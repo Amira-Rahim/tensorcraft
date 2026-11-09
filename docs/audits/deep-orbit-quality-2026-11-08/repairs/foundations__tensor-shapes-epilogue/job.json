@@ -1,0 +1,96 @@
+{
+  "id": "foundations/tensor-shapes",
+  "phase": "epilogue",
+  "status": "published",
+  "prompt": "Use case: illustration-story. Create a replacement for the LAST target scene. Reference 1 is Dr. Farah's canonical identity: preserve her facial width, jaw, chin, nose, eye spacing, brows, mouth, complexion, age, hairline and green AR lens through a new natural expression. Reference 2 is the signal-analysis lab ROOM only. Reference 3 is quality, muted palette and candid acting only, not cast or content. LAST is the old target to improve, not a pose or proportion authority. Show exactly Farah, an adult woman with ordinary shoulder width, balanced head and torso, a short natural neck and two anatomically continuous arms. Landscape 1536x1024. The main lesson display must occupy the available wall generously with large short crisp labels and no tiny console-text substitute. Camera is beside Farah so her recognizable three-quarter face and the front of the physical display are visible to both her and us. All text, grids and marks share the screen perspective. Soft facial light, charcoal room, gray coat, quiet sage interface and aged brass. Remove excess foreground hardware, keep a few room-canon instruments low and unobtrusive. No neon outlines, orange wash, extra crew, generic decoration or camera-facing presentation. Exactly natural hands with coherent shoulder-elbow-wrist chains, correct thumb sides, separated fingers and plausible contact. Moment: Farah labels the lines of Demir's full recording as the next readings arrive, curious about the repeating waves whose cause is still unknown. Close three-quarter view with Farah on the RIGHT and a large active wall display filling the LEFT two-thirds. Farah reaches naturally with a short stylus held in a relaxed writing grip to finish the label beside a wave. Her elbow bends comfortably, shoulder relaxed, wrist straight enough to write; stylus is one continuous object touching the glass. Her other palm lightly braces the lower console edge. Her gaze is on the stylus contact point, with a small delighted but thoughtful expression. Torso partly turns with the writing arm; no lecture pose and no oversized head. Main screen exact hierarchy: title 'Full recording'; a single large shape mapping '[450,64]' then 'transpose()' with a modest thin arrow then '[64,450]'; below those shapes respectively 'moments by sensors' and 'sensors by moments'. Beneath, show two uncluttered parallel chart strips headed 'Selected sensors: A, B' and clearly marked 'Illustrative traces'. Each strip has its own label A or B and a simple smooth repeating wave with several clear rises and falls, no numerical point values. Shared bottom axis 'Time'; small side axis 'Reading'. Farah is labeling B beside the lower strip. No fabricated diagnosis or success verdict; the repeating shape is a story observation. Do not include the twelve-value exercise table. Keep all printed text large enough to read and projected into the glass plane. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "Lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-openai-20261107.png",
+      "sha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+      "role": "Benchmark quality and palette only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-epilogue-openai-20261107.png",
+      "sha256": "57f25558df9c2f5fcdab49b94b47e9003a92cc46508d080768787577c9867fd5",
+      "role": "Edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+    }
+  ],
+  "requestedOutput": "Separate candidate; no publishing or ledger mutation",
+  "owner": "/root/quality_early",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-72c5fb65-753c-4c73-bcaf-80d95210eb40.png",
+  "candidatePath": "art-src/scenes/foundations__tensor-shapes-epilogue-openai-20261107.png",
+  "candidateSha256": "8b3a36cbf5478eeb8dec45551c162971f212a2767a0dba72a4164ba403e058c2",
+  "ownReview": {
+    "reviewer": "/root/quality_early",
+    "candidateSha256": "8b3a36cbf5478eeb8dec45551c162971f212a2767a0dba72a4164ba403e058c2",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native original plus 2x face and arms or 3x individual hands, compared to canonical Farah portrait.",
+    "cropCoordinates": {
+      "face": [
+        1118,
+        375,
+        1320,
+        585
+      ],
+      "arms": [
+        825,
+        555,
+        1490,
+        1024
+      ]
+    },
+    "canonicalFaceReference": {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    },
+    "checks": {
+      "action": "Farah follows the newly labeled B trace with her stylus as she inspects the repeating waves.",
+      "anatomy": "Raised arm has relaxed elbow and correct writing grip around one continuous stylus; other hand braces the bench with natural finger overlap.",
+      "display": "Main wall display fills left two-thirds, clear [450,64] to [64,450] axis mapping. Selected A/B waves explicitly illustrative; no invented numeric samples or diagnosis.",
+      "expression": "Interested small smile, eyes toward work, balanced adult pose and canonical face."
+    },
+    "surfacePerspective": "Text and diagram geometry follow the physical wall screen plane.",
+    "operatorDirection": "Farah has a direct view of the front of the display, camera beside her.",
+    "temporaryCropsRemoved": true
+  },
+  "publication": {
+    "alt": "Farah follows the repeating B trace after turning the recording into one row per sensor.",
+    "action": "Farah follows the B trace with her stylus while bracing her other hand on the bench.",
+    "emotion": "Interested attention with a restrained smile.",
+    "eyeline": "Toward the repeating B trace on the wall display.",
+    "location": "Archimedes, Lab",
+    "checks": [
+      "Farah follows the newly labeled B trace with her stylus as she inspects the repeating waves. Raised arm has relaxed elbow and correct writing grip around one continuous stylus; other hand braces the bench with natural finger overlap. Main wall display fills left two-thirds, clear [450,64] to [64,450] axis mapping. Selected A/B waves explicitly illustrative; no invented numeric samples or diagnosis. Interested small smile, eyes toward work, balanced adult pose and canonical face."
+    ]
+  },
+  "publishedSource": "art-src/scenes/foundations__tensor-shapes-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-epilogue.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-shapes-epilogue/candidate.png",
+      "sha256": "8b3a36cbf5478eeb8dec45551c162971f212a2767a0dba72a4164ba403e058c2",
+      "bytes": 2059821,
+      "retainedEquivalent": "art-src/scenes/foundations__tensor-shapes-epilogue-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

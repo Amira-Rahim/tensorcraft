@@ -1,0 +1,236 @@
+{
+  "key": "monitoring-takeaways",
+  "id": "capstone/monitoring",
+  "phase": "takeaways",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir stands RIGHT at engineering monitoring workbench, mouse hand paused, other palm flat on desk. He leans in toward screen LEFT with curious lifted eyebrow, half-smiling as he catches an easy-to-miss distinction. Remove original outward tablet. Monitor heading \"Monitoring review\". Three clear rows \"Absent measurement: No data\", \"Zero mean distance: means match\", \"Accuracy needs trusted labels\". Beneath simple two-step flow \"Drift alert\" connected to \"Investigate\". No imaginary charts, data values, alerts solved or accuracy score. Emphasize his screen-facing eye direction and physically accessible display. Natural torso/head alignment, coherent hands with five fingers. Dark peripheral screens and familiar engineering room.",
+  "meaning": "Recap distinguishes absence and zero mean distance, drift investigation and labeledaccuracy.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+      "sha256": "b64d488765ac56f94211d7723e4c1ecc62fb5e76c73c1148c533ba665c26483d",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+      "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+      "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ff35c78f-f3bf-415f-bafd-25a57abf0cae.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 840,
+      "top": 80,
+      "width": 360,
+      "height": 470
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 500,
+      "top": 730,
+      "width": 830,
+      "height": 170
+    }
+  ],
+  "candidatePath": "art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+  "candidateSha256": "62eb8514465a31d09c01af88f433c36bf06ccb5a271d6b0292c22f2e87961dd7",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir stands RIGHT at engineering monitoring workbench, mouse hand paused, other palm flat on desk. He leans in toward screen LEFT with curious lifted eyebrow, half-smiling as he catches an easy-to-miss distinction. Remove original outward tablet. Monitor heading \"Monitoring review\". Three clear rows \"Absent measurement: No data\", \"Zero mean distance: means match\", \"Accuracy needs trusted labels\". Beneath simple two-step flow \"Drift alert\" connected to \"Investigate\". No imaginary charts, data values, alerts solved or accuracy score. Emphasize his screen-facing eye direction and physically accessible display. Natural torso/head alignment, coherent hands with five fingers. Dark peripheral screens and familiar engineering room.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+          "sha256": "b64d488765ac56f94211d7723e4c1ecc62fb5e76c73c1148c533ba665c26483d",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ff35c78f-f3bf-415f-bafd-25a57abf0cae.png",
+        "sha256": "62eb8514465a31d09c01af88f433c36bf06ccb5a271d6b0292c22f2e87961dd7"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Recap distinguishes absence and zero mean distance, drift investigation and labeledaccuracy.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 840,
+        "top": 80,
+        "width": 360,
+        "height": 470
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 500,
+        "top": 730,
+        "width": 830,
+        "height": 170
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+      "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+      "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+      "sha256": "b64d488765ac56f94211d7723e4c1ecc62fb5e76c73c1148c533ba665c26483d",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "monitoring-takeaways",
+    "id": "capstone/monitoring",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ff35c78f-f3bf-415f-bafd-25a57abf0cae.png",
+    "candidateSha256": "62eb8514465a31d09c01af88f433c36bf06ccb5a271d6b0292c22f2e87961dd7",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:50:28.362412+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+        "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+        "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Actual recap distinguishes absent measurement from zero mean distance, requires trusted labels for accuracy, and directs drift alerts to investigation. Zero distance means feature means match, not whole distributions; screen wording preserves that distinction."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/monitoring-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ff35c78f-f3bf-415f-bafd-25a57abf0cae.png",
+  "publishedSource": "art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/monitoring-takeaways.webp",
+  "sourceSha256": "62eb8514465a31d09c01af88f433c36bf06ccb5a271d6b0292c22f2e87961dd7",
+  "webpSha256": "94d8c92f3ccf85af92dc3611d35119130c5fc582db7ec631c6341481c1bed904",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+    "sourceSha256": "b64d488765ac56f94211d7723e4c1ecc62fb5e76c73c1148c533ba665c26483d",
+    "webpSha256": "3e61a908778c9ceb35ba3388589055ea1275a158d17c1c35f8dfc1dd09303f5b",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a59f5287-da52-46db-8412-d36a8e62e28c.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "62eb8514465a31d09c01af88f433c36bf06ccb5a271d6b0292c22f2e87961dd7",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Actual recap distinguishes absent measurement from zero mean distance, requires trusted labels for accuracy, and directs drift alerts to investigation. Zero distance means feature means match, not whole distributions; screen wording preserves that distinction."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+        "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+        "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/monitoring-takeaways.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

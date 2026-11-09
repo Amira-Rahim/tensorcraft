@@ -1,0 +1,74 @@
+{
+  "reviewer": "quality_early",
+  "reviewedAt": "2026-11-08T19:21:29.409634+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-epilogue/candidate.png",
+  "candidateSha256": "547db593ad3d05ca7b4c269f84d26ecf6fcda113e224cac4ed029dd34e037fb4",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x or 3x face/hand/prop crops, full shoulder-elbow-wrist chains traced in original, direct canonical portrait comparison, current lesson and relevant exercise source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": "rt5face",
+      "k": 5,
+      "box": [
+        260,
+        200,
+        570,
+        540
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-epilogue/candidate.png"
+    },
+    {
+      "i": "rt5hands",
+      "k": 5,
+      "box": [
+        115,
+        740,
+        945,
+        990
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-epilogue/candidate.png"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Two complete arms rest at chair and notebook, with natural hand silhouettes and correctly occluded thumbs. Multitool lies separately and continuously on the desk.",
+    "displayLegibilityAndSource": "Three large raw pulses are shown on the engineering rig with no invented measurements or bridge-approval result. The closed notebook supports the epilogue's absence of further writing.",
+    "identityExpressionAndStory": "Nazari's quiet absorbed gaze, mature face and gray-streaked hair match the current reflective epilogue.",
+    "palette": "Muted sage, charcoal and aged brass with warm skin and restrained lighting.",
+    "perspectiveAndOperator": "Readable physical display fronts with consistent text plane and plausible operator orientation.",
+    "largeDisplayRule": "Essential lesson information is large and clear, using the available scene space rather than a tiny rear console."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true
+}

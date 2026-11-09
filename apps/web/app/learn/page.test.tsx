@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import LearnPage from "./page";
+import { INTRO_VIDEO } from "@/lib/intro-video";
 
 // Stub next/link so render works without the Next router.
 vi.mock("next/link", () => ({
@@ -49,6 +50,14 @@ describe("LearnPage world links", () => {
       expect(container.querySelector(`a[href="/worlds/${slug}"]`)).toBeNull();
     }
   });
+
+  it("identifies Deep Orbit as the first available world", () => {
+    const { container } = render(<LearnPage />);
+    expect(container.textContent).toContain(
+      "Deep Orbit, the first available world",
+    );
+    expect(container.textContent).toMatch(/Four more worlds are coming\s+soon/);
+  });
 });
 
 describe("LearnPage free-lesson CTAs", () => {
@@ -82,7 +91,7 @@ describe("LearnPage SEO payload", () => {
 
   it("emits BreadcrumbList always, VideoObject only with the trailer", () => {
     const hasTrailer = fs.existsSync(
-      path.join(process.cwd(), "public/media/learn-trailer.mp4"),
+      path.join(process.cwd(), "public", INTRO_VIDEO.src),
     );
     const { container } = render(<LearnPage />);
     const types = Array.from(
@@ -94,9 +103,40 @@ describe("LearnPage SEO payload", () => {
 });
 
 describe("LearnPage trailer gate", () => {
+  it("opens the approved introduction with its captions", () => {
+    const exists = vi.spyOn(fs, "existsSync").mockReturnValue(true);
+    try {
+      const { container } = render(<LearnPage />);
+      expect(exists).toHaveBeenCalledWith(
+        path.join(process.cwd(), "public", "/media/tensorcraft-intro.mp4"),
+      );
+      expect(
+        container.querySelector(
+          'img[src="/media/tensorcraft-intro-poster.webp"]',
+        ),
+      ).toBeInTheDocument();
+      expect(container.querySelector("video")).toBeNull();
+
+      fireEvent.click(screen.getByTestId("learn-watch-trailer"));
+      expect(screen.getByRole("dialog")).toHaveAccessibleName(
+        "Tensorcraft introduction",
+      );
+      expect(container.querySelector("video")).toHaveAttribute(
+        "src",
+        "/media/tensorcraft-intro.mp4",
+      );
+      expect(container.querySelector('track[kind="captions"]')).toHaveAttribute(
+        "src",
+        "/media/tensorcraft-intro.vtt",
+      );
+    } finally {
+      exists.mockRestore();
+    }
+  });
+
   it("gates the trailer controls on the asset actually existing", () => {
     const hasTrailer = fs.existsSync(
-      path.join(process.cwd(), "public/media/learn-trailer.mp4"),
+      path.join(process.cwd(), "public", INTRO_VIDEO.src),
     );
     const { container } = render(<LearnPage />);
     if (hasTrailer) {

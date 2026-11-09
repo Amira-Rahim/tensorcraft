@@ -1,0 +1,168 @@
+{
+  "i": 36,
+  "room": "lab",
+  "moment": "Demir sits at the RIGHT foreground of the signal lab, running a neuron arithmetic check. One hand presses a normal console key and the other holds a tablet with its back toward camera. Farah stands just behind him to the far right, looking from his result toward the LARGE LEFT wall display. One of her hands lightly rests on the chair back and the other holds a closed notebook at her side. Her expression is attentive, Demir's is curious and engaged. Exactly four continuous arm chains, no overlapping mystery hand, no pen. Exact display text: title 'One neuron'; rows 'inputs [1, 2, 3]', 'weights [0.2, 0.8, -0.5]', 'bias 0.1'; a short diagram 'dot' then '+ bias' then 'scalar []'; bottom 'Expected check: 0.4'. This is a supplied arithmetic check, not trained prediction.",
+  "extra": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml"
+  ],
+  "id": "neural-networks__first-neuron-challenge",
+  "lesson": "neural-networks/first-neuron",
+  "phase": "challenge",
+  "source": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+  "sourceSha256": "5d1d942986f713f360ec161ddabf88a7267457eb36333dc6cea7ed710eb2e675",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+  "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: dr-farah, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the RIGHT foreground of the signal lab, running a neuron arithmetic check. One hand presses a normal console key and the other holds a tablet with its back toward camera. Farah stands just behind him to the far right, looking from his result toward the LARGE LEFT wall display. One of her hands lightly rests on the chair back and the other holds a closed notebook at her side. Her expression is attentive, Demir's is curious and engaged. Exactly four continuous arm chains, no overlapping mystery hand, no pen. Exact display text: title 'One neuron'; rows 'inputs [1, 2, 3]', 'weights [0.2, 0.8, -0.5]', 'bias 0.1'; a short diagram 'dot' then '+ bias' then 'scalar []'; bottom 'Expected check: 0.4'. This is a supplied arithmetic check, not trained prediction. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "Room only",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+      "role": "Edit target, not identity authority",
+      "sha256": "b7811e4e4b117c539412eec1677f6b24699221a01dd78163f235608b25b1f015"
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: dr-farah, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the RIGHT foreground of the signal lab, running a neuron arithmetic check. One hand presses a normal console key and the other holds a tablet with its back toward camera. Farah stands just behind him to the far right, looking from his result toward the LARGE LEFT wall display. One of her hands lightly rests on the chair back and the other holds a closed notebook at her side. Her expression is attentive, Demir's is curious and engaged. Exactly four continuous arm chains, no overlapping mystery hand, no pen. Exact display text: title 'One neuron'; rows 'inputs [1, 2, 3]', 'weights [0.2, 0.8, -0.5]', 'bias 0.1'; a short diagram 'dot' then '+ bias' then 'scalar []'; bottom 'Expected check: 0.4'. This is a supplied arithmetic check, not trained prediction. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "status": "published",
+  "owner": "/root/quality_early",
+  "tool": "builtin image_gen",
+  "preparedAt": "2026-11-08T17:36:15.433828+00:00",
+  "promptSha256": "af3fc1a865d431195188d03c9477cdd3e0910424467da4a1675f012f0a7c80a9",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+      "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml",
+      "sha256": "76be1567cd573a022279c518761660430454f55285684fba97d4047bf613e45c"
+    }
+  ],
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-c7742caf-ff8c-4324-b758-4f6de7cc5eca.png",
+  "candidatePath": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+  "candidateSha256": "5d1d942986f713f360ec161ddabf88a7267457eb36333dc6cea7ed710eb2e675",
+  "ownReview": {
+    "reviewer": "quality_early",
+    "reviewedAt": "2026-11-08T18:44:32.026553+00:00",
+    "candidateSha256": "5d1d942986f713f360ec161ddabf88a7267457eb36333dc6cea7ed710eb2e675",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native generated original plus magnified hands/props and face comparison with independently viewed canonical portraits. All complete arm chains traced in original.",
+    "cropCoordinates": [
+      {
+        "i": "r6faces",
+        "k": 6,
+        "box": [
+          940,
+          170,
+          1470,
+          635
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r6hands",
+        "k": 6,
+        "box": [
+          575,
+          535,
+          1510,
+          950
+        ],
+        "scale": 2
+      }
+    ],
+    "canonicalFaceReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "role": "Canonical identity: dr-farah",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "role": "Canonical identity: ensign-demir",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ],
+    "checks": "Inputs [1, 2, 3], weights [0.2, 0.8, -0.5], bias 0.1, dot then bias then scalar [] and expected 0.4 match the exercise. Two arms per person, thumb chirality, button contact, tablet grip, chair rest and notebook grip pass native and magnified review. Canonical faces retain identity.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "temporaryCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__first-neuron-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+  "webpSha256": "51173d1e18c9023e590e398313d9ab0e4c763f1c8b3ca91d0ad0a5aa61e34061",
+  "webpQuality": 80,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+    "sourceSha256": "b7811e4e4b117c539412eec1677f6b24699221a01dd78163f235608b25b1f015",
+    "webpSha256": "d89a058e49bbfeae7740b8eb74920f591077fedf74daafb28b667ec40b32f062",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3c66160a-3870-42a1-afe2-9bc1684c3e6b.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_sequence",
+    "authorReviewer": "quality_early",
+    "status": "approved",
+    "candidateSha256": "5d1d942986f713f360ec161ddabf88a7267457eb36333dc6cea7ed710eb2e675",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Inputs [1, 2, 3], weights [0.2, 0.8, -0.5], bias 0.1, dot then bias then scalar [] and expected 0.4 match the exercise. Two arms per person, thumb chirality, button contact, tablet grip, chair rest and notebook grip pass native and magnified review. Canonical faces retain identity."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+        "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml",
+        "sha256": "76be1567cd573a022279c518761660430454f55285684fba97d4047bf613e45c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

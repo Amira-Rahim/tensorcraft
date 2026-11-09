@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "phase": "concept",
+      "sourceSha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+      "outputSha256": "3b9e42d4d237b95b38ef4c2095644fd75f98887fe8cf8f9edf0aab1c82598fc3",
+      "bytes": 148392,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "takeaways",
+      "sourceSha256": "6aeb3e007ea5597dae797f5149562a747eb3f4b53bf2e00af2dad7e5755cceb4",
+      "outputSha256": "ac645567677141ef8495186069e5ec1031dd6374a1e65c2088dc1f1aad38849d",
+      "bytes": 190892,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "epilogue",
+      "sourceSha256": "0de89b54f8c66eda92eab46a8f7bb46cfa7c37b14dd7a3055bc6e99f2c97c0d1",
+      "outputSha256": "8dab1a40979c09ca76e46f8be5f66ace9d0484b628f4e0b8aa48a71944cddb02",
+      "bytes": 190716,
+      "quality": 83,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "challenge",
+      "sourceSha256": "338691c9726cfe8bb6d88019e316bd36a42cd5efbd744e6243ada8ab552a89d8",
+      "outputSha256": "268091f57df5ca264b5294beb0a47cdc2899ab7c4bf5727397b3033aa6613426",
+      "bytes": 159786,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "briefing",
+      "sourceSha256": "39ea11a0dffac2432167e251fbc9da96479c31e45be6db57e44bdbf51da4f585",
+      "outputSha256": "fbd2967d976ee45cfde58310a7b77dbd79160ff57d5fc5ce62b4484c895ed706",
+      "bytes": 169420,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    }
+  ],
+  "removed": [
+    "art-src/scenes/advanced-time-series__forecasting-briefing-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__forecasting-challenge-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__forecasting-concept-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__forecasting-concept-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__forecasting-epilogue-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__forecasting-takeaways-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__forecasting-takeaways-semantics-stage2-openai-20261107.png"
+  ],
+  "archive": "Current source inputs retained in semantic-review/inputs; current outputs and proofs retained."
+}

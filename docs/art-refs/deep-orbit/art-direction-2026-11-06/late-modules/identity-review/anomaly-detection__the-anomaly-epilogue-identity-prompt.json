@@ -1,0 +1,53 @@
+{
+  "queueIndex": 42,
+  "key": "deep-orbit/anomaly-detection/the-anomaly",
+  "phase": "epilogue",
+  "status": "awaiting-identity-correction",
+  "inputScene": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261106.png",
+  "inputSceneSha256": "b90ec841c996a371be4d17e599d2d81476780f1c53071049011e644ae70e1b4e",
+  "cast": [
+    "nazari",
+    "farah"
+  ],
+  "faceBoxes": {
+    "nazari": [
+      115,
+      60,
+      300,
+      335
+    ],
+    "farah": [
+      695,
+      275,
+      335,
+      350
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-identity-stage-openai-20261107.png",
+      "sha256": "11058ce17fc190aa64bb6fb5e56f36eb1510cd5535f6a715b868ca9f869cacf9",
+      "role": "target scene with corrected crew identity"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Image 1 canonical Nazari and image 2 canonical Farah are identity preservation references. Image 3 is the TARGET SCENE with independently approved faces. Change ONLY the two traces inside the large screen at right. All people and faces, hair, eyes, cheeks, noses, mouths, bodies, hands, props, room, lighting and frame are strictly unchanged. The current screen wrongly shows groups of three and two repeated spikes. REPLACE them with two matching rows of eight single narrow event pulses on straight baselines. Each row must have exactly the same eight pulse positions. Across normalized horizontal screen width the centers are at 0.07, 0.095, 0.12, 0.17, 0.245, 0.37, 0.57, 0.895. These encode adjacent gaps in ratio 1,1,2,3,5,8,13: first two gaps equal and small, all later gaps grow progressively; final gap is largest. Draw eight separate slender vertical pulse spikes of equal height, not broad oscillations, not grouped bursts. Empty flat baseline clearly visible between each event. No labels, numbers, text, decorative marks or extra spikes. Keep the original two-row screen layout and perspective. This shows a matching calibration timing pattern without explaining its origin. Faces must remain pixel-faithful to the target. One1536x1024 scene.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/anomaly-detection__the-anomaly-epilogue-identity-prompt.json",
+  "newSource": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-epilogue.webp",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-identity-stage-openai-20261107.png",
+      "reason": "Identity passed root review. Display must replace wrong clustered pulses with matching Fibonacci gap event sequences."
+    }
+  ]
+}

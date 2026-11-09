@@ -1,0 +1,231 @@
+{
+  "key": "normalization-takeaways",
+  "id": "foundations/normalization",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+  "exercise": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+  "section": "Scaling each feature; Min-max scaling; minMaxStats and zero-scale tests",
+  "meaning": "Saved per-feature bounds for supplied four-row batch: temperature min20 max26, signal strength min0.2 max0.8; formula (x-min)/(max-min), reused training bounds; later observations can exceed0-1; zero divisor replaced by1.",
+  "prompt": "Use case: identity-preserve. Deep Orbit illustrated story scene, 1536x1024 landscape. Input1 is the canonical character face and age, highest priority. Input2 is the approved Bridge master for ROOM GEOMETRY ONLY, do not copy its diagrams. Input3 is the exact scene/content edit target. Restore a candid work moment rather than an outward device presentation. Preserve this actual character's face morphology, eye shape/spacing, nose, jaw, age, hairstyle, uniform and signature equipment. Preserve balanced stylized adult proportions, with natural head/neck/shoulders and two complete anatomically coherent arm chains and five fingers per hand. Use the same restrained cel-shaded linework, muted sage #6BAA8A, aged brass #A89060 and charcoal/navy, natural tan skin, subdued practical lights. No neon lime or glossy rendering. Every lit panel must have the exact meaningful content specified below; all other background and wrist screens inactive dark glass. Text/rows/boxes must be drawn in the exact physical screen plane with converging baselines and coherent perspective, never a flat overlay. Do not add people, labels, decorative waveforms, checkmarks, progress bars or numerical results. No eye contact with camera. No tablet/card/notebook held toward the camera.\nRestage Dr Farah alone in a candid calibration check on the Bridge. Remove the outward handheld tablet. Medium three-quarter view shows Farah on the RIGHT seated naturally at a compact desk, monitor on the LEFT angled toward her; camera is beside her at the same FRONT side of that screen, so Farah and viewer can both see the display. Her body/chair/head all face the console at a natural diagonal. Her face is visible in natural three-quarter view, eyes on the saved bounds, brow slightly raised with engaged curiosity. Anatomical LEFT eyeglass lens stays over her LEFT eye. One hand rests on the mouse; the other rests loosely flat on the desk, no pointing or awkward finger flourish. Her work monitor contains a sparse practical configuration view, exact text:\nHeading \"Saved min-max bounds\"\nTable headers \"Feature\" \"Min\" \"Max\"\nRows \"Temperature\" \"20\" \"26\" and \"Signal strength\" \"0.2\" \"0.8\"\nBelow: \"(x - min) / (max - min)\"\nFooter: \"Reuse training bounds\"\nOne separate short line below the table: \"Later values may exceed 0 to 1\"\nFinal small line: \"Zero range: divide by 1\"\nThe table is a setup record, not a fabricated success result. All text and table lines conform to the monitor's physical perspective. No extra boards carrying duplicate lesson text. Other bridge displays dark. Preserve mature canonical Farah face, olive-tan complexion, hair and lab coat, muted Bridge palette and familiar brass/charcoal furniture.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+      "sha256": "40c6c538642177866de6b152bb70c99f723d62ba5e6d4f97553c91dd3d91c101",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "status": "published",
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/foundations/normalization-takeaways.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6d9f09f6-e3b4-450a-b57d-70d5d3a887ef.png",
+  "reviewCrops": {
+    "face": {
+      "left": 950,
+      "top": 50,
+      "width": 410,
+      "height": 480
+    },
+    "hands": {
+      "left": 530,
+      "top": 750,
+      "width": 620,
+      "height": 220
+    }
+  },
+  "candidatePath": "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+  "candidateSha256": "8e5f940844250eabfd8c3cce5e0d6be232b6da080af37fbdbd5451dc1eec7eba",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit illustrated story scene, 1536x1024 landscape. Input1 is the canonical character face and age, highest priority. Input2 is the approved Bridge master for ROOM GEOMETRY ONLY, do not copy its diagrams. Input3 is the exact scene/content edit target. Restore a candid work moment rather than an outward device presentation. Preserve this actual character's face morphology, eye shape/spacing, nose, jaw, age, hairstyle, uniform and signature equipment. Preserve balanced stylized adult proportions, with natural head/neck/shoulders and two complete anatomically coherent arm chains and five fingers per hand. Use the same restrained cel-shaded linework, muted sage #6BAA8A, aged brass #A89060 and charcoal/navy, natural tan skin, subdued practical lights. No neon lime or glossy rendering. Every lit panel must have the exact meaningful content specified below; all other background and wrist screens inactive dark glass. Text/rows/boxes must be drawn in the exact physical screen plane with converging baselines and coherent perspective, never a flat overlay. Do not add people, labels, decorative waveforms, checkmarks, progress bars or numerical results. No eye contact with camera. No tablet/card/notebook held toward the camera.\nRestage Dr Farah alone in a candid calibration check on the Bridge. Remove the outward handheld tablet. Medium three-quarter view shows Farah on the RIGHT seated naturally at a compact desk, monitor on the LEFT angled toward her; camera is beside her at the same FRONT side of that screen, so Farah and viewer can both see the display. Her body/chair/head all face the console at a natural diagonal. Her face is visible in natural three-quarter view, eyes on the saved bounds, brow slightly raised with engaged curiosity. Anatomical LEFT eyeglass lens stays over her LEFT eye. One hand rests on the mouse; the other rests loosely flat on the desk, no pointing or awkward finger flourish. Her work monitor contains a sparse practical configuration view, exact text:\nHeading \"Saved min-max bounds\"\nTable headers \"Feature\" \"Min\" \"Max\"\nRows \"Temperature\" \"20\" \"26\" and \"Signal strength\" \"0.2\" \"0.8\"\nBelow: \"(x - min) / (max - min)\"\nFooter: \"Reuse training bounds\"\nOne separate short line below the table: \"Later values may exceed 0 to 1\"\nFinal small line: \"Zero range: divide by 1\"\nThe table is a setup record, not a fabricated success result. All text and table lines conform to the monitor's physical perspective. No extra boards carrying duplicate lesson text. Other bridge displays dark. Preserve mature canonical Farah face, olive-tan complexion, hair and lab coat, muted Bridge palette and familiar brass/charcoal furniture.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+          "sha256": "40c6c538642177866de6b152bb70c99f723d62ba5e6d4f97553c91dd3d91c101",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6d9f09f6-e3b4-450a-b57d-70d5d3a887ef.png",
+        "sha256": "8e5f940844250eabfd8c3cce5e0d6be232b6da080af37fbdbd5451dc1eec7eba"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native 1536x1024 full frame",
+      "native face crop against canonical portrait",
+      "native hands crop"
+    ],
+    "readerDirection": "Screen front faces seated character and the beside-console camera. Eyes follow the display, without outward tablet.",
+    "anatomy": "Both arm chains supported; relaxed desk hand and mouse hand; head and torso face console together.",
+    "identity": "Canonical mature face, hair and costume retained.",
+    "screenPlane": "Text, rows and border converge with the physical monitor plane.",
+    "palette": "Muted sage, aged brass, charcoal with natural skin.",
+    "meaning": "Saved per-feature bounds for supplied four-row batch: temperature min20 max26, signal strength min0.2 max0.8; formula (x-min)/(max-min), reused training bounds; later observations can exceed0-1; zero divisor replaced by1.",
+    "story": "Candid calibration/cleanup check with subtle engaged expression and no camera gaze.",
+    "reviewCrops": {
+      "face": {
+        "left": 950,
+        "top": 50,
+        "width": 410,
+        "height": 480
+      },
+      "hands": {
+        "left": 530,
+        "top": 750,
+        "width": 620,
+        "height": 220
+      }
+    }
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+      "sha256": "40c6c538642177866de6b152bb70c99f723d62ba5e6d4f97553c91dd3d91c101",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "normalization-takeaways",
+    "id": "foundations/normalization",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6d9f09f6-e3b4-450a-b57d-70d5d3a887ef.png",
+    "candidateSha256": "8e5f940844250eabfd8c3cce5e0d6be232b6da080af37fbdbd5451dc1eec7eba",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:35:17.596142+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+        "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+        "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "Actual exercise bounds are temperature 20 to 26 and signal strength 0.2 to 0.8. Formula, training-stat reuse, later range exceedance and zero-scale divisor 1 are correct."
+    }
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6d9f09f6-e3b4-450a-b57d-70d5d3a887ef.png",
+  "publishedSource": "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization-takeaways.webp",
+  "sourceSha256": "8e5f940844250eabfd8c3cce5e0d6be232b6da080af37fbdbd5451dc1eec7eba",
+  "webpSha256": "c9251772c31eff377601c6e1ed3a9ba44c7b2bf9c58f9bb73f303585d6b639f4",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+    "sourceSha256": "40c6c538642177866de6b152bb70c99f723d62ba5e6d4f97553c91dd3d91c101",
+    "webpSha256": "8565066650cbe651c07690492aba0dd5ba9e3fbfe741c21435b9c9676fecbf28",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cd0ac8d4-3005-4f96-8f08-7b22d8e24d59.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "8e5f940844250eabfd8c3cce5e0d6be232b6da080af37fbdbd5451dc1eec7eba",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "Actual exercise bounds are temperature 20 to 26 and signal strength 0.2 to 0.8. Formula, training-stat reuse, later range exceedance and zero-scale divisor 1 are correct."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+        "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+        "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/foundations/normalization-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

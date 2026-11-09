@@ -1,0 +1,50 @@
+{
+  "key": "tensorflow-js-setup-takeaways",
+  "id": "browser-runtimes/tensorflow-js-setup",
+  "phase": "takeaways",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "status": "candidate-awaiting-review",
+  "input": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+  "inputSha256": "3e866d61050ed5ddaab1a070751c8b5953d303b67b6b20c26d3d28d5d8d397e4",
+  "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-7c658e7e-e588-40b9-80c7-571a7663f942.png",
+  "archivedInputSha256": "3e866d61050ed5ddaab1a070751c8b5953d303b67b6b20c26d3d28d5d8d397e4",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+      "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+      "sha256": "3e866d61050ed5ddaab1a070751c8b5953d303b67b6b20c26d3d28d5d8d397e4"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+      "sha256": "c7bdafbbfd6e5b2df2b4f4323989a337ccb0ec573b1c0fe1f4a2482867fcb6d9"
+    }
+  ],
+  "screenMeaning": "Benchmark the same256x256 matmul, warm it and await readback before stopping time; actual device results vary.",
+  "screenSpecification": "Replace the checkerboard and generic bars on the center monitor with a simple timing sequence headed MEASURE THIS DEVICE. Top line: A [256,256] x B [256,256] = C [256,256]. Below, show Start timer -> matMul -> await C.data() -> Stop timer. Use clear directional arrows and no bars, timing result or speed promise. The timer must include readback. This is a workload diagram, not a miniature 256-cell raster. Keep the existing physical stopwatch in Nazari hand and the tablet exactly unchanged.",
+  "proportionSpecification": "Gently reduce only Nazari whole head about 8 percent linearly while preserving her face morphology, age, expression, hair and neck alignment. Preserve Demir head size and all bodies and arms.",
+  "prompt": "Use case: identity-preserve scene edit for an educational adventure comic. The first two images are canonical identity portraits for chief-nazari, ensign-demir. The next image supplies COLOR STYLE ONLY, never pose or content. The LAST image is the target. Preserve exact canonical faces, age, hair, expression, gaze, wardrobe, camera, room, distinctive phase action, hands and continuous arm chains. Gently reduce only Nazari whole head about 8 percent linearly while preserving her face morphology, age, expression, hair and neck alignment. Preserve Demir head size and all bodies and arms. The approved poses must stay natural. Use muted sage #6BAA8A screen ink, aged brass #A89060 metal, charcoal/navy surfaces, warm natural tan skin and flat cel shadows. Remove neon mint bloom, green hair halos, yellow-gold glare, orange skin and glossy gradients while preserving warm practical lighting and contrast. Replace the checkerboard and generic bars on the center monitor with a simple timing sequence headed MEASURE THIS DEVICE. Top line: A [256,256] x B [256,256] = C [256,256]. Below, show Start timer -> matMul -> await C.data() -> Stop timer. Use clear directional arrows and no bars, timing result or speed promise. The timer must include readback. This is a workload diagram, not a miniature 256-cell raster. Keep the existing physical stopwatch in Nazari hand and the tablet exactly unchanged. Every OTHER secondary monitor becomes inactive dark charcoal glass in its current frame, with no unrelated waveforms, bars, circles, labels or diagrams. Keep physical console buttons and room hardware. Keep short labels precisely spelled with spaces between words and numbers. No invented measurements. Output one 1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/tf-setup-remaining4/tensorflow-js-setup-takeaways.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/tf-setup-remaining4/tensorflow-js-setup-takeaways.json",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-79f61e42-1238-4f4e-8e33-f3ef98e8cdb6.png",
+  "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-79f61e42-1238-4f4e-8e33-f3ef98e8cdb6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+}

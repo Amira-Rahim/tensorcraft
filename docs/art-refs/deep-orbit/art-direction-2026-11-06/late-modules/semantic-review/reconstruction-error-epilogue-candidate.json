@@ -1,0 +1,182 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portraits first and room reference next, LAST image is target. Correct ONLY the horizontal round-table display reader direction. Demir stands at the LEFT side of this table. Rotate the entire table display text and grid 90 degrees CLOCKWISE within its horizontal plane, so the header is on the RIGHT side of the table, letter bottoms toward Demir on the LEFT, and all text reads naturally upright when viewed from his left-side position. To our camera the text is sideways. Keep exact data: Mission squared errors; fft_5:64.12; fft_6:2.89; amplitude:0.71; Other eight:each below0.1; fft_5:72Hz bin,nearest73.4Hz. No mirrored writing, no changed values or reversed rows. Table ellipse, grid, baselines and all text share the same horizontal plane perspective. Keep ARIA monitor content/orientation unchanged, face, surprised gaze, full body, two arm chains and button contact unchanged. No new scene elements. Muted cel-shaded adventure comic. One1536x1024 image.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-epilogue-narrative-stage1-openai-20261107.png",
+      "sha256": "9e8417e75604a391ff3641d6909fa269a290b1d173801d4874675a3125143b5b",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "9e8417e75604a391ff3641d6909fa269a290b1d173801d4874675a3125143b5b",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+    "sha256": "a3bb41238713eb0365da6de4c51a3d3327dbebd67a9426e906f6f71afd35b649"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sha256": "dec34450564614d8f3963d95bf9a3cf627d276b42b576e430c9a5cae535425e6"
+    }
+  ],
+  "panelSpecification": {
+    "state": "story finding and queued work",
+    "concreteGenerationSpecification": "Restage Demir alone in a candid bridge task moment, standing sideways at the central console, torso and head naturally angled toward the adjacent ARIA monitor. Camera looks diagonally past the work surface and shows his three-quarter face. He has put his tablet face down on the console. One hand rests near the feature table; the other finger has just pressed the queue control. His brow rises and mouth parts slightly in surprised attention to ARIA's request, not a smile for the camera. The central low screen shows compact Mission squared errors table with exact rows fft_5:64.12, fft_6:2.89, amplitude:0.71, Other eight:each below0.1. Footer fft_5:72 Hz bin, nearest73.4 Hz. Adjacent small monitor is ARIA replay,400 decisions,Priority3,Queued, with one tiny abstract waveform clearly labeled ARIA as voice, not signal data. No completed replay outcome. Every table column, label and rule follows its real display perspective, not flat frontal type. No holographic cone, unused screens off. Two connected arms, realistic pressing finger and supporting palm, exact canonical adult face and head scale. Charcoal, aged brass, subdued sage and natural warm skin.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Epilogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portraits first and room reference next, LAST image is target. Correct ONLY the horizontal round-table display reader direction. Demir stands at the LEFT side of this table. Rotate the entire table display text and grid 90 degrees CLOCKWISE within its horizontal plane, so the header is on the RIGHT side of the table, letter bottoms toward Demir on the LEFT, and all text reads naturally upright when viewed from his left-side position. To our camera the text is sideways. Keep exact data: Mission squared errors; fft_5:64.12; fft_6:2.89; amplitude:0.71; Other eight:each below0.1; fft_5:72Hz bin,nearest73.4Hz. No mirrored writing, no changed values or reversed rows. Table ellipse, grid, baselines and all text share the same horizontal plane perspective. Keep ARIA monitor content/orientation unchanged, face, surprised gaze, full body, two arm chains and button contact unchanged. No new scene elements. Muted cel-shaded adventure comic. One1536x1024 image."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0e1e9139-d7e5-4164-9d6a-3290ba0c74ee.png",
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/reconstruction-error-epilogue-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-epilogue-target.png",
+    "sha256": "ccf1db88e136ef8d1f522bd8277695f863978fbb7d16937fae74f037082627ac",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "ccf1db88e136ef8d1f522bd8277695f863978fbb7d16937fae74f037082627ac",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-epilogue-runtime-before.png",
+    "sha256": "1d1024108276c2e158b216c37f0af171a52e591fc136c7a527acd7daf49870f9",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "1d1024108276c2e158b216c37f0af171a52e591fc136c7a527acd7daf49870f9",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir pauses while ARIA asks for a replay, then quietly queues the work beside the error table.",
+    "fullSpecification": "Restage Demir alone in a candid bridge task moment, standing sideways at the central console, torso and head naturally angled toward the adjacent ARIA monitor. Camera looks diagonally past the work surface and shows his three-quarter face. He has put his tablet face down on the console. One hand rests near the feature table; the other finger has just pressed the queue control. His brow rises and mouth parts slightly in surprised attention to ARIA's request, not a smile for the camera. The central low screen shows compact Mission squared errors table with exact rows fft_5:64.12, fft_6:2.89, amplitude:0.71, Other eight:each below0.1. Footer fft_5:72 Hz bin, nearest73.4 Hz. Adjacent small monitor is ARIA replay,400 decisions,Priority3,Queued, with one tiny abstract waveform clearly labeled ARIA as voice, not signal data. No completed replay outcome. Every table column, label and rule follows its real display perspective, not flat frontal type. No holographic cone, unused screens off. Two connected arms, realistic pressing finger and supporting palm, exact canonical adult face and head scale. Charcoal, aged brass, subdued sage and natural warm skin."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "401311284363174d6a02f1119d558dbc19d0e5c564b4b69a66828d3fbd32c379",
+  "faceBoxes": {
+    "demir": [
+      270,
+      120,
+      260,
+      340
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-epilogue-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Demir alone in a candid bridge task moment, standing sideways at the central console, torso and head naturally angled toward the adjacent ARIA monitor. Camera looks diagonally past the work surface and shows his three-quarter face. He has put his tablet face down on the console. One hand rests near the feature table; the other finger has just pressed the queue control. His brow rises and mouth parts slightly in surprised attention to ARIA's request, not a smile for the camera. The central low screen shows compact Mission squared errors table with exact rows fft_5:64.12, fft_6:2.89, amplitude:0.71, Other eight:each below0.1. Footer fft_5:72 Hz bin, nearest73.4 Hz. Adjacent small monitor is ARIA replay,400 decisions,Priority3,Queued, with one tiny abstract waveform clearly labeled ARIA as voice, not signal data. No completed replay outcome. Every table column, label and rule follows its real display perspective, not flat frontal type. No holographic cone, unused screens off. Two connected arms, realistic pressing finger and supporting palm, exact canonical adult face and head scale. Charcoal, aged brass, subdued sage and natural warm skin. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "9e8417e75604a391ff3641d6909fa269a290b1d173801d4874675a3125143b5b",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-84699328-b0f8-4938-9cd0-8b62ed0d6ad6.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-epilogue-target.png",
+          "sha256": "ccf1db88e136ef8d1f522bd8277695f863978fbb7d16937fae74f037082627ac",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "ccf1db88e136ef8d1f522bd8277695f863978fbb7d16937fae74f037082627ac",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-epilogue-identity-proof.jpg"
+    }
+  ],
+  "nextCandidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-narrative-stage2-openai-20261107.png",
+  "previousPanelSpecification": {
+    "state": "story finding and queued work",
+    "concreteGenerationSpecification": "Preserve Demir standing, full head size, canonical face, handheld tablet back and one hand resting on the holo control. Main table replaces unsupported bar chart with a ranked numeric table headed \"Mission squared errors\". Exact rows \"fft_5: 64.12\", \"fft_6: 2.89\", \"amplitude: 0.71\", \"Other eight: each below 0.1\". Footer \"fft_5: 72 Hz bin, nearest 73.4 Hz\". No bars to mis-scale. Side monitor replaces decorative rings with \"ARIA replay\" and \"400 decisions\", \"Priority 3\", \"Queued\". Do not show completed results. ARIA may have one small abstract voice waveform identified as ARIA, not measurement data, no face. Table projection dim sage on charcoal without luminous rim/cone. Every other display off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Epilogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "401311284363174d6a02f1119d558dbc19d0e5c564b4b69a66828d3fbd32c379",
+    "proofSha256": "105a28d90f95c68cb321949f0a885be4b8df5dd0b8c97d2f46be6be93eb9e6dc",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Demir pauses while ARIA asks for a replay, then quietly queues the work beside the error table."
+  },
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0e1e9139-d7e5-4164-9d6a-3290ba0c74ee.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-84699328-b0f8-4938-9cd0-8b62ed0d6ad6.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+      "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-narrative-stage2-openai-20261107.png",
+    "sha256": "401311284363174d6a02f1119d558dbc19d0e5c564b4b69a66828d3fbd32c379",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__reconstruction-error-epilogue.json"
+}

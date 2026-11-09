@@ -1,0 +1,816 @@
+{
+  "status": "checkpointed-on-user-cleanup-request",
+  "date": "2026-11-07",
+  "owner": "late_final",
+  "noGenerationInFlight": true,
+  "counts": {
+    "ownedRuntimeScenes": 80,
+    "narrativeRepairsPublished": 2,
+    "ownerPassedCandidatesAwaitingIndependentReview": 37,
+    "savedCandidatesHeldForReaderDirection": 2,
+    "narrativeRestagesNotGenerated": 4,
+    "originalScenesNarrativeOwnerPassAwaitingCombinedReview": 35
+  },
+  "remainingNarrativeRestages": [
+    "multi-model-systems/concept",
+    "multi-model-systems/challenge",
+    "multi-model-systems/takeaways",
+    "multi-model-systems/epilogue"
+  ],
+  "heldCandidates": {
+    "report-generation/takeaways": "Monitor faces camera across desk; crew see its back. Turn monitor toward crew. Thin bright rims/dim pillar in same future correction.",
+    "report-generation/epilogue": "Notebook Hypotheses / Next watch faces camera. Rotate ink180degrees on paper plane toward Nazari."
+  },
+  "cleanup": {
+    "lastBatchDeletedCount": 16,
+    "lastBatchDeletedBytes": 34767565,
+    "deletedCount": 262,
+    "deletedBytes": 359122631,
+    "restoredCount": 20,
+    "restoredBytes": 42888239,
+    "crossOwnerAudit": {
+      "activeRecordsChecked": 280,
+      "missing": [],
+      "hashMismatches": [],
+      "remainingDeletedActiveReferences": 0
+    }
+  },
+  "readyIndex": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/current-ready-candidates.json",
+  "all80Records": [
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-takeaways-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "1422de5a77536b9f47b7d115f4093578f016393348a4fa738a3b795b73b5f9d4",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-takeaways-identity-proof.jpg",
+      "identityProofSha256": "0b662890c95c62b7fbd47bd5cabbc0f7a21906c55857807bf67466362469be4f",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-concept-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__temporal-attention-concept-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "be8d3e8675e03aeace2538db1efd77dba07c41e93cebc885cbe2c9c95d326908",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-concept-identity-proof.jpg",
+      "identityProofSha256": "3ffdc54735b74515d456cae055ed44a430e53dd4d26ce86331ad0514c2c4a086",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/optimization-edge/caching-strategies",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-concept-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__beyond-lstm-concept-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "6023a1a5efe1098fa00b28dff024187c3f2de521aa86fb1ecdbce47501be218a",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-concept-identity-proof.jpg",
+      "identityProofSha256": "026a850711a9ef887bac510ab65b6553b4fcf0166e58b6214efec46e44f39667",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-takeaways-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "32ec49431ecfdd8b14044349dfbaca734e1f824591b069cb873b2a510a44bfd0",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-takeaways-identity-proof.jpg",
+      "identityProofSha256": "5c1aaa27937a114a566c5e92ea2cd9fde062d7ffcf876cdb0a220d5c29da8ccd",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "approved",
+      "runtimeCombinedStatus": "approved",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-epilogue-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-openai-20261107.png",
+      "candidateSha256": "530c41724cfbdfc89c4d9aa5c37bbd6c0ba214c82a97bf0186d4a49b75506338",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-epilogue-identity-proof.jpg",
+      "identityProofSha256": "59f1f86b7223533a3ad978480f8f678eae82f4cf118465d7de7f31936ccdc6ee",
+      "candidateStatus": "published",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-concept-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__forecasting-concept-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-concept-identity-proof.jpg",
+      "identityProofSha256": "214d2da65995eb14522728c2cae8b5719024af01689141f7a385d0528ef94b4d",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-takeaways-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__forecasting-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "8b52c20093fa10ae0403ea27cebf386fd1a6ad516acc26dc7748d5b01a26c274",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-takeaways-identity-proof.jpg",
+      "identityProofSha256": "5647b0241a34a639bd81be1878b66ce1fc38f1e3f65244fb22b8c59e9a1b9a01",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-epilogue-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__forecasting-epilogue-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "a85e281ad6e591d9f7a922a5206a3ecd7476c03241653256e5e3fed9f6224c26",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-epilogue-identity-proof.jpg",
+      "identityProofSha256": "b9e395644c5fc0604b0a5bf47a37206c9c7b41f6565f72a7482f62c0a69b70a8",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-challenge-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__forecasting-challenge-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "03b1d53035f432f268fe427998625fa9ee27d0a002460c029d90dc18c47c6dee",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-challenge-identity-proof.jpg",
+      "identityProofSha256": "d50f867b48b8e03cd2a16d4c72a205084a867472a07bd3bcc50a1b8b8a06c51a",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-epilogue-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-epilogue-identity-proof.jpg",
+      "identityProofSha256": "135cdddf4005efa054d6a65c2d1114f3c99e7c00e5b6ab800a2627dc246c14aa",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-concept-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-concept-identity-proof.jpg",
+      "identityProofSha256": "d4b9d182d232e9a77f081ae95f99e39738a85c737dbaa7d59db93b8c0fc4f6e1",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-takeaways-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-takeaways-identity-proof.jpg",
+      "identityProofSha256": "223bb99551603c1065400f03a44ec530f229e7155527d92293553d77f77205e6",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-concept-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__reconstruction-error-concept-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-concept-identity-proof.jpg",
+      "identityProofSha256": "a6b42f24181ec878b1db61126d8935fa0b867b765edfa20353db76b1892ad73e",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-challenge-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "8de48d1f4d5ea596ed58383212e8cc008ec4802afeadd0b3c143f080a1721934",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-challenge-identity-proof.jpg",
+      "identityProofSha256": "6a226cbc69aff2159b903275baec2b70afd2be0dfc095ac58eb4eba045f2b214",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-takeaways-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-takeaways-identity-proof.jpg",
+      "identityProofSha256": "d5f2a4100deb23baa62e491425ea260821dd50ad882a9cf37b8b57a16dec80f8",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-epilogue-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "401311284363174d6a02f1119d558dbc19d0e5c564b4b69a66828d3fbd32c379",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-epilogue-identity-proof.jpg",
+      "identityProofSha256": "105a28d90f95c68cb321949f0a885be4b8df5dd0b8c97d2f46be6be93eb9e6dc",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-challenge-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "625b359c7916a20349cd59b39882ef444ed29b9878284f6bc9e6671b90c0d5fb",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-challenge-identity-proof.jpg",
+      "identityProofSha256": "7b80f15947c3b95b3dadfdd03bfaab2bc53508168fa1070fb3156f2535793bc0",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-takeaways-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "3904d131cbd58ca6c48b3151e009c801f08494283c3b6a298e2168633be5fc89",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-takeaways-identity-proof.jpg",
+      "identityProofSha256": "b259d09107ae7c289d8d7adf06d5afaab262d36bb2ab203c779d3d146fbec2c8",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-epilogue-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "6d52ab3b808fbc8a469c2cc2fb33e68d295f3a4f195349e092714703b941bc10",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-epilogue-identity-proof.jpg",
+      "identityProofSha256": "7e82a77f87794675045629b9691ee80618cf07d94e4fa6657935ad0557d8748a",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-concept-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__kalman-filters-concept-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "327c41e5ff19a743e59e5bc6b40367763e668b169bda1d86392058e1b18cf20a",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-concept-identity-proof.jpg",
+      "identityProofSha256": "c289bd27a22d41c5e2cf2c0be938982a3d3ee39841e21f26515977b7ae48cdc5",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "approved",
+      "runtimeCombinedStatus": "approved",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-takeaways-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-openai-20261107.png",
+      "candidateSha256": "f6b289401dc479f3af102710ff143da6eb38bcaa60c22a32e77f16b63aac16b2",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-takeaways-identity-proof.jpg",
+      "identityProofSha256": "efbc12da7e45707ebe73b4a47d14bc5e65a372545c044e2b0acb3838f52a0a2d",
+      "candidateStatus": "published",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "superseded-by-narrative-hold",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-epilogue-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage4-openai-20261107.png",
+      "candidateSha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-epilogue-identity-proof.jpg",
+      "identityProofSha256": "69efdedcc8902c76459196b1227f310e2c5af3468fa62123a76c48042820e373",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "approved"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-concept-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-concept-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "2a16aaa8d2d347eb8c477ba0b7c6fe991190332a3a783af09dddc1ce80f6eb47",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-concept-identity-proof.jpg",
+      "identityProofSha256": "2437c8af49d6e237e0272fd44501345a4e7517015dc3283a5b0c5cab78a6eb1a",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-challenge-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-challenge-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "cac09f006bb1465c1f9ac72a6a7262ced3dbb5dbbb465d5ae80e403361bc63d6",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-challenge-identity-proof.jpg",
+      "identityProofSha256": "02d6919602ca8c1d3ebeee830bab8f350d9f061da8fab7023b99b125de1641ff",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-takeaways-candidate.json",
+      "candidate": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "dfc4996e9f0739f0462fe80e2acbc51f6991c65438e62a336859e3fd90cb71ab",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-takeaways-identity-proof.jpg",
+      "identityProofSha256": "357905a8e9f93b4334dd8d2e5c1e5cced0ee52419902cf21745dc73336eb0e3c",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-concept-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__autoencoders-concept-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-concept-identity-proof.jpg",
+      "identityProofSha256": "9cb28c8552e383fb75cbc9f87e003a98406fdffef426df7a0b0a178ff9f13455",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-takeaways-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__autoencoders-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "c7a6b9bfc5dfd0a7e3f3d4151450a82556a901d9ec0d543db4bbd8f25e4cf2d5",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-takeaways-identity-proof.jpg",
+      "identityProofSha256": "c187e65060cc153d8a6896fe98dfdd606ace236bfc22f1454469b738a5caea8e",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-epilogue-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__autoencoders-epilogue-narrative-stage3-openai-20261107.png",
+      "candidateSha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-epilogue-identity-proof.jpg",
+      "identityProofSha256": "825091c80ad318b6931d3fbd7a630f0e4eecd351844db5241425047b7c84fba5",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-briefing-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__autoencoders-briefing-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-briefing-identity-proof.jpg",
+      "identityProofSha256": "72a80fda981caa27fefb611562a7eff969a625c71660bc5cec584ce7ca7fca79",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/the-anomaly-briefing-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__the-anomaly-briefing-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/the-anomaly-briefing-identity-proof.jpg",
+      "identityProofSha256": "578097e84a524e68f9268f33392c6e27cd37f27e2ce2344ea6222bc79ad1be9a",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/the-anomaly-takeaways-candidate.json",
+      "candidate": "art-src/scenes/anomaly-detection__the-anomaly-takeaways-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "92166392b334ea8e3fb4715af5b32b18b615b96927f50c3f35bcd9ff6be8a31c",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/the-anomaly-takeaways-identity-proof.jpg",
+      "identityProofSha256": "1e065668ab56010434cd731de87dcf21f6bf206ff9cb10db3e8cf1cd393e7823",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/llms-for-science-challenge-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__llms-for-science-challenge-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "8e28d344a33a30b69d23e9c4d29a8fc9b2a0e80c48d143da05b1176fd5504cc3",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/llms-for-science-challenge-identity-proof.jpg",
+      "identityProofSha256": "93aaaebf1822d0a1094029f2cf6c80e212d3df15c1b000464c4e32f588cdaf08",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/rag-for-signals-takeaways-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__rag-for-signals-takeaways-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "59a53984aa13d7478cc31ab3d8515624adece7288710cef10d23660f5fcd9297",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/rag-for-signals-takeaways-identity-proof.jpg",
+      "identityProofSha256": "c9afc9628eac63239b5d9c33854f940d66f92973b7634bd1c8de1791b3b70be2",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/rag-for-signals-epilogue-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__rag-for-signals-epilogue-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "4c56e7334f13ac2de1372dd994c2e11033f87f64b1baed50386d00f8e7fa955b",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/rag-for-signals-epilogue-identity-proof.jpg",
+      "identityProofSha256": "46107866d4d1e8ffe916ab2d2e5192073bede202da5bb2d13971560c77135458",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/report-generation-challenge-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__report-generation-challenge-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "ea36c220edff7b9afcbce9155e7d3c9bac39086c2cade99849a48015a43a1f38",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/report-generation-challenge-identity-proof.jpg",
+      "identityProofSha256": "710503939aa162d591c334e2a18618fbb9a452100008671e22dae0bfa0fc79ec",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/report-generation-takeaways-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__report-generation-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "bc9639f666a0bfdddbb59b4819d4ef48ce2d1ee500540056ea4cd4c4deeb6ea2",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/report-generation-takeaways-identity-proof.jpg",
+      "identityProofSha256": "4c1c72c585c65a475a81c154db8a061ba2bd9c08ff1acfdb2759fc48cf688fb9",
+      "candidateStatus": "hold-reader-direction",
+      "holdReason": "Working display faces camera, while crew stand behind its back. Future correction must turn/move monitor toward crew with camera beside reading side; retain exact review-state content and natural poses. Thin bright rims/dim pillar while editing. No generation at cleanup checkpoint."
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/report-generation-epilogue-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__report-generation-epilogue-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "5b84244d9ee25ab04153a313b1428b927850263e7f47b9935d7b9a6fbb10ecf3",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/report-generation-epilogue-identity-proof.jpg",
+      "identityProofSha256": "cd4d49fc5e9a5470d2bde5c240a08ce2831bdcbbddaaf1d33569560fd8f50e9c",
+      "candidateStatus": "hold-reader-direction",
+      "holdReason": "Notebook Hypotheses / Next watch faces camera, not writing Nazari. Rotate only written ink180degrees on existing notebook plane before future approval. Screen exact source values and faces/body otherwise visually pass."
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-concept-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__prompt-engineering-concept-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "6e49c76ac55c1c1e937e177d45535a0012af37d7bab0a8c1a53e410b2fad2384",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-concept-identity-proof.jpg",
+      "identityProofSha256": "b4510c21f021039f0cccf49b532ade80399cf77f66509aa87b4623a3912b5ae7",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-challenge-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__prompt-engineering-challenge-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "8b4378938b63f2b15035a611ad17569b83d17234652378501cc0325253b8af73",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-challenge-identity-proof.jpg",
+      "identityProofSha256": "c943e548f3535424588a3be348e647244016e14b740cac1fe58b86bb5de9451e",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-takeaways-candidate.json",
+      "candidate": "art-src/scenes/llm-integration__prompt-engineering-takeaways-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "94f2b1014c930f5ef417baef2ba87ae9ebd42c42161c6addd3650626a4d9da8b",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-takeaways-identity-proof.jpg",
+      "identityProofSha256": "7b4408203884a9a8c70990477e444e5b37b0af1983b97bff80d62d2a58ad4f81",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "concept",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "takeaways",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "epilogue",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "challenge",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/optimization-edge/model-profiling",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/optimization-edge/quantization",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    },
+    {
+      "key": "deep-orbit/optimization-edge/pruning",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "needs-restaging",
+      "runtimeCombinedStatus": "not-reviewed",
+      "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/pruning-briefing-candidate.json",
+      "candidate": "art-src/scenes/optimization-edge__pruning-briefing-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "bf5fcc8ec47c77233b5e17df60c31e38b2449f3ca54ee43e5e65b4057c1d4eb9",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/pruning-briefing-identity-proof.jpg",
+      "identityProofSha256": "62edb8d0314bd5f8eefbad166fd10cc2016fd82174d4a17a198067df279352cc",
+      "candidateStatus": "own-pass-awaiting-independent-review",
+      "holdReason": null
+    },
+    {
+      "key": "deep-orbit/optimization-edge/webgpu-acceleration",
+      "phase": "briefing",
+      "runtimeNarrativeStatus": "own-pass-awaiting-independent-review",
+      "runtimeCombinedStatus": "not-reviewed"
+    }
+  ],
+  "publishedRepairsValidation": "Both narrative-approved source/runtime pairs revalidated after cleanup, exact review/proof/reference hashes and byte-identical1536x1024 quality86 effort6 cover encoding.",
+  "limitations": "37 candidates have owner QA only; they remain unpublished until independent review. Prior identity approval does not establish current narrative, proportion, palette or screen-semantic acceptance.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

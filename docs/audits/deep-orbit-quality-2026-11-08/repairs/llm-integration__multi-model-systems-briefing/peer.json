@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-briefing/candidate.png",
+  "candidateSha256": "1a46021d9429046ea249a269a732ece9098652ac79d5cb2afe2aa91973db15e0",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist chains and explicit thumb chirality review, direct canonical portrait comparison, and current lesson source checks.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 2,
+      "name": "root-rest-multi-brief-facechin",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-briefing/candidate.png",
+      "box": [
+        350,
+        215,
+        665,
+        670
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "root-rest-multi-brief-mouse",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-briefing/candidate.png",
+      "box": [
+        575,
+        805,
+        845,
+        975
+      ],
+      "scale": 3
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's left hand rests under his chin with naturally curled fingers and thumb support; his right hand wraps the mouse with four fingers visible and thumb occluded on the medial far side. Both arms connect through plausible elbows and wrists.",
+    "displayLegibilityAndSource": "Class/score, reconstruction error and forecast feed the LLM draft, whose review remains pending. Check each output matches the current orchestration introduction without claiming checked types prove factual accuracy.",
+    "identityExpressionAndStory": "Demir's considered half-smile and chin-resting pose fit planning model handoffs. Canonical hair, stubble, freckles, earpiece and adult proportions are preserved.",
+    "palette": "Muted sage, charcoal and aged brass with warm natural skin.",
+    "perspectiveAndOperator": "Main display geometry and text follow their physical plane and remain visible to the operator.",
+    "largeDisplayRule": "The main lesson facts are large and clear, using the available working display area."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:18:43.210344+00:00"
+}

@@ -1,0 +1,150 @@
+{
+  "key": "fourier-transform-takeaways",
+  "id": "signal-processing/fourier-transform",
+  "phase": "takeaways",
+  "source": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+  "sourceSha256": "c70a4f874773fe5315807440be5ca42cfa8fa0da04e6a348228083bff70210e3",
+  "sourceEvidence": {
+    "mdx": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+    "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+  },
+  "reviewer": "/root/reader_signal",
+  "nativeReview": "1536x1024 current source visually inspected",
+  "gates": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeck": "pass",
+    "readerDirection": "pass",
+    "surfacePerspective": "pass",
+    "palette": "hold",
+    "lessonMeaning": "hold",
+    "storyAction": "hold"
+  },
+  "verdict": "hold",
+  "holdReason": "Anonymous wave/spectrum plots, incidental pie UI and gold/lime. Camera-facing presentation lacks engaged task.",
+  "preserve": "Restage Farah comparing the actual frequency catalog at workstation.",
+  "prompt": "Use case: precise-object-edit. Asset: Deep Orbit signal-processing/fourier-transform-takeaways scene,1536x1024 landscape. Image1: dr-farah canonical identity authority; Image2: lab ROOM ONLY master, copy architecture not its incidental graphics or oversaturated lighting; Image3: exact edit target.\nRestage only enough to turn the camera-facing presentation into a candid checking moment. Farah stands naturally at a shared lab console, adjusts a window-length dial with one hand and studies the readout with thoughtful satisfaction; her other hand rests on the console, no outward tablet. Show her recognizable three-quarter face and natural connected arms. The principal screen shows exact short table headed Bin spacing / Samples | Sample rate | Spacing / 512 | 256 Hz | 0.5 Hz / 2048 | 256 Hz | 0.125 Hz. A small adjacent spectrum illustration labelled Schematic illustrates a coarse grid and finer grid with the same unresolved peak, no numeric axis on this sketch. Footer Longer window, finer frequency grid. Do not claim a cause or a solved mission. All screens follow their planes; remove random pie graphics and neon/gold wash.\nIdentity: preserve canonical facial geometry, ages, skin, hairstyle, natural expressions and signature equipment. Keep readable faces in natural three-quarter angles, stable adult head/body proportions. Trace each shoulder through elbow/wrist to one natural five-finger hand; solid furniture contacts. Each screen front faces its actual reader; all text and diagrams follow its physical perspective, never camera-facing overlays. No extra crew, no plants, no fake tiny glyphs. Subordinate unused screens and wrist displays are dark. Muted charcoal, gray, restrained olive, sage interface and aged brass. Warm light remains localized, no yellow wash or electric lime. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Equipment-side check: Demir has one earpiece on anatomical RIGHT ear only. If his visible ear is anatomical LEFT, keep it bare and hide the far-side earpiece completely; never float green hardware on cheek, eye or collar.",
+  "promptSha256": "cf14adea06de3a4f3644ca6248c8098d816b4314c1e3ac094bbece17aaa8ee8f",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+      "sha256": "bfcfe1645443f77f589745d982390a6c278e7a07767914d40b10c7a0750d4201"
+    }
+  ],
+  "alt": "Farah changes the window length and checks how the FFT frequency grid becomes finer.",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-8bf4cad7-b3ca-48aa-8879-8ab02757d176.png",
+  "candidateSha256": "c70a4f874773fe5315807440be5ca42cfa8fa0da04e6a348228083bff70210e3",
+  "ownReview": {
+    "verdict": "pass",
+    "nativeFull": true,
+    "reviewer": "/root/reader_signal",
+    "notes": "512/256=.5Hz and2048/256=.125Hz grid values correct; marked schematic bins, natural dial operation and supporting hand.",
+    "gates": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    }
+  },
+  "candidatePath": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-8bf4cad7-b3ca-48aa-8879-8ab02757d176.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+      "sha256": "bfcfe1645443f77f589745d982390a6c278e7a07767914d40b10c7a0750d4201",
+      "role": "edit target"
+    }
+  ],
+  "independentReview": {
+    "key": "fourier-transform-takeaways",
+    "id": "signal-processing/fourier-transform",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-8bf4cad7-b3ca-48aa-8879-8ab02757d176.png",
+    "candidateSha256": "c70a4f874773fe5315807440be5ca42cfa8fa0da04e6a348228083bff70210e3",
+    "verdict": "pass",
+    "reviewer": "/root",
+    "method": "Native complete1536x1024 plus canonical portraits and current MDX/exercise",
+    "notes": "Farah naturally operates dial with supported free hand. Canonical face and relaxed neck, modest palette, screen has correct256/512=.5Hz and256/2048=.125Hz. Schematic bin grids distinguish resolution without invented measurements. Table follows trapezoidal screen plane; working eyeline.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      }
+    ],
+    "alt": "Farah adjusts the window length while comparing coarse and fine frequency-bin spacing.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-8bf4cad7-b3ca-48aa-8879-8ab02757d176.png",
+  "publishedSource": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-takeaways.webp",
+  "webpSha256": "f9393fbea55986b78ef9d4b58b9cd4ac76793bd4f2667e947177519420539c6b",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+    "sourceSha256": "bfcfe1645443f77f589745d982390a6c278e7a07767914d40b10c7a0750d4201",
+    "webpSha256": "286ac63d0aba2bf843007a5d0c2ed1b464945b8adc55d2da55f97bbbe9db6c02",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-234ec25e-ba92-40af-a9fd-a0e1aa9c2c43.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_signal",
+    "status": "approved",
+    "candidateSha256": "c70a4f874773fe5315807440be5ca42cfa8fa0da04e6a348228083bff70210e3",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah naturally operates dial with supported free hand. Canonical face and relaxed neck, modest palette, screen has correct256/512=.5Hz and256/2048=.125Hz. Schematic bin grids distinguish resolution without invented measurements. Table follows trapezoidal screen plane; working eyeline."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-takeaways.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

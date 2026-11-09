@@ -1,0 +1,128 @@
+{
+  "id": "capstone__documentation-takeaways",
+  "lesson": "capstone/documentation",
+  "phase": "takeaways",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah.\nStory action: Farah actively checks the handover binder against the wall review. Expression: Intent concentration with a small satisfied smile.\nFarah stands at the right, torso naturally inclined over an OPEN binder on the counter facing HER. Her near hand holds the page flat and her other hand turns one page at its outer corner with an ordinary pinch. Both complete arms are visible and wrists neutral. She glances up toward the large left wall review as she checks the next item. No viewer-facing paper. Retain the large wall display and its exact content: title Handover review. Two columns: Model card, with Evaluation context and Known limitations; Runbook, with Checks and thresholds and Action owner and escalation. Footer Validate thresholds on separate periods. No pen.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "300d14e86346e313fd7e7fb32bc7ca1328b8a308ec19c481046df4f774c7e362",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room architecture only",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/capstone__documentation-takeaways-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "4edab9373d5c5ba21f4a735e3a16dcbf94d64e8bcecda6caa14963b6293d445a"
+    }
+  ],
+  "sourceSha256": "4edab9373d5c5ba21f4a735e3a16dcbf94d64e8bcecda6caa14963b6293d445a",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+    "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+  },
+  "source": "art-src/scenes/capstone__documentation-takeaways-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.316230+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah.\nStory action: Farah actively checks the handover binder against the wall review. Expression: Intent concentration with a small satisfied smile.\nFarah stands at the right, torso naturally inclined over an OPEN binder on the counter facing HER. Her near hand holds the page flat and her other hand turns one page at its outer corner with an ordinary pinch. Both complete arms are visible and wrists neutral. She glances up toward the large left wall review as she checks the next item. No viewer-facing paper. Retain the large wall display and its exact content: title Handover review. Two columns: Model card, with Evaluation context and Known limitations; Runbook, with Checks and thresholds and Action owner and escalation. Footer Validate thresholds on separate periods. No pen.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-takeaways-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah actively checks the handover binder against the wall review.",
+    "location": "Archimedes, Lab",
+    "action": "Farah actively checks the handover binder against the wall review.",
+    "emotion": "Intent concentration with a small satisfied smile.",
+    "eyeline": "Toward task equipment and colleague as the narrative action requires.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-930d13a9-391a-4be9-8a9a-3af6b6050d2d.png",
+  "candidatePath": "art-src/scenes/capstone__documentation-takeaways-openai-20261107.png",
+  "candidateSha256": "9cfecd4c31a38888ccd58f424cd0ad6fba41a0bc57b250b721b52780f96ee796",
+  "generatedAt": "2026-11-08T19:05:41.126924+00:00",
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        1040,
+        140,
+        300,
+        400
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/capstone__documentation-takeaways-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        640,
+        740,
+        710,
+        250
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/capstone__documentation-takeaways-hands0.png",
+      "removedAfterReview": true
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.685663+00:00",
+    "candidateSha256": "9cfecd4c31a38888ccd58f424cd0ad6fba41a0bc57b250b721b52780f96ee796",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "publishedSource": "art-src/scenes/capstone__documentation-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation-takeaways.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "temporaryDiagnosticCropsRemoved": true
+}

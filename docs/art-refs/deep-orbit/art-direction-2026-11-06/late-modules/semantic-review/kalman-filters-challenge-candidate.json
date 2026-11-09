@@ -1,0 +1,141 @@
+{
+  "key": "deep-orbit/advanced-time-series/kalman-filters",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: lighting-weather with immutable identity. First references canonical people and room, LAST exact target. Tone down only the bright neon mint outlines on hair, coats, shoulders, chair and any rim edges into thin subdued desaturated sage. The tall lab glass pillar must be dark muted sage, with dim pale grey-sage internal stripes and no bright lime fill or bloom, matching quiet laboratory ambient light. Preserve all exact faces, head sizes, facial geometry, expressions, complete poses, necks, arms, hands, grips and chair support. Every panel, word, number, diagram and screen state must remain EXACTLY unchanged. Keep natural warm skin and local warm practical lamps, aged brass and charcoal materials. No other changes, no head resizing. Output one full 1536x1024 cel-shaded scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/advanced-time-series__kalman-filters-challenge-semantics-stage1-openai-20261107.png",
+      "sha256": "aa3a0a9e092e4ecb6494803368725cc11ce5cc9ea52a4179682caa848d011a60",
+      "role": "target scene",
+      "originalPath": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-challenge-semantics-stage1-openai-20261107.png",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "aa3a0a9e092e4ecb6494803368725cc11ce5cc9ea52a4179682caa848d011a60",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-challenge.webp",
+    "sha256": "f40d770d145e339da17236984491c8b12e918071b363b0c9338de98c21ee3f5e"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "sha256": "6cb732cf4fecd19c6a491f5e32b60d90220e29e02ac4daede37e9ada1a5490b0"
+    }
+  ],
+  "panelSpecification": {
+    "state": "pending learner updates",
+    "panels": [
+      "Preserve Demir's exact face, head size, body, stance and both hands operating his tablet. The tablet back remains unchanged, with no screen on its back. The main board replaces the completed curve with a supplied input table headed \"Eight-day log (s)\". Exactly eight numbered rows:1 73.1;2 72.9;3 73.0;4 72.6;5 72.7;6 72.3;7 72.4;8 72.0. Beside it, an input card reads \"Initial estimate:73.1\" and \"Q=0.1  R=1\". Below it, write \"Updates for days2-8: pending\". No completed filter curve or calculated output. All secondary monitors and the wrist screen are off. Keep his warm, focused expression and natural adult proportions."
+    ],
+    "otherScreens": "All unspecified screens are inactive charcoal glass."
+  },
+  "numericVerification": {
+    "dailyLog": [
+      73.1,
+      72.9,
+      73,
+      72.6,
+      72.7,
+      72.3,
+      72.4,
+      72
+    ],
+    "ema0.2final": 72.56664064000002,
+    "ema0.8final": 72.07916416,
+    "kalmanFinal": 72.43168039656481,
+    "method": "CurrentMDX equations executed inPython withsameinitialization andsubsequent7updates."
+  },
+  "bodyConstraints": "Preserve wholebodyposes, gripandchaircoherence; anyheadadjustments remainmodest andcanonical.",
+  "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-challenge-openai-20261107.png",
+  "candidateSha256": "9686347dceffc3e4c3b12a4c29f2b2021ece929faa1b39cfb781a2b79605fe7d",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-71339f5f-b2c7-419b-a53e-d733e18570f6.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-challenge-identity-proof.jpg",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise-object-edit. Deep Orbit cinematic cel-shaded story scene,1536x1024. First references are canonical faces, next is the room master, and the LAST image is the exact scene to edit. Preserve facial morphology, adult age, nose, jaw, eyes, brows, expression, hair, warm complexion and signature equipment. Farah lens on anatomical LEFT eye, Demir comms on anatomical RIGHT ear. Preserve whole body poses, continuous shoulder-arm-hand chains, original grips, neck alignment, chair support, room geometry and composition. People and story remain dominant. Every unspecified monitor or wrist display is inactive charcoal glass, without decorative technical content. Use muted sage, aged brass and charcoal, with natural warm skin and no neon mint, cyan or mustard wash. Preserve Demir's exact face, head size, body, stance and both hands operating his tablet. The tablet back remains unchanged, with no screen on its back. The main board replaces the completed curve with a supplied input table headed \"Eight-day log (s)\". Exactly eight numbered rows:1 73.1;2 72.9;3 73.0;4 72.6;5 72.7;6 72.3;7 72.4;8 72.0. Beside it, an input card reads \"Initial estimate:73.1\" and \"Q=0.1  R=1\". Below it, write \"Updates for days2-8: pending\". No completed filter curve or calculated output. All secondary monitors and the wrist screen are off. Keep his warm, focused expression and natural adult proportions. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full final scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/kalman-filters-challenge-before.png",
+          "sha256": "b41df33f458084bae8bbb5ebb4aed8502dd8dfb84225e81b9de49147a122de15",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "b41df33f458084bae8bbb5ebb4aed8502dd8dfb84225e81b9de49147a122de15",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-challenge-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "aa3a0a9e092e4ecb6494803368725cc11ce5cc9ea52a4179682caa848d011a60",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-a1c33cbb-207b-43fa-b448-76f487fa272e.png"
+    }
+  ],
+  "ownReview": "Native fullframe and canonical proof checked: faces, balanced stylized proportions, natural whole poses, arm chains, contacts, restrained palette and all prominent panels pass.",
+  "independentReview": {
+    "status": "approved",
+    "reviewer": "/root",
+    "notes": "Root independently viewed current native fullframe and fresh canonical face comparisons. All exact screen data and operations, balanced head sizes, anatomy and canonical faces pass. Final muted sage palette eliminates fluorescent pillar and rim holds.",
+    "candidateSha256": "9686347dceffc3e4c3b12a4c29f2b2021ece929faa1b39cfb781a2b79605fe7d",
+    "proofSha256": "da32de4a2ac12b03ee104161cbdb654642a98e585b04399063d1c4a6de9ecfe6",
+    "reviewedAt": "2026-11-07T10:30:12.250334+00:00"
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__kalman-filters-challenge-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-challenge.webp",
+  "publishedOutputSha256": "3d02b1092df42491b10e43e97fd21ebf95bb86ee2e6feeaad716e464d8f725f5",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 194606
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-71339f5f-b2c7-419b-a53e-d733e18570f6.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-a1c33cbb-207b-43fa-b448-76f487fa272e.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-challenge.webp",
+      "art-src/scenes/advanced-time-series__kalman-filters-challenge-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

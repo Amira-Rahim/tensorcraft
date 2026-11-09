@@ -1,4 +1,6 @@
-# Content quality plan: a $50 course built to a $70 standard
+# Content quality plan for Deep Orbit
+
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. Quality, learner outcomes and willingness to pay still require their own evidence.
 
 Date: 2026-09-17. Status: approved; implementation in progress.
 
@@ -50,13 +52,15 @@ adds three decision tasks and a downloadable final project with a real local
 TFJS application and public rubric. Maintainer integration checks pass;
 independent reviewer scores, learner difficulty and transfer remain open.
 
-Owner direction: target at least 9/10 in every audit category, retain $50 as
-the launch price, and prepare a course worth $70 before raising the price
-after learning from customers.
+Current direction: target at least 9/10 in every audit category and assess the
+$79 introductory and $99 regular offer using learning and customer evidence.
+The September 17 direction was to retain $50 at launch and prepare a course
+worth $70. The November 9 owner decision supersedes that price instruction.
 
 This plan implements the [education and product audit](audits/education-product-audit-2026-09-17.md).
-It replaces the older proposed $79 experiment. It does not change checkout
-prices, promise a price-change date, or certify the current course as 9/10.
+The September plan replaced an older proposed $79 experiment. The November 9
+price decision is a later instruction. Neither decision certifies the current
+course as 9/10 or schedules an automatic introductory-price end date.
 
 Start with Deep Orbit, the only launched world. Each later world must
 independently meet the same standard. More lessons, longer runtime, more
@@ -70,7 +74,7 @@ simple baseline, evaluate failures, and run their saved model in a working
 JavaScript application. They should understand when the result is unreliable
 and when an ordinary rule is sufficient.
 
-The $70 deliverable is a complete, readable course with useful feedback,
+The deliverable is a complete, readable course with useful feedback,
 a satisfying story, and a project the learner can run, explain, and modify
 outside Tensorcraft. It includes the guided exercises, an early transfer
 assignment, and a final independent project. Completion does not imply
@@ -97,7 +101,7 @@ unrated. The author cannot supply the final independent score.
 | Storytelling | Coherent mystery; developing characters; technical work causes events; stakes have consequences; the ending pays off the course | Season continuity review and learner accounts of motives, changes, and payoff |
 | Player agency | Choices use evidence; options have costs; consequences persist; later scenes acknowledge them; outcomes stay scientifically honest | Saved-choice browser tests and learners identifying later effects of decisions |
 | Independent application | Frame a new problem; choose a valid split; compare baseline/model; diagnose failures; export and run the result | An unfamiliar project completed without a supplied solution, assessed with a public rubric |
-| Value at $70 | Useful scope; dependable practice; usable project artifact; clear access/cost/support terms; real willingness to pay | Quality gates below, interviews, and an actual $70 offer with purchase/refund evidence |
+| Value at the current price | Useful scope; dependable practice; usable project artifact; clear access/cost/support terms; real willingness to pay | Quality gates below, interviews, and actual $79 introductory and $99 regular purchase/refund evidence |
 | Learner ROI | Demonstrated skill gain; retention; transfer; manageable time investment; honest outcome claims | Pre/post/delayed tasks, observed effort, project review, and follow-up use |
 | Readiness to pursue 150,000 users | Defined target; measurable funnel; repeatable acquisition; sustainable delivery economics; demand for another world | Cohort and channel evidence. This scores readiness, not the probability of reaching 150,000 |
 
@@ -114,7 +118,7 @@ Fix confirmed teaching errors immediately, without waiting for a user count.
 | 2 | Q2 teaching improvements; Q3 editorial pass | Corrected concepts | Every Deep Orbit lesson and exercise reviewed; coherent difficulty progression |
 | 3 | Q4 story consequences; Q5 independent project | Stable objectives, terminology, and canon | Choices persist and a project runs outside the course |
 | 4 | Q6 independent review and learner pilot | Revised course and assessments | Reviewer and learner gates met after revisions |
-| 5 | Q7 price validation; Q8 distribution evidence | Reliable course and learning evidence | A defensible $70 offer and a measured growth plan |
+| 5 | Q7 price validation; Q8 distribution evidence | Reliable course and learning evidence | Evidence for the current offer and a measured growth plan |
 | Per-world release | Q9 review the four draft worlds | Reusable standards; world-specific expertise | Each world passes its own checks before release |
 
 Q8 instrumentation review can begin during Batch 1. Known draft errors can
@@ -379,12 +383,13 @@ population-wide efficacy. Revise failures and test with fresh participants
 using different tasks. Do not lower thresholds after seeing results or
 substitute satisfaction for demonstrated skill gain.
 
-## Q7. Validate the $70 offer
+## Q7. Validate the current offer
 
-Keep the live price at $50 during repairs. Before a wider $70 release,
-require Q1-Q5 complete, independent scores of at least 9/10 for the assessable
-course categories, and Q6 evidence that the advertised outcome is achievable.
-Value and growth scores await their own external evidence below.
+The owner approved $79 introductory and $99 regular pricing on November 9.
+Q1-Q5 completion, independent scores of at least 9/10 for the assessable
+course categories and Q6 evidence remain necessary to support the advertised
+quality and learning outcomes. Those evidence gates do not override the
+authorized price update. Value and growth scores await external evidence.
 
 Review purchase claims: launched scope, access duration, prerequisites,
 workload, project outcome, refunds, external costs, and support offered.
@@ -394,7 +399,7 @@ as `llms.txt`, metadata, and structured pricing data.
 Use observed study time to check whether the preview and refund window let
 buyers assess fit. Propose a policy adjustment if they do not.
 
-Then make a clearly priced $70 offer to a limited new-customer cohort. Use
+Observe clearly priced $79 introductory and $99 regular offers. Use
 real purchases and refunds alongside interviews; willingness-to-pay surveys
 alone do not pass. As an initial diagnostic sample, aim for 25 completed
 purchase/refund observation windows at each price from reasonably comparable
@@ -403,19 +408,19 @@ Record course revision, channel, dates, and sample sizes. Avoid attributing
 simultaneous content or audience changes solely to price.
 
 Compare conversion, refunds, learning progress, support burden, and net
-receipts per qualified visitor. Before costs/refunds, $70 breaks even with
-$50 revenue per visitor if conversion retains about 71.4% of its prior rate.
-Use actual net receipts for the decision. Set acceptable refund and support
-thresholds before the experiment, informed by the $50 cohort. Extend the
-observation if uncertain. A few enthusiastic interviews do not establish an
-optimal price.
+receipts per qualified visitor. Before costs and refunds, $99 breaks even
+with $79 revenue per visitor if conversion retains about 79.8% of its prior
+rate. Use actual net receipts for the decision. Set acceptable refund and
+support thresholds before the comparison, informed by the introductory
+cohort. Extend the observation if uncertain. A few enthusiastic interviews
+do not establish an optimal price.
 
-When the owner schedules the increase, update Stripe prices, shared
-constants, checkout, pricing copy, structured data, price-bearing email and
+When the owner schedules the increase, update shared constants and verify
+Stripe's inline checkout amount, pricing copy, structured data, price-bearing email and
 receipt templates, and tests together. Preserve existing buyers' promised
 access. Decide future bundle prices separately before enabling bundles.
-Verify with Stripe test mode before publishing the price change. No price
-change occurs as part of this planning task.
+Verify with Stripe test mode before publishing the price change. This plan
+does not schedule the transition from the introductory to the regular price.
 
 ## Q8. Establish evidence for the growth ambition
 

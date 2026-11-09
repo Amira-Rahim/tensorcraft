@@ -1,0 +1,191 @@
+{
+  "key": "deep-orbit/advanced-time-series/kalman-filters",
+  "phase": "concept",
+  "status": "superseded",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Farah seated sideways at a lab workbench, chair and torso facing a low sloping instrument display, natural three-quarter face visible from the camera beside the instrument. She looks down at the update loop with a slight questioning brow, not at an audience. Her right hand adjusts the physical slider on the workbench; her left hand holds a stylus poised near the assumed variances on the same console, elbow supported naturally. Remove the upright held presentation tablet. The compact embedded display shows a connected cycle: Predict variance, Compute gain, Correct estimate + variance, then Next reading returning to Predict variance. Each arrow unambiguous. Bottom row labeled Assumed variances: Q = 0.1, R = 1, Initial variance = 1. No invented curves or claim of known ground truth. All lettering and arrows follow the sloping console plane with consistent foreshortening and spacing. Other wall monitors off, lab pillar dark muted sage, aged brass and charcoal, warm olive skin. Preserve exact adult face morphology and balanced head size with a natural neck; two connected arms, distinct shoulders and realistic slider and stylus grips. Work action dominates, no displayed card, no stage-poster framing. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/kalman-filters-concept-target.png",
+      "sha256": "a4d7d2d516856df5236de5cbd91a43b0dfe3ba054731564e0f2bf852f0a55169",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "a4d7d2d516856df5236de5cbd91a43b0dfe3ba054731564e0f2bf852f0a55169",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+    "sha256": "b07943930de006acb19e250fe8fa6a0d46c7cd3694677cddcb00ff2dcd0b08c3"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "sha256": "6cb732cf4fecd19c6a491f5e32b60d90220e29e02ac4daede37e9ada1a5490b0"
+    }
+  ],
+  "panelSpecification": {
+    "state": "operation",
+    "panels": [
+      "Preserve Farah's exact face, smile, seated torso, hips and chair, both hands with slider grip and tablet-frame grip. Her head is large: adjust the whole head modestly to about92 percent of current linear size, preserving facial morphology and a natural neck. The foreground tablet replaces the bell curves with a simple connected loop of three short stages: \"Predict variance\" flows to \"Compute gain\", then \"Correct estimate + variance\". A return path labeled \"Next reading\" completes the loop. All paths and arrowheads must connect clearly. Small bottom strip: \"Q=0.1  R=1  Initial variance=1\", labeled \"Assumed variances\". Turn all wall and background monitors off. The slider is a physical control. Do not draw arbitrary waves or claim that an estimate is ground truth."
+    ],
+    "otherScreens": "All unspecified screens are inactive charcoal glass.",
+    "concreteGenerationSpecification": "Restage Farah seated sideways at a lab workbench, chair and torso facing a low sloping instrument display, natural three-quarter face visible from the camera beside the instrument. She looks down at the update loop with a slight questioning brow, not at an audience. Her right hand adjusts the physical slider on the workbench; her left hand holds a stylus poised near the assumed variances on the same console, elbow supported naturally. Remove the upright held presentation tablet. The compact embedded display shows a connected cycle: Predict variance, Compute gain, Correct estimate + variance, then Next reading returning to Predict variance. Each arrow unambiguous. Bottom row labeled Assumed variances: Q = 0.1, R = 1, Initial variance = 1. No invented curves or claim of known ground truth. All lettering and arrows follow the sloping console plane with consistent foreshortening and spacing. Other wall monitors off, lab pillar dark muted sage, aged brass and charcoal, warm olive skin. Preserve exact adult face morphology and balanced head size with a natural neck; two connected arms, distinct shoulders and realistic slider and stylus grips. Work action dominates, no displayed card, no stage-poster framing.",
+    "finalLocalizedCorrection": null
+  },
+  "numericVerification": {
+    "dailyLog": [
+      73.1,
+      72.9,
+      73,
+      72.6,
+      72.7,
+      72.3,
+      72.4,
+      72
+    ],
+    "ema0.2final": 72.56664064000002,
+    "ema0.8final": 72.07916416,
+    "kalmanFinal": 72.43168039656481,
+    "method": "CurrentMDX equations executed inPython withsameinitialization andsubsequent7updates."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-d7059b20-a574-4b4c-891d-7e7c37a3e1a6.png",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise-object-edit. Deep Orbit cinematic cel-shaded story scene,1536x1024. First references are canonical faces, next is the room master, and the LAST image is the exact scene to edit. Preserve facial morphology, adult age, nose, jaw, eyes, brows, expression, hair, warm complexion and signature equipment. Farah lens on anatomical LEFT eye, Demir comms on anatomical RIGHT ear. Preserve whole body poses, continuous shoulder-arm-hand chains, original grips, neck alignment, chair support, room geometry and composition. People and story remain dominant. Every unspecified monitor or wrist display is inactive charcoal glass, without decorative technical content. Use muted sage, aged brass and charcoal, with natural warm skin and no neon mint, cyan or mustard wash. Preserve Farah's exact face, smile, seated torso, hips and chair, both hands with slider grip and tablet-frame grip. Her head is large: adjust the whole head modestly to about92 percent of current linear size, preserving facial morphology and a natural neck. The foreground tablet replaces the bell curves with a simple connected loop of three short stages: \"Predict variance\" flows to \"Compute gain\", then \"Correct estimate + variance\". A return path labeled \"Next reading\" completes the loop. All paths and arrowheads must connect clearly. Small bottom strip: \"Q=0.1  R=1  Initial variance=1\", labeled \"Assumed variances\". Turn all wall and background monitors off. The slider is a physical control. Do not draw arbitrary waves or claim that an estimate is ground truth. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full final scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/kalman-filters-concept-before.png",
+          "sha256": "ed526903617444ba9c9290669028e85132a8e4cdefd9580dbe0ed70fc14b978b",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "ed526903617444ba9c9290669028e85132a8e4cdefd9580dbe0ed70fc14b978b",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-concept-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "46fd49d89daec9c2bead177f258cfc905f7c9eda67fd208001d5f4cd250858ce",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-fd3997d4-3377-48c2-8357-b33480592106.png"
+    }
+  ],
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "327c41e5ff19a743e59e5bc6b40367763e668b169bda1d86392058e1b18cf20a",
+    "proofSha256": "c289bd27a22d41c5e2cf2c0be938982a3d3ee39841e21f26515977b7ae48cdc5",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah works the uncertainty controls and checks the next update with focused caution about the assumed noise."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__kalman-filters-concept-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+  "publishedOutputSha256": "b07943930de006acb19e250fe8fa6a0d46c7cd3694677cddcb00ff2dcd0b08c3",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 171208
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/kalman-filters-concept-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/kalman-filters-concept-target.png",
+    "sha256": "a4d7d2d516856df5236de5cbd91a43b0dfe3ba054731564e0f2bf852f0a55169",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "a4d7d2d516856df5236de5cbd91a43b0dfe3ba054731564e0f2bf852f0a55169",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/kalman-filters-concept-runtime-before.png",
+    "sha256": "a4d7d2d516856df5236de5cbd91a43b0dfe3ba054731564e0f2bf852f0a55169",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "a4d7d2d516856df5236de5cbd91a43b0dfe3ba054731564e0f2bf852f0a55169",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah works the uncertainty controls and checks the next update with focused caution about the assumed noise.",
+    "fullSpecification": "Restage Farah seated sideways at a lab workbench, chair and torso facing a low sloping instrument display, natural three-quarter face visible from the camera beside the instrument. She looks down at the update loop with a slight questioning brow, not at an audience. Her right hand adjusts the physical slider on the workbench; her left hand holds a stylus poised near the assumed variances on the same console, elbow supported naturally. Remove the upright held presentation tablet. The compact embedded display shows a connected cycle: Predict variance, Compute gain, Correct estimate + variance, then Next reading returning to Predict variance. Each arrow unambiguous. Bottom row labeled Assumed variances: Q = 0.1, R = 1, Initial variance = 1. No invented curves or claim of known ground truth. All lettering and arrows follow the sloping console plane with consistent foreshortening and spacing. Other wall monitors off, lab pillar dark muted sage, aged brass and charcoal, warm olive skin. Preserve exact adult face morphology and balanced head size with a natural neck; two connected arms, distinct shoulders and realistic slider and stylus grips. Work action dominates, no displayed card, no stage-poster framing."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "0d599cb65b65028c15cfb84ab5b508275abae3d8c2cde9c1c9a3d5837683a90f",
+  "faceBoxes": {
+    "farah": [
+      980,
+      75,
+      365,
+      410
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-concept-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "operation",
+    "panels": [
+      "Preserve Farah's exact face, smile, seated torso, hips and chair, both hands with slider grip and tablet-frame grip. Her head is large: adjust the whole head modestly to about92 percent of current linear size, preserving facial morphology and a natural neck. The foreground tablet replaces the bell curves with a simple connected loop of three short stages: \"Predict variance\" flows to \"Compute gain\", then \"Correct estimate + variance\". A return path labeled \"Next reading\" completes the loop. All paths and arrowheads must connect clearly. Small bottom strip: \"Q=0.1  R=1  Initial variance=1\", labeled \"Assumed variances\". Turn all wall and background monitors off. The slider is a physical control. Do not draw arbitrary waves or claim that an estimate is ground truth."
+    ],
+    "otherScreens": "All unspecified screens are inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-d7059b20-a574-4b4c-891d-7e7c37a3e1a6.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-fd3997d4-3377-48c2-8357-b33480592106.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+      "art-src/scenes/advanced-time-series__kalman-filters-concept-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/advanced-time-series__kalman-filters-concept-narrative-stage1-openai-20261107.png",
+    "sha256": "327c41e5ff19a743e59e5bc6b40367763e668b169bda1d86392058e1b18cf20a",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/advanced-time-series__kalman-filters-concept.json"
+}

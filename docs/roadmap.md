@@ -11,6 +11,8 @@ strategy, commercial goals, and evidence gates.
 
 ---
 
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. The price decision does not establish learning outcomes or willingness to pay.
+
 ## 0. Where We Actually Are
 
 Honest current state, verified against the codebase:
@@ -41,7 +43,7 @@ settle any of those questions.
 
 Owner decision, 2026-10-03: the goal is cumulative customers, not simultaneous active subscribers. The previous 100,000 target is superseded. Count successful real purchases with positive retained revenue, excluding staff, test payments, complimentary access, and fully refunded purchases. Deduplicate repeat buyers. Track enterprise contracts and paid learner seats separately rather than treating one company purchase as hundreds of individual customers.
 
-At the current $50 price, 200,000 customers each buying once would produce $10 million in cumulative gross sales before refunds, taxes, fees, and operating costs. It would not be annual recurring revenue. Over ten years the average would be 20,000 new customers per year; this is arithmetic, not a forecast.
+At $79 per purchase, 200,000 customers each buying once would produce $15.8 million in cumulative gross sales. At $99 it would produce $19.8 million. A mix depends on the prices actually paid. These amounts precede refunds, taxes, fees and operating costs. Over ten years the average would be 20,000 new customers per year. This is arithmetic, not a forecast or recurring revenue.
 
 The next commercial milestone remains 1,000 paying customers under the [current acquisition plan](marketing-first-1000-paid.md). The [foundations opening plan](foundations-opening-plan.md) improves the visual and story-driven entrance to the existing course. Its internal work does not establish demand at the long-term scale.
 

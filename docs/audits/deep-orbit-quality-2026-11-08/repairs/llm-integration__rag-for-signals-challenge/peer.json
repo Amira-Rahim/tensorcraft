@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-challenge/candidate.png",
+  "candidateSha256": "d7e96c2617a2c1becd3b3b9b2d293ca8e48b8be3228b3872d7d9843716f94bad",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist tracing with explicit left/right thumb chirality, direct canonical portrait comparison, and current source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 5,
+      "name": "root-rest-ragchallenge-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-challenge/candidate.png",
+      "box": [
+        985,
+        100,
+        1310,
+        485
+      ],
+      "scale": 2
+    },
+    {
+      "i": 5,
+      "name": "root-rest-ragchallenge-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-challenge/candidate.png",
+      "box": [
+        680,
+        605,
+        940,
+        845
+      ],
+      "scale": 3
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's far right hand grips the mouse with the thumb on the near medial edge; his near left hand rests on the keyboard with the thumb occluded away from the camera. Two connected arm chains and ordinary wrists, without extra digits.",
+    "displayLegibilityAndSource": "The enlarged monitor states Band-7 / last 72 hours, context cap 20, and pending matched/truncated/verified-claim results. Its footer asks for source row, field, unit and operation, matching the retrieval and verification challenges.",
+    "identityExpressionAndStory": "Demir's serious focused stare fits implementing the checker. Hair, stubble, freckles, earpiece and facial proportions retain his identity.",
+    "palette": "Restrained charcoal, sage and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Text and rules share their actual display plane; the operator can see the same front surface.",
+    "largeDisplayRule": "Essential lesson information is large, clear and spacious across the main available working display."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:30:45.436717+00:00"
+}

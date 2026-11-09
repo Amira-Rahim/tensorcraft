@@ -1,0 +1,205 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+  "candidateSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh native revision review, new 2x face/hand crops, enlarged complete arm-chain and display crops, canonical portraits, current MDX and independent 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity: Ensign Demir"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity: Commander Mirza"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-demir-mouse-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        300,
+        860,
+        530,
+        995
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-demir-keyboard-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        560,
+        815,
+        765,
+        920
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-mirza-right-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        415,
+        620,
+        540,
+        720
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-mirza-left-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        535,
+        615,
+        640,
+        715
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-demir-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        200,
+        340,
+        370,
+        555
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-mirza-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        365,
+        175,
+        540,
+        385
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-full-arm-chains",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        25,
+        550,
+        770,
+        1000
+      ],
+      "scale": 1.5
+    },
+    {
+      "i": 1,
+      "name": "followup-architecture-v2-display",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/candidate.png",
+      "box": [
+        802,
+        78,
+        1534,
+        774
+      ],
+      "scale": 1
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6",
+      "facts": [
+        "Briefing pulse interval is 47.0 seconds.",
+        "Registry lists preprocessor, fft-extractor, classifier, anomaly-detector and reporter.",
+        "Classifier and anomaly-detector both depend on fft-extractor. Reporter depends on both classifier and anomaly-detector.",
+        "The branched architecture remains proposed work, distinct from the linear exercise runner."
+      ]
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's near right shoulder, bent elbow, forearm and mouse wrist are visibly continuous. His far left shoulder, upper arm, elbow, forearm and keyboard hand form a separate chain in front of his own torso. Right mouse thumb is naturally obscured on its far side; left keyboard thumb lies on its medial near edge. Mirza's notebook grips are attached to her own arms, with continuous prop contact and no overlap into Demir's limbs.",
+    "identityExpressionAndStory": "Demir and Mirza retain canonical faces, ages, proportions and equipment. Their questioning and serious expressions remain directed toward the work.",
+    "displayLegibilityAndSource": "Exactly five component boxes preserve Preprocessor to FFT extractor, its Classifier and Anomaly detector branches, and their merge into Reporter. Pulse interval 47.0 s remains source-correct. All text is legible and unclipped at 768 x 512.",
+    "perspectiveAndOperator": "Glass, bezel, title/footer rules and component boxes now share a frontal rectangular plane. Level edges and vertical sides agree throughout. The monitor is physically supported behind the keyboard and mouse, with both operators and camera on the readable front side.",
+    "largeDisplayRule": "The broad main monitor gives the full diagram enough readable space.",
+    "palette": "Muted brass, sage and charcoal remain consistent."
+  },
+  "measuredGeometry": {
+    "coordinateSystem": "Approximate native 1536 x 1024 coordinates",
+    "glassTop": [
+      [
+        847,
+        203
+      ],
+      [
+        1471,
+        203
+      ]
+    ],
+    "glassBottom": [
+      [
+        847,
+        668
+      ],
+      [
+        1471,
+        668
+      ]
+    ],
+    "titleDivider": [
+      [
+        856,
+        296
+      ],
+      [
+        1463,
+        296
+      ]
+    ],
+    "footerDivider": [
+      [
+        856,
+        580
+      ],
+      [
+        1463,
+        580
+      ]
+    ],
+    "interpretation": "Physical and content horizontal families are now consistently level."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 4,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "resolvedFindings": [
+    {
+      "originalSourceSha256": "bcdb011e04fc66a814694d17e3524852c4568a6c3052f2b6430fd07a603152de",
+      "resolution": "Crossed pointer arm replaced by two visible working arm chains in front of Demir's torso."
+    },
+    {
+      "previousCandidateSha256": "3dd8d2760ed66775634900600a5000dd1e65c3e7b1d79ffcfe5f58f8ffd4ac1c",
+      "resolution": "Frontal screen and content now share one plane, preserving the repaired character poses."
+    }
+  ],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T13:54:33.270881+00:00"
+}

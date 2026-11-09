@@ -1,0 +1,126 @@
+{
+  "key": "deep-orbit/llm-integration/report-generation",
+  "phase": "takeaways",
+  "status": "superseded",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-takeaways.webp",
+    "sha256": "3fa3bff06af21aa703822c2045c6031fcdac2e7346da2e399e1f0aee0c4cc88e"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/report-generation-takeaways-runtime-before.png",
+    "sha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/report-generation-takeaways-runtime-before.png",
+    "sha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/generate-report.yaml",
+      "sha256": "334add33b39b4e95adf2916cf6720caf37f1e527b0f560eaa64ddd17fb56075c"
+    }
+  ],
+  "panelSpecification": {
+    "state": "takeaways",
+    "concreteGenerationSpecification": "Candid Farah and Nazari investigating together at a lab work console, both bodies angled toward it. Farah stands leaning one hand on the bench and uses the other on a trackpad, brows drawn at the report review. Nazari seated beside her has one hand resting on keyboard and the other gently raised palm-in toward Farah in a wait gesture, eyes on Farah, cautious skeptical expression. Four arms only, no crossing or floating hands. The compact monitor truly faces both crew and is visible obliquely from their reading side. A practical work queue headed Report review, with rows Section review: required; Approved sections: assemble; Omitted headings: list; Final consistency: pending. Bottom Release: held for review. No completed approval, no invented counts, no decorative diagrams. This is a pending work process, not a lesson poster. No held tablets/cards, all secondary displays dark, dark sage pillar and subdued brass. Exact paper-free scene avoids fake reader orientation.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+        "section": "RecallPrompt and LessonRecap lines179-229"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/report-generation-takeaways-runtime-before.png",
+      "sha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve narrative restaging. Canonical face portraits FIRST, room reference next for architecture only, LAST current scene is edit target with old pose superseded. Preserve exact canonical facial morphology, age, hair and equipment. Demir comms anatomical RIGHT ear, Farah lens anatomical LEFT eye, Nazari no lens. Balanced warm stylized adult proportions, no large chibi heads or tiny realistic heads. Clean flat cel-shaded adventure illustration. Candid Farah and Nazari investigating together at a lab work console, both bodies angled toward it. Farah stands leaning one hand on the bench and uses the other on a trackpad, brows drawn at the report review. Nazari seated beside her has one hand resting on keyboard and the other gently raised palm-in toward Farah in a wait gesture, eyes on Farah, cautious skeptical expression. Four arms only, no crossing or floating hands. The compact monitor truly faces both crew and is visible obliquely from their reading side. A practical work queue headed Report review, with rows Section review: required; Approved sections: assemble; Omitted headings: list; Final consistency: pending. Bottom Release: held for review. No completed approval, no invented counts, no decorative diagrams. This is a pending work process, not a lesson poster. No held tablets/cards, all secondary displays dark, dark sage pillar and subdued brass. Exact paper-free scene avoids fake reader orientation. Every label and grid follows its physical surface plane, all handwriting faces its writer. One1536x1024 scene.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah catches a cross-section concern while Nazari holds release for the complete-report check.",
+    "fullSpecification": "Candid Farah and Nazari investigating together at a lab work console, both bodies angled toward it. Farah stands leaning one hand on the bench and uses the other on a trackpad, brows drawn at the report review. Nazari seated beside her has one hand resting on keyboard and the other gently raised palm-in toward Farah in a wait gesture, eyes on Farah, cautious skeptical expression. Four arms only, no crossing or floating hands. The compact monitor truly faces both crew and is visible obliquely from their reading side. A practical work queue headed Report review, with rows Section review: required; Approved sections: assemble; Omitted headings: list; Final consistency: pending. Bottom Release: held for review. No completed approval, no invented counts, no decorative diagrams. This is a pending work process, not a lesson poster. No held tablets/cards, all secondary displays dark, dark sage pillar and subdued brass. Exact paper-free scene avoids fake reader orientation."
+  },
+  "narrativeVisualReview": "pending",
+  "candidatePath": "art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/llm-integration__report-generation-takeaways-narrative-stage1-openai-20261107.png",
+  "candidateSha256": "82a80d27334cc17debcbf0213fb43c5510e3033b76095120f6e90155acad652f",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-bc00d078-0fcb-4a97-a95c-e2f66c4c3632.png",
+  "publicationHold": false,
+  "faceBoxes": {
+    "farah": [
+      295,
+      50,
+      390,
+      390
+    ],
+    "nazari": [
+      945,
+      125,
+      320,
+      365
+    ]
+  },
+  "recoveryNote": "Recovered generated output after orchestration save helper failed; exact fullframe visually matched to prepared job before workspace copy.",
+  "ownReview": {
+    "status": "hold",
+    "reviewer": "late_final",
+    "reason": "Working display faces camera, while crew stand behind its back. Future correction must turn/move monitor toward crew with camera beside reading side; retain exact review-state content and natural poses. Thin bright rims/dim pillar while editing. No generation at cleanup checkpoint."
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/report-generation-takeaways-identity-proof.jpg",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-bc00d078-0fcb-4a97-a95c-e2f66c4c3632.png",
+      "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-takeaways.webp",
+      "art-src/scenes/llm-integration__report-generation-takeaways-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/llm-integration__report-generation-takeaways-narrative-stage1-openai-20261107.png",
+    "sha256": "bc9639f666a0bfdddbb59b4819d4ef48ce2d1ee500540056ea4cd4c4deeb6ea2",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/llm-integration__report-generation-takeaways.json"
+}

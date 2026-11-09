@@ -1,0 +1,217 @@
+{
+  "key": "system-architecture-concept",
+  "auditIndex": 9,
+  "id": "capstone/system-architecture",
+  "phase": "concept",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+    "sha256": "d6ca2b6fc89c79b0b5acee4f46035a23911beb32b24703e2ee06ab30c70d85c1"
+  },
+  "prompt": "Use case: identity-preserve. First canonical portrait(s) establish fixed identities, next room master is architecture only, last image exact correction target. Restage screen-reader geometry. Place both Demir and Nazari together on LEFT half of frame, with a single upright monitor on RIGHT half angled toward LEFT. Camera is beside them on same front side of monitor. Demir seated typing and looks up to Nazari leaning beside him, Nazari points with stylus toward monitor while sharing a wry look with him. Both can see screen from their seats. Preserve exact screen text: Input contract; Feature order; Units and scaling; Shape and dtype; A matching shape is not enough; Validate before process. Do not put any character behind a camera-facing screen. Two natural hands per character, every word follows screen perspective. No unrelated monitors lit, ordinary balanced heads/shoulders/neck. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. 1536x1024.",
+  "meaning": "Runtime validation includesmeaningnotshape; inputcontracts units featureorder preprocessing. Not automaticTSinference.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2026effc-7a09-4666-a342-b919eca8fe6a.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2026effc-7a09-4666-a342-b919eca8fe6a.png",
+      "sha256": "92a1198e475661c28a399a51c0a686839eecbb8ee192c604478f67dee08e3820",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-484146bf-b93d-490e-992e-5f7a89727d78.png",
+  "candidatePath": "art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+  "candidateSha256": "86889bd95282d3c713d40580bf818498259a01d5a370112f0ec90336492ba95c",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; Farah lens stays over anatomical LEFT eye. Nazari and Mirza have no monocle or earpiece. Only exact named cast. Restage the work, no outward cards. Nazari LEFT bends slightly beside seated Demir RIGHT; he has one hand on keyboard, the other on a mouse placed beside keyboard. She traces a shared upright monitor with stylus, looking at him with amused insistence; he studies the highlighted order with a caught-out half smile. Screen title \"Input contract\". Three stacked rows \"Feature order\", \"Units and scaling\", \"Shape and dtype\". Footer \"Validate before process\". A separate small line \"A matching shape is not enough\". Keep all content on front-facing screen both can read, notebook closed on desk, background screens inactive.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2026effc-7a09-4666-a342-b919eca8fe6a.png",
+          "sha256": "92a1198e475661c28a399a51c0a686839eecbb8ee192c604478f67dee08e3820",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2026effc-7a09-4666-a342-b919eca8fe6a.png",
+        "sha256": "92a1198e475661c28a399a51c0a686839eecbb8ee192c604478f67dee08e3820"
+      }
+    },
+    {
+      "prompt": "Use case: identity-preserve. First canonical portrait(s) establish fixed identities, next room master is architecture only, last image exact correction target. Restage screen-reader geometry. Place both Demir and Nazari together on LEFT half of frame, with a single upright monitor on RIGHT half angled toward LEFT. Camera is beside them on same front side of monitor. Demir seated typing and looks up to Nazari leaning beside him, Nazari points with stylus toward monitor while sharing a wry look with him. Both can see screen from their seats. Preserve exact screen text: Input contract; Feature order; Units and scaling; Shape and dtype; A matching shape is not enough; Validate before process. Do not put any character behind a camera-facing screen. Two natural hands per character, every word follows screen perspective. No unrelated monitors lit, ordinary balanced heads/shoulders/neck. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. 1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2026effc-7a09-4666-a342-b919eca8fe6a.png",
+          "sha256": "92a1198e475661c28a399a51c0a686839eecbb8ee192c604478f67dee08e3820",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-484146bf-b93d-490e-992e-5f7a89727d78.png",
+        "sha256": "86889bd95282d3c713d40580bf818498259a01d5a370112f0ec90336492ba95c"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/remaining_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "method": "Native full frame compared with canonical portraits and current MDX",
+    "notes": "Nazari and Demir now beside the front of a shared monitor. Input contract shows feature order, units/scaling,shape/dtype and validate-before-process. Nazari natural stylus/bracing hands, Demir keyboard hands, short coherent necks, exchanged wry glance, muted room."
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2026effc-7a09-4666-a342-b919eca8fe6a.png",
+      "sha256": "92a1198e475661c28a399a51c0a686839eecbb8ee192c604478f67dee08e3820",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-484146bf-b93d-490e-992e-5f7a89727d78.png",
+  "publishedSource": "art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-concept.webp",
+  "sourceSha256": "86889bd95282d3c713d40580bf818498259a01d5a370112f0ec90336492ba95c",
+  "webpSha256": "03f29df067b90319cbc06dfd71476be930fa90385cada3b0bf9f441cd94ec266",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+    "sourceSha256": "d6ca2b6fc89c79b0b5acee4f46035a23911beb32b24703e2ee06ab30c70d85c1",
+    "webpSha256": "b766ac8f272708e8210375578cb31b061339defec9dbbe0fff51265827898f62",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-74a675bb-0cd0-470f-9b77-f9f9e8697a7b.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root/remaining_root_opt",
+    "status": "approved",
+    "candidateSha256": "86889bd95282d3c713d40580bf818498259a01d5a370112f0ec90336492ba95c",
+    "method": "Independent native full-frame visual inspection, comparison with canonical character portraits, current MDX and exercise source verification. Screen plane, anatomy, palette, reader direction and story action checked. Face crops compared beside neutral canonical portraits.",
+    "checks": {
+      "combinedNativeReview": "Nazari and Demir collaborate at a physical console. Contract labels feature order, units/scaling, shape/dtype and validate before process match current lesson and avoid the claim that matching shapes suffice. All text follows display plane. Stylus, keyboard and support hands are natural; canonical Nazari age and Demir face, short necks, candid exchange, restrained palette.",
+      "independentPeerRecord": "/tmp/rootopt-recovered-peer.json",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+          "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+          "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+        "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+        "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/system-architecture-concept.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

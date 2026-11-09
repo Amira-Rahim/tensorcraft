@@ -1,0 +1,82 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-briefing/candidate.png",
+  "candidateSha256": "99eda3f4c50c96b1a06ec783a7a8d9c78ed05e08060717957f5a6d6fe6de00ca",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist tracing with explicit left/right thumb chirality, direct canonical portrait comparison, and current source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 8,
+      "name": "root-rest-reportbrief-faces",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-briefing/candidate.png",
+      "box": [
+        435,
+        75,
+        1230,
+        755
+      ],
+      "scale": 2
+    },
+    {
+      "i": 8,
+      "name": "root-rest-reportbrief-farahhands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-briefing/candidate.png",
+      "box": [
+        390,
+        790,
+        910,
+        1010
+      ],
+      "scale": 3
+    },
+    {
+      "i": 8,
+      "name": "root-rest-reportbrief-tablet",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-briefing/candidate.png",
+      "box": [
+        960,
+        500,
+        1290,
+        700
+      ],
+      "scale": 3
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah's right-hand writing grip contains a straight continuous pen; her left fingers brace the paper. Demir grips opposite tablet edges with four fingers visible on each back surface and thumbs around the far edges. Four complete arm chains, no floating props or reversed hands.",
+    "displayLegibilityAndSource": "The large board flags an instrument absent from the ship inventory, marks the draft for revision and calls for one section per prompt. This accurately conveys the briefing's invented Methodology instrument and revised workflow.",
+    "identityExpressionAndStory": "Farah's displeased, concentrated expression and Demir's tentative downward smile give the revision scene a specific reaction. Both remain recognizable against the canonical portraits.",
+    "palette": "Restrained charcoal, sage and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Text and rules share their actual display plane; the operator can see the same front surface.",
+    "largeDisplayRule": "Essential lesson information is large, clear and spacious across the main available working display."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:30:45.443605+00:00"
+}

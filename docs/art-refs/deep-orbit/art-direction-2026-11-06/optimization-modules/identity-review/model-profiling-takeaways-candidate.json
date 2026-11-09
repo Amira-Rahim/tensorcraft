@@ -1,0 +1,76 @@
+{
+  "index": 2,
+  "module": "optimization-edge",
+  "lesson": "model-profiling",
+  "phase": "takeaways",
+  "room": "engineering",
+  "characters": [
+    "chief-nazari"
+  ],
+  "aria": false,
+  "alt": "Nazari clips the baseline report into her ledger and leaves peak-memory measurement open.",
+  "scene": "Nazari alone at a clear section of the engineering bench, near-frontal head and a quietly pleased half-smile. She uses one hand to hold a large open ledger while the other closes a spring clip over a report resting on its page. Her multitool rests separately on the bench. Three simple report regions show a storage bar, a small timing distribution, and an empty outlined memory-peak plot. No text, digits, equations or approval stamps. The result is a usable baseline, with peak-memory work still visibly pending. Warm close framing from waist up, ledger below her face, no merged hand or paper.",
+  "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari alone at a clear section of the engineering bench, near-frontal head and a quietly pleased half-smile. She uses one hand to hold a large open ledger while the other closes a spring clip over a report resting on its page. Her multitool rests separately on the bench. Three simple report regions show a storage bar, a small timing distribution, and an empty outlined memory-peak plot. No text, digits, equations or approval stamps. The result is a usable baseline, with peak-memory work still visibly pending. Warm close framing from waist up, ledger below her face, no merged hand or paper. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "src": "/scenes/deep-orbit/optimization-edge/model-profiling-takeaways.webp",
+  "source": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+  "location": "Archimedes, Engineering",
+  "status": "generated-awaiting-review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-a29fb7fe-d30f-4e8c-a19f-19d3410d183e.png",
+  "candidate": "/tmp/optimization-candidates/2.webp",
+  "candidateSha256": "1ba767d706df8dff3ba9a4fc4a470954831404df7cc89b771f1edef7fda5713e",
+  "sourceSha256": "ee5a8328fb9f0d1999ab5115e74bdcbaa4068205af585ed4172ecb0018659e36",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room reference",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 172718,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/model-profiling-takeaways-chief-nazari-proof.png",
+      "crop": {
+        "left": 585,
+        "top": 0,
+        "width": 390,
+        "height": 425
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-a29fb7fe-d30f-4e8c-a19f-19d3410d183e.png",
+      "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

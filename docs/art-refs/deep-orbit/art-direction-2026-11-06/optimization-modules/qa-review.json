@@ -1,0 +1,485 @@
+{
+  "date": "2026-11-07",
+  "scope": "24 new scenes:20 Optimization Edge phases plus4 Browser Runtimes Model Loading phases, excluding existing briefings",
+  "status": "COMPLETE",
+  "reviewedSourceLessons": [
+    "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+    "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+    "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+    "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+    "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+    "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx"
+  ],
+  "constraints": [
+    "Five genuinely distinct scene phases per lesson, with briefings owned by scene_anatomy_gate",
+    "Canonical neutral portraits first, room reference last for new scenes",
+    "Faces compared independently at close crop scale",
+    "Full-frame anatomy, hand grips, furniture contact and display semantics inspected",
+    "No claims of runtime speed from storage reduction, no accuracy claim from unlabeled agreement",
+    "No claims that cache misses prove no repetition or partial telemetry restores the lost capture"
+  ],
+  "records": [
+    {
+      "index": 0,
+      "id": "optimization-edge/model-profiling",
+      "phase": "concept",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__model-profiling-concept-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-concept.webp",
+      "qa": {
+        "identity": "Nazari retains mature cheek/eye folds, broad nose and gray bob; Demir retains compact lower face, rounded nose, brow/eye structure and stubble.",
+        "anatomy": "Both figures have two distinct attached arms; notebook, pointer gesture, stopwatch and bench-rest grips are coherent, with no furniture intersection.",
+        "display": "Four-row storage view uses an empty second row and largest third bar; separate timing trace and empty peak-memory axes avoid conflating metrics.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad rounded nose, mature folds and broad jaw retained; Demir eye/brow spacing, compact broad nose tip, soft square jaw and uneven stubble match through tilted gaze/open mouth."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 1,
+      "id": "optimization-edge/model-profiling",
+      "phase": "challenge",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-challenge.webp",
+      "qa": {
+        "identity": "Demir has rounded compact nose, short broad lower face, freckles and irregular stubble; anatomical-right earpiece retained.",
+        "anatomy": "Two arms connect correctly to stopwatch grip and keyboard keypress; seated stool and desk contact remain separate.",
+        "display": "Completed output waveform is visible while baseline result table remains empty.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad rounded nose, mature folds and broad jaw retained; Demir eye/brow spacing, compact broad nose tip, soft square jaw and uneven stubble match through tilted gaze/open mouth."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 2,
+      "id": "optimization-edge/model-profiling",
+      "phase": "takeaways",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-takeaways.webp",
+      "qa": {
+        "identity": "Nazari retains mature facial folds, broad compact nose, rounded jaw and short gray bob.",
+        "anatomy": "Two hands coherently hold ledger and pinch clip; no extra fingers or furniture overlap.",
+        "display": "Separate storage bar, timing distribution and empty peak-memory plot remain visibly distinct.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad rounded nose, mature folds and broad jaw retained; Demir eye/brow spacing, compact broad nose tip, soft square jaw and uneven stubble match through tilted gaze/open mouth."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 3,
+      "id": "optimization-edge/model-profiling",
+      "phase": "epilogue",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-epilogue.webp",
+      "qa": {
+        "identity": "Demir retains compact rounded nose, short lower face, freckles, stubble and characteristic brows; alert expression remains recognizable.",
+        "anatomy": "Two hands hold paper and rest on console, natural fingers and wrist chains.",
+        "display": "Short recovered trace occupies only a small part of mostly empty recording screen; separate abstract ARIA ring is no lost-capture restoration claim.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad rounded nose, mature folds and broad jaw retained; Demir eye/brow spacing, compact broad nose tip, soft square jaw and uneven stubble match through tilted gaze/open mouth."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 4,
+      "id": "optimization-edge/quantization",
+      "phase": "concept",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-concept.webp",
+      "qa": {
+        "identity": "Nazari preserves mature rounded facial features, broad nose and gray bob.",
+        "anatomy": "Stylus and slate held in two coherent hands, torso outside furniture.",
+        "display": "Two 2x4 grids contain eight equal-height weight cells apiece, with lower encoding cells approximately a quarter of upper widths; no weights removed and no internal symbols.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad nose/jaw and mature folds, Farah rounded adult cheeks/chin and compact nose, Demir compact nose and broad softly squared lower face all retained through natural angles."
+      },
+      "withheldPriorAttempts": [
+        {
+          "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-92d8f6de-1446-418c-8574-add3abe7d330.png",
+          "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari stands beside an engineering teaching screen, near-frontal face with an interested raised eyebrow. One hand holds a stylus pointed toward the screen without touching it; the other holds a slate against her waist. The screen has TWO clearly separated encoding strips. Each strip contains exactly EIGHT rectangular weight cells, arranged in two rows of four. The upper cells are wide horizontal rectangles, the lower cells are narrow horizontal rectangles of about one quarter the width. All eight positions remain in both strips, with matched orderly arrangement and the same neutral green color. There are sixteen visible outer cells total, no internal subdivisions, no removed cells, no class symbols. This illustrates fewer bytes per stored weight, not fewer weights or neurons. No speed arrow or success badge. Close three-quarter body view but face gently toward camera. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+          "reason": "Both grids had unequal row heights but identical overall encoding width; diagram failed storage encoding semantics."
+        },
+        {
+          "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-44045b61-b3a3-4592-8e20-742e9d3b4f9f.png",
+          "prompt": "Use case: precise-object-edit. Reference image 1 is Nazari's canonical identity; reference image 2 is the target scene. Change ONLY the contents of the large screen. Keep every face, head, body, hand, stylus, slate, room, composition and lighting exactly unchanged. Replace the existing screen graphics with TWO panels, top and bottom. In the TOP panel place exactly EIGHT identical wide horizontal solid green rectangles, arranged as two rows of four, all SAME height and SAME width. In the BOTTOM panel place exactly EIGHT identical short green rectangles, arranged as two rows of four. Each bottom rectangle has exactly the SAME HEIGHT as a top rectangle but ONE QUARTER its WIDTH. Thus every top-row and second-row cell in the upper panel has same dimensions; every cell in lower panel has same dimensions. Keep each lower cell aligned with its upper counterpart's LEFT edge, leaving a large empty gap to its right. Exactly sixteen solid green shapes total. No internal subdivisions, no extra stripes, text, labels, symbols or arrows. Teaching meaning: eight weights stay eight weights, each encoded with fewer bytes. The two panels can have identical outer borders, but their cells must clearly differ in horizontal WIDTH only. Preserve illustration style.",
+          "reason": "Width ratio closer to half instead of quarter; refine to quarter."
+        },
+        {
+          "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-bd4e7b7c-42ca-4183-90d0-69149a3a7458.png",
+          "prompt": "Use case: precise-object-edit. First image canonical Nazari, second image target. Change ONLY the eight small green rectangles within the BOTTOM panel of the large screen. Keep all their heights and left edges and row positions fixed; reduce each small rectangle's horizontal width to about 27 pixels in this 1536-wide image, so its width is ONE QUARTER of the corresponding upper cell's approximately110-pixel width. This makes eight slender vertical green rectangles, arranged two rows by four columns with lots of empty space to their right. Preserve exactly eight wide upper green rectangles, and exactly eight much narrower lower green rectangles. All other pixels should be unchanged, especially Nazari's face, hair, body, hands, stylus, slate and room. No text or symbols added.",
+          "reason": "Eight lower cells preserved, but narrowed too far to about one seventh of upper width."
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "id": "optimization-edge/quantization",
+      "phase": "challenge",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__quantization-challenge-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-challenge.webp",
+      "qa": {
+        "identity": "Demir and Nazari retain canonical nose shapes, lower faces and ages, with natural cooperative expressions.",
+        "anatomy": "Four coherent hands hold folder, slate and keypress; clear seated contact and separation.",
+        "display": "Three paired class-token cards: circle/circle and square/square match, triangle/square disagree without correctness coloring or accuracy claim.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad rounded nose, mature folds and broad jaw retained; Demir eye/brow spacing, compact broad nose tip, soft square jaw and uneven stubble match through tilted gaze/open mouth."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 6,
+      "id": "optimization-edge/quantization",
+      "phase": "takeaways",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-takeaways.webp",
+      "qa": {
+        "identity": "Farah has broad rounded lower cheeks, compact rounded nose, short chin and adult eye/mouth detail with canonical AR lens.",
+        "anatomy": "Two attached hands hold comparison card and write in notebook; stopwatch and closed slate remain separate.",
+        "display": "Two traces differ without verdict; stopwatch and diagnostic slate are not conflated with prediction agreement.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad nose/jaw and mature folds, Farah rounded adult cheeks/chin and compact nose, Demir compact nose and broad softly squared lower face all retained through natural angles."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 7,
+      "id": "optimization-edge/quantization",
+      "phase": "epilogue",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-epilogue.webp",
+      "qa": {
+        "identity": "Nazari retains broad mature lower face, compact nose, individual brow/eye folds and gray bob while glancing at signal.",
+        "anatomy": "Two attached arms, one relaxed and one resting on bench; no table or rail intersection.",
+        "display": "Exactly three raw pulses, closed ledger and idle multitool support quiet engineering ending without bridge certification.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad nose/jaw and mature folds, Farah rounded adult cheeks/chin and compact nose, Demir compact nose and broad softly squared lower face all retained through natural angles."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 8,
+      "id": "optimization-edge/pruning",
+      "phase": "concept",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-concept.webp",
+      "qa": {
+        "identity": "Demir preserves round nose, broad compact lower face, freckles and stubble through raised brow.",
+        "anatomy": "Pen poised above unsigned folder and other hand supports its outer edge; two coherent arms.",
+        "display": "Both 2x4 grids retain eight bordered slots; upper eight green, lower four green/four dark. Output dots differ on separate rails; no dimensions removed.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad nose/jaw and mature folds, Farah rounded adult cheeks/chin and compact nose, Demir compact nose and broad softly squared lower face all retained through natural angles."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 9,
+      "id": "optimization-edge/pruning",
+      "phase": "challenge",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-challenge.webp",
+      "qa": {
+        "identity": "Demir and Farah reviewed under gentle gaze/angle changes against individual anchors.",
+        "anatomy": "Four attached arms, natural slate/book/bench/keypress contacts; bodies outside furniture.",
+        "display": "Exactly five class rows, each with two empty bars, awaiting per-class evaluation rather than a claimed aggregate result.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad nose/jaw and mature folds, Farah rounded adult cheeks/chin and compact nose, Demir compact nose and broad softly squared lower face all retained through natural angles."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 10,
+      "id": "optimization-edge/pruning",
+      "phase": "takeaways",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-takeaways.webp",
+      "qa": {
+        "identity": "Nazari mature nose, rounded cheeks/chin, folds and gray bob match anchor.",
+        "anatomy": "Two hands naturally hold outer card edges, intact fingers and wrists.",
+        "display": "Both equal-sized cards retain exact 2x4 scalar grids: eight solid green left, four green/four dark right, all borders preserved. All waveform icons removed.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad nose/jaw and mature folds, Farah rounded adult cheeks/chin and compact nose, Demir compact nose and broad softly squared lower face all retained through natural angles."
+      },
+      "withheldPriorAttempts": [
+        {
+          "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7eb5446a-cc9c-4fb4-be28-bef65662155d.png",
+          "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari alone at a tabletop under a warm workshop lamp, face toward camera with a small wry smile. She holds two stiff report cards, one in each hand, at chest height. Both cards have the SAME outer size and the same two-by-four grid of exactly EIGHT cells. Left card eight green cells; right card four green and four dark cells with all eight borders preserved. No cells disappear and no card shrinks. A separate closed review folder sits on the table. This reinforces unchanged dense storage slots after zeroing and the need for prediction evaluation, without claiming speedup or accuracy preservation. Hands hold outer edges naturally, fingers not intersecting the grids; waist-up frontal composition. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+          "reason": "Sine-wave symbols inside weight cells misrepresent scalar weights; remove all interior symbols."
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "id": "optimization-edge/pruning",
+      "phase": "epilogue",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-epilogue.webp",
+      "qa": {
+        "identity": "Nazari and Demir retain adult/young adult face proportions, broad noses and compact lower faces.",
+        "anatomy": "Nazari writes and holds ledger with two hands; Demir presents report in two hands, no overlap.",
+        "display": "Five paired-bar rows kept with sign-off; background waveform and stored-bundle rectangle do not claim quality loss vanished.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS: Nazari broad nose/jaw and mature folds, Farah rounded adult cheeks/chin and compact nose, Demir compact nose and broad softly squared lower face all retained through natural angles."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 12,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "concept",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-concept-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-concept.webp",
+      "qa": {
+        "identity": "Demir compact nose and broad softly squared lower face hold through gentle head tilt; canonical eye/brow spacing, freckles and stubble retained.",
+        "anatomy": "Two attached hands hold waveform card and stylus; natural grips, no console intersection.",
+        "display": "Card's two humps match selected cache row; four distinct cache traces and output pane avoid language-bundle timing claims.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS all eight requested crops; compact rounded noses, broad lower faces and canonical brow/eye spacing preserved. WebGPU concept open smile and 3/4 pose account for jaw stretch."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 13,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "challenge",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-challenge-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-challenge.webp",
+      "qa": {
+        "identity": "Demir retains compact rounded face and nose; Nazari retains mature broad nose, cheek/eye folds and jaw through open smile.",
+        "anatomy": "Four attached arms with tablet, keyboard, stopwatch and five-finger open gesture; bodies remain outside chair and console.",
+        "display": "Four rows each retain waveform key, version-color square and clock-age symbol; no verdict or performance claim.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS all eight requested crops; compact rounded noses, broad lower faces and canonical brow/eye spacing preserved. WebGPU concept open smile and 3/4 pose account for jaw stretch."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 14,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "takeaways",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-takeaways.webp",
+      "qa": {
+        "identity": "Demir retains compact rounded nose and broad short lower face while looking down; freckles and stubble remain.",
+        "anatomy": "Two hands place one card into organizer and hold another outside; continuous wrists and coherent card grip.",
+        "display": "Four-slot organizer, old card outside, differing version squares and nearby-but-different traces preserve cache validity/approximation meaning.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS all eight requested crops; compact rounded noses, broad lower faces and canonical brow/eye spacing preserved. WebGPU concept open smile and 3/4 pose account for jaw stretch."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 15,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "epilogue",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-epilogue.webp",
+      "qa": {
+        "identity": "Demir retains compact nose, canonical eye/brow spacing and rounded lower face through curious downward gaze.",
+        "anatomy": "Two attached hands support paper and desk; no body, rail or furniture overlap.",
+        "display": "Empty cache search pane, two differing raw traces and abstract ARIA ring stay separate; no-hit result is not proof of no repetition.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS all eight requested crops; compact rounded noses, broad lower faces and canonical brow/eye spacing preserved. WebGPU concept open smile and 3/4 pose account for jaw stretch."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 16,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "concept",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-concept.webp",
+      "qa": {
+        "identity": "Demir's compact round nose, broad lower face and eye/brow structure persist through 3/4 open smile; Nazari retains mature broad contours and eye folds.",
+        "anatomy": "Four hands coherently hold notebook, gesture, stopwatch and stylus; human bodies remain outside holographic table.",
+        "display": "Two equal unranked paths each contain three connected work rectangles ending in output waveform; physical stopwatch emphasizes completed readback.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS all eight requested crops; compact rounded noses, broad lower faces and canonical brow/eye spacing preserved. WebGPU concept open smile and 3/4 pose account for jaw stretch."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 17,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "challenge",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-challenge.webp",
+      "qa": {
+        "identity": "Demir's round nose and broad compact lower face, eye spacing, freckles, stubble and anatomical-right earpiece match anchor.",
+        "anatomy": "Two hands hold slate and press one button; clear wrists and console contact.",
+        "display": "Four neutral startup options have empty status circles, top cursor/outline and pending output panel; no availability or speed guarantee.",
+        "approved": true,
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS all eight requested crops; compact rounded noses, broad lower faces and canonical brow/eye spacing preserved. WebGPU concept open smile and 3/4 pose account for jaw stretch."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 18,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "takeaways",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-takeaways-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-takeaways.webp",
+      "qa": {
+        "approved": true,
+        "identity": "Nazari retains mature eye/mouth folds, broad rounded nose, full jaw and gray bob through gentle smile.",
+        "anatomy": "Two coherent hands hold stopwatch and place completed output paper; natural fingers, clear table separation.",
+        "display": "Three-stage path ends in waveform output box; stopwatch follows completed output, with no numeric speed or universal GPU claim.",
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS, mature contours and same canonical nose/jaw preserved."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 19,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "epilogue",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-epilogue-openai-20261107.png",
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-epilogue.webp",
+      "qa": {
+        "approved": true,
+        "identity": "Nazari retains mature broad rounded nose and full jaw; Demir retains compact nose, short chin, softly squared cheeks and canonical eye/brow spacing.",
+        "anatomy": "Four attached arms, ledger closing grip, configuration-card pinning and console hand all coherent, no furniture intersection.",
+        "display": "Exactly two live pulses, checked configuration card and separate backend timing strips support target rehearsal without restoring lost capture.",
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "scene_anatomy_gate",
+        "peerVerdict": "Identity-only PASS both Nazari and Demir, fixed individual morphology through gentle expressions."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 20,
+      "id": "browser-runtimes/model-loading",
+      "phase": "concept",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/browser-runtimes__model-loading-concept-openai-20261107.png",
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-concept.webp",
+      "qa": {
+        "approved": true,
+        "identity": "Demir retains round compact nose, broad short lower face, canonical eyes/brows, freckles and stubble through warm open smile; face preserved after display correction.",
+        "anatomy": "Two attached arms hold slate and stylus with natural five-finger grips; standing torso clear of monitor and furniture.",
+        "display": "Specific lesson export: one manifest file and one weight file feed one opaque loaded-model box; separate manifest architecture path preserved. No invented shard/layer count.",
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "root",
+        "peerVerdict": "All five Model Loading face crops passed; fresh corrected concept face independently rechecked and still PASS."
+      },
+      "withheldPriorAttempts": [
+        {
+          "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-818f381a-c589-4c33-b62a-a5338d2c4ec5.png",
+          "prompt": "Create one NEW Deep Orbit lesson scene,1536x1024 landscape. Image1 is the authoritative neutral identity portrait of ensign-demir. LAST image is dashboard alcove room reference ONLY, never a face or screen-content template. Ensign Demir is the EXACT mid-twenties man in his neutral portrait: compact broad softly squared lower face, SHORT rounded chin, compact round-ended nose with broad base and full nostrils, distinctive straight brows, round alert eyes and fixed spacing, sparse freckles and short uneven stubble. Preserve compact dark-brown forelock and hairline, green comms earpiece on HIS ANATOMICAL RIGHT ear and slate uniform. Do not elongate his nose/jaw, point his chin, enlarge his eyes or inflate his quiff. Same individual faces are mandatory, with expressive warmth and natural gaze. Keep every face near-frontal or gentle three-quarter and clearly lit, at least about200pixels high. Demir alone in a new medium front-facing view, standing outside the dashboard alcove with one hand using a stylus on a small freestanding screen and the other holding a tablet at his side. The screen contains one flat manifest document icon connected to several small binary-shard rectangles which together feed one compact model outline. These are on-screen file symbols, not floating physical cubes. No letters, digits or fake code. He has a small 'oh, that explains it' smile, learning that the manifest references the weights. Keep his canonical face and the bridge's muted brass/green environment; no extra character or warning-wall composition. Main diagram uses one blank flat manifest document icon, exactly THREE small plain weight-file rectangles and one compact model outline. Manifest connects to weight files and ALSO contributes its architecture to the final model; weights and manifest combine. No fake equations or symbols inside files. Set is Bridge Dashboard Station, a brass-edged aft-rail alcove with modest stacked green monitors, single chair and clamped mug; bridge architecture behind. Move camera and humans to make faces and action legible. Exactly1 named humans, no anonymous background people or silhouettes. Exactly two attached arms and hands per person, five natural fingers, correct object grips and continuous shoulder/elbow/wrist chains. Bodies wholly outside desk, chair and rails. Use a warm inviting practical space adventure tone with light dry humor, no panic or menace. No text, words, letters, digits, code, formulas, labels or fake glyph strings anywhere. Do not inherit pseudo-equations, decorative symbols or gauges from the room master. Focal screens show ONLY the specified meaningful graphics; incidental screens use a simple neutral trace or remain blank. No planets, crystals, emoji or wave symbols inside scalar data cells. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+          "reason": "General multi-shard diagram did not match this lesson's specific manifest plus one weights.bin export; replace with one weight file and an opaque model box."
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "id": "browser-runtimes/model-loading",
+      "phase": "challenge",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/browser-runtimes__model-loading-challenge-openai-20261107.png",
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-challenge.webp",
+      "qa": {
+        "approved": true,
+        "identity": "Demir compact round nose and broad softly squared lower face retained through gentle3/4 view, with fixed eye/brow spacing and stubble.",
+        "anatomy": "Two hands at keyboard and outer desk edge; natural seated chair support, no clipping or extra fingers.",
+        "display": "Three input feature cells and one output cell surround model outline, with no fixed batch-size claim or fabricated verdict.",
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "root",
+        "peerVerdict": "Identity PASS, compact nose and broad lower face preserved through yaw."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 22,
+      "id": "browser-runtimes/model-loading",
+      "phase": "takeaways",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/browser-runtimes__model-loading-takeaways-openai-20261107.png",
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-takeaways.webp",
+      "qa": {
+        "approved": true,
+        "identity": "Demir maintains compact nose and short broad lower face through downward gaze, canonical eyes/brows and irregular stubble.",
+        "anatomy": "Two natural hands support opposite tablet edges; body wholly separate from empty chair and desk.",
+        "display": "Storage cylinder beside two distinct model-version tiles, old dim/new outlined; no guarantee of permanent storage.",
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "root",
+        "peerVerdict": "Identity PASS, same individual through downward gaze."
+      },
+      "withheldPriorAttempts": []
+    },
+    {
+      "index": 23,
+      "id": "browser-runtimes/model-loading",
+      "phase": "epilogue",
+      "status": "IDENTITY_APPROVED",
+      "source": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-epilogue.webp",
+      "qa": {
+        "approved": true,
+        "identity": "Farah keeps mature38 proportions, broad rounded cheek/chin and compact nose; Demir retains compact round nose and broad lower face while leaning toward comparison.",
+        "anatomy": "Farah supports notebook with two hands; Demir has one keyboard hand and one rim hand. Four coherent arms, no furniture/body intersection.",
+        "display": "Notebook and dashboard show near-equal score bars differing modestly for the same reading; no percentages, accuracy verdict or false signal corruption.",
+        "reviewer": "unique_lesson_art",
+        "peerReviewer": "root",
+        "peerVerdict": "Both identity faces PASS through natural yaw/tilt; Farah adult proportions retained."
+      },
+      "withheldPriorAttempts": []
+    }
+  ],
+  "approved": 24,
+  "expected": 24
+}

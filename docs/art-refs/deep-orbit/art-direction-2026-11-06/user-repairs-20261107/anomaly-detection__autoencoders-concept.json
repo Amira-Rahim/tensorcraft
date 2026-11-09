@@ -1,0 +1,185 @@
+{
+  "id": "anomaly-detection__autoencoders-concept",
+  "lesson": "anomaly-detection/autoencoders",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "room": "lab",
+  "src": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+  "alt": "Farah traces the mission autoencoder from eleven inputs through four bottleneck units and back.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.045857+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah sits at the lab bench, turning a tactile dial with one hand while her other hand rests on an open notebook. She looks toward the large upright architecture display with focused interest. Move the former tiny console diagram onto the available wall. Preserve adult proportions and signature left-eye AR lens. No held pen.\nExact visible display content: Title \"Mission autoencoder\". Header \"3 raw + 8 FFT features\". Three main connected boxes: \"Input: 11 features\" to \"Bottleneck: 4\" to \"Rebuilt: 11 features\". Label connecting arrows \"Encoder\" and \"Decoder\" respectively. Footer \"Evaluate reconstruction error\". Do not substitute the separate eight-feature exercise architecture.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "f1aadbbabaf5a7cd191d9076deda6cd7f9eebfba7be5dd31b311537d0a963437",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room master",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+    "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+  },
+  "sourceSha256": "3923abf2c497dccd9a8624a23fc09d6a92d5b9ed1d7a1d5218db925d1e10c74a",
+  "sourceEvidence": {
+    "task": "Farah sits at the lab bench, turning a tactile dial with one hand while her other hand rests on an open notebook. She looks toward the large upright architecture display with focused interest. Move the former tiny console diagram onto the available wall. Preserve adult proportions and signature left-eye AR lens. No held pen.",
+    "visibleDataOperationAndResult": "Title \"Mission autoencoder\". Header \"3 raw + 8 FFT features\". Three main connected boxes: \"Input: 11 features\" to \"Bottleneck: 4\" to \"Rebuilt: 11 features\". Label connecting arrows \"Encoder\" and \"Decoder\" respectively. Footer \"Evaluate reconstruction error\". Do not substitute the separate eight-feature exercise architecture.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The 11-feature to 4-unit bottleneck diagram is on a small tabletop panel beneath unused wall area.",
+        "repairDirection": "Create large upright main architecture display, preserve 3 raw plus 8 FFT features, input 11, bottleneck 4, rebuilt 11 and reconstruction-error evaluation."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah sits at the lab bench, turning a tactile dial with one hand while her other hand rests on an open notebook. She looks toward the large upright architecture display with focused interest. Move the former tiny console diagram onto the available wall. Preserve adult proportions and signature left-eye AR lens. No held pen.\nExact visible display content: Title \"Mission autoencoder\". Header \"3 raw + 8 FFT features\". Three main connected boxes: \"Input: 11 features\" to \"Bottleneck: 4\" to \"Rebuilt: 11 features\". Label connecting arrows \"Encoder\" and \"Decoder\" respectively. Footer \"Evaluate reconstruction error\". Do not substitute the separate eight-feature exercise architecture.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp"
+  },
+  "publicationStatus": "withheld pending independent peer review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ddaf606f-758e-4a81-af03-4cd4cbf22a58.png",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+  "candidateSha256": "3923abf2c497dccd9a8624a23fc09d6a92d5b9ed1d7a1d5218db925d1e10c74a",
+  "generatedAt": "2026-11-08T18:46:16.948180+00:00",
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 1060,
+      "top": 275,
+      "width": 340,
+      "height": 370
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 450,
+      "top": 680,
+      "width": 215,
+      "height": 145
+    },
+    {
+      "left": 1060,
+      "top": 825,
+      "width": 255,
+      "height": 115
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T19:06:40.229891+00:00",
+    "candidateSha256": "3923abf2c497dccd9a8624a23fc09d6a92d5b9ed1d7a1d5218db925d1e10c74a",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "dr-farah",
+        "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 1060,
+          "top": 275,
+          "width": 340,
+          "height": 370
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah adjusts a brass lab dial while checking the mission autoencoder diagram and keeping a hand on her notebook.",
+    "emotion": "Focused technical attention.",
+    "eyeline": "Toward the large input, bottleneck and rebuilt-feature diagram.",
+    "narrativeReason": "The mission's eleven features compress to four and rebuild to eleven before reconstruction-error evaluation.",
+    "findings": [
+      "Wall space now carries a large 3 raw + 8 FFT feature diagram, input 11, bottleneck 4 and rebuilt 11 with encoder and decoder arrows.",
+      "Canonical face, two complete arm chains, neutral dial grip and notebook contact pass close inspection."
+    ]
+  },
+  "owner": "/root/quality_sequence",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-concept/candidate.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+  "webpSha256": "2e2555364e1d17ea3434549945e12572241df78e9b0057095abf49304cdac57d",
+  "webpQuality": 80,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+    "sourceSha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc",
+    "webpSha256": "28d2688f14d3b943d312749f4387e49181240750345510242f620d1bff6f475c",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-cb65505b-49a7-4fab-9b26-6fbb9aa68ca1.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_runtime",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "3923abf2c497dccd9a8624a23fc09d6a92d5b9ed1d7a1d5218db925d1e10c74a",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Wall space now carries a large 3 raw + 8 FFT feature diagram, input 11, bottleneck 4 and rebuilt 11 with encoder and decoder arrows.",
+      "Canonical face, two complete arm chains, neutral dial grip and notebook contact pass close inspection.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

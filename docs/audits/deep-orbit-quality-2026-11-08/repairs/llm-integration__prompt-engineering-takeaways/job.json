@@ -1,0 +1,128 @@
+{
+  "id": "llm-integration__prompt-engineering-takeaways",
+  "lesson": "llm-integration/prompt-engineering",
+  "phase": "takeaways",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah.\nStory action: Farah checks a reply before accepting it. Expression: Careful, curious scrutiny with a hint of wry patience.\nFarah seated at the right studying a large upright wall-integrated working display at left. Move all key information off the narrow little monitor into the large currently blank wall. Her right hand rests naturally on a mouse, her other holds a page flat in an open operator-facing notebook on the desk. No pen. Exact large display: Reply review; Syntax: pending; Required fields: pending; Evidence: pending; Check before accepting. Each is a spacious readable row. No checked results or model guarantees. Keep gaze, head and torso naturally coordinated.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "918e75425723ce00c65908a4ffeb55b28fea0899fcb230c9a54c2c0d26a935b3",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room architecture only",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__prompt-engineering-takeaways-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "94f2b1014c930f5ef417baef2ba87ae9ebd42c42161c6addd3650626a4d9da8b"
+    }
+  ],
+  "sourceSha256": "94f2b1014c930f5ef417baef2ba87ae9ebd42c42161c6addd3650626a4d9da8b",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+    "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+  },
+  "source": "art-src/scenes/llm-integration__prompt-engineering-takeaways-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.328195+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah.\nStory action: Farah checks a reply before accepting it. Expression: Careful, curious scrutiny with a hint of wry patience.\nFarah seated at the right studying a large upright wall-integrated working display at left. Move all key information off the narrow little monitor into the large currently blank wall. Her right hand rests naturally on a mouse, her other holds a page flat in an open operator-facing notebook on the desk. No pen. Exact large display: Reply review; Syntax: pending; Required fields: pending; Evidence: pending; Check before accepting. Each is a spacious readable row. No checked results or model guarantees. Keep gaze, head and torso naturally coordinated.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__prompt-engineering-takeaways-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah checks a reply before accepting it.",
+    "location": "Archimedes, Lab",
+    "action": "Farah checks a reply before accepting it.",
+    "emotion": "Careful, curious scrutiny with a hint of wry patience.",
+    "eyeline": "Toward task equipment and colleague as the narrative action requires.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a29dd939-6ba4-4820-9ac2-092c6f691144.png",
+  "candidatePath": "art-src/scenes/llm-integration__prompt-engineering-takeaways-openai-20261107.png",
+  "candidateSha256": "46c001ee9bf8474fa7653808483518aa4894c25120e11fb1b51a990c08a4642e",
+  "generatedAt": "2026-11-08T19:16:54.648147+00:00",
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        940,
+        135,
+        430,
+        430
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__prompt-engineering-takeaways-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        480,
+        760,
+        760,
+        230
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__prompt-engineering-takeaways-hands0.png",
+      "removedAfterReview": true
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.683068+00:00",
+    "candidateSha256": "46c001ee9bf8474fa7653808483518aa4894c25120e11fb1b51a990c08a4642e",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "publishedSource": "art-src/scenes/llm-integration__prompt-engineering-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-takeaways.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "temporaryDiagnosticCropsRemoved": true
+}

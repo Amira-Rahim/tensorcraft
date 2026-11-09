@@ -10,6 +10,11 @@ import { LESSON_HANDOFFS } from "./lesson-handoffs";
 import { ChannelLayoutExperiment } from "../mdx/channel-layout-experiment";
 import { LessonInvestigation } from "./lesson-investigation";
 import { LESSON_INVESTIGATIONS } from "./lesson-investigations";
+import {
+  resolveLessonSceneArt,
+  type LessonSceneMetadata,
+  type LessonScenePhase,
+} from "@/lib/lesson-scene-art";
 
 const DEEP_ORBIT_LOCATION_CAPTIONS: Record<string, string> = {
   "Archimedes, Lab": "Inside the science lab on the spaceship Archimedes.",
@@ -52,12 +57,13 @@ function sceneCaption(place: string, time?: string): string {
 interface SceneLesson {
   slug: string;
   context: { narrative: string; speaker?: string };
-  scene?: { location: string; time?: string; portraitAlt?: string };
+  scene?: LessonSceneMetadata;
 }
 interface Props {
   lesson: SceneLesson;
   worldSlug: string;
   moduleSlug: string;
+  phase?: LessonScenePhase;
   compact?: boolean;
   narrativeFirst?: boolean;
   heading?: string;
@@ -67,6 +73,7 @@ export function LessonMissionScene({
   lesson,
   worldSlug,
   moduleSlug,
+  phase = "concept",
   compact = false,
   narrativeFirst = false,
   heading,
@@ -74,7 +81,14 @@ export function LessonMissionScene({
 }: Props) {
   const character = resolveCharacter(worldSlug, lesson.context.speaker);
   const portrait = portraitSources(worldSlug, character);
-  const location = lesson.scene?.location;
+  const art = resolveLessonSceneArt({
+    worldSlug,
+    moduleSlug,
+    lessonSlug: lesson.slug,
+    phase,
+    scene: lesson.scene,
+  });
+  const location = art?.location ?? lesson.scene?.location;
   const locationCaption =
     worldSlug === "deep-orbit"
       ? location
@@ -100,18 +114,20 @@ export function LessonMissionScene({
       aria-label="Mission context"
     >
       {narrativeFirst && narrative}
-      <ScenePortrait
-        src={`/scenes/${worldSlug}/${moduleSlug}/${lesson.slug}.webp`}
-        alt={lesson.scene?.portraitAlt}
-        aspectRatio={
-          worldSlug === "deep-orbit" ? "3 / 2" : compact ? "16 / 7" : "4 / 3"
-        }
-        className="mission-context-image"
-      />
+      {art && (
+        <ScenePortrait
+          src={art.src}
+          alt={art.alt}
+          aspectRatio={
+            worldSlug === "deep-orbit" ? "3 / 2" : compact ? "16 / 7" : "4 / 3"
+          }
+          className="mission-context-image"
+        />
+      )}
       <div className="mission-context-copy">
         {heading && worldSlug !== "deep-orbit" && <h2>{heading}</h2>}
         <p className="mission-context-location">
-          {sceneCaption(locationCaption, lesson.scene?.time)}
+          {sceneCaption(locationCaption, art?.time ?? lesson.scene?.time)}
         </p>
         {heading && worldSlug === "deep-orbit" && <h2>{heading}</h2>}
         {!compact && character && (
@@ -166,6 +182,7 @@ export function LessonConceptWorkbench({
             lesson={lesson}
             worldSlug={worldSlug}
             moduleSlug={moduleSlug}
+            phase="concept"
             learningGoals={learningGoals}
           />
           {lesson.slug === "tensor-shapes" ? (

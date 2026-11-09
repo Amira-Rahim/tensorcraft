@@ -1,0 +1,122 @@
+{
+  "id": "foundations/normalization",
+  "phase": "challenge",
+  "owner": "/root/quality_runtime",
+  "status": "published",
+  "preparedAt": "2026-11-09T13:49:09.300905+00:00",
+  "tool": "built-in image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Fully restage the LAST reference to repair its physically incorrect screen orientation. Preserve exact canonical identities from the FIRST portrait references, followed by the bridge room reference. The last image supplies lesson facts and story only; abandon its wrong screen and camera placement. Preserve mature facial width, eyes, nose, jaw, mouth, complexion, age, hairline and signature equipment. Exactly the named cast, no additional humans. Natural adult proportions, compact necks, exactly two coherent shoulder-elbow-wrist-hand chains per person, correct thumb sides, natural fingers and grounded contact. Keep the warm candid story tone, charcoal and muted sage palette, brass trim and balanced skin light. No neon outlines, giant heads, miniature bodies, fake text or extra decorative graphs. Large clear short labels with generous margins, readable at 768 x 512. Landscape 1536 x 1024.  Input roles: image 1: Canonical identity: ensign-demir, image 2: Bridge room authority, image 3: Edit target: retain lesson facts and abandon incorrect operator/screen placement. CRITICAL PHYSICAL STAGING: Show the operator on the LEFT in a natural right-facing side or three-quarter profile, looking RIGHT at a desktop monitor on the RIGHT. The camera is beside the operator on the same viewing side of that monitor, close enough to see the face in natural three-quarter profile and the screen front. The monitor is physically turned LEFT toward the operator and toward the nearby camera. Its LEFT bezel edge is the nearer and taller edge; its RIGHT bezel edge recedes, so its entire rectangular surface visibly narrows toward the right. Top and bottom bezel, screen border, table rows, all text baselines, glyphs and grid lines share that ONE consistent perspective. Both character gaze and camera ray meet the FRONT luminous surface. The screen must NEVER sit between camera and operator with its front facing away from the operator. Show the mounting stand and keyboard placement so their relationship is unambiguous. A normal large desktop workstation display, roughly a 32-inch monitor, not a wall-sized billboard. Use a close medium camera framing so it remains large and legible, occupying roughly the right half of the image without enlarging the physical monitor absurdly. Crew stay to the LEFT of the monitor; no face or body behind its back. The operator and display are the same distance band in the frame. Keep both front-facing screen and recognizable faces visible, without turning anyone toward the audience. Specific story action: Demir sits on the LEFT, torso and chair facing RIGHT toward the monitor. He types with both hands on a keyboard directly between him and the right-hand screen, glancing up at the raw batch with a focused small frown. Show his near-side three-quarter face, natural chair support and two complete typing arms. The screen and keyboard face him, never the audience alone. Keep the raw table and the workflow in separate spacious columns. Exact display content: Title 'Supplied batch [4, 2]'. Table header 'Raw rows', four rows '[20, 0.2]', '[22, 0.8]', '[24, 0.4]', '[26, 0.6]'. Beside the table, three vertically connected steps 'Fit stats', 'Scale', 'Fixed neuron'. Below them 'Weights [0.9, -1.4]', 'Bias -0.3', 'Sigmoid'. Bottom status 'Scores [4, 1]: pending'. No returned scores or fitted statistics are shown in this challenge scene. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "75dfba303f175c9e0ca3a879ef6befd1eb16c6aabf5149551f81d1e411dd07ef",
+  "source": "art-src/scenes/foundations__normalization-challenge-openai-20261107.png",
+  "sourceSha256": "184ab3773c9506f3883caffbf5137bf870af5eead163f7b9d4b41ba4db2db0fc",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "Bridge room authority",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-bca26cd9-6f85-4b0e-aea6-d463396f79d3.png",
+      "role": "Edit target: retain lesson facts and abandon incorrect operator/screen placement",
+      "sha256": "184ab3773c9506f3883caffbf5137bf870af5eead163f7b9d4b41ba4db2db0fc",
+      "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-challenge-openai-20261107.png"
+    }
+  ],
+  "sourceEvidence": "Challenge scales the supplied four two-feature rows, runs the fixed dense sigmoid neuron and keeps calculated outputs pending.",
+  "userDefect": "The previous screen front did not physically face its operator. Recompose camera, operator, keyboard and monitor to show the same front surface from one coherent plane.",
+  "identifiedPhaseEvidence": "Current source art and early-inventory.json identify the z-score table as concept; takeaways is a separate scene.",
+  "publication": {
+    "alt": "Demir prepares the four raw readings at a monitor turned toward his keyboard.",
+    "location": "Archimedes, Bridge",
+    "action": "Demir prepares the four raw readings at a monitor turned toward his keyboard.",
+    "emotion": "Focused concentration before running the supplied model.",
+    "eyeline": "Demir looks right at the monitor front while typing.",
+    "checks": [
+      "Canonical facial structure and age.",
+      "Exactly two natural arm chains per person with coherent hands and contact.",
+      "Monitor front faces operator and camera on the same side.",
+      "One consistent perspective for bezel, table, text and baselines.",
+      "Current lesson and exercise facts, readable at 768 x 512."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-34dddd95-8e8f-4d17-ba32-9f6387e4c122.png",
+  "generatedSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+  "candidatePath": "art-src/scenes/foundations__normalization-challenge-openai-20261107.png",
+  "candidateSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+  "ownReview": {
+    "candidateSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+    "verdict": "PASS",
+    "reviewedAt": "2026-11-09T13:56:06.130289+00:00",
+    "nativeReviewed": true,
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "method": "Full native original, 2x canonical face and hand/prop crops, 2x display crop, and standalone 768 x 512 diagnostic preview. Current MDX and exercise facts verified.",
+    "canonicalIdentityCompared": true,
+    "faceAndHandMagnification": 2,
+    "runtimeSize": [
+      768,
+      512
+    ],
+    "runtimeSizeVerdict": "PASS",
+    "scores": {
+      "colorLight": 5,
+      "movementAnatomyContact": 5,
+      "expressionGaze": 5,
+      "identityProportions": 5,
+      "displayContentLegibilityPerspective": 5,
+      "compositionStoryAction": 5
+    },
+    "findings": [
+      "Demir sits left of the monitor and types at the keyboard on its front side. His eyes track its luminous face.",
+      "The mildly angled glass, bezel, row dividers and text share the same projection; the screen is a plausible desktop size.",
+      "The four raw input rows, batch shape, weights, bias and sigmoid remain readable at 768 x 512. Output scores remain pending.",
+      "Both wrist-to-hand chains connect naturally to the keyboard, with plausible finger contact. Canonical face and headset remain recognizable."
+    ],
+    "diagnosticCropCoordinatesXYWH": {
+      "faces": {
+        "ensign-demir": [
+          260,
+          50,
+          360,
+          440
+        ]
+      },
+      "hands": [
+        [
+          445,
+          760,
+          490,
+          220
+        ]
+      ],
+      "display": [
+        860,
+        135,
+        676,
+        705
+      ]
+    },
+    "temporaryCropsDeleted": true
+  },
+  "publishedSource": "art-src/scenes/foundations__normalization-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization-challenge.webp",
+  "publishedWebpSha256": "26eedebf3623d96ab02157221838dfb5d36ac6fc7662b901d74ddc786465e9a1"
+}

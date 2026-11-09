@@ -1,0 +1,103 @@
+{
+  "module": "training-loop",
+  "lesson": "loss-functions",
+  "phase": "challenge",
+  "src": "/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+  "index": 42,
+  "characters": [
+    "ensign-demir",
+    "dr-farah"
+  ],
+  "prompt": "Strict identity-only repair. Image1 authoritative canonical Demir, image2 canonical Farah, last image target. Correct ONLY Demir's head, hair and neck transition. His current narrow pointed nose and pinched chin are wrong. Turn him gently toward camera into near-frontal three-quarter view, keeping his warm smile and gaze toward his task. Restore portrait1's compact broad softly squared lower face, SHORT rounded chin, broad round-ended nose and full nostrils, same bridge and eye spacing, distinctive straight brows, sparse freckles, uneven stubble and compact dark front locks. Keep earpiece on anatomical right. Preserve Farah exactly, including her already approved face. Preserve all bodies, arms, hands, fingers, tablet grips, keyboard contact, furniture, prediction-target rail graphics, lighting and framing. No other changes. 1536x1024.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-143ffa51-92e5-45af-89e8-442160febade.png"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f35974d8-6c15-4db5-9ee2-065653368722.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-143ffa51-92e5-45af-89e8-442160febade.png",
+      "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=504): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. DR-FARAH (portrait 2, scene head near x=1247): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+      "references": [
+        "docs/art-refs/deep-orbit/ensign-demir.png",
+        "docs/art-refs/deep-orbit/dr-farah.png",
+        "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-challenge.webp"
+      ],
+      "reason": "Peer hold: Demir narrow nose and pinched chin."
+    }
+  ],
+  "candidate": "/tmp/early-identity-candidates/42.webp",
+  "candidateSha256": "7d991a3fbb0a5741f11b10cc25ad88c2d0a029c0b72b403182a56d8932ca9108",
+  "sourceSha256": "436646fbef527af9601878e647a79bb268489e8abbd38520bd416765542acb77",
+  "beforeSha256": "50cf2ac16d08f879f835c6007eea2d4dbd6d7b70f3432981c71d0a3bede31fc8",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-143ffa51-92e5-45af-89e8-442160febade.png",
+      "role": "edit target",
+      "sha256": "88c0df1d5b421f0dbc36f447e347824a4a561a998c6464c066152ffafca022b5"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 158548,
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-challenge-ensign-demir-correction.png",
+      "crop": {
+        "left": 348,
+        "top": 312,
+        "width": 312,
+        "height": 393
+      }
+    },
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-challenge-dr-farah-correction.png",
+      "crop": {
+        "left": 1065,
+        "top": 201,
+        "width": 363,
+        "height": 405
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-143ffa51-92e5-45af-89e8-442160febade.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f35974d8-6c15-4db5-9ee2-065653368722.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

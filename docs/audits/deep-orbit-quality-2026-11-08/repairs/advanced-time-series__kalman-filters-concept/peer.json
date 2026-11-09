@@ -1,0 +1,52 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-08T19:08:49.787732+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__kalman-filters-concept/candidate.png",
+  "candidateSha256": "8dfb343eac07a7912466f3a59bc033cd3ad64cdd24db90f51c4198a1c20623b0",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original inspection and enlarged canonical-face plus hand crops; current lesson source facts checked. Traced shoulder-elbow-wrist-hand chains, thumb sides, prop continuity, operator direction and display surface perspective.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+    "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 995,
+      "top": 240,
+      "width": 315,
+      "height": 345
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 435,
+      "top": 680,
+      "width": 610,
+      "height": 260
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The arrows form the correct predict-variance, gain, correction, next-reading cycle. Q = 0.1, R = 1 and initial variance = 1 match the source, and the level-only limitation remains explicit.",
+    "Farah's right hand grips the dial naturally and her left rests on the bench. Two connected arm chains, compact neck, canonical face and operator-facing board pass."
+  ],
+  "repairDirection": "None."
+}

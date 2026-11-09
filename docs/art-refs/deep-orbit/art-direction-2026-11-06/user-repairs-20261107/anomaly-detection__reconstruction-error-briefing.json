@@ -1,0 +1,133 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "briefing",
+  "index": 35,
+  "cast": [
+    "ensign-demir",
+    "dr-farah"
+  ],
+  "prompt": "Use case: identity-preserve. Replace this Deep Orbit lesson scene,1536x1024. The first reference portraits are strict canonical identities, preserve facial morphology, age, complexion, nose, brow, eyes, mouth, hair, signature equipment. Next reference is the room master for ROOM ARCHITECTURE ONLY, not its old screens or bright colors. Last reference is the edit target to restage. Normal balanced stylized adult heads, short relaxed necks and ordinary shoulders. Exactly two coherent arm chains per person, natural five-finger hands and wrists, convincing contact with solid objects. Characters look at their task or each other with candid curiosity, dry amusement or modest delight, never camera posing or holding information out for the viewer. Every legible display faces its actual operator, with camera beside operator seeing that same front. All text, axes, rules and graphs are projected together onto physical screen plane, not independently pasted upright. Restrained sage #6BAA8A and aged brass #A89060 against charcoal/navy, natural skin and soft practical lights. All incidental screens and wrist displays inactive dark charcoal. Hologram table inactive charcoal; dim lab tube olive-sage. No neon outlining, no fake graphs, arbitrary symbols, invented results or furniture intersections. Demir sits at a lab desk, one hand on keyboard and other relaxed palm up as his git-diff comparison occurs to him. Farah stands beside the same screen, one hand resting on desk and other holding a lowered stylus, an amused questioning expression asking which feature changed. Both naturally look toward each other and the actual operator-facing monitor. Physical screen to their right, camera from shared front-side angle. Meaningful compact workflow title \"Reconstruction check\"; \"Input\" and \"Rebuilt input\" converge into \"Squared feature differences\" then \"Mean = MSE\". Footer \"Score: pending\" and \"Inspect each feature\". No fabricated input waveform or bar chart and no completed score at this briefing. Preserve warm laboratory architecture but no floating translucent tablets, incidental graphs or bright mint tubes. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx"
+  ],
+  "location": "Archimedes, Lab",
+  "alt": "Demir proposes a reconstruction comparison while Farah asks which feature contributes to the error.",
+  "tool": "built-in image_gen",
+  "replacesSha256": "3566cef486c34588757aaf6530987fb38d626e4355744c7ca2616f675a0f632d",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-7eff0bfe-6f59-4a5e-aa69-7eed385c1fb7.png",
+  "candidateSha256": "bc74730fc3e938899eec786c1679d9cf52accd3ef5d54c21e94a723b4172878f",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+      "sha256": "3566cef486c34588757aaf6530987fb38d626e4355744c7ca2616f675a0f632d",
+      "role": "edit target"
+    }
+  ],
+  "ownQA": {
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "inspection": "Native1536x1024 plus temporary face crops side by side with canonical original portraits, current MDX and exercise facts verified",
+    "notes": "Demir gestures a git-diff idea while Farah responds with a questioning smile and lowered stylus. Input and rebuilt input feed squared feature differences, then mean=MSE; pending score and inspect-each-feature match current briefing. No invented waveforms or results. Both share display front and turn naturally to one another, coherent four arms/hands, short necks, canonical face crops and restrained lab palette.",
+    "faceCropCoordinates": [
+      [
+        "dr-farah",
+        [
+          1030,
+          140,
+          1330,
+          480
+        ]
+      ],
+      [
+        "ensign-demir",
+        [
+          755,
+          300,
+          1015,
+          630
+        ]
+      ]
+    ],
+    "temporaryCropsRemoved": true
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-7eff0bfe-6f59-4a5e-aa69-7eed385c1fb7.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp",
+  "sourceSha256": "bc74730fc3e938899eec786c1679d9cf52accd3ef5d54c21e94a723b4172878f",
+  "webpSha256": "d0fc6bd4f7f345a333c46cbd413320e2137d302736b48a9ec30b3c044cc9286a",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+    "sourceSha256": "3566cef486c34588757aaf6530987fb38d626e4355744c7ca2616f675a0f632d",
+    "webpSha256": "b1ef92b3c1b6feb10db7d871b1b669c363921ab7e3bd1f1e331570e73d6a5e5c",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_late",
+    "status": "approved",
+    "candidateSha256": "bc74730fc3e938899eec786c1679d9cf52accd3ef5d54c21e94a723b4172878f",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Demir gestures a git-diff idea while Farah responds with a questioning smile and lowered stylus. Input and rebuilt input feed squared feature differences, then mean=MSE; pending score and inspect-each-feature match current briefing. No invented waveforms or results. Both share display front and turn naturally to one another, coherent four arms/hands, short necks, canonical face crops and restrained lab palette.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

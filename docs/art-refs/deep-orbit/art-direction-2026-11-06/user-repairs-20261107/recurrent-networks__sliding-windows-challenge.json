@@ -1,0 +1,183 @@
+{
+  "id": "recurrent-networks__sliding-windows-challenge",
+  "lesson": "recurrent-networks/sliding-windows",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "room": "bridge",
+  "src": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+  "alt": "Demir checks the twelve-reading synthetic stream before building windows across its split.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.064613+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: ensign-demir. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Keep Demir seated at the bridge keyboard in focused three-quarter view, both hands typing naturally and eyes on the screen. Keep the same upright large main screen, warm brass and green light. Correct the misleading unqualified mission window value to the actual synthetic exercise setup.\nExact visible display content: Title \"Synthetic window check\". Large single row \"Readings: 0 through 11\". Parameter blocks \"Window: 4\", \"Split at: 8\", \"Stride: 1\". Checklist \"Split the recording first\", \"Keep windows within each side\", \"Use the last reading label\". Footer \"Checks pending\". Do not show solved counts, classification labels or 80-reading mission setting.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "50779e85fd8eb399fb110d9e7ba79e5f4d1c16bcc03a002550ad0712b0397a13",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room master",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "d63f411dfe8b943d5c8bb6d7a09db82c58dea6407e7b2c19c363a802b5cd0ab5"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+    "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+  },
+  "sourceSha256": "6b73445123d4dce647aa938d38338fe1b96cafea974e01c7d90ee348e3b6f153",
+  "sourceEvidence": {
+    "task": "Keep Demir seated at the bridge keyboard in focused three-quarter view, both hands typing naturally and eyes on the screen. Keep the same upright large main screen, warm brass and green light. Correct the misleading unqualified mission window value to the actual synthetic exercise setup.",
+    "visibleDataOperationAndResult": "Title \"Synthetic window check\". Large single row \"Readings: 0 through 11\". Parameter blocks \"Window: 4\", \"Split at: 8\", \"Stride: 1\". Checklist \"Split the recording first\", \"Keep windows within each side\", \"Use the last reading label\". Footer \"Checks pending\". Do not show solved counts, classification labels or 80-reading mission setting.",
+    "defects": [
+      {
+        "category": "display-source-meaning",
+        "detail": "Challenge illustration says Window length: 80 readings without identifying it as the mission setting. The current exercise uses 12 synthetic index-valued readings, window size 4, split at 8, and also tests other parameter values.",
+        "repairDirection": "Keep large upright screen and keyboard action; show Synthetic check, readings 0 through 11, window 4, split at 8, stride 1, labels from last reading and checks pending. Do not leak solved outputs."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: ensign-demir. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Keep Demir seated at the bridge keyboard in focused three-quarter view, both hands typing naturally and eyes on the screen. Keep the same upright large main screen, warm brass and green light. Correct the misleading unqualified mission window value to the actual synthetic exercise setup.\nExact visible display content: Title \"Synthetic window check\". Large single row \"Readings: 0 through 11\". Parameter blocks \"Window: 4\", \"Split at: 8\", \"Stride: 1\". Checklist \"Split the recording first\", \"Keep windows within each side\", \"Use the last reading label\". Footer \"Checks pending\". Do not show solved counts, classification labels or 80-reading mission setting.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-challenge.webp"
+  },
+  "exerciseSource": {
+    "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+    "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+  },
+  "publicationStatus": "withheld pending independent peer review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-f7f56c88-a633-4346-9030-7c4e3ecb6e3b.png",
+  "candidatePath": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+  "candidateSha256": "6b73445123d4dce647aa938d38338fe1b96cafea974e01c7d90ee348e3b6f153",
+  "generatedAt": "2026-11-08T19:01:02.364764+00:00",
+  "owner": "/root/quality_sequence",
+  "faceCropCoordinates": {
+    "ensign-demir": {
+      "left": 335,
+      "top": 180,
+      "width": 305,
+      "height": 365
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 675,
+      "top": 765,
+      "width": 275,
+      "height": 175
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T19:18:53.248818+00:00",
+    "candidateSha256": "6b73445123d4dce647aa938d38338fe1b96cafea974e01c7d90ee348e3b6f153",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "ensign-demir",
+        "referencePath": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "candidateCropCoordinates": {
+          "left": 335,
+          "top": 180,
+          "width": 305,
+          "height": 365
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Demir types the synthetic window checks at the bridge workstation.",
+    "emotion": "Focused confidence about setting up the test.",
+    "eyeline": "Toward the main monitor and keyboard.",
+    "narrativeReason": "The challenge now matches the actual synthetic exercise instead of suggesting an 80-reading input window.",
+    "findings": [
+      "Large main screen clearly shows readings 0 through 11, window 4, split at 8 and stride 1, with split-first, within-side windows and last-reading-label checks pending.",
+      "Both forearms, natural wrists and plausible keyboard fingers pass native crop review; Demir's canonical identity is retained."
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/recurrent-networks__sliding-windows-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-challenge.webp",
+  "webpSha256": "9ecabc923db448daa0c704fd0dc41632cce5fef2653ba03a20c4eed0f25492d2",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+    "sourceSha256": "d63f411dfe8b943d5c8bb6d7a09db82c58dea6407e7b2c19c363a802b5cd0ab5",
+    "webpSha256": "109d37e9791ab455f5a659ea949996f35621d947d7748a1d1a3bee07a9a1801a",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-036095f1-efbf-4d86-8ca5-fc2f6c6d4c52.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_runtime",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "6b73445123d4dce647aa938d38338fe1b96cafea974e01c7d90ee348e3b6f153",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Large main screen clearly shows readings 0 through 11, window 4, split at 8 and stride 1, with split-first, within-side windows and last-reading-label checks pending.",
+      "Both forearms, natural wrists and plausible keyboard fingers pass native crop review; Demir's canonical identity is retained.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

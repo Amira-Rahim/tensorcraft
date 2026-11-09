@@ -1,0 +1,267 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "concept",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Farah and Nazari as colleagues checking a baseline rule on a bridge working console, not presenting a board. Farah sits diagonally toward an embedded sloping console, one hand adjusts the baseline dial and the other stylus touches the exact-boundary note. Her eyebrows lift in concentration. Nazari leans at the side of the desk, one hand on the rail and other holding a tablet down facing herself, skeptical gaze directed at Farah's result. They have clear separate shoulder-arm-hand chains and natural torso/head alignment, no camera gaze. The single compact console shows three decision regions under Normalized amplitude: 0 to 1: Below 0.07 / Flag; 0.07 through 0.97 / Do not flag; Above 0.97 / Flag. Bottom small text Mean 0.52, std 0.15 and Exact boundaries stay unflagged. These are discrete regions, no proportional distribution axis or bell curve. Use subdued amber only for Flag and sage for center, not celebratory green. All lettering and boxes follow the tilted physical screen plane. Nazari's tablet back plain; unused screens and central emitter off. Warm natural skin, restrained charcoal/sage/aged brass, moderate stylized adult heads and no fluorescent edges. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-concept-target.png",
+      "sha256": "a9477b5a25d9aa1c0bb108e7b99dc2a9ffa810ecf257bb9d8456eacdf7d6ec91",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "a9477b5a25d9aa1c0bb108e7b99dc2a9ffa810ecf257bb9d8456eacdf7d6ec91",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+    "sha256": "f1903c5e58c5f11bbc2d8aead17a694d03f413a505b63076faf5730135995dd0"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+      "matchesCandidateMetadata": true
+    }
+  ],
+  "panelSpecification": {
+    "state": "worked mission baseline",
+    "concreteGenerationSpecification": "Restage Farah and Nazari as colleagues checking a baseline rule on a bridge working console, not presenting a board. Farah sits diagonally toward an embedded sloping console, one hand adjusts the baseline dial and the other stylus touches the exact-boundary note. Her eyebrows lift in concentration. Nazari leans at the side of the desk, one hand on the rail and other holding a tablet down facing herself, skeptical gaze directed at Farah's result. They have clear separate shoulder-arm-hand chains and natural torso/head alignment, no camera gaze. The single compact console shows three decision regions under Normalized amplitude: 0 to 1: Below 0.07 / Flag; 0.07 through 0.97 / Do not flag; Above 0.97 / Flag. Bottom small text Mean 0.52, std 0.15 and Exact boundaries stay unflagged. These are discrete regions, no proportional distribution axis or bell curve. Use subdued amber only for Flag and sage for center, not celebratory green. All lettering and boxes follow the tilted physical screen plane. Nazari's tablet back plain; unused screens and central emitter off. Warm natural skin, restrained charcoal/sage/aged brass, moderate stylized adult heads and no fluorescent edges.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "A baseline for normal readings"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": null
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-dad42e8a-13a1-409d-a8e9-9c12cd1d20c9.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+    "proofSha256": "d4b9d182d232e9a77f081ae95f99e39738a85c737dbaa7d59db93b8c0fc4f6e1",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah tests the exact boundary rule while Nazari checks the baseline settings with guarded skepticism."
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/normal-vs-anomalous-concept-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-concept-target.png",
+    "sha256": "a9477b5a25d9aa1c0bb108e7b99dc2a9ffa810ecf257bb9d8456eacdf7d6ec91",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "a9477b5a25d9aa1c0bb108e7b99dc2a9ffa810ecf257bb9d8456eacdf7d6ec91",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-concept-runtime-before.png",
+    "sha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah tests the exact boundary rule while Nazari checks the baseline settings with guarded skepticism.",
+    "fullSpecification": "Restage Farah and Nazari as colleagues checking a baseline rule on a bridge working console, not presenting a board. Farah sits diagonally toward an embedded sloping console, one hand adjusts the baseline dial and the other stylus touches the exact-boundary note. Her eyebrows lift in concentration. Nazari leans at the side of the desk, one hand on the rail and other holding a tablet down facing herself, skeptical gaze directed at Farah's result. They have clear separate shoulder-arm-hand chains and natural torso/head alignment, no camera gaze. The single compact console shows three decision regions under Normalized amplitude: 0 to 1: Below 0.07 / Flag; 0.07 through 0.97 / Do not flag; Above 0.97 / Flag. Bottom small text Mean 0.52, std 0.15 and Exact boundaries stay unflagged. These are discrete regions, no proportional distribution axis or bell curve. Use subdued amber only for Flag and sage for center, not celebratory green. All lettering and boxes follow the tilted physical screen plane. Nazari's tablet back plain; unused screens and central emitter off. Warm natural skin, restrained charcoal/sage/aged brass, moderate stylized adult heads and no fluorescent edges."
+  },
+  "narrativeVisualReview": "approved",
+  "candidateSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+  "faceBoxes": {
+    "farah": [
+      295,
+      235,
+      330,
+      365
+    ],
+    "nazari": [
+      1000,
+      55,
+      290,
+      335
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-concept-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "worked mission baseline",
+    "concreteGenerationSpecification": "Keep Farah adjusting dial with one hand and resting the other on holo frame, Nazari holding tablet toward herself with both hands. Current faces and complete head sizes unchanged. Replace overlapping invented Gaussian curves with three equally sized decision cards, explicitly headed \"Normalized amplitude: 0 to 1\". Left card \"Below 0.07\" and \"Flag\". Center card \"0.07 through 0.97\" and \"Do not flag\". Right card \"Above 0.97\" and \"Flag\". Below cards \"Mean 0.52, std 0.15\" and \"Exact boundaries stay unflagged\". No proportional axis, bell curve or probability claim. Cards are discrete decision regions, not measured distributions. Keep holo dark translucent sage with thin outlines, muted amber flags, no bloom. All other screens off; tablet back remains plain.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "A baseline for normal readings"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "approved",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-dad42e8a-13a1-409d-a8e9-9c12cd1d20c9.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+      "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "independentPeerReview": {
+    "index": 13,
+    "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+    "phase": "concept",
+    "path": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-narrative-stage1-openai-20261107.png",
+    "metadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-concept-candidate.json",
+    "candidateSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+    "readerDirection": "pass",
+    "rationale": "No impossible outward-facing reading or writing detected in the temporary full-scene screen.",
+    "inspection": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "currentFileSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+    "publicationAuthorized": false,
+    "hashStillMatches": true,
+    "activeSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+    "activeSha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+    "ledgerSha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+    "peerStatus": "pass",
+    "peerRationale": "Farah controls a bounded-amplitude cutoff test while Nazari checks her own tablet. Exact0.07/0.97 boundaries and mean0.52/std0.15 implement strict three-sigma rule. Removes ambiguous unlabeled Gaussian-looking curves and neon.",
+    "currentSourceHashes": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+        "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+        "matchesCandidateMetadata": true
+      }
+    ],
+    "gates": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    }
+  },
+  "temporaryCandidatePathAtReview": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-narrative-stage1-openai-20261107.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+  "sourceSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+  "webpSha256": "27f38955374b100b0c0463c6f393d0883f2f44af14f0f9a3b97610b9938e1133",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+    "sourceSha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+    "webpSha256": "f1903c5e58c5f11bbc2d8aead17a694d03f413a505b63076faf5730135995dd0",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+    "method": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "checks": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+        "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+        "matchesCandidateMetadata": true
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

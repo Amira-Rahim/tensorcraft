@@ -1,0 +1,219 @@
+{
+  "key": "sequences-matter-epilogue",
+  "auditIndex": 20,
+  "id": "recurrent-networks/sequences-matter",
+  "phase": "epilogue",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2f29f59b-41ad-4dd0-9b03-92fba01c695e.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+    "sha256": "c9f3ee5bbeb21a83f665b4ab3561b6882a4938ee51c11972c2f7ffd786d428fa"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir sits LEFT at Farah's lab workstation, leaving the testcomparison ready for her return. He looks RIGHT at upright monitor with thoughtful raised brows and an amused half-smile at the unchanged scores. One hand on mouse, other rests on closed logbook. NO paper text or outward devices. Display heading \"Illustrative order test\". Two rows \"Ordered: 1 2 3 4 5\" and \"Shuffled: 3 1 5 2 4\". Beneath \"Each reading keeps its own score\" and \"This classifier sees one reading at a time\". Small footer \"Order is not an input yet\". Do not fabricate score values. Allreaders on displayfrontside; samecanonicalface, restrainedlabpalette.",
+  "meaning": "Stateless classifier returns sameindividualscorefor eachsameinput regardlessorder;epilogue leavescomparisonforFarah.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2f29f59b-41ad-4dd0-9b03-92fba01c695e.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2f29f59b-41ad-4dd0-9b03-92fba01c695e.png",
+      "sha256": "8b9deac1c60c134a902c216b7d9d06e35291701ce879b9a0c4ad086879516f29",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0622a09a-4ccf-4797-877a-2a95f9c7f85d.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/sequences-matter-epilogue/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/sequences-matter-epilogue/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+  "candidateSha256": "974f340a1e8e9a1b9a18941d480b88d7b9928be9572e4b07ca80de6d50385716",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir sits LEFT at Farah's lab workstation, leaving the testcomparison ready for her return. He looks RIGHT at upright monitor with thoughtful raised brows and an amused half-smile at the unchanged scores. One hand on mouse, other rests on closed logbook. NO paper text or outward devices. Display heading \"Illustrative order test\". Two rows \"Ordered: 1 2 3 4 5\" and \"Shuffled: 3 1 5 2 4\". Beneath \"Each reading keeps its own score\" and \"This classifier sees one reading at a time\". Small footer \"Order is not an input yet\". Do not fabricate score values. Allreaders on displayfrontside; samecanonicalface, restrainedlabpalette.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2f29f59b-41ad-4dd0-9b03-92fba01c695e.png",
+          "sha256": "8b9deac1c60c134a902c216b7d9d06e35291701ce879b9a0c4ad086879516f29",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0622a09a-4ccf-4797-877a-2a95f9c7f85d.png",
+        "sha256": "974f340a1e8e9a1b9a18941d480b88d7b9928be9572e4b07ca80de6d50385716"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Stateless classifier returns sameindividualscorefor eachsameinput regardlessorder;epilogue leavescomparisonforFarah.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/sequences-matter-epilogue/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/sequences-matter-epilogue/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2f29f59b-41ad-4dd0-9b03-92fba01c695e.png",
+      "sha256": "8b9deac1c60c134a902c216b7d9d06e35291701ce879b9a0c4ad086879516f29",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "independentReview": {
+    "key": "sequences-matter-epilogue",
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "epilogue",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0622a09a-4ccf-4797-877a-2a95f9c7f85d.png",
+    "candidateSha256": "974f340a1e8e9a1b9a18941d480b88d7b9928be9572e4b07ca80de6d50385716",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Source stateless per-reading property precise; illustrative rows do not pretend to be full archive. Native full frame inspected, readable surfaces, coherent hands and furniture.",
+    "alt": "Demir compares ordered and shuffled readings and finds that each reading keeps its score.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0622a09a-4ccf-4797-877a-2a95f9c7f85d.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-epilogue.webp",
+  "sourceSha256": "974f340a1e8e9a1b9a18941d480b88d7b9928be9572e4b07ca80de6d50385716",
+  "webpSha256": "29a1dc92338198d7f91043f0f662304147a687971a12066bcedfc03a37e5ee6b",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+    "sourceSha256": "c9f3ee5bbeb21a83f665b4ab3561b6882a4938ee51c11972c2f7ffd786d428fa",
+    "webpSha256": "1d354ad048e078a3004efa36db41fdc4323a5dbcdf623c59c1a8f53aeda8562e",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-26b04b80-09db-4990-aab8-cea4682f3ca6.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "974f340a1e8e9a1b9a18941d480b88d7b9928be9572e4b07ca80de6d50385716",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-epilogue.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

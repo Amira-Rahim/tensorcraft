@@ -1,0 +1,145 @@
+{
+  "id": "foundations/normalization",
+  "phase": "epilogue",
+  "owner": "/root/quality_runtime",
+  "status": "published",
+  "preparedAt": "2026-11-09T13:49:09.315051+00:00",
+  "tool": "built-in image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Fully restage the LAST reference to repair its physically incorrect screen orientation. Preserve exact canonical identities from the FIRST portrait references, followed by the bridge room reference. The last image supplies lesson facts and story only; abandon its wrong screen and camera placement. Preserve mature facial width, eyes, nose, jaw, mouth, complexion, age, hairline and signature equipment. Exactly the named cast, no additional humans. Natural adult proportions, compact necks, exactly two coherent shoulder-elbow-wrist-hand chains per person, correct thumb sides, natural fingers and grounded contact. Keep the warm candid story tone, charcoal and muted sage palette, brass trim and balanced skin light. No neon outlines, giant heads, miniature bodies, fake text or extra decorative graphs. Large clear short labels with generous margins, readable at 768 x 512. Landscape 1536 x 1024.  Input roles: image 1: Canonical identity: dr-farah, image 2: Canonical identity: ensign-demir, image 3: Bridge room authority, image 4: Edit target: retain lesson facts and abandon incorrect operator/screen placement. CRITICAL PHYSICAL STAGING: Show the operator on the LEFT in a natural right-facing side or three-quarter profile, looking RIGHT at a desktop monitor on the RIGHT. The camera is beside the operator on the same viewing side of that monitor, close enough to see the face in natural three-quarter profile and the screen front. The monitor is physically turned LEFT toward the operator and toward the nearby camera. Its LEFT bezel edge is the nearer and taller edge; its RIGHT bezel edge recedes, so its entire rectangular surface visibly narrows toward the right. Top and bottom bezel, screen border, table rows, all text baselines, glyphs and grid lines share that ONE consistent perspective. Both character gaze and camera ray meet the FRONT luminous surface. The screen must NEVER sit between camera and operator with its front facing away from the operator. Show the mounting stand and keyboard placement so their relationship is unambiguous. A normal large desktop workstation display, roughly a 32-inch monitor, not a wall-sized billboard. Use a close medium camera framing so it remains large and legible, occupying roughly the right half of the image without enlarging the physical monitor absurdly. Crew stay to the LEFT of the monitor; no face or body behind its back. The operator and display are the same distance band in the frame. Keep both front-facing screen and recognizable faces visible, without turning anyone toward the audience. Specific story action: Farah sits on the LEFT, entirely to the left of the monitor, in a right-facing three-quarter profile. She leans slightly toward the screen on the RIGHT with sober curious eyes, one hand on the mouse and the other resting flat on the desk. Demir stands just behind her on the LEFT, on the SAME front viewing side of the monitor, and studies it with a raised questioning eyebrow. His near hand rests lightly on the chair back and his other hand holds a closed notebook down by his hip. Neither person is behind the monitor. Make the side-view desk arrangement explicit: left seated operator, keyboard and mouse in front of her, right monitor whose luminous front faces left toward her and toward the nearby camera. Candid discovery with uncertainty, no celebratory smile. Exact display content: Title 'Sample 7741'. Spacious lines 'Archive: 8 days ago', 'Preview score near boundary', 'For review', 'Cause unknown'. Bottom caution 'A score does not establish novelty'. No exact probability, anomaly certainty or solved cause. Keep this evidence prominent on the single shared monitor. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "d01a0be6946c98430a7b25a31fb46ff98055253783f65b7650d796313d23baf6",
+  "source": "art-src/scenes/foundations__normalization-epilogue-openai-20261107.png",
+  "sourceSha256": "3d238630d01f72e5d8393d89bdae7b89c878ecddcd3541a93130b32106bfe724",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "Bridge room authority",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-cff8f8d5-5d19-4cd9-a8de-30bde583570e.png",
+      "role": "Edit target: retain lesson facts and abandon incorrect operator/screen placement",
+      "sha256": "3d238630d01f72e5d8393d89bdae7b89c878ecddcd3541a93130b32106bfe724",
+      "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-epilogue-openai-20261107.png"
+    }
+  ],
+  "sourceEvidence": "Epilogue revisits sample 7741 recorded eight days ago. The preview classifier gives a near-boundary score, which does not establish novelty or cause.",
+  "userDefect": "The previous screen front did not physically face its operator. Recompose camera, operator, keyboard and monitor to show the same front surface from one coherent plane.",
+  "identifiedPhaseEvidence": "Current source art and early-inventory.json identify the z-score table as concept; takeaways is a separate scene.",
+  "publication": {
+    "alt": "Farah and Demir inspect sample 7741 on a screen facing their shared side of the desk.",
+    "location": "Archimedes, Bridge",
+    "action": "Farah and Demir inspect sample 7741 on a screen facing their shared side of the desk.",
+    "emotion": "Sober curiosity about an unresolved archived reading.",
+    "eyeline": "Farah looks right at the monitor front; Demir follows her attention from behind her on the same viewing side.",
+    "checks": [
+      "Canonical facial structure and age.",
+      "Exactly two natural arm chains per person with coherent hands and contact.",
+      "Monitor front faces operator and camera on the same side.",
+      "One consistent perspective for bezel, table, text and baselines.",
+      "Current lesson and exercise facts, readable at 768 x 512."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-f297da27-71e1-4a8a-8d60-5a4b71374e07.png",
+  "generatedSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+  "candidatePath": "art-src/scenes/foundations__normalization-epilogue-openai-20261107.png",
+  "candidateSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+  "ownReview": {
+    "candidateSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+    "verdict": "PASS",
+    "reviewedAt": "2026-11-09T13:56:06.139027+00:00",
+    "nativeReviewed": true,
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "method": "Full native original, 2x canonical face and hand/prop crops, 2x display crop, and standalone 768 x 512 diagnostic preview. Current MDX and exercise facts verified.",
+    "canonicalIdentityCompared": true,
+    "faceAndHandMagnification": 2,
+    "runtimeSize": [
+      768,
+      512
+    ],
+    "runtimeSizeVerdict": "PASS",
+    "scores": {
+      "colorLight": 5,
+      "movementAnatomyContact": 5,
+      "expressionGaze": 5,
+      "identityProportions": 5,
+      "displayContentLegibilityPerspective": 5,
+      "compositionStoryAction": 5
+    },
+    "findings": [
+      "Farah sits left of the monitor at the mouse and keyboard. Demir stands behind her on the same viewing side; neither reads the screen from behind.",
+      "The slightly angled screen, bezel and internal rules form a coherent plane. Its desktop support and table placement make the workstation physically credible.",
+      "Sample 7741, the eight-day archive age, near-boundary preview score, review state and unknown cause remain readable at 768 x 512 without adding a novelty conclusion.",
+      "The mouse, resting hand, chair contact and held closed book have coherent grip/contact. Both canonical faces remain visible with sober attention."
+    ],
+    "diagnosticCropCoordinatesXYWH": {
+      "faces": {
+        "ensign-demir": [
+          265,
+          10,
+          250,
+          330
+        ],
+        "dr-farah": [
+          480,
+          245,
+          300,
+          350
+        ]
+      },
+      "hands": [
+        [
+          335,
+          445,
+          155,
+          100
+        ],
+        [
+          35,
+          715,
+          150,
+          145
+        ],
+        [
+          470,
+          800,
+          485,
+          165
+        ]
+      ],
+      "display": [
+        940,
+        155,
+        596,
+        655
+      ]
+    },
+    "temporaryCropsDeleted": true
+  },
+  "publishedSource": "art-src/scenes/foundations__normalization-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization-epilogue.webp",
+  "publishedWebpSha256": "56ebe63c713a52e581662893aa3535f01be01dccd3cd0499ed859c9c42558c67"
+}

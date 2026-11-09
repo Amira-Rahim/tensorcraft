@@ -1,0 +1,28 @@
+{
+  "id": "recurrent-networks/lstm-gates",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/lstm-concept-input.png"
+  ],
+  "prompt": "Use case: precise-object-edit. First 1 references are immutable canonical people identities, next engineering master ROOM ONLY, LAST exact target. Preserve faces, facial structure, age, hairstyle and expression, balanced stylized adult head/body scale. Farah lens on anatomical LEFT eye, Demir comms on anatomical RIGHT ear, Nazari has no glasses, lens or earpiece. Preserve natural shoulder-elbow-wrist-hand chains, plausible fingers and grips, two hands per person, supported seated anatomy, natural neck angle. Keep camera and engaging lighthearted adventure mood. Keep Farah natural stylus and open palm. Whiteboard title \"LSTM state update\". Four named blocks in a top row \"Forget f\", \"Input i\", \"Candidate g\", \"Output o\". Below them exact formulas on separate lines \"c = f * previousCell + i * g\" and \"h = o * tanh(c)\". Small footer two lines \"f, i, o use sigmoid\" and \"g uses tanh\". No waveform or ambiguous extra node. Make all symbols readable. The whiteboard is opaque off-white with muted dark sage ink. ALL unassigned secondary screens and wrist terminals are inactive charcoal glass, no random waves or fauxcode. Restrained sage #6BAA8A and aged brass #A89060 with charcoal/navy clothing and natural skin. Thin desaturated rim highlights, no neon mint or luminous fat outline, no yellow-gold wash. No decorative heading dashes, prose separators or colored left accent bars. One image1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "alt": "Farah separates the three sigmoid gates from the candidate update and traces the cell and hidden state.",
+  "location": "Archimedes, Engineering",
+  "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+  "screenMeaning": "Keep Farah natural stylus and open palm. Whiteboard title \"LSTM state update\". Four named blocks in a top row \"Forget f\", \"Input i\", \"Candidate g\", \"Output o\". Below them exact formulas on separate lines \"c = f * previousCell + i * g\" and \"h = o * tanh(c)\". Small footer two lines \"f, i, o use sigmoid\" and \"g uses tanh\". No waveform or ambiguous extra node. Make all symbols readable. The whiteboard is opaque off-white with muted dark sage ink.",
+  "status": "generated-awaiting-review",
+  "prefix": "lstm",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-fb52f441-6c26-41c9-8fae-06f9217d26bd.png",
+  "deletedHistoricalImages": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/lstm-concept-input.png",
+      "sha256": "a55ad949bcf9a70c9dddb0e0825e5bf1aeddcdb178bfcc45b4a29da0a66169ee",
+      "availability": "deleted-obsolete-working-copy"
+    }
+  ]
+}

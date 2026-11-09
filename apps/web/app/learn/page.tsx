@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { WORLD_CONTENT } from "@tensorcraft/shared";
 import { heroPlateSrc } from "@/lib/location-art";
+import { INTRO_VIDEO } from "@/lib/intro-video";
 import { FreeLessonCtaTracker } from "@/app/components/free-lesson-cta-tracker";
 import { LearnHeroScene } from "./learn-hero-scene";
 import { TrailerHero } from "./trailer-hero";
@@ -52,12 +53,10 @@ const SECONDARY_CTA =
 
 export default function LearnPage() {
   const hasPlate = Boolean(heroPlateSrc("deep-orbit"));
-  // The trailer hero ships only once the pipeline's review gate has
-  // produced the assets (scripts/marketing/tour-video/); until then the
-  // plate hero stands. Checked at build/revalidate, never per-request, so
-  // the page stays static.
+  // Keep the plate fallback until the approved introduction ships.
+  // Checked at build/revalidate so the page stays static.
   const hasTrailer = fs.existsSync(
-    path.join(process.cwd(), "public/media/learn-trailer.mp4"),
+    path.join(process.cwd(), "public", INTRO_VIDEO.src),
   );
 
   return (
@@ -115,11 +114,12 @@ export default function LearnPage() {
           Machine Learning with JavaScript
         </h1>
         <p className="text-lg md:text-2xl text-text-muted font-sans leading-relaxed mb-4 max-w-[70ch] mx-auto">
+          Tensorcraft teaches ML through courses set in different story worlds.
           Your experience with arrays, state, and async code gives you a
-          starting point for ML. Tensorcraft builds on it with{" "}
-          {WORLD_CONTENT.lessonBridges} JavaScript-to-ML comparisons across{" "}
-          {WORLD_CONTENT.modulesPerWorld} modules aboard the research ship
-          Archimedes. Help the crew investigate a signal while writing and
+          starting point. Deep Orbit, the first available world, builds on it
+          with {WORLD_CONTENT.lessonBridges} JavaScript-to-ML comparisons across{" "}
+          {WORLD_CONTENT.modulesPerWorld} modules. Help the crew aboard the
+          research ship Archimedes investigate a signal while writing and
           running code in your browser.
         </p>
         <p className="text-base md:text-xl text-text-muted font-sans leading-relaxed mb-10 max-w-[70ch] mx-auto">
@@ -129,8 +129,8 @@ export default function LearnPage() {
             className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
           >
             Deep Orbit
-          </Link>
-          , the live course, is free: no account, no credit card.
+          </Link>{" "}
+          is free: no account, no credit card. Four more worlds are coming soon.
         </p>
         <div className="flex justify-center">
           <CrewStrip />
@@ -153,7 +153,7 @@ export default function LearnPage() {
             </Link>
           </FreeLessonCtaTracker>
           <Link href="/worlds" className={SECONDARY_CTA}>
-            See all 5 courses
+            See all worlds
           </Link>
         </div>
       </section>

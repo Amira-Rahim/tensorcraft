@@ -1,0 +1,56 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T07:15:32.540632+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/recurrent-networks__sliding-windows-challenge/candidate.png",
+  "candidateSha256": "6b73445123d4dce647aa938d38338fe1b96cafea974e01c7d90ee348e3b6f153",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full native original plus enlarged face and hand crops, compared with canonical portraits. Current lesson and required exercise facts checked. Arm chains, thumb sides, contact, operator direction and display perspective inspected.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+    "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "faceCropCoordinates": {
+    "ensign-demir": {
+      "left": 335,
+      "top": 180,
+      "width": 305,
+      "height": 365
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 675,
+      "top": 765,
+      "width": 275,
+      "height": 175
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The explicitly synthetic 12-reading setup correctly shows indices 0 through 11, window 4, split at 8 and stride 1. Split-first, boundary exclusion and last-reading labels match the exercise; outputs remain pending.",
+    "Demir has natural two-handed typing, coherent seated support, canonical facial structure and attentive work gaze."
+  ],
+  "repairDirection": "None.",
+  "exerciseEvidence": {
+    "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+    "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+  }
+}

@@ -1,0 +1,438 @@
+{
+  "deep-orbit/advanced-time-series/temporal-attention": {
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+      "alt": "Demir checks the synthetic attention inputs before running the probe.",
+      "location": "Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+      "alt": "Demir compares a complete window with a truncated capture that lost the onset.",
+      "location": "Archimedes, Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+      "alt": "Demir checks two attention peaks and their timestamps on a large bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+      "alt": "Nazari and Demir review seven captures missing their opening seconds and plan a wider capture window."
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+      "alt": "Demir edits the position-scoring path while the original readings flow into the summary.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/optimization-edge/caching-strategies": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies.webp",
+      "alt": "Demir pauses over his mug as the log reveals 213 repeated classifier runs.",
+      "location": "Bridge, Dashboard Station"
+    }
+  },
+  "deep-orbit/advanced-time-series/beyond-lstm": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+      "alt": "Farah checks how attention scores become a weighted value blend on the large lab display.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+      "alt": "Farah and Demir inspect attention weights while keeping the source of the signal unresolved.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+      "alt": "Demir tests the attention probe on his pen tablet while the shared display lists its inputs and pending outputs.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-epilogue.webp",
+      "alt": "Farah and Demir compare the archive and tonight’s pulse timing, concerned by the shorter gap."
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+      "alt": "Farah and Demir compare the missed LSTM forecast and plan an attention test at the lab workstation.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/advanced-time-series/forecasting": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+      "alt": "Farah traces how rollout reuses predictions while one-step replay updates its history with observed readings.",
+      "location": "Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-takeaways.webp",
+      "alt": "Mirza and Farah compare one-step errors across periods without feeding predictions back.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp",
+      "alt": "Farah, Demir and Nazari review an early arrival and shrinking gaps on the bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+      "alt": "Demir prepares a synthetic-series forecast comparison, with rollout and observed-history replay still awaiting training.",
+      "location": "Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting.webp",
+      "alt": "Farah shows Mirza two forecasting paths on the bridge before their next comparison.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/anomaly-detection/normal-vs-anomalous": {
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+      "alt": "Demir pauses over unresolved sample 7741, with his baseline report saved and the original capture retained.",
+      "location": "Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+      "alt": "Farah checks the three-sigma amplitude boundaries while Nazari reviews a tablet beside the console.",
+      "location": "Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp",
+      "alt": "Demir prepares a z-score check using the supplied synthetic reading and baseline.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+      "alt": "Nazari checks an estimated 270 false flags per hour and notes that the observed rate still needs measuring.",
+      "location": "Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+      "alt": "Nazari, Farah and Mirza review two explained alerts and a third that still needs a baseline check.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/anomaly-detection/reconstruction-error": {
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+      "alt": "Farah checks individual squared differences before averaging them into one reconstruction score.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+      "alt": "Demir prepares two eight-feature probes to check reconstruction error and tensor cleanup.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+      "alt": "Farah and Demir inspect a counterexample where an unusual input reconstructs perfectly.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+      "alt": "Demir queues ARIA replay while the shared display shows which features dominate the error.",
+      "location": "Archimedes, Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp",
+      "alt": "Demir proposes a reconstruction comparison while Farah asks which feature contributes to the error.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/anomaly-detection/threshold-tuning": {
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-concept.webp",
+      "alt": "Farah compares false alarms and misses while Nazari watches the validation table.",
+      "location": "Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+      "alt": "Demir reviews six validation cases before selecting an anomaly cutoff.",
+      "location": "Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp",
+      "alt": "Nazari compares capture and crew-pager thresholds on a large bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-epilogue.webp",
+      "alt": "Nazari hands Demir the next-watch log after a replay leaves two of fourteen earlier alerts flagged.",
+      "location": "Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning.webp",
+      "alt": "Nazari and Farah weigh false alarms against missed anomalies after reviewing fourteen alerts.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/advanced-time-series/kalman-filters": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+      "alt": "Farah follows the Kalman update loop and checks its noise assumptions on the lab wall.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-challenge.webp",
+      "alt": "Demir prepares seven Kalman updates from eight interval readings while all calculated outputs remain pending."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-takeaways.webp",
+      "alt": "Farah and Demir compare the smoothed estimate with the newest interval and notice its lag.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+      "alt": "Mirza notes a deadline while Farah presents the smoothed interval and its assumptions.",
+      "location": "Archimedes, Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+      "alt": "Farah and Demir compare an eight-day interval log, with the latest interval at 72.0 seconds."
+    }
+  },
+  "deep-orbit/advanced-time-series/time-series-ensemble-methods": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-concept.webp",
+      "alt": "Farah and Demir set blend weights from prior errors before evaluating the combined forecast.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-challenge.webp",
+      "alt": "Demir checks the supplied ensemble predictions before calculating their errors.",
+      "location": "Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+      "alt": "Farah checks the blend against every member and finds that the best member still wins.",
+      "location": "Archimedes, Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-epilogue.webp",
+      "alt": "Demir revises his extrapolation notes as Nazari questions what the three zero-interval forecasts mean.",
+      "location": "Archimedes, Engineering"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods.webp",
+      "alt": "Farah and Demir plan a three-model forecast blend at the engineering console.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/anomaly-detection/autoencoders": {
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+      "alt": "Farah traces the mission autoencoder from eleven inputs through four bottleneck units and back.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp",
+      "alt": "Demir separates the synthetic archive into calm training rows and excluded flagged rows.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-takeaways.webp",
+      "alt": "Demir and Farah inspect a separate synthetic evaluation pair at the lab console.",
+      "location": "Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+      "alt": "Farah reviews suspect training rows as Nazari records the missed signal and orders another run.",
+      "location": "Archimedes, Lab"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+      "alt": "Farah compares individually normal features with an unfamiliar combination on the lab wall display.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/anomaly-detection/the-anomaly": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+      "alt": "Farah, Demir, Nazari and Mirza compare two detector flags in archive sample 7741 with the matching live capture.",
+      "location": "Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+      "alt": "Demir checks the autoencoder evidence for sample 7741 before combining the detector votes.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly-takeaways.webp",
+      "alt": "Farah and Nazari review two detector flags while questioning their shared training data.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+      "alt": "Farah and Demir compare three checks on one capture, with two flags prompting an investigation.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly-epilogue.webp",
+      "alt": "Farah repeats the timing check as Nazari compares it with calibration and calls for an independent instrument.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/llm-integration/llms-for-science": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/llm-integration/llms-for-science.webp",
+      "alt": "Farah proposes a draft while Nazari insists on a verification ledger.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/llm-integration/llms-for-science-challenge.webp",
+      "alt": "Demir inspects a supplied mock reply before checking its fields and evidence.",
+      "location": "Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/llm-integration/llms-for-science-takeaways.webp",
+      "alt": "Farah checks a draft against its sources before recording approval.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/llm-integration/llms-for-science-epilogue.webp",
+      "alt": "Farah logs the unsupported Band-3 claim as Nazari and ARIA review the first draft.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/llm-integration/llms-for-science-concept.webp",
+      "alt": "Farah checks a draft's unsupported number while Nazari records the discrepancy.",
+      "location": "Bridge"
+    }
+  },
+  "deep-orbit/llm-integration/rag-for-signals": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/llm-integration/rag-for-signals.webp",
+      "alt": "Farah and Demir plan how retrieved archive records will reach the report prompt.",
+      "location": "Archimedes, Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/llm-integration/rag-for-signals-concept.webp",
+      "alt": "Farah helps Demir inspect the retrieval rules before they trust the draft.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/llm-integration/rag-for-signals-takeaways.webp",
+      "alt": "Nazari catches a field mismatch while Farah checks the cited record.",
+      "location": "Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/llm-integration/rag-for-signals-challenge.webp",
+      "alt": "Demir prepares a query and checks the retrieval status fields.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+      "alt": "Nazari records the mismatch as Demir discovers more answers need review.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/llm-integration/report-generation": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/llm-integration/report-generation.webp",
+      "alt": "Farah catches an invented instrument and changes the drafting workflow.",
+      "location": "Archimedes, Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/llm-integration/report-generation-concept.webp",
+      "alt": "Farah checks the Executive Summary against its source counts.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/llm-integration/report-generation-challenge.webp",
+      "alt": "Demir prepares to assemble only the sections that passed review.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/llm-integration/report-generation-takeaways.webp",
+      "alt": "Farah and Nazari check the assembled report for conflicting claims and missing context.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/llm-integration/report-generation-epilogue.webp",
+      "alt": "Nazari records the transmission while Farah files the withheld Hypotheses section for follow-up.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/llm-integration/prompt-engineering": {
+    "concept": {
+      "src": "/scenes/deep-orbit/llm-integration/prompt-engineering-concept.webp",
+      "alt": "Farah and Demir refine the four parts of their signal-classification prompt.",
+      "location": "Archimedes, Lab"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/llm-integration/prompt-engineering.webp",
+      "alt": "Farah and Demir identify what the first prompt leaves out before revising it.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/llm-integration/prompt-engineering-challenge.webp",
+      "alt": "Demir assembles the prompt before sending his first request.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/llm-integration/prompt-engineering-takeaways.webp",
+      "alt": "Farah checks a reply before accepting it.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/llm-integration/prompt-engineering-epilogue.webp",
+      "alt": "Demir compares prompt versions while Farah prepares tests on separate readings.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/llm-integration/multi-model-systems": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/llm-integration/multi-model-systems.webp",
+      "alt": "Demir traces the handoffs before connecting the models.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/llm-integration/multi-model-systems-concept.webp",
+      "alt": "Demir checks that each model receives the shape and scaling it was trained to use.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/llm-integration/multi-model-systems-takeaways.webp",
+      "alt": "Farah and Demir check the separate release requirements for measured alerts and generated explanations.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/llm-integration/multi-model-systems-epilogue.webp",
+      "alt": "Mirza reviews the first alert over coffee as Demir opens the profiler.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/llm-integration/multi-model-systems-challenge.webp",
+      "alt": "Demir starts the pipeline test while consulting his checklist.",
+      "location": "Bridge"
+    }
+  },
+  "deep-orbit/optimization-edge/model-profiling": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling.webp",
+      "alt": "Nazari reviews the lost capture with Demir beside the dashboard incident replay.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/optimization-edge/quantization": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/optimization-edge/quantization.webp",
+      "alt": "Nazari weighs the smaller uint8 file against decisions that still need to be measured.",
+      "location": "engineering"
+    }
+  },
+  "deep-orbit/optimization-edge/pruning": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/optimization-edge/pruning.webp",
+      "alt": "Demir reviews Directive 44-C and questions its unverified pruning claims.",
+      "location": "engineering"
+    }
+  },
+  "deep-orbit/optimization-edge/webgpu-acceleration": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp",
+      "alt": "Demir prepares a backend startup check while Nazari asks him to measure the result.",
+      "location": "Archimedes, Bridge"
+    }
+  }
+}

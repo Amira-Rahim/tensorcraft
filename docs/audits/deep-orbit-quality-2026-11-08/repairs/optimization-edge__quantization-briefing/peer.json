@@ -1,0 +1,96 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-briefing/candidate.png",
+  "candidateSha256": "723c1a710b89c107614f00e8ee4ca60bd7022f881ec456c1de0055b182968044",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original review, 2x face and hand crops, complete shoulder-elbow-wrist chain and thumb-side check, canonical portrait comparison, and current lesson plus relevant exercise verification.",
+  "canonicalFaceReferences": [
+    {
+      "character": "chief-nazari",
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 1,
+      "name": "runtime-final-1-face-chief-nazari",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-briefing/candidate.png",
+      "box": [
+        350,
+        300,
+        575,
+        585
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "runtime-final-1-face-ensign-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-briefing/candidate.png",
+      "box": [
+        90,
+        235,
+        280,
+        510
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "runtime-final-1-hands-0",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-briefing/candidate.png",
+      "box": [
+        150,
+        710,
+        295,
+        890
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "runtime-final-1-hands-1",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-briefing/candidate.png",
+      "box": [
+        340,
+        875,
+        865,
+        1020
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Nazari's right hand rests on the closed multitool, while her left fingers and palm meet the desktop. Behind her, Demir's two arms terminate in distinct hands holding the same closed notebook. Thumb placement follows each complete arm chain; the book remains continuous between grips.",
+    "displayLegibilityAndSource": "The main board uses the available wall area and clearly shows 85 million weights, float32 at 4 bytes and 340 MB, uint8 at 1 byte and 85 MB. Decode floats at load and changed decisions to measure next accurately preserve the scope of the briefing.",
+    "identityExpressionAndStory": "Nazari's skeptical sidelong look contrasts naturally with Demir's attentive listening. Canonical mature Nazari and young adult Demir proportions and faces remain recognizable.",
+    "palette": "Muted Deep Orbit olive, charcoal, brass and controlled green light retain the benchmark palette.",
+    "perspectiveAndOperator": "Upright board and physical console are consistently oriented toward the operator; text follows the flat display surface.",
+    "largeDisplayRule": "The main lesson content occupies a large readable board in available wall space rather than a small console below unused wall."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:43:12.621630+00:00"
+}

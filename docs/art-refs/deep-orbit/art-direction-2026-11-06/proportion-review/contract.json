@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-07",
+  "status": "combined-review-in-progress",
+  "scope": "All280 lesson scene images. Preserve canonical faces and distinct five-section coverage. Recheck anatomy, moderate proportions, palette and lesson-grounded screen meaning.",
+  "proportions": {
+    "workingReference": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/inference-epilogue-balanced-proportion-candidate.json",
+    "ownerFeedback": "Original heads were oversized. First reduction was explicitly rejected as too small. Use the intermediate stylized adult appearance; no imposed realistic seven-head ratio.",
+    "method": "Only correct visibly disproportionate figures. Usually a modest10-15 percent adjustment where needed; exact facial morphology stays unchanged. Re-evaluate full body, head/neck/shoulder connection, pelvis, thigh/knee/foot proportions and furniture spacing."
+  },
+  "palette": {
+    "workingReference": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/palette-calibration/tensorflow-js-setup-challenge-palette.json",
+    "basis": "Canonical room plates, muted sage green, aged brass, charcoal/navy clothing and natural skin. Preserve justified scene lighting.",
+    "explicitOwnerCorrections": [
+      "browser-runtimes/tensorflow-js-setup/challenge",
+      "browser-runtimes/why-the-browser/all-five-phases"
+    ]
+  },
+  "screens": {
+    "requirement": "Every prominent panel must communicate a specific fact, operation, input, comparison, output or unresolved question from the current lesson and section.",
+    "sourceEvidence": "Record current MDX and relevant exercise YAML. Verify labels, values, shapes, axes, counts, order, topology and any outcome. Identify illustrative examples and fictional timings.",
+    "labels": "Short verified labels are allowed when they make the diagram understandable. No fake code or decorative glyphs.",
+    "phaseBoundary": "Challenges depict pending work and inputs. Do not imply a correct result before the learner completes the task."
+  },
+  "publishGate": [
+    "Canonical facial proof for every visible human",
+    "Full-frame anatomy and proportion review",
+    "Palette review against working reference and room context",
+    "Exact screen meaning and rendered content review against source",
+    "Unique1536x1024 WebP within200KiB, final source/runtime/proof hash provenance"
+  ],
+  "cleanup": "Remove superseded project source candidates as replacements are saved. Preserve current selected sources and review evidence.197 obsolete PNGs already deleted;403483879bytes reclaimed."
+}

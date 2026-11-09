@@ -6,13 +6,15 @@ This plan implements all twelve findings in the [final learning-product audit](a
 
 The implementation baseline is revision `80a3f029`. The audit's [retained evidence](audits/final-learning-product-2026-09-19/evidence.json) records what was inspected and the limits of that inspection. Estimates below are planning estimates, not delivery promises.
 
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. The price decision does not establish learning outcomes or willingness to pay.
+
 ## 1. The result we are building toward
 
 A JavaScript engineer should be able to start without prior ML knowledge, obtain an understandable result early, and gradually learn to prepare data, train and evaluate a model, diagnose failures, and run a saved artifact in a JavaScript application. Someone who already understands ML should be able to reach the engineering challenges directly and find meaningful work on evaluation, runtime behavior, caching, conversion, and deployment.
 
 The story should make these activities necessary. A discovery changes the crew's next action. A mistake costs something concrete. A character remembers what they learned. A choice changes a later responsibility or resource allocation. Deep Orbit should deliver its own ending while giving a returning learner a clear reason to explore another theme.
 
-The purchase should provide a coherent course, useful feedback, a satisfying season, and work the learner can explain and run outside Tensorcraft. The $50 price, and any later increase the owner decides on, needs that practical substance. Lesson counts, illustrations, certificates, and hours of material help describe the package; they cannot establish learning or willingness to pay.
+The purchase should provide a coherent course, useful feedback, a satisfying season, and work the learner can explain and run outside Tensorcraft. The $79 introductory and $99 regular price needs that practical substance. Lesson counts, illustrations, certificates, and hours of material help describe the package; they cannot establish learning or willingness to pay.
 
 The central learning sequence is:
 
@@ -115,7 +117,7 @@ Update the world overview, relevant course/pricing descriptions, and module intr
 
 Add a compact project preview using the existing external room project: inputs, a baseline, model output, an uncertainty or failure case, and a link to the artifact brief. Clearly label a maintainer demonstration and supplied starter code. Do not show fixture results as work a buyer has already achieved.
 
-State prerequisites in ordinary terms: JavaScript functions, arrays, objects, modules, and async work. Distinguish required local setup for the final project from browser-only introductory work. Retain honest time estimates and current access/refund terms. The checkout price stays $50 until the owner decides to change it after customer evidence.
+State prerequisites in ordinary terms: JavaScript functions, arrays, objects, modules, and async work. Distinguish required local setup for the final project from browser-only introductory work. Retain honest time estimates and current access/refund terms. The owner approved $79 introductory and $99 regular pricing on 2026-11-09. Preserve existing purchase and access commitments.
 
 ### Two reversible routes
 
@@ -338,7 +340,7 @@ Grade JS audience fit, learning design, factual reliability, readability, storyt
 
 No overall average can hide a weak category. Wrong foundational rules, misleading guarantees, graders accepting materially wrong answers, broken access, lost saved work, or unreachable required interactions block the relevant release regardless of the score.
 
-The internal application score establishes that the project, rubric, setup, and transfer tasks are sound and executable. Actual independent learner performance remains unmeasured until the later study. Value at $70, learner ROI, and readiness to acquire 150,000 users remain externally unproven rather than receiving convenient internal 9/10 ratings.
+The internal application score establishes that the project, rubric, setup, and transfer tasks are sound and executable. Actual independent learner performance remains unmeasured until the later study. Value at the current prices, learner ROI, and readiness to acquire 150,000 users remain externally unproven rather than receiving convenient internal 9/10 ratings.
 
 **Exit condition:** all twelve findings have an internal disposition, every internal category meets its defined gate, the reviewed candidate is deployed and smoke-checked when implementation reaches release, and evidence-dependent categories remain explicitly open.
 
@@ -356,11 +358,11 @@ Ask learners to explain why a result changed, defend a split and baseline, diagn
 
 Freeze task-level scoring and assistance rules before reviewing results. Report counts and uncertainty, not only percentages. A consequential misconception or repeated inability to perform the intended task returns to development. Repeated confusion in the same step triggers a targeted revision and another small check before scaling. Independent ML/editorial review can now challenge issues our internal pass missed.
 
-### E2: validate the $70 offer and learner ROI
+### E2: validate the current offer and learner ROI
 
-Keep the $50 launch offer while collecting learning and customer evidence. Evaluate the artifact's usefulness, effort required, support burden, refund reasons, and later use. Update inaccurate duration estimates and setup expectations promptly.
+Collect learning and customer evidence for the $79 introductory and $99 regular offer. Evaluate the artifact's usefulness, effort required, support burden, refund reasons, and later use. Update inaccurate duration estimates and setup expectations promptly.
 
-After the owner chooses to test $70, use an actual clearly priced offer and measure completed purchases, refunds, support load, and learning outcomes. Stated willingness to pay is supporting evidence; it is not equivalent to buying. Keep existing purchase/access commitments and avoid silently changing terms.
+Use the actual clearly priced offer and measure completed purchases, refunds, support load and learning outcomes. Record each price cohort separately. Stated willingness to pay is supporting evidence; it is not equivalent to buying. Keep existing purchase/access commitments and avoid silently changing terms.
 
 Learner ROI means demonstrated skill gain and useful application relative to money and time. Do not replace it with a salary promise or a certificate claim. Do not raise the price automatically because a test suite passes or the internal rubric reaches A.
 

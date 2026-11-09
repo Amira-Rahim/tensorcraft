@@ -1,0 +1,102 @@
+{
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit cinematic cel-shaded adventure-comic scene,1536x1024. First references are exact canonical people, then bridge room master for muted palette and materials, LAST reference is exact scene to edit. Keep the same composition, room geometry, people, expressions and story action. Preserve canonical face morphology exactly, including nose, jaw, eyes, brows, complexion, adult stubble/age marks, hair and side-specific equipment. Demir comms on anatomical RIGHT ear. Keep each entire shoulder-elbow-wrist-hand chain connected, all original grips and physical contacts, torso/neck gaze alignment, chair and body support. Preserve stylized adult warmth. Do not replace the scene with an infographic: integrate one concise task display into existing equipment, keeping people and story dominant. All other screens, wrist displays and peripheral monitors must be inactive charcoal glass with NO arbitrary graphics, text, waveforms, bars, circles or invented data. Physical hardware buttons may remain. No fake technical decoration. Preserve Nazari and Demir exact faces, head sizes, expressions, whole body poses and natural arm/hand chains, seated chair and Demir dial grip. Main right monitor replaces its3 arbitrary waveforms with a concise capture ledger headed \"7 captures, 6 hours\". Exactly SEVEN evenly spaced rows numbered1 through7. Each row shows one short missing segment at its start, followed by a retained capture segment. A shared legend says \"First 32 s missing\". No additional numerical durations. Nazari tablet shows the corrective result: a simple longer recording range, with an event marker inside it, headed \"Wider window\" and short text \"Onset captured\". Demir and Nazari are reviewing the failed narrow windows and the repair. Onset captured does not mean pulse timing is solved. No green global success stamp. All other bridge monitors and Demir wrist screen are inactive charcoal glass. Keep warm subdued bridge lighting, no saturated yellow or neon green wash. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Preserve natural skin and restrained sage/brass, no cyan, neon mint or mustard wash. Output one full scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/temporal-attention-epilogue-before.png",
+      "sha256": "e831bcb50f88be4c390218570f8da216b526faa03ba27ab8bcdffce04855a821",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "e831bcb50f88be4c390218570f8da216b526faa03ba27ab8bcdffce04855a821",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+    "sha256": "8c1e4a2467eb94618e731691d277e1379cd61aa16ac45b326bc3f5123f2e6302"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+    }
+  ],
+  "panelSpecification": {
+    "state": "failed recording strategy and correction",
+    "panels": [
+      "Main console: Seven captures, each with its first 32 seconds shown as missing. Label capture window relative to expected return.",
+      "Secondary panel: Wider recording window captures the onset. Pulse markers arrive earlier than predicted, with no invented numeric acceleration rate."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "bodyConstraints": "Preserve full original coherent poses, connected limbs and chair support. No global realistic re-proportioning.",
+  "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-epilogue-openai-20261107.png",
+  "candidateSha256": "16418c806ce3def2700197dba9cdefa06444b95609564534266b79d968bcc3f9",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-20b59b54-09de-4637-b2c6-a50cd4e2b15a.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-epilogue-identity-proof.jpg",
+  "independentReview": {
+    "status": "approved",
+    "reviewer": "/root/art_peer_final",
+    "notes": "All five native fullframes and exact fresh face proofs approved. Final briefing/takeaways schematic sequences preserve indices, raw times, counts, membership and weight sums without misleading proportional axes. Concept scorer flow, actual challenge fixture and seven-capture ending source checked.",
+    "candidateSha256": "16418c806ce3def2700197dba9cdefa06444b95609564534266b79d968bcc3f9",
+    "proofSha256": "358196029761f98bbae861cdd652269a947b53ec0f9d7975476f06be3087bc17",
+    "reviewedAt": "2026-11-07T10:00:21.049254+00:00"
+  },
+  "ownReview": "Native fullframe and canonical proof checked: faces, balanced stylized proportions, two connected arm chains, contacts, palette and all prominent panels pass.",
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__temporal-attention-epilogue-semantics-stage1-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+  "publishedOutputSha256": "e7e55106911fcda8c52390d6c05948d6113f439f515b7b3e4a5d3d793ab88ed6",
+  "encoding": {
+    "format": "webp",
+    "quality": 83,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 187560
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-20b59b54-09de-4637-b2c6-a50cd4e2b15a.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+      "art-src/scenes/advanced-time-series__temporal-attention-epilogue-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "queueIndex": 0,
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "briefing",
+  "status": "awaiting-identity-correction",
+  "inputScene": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-original.webp",
+  "inputSceneSha256": "10b4bfcd005c2547a65f893452fa9db15e828e85317a7d887b4c7cc55a97f093",
+  "cast": [
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      980,
+      90,
+      330,
+      370
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-original.webp",
+      "sha256": "10b4bfcd005c2547a65f893452fa9db15e828e85317a7d887b4c7cc55a97f093",
+      "role": "target scene",
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "10b4bfcd005c2547a65f893452fa9db15e828e85317a7d887b4c7cc55a97f093",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve. Image 1 is the ONLY authoritative identity of Ensign Demir. Image 2 is a scene with the WRONG FACE that must be replaced, not merely retouched. Replace the entire existing head in Image 2 with the same head and facial morphology as Image 1, drawn naturally into the scene. Keep the head position and body lean. Turn his face a little toward the viewer so both cheeks are visible, while his eyes still look down at the waveform. Closely copy Image 1's broad softly squared lower face, short rounded chin, round-ended wide nose, eye size and spacing, straight dark eyebrows, uneven short stubble, sparse freckles, warm complexion, compact front hair locks. Do NOT reuse the narrow nose, pointed jaw, eye shape or swept hair from Image 2. Put the earpiece on Demir's RIGHT anatomical ear as in Image 1 (viewer-left in the more frontal corrected head); his opposite ear is bare. Keep a small attentive smile. Absolutely preserve the torso, both original arms and hands, tabletop, every waveform and teaching graphic, every background panel, exact lighting direction and original composition. No new text, limbs or props. One 1536x1024 illustration.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__temporal-attention-briefing-identity-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+  "priorAttempts": [
+    {
+      "prompt": "Use case: identity-preserve. STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral identity of ensign-demir. Image 2 is the scene to correct and is NOT an identity authority. ensign-demir is the existing person whose head is near 0.75 of image width and 0.27 of image height. Change only heads, hair and neck transitions to make every person unmistakably the SAME INDIVIDUAL as their neutral anchor. Retain current head rotation, gaze and appropriate facial expression, using expression alone without changing facial structure. Preserve exactly the entire room, bodies, all existing arms and hands, uniforms, furniture, teaching displays and graphics, props, colors, lighting direction, composition and image size. DEMIR: faithfully reproduce the anchor's mid-twenties face proportions, warm light-medium complexion, broad softly squared lower face, short rounded chin, round-ended nose of the same width, distinctive fairly straight eyebrows and exact eye spacing/size, short uneven stubble, sparse freckles, compact tousled hair with the same hairline and front locks, and green round comms earpiece on the same anatomical ear as the anchor. Do not elongate or sharpen the jaw, pinch the nose, increase eye size, create a tall heroic quiff or make a different handsome anime character. Every face must match its individual portrait without relying on clothes or equipment. No new people, no added arms/hands, no text or decorative symbols. One 1536x1024 scene. Do not modify any screen or plot, even if you think it can be improved.",
+      "reason": "First correction retained narrow face and wrong anatomical earpiece side; rejected before publication."
+    }
+  ],
+  "originalInputScene": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp"
+}

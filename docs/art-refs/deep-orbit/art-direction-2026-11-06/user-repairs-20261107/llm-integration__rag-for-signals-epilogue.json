@@ -1,0 +1,242 @@
+{
+  "id": "llm-integration__rag-for-signals-epilogue",
+  "lesson": "llm-integration/rag-for-signals",
+  "phase": "epilogue",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: chief-nazari, ensign-demir.\nStory action: Nazari records the mismatch as Demir discovers more answers need review. Expression: Nazari has dry resolve; Demir shows concerned realization.\nThis epilogue takes place on the BRIDGE. Use the supplied bridge room master, preserving its gray structural ribs, clock, viewports and rail. Keep the target composition, large monitor, faces, text and hand anatomy unchanged. Nazari seated left initials an open ledger facing HER, with one hand holding a single straight pen in a natural tripod grip, the other flattening the page. Demir stands beside her looking between her ledger and the display, one hand on the chair back and one resting by his own side. Enlarge the primary display into the unused upper right area. Exact large rows: Band-7 / last 72 hours; Retrieved records: 14; Generated count: 17; Additional mismatches: 2; Free-text review: pending. Paper is not a viewer-facing placard. The public lesson information is on the shared screen. No invented extra counts.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "62c5b095987711233e893c81a42bc1976219aff044d0fd27d22d178ee007e6fe",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room architecture only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1968598d-3e0b-40f4-b017-f1a43a8a1436.png",
+      "role": "edit target",
+      "sha256": "5e143f4119d3ca98d44d1f3deda3e1217437db6ed442b523cf28a7c804cb1c81"
+    }
+  ],
+  "sourceSha256": "2473cca389ce077479db933326788ccc21200d2c5e0934e765d4c84d7afce97b",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+    "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+  },
+  "source": "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.336565+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: chief-nazari, ensign-demir.\nStory action: Nazari records the mismatch as Demir discovers more answers need review. Expression: Nazari has dry resolve; Demir shows concerned realization.\nThis epilogue takes place on the BRIDGE. Use the supplied bridge room master, preserving its gray structural ribs, clock, viewports and rail. Keep the target composition, large monitor, faces, text and hand anatomy unchanged. Nazari seated left initials an open ledger facing HER, with one hand holding a single straight pen in a natural tripod grip, the other flattening the page. Demir stands beside her looking between her ledger and the display, one hand on the chair back and one resting by his own side. Enlarge the primary display into the unused upper right area. Exact large rows: Band-7 / last 72 hours; Retrieved records: 14; Generated count: 17; Additional mismatches: 2; Free-text review: pending. Paper is not a viewer-facing placard. The public lesson information is on the shared screen. No invented extra counts.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1968598d-3e0b-40f4-b017-f1a43a8a1436.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4b4ea03c-f923-4a96-9143-03289389e068.png",
+  "candidatePath": "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+  "candidateSha256": "2473cca389ce077479db933326788ccc21200d2c5e0934e765d4c84d7afce97b",
+  "generatedAt": "2026-11-09T06:40:44.882564+00:00",
+  "attempts": [
+    {
+      "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: chief-nazari, ensign-demir.\nStory action: Nazari records the mismatch as Demir discovers more answers need review. Expression: Nazari has dry resolve; Demir shows concerned realization.\nNazari seated left initials an open ledger facing HER, with one hand holding a single straight pen in a natural tripod grip, the other flattening the page. Demir stands beside her looking between her ledger and the display, one hand on the chair back and one resting by his own side. Enlarge the primary display into the unused upper right area. Exact large rows: Band-7 / last 72 hours; Retrieved records: 14; Generated count: 17; Additional mismatches: 2; Free-text review: pending. Paper is not a viewer-facing placard. The public lesson information is on the shared screen. No invented extra counts.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "1ae1b74241acc5888d97d8d2d63beea59e2ce13365a2cfee9dc8b83d0ffed7a7",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room architecture only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+          "sha256": "4c56e7334f13ac2de1372dd994c2e11033f87f64b1baed50386d00f8e7fa955b",
+          "role": "edit target"
+        }
+      ],
+      "generationArgs": {
+        "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: chief-nazari, ensign-demir.\nStory action: Nazari records the mismatch as Demir discovers more answers need review. Expression: Nazari has dry resolve; Demir shows concerned realization.\nNazari seated left initials an open ledger facing HER, with one hand holding a single straight pen in a natural tripod grip, the other flattening the page. Demir stands beside her looking between her ledger and the display, one hand on the chair back and one resting by his own side. Enlarge the primary display into the unused upper right area. Exact large rows: Band-7 / last 72 hours; Retrieved records: 14; Generated count: 17; Additional mismatches: 2; Free-text review: pending. Paper is not a viewer-facing placard. The public lesson information is on the shared screen. No invented extra counts.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png"
+        ],
+        "transparent_background": false
+      },
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1968598d-3e0b-40f4-b017-f1a43a8a1436.png",
+      "candidateSha256": "5e143f4119d3ca98d44d1f3deda3e1217437db6ed442b523cf28a7c804cb1c81",
+      "reason": "Reference correction: epilogue is on the bridge, while the first generation mistakenly supplied the lab master. Current candidate retained bridge staging, but regenerate with its correct room authority."
+    }
+  ],
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        235,
+        260,
+        275,
+        320
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-epilogue-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "faces",
+      "box": [
+        500,
+        60,
+        270,
+        300
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-epilogue-faces1.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        265,
+        800,
+        500,
+        180
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-epilogue-hands0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        455,
+        490,
+        140,
+        100
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-epilogue-hands1.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        780,
+        750,
+        90,
+        130
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-epilogue-hands2.png",
+      "removedAfterReview": true
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.699727+00:00",
+    "candidateSha256": "2473cca389ce077479db933326788ccc21200d2c5e0934e765d4c84d7afce97b",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-epilogue/candidate.png",
+  "publishedSource": "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+  "webpSha256": "3a00b0937ac0d18bb2f3ceaf7e11bc4d2e3e7aeb7dbbb87de7667145a9e7559b",
+  "webpQuality": 80,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+    "sourceSha256": "4c56e7334f13ac2de1372dd994c2e11033f87f64b1baed50386d00f8e7fa955b",
+    "webpSha256": "49b1c4fd1daf211b3453079e9872764535401c8aafad58066a6613fe306a6c37",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-22da6ccf-e359-4c01-81d3-64a0108bb593.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "2473cca389ce077479db933326788ccc21200d2c5e0934e765d4c84d7afce97b",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+        "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root",
+  "temporaryDiagnosticCropsRemoved": true
+}

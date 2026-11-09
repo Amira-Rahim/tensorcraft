@@ -1,0 +1,131 @@
+{
+  "deep-orbit/optimization-edge/caching-strategies": {
+    "concept": {
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-concept.webp",
+      "alt": "Demir inspects the cache key while working at the dashboard station.",
+      "location": "Dashboard Station"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-challenge.webp",
+      "alt": "Demir and Nazari review cache keys, reuse and eviction at the bridge console.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-takeaways.webp",
+      "alt": "Demir checks the cache handover with one hand resting on the desk and the other on a mouse.",
+      "location": "Bridge, Dashboard Station"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies-epilogue.webp",
+      "alt": "Demir reviews the cache results at the dashboard station.",
+      "location": "Dashboard Station"
+    }
+  },
+  "deep-orbit/optimization-edge/webgpu-acceleration": {
+    "concept": {
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-concept.webp",
+      "alt": "Nazari catches the difference between queued work and completed prediction timing.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-challenge.webp",
+      "alt": "Demir tests the backend fallback order and waits for initialization.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-takeaways.webp",
+      "alt": "Nazari reviews the complete prediction timing interval over a cup of coffee.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-epilogue.webp",
+      "alt": "Nazari and Demir compare the successful bridge rehearsal with the engineering fallback.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/optimization-edge/quantization": {
+    "concept": {
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-concept.webp",
+      "alt": "Nazari checks how stored uint8 weights decode to float32 at runtime.",
+      "location": "Archimedes, Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-takeaways.webp",
+      "alt": "Farah reviews how stored integer weights decode to floats and which quality and runtime checks remain.",
+      "location": "Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-epilogue.webp",
+      "alt": "Nazari silently watches three raw signal pulses on the engineering rig beside a closed notebook.",
+      "location": "engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/optimization-edge/quantization-challenge.webp",
+      "alt": "Nazari watches Demir compare class predictions before and after decoding quantized weights.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/optimization-edge/pruning": {
+    "concept": {
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-concept.webp",
+      "alt": "Demir records how pruning four of eight weights changes the same dot product.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-challenge.webp",
+      "alt": "Demir and Farah prepare per-class recall checks at each pruning level.",
+      "location": "Archimedes, Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-takeaways.webp",
+      "alt": "Nazari reviews dense pruning: zeroed weights keep their slots, while compression and per-class errors need measurement.",
+      "location": "Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/optimization-edge/pruning-epilogue.webp",
+      "alt": "Nazari and Demir review pruning costs while rejected-class replay remains pending.",
+      "location": "engineering"
+    }
+  },
+  "deep-orbit/optimization-edge/model-profiling": {
+    "concept": {
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-concept.webp",
+      "alt": "Nazari and Demir inspect the fictional model profile before measuring peak runtime memory.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-challenge.webp",
+      "alt": "Demir starts a baseline profiling check that includes prediction output readback before stopping the clock.",
+      "location": "engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-takeaways.webp",
+      "alt": "Nazari separates storage, completed prediction time and peak memory in the baseline review.",
+      "location": "engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/optimization-edge/model-profiling-epilogue.webp",
+      "alt": "Demir replays ARIA’s recovered telemetry fragment and finds the last clean pulse interval.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/browser-runtimes/model-loading": {
+    "concept": {
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-concept.webp",
+      "alt": "Demir discovers the model manifest and referenced weights in the deployment folder at his workstation."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-challenge.webp",
+      "alt": "Demir prepares to load a model once, inspect its shapes and layer count, and release it afterward."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-takeaways.webp",
+      "alt": "Demir selects the new cached model version and prepares to verify it before removing the old one."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading-epilogue.webp",
+      "alt": "Farah and Demir discover that the notebook and dashboard use different model versions.",
+      "location": "bridge"
+    }
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "key": "ci-cd-pipeline-takeaways",
+  "id": "capstone/ci-cd-pipeline",
+  "phase": "takeaways",
+  "cast": [
+    "chief-nazari"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Nazari stands LEFT at engineering release desk, leaning slightly forward to compare two side-by-side monitors RIGHT. One palm anchors closed binder, other rests on mouse. She studies mismatch risk with wry skeptical brow and attentive expression. Remove outward open binder. First screen heading \"Artifact identity\" with lines \"Graph and weight hashes\", \"Preprocessing version\", \"Label order\". Second screen heading \"Release checks\" with lines \"Evaluate exact candidate\", \"Benchmark target device\", \"Verify served release\", \"Verify complete rollback\". These are gates awaiting decisions, no pass icons or fabricated measurements. Both screens actually face her, camera beside same front side, native perspective. Use controlled muted engineering light, visible mature Nazari identity and logical arms/hands.",
+  "meaning": "CIrecap separates identity/quality;pin exactgraphweights preprocessinglabelorder;targetdevicebenchmark; servedcandidate/restoredreleaseverification.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+      "sha256": "45e523f670ab4fb0172d2992fec83c8e86bf3f9c4bdb1bc179ac0b18f6394749",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+      "sha256": "ad79507cc91830ef0891260b904b18ab458090da54c6af6dbf4dbd809198cf28"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
+      "sha256": "767bdfbc158a37ebdf52425f686770d141741a35a28284fbc4ede2c849774637"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-8b23c561-ad4e-4dec-93be-c13052895060.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 320,
+      "top": 120,
+      "width": 390,
+      "height": 430
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 280,
+      "top": 770,
+      "width": 800,
+      "height": 160
+    }
+  ],
+  "candidatePath": "art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+  "candidateSha256": "91f88bf8659b67c416bab58cf8f4febc6091d10e06b2e72b139d25294b3ee92a",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Nazari stands LEFT at engineering release desk, leaning slightly forward to compare two side-by-side monitors RIGHT. One palm anchors closed binder, other rests on mouse. She studies mismatch risk with wry skeptical brow and attentive expression. Remove outward open binder. First screen heading \"Artifact identity\" with lines \"Graph and weight hashes\", \"Preprocessing version\", \"Label order\". Second screen heading \"Release checks\" with lines \"Evaluate exact candidate\", \"Benchmark target device\", \"Verify served release\", \"Verify complete rollback\". These are gates awaiting decisions, no pass icons or fabricated measurements. Both screens actually face her, camera beside same front side, native perspective. Use controlled muted engineering light, visible mature Nazari identity and logical arms/hands.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+          "sha256": "45e523f670ab4fb0172d2992fec83c8e86bf3f9c4bdb1bc179ac0b18f6394749",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-8b23c561-ad4e-4dec-93be-c13052895060.png",
+        "sha256": "91f88bf8659b67c416bab58cf8f4febc6091d10e06b2e72b139d25294b3ee92a"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "CIrecap separates identity/quality;pin exactgraphweights preprocessinglabelorder;targetdevicebenchmark; servedcandidate/restoredreleaseverification.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 320,
+        "top": 120,
+        "width": 390,
+        "height": 430
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 280,
+        "top": 770,
+        "width": 800,
+        "height": 160
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+      "sha256": "ad79507cc91830ef0891260b904b18ab458090da54c6af6dbf4dbd809198cf28"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
+      "sha256": "767bdfbc158a37ebdf52425f686770d141741a35a28284fbc4ede2c849774637"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+      "sha256": "45e523f670ab4fb0172d2992fec83c8e86bf3f9c4bdb1bc179ac0b18f6394749",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "ci-cd-pipeline-takeaways",
+    "id": "capstone/ci-cd-pipeline",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-8b23c561-ad4e-4dec-93be-c13052895060.png",
+    "candidateSha256": "91f88bf8659b67c416bab58cf8f4febc6091d10e06b2e72b139d25294b3ee92a",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:50:28.360446+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+        "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+        "sha256": "ad79507cc91830ef0891260b904b18ab458090da54c6af6dbf4dbd809198cf28"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
+        "sha256": "767bdfbc158a37ebdf52425f686770d141741a35a28284fbc4ede2c849774637"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Actual recap separates identity and quality, pins graph/weights/preprocessing/labels, benchmarks target device, and verifies served candidate and complete rollback. Two work displays meaningfully separate these checks."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-8b23c561-ad4e-4dec-93be-c13052895060.png",
+  "publishedSource": "art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline-takeaways.webp",
+  "sourceSha256": "91f88bf8659b67c416bab58cf8f4febc6091d10e06b2e72b139d25294b3ee92a",
+  "webpSha256": "40bb1362112a9d1dfdc3ccb488d7993f4f6427558080b2a0ff95e37a060f6959",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+    "sourceSha256": "45e523f670ab4fb0172d2992fec83c8e86bf3f9c4bdb1bc179ac0b18f6394749",
+    "webpSha256": "5788cbb294c26e446048406a8cadc09e45e63520dc0e0ab98c27b0712a54c735",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-94680354-ce38-45be-87b6-9482f37009c5.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "91f88bf8659b67c416bab58cf8f4febc6091d10e06b2e72b139d25294b3ee92a",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Actual recap separates identity and quality, pins graph/weights/preprocessing/labels, benchmarks target device, and verifies served candidate and complete rollback. Two work displays meaningfully separate these checks."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+        "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+        "sha256": "ad79507cc91830ef0891260b904b18ab458090da54c6af6dbf4dbd809198cf28"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
+        "sha256": "767bdfbc158a37ebdf52425f686770d141741a35a28284fbc4ede2c849774637"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

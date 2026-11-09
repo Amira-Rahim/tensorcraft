@@ -1,0 +1,158 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-epilogue/candidate.png",
+  "candidateSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh native image, 2x hand and face crops, complete arm-chain and prop-contact checks, canonical portraits, current MDX/exercise and independent 768 x 512 preview. Physical glass and content convergence assessed, allowing slope to change with row height.",
+  "canonicalFaceReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 2,
+      "name": "followup-normalization-epilogue-face-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-epilogue/candidate.png",
+      "box": [
+        294,
+        88,
+        529,
+        340
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "followup-normalization-epilogue-face-farah",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-epilogue/candidate.png",
+      "box": [
+        529,
+        318,
+        788,
+        611
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "followup-normalization-epilogue-demir-chair-hand",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-epilogue/candidate.png",
+      "box": [
+        345,
+        434,
+        493,
+        554
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "followup-normalization-epilogue-demir-book-hand",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-epilogue/candidate.png",
+      "box": [
+        39,
+        688,
+        221,
+        863
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "followup-normalization-epilogue-farah-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-epilogue/candidate.png",
+      "box": [
+        414,
+        787,
+        958,
+        992
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah's near right hand rests naturally on the mouse with thumb on its obscured far side, and her left hand rests on the desk. Demir's right hand holds the closed notebook while his left hand rests on the chair. All four arms trace to their correct shoulders without crossings or broken contact.",
+    "identityExpressionAndStory": "Farah's concerned assessment and Demir's questioning look remain candid and canonical. The chair/notebook pose supports their shared review.",
+    "displayLegibilityAndSource": "Sample 7741, archive eight days ago, preview score near boundary, for review, cause unknown and score-does-not-establish-novelty caveat preserve the current epilogue. Every main line is readable at 768 x 512.",
+    "perspectiveAndOperator": "PASS: the monitor sits behind the keyboard and mouse, with Farah and Demir on its readable front side. Upper and lower content rules broadly share the glass's converging horizontal family. The change from rising upper lines to falling lower lines is physically coherent.",
+    "largeDisplayRule": "Main content occupies a large working monitor and remains readable without clipped teaching text at 768 x 512.",
+    "palette": "Muted charcoal, sage and brass remain consistent with Deep Orbit."
+  },
+  "measuredGeometry": {
+    "coordinateSystem": "Approximate native 1536 x 1024 pixel coordinates",
+    "glassTop": [
+      [
+        1010,
+        323
+      ],
+      [
+        1500,
+        211
+      ]
+    ],
+    "glassBottom": [
+      [
+        976,
+        684
+      ],
+      [
+        1458,
+        742
+      ]
+    ],
+    "titleDivider": [
+      [
+        1019,
+        412
+      ],
+      [
+        1469,
+        355
+      ]
+    ],
+    "footerDivider": [
+      [
+        1002,
+        613
+      ],
+      [
+        1445,
+        630
+      ]
+    ],
+    "interpretation": "The glass and content line families converge in the same approximate horizon region; no separate flattened table/card plane appears."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 4,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "repairDirection": null,
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T13:53:15.927700+00:00"
+}

@@ -1,0 +1,154 @@
+{
+  "key": "deep-orbit/advanced-time-series/kalman-filters",
+  "phase": "briefing",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identity. First references are canonical people and room, LAST input is the exact edit target. Only the specified display change is authorized. All face morphology, head scales, anatomy, poses, furniture, materials, lighting and composition must remain unchanged. Correct ONLY the main board chart layout and labels. Preserve both exact faces, head sizes, full bodies, stylus and every hand, room and palette. The lower day-axis labels are currently misnumbered and hidden behind Demir. Move the chart's horizontal axis UP inside the board, above Demir's hair, to make all eight day labels readable. Compact the chart vertically if needed. It must show exactly eight equally spaced positions labeled1,2,3,4,5,6,7,8 in order beneath their matching points. Keep y-axis Seconds from72.0 to73.2. Plot the exact eight paired values: Day1=73.1, Day2=72.9, Day3=73.0, Day4=72.6, Day5=72.7, Day6=72.3, Day7=72.4, Day8=72.0. One point per day, joined in order, with rises on3,5,7. Avoid extra ticks or mislabeled points. Header Daily pulse interval unchanged. Bottom EMA0.2:72.57 s, EMA0.8:72.08 s, Latest:72.0 s remain correct and readable. Only board content can move. Do not alter or move any character. Output one full1536x1024 scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/advanced-time-series__kalman-filters-briefing-semantics-stage1-openai-20261107.png",
+      "sha256": "089654efb8aedc1ee5b7cd46678702d134dea43edfd803f75f6e00d58f4229f3",
+      "role": "target scene",
+      "originalPath": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-briefing-semantics-stage1-openai-20261107.png",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "089654efb8aedc1ee5b7cd46678702d134dea43edfd803f75f6e00d58f4229f3",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+    "sha256": "7270fdca135af8607c77903b0377eadd9bd7b8002922578979efa8e1d3ffe57b"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "sha256": "6cb732cf4fecd19c6a491f5e32b60d90220e29e02ac4daede37e9ada1a5490b0"
+    }
+  ],
+  "panelSpecification": {
+    "state": "problem",
+    "panels": [
+      "Preserve Demir's head size. Adjust Farah's complete head only slightly, to about94 percent of its current linear size, keeping her exact face and a natural short neck. Preserve her stylus grip, bench hand and leaning torso, and Demir's expressive hands. Replace the main board with one exact eight-point line chart headed \"Daily pulse interval\". Horizontal axis \"Day\", eight equally spaced positions1 through8. Vertical axis \"Seconds\", range72.0 to73.2. One measured point each day, in order:73.1,72.9,73.0,72.6,72.7,72.3,72.4,72.0. Thin joined line follows these values, rising slightly on days3,5,7. No extra points or curves. Under the plot show three separate comparison values: \"EMA0.2:72.57 s\", \"EMA0.8:72.08 s\", \"Latest:72.0 s\". These are EMA endpoints, not Kalman results. Turn all other screens and wrist display off. Mute the bright pillar to match the room master."
+    ],
+    "otherScreens": "All unspecified screens are inactive charcoal glass."
+  },
+  "numericVerification": {
+    "dailyLog": [
+      73.1,
+      72.9,
+      73,
+      72.6,
+      72.7,
+      72.3,
+      72.4,
+      72
+    ],
+    "ema0.2final": 72.56664064000002,
+    "ema0.8final": 72.07916416,
+    "kalmanFinal": 72.43168039656481,
+    "method": "CurrentMDX equations executed inPython withsameinitialization andsubsequent7updates."
+  },
+  "bodyConstraints": "Preserve wholebodyposes, gripandchaircoherence; anyheadadjustments remainmodest andcanonical.",
+  "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261107.png",
+  "candidateSha256": "5bc182229029424d9e23372318d9cbdfbab6f5325f8a7c59e1fc6553b5c4cc07",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-d8e7ce80-a611-4f03-9952-8bd6c71729f6.png",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise-object-edit. Deep Orbit cinematic cel-shaded story scene,1536x1024. First references are canonical faces, next is the room master, and the LAST image is the exact scene to edit. Preserve facial morphology, adult age, nose, jaw, eyes, brows, expression, hair, warm complexion and signature equipment. Farah lens on anatomical LEFT eye, Demir comms on anatomical RIGHT ear. Preserve whole body poses, continuous shoulder-arm-hand chains, original grips, neck alignment, chair support, room geometry and composition. People and story remain dominant. Every unspecified monitor or wrist display is inactive charcoal glass, without decorative technical content. Use muted sage, aged brass and charcoal, with natural warm skin and no neon mint, cyan or mustard wash. Preserve Demir's head size. Adjust Farah's complete head only slightly, to about94 percent of its current linear size, keeping her exact face and a natural short neck. Preserve her stylus grip, bench hand and leaning torso, and Demir's expressive hands. Replace the main board with one exact eight-point line chart headed \"Daily pulse interval\". Horizontal axis \"Day\", eight equally spaced positions1 through8. Vertical axis \"Seconds\", range72.0 to73.2. One measured point each day, in order:73.1,72.9,73.0,72.6,72.7,72.3,72.4,72.0. Thin joined line follows these values, rising slightly on days3,5,7. No extra points or curves. Under the plot show three separate comparison values: \"EMA0.2:72.57 s\", \"EMA0.8:72.08 s\", \"Latest:72.0 s\". These are EMA endpoints, not Kalman results. Turn all other screens and wrist display off. Mute the bright pillar to match the room master. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full final scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/kalman-filters-briefing-before.png",
+          "sha256": "4daf1cd2b91ba5ee6b85f11411c77b66f1ee794e04a57f4030b2f5ec880d5aa7",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "4daf1cd2b91ba5ee6b85f11411c77b66f1ee794e04a57f4030b2f5ec880d5aa7",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-briefing-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "089654efb8aedc1ee5b7cd46678702d134dea43edfd803f75f6e00d58f4229f3",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-fc8bc0d2-fadf-4826-bc1c-b3b50c3416d6.png",
+      "status": "candidate-awaiting-review"
+    }
+  ],
+  "requestedDisplayCorrections": "Correct ONLY the main board chart layout and labels. Preserve both exact faces, head sizes, full bodies, stylus and every hand, room and palette. The lower day-axis labels are currently misnumbered and hidden behind Demir. Move the chart's horizontal axis UP inside the board, above Demir's hair, to make all eight day labels readable. Compact the chart vertically if needed. It must show exactly eight equally spaced positions labeled1,2,3,4,5,6,7,8 in order beneath their matching points. Keep y-axis Seconds from72.0 to73.2. Plot the exact eight paired values: Day1=73.1, Day2=72.9, Day3=73.0, Day4=72.6, Day5=72.7, Day6=72.3, Day7=72.4, Day8=72.0. One point per day, joined in order, with rises on3,5,7. Avoid extra ticks or mislabeled points. Header Daily pulse interval unchanged. Bottom EMA0.2:72.57 s, EMA0.8:72.08 s, Latest:72.0 s remain correct and readable. Only board content can move. Do not alter or move any character.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-briefing-identity-proof.jpg",
+  "ownReview": "Native fullframe and canonical proof checked: faces, balanced stylized proportions, natural whole poses, arm chains, contacts, restrained palette and all prominent panels pass.",
+  "independentReview": {
+    "status": "approved",
+    "reviewer": "/root",
+    "notes": "Root independently viewed current native fullframe and fresh canonical face comparisons. All exact screen data and operations, balanced head sizes, anatomy and canonical faces pass. Final muted sage palette eliminates fluorescent pillar and rim holds.",
+    "candidateSha256": "5bc182229029424d9e23372318d9cbdfbab6f5325f8a7c59e1fc6553b5c4cc07",
+    "proofSha256": "2eeda493037f727e5d1b9abeaf7e747983cdf157093e4ae2cdeb149cc189a642",
+    "reviewedAt": "2026-11-07T10:30:11.519693+00:00"
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__kalman-filters-briefing-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+  "publishedOutputSha256": "aca7f7b1c146b446871e1c4733e3839f28ef112e47bbb5d7a711b8e8c2669da3",
+  "encoding": {
+    "format": "webp",
+    "quality": 83,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 188076
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-d8e7ce80-a611-4f03-9952-8bd6c71729f6.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-fc8bc0d2-fadf-4826-bc1c-b3b50c3416d6.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+      "art-src/scenes/advanced-time-series__kalman-filters-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

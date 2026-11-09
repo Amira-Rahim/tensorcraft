@@ -86,7 +86,7 @@ const ROWS: Row[] = [
   },
   {
     feature: "Cost (full curriculum)",
-    tensorcraft: `$0 preview / $${PRICING.single.price} per world, one payment, lifetime access`,
+    tensorcraft: `$0 preview / $${PRICING.single.price}${PRICING.single.price < PRICING.single.regularPrice ? ` introductory price per world ($${PRICING.single.regularPrice} regular price)` : " per world"}, one payment, lifetime access`,
     fastai: "Free",
     karpathy: "Free",
     coursera: "$49-79/mo (specialization $200-500)",

@@ -1,0 +1,79 @@
+{
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "concept",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit lesson scene, 1536x1024 adventure-comic illustration. The first input(s) are immutable canonical face identity references. The LAST input is the exact scene to edit. Preserve the same people, same facial morphology and story moment. Preserve Farah's canonical face, left-eye lens, hair, exact teaching pose, stylus grip, opposite hand resting on desk and continuous two-arm anatomy. Preserve room, desk and camera. Replace the main foreground diagram of three waveform boxes with a concise attention calculation. At left show \"Scores\" and three clear values \"2   1   0\". A single arrow labeled \"Softmax\" leads to \"Weights\" with corresponding values \"0.665   0.245   0.090\". Below these, three distinct cards \"Value 1\", \"Value 2\", \"Value 3\" connect by paths visibly labeled with those same three weights to one box \"Weighted blend\". The high weight is visibly thicker, all three paths contribute. A small strip above says \"Query compares Keys\". Do not imply keys are the blended values. Keep layout clear, very short text, no prose paragraphs. The background main monitor has only a modest strip \"Attention example\" and the same three-score relationship, no random waves. Other prominent small screens are dark inactive. Reduce Farah's whole head only modestly to90 percent current width/height while preserving exact internal facial morphology and expression. Keep body/shoulders/hands the same size and rejoin neck naturally. Retain the existing muted lab colors without neon bloom. Output one final full scene only, no before/after collage, no caption outside the art, no new characters or props.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/beyond-lstm-concept-before.png",
+      "sha256": "e5a76ad14a1a74c720a1792a79f9eaae7a6649028ae55d7d0fdecb9445ec0347",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "e5a76ad14a1a74c720a1792a79f9eaae7a6649028ae55d7d0fdecb9445ec0347",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+    "sha256": "2698bfc69a62b4ef22d84f19570bc03288b409bcdc055f2607de6f9219d33e92"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "panelSpecification": {
+    "state": "worked example",
+    "panels": [
+      "Board: Query compared with Keys, producing scores [2, 1, 0], then Softmax weights [0.665, 0.245, 0.090]. Distinct Values cards feed a weighted blend. Label Scores, Weights, Values so waveforms cannot imply keys and values are interchangeable.",
+      "Small panel: sum of weights = 1; high weight means more influence, with no causal or anomaly verdict."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "bodyConstraints": "Preserve current connected anatomy and natural pose.",
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+  "candidateSha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b657a197-e42b-4b59-8855-8c9b43a5b663.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-concept-identity-proof.jpg",
+  "independentReview": {
+    "reviewer": "/root",
+    "status": "approved",
+    "notes": "Canonical face proof and fullframe pass. Exact scores2,1,0, softmax weights0.665,0.245,0.090 and three Values convergence verified against MDX lines96-99.",
+    "candidateSha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+    "proofSha256": "1614e33923fe251afc84bffc3ad894252a7d2a36a3f1ae4797d41a797306fa76"
+  },
+  "ownReview": "Full connected Farah arm chains and natural neck. Canonical adult nose/cheeks retained. Three positive contributions meet one blend; all unrelated monitors inactive. Modest head adjustment approved.",
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-concept-semantics-stage1-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+  "publishedOutputSha256": "efd703e180d24793d8d9880061296f2c1628298653948d64905f9d17e891f26d",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 176942
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

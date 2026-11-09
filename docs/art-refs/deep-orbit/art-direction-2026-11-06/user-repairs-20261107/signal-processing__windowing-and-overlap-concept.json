@@ -1,0 +1,161 @@
+{
+  "key": "windowing-and-overlap-concept",
+  "id": "signal-processing/windowing-and-overlap",
+  "phase": "concept",
+  "source": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+  "sourceSha256": "1e1451e73930577f4d1abdde590f74466975d908a07aa47880f1998f56719266",
+  "sourceEvidence": {
+    "mdx": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+    "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+  },
+  "reviewer": "/root/reader_signal",
+  "nativeReview": "1536x1024 current source visually inspected",
+  "gates": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeck": "pass",
+    "readerDirection": "pass",
+    "surfacePerspective": "pass",
+    "palette": "hold",
+    "lessonMeaning": "hold",
+    "storyAction": "hold"
+  },
+  "verdict": "hold",
+  "holdReason": "Unlabelled input/taper/output curves and camera-facing smile; gold/lime drift.",
+  "preserve": "Upward drafting panel is valid, preserve natural hip/stylus hand chains.",
+  "prompt": "Use case: precise-object-edit. References canonical portraits first are identity authority, lab master is ROOM ONLY, last image is edit target. Restore Farah's signature translucent sage-green rectangular AR monocle over her ANATOMICAL LEFT eye, matching canonical portrait. She is turned toward image left, so it covers her near eye on image right, naturally foreshortened with her face. Preserve every other part of her face/hair/expression, stylus hand, hip hand, excellent screen taper illustration and muted scene. Output1536x1024. No other edits.",
+  "promptSha256": "8ec5e72a5aef38510e05d6018757c1ed60b839ea422279128a8899298ec59208",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-6775eeaf-2855-4b8a-8cb0-425b231e5c48.png",
+      "sha256": "9a71128063bb669c876c02732d11ba3bf1ba43f82bd7b3b9692ff040206e5b32"
+    }
+  ],
+  "alt": "Farah traces the taper endpoint while checking how Hann weights fade the signal at both edges.",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-0318e617-d94b-402c-bf35-3bda998c09c0.png",
+  "candidateSha256": "1e1451e73930577f4d1abdde590f74466975d908a07aa47880f1998f56719266",
+  "history": [
+    {
+      "prompt": "Use case: precise-object-edit. Asset: Deep Orbit signal-processing/windowing-and-overlap-concept scene,1536x1024 landscape. Image1: dr-farah canonical identity authority; Image2: lab ROOM ONLY master, copy architecture not its incidental graphics or oversaturated lighting; Image3: exact edit target.\nPreserve Farah standing at the upward tilted drafting display, one hand on hip and stylus naturally in the other. Turn her eyes and face toward the multiplication on the screen rather than the viewer. Main display three horizontal strips clearly labelled Signal, Hann weights, and Windowed signal. Signal is a steady oscillation, Hann weights a single raised-cosine arch from zero to zero, Windowed signal the SAME oscillation multiplied by that envelope and fading to zero at each end. Small formula Signal x weights = windowed signal. Caption Schematic taper. No arbitrary numeric plots or nonsensical extra diagrams. Her stylus touches the taper endpoint and she looks there with quiet concentration. Use the physical drafting-screen perspective for all elements. Remove gold wash/electric lime, keep muted neutral room and sage.\nIdentity: preserve canonical facial geometry, ages, skin, hairstyle, natural expressions and signature equipment. Keep readable faces in natural three-quarter angles, stable adult head/body proportions. Trace each shoulder through elbow/wrist to one natural five-finger hand; solid furniture contacts. Each screen front faces its actual reader; all text and diagrams follow its physical perspective, never camera-facing overlays. No extra crew, no plants, no fake tiny glyphs. Subordinate unused screens and wrist displays are dark. Muted charcoal, gray, restrained olive, sage interface and aged brass. Warm light remains localized, no yellow wash or electric lime. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Equipment-side check: Demir has one earpiece on anatomical RIGHT ear only. If his visible ear is anatomical LEFT, keep it bare and hide the far-side earpiece completely; never float green hardware on cheek, eye or collar.",
+      "promptSha256": "b50aa2b91d6a110d70a4971d5e6f6e239fff6c83d998fdb958374603cb611c76",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-6775eeaf-2855-4b8a-8cb0-425b231e5c48.png",
+          "sha256": "9a71128063bb669c876c02732d11ba3bf1ba43f82bd7b3b9692ff040206e5b32"
+        }
+      ],
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-6775eeaf-2855-4b8a-8cb0-425b231e5c48.png",
+      "candidateSha256": "9a71128063bb669c876c02732d11ba3bf1ba43f82bd7b3b9692ff040206e5b32"
+    }
+  ],
+  "ownReview": {
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Full native reviewed. Canonical identity and signature equipment, natural body and hand chains, meaningful source-specific data, physical text/graph perspective, actual reader front and candid task pass."
+  },
+  "candidatePath": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-0318e617-d94b-402c-bf35-3bda998c09c0.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-6775eeaf-2855-4b8a-8cb0-425b231e5c48.png",
+      "sha256": "9a71128063bb669c876c02732d11ba3bf1ba43f82bd7b3b9692ff040206e5b32",
+      "role": "canonical identity"
+    }
+  ],
+  "independentReview": {
+    "key": "windowing-and-overlap-concept",
+    "id": "signal-processing/windowing-and-overlap",
+    "phase": "concept",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-0318e617-d94b-402c-bf35-3bda998c09c0.png",
+    "candidateSha256": "1e1451e73930577f4d1abdde590f74466975d908a07aa47880f1998f56719266",
+    "verdict": "pass",
+    "reviewer": "/root",
+    "method": "Native complete1536x1024 against canonical portraits and current MDX/exercise",
+    "notes": "Farah uses stylus on an operator-facing sloped display, free hand naturally at hip. Signal times Hann weights produces tapered signal, schematic and correct envelope. Labels follow screen plane, no meaningful random peripherals, shortneck/canonical face retained.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+        "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+      }
+    ],
+    "alt": "Farah traces how Hann weights soften the signal edges before the FFT.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-0318e617-d94b-402c-bf35-3bda998c09c0.png",
+  "publishedSource": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap-concept.webp",
+  "webpSha256": "32a2b979b5e52f3ccd5b5abc7082f6e96a5fe10b9227115234a63d9e4e53eddc",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+    "sourceSha256": "fa704250189c9f52f526d73d8c836aec3f617c421ee206aa2966f06141e0a5d7",
+    "webpSha256": "bc052534218044a671baf7b3c16d980096bc70f8e911219c96f1d9b8dd7b8f2c",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-f92992fe-9efb-494d-85ee-aa04e371bf35.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_signal",
+    "status": "approved",
+    "candidateSha256": "1e1451e73930577f4d1abdde590f74466975d908a07aa47880f1998f56719266",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah uses stylus on an operator-facing sloped display, free hand naturally at hip. Signal times Hann weights produces tapered signal, schematic and correct envelope. Labels follow screen plane, no meaningful random peripherals, shortneck/canonical face retained."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+        "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap-concept.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

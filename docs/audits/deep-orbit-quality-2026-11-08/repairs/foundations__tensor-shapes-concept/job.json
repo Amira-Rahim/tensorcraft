@@ -1,0 +1,97 @@
+{
+  "id": "foundations/tensor-shapes",
+  "phase": "concept",
+  "status": "published",
+  "prompt": "Use case: illustration-story. Create a replacement for the LAST target scene. Reference 1 is Dr. Farah's canonical identity: preserve her facial width, jaw, chin, nose, eye spacing, brows, mouth, complexion, age, hairline and green AR lens through a new natural expression. Reference 2 is the signal-analysis lab ROOM only. Reference 3 is quality, muted palette and candid acting only, not cast or content. LAST is the old target to improve, not a pose or proportion authority. Show exactly Farah, an adult woman with ordinary shoulder width, balanced head and torso, a short natural neck and two anatomically continuous arms. Landscape 1536x1024. The main lesson display must occupy the available wall generously with large short crisp labels and no tiny console-text substitute. Camera is beside Farah so her recognizable three-quarter face and the front of the physical display are visible to both her and us. All text, grids and marks share the screen perspective. Soft facial light, charcoal room, gray coat, quiet sage interface and aged brass. Remove excess foreground hardware, keep a few room-canon instruments low and unobtrusive. No neon outlines, orange wash, extra crew, generic decoration or camera-facing presentation. Exactly natural hands with coherent shoulder-elbow-wrist chains, correct thumb sides, separated fingers and plausible contact. Moment: Farah actively checks how transpose moves sensor A's readings from a column into a row. Large main wall screen occupies the LEFT two-thirds; Farah is at RIGHT in a close three-quarter view, slightly leaning toward the work. One hand operates a small low console control while her other hand rests with relaxed spread fingers on the clear bench. Her eyes specifically follow the highlighted A row on the main screen, eyebrows lifted in recognition with a slight satisfied smile, not looking toward ceiling or audience. No pointer presentation or hand on hip. Screen has only two large clear grids with an ordinary thin connecting arrow and 'transpose()' between them. Left heading '[3,4] moments by sensors', column labels A B C D and row labels 1 2 3, data rows [2,20,5,8], [3,18,7,8], [4,16,6,9]. Highlight the complete A column [2,3,4] with a restrained sage wash. Right heading '[4,3] sensors by moments', column labels 1 2 3 and row labels A B C D, data rows [2,3,4], [20,18,16], [5,7,6], [8,8,9]. Highlight complete row A [2,3,4]. Every cell is large and readable; correct exact topology and count. These are the same twelve values, only rearranged. Give screen and character comfortable separation so nothing hides labels. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "Lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-openai-20261107.png",
+      "sha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+      "role": "Benchmark quality and palette only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-concept-openai-20261107.png",
+      "sha256": "674b28a68c2a84293136ff1d4aa0bb624526a160ad7274da7dcd8fb6a401da79",
+      "role": "Edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+    }
+  ],
+  "requestedOutput": "Separate candidate; no publishing or ledger mutation",
+  "owner": "/root/quality_early",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-da10757d-8bd7-45d1-af94-3812c47a8729.png",
+  "candidatePath": "art-src/scenes/foundations__tensor-shapes-concept-openai-20261107.png",
+  "candidateSha256": "d191d62df43b8f60db5dfaae4a75883db1cf05d19bef56a0331f2f161870c027",
+  "ownReview": {
+    "reviewer": "/root/quality_early",
+    "candidateSha256": "d191d62df43b8f60db5dfaae4a75883db1cf05d19bef56a0331f2f161870c027",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native original plus 2x face and arms or 3x individual hands, compared to canonical Farah portrait.",
+    "cropCoordinates": {
+      "face": [
+        1120,
+        245,
+        1348,
+        540
+      ],
+      "arms": [
+        550,
+        490,
+        1485,
+        980
+      ]
+    },
+    "canonicalFaceReference": {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    },
+    "checks": {
+      "action": "Farah operates the control while following the highlighted sensor-A row after transpose.",
+      "anatomy": "Two continuous shoulder-elbow-wrist chains, natural dial pinch and resting hand with plausible overlapping digits.",
+      "display": "Large wall screen holds exact 3x4 and 4x3 grids, all 24 shown values and axis meanings correct, A column maps to A row, large legible type.",
+      "expression": "Curious recognition focused on the main work, balanced head and shoulders.",
+      "identity": "Canonical brows, eye spacing, nose, jaw and mouth retained through three-quarter turn."
+    },
+    "surfacePerspective": "Text and diagram geometry follow the physical wall screen plane.",
+    "operatorDirection": "Farah has a direct view of the front of the display, camera beside her.",
+    "temporaryCropsRemoved": true
+  },
+  "publication": {
+    "alt": "Farah follows sensor A as a three-by-four grid is transposed into four sensor rows.",
+    "action": "Farah operates the dial while following the highlighted sensor A row after transpose.",
+    "emotion": "Curious recognition as the axes change roles.",
+    "eyeline": "Toward the highlighted A row on the large wall screen.",
+    "location": "Archimedes, Lab",
+    "checks": [
+      "Farah operates the control while following the highlighted sensor-A row after transpose. Two continuous shoulder-elbow-wrist chains, natural dial pinch and resting hand with plausible overlapping digits. Large wall screen holds exact 3x4 and 4x3 grids, all 24 shown values and axis meanings correct, A column maps to A row, large legible type. Curious recognition focused on the main work, balanced head and shoulders. Canonical brows, eye spacing, nose, jaw and mouth retained through three-quarter turn."
+    ]
+  },
+  "publishedSource": "art-src/scenes/foundations__tensor-shapes-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-concept.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-shapes-concept/candidate.png",
+      "sha256": "d191d62df43b8f60db5dfaae4a75883db1cf05d19bef56a0331f2f161870c027",
+      "bytes": 2092596,
+      "retainedEquivalent": "art-src/scenes/foundations__tensor-shapes-concept-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

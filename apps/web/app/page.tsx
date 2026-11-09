@@ -5,7 +5,7 @@ import { FaqSection } from "./components/faq-section";
 import { FreeLessonCtaTracker } from "./components/free-lesson-cta-tracker";
 import { LandingHero } from "./components/landing-hero";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
-import { FiveWorldsSection } from "./components/five-worlds-section";
+import { IntroVideoSection } from "./components/intro-video-section";
 
 export const revalidate = 3600;
 
@@ -20,6 +20,8 @@ export default function Home() {
         {/* ===== HERO, brutalist, ParticleField bg (client island) ===== */}
         <LandingHero />
 
+        <IntroVideoSection />
+
         <h2 className="sr-only">
           Machine learning in JavaScript through browser exercises.
         </h2>
@@ -27,9 +29,7 @@ export default function Home() {
         {/* ===== BRIDGE SYSTEM (client island) ===== */}
         <BridgePreviewSection />
 
-        {/* ===== WHAT YOU'LL BUILD (server-rendered, zero JS) =====
-            Outcome before catalog: the payoff motivates the world choice
-            in Five Worlds below. ===== */}
+        {/* ===== DEEP ORBIT OUTCOME (server-rendered, zero JS) ===== */}
         <section id="how-it-works" className="border-b border-border">
           {/* One pipeline band: header owns the first cell, steps 01-04 fill
               the rest. Hard dividers between cells; oversized ghost
@@ -37,15 +37,15 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
             <div className="px-10 md:px-14 py-12 border-b xl:border-b-0 sm:border-r border-border sm:col-span-2 xl:col-span-1">
               <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
-                What You&apos;ll Build
+                Your Deep Orbit project
               </h2>
               {/* One sentence on purpose: browser, no-Python, and GitHub are
                   each already stated by the hero, the FAQ, or the cards and
                   commit log beside this. (Owner, 2026-08-16: this band was
                   overcrowded; every card now carries one fact once.) */}
               <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] font-sans mb-5">
-                Across 11 modules you&apos;ll build and deploy one real-time
-                anomaly detection system.
+                In Deep Orbit&apos;s 11 modules, you&apos;ll build and deploy a
+                real-time anomaly detection system.
               </p>
               <Link
                 href="/pricing#curriculum"
@@ -107,9 +107,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ===== FIVE WORLDS (client island, canvas animations) ===== */}
-        <FiveWorldsSection />
-
         {/* ===== FAQ (server-rendered, static Q|A rows, zero JS) =====
             Objection handling before the close. Each row is a question |
             answer grid, so both halves of the page carry content. Shared
@@ -136,6 +133,8 @@ export default function Home() {
           <p className="text-base text-text-muted max-w-[420px] leading-relaxed font-sans">
             Open the lesson and start reading. If it clicks, the full world is $
             {PRICING.single.price} once, no subscription.
+            {PRICING.single.price < PRICING.single.regularPrice &&
+              ` That’s the introductory price. The regular price is $${PRICING.single.regularPrice}.`}
           </p>
           {/* Free-first stays the primary action. The secondary link exists
               because this block names the price and then previously offered

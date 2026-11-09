@@ -1,0 +1,62 @@
+{
+  "queueIndex": 43,
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "briefing",
+  "status": "withheld-anatomy",
+  "inputScene": "art-src/scenes/advanced-time-series__beyond-lstm-briefing-anatomy-stage1-openai-20261107.png",
+  "inputSceneSha256": "a527089c78fc490a1db52192b2aa23887e845dd3c0d7fd720b6304be4de37b67",
+  "cast": [
+    "farah",
+    "demir"
+  ],
+  "faceBoxes": {
+    "farah": [
+      430,
+      380,
+      295,
+      330
+    ],
+    "demir": [
+      995,
+      320,
+      270,
+      310
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__beyond-lstm-briefing-anatomy-stage1-openai-20261107.png",
+      "sha256": "a527089c78fc490a1db52192b2aa23887e845dd3c0d7fd720b6304be4de37b67",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: identity-preserve and precise-object-edit. Image 1 is the canonical identity of Dr. Farah. Image 2 is the canonical identity of Ensign Demir. Image 3 is the edit target. Rebuild ONLY Farah entire body FROM THE NECK DOWN and her two arms to correct the current impossible shoulder attachment. Do not preserve her old torso or old arm routing. Place Farah in the same left foreground position, but seated with her chest and BOTH DISTINCT SHOULDERS clearly facing the viewer in a gentle front three-quarter view. Her lab-coat front lapels and central uniform opening must be plainly visible. Her anatomical RIGHT shoulder is on viewer LEFT and connects to exactly ONE upper arm raised toward the small circled early ripple on the screen at far left. Show that upper arm, one elbow, forearm, wrist and one hand holding the stylus as a single clear continuous chain. Her anatomical LEFT shoulder is on viewer RIGHT and connects to exactly ONE separate upper arm descending beside her right-image side. That arm bends naturally forward and its hand rests lightly on the desk rail at image right of her torso. Both shoulder attachment points must be visible and separated by the full width of her chest. No arm begins behind the other shoulder. No foreground upper arm on the raised-arm shoulder. Two arms total, two hands total. The resting arm cannot cross or cover the raised-arm shoulder or chest. Keep her head, canonical adult face, hair, green lens over the same anatomical eye and upward gaze at the small early ripple exactly as currently shown. A natural slight neck transition is allowed to meet the rebuilt torso. Keep Demir ENTIRELY unchanged: face, hair, pose, torso, arms, hands, wrist terminal and leaning stance. Preserve all waveform and teaching display pixels exactly: small early ripple circled at left and large late pulse circled at right, all intervening waveform peaks, chart axes and room display details. Preserve room architecture, background, desks, chairs, perspective, lighting and colors, adjusting Farah seat only if necessary for her corrected torso. No added objects, people, text, numbers or symbols. Cel-shaded cartoon style identical to the original. One 1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__beyond-lstm-briefing-anatomy-repair-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+  "originalInputScene": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+  "previousQueueStatus": "awaiting-identity-correction",
+  "resolution": {
+    "registry": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-approved.json",
+    "sourceSha256": "a527089c78fc490a1db52192b2aa23887e845dd3c0d7fd720b6304be4de37b67",
+    "outputSha256": "758feaa2e274f65f361078d80013a08e8d15dcb470c788e59ae414e7f9fad071",
+    "reviewDate": "2026-11-07"
+  },
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/advanced-time-series__beyond-lstm-briefing-anatomy-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__beyond-lstm-briefing-identity-prompt.json",
+      "reason": "User correctly identified both Farah arms appearing to emerge from the same shoulder. Earlier full-frame and contact-sheet reviews missed the attachment error."
+    }
+  ]
+}

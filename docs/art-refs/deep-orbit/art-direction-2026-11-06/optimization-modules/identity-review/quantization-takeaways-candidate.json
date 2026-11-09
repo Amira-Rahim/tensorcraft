@@ -1,0 +1,76 @@
+{
+  "index": 6,
+  "module": "optimization-edge",
+  "lesson": "quantization",
+  "phase": "takeaways",
+  "room": "engineering",
+  "characters": [
+    "dr-farah"
+  ],
+  "aria": false,
+  "alt": "Farah records which decoded predictions change and keeps timing and memory checks separate.",
+  "scene": "Farah alone at the engineering workbench, near-frontal face with her exact adult proportions and a thoughtful gentle smile. She sits comfortably with both feet implied below the clear stool, one hand uses a pen to mark a notebook, other hand holds a single comparison card above the notebook. On the card, two tiny aligned simple wave traces differ slightly in height, without a verdict. A physical stopwatch and a closed diagnostic slate sit unused to the side, separate from her hands. In background one neutral screen shows two equal rectangular panels, not falling speed curves. The action is documenting comparison inputs and disagreements while other measurements remain separate, not approving universal quality. Medium front view with open desk space.",
+  "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of dr-farah. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Dr Farah is the EXACT mature38-year-old woman in her neutral portrait: olive-tan complexion, broad rounded lower cheeks, SHORT rounded chin, compact broad round-tipped nose and nostrils, restrained almond eyes with the same spacing, adult eye/mouth lines, exact brows and mouth proportions. Compact dark wavy hair loosely tied, gray lab coat, rectangular green AR lens on the same anatomical eye as portrait. Never slim her into a pointed teenage face or tiny nose. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Farah alone at the engineering workbench, near-frontal face with her exact adult proportions and a thoughtful gentle smile. She sits comfortably with both feet implied below the clear stool, one hand uses a pen to mark a notebook, other hand holds a single comparison card above the notebook. On the card, two tiny aligned simple wave traces differ slightly in height, without a verdict. A physical stopwatch and a closed diagnostic slate sit unused to the side, separate from her hands. In background one neutral screen shows two equal rectangular panels, not falling speed curves. The action is documenting comparison inputs and disagreements while other measurements remain separate, not approving universal quality. Medium front view with open desk space. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "src": "/scenes/deep-orbit/optimization-edge/quantization-takeaways.webp",
+  "source": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+  "location": "Archimedes, Engineering",
+  "status": "generated-awaiting-review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2353d1d3-ebf8-4ff3-88eb-986bf1533b49.png",
+  "candidate": "/tmp/optimization-candidates/6.webp",
+  "candidateSha256": "f05af79bea0f021ca0987c65f4d41e5976bebfca26bbe934a7a8b0dd84878ee0",
+  "sourceSha256": "afa90923f2275f3cfce5fbcadfa7942445003ce09b285ce098e61e1be49d16ac",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room reference",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 155298,
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/quantization-takeaways-dr-farah-proof.png",
+      "crop": {
+        "left": 580,
+        "top": 20,
+        "width": 365,
+        "height": 415
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2353d1d3-ebf8-4ff3-88eb-986bf1533b49.png",
+      "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

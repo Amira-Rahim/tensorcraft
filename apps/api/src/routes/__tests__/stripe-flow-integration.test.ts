@@ -287,7 +287,7 @@ describe("Stripe webhook → purchase → access integration flow", () => {
     expect(res.status).toBe(400);
   });
 
-  it("completes full flow: signature → purchase row → PostHog → Kit → access grant", async () => {
+  it("fulfills a historical $49 checkout at its original amount after a price change", async () => {
     // Seed a profile so the Kit fire-and-forget branch finds an email.
     db.profiles.push({ id: USER_ID, email: "buyer@example.com" });
 
@@ -311,6 +311,7 @@ describe("Stripe webhook → purchase → access integration flow", () => {
     const purchase = db.purchases[0];
     expect(purchase.user_id).toBe(USER_ID);
     expect(purchase.status).toBe("completed");
+    expect(purchase.amount).toBe(49);
     expect(purchase.world_ids).toEqual(["deep-orbit"]);
     expect(purchase.stripe_session_id).toBe(SESSION_ID);
 

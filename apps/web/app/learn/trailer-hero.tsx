@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TrailerLightbox } from "@/app/components/trailer-lightbox";
 import { EVENTS, track } from "@/lib/analytics-events";
+import { INTRO_VIDEO } from "@/lib/intro-video";
 
 /**
  * The video hero (owner ruling 2026-08-27: nothing over the film but an
@@ -13,13 +14,9 @@ import { EVENTS, track } from "@/lib/analytics-events";
  *   enters the Lighthouse-audited load. Reduced-motion and Save-Data
  *   visitors keep the poster.
  * - The entire video surface is a button: clicking it opens the full cut
- *   with sound in a FocusTrap lightbox (the mp4 loads only then).
+ *   with sound in a FocusTrap lightbox.
  * - The page's single CTA overlays via its own layer above this island.
  */
-const POSTER = "/media/learn-trailer-poster.webp";
-const LOOP = "/media/learn-trailer-loop.webm";
-const FULL = "/media/learn-trailer.mp4";
-
 function prefersStillness(): boolean {
   // The matchMedia guard also covers jsdom, which never implements it:
   // under vitest 4 an effect throwing here fails every test that renders
@@ -87,7 +84,7 @@ export function TrailerHero() {
             reference itself and turned main red. Keep the rationale, drop the
             directive: there is nothing to suppress. */}
         <img
-          src={POSTER}
+          src={INTRO_VIDEO.poster}
           alt=""
           className="absolute inset-0 w-full h-full object-cover select-none"
         />
@@ -98,7 +95,7 @@ export function TrailerHero() {
             autoPlay
             playsInline
             preload="auto"
-            src={LOOP}
+            src={INTRO_VIDEO.src}
             onPlaying={() => {
               setPlaying(true);
               if (!trackedRef.current) {
@@ -135,9 +132,10 @@ export function TrailerHero() {
 
       {open && (
         <TrailerLightbox
-          src={FULL}
-          poster={POSTER}
-          ariaLabel="Tensorcraft trailer"
+          src={INTRO_VIDEO.src}
+          poster={INTRO_VIDEO.poster}
+          captionsSrc={INTRO_VIDEO.captions}
+          ariaLabel="Tensorcraft introduction"
           onClose={close}
         />
       )}

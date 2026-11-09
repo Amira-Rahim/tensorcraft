@@ -1,0 +1,177 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+  "candidateSha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40",
+  "verdict": "FAIL",
+  "nativeReviewed": true,
+  "method": "Fresh native candidate review and enlarged display, face and hand crops. Compared actual display boundary with internal horizontal lines; full shoulder-elbow-wrist and hand-contact inspection; canonical faces and current MDX checked.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "Canonical Nazari identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical Demir identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "followup-ci-display",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        812,
+        64,
+        1510,
+        572
+      ],
+      "scale": 1.5
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-nazari-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        500,
+        210,
+        775,
+        526
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-demir-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        195,
+        180,
+        444,
+        482
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-demir-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        48,
+        708,
+        330,
+        962
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-nazari-desk-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        450,
+        776,
+        662,
+        1010
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-nazari-trackball",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        838,
+        803,
+        1135,
+        929
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Both Demir arms attach continuously to the rail grips. Nazari's near right arm rests on the desk and far left hand controls the trackball. Fingers, wrist transitions and contacts remain coherent.",
+    "identityExpressionAndStory": "Nazari's skeptical searching face and Demir's sheepish realization retain canonical face structure and task-directed gaze.",
+    "displayLegibilityAndSource": "Release mismatch, Candidate/New release, Evaluation/Previous release, Old report: passed and Pairing must match are large, legible and correct for the briefing.",
+    "perspectiveAndOperator": "FAIL: the physical glass top edge rises approximately 42 px over 624 px, while the title underline rises 14 px over 568 px and table top rises 9 px over 567 px. The glass bottom is near level. These line families do not share one vanishing point, so content still appears flatter than its glass plane. Operator can view the screen front, and the swivel mounting is plausible.",
+    "largeDisplayRule": "Main content uses the available monitor space without clipping.",
+    "palette": "Muted sage, brass and charcoal preserve the scene palette."
+  },
+  "measuredGeometry": {
+    "coordinateSystem": "Native 1536 x 1024 image, approximate pixel endpoints",
+    "glassTop": [
+      [
+        842,
+        140
+      ],
+      [
+        1466,
+        98
+      ]
+    ],
+    "glassBottom": [
+      [
+        843,
+        507
+      ],
+      [
+        1471,
+        509
+      ]
+    ],
+    "titleUnderline": [
+      [
+        873,
+        217
+      ],
+      [
+        1441,
+        203
+      ]
+    ],
+    "tableTop": [
+      [
+        874,
+        239
+      ],
+      [
+        1441,
+        230
+      ]
+    ],
+    "tableBottom": [
+      [
+        874,
+        358
+      ],
+      [
+        1441,
+        358
+      ]
+    ],
+    "interpretation": "Given the frame's top and bottom horizontal family, interior upper rules would rise roughly 25 to 30 pixels across the table width; observed rises are only 9 to 14 pixels."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 3,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "Interior title and table are closer to front-facing than the surrounding glass; the user-reported perspective problem is reduced but persists."
+  ],
+  "repairDirection": "Make the physical monitor genuinely frontal and rectangular, with horizontal top/bottom edges, horizontal table rules and text baselines, and vertical sides. Preserve the swivel base and current foreground.",
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T13:46:05.148911+00:00"
+}

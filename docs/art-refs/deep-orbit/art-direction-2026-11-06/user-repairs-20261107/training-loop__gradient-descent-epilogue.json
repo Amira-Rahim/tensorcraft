@@ -1,0 +1,100 @@
+{
+  "key": "gradient-descent-epilogue",
+  "id": "training-loop/gradient-descent",
+  "phase": "epilogue",
+  "cast": [
+    "ensign-demir",
+    "chief-nazari"
+  ],
+  "prompt": "Use case: identity-preserve story scene edit. First image(s) are authoritative neutral portraits of each named human, next is ROOM GEOMETRY ONLY, last is scene to replace. Preserve exact canonical facial structure, age markers, hair, equipment and uniforms. Natural moderately stylized adult proportions, short relaxed necks and ordinary shoulder widths. Two coherent arms per person, natural five-finger hands and wrist alignment. Text, rows, boxes, labels follow physical display perspective including foreshortening and vanishing directions. The operators must see the fronts of screens. Camera beside operators sees the same surface. No camera-facing placards or empty posed smiles. Muted sage #6BAA8A and aged brass #A89060 against charcoal, natural skin, restrained warm practical light. Unused screens dark. No decorative neon, random graphs, plants, extra people or invented results. Landscape1536x1024. Preserve live conversational moment at Engineering console: Demir's ordinary-sized body at left reaches naturally to select next parameter with relaxed index finger, one hand holds tablet whose back faces audience; Nazari stands next to him, naturally folded arms and skeptical amused brow as she counts what remains. Both look at work or each other with visible canonical faces. Main display exact title 'Parameter updates' and rows 'Updated: 1', 'Still at initialization: 672', 'Total: 673'. A separate small display labeled 'ARIA' has one gentle waveform representing ARIA's voice and short text 'Logging each gradient step'. All other rear/wrist displays inactive charcoal. No grid of arbitrary boxes, no invented loss values. Natural finger orientation, no mirrored hand, plausible forearm angle and keyboardclearance. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room geometry only",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "8ac4850db6864d6c996c97cae358bd6f2a671d0096c763e97ef4cf41f4be951c"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+    }
+  ],
+  "candidatePath": "art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2d653561-a716-4fc3-9c54-6e3882006328.png",
+  "candidateSha256": "cabcdfdd9f0b77d3b4cd36dc1b3d974bd8cb40fdde859b0c61cc68a95a4b9166",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "reviewer": "/root",
+    "status": "pass pending independent peer",
+    "method": "Native1536x1024 complete frame and canonical portraits/source inspected",
+    "notes": "Natural face/head/neck and arm chains, source-specific screen content in physical plane, modest palette and engaged work. GDconcept needs unrelated tiny rear screens off."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2d653561-a716-4fc3-9c54-6e3882006328.png",
+  "publishedSource": "art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp",
+  "sourceSha256": "cabcdfdd9f0b77d3b4cd36dc1b3d974bd8cb40fdde859b0c61cc68a95a4b9166",
+  "webpSha256": "4f2e61f955549dcf3f3fa3a5203863930b0e545fd1ac1e0bafb80aa5b41e91e9",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+    "sourceSha256": "8ac4850db6864d6c996c97cae358bd6f2a671d0096c763e97ef4cf41f4be951c",
+    "webpSha256": "4227adb5999a4a2fcc04a65bd07f2ca381c9e645a3fbd6ffa7aa1aa3c87920f3",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-8bc855c7-0e38-4c07-97a0-53c5b1ed2a27.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "cabcdfdd9f0b77d3b4cd36dc1b3d974bd8cb40fdde859b0c61cc68a95a4b9166",
+    "method": "Native complete1536x1024 plus currentMDX/exercise and canonical references",
+    "checks": {
+      "combinedNativeReview": "Natural pointing index and tablet grip, coherent folded Nazari arms, canonical faces and reasonable proportions. Main display correctly shows1updated+672initialized=673; ARIA labeled waveform/logging meaningful. All text follows respective surface plane. Dark wrist/unused screens, lively exchange.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+          "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

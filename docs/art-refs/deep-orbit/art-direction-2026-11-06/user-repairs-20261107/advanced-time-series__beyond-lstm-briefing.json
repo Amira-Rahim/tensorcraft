@@ -1,0 +1,156 @@
+{
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "briefing",
+  "index": 0,
+  "prompt": "Use case: identity-preserve. Create the replacement Deep Orbit lesson scene at1536x1024. First two reference images are the canonical human identities; preserve facial structure, eye and brow shapes, jaw, nose, mouth, complexion, age, hair and signature equipment. Third reference is the Lab ROOM GEOMETRY ONLY, not its old decorative interfaces or bright palette. Last is the scene to restage. Balanced stylized adult head/body proportions, short relaxed necks, ordinary shoulders. Exactly two anatomically coherent arms per person, natural wrists and five-finger hands; no body/furniture intersections. Crew look at work or each other, not camera. Every screen's readable front faces its operator, camera beside operator sees that same front. All text, rows and rules follow screen perspective and foreshortening. Muted sage #6BAA8A and aged brass #A89060 against charcoal/navy, natural skin and modest practical lights. Turn all incidental monitors and wrist displays inactive charcoal. Subdue the vertical lab tube to dim olive-sage, no lime glow or neon outlines. No invented outcomes, random waveforms, graphs, glyphs or decorative progress bars. Restage the Beyond LSTM briefing as a candid lab investigation. Farah is seated in natural three-quarter view at the clear desk, facing a large upright work monitor on the left. She has just laid her stylus flat on the desk; one hand rests beside it, the other makes a small relaxed palm-up question gesture at waist height. Demir stands to her right, slightly leaning toward the same monitor, one hand naturally rests on clear desk edge and the other holds a closed notebook at his side. He exchanges a rueful half-smile with Farah at their forecast miss. Both faces visible with exact canonical identity. No arms raised above shoulders, no crossed reaching limbs, no touch through glass. Camera shares their side of the working monitor. Main display contains ONLY these short verified rows: title \"Forecast review\"; \"LSTM forecast: 01:34:55\"; \"Observed: 01:31:27\"; \"208 s early\"; \"Early ripple: step 4 of 80\"; small footer \"Attention test: pending\". Show no invented spike location or plotted curve. This is a question they are investigating, not a solved prediction. Keep the room recognizably the established Lab with brass apparatus and glass doorway, modest conversational warmth. Different composition from a lecturer pointing high at a board. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+    "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml"
+  ],
+  "location": "Archimedes, Lab",
+  "alt": "Farah and Demir compare the missed LSTM forecast and plan an attention test at the lab workstation.",
+  "tool": "built-in image_gen",
+  "replacesSha256": "a9e7ae6140c3ff662fdc32e364c3b87721f19254fe4225000cb1bdb16c4ecc53",
+  "candidateSha256": "e3c09d107e9ee7fde988cdd487ac4546fcdcdcf8b19b23e628cf6a00a145df0f",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+      "sha256": "a9e7ae6140c3ff662fdc32e364c3b87721f19254fe4225000cb1bdb16c4ecc53",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+  "ownQA": {
+    "verdict": "PASS",
+    "reviewer": "/root/reader_late",
+    "inspection": "Native1536x1024 and temporary face/hand crops compared with neutral portraits",
+    "identity": "Farah oval face, nose/eye/brow proportions, AR lens and ponytail preserved; Demir brown eyes, freckles, brow, jaw, stubble and headset preserved in natural downward three-quarter gaze.",
+    "anatomy": "Four coherent shoulder-to-hand chains. Farah stylus-rest hand and small palm-up gesture; Demir desk contact and relaxed book grip. Normal short necks and balanced adult body proportions, chair/table clear.",
+    "readerAndPerspective": "Both share working display front. Title and rows progressively change slope with screen depth. Exact times and208s difference, early ripple step4of80, attention pending verified.",
+    "paletteAndStory": "Dim olive tube, muted sage text, aged brass, dark auxiliary monitors. Farah questions the miss and Demir replies with rueful smile, no camera-facing pose.",
+    "cropCoordinates": {
+      "farah": [
+        538,
+        330,
+        280,
+        340
+      ],
+      "demir": [
+        935,
+        160,
+        285,
+        330
+      ],
+      "hands": [
+        520,
+        750,
+        920,
+        240
+      ]
+    },
+    "temporaryCropsRemoved": true
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-5f52970d-bd2c-4497-9ca8-9b368a22be89.png",
+  "id": "advanced-time-series/beyond-lstm",
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-5f52970d-bd2c-4497-9ca8-9b368a22be89.png",
+  "publishedSource": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+  "sourceSha256": "e3c09d107e9ee7fde988cdd487ac4546fcdcdcf8b19b23e628cf6a00a145df0f",
+  "webpSha256": "5c6baa1a0a0a065e74912ddb7d15969d5e78a512a4ca710212e50892ea739764",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+    "sourceSha256": "a9e7ae6140c3ff662fdc32e364c3b87721f19254fe4225000cb1bdb16c4ecc53",
+    "webpSha256": "8cd2f750e877bbe202e07601266d13167e0262b5dc04b4820167564f37ca34b1",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_late",
+    "status": "approved",
+    "candidateSha256": "e3c09d107e9ee7fde988cdd487ac4546fcdcdcf8b19b23e628cf6a00a145df0f",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Natural collaborative review with canonical faces and four coherent hands. Exact forecast01:34:55 and observation01:31:27 differ208seconds; early ripple4of80 and pending attention match MDX. Display front accessible to both; perspective and muted palette coherent.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+          "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+          "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+        "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

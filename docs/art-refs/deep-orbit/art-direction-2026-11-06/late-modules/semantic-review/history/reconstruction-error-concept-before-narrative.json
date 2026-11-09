@@ -1,0 +1,64 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "concept",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next room reference only, LAST exact target. Preserve people, adult age, exact face morphology, expressions, hair, signature equipment, natural warm skin, whole poses, two connected arm chains per person, grips, neck alignment, chairs and contacts. Farah lens anatomical LEFT, Demir comms anatomical RIGHT. Narrative crew action stays dominant. All unmentioned monitors and wrist displays OFF, plain charcoal glass. No arbitrary waveforms, charts, code, meters or data. Restrained sage, aged brass, charcoal. Eliminate neon mint outlines and broad yellow wash. Any LAB PILLAR dark muted sage with thin dim grey internal bands, never fluorescent lime. Preserve exact Farah face, full head size, leaning whole torso, hand turning dial and other hand supported on bench. Main board shows a single simple calculation chain, no decorative waves. Heading \"Compare input with rebuilt features\". Three connected boxes left to right \"Subtract\", \"Square each gap\", \"Mean over 11 features\". Arrow from final box to one small result box below \"One MSE per reading\". A distinct branch from \"Square each gap\" leads to a separate box \"11 per-feature squared errors\". Branch bypasses mean and does not loop back. All arrowheads unambiguous. No fabricated numeric results. All secondary screens off. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/reconstruction-error-concept-before.png",
+      "sha256": "f5dfa2a530a0b62ad78c0e6437b2130b1cc4ae661a42b4efdcaf0ff4b98744b7",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "f5dfa2a530a0b62ad78c0e6437b2130b1cc4ae661a42b4efdcaf0ff4b98744b7",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+    "sha256": "7ae843a6186946d054d5401dfd235df8de0182fa61631149e89d8dea9f7e95fb"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sha256": "dec34450564614d8f3963d95bf9a3cf627d276b42b576e430c9a5cae535425e6"
+    }
+  ],
+  "panelSpecification": {
+    "state": "operation",
+    "concreteGenerationSpecification": "Preserve exact Farah face, full head size, leaning whole torso, hand turning dial and other hand supported on bench. Main board shows a single simple calculation chain, no decorative waves. Heading \"Compare input with rebuilt features\". Three connected boxes left to right \"Subtract\", \"Square each gap\", \"Mean over 11 features\". Arrow from final box to one small result box below \"One MSE per reading\". A distinct branch from \"Square each gap\" leads to a separate box \"11 per-feature squared errors\". Branch bypasses mean and does not loop back. All arrowheads unambiguous. No fabricated numeric results. All secondary screens off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Measuring reconstruction error and Error by feature"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve whole poses and anatomical chains. Briefing Farah and takeaways both receive only subtle head adjustment, all others unchanged.",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-concept-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "8de3c75a2cd268976fc6964c32fbd11bcf32ef352351c440481d2cce2b3b856f",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7baf0c77-e6c1-4b54-aee3-396ae57038a8.png"
+}

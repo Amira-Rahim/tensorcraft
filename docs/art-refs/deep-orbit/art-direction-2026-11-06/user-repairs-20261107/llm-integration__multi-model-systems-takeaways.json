@@ -1,0 +1,177 @@
+{
+  "key": "multi-model-systems-takeaways",
+  "id": "llm-integration/multi-model-systems",
+  "phase": "takeaways",
+  "source": "art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+  "sourceSha256": "60f6662512a4c4b356ac8afb75c56673a796e790db5d3d9e53564ffad552ddb4",
+  "auditIndex": 63,
+  "auditHold": "Both characters stare at camera holding props while two bright floating warning/report icons do not explain review gates. Full restage: Demir checks measured alert on workstation while Farah reviews draft beside him; distinguish measured alert release from explanation pending human review, show input/output checks and fallback/stop. Natural interaction, muted physical display and dark auxiliaries.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Image1: ensign-demir canonical identity authority. Image2: dr-farah canonical identity authority. Image3: bridge ROOM ONLY master, not incidental UI or oversaturated light. Finalimage: exactedit target.\nFull restage into a candid two-person working scene. Demir seated at imageleft, natural typing hands low and relaxed, Farah standing beside him to right resting one hand on desk and pointing with stylus in other. Both look at a large physical monitor at left foreground, front angled toward both crew, camera shares their viewing side while three-quarter faces remain readable. Demir reacts with understanding to Farah's reminder. Display header Pipeline release checks. Two distinct rows Measured alert: checked fields / Explanation: human review. Smaller rows Check inputs and outputs / Acceptable fallback or stop / Evaluate the full pipeline. No completed alert result implied, this is checklist. Remove bright floating icons and camera-facing props. Dark wrist and all unused panels.\n Farah wears translucent sage AR lens on anatomicalLEFT eye. Never omit it. Demir has one communicator on anatomicalRIGHT ear; when hidden by head do not draw it floating beside eye/cheek. Canonical identity and age from portraits, naturally expressive faces in three-quarter view; normal adult head/body proportions and necks. Two arms per person, trace shoulders to elbows to wrists and exactly one natural five-finger hand each. No hand/furniture penetration. Every display has a physical frame; its front must face its actual readers as well as obliquely visible to camera. Every line, arrow and letter lies in its screen plane. Any notebook is blank faintly ruled, never fake handwriting. No mugshot or posed presentation, no one looks at camera. Warm light localized, muted charcoal/neutralgray/olive, sage #6BAA8A interfaces, aged brass #A89060. Avoid electriclime/yellowwash, no plants. Dark unused screens and wrist displays. Clean bold linework, flat celshading, cohesive Deep Orbit series. 1536x1024 landscape. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "6d04b40e8cf5de546f83c22ea6cbbf062c394c839092eeeeb47251de418961f7",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+      "sha256": "65c1c9d68bb026562006dffb90cb8715118a628763356fb11724a0869376d622"
+    }
+  ],
+  "alt": "Farah and Demir check the separate release requirements for measured alerts and generated explanations.",
+  "location": "Archimedes, Bridge",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9c757dfd-e153-4fe4-afab-7633c0b0ead6.png",
+  "candidatePath": "art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9c757dfd-e153-4fe4-afab-7633c0b0ead6.png",
+  "candidateSha256": "60f6662512a4c4b356ac8afb75c56673a796e790db5d3d9e53564ffad552ddb4",
+  "ownReview": {
+    "reviewer": "/root/remaining_signal_llm",
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Candid conversation and checklist, no complete-result claims. All4 hands anatomical, Farah leaning with shortneck, Demir normal shoulders, operatorfrontscreen correctperspective."
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+      "sha256": "65c1c9d68bb026562006dffb90cb8715118a628763356fb11724a0869376d622",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9c757dfd-e153-4fe4-afab-7633c0b0ead6.png",
+  "publishedSource": "art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-takeaways.webp",
+  "webpSha256": "f9714038dbf8589e686f0201ab82242c27ed9e736c0584eccbf5051ba0cb03d9",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+    "sourceSha256": "65c1c9d68bb026562006dffb90cb8715118a628763356fb11724a0869376d622",
+    "webpSha256": "bfc21c0e83b30ae788afe8994c7a20190d85f8fbb42f2842503ca721505c9f5d",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_signal_llm",
+    "status": "approved",
+    "candidateSha256": "60f6662512a4c4b356ac8afb75c56673a796e790db5d3d9e53564ffad552ddb4",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah explains release checks while Demir turns from typing. Four coherent natural hands and arm chains, short necks and canonical faces. Monitor faces crew and camera; all text follows its plane. Checklist keeps measured alerts separate from human-reviewed explanations, with fallback or stop and full-pipeline evaluation matching MDX.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+          "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+        "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__multi-model-systems-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-takeaways.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root",
+  "identityCropReview": [
+    {
+      "key": "multi-model-systems-takeaways",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9c757dfd-e153-4fe4-afab-7633c0b0ead6.png",
+      "sourceSha256": "60f6662512a4c4b356ac8afb75c56673a796e790db5d3d9e53564ffad552ddb4",
+      "crop": {
+        "left": 550,
+        "top": 245,
+        "width": 285,
+        "height": 365
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "referenceCrop": {
+        "left": 125,
+        "top": 5,
+        "width": 270,
+        "height": 330
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad brows, round brown eyes, nose bridge and tip, rounded jaw/chin, freckles, light stubble and swept hairline. Side-view foreshortening remains plausible; right-ear communicator is correctly visible or hidden with the pose, never moved to left ear.",
+      "comparisonDeleted": true
+    },
+    {
+      "key": "multi-model-systems-takeaways",
+      "character": "farah",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9c757dfd-e153-4fe4-afab-7633c0b0ead6.png",
+      "sourceSha256": "60f6662512a4c4b356ac8afb75c56673a796e790db5d3d9e53564ffad552ddb4",
+      "crop": {
+        "left": 940,
+        "top": 60,
+        "width": 360,
+        "height": 380
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "referenceCrop": {
+        "left": 115,
+        "top": 5,
+        "width": 290,
+        "height": 335
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad soft cheek/jaw, rounded chin, arched brows, almond eye spacing, nose shape, mouth proportions and mature complexion. Gaze and three-quarter rotation account for apparent width differences; low ponytail and anatomical left-eye AR lens remain consistent.",
+      "comparisonDeleted": true
+    }
+  ]
+}

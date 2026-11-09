@@ -1,0 +1,182 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "concept",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portrait references first, room palette reference next, LAST input exact edit target. Change ONLY the bright lime-green vertical pillar behind Farah. Make its glass a dark desaturated sage, with faint subdued rings and no luminous yellow-green glow. Preserve the exact diagram and every word/arrow/value, Farah face, whole pose, all arm/hand/stylus chains, size, monitor angle and all other room details. Clean cel-shaded adventure-comic illustration,1536x1024. No changes outside requested detail.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-concept-narrative-stage1-openai-20261107.png",
+      "sha256": "47b2d4d02c1fb292311fd1795663c026e040d65213f5d5670b3ef1bfd2b1b210",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "47b2d4d02c1fb292311fd1795663c026e040d65213f5d5670b3ef1bfd2b1b210",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+    "sha256": "7ae843a6186946d054d5401dfd235df8de0182fa61631149e89d8dea9f7e95fb"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sha256": "dec34450564614d8f3963d95bf9a3cf627d276b42b576e430c9a5cae535425e6"
+    }
+  ],
+  "panelSpecification": {
+    "state": "operation",
+    "concreteGenerationSpecification": "Restage Farah as a scientist working at an angled lab console, not a presenter next to a giant lesson board. She stands in three-quarter side profile leaning into a compact working display; her stylus follows the branch before averaging, and her other hand braces naturally on the bench. Focused curiosity, eyes on the branch, natural neck and shoulders. Camera sees her canonical face from beside the display. Turn the huge wallboard off. The small work screen has heading Input vs rebuilt features and three connected steps: Subtract, Square each gap, Mean over 11 features. The mean feeds One MSE per reading. A separate downward branch from Square each gap feeds 11 per-feature squared errors, bypassing the mean. Clear non-crossing arrowheads, no invented values, no waves. Every label and line conforms to the angled screen plane. Other screens inactive, notebook closed with a plain cover. Warm olive skin, dim sage pillar, charcoal and aged brass, no bright lime outlines. Exact adult face and balanced head size, two distinct connected arms with realistic stylus grip and supporting fingers.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Measuring reconstruction error and Error by feature"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portrait references first, room palette reference next, LAST input exact edit target. Change ONLY the bright lime-green vertical pillar behind Farah. Make its glass a dark desaturated sage, with faint subdued rings and no luminous yellow-green glow. Preserve the exact diagram and every word/arrow/value, Farah face, whole pose, all arm/hand/stylus chains, size, monitor angle and all other room details. Clean cel-shaded adventure-comic illustration,1536x1024. No changes outside requested detail."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-746e61e3-f519-4f64-ad31-8e6bd82a798f.png",
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/reconstruction-error-concept-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-concept-target.png",
+    "sha256": "8de3c75a2cd268976fc6964c32fbd11bcf32ef352351c440481d2cce2b3b856f",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "8de3c75a2cd268976fc6964c32fbd11bcf32ef352351c440481d2cce2b3b856f",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-concept-runtime-before.png",
+    "sha256": "f5dfa2a530a0b62ad78c0e6437b2130b1cc4ae661a42b4efdcaf0ff4b98744b7",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "f5dfa2a530a0b62ad78c0e6437b2130b1cc4ae661a42b4efdcaf0ff4b98744b7",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah checks how an eleven-feature mismatch becomes one score, then stops at the per-feature branch to inspect what the average hides.",
+    "fullSpecification": "Restage Farah as a scientist working at an angled lab console, not a presenter next to a giant lesson board. She stands in three-quarter side profile leaning into a compact working display; her stylus follows the branch before averaging, and her other hand braces naturally on the bench. Focused curiosity, eyes on the branch, natural neck and shoulders. Camera sees her canonical face from beside the display. Turn the huge wallboard off. The small work screen has heading Input vs rebuilt features and three connected steps: Subtract, Square each gap, Mean over 11 features. The mean feeds One MSE per reading. A separate downward branch from Square each gap feeds 11 per-feature squared errors, bypassing the mean. Clear non-crossing arrowheads, no invented values, no waves. Every label and line conforms to the angled screen plane. Other screens inactive, notebook closed with a plain cover. Warm olive skin, dim sage pillar, charcoal and aged brass, no bright lime outlines. Exact adult face and balanced head size, two distinct connected arms with realistic stylus grip and supporting fingers."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718",
+  "faceBoxes": {
+    "farah": [
+      890,
+      110,
+      390,
+      420
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-concept-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Farah as a scientist working at an angled lab console, not a presenter next to a giant lesson board. She stands in three-quarter side profile leaning into a compact working display; her stylus follows the branch before averaging, and her other hand braces naturally on the bench. Focused curiosity, eyes on the branch, natural neck and shoulders. Camera sees her canonical face from beside the display. Turn the huge wallboard off. The small work screen has heading Input vs rebuilt features and three connected steps: Subtract, Square each gap, Mean over 11 features. The mean feeds One MSE per reading. A separate downward branch from Square each gap feeds 11 per-feature squared errors, bypassing the mean. Clear non-crossing arrowheads, no invented values, no waves. Every label and line conforms to the angled screen plane. Other screens inactive, notebook closed with a plain cover. Warm olive skin, dim sage pillar, charcoal and aged brass, no bright lime outlines. Exact adult face and balanced head size, two distinct connected arms with realistic stylus grip and supporting fingers. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-concept-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "47b2d4d02c1fb292311fd1795663c026e040d65213f5d5670b3ef1bfd2b1b210",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c702a5b3-9dcd-4210-889e-56f1ffd6767e.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-concept-target.png",
+          "sha256": "8de3c75a2cd268976fc6964c32fbd11bcf32ef352351c440481d2cce2b3b856f",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "8de3c75a2cd268976fc6964c32fbd11bcf32ef352351c440481d2cce2b3b856f",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-concept-identity-proof.jpg"
+    }
+  ],
+  "nextCandidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-concept-narrative-stage2-openai-20261107.png",
+  "previousPanelSpecification": {
+    "state": "operation",
+    "concreteGenerationSpecification": "Preserve exact Farah face, full head size, leaning whole torso, hand turning dial and other hand supported on bench. Main board shows a single simple calculation chain, no decorative waves. Heading \"Compare input with rebuilt features\". Three connected boxes left to right \"Subtract\", \"Square each gap\", \"Mean over 11 features\". Arrow from final box to one small result box below \"One MSE per reading\". A distinct branch from \"Square each gap\" leads to a separate box \"11 per-feature squared errors\". Branch bypasses mean and does not loop back. All arrowheads unambiguous. No fabricated numeric results. All secondary screens off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Measuring reconstruction error and Error by feature"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718",
+    "proofSha256": "a6b42f24181ec878b1db61126d8935fa0b867b765edfa20353db76b1892ad73e",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah checks how an eleven-feature mismatch becomes one score, then stops at the per-feature branch to inspect what the average hides."
+  },
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-746e61e3-f519-4f64-ad31-8e6bd82a798f.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c702a5b3-9dcd-4210-889e-56f1ffd6767e.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+      "art-src/scenes/anomaly-detection__reconstruction-error-concept-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/anomaly-detection__reconstruction-error-concept-narrative-stage2-openai-20261107.png",
+    "sha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__reconstruction-error-concept.json"
+}

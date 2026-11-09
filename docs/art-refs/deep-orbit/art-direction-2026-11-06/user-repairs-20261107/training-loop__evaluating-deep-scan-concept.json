@@ -1,0 +1,93 @@
+{
+  "key": "evaluating-deep-scan-concept",
+  "id": "training-loop/evaluating-deep-scan",
+  "phase": "concept",
+  "cast": [
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve story scene edit. First image(s) are authoritative neutral portraits of each named human, next is ROOM GEOMETRY ONLY, last is scene to replace. Preserve exact canonical facial structure, age markers, hair, equipment and uniforms. Natural moderately stylized adult proportions, short relaxed necks and ordinary shoulder widths. Two coherent arms per person, natural five-finger hands and wrist alignment. Text, rows, boxes, labels follow physical display perspective including foreshortening and vanishing directions. The operators must see the fronts of screens. Camera beside operators sees the same surface. No camera-facing placards or empty posed smiles. Muted sage #6BAA8A and aged brass #A89060 against charcoal, natural skin, restrained warm practical light. Unused screens dark. No decorative neon, random graphs, plants, extra people or invented results. Landscape1536x1024. Mirza is actively inspecting why accuracy hides missed anomalies. Three-quarter side composition with her left of a working Bridge display on right. She leans forward slightly with a thoughtful mildly disappointed brow, setting one small case card into a shallow tray on desk. Only the blank back of the card faces us, front faces her. Her other hand rests naturally on console beside the tray. No floating holograms. Exact display title 'Crew example: 50 test rows'. A clearly aligned two-by-two confusion table, with column labels 'Predicted anomaly' and 'Predicted calm'; row labels 'Actual anomaly' and 'Actual calm'. Cells in that order:23,3 /0,24. The3 cell has a modest amber outline and short nearby label 'Missed anomalies'. Footer 'Accuracy: 94%'. Keep all type in screen plane. This is explicitly the crew example, not the learner's result. Small amused ruefulness at the three misses, active classification work, no audience pose. Other screens dark. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "canonical identity",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room geometry only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "bde2c2b4b05eea6b1953b62e21bc1cf82406dce81eac7cd9b674c13fcaddbc40"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+    }
+  ],
+  "candidatePath": "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4660ae7a-8150-48df-83b0-cf1ca80ca053.png",
+  "candidateSha256": "000be3b028e8921d0fcf7d5128d3c41dab4aeb5d7cc12289b6a286fea7dbdd9a",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "reviewer": "/root",
+    "status": "pass pending independent peer",
+    "method": "Native 1536x1024 complete frame and canonical portraits inspected",
+    "notes": "Natural arm chains, necks, identities, task-action and muted palette. Readable text in screen plane. Takeaways numerical bar fill looks about54percent for60percent, withhold pending removal of redundant bars."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4660ae7a-8150-48df-83b0-cf1ca80ca053.png",
+  "publishedSource": "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+  "sourceSha256": "000be3b028e8921d0fcf7d5128d3c41dab4aeb5d7cc12289b6a286fea7dbdd9a",
+  "webpSha256": "464e5880b6ab6654d4ff7e22fe50997288d0db29a439a1665968c07372ad365f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+    "sourceSha256": "bde2c2b4b05eea6b1953b62e21bc1cf82406dce81eac7cd9b674c13fcaddbc40",
+    "webpSha256": "7ee6439d536d7e0bcd9e9dccea7db54d2478c003154d0760e3925eeae57e9579",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-b93353d8-fe6d-4fc3-893c-abf7ce1552b9.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "000be3b028e8921d0fcf7d5128d3c41dab4aeb5d7cc12289b6a286fea7dbdd9a",
+    "method": "Native complete1536x1024 plus canonical references and current MDX",
+    "checks": {
+      "combinedNativeReview": "Natural card pinch and console hand with normal arm chains; face and age canonical, short neck. Blank card back faces camera and front faces Mirza. Shared monitor correctly shows crew example50rows,actualrow/predictedcolumn matrix23,3/0,24 and94percent. Text fits perspective, amber3 meaningful, modest reflective emotion and muted palette.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+          "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+    "docs/art-refs/deep-orbit/commander-mirza.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

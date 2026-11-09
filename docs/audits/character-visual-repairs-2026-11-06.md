@@ -8,8 +8,12 @@ epilogues. Each scene ships once under its runtime lesson slug.
 
 [Scene review gallery](character-visual-design-2026-11-06/scene-gallery.html)
 supports module filtering and opens each image at full resolution.
-[A four-scene preview](character-visual-design-2026-11-06/face-visible-preview.jpg)
-shows the shared character treatment.
+Current original scenes remain available for [Building a Network](../../art-src/scenes/neural-networks__building-a-network-openai-20261107.png)
+and [The Anomaly](../../art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png).
+The November 9 cleanup removed the obsolete four-scene preview. Its
+[cleanup record](deep-orbit-quality-2026-11-08/unused-artwork-cleanup.json)
+preserves the preview hash and retained original paths. This document records
+the November 6 repairs. Image links open the current artwork.
 
 ## Character and scene changes
 

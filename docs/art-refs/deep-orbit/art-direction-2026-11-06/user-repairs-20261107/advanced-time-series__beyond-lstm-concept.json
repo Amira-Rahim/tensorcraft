@@ -1,0 +1,181 @@
+{
+  "id": "advanced-time-series__beyond-lstm-concept",
+  "lesson": "advanced-time-series/beyond-lstm",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "room": "lab",
+  "src": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+  "alt": "Farah checks how attention scores become a weighted value blend on the large lab display.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.017833+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah operates a mouse with one hand and rests the other on her open notebook. Her absorbed half-smile turns toward the illustrative weights as she checks how every value contributes. Keep the one-person close three-quarter composition, but enlarge the main diagram onto the unused lab wall.\nExact visible display content: Title: \"Illustrative attention\". Flow: \"Query + Keys\" to \"Scores [2, 1, 0]\" to \"Softmax\" to \"Weights [0.665, 0.245, 0.090]\" to \"Blend Values\". Footer: \"Weights sum to 1\". Use one clear connected flow, large labels. No invented probability-of-relevance interpretation.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "b66adeed795be4589c6a53571b1b8fae83ecd73fef621ca69e5e2ced89551fbb",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room master",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "6156faba3878c9d00bf7c702fd070de378fff6088b613badcd27f42b28a78a8d"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+    "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+  },
+  "sourceSha256": "080c283cb54796e50a79627efb6b8ca94894f68d5deb9bb2ed22cc58a908a132",
+  "sourceEvidence": {
+    "task": "Farah operates a mouse with one hand and rests the other on her open notebook. Her absorbed half-smile turns toward the illustrative weights as she checks how every value contributes. Keep the one-person close three-quarter composition, but enlarge the main diagram onto the unused lab wall.",
+    "visibleDataOperationAndResult": "Title: \"Illustrative attention\". Flow: \"Query + Keys\" to \"Scores [2, 1, 0]\" to \"Softmax\" to \"Weights [0.665, 0.245, 0.090]\" to \"Blend Values\". Footer: \"Weights sum to 1\". Use one clear connected flow, large labels. No invented probability-of-relevance interpretation.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Small weights and value-flow labels compete within the tabletop monitor beneath a large unused wall.",
+        "repairDirection": "Move the exact scores, weights and blend diagram onto the wall display. Keep the scene action but make the main technical content large and generously spaced."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah operates a mouse with one hand and rests the other on her open notebook. Her absorbed half-smile turns toward the illustrative weights as she checks how every value contributes. Keep the one-person close three-quarter composition, but enlarge the main diagram onto the unused lab wall.\nExact visible display content: Title: \"Illustrative attention\". Flow: \"Query + Keys\" to \"Scores [2, 1, 0]\" to \"Softmax\" to \"Weights [0.665, 0.245, 0.090]\" to \"Blend Values\". Footer: \"Weights sum to 1\". Use one clear connected flow, large labels. No invented probability-of-relevance interpretation.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp"
+  },
+  "publicationStatus": "withheld pending independent peer review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-8aa19991-5a40-43dd-8a78-2c127f7b8bdb.png",
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+  "candidateSha256": "080c283cb54796e50a79627efb6b8ca94894f68d5deb9bb2ed22cc58a908a132",
+  "generatedAt": "2026-11-08T17:53:35.145992+00:00",
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 1040,
+      "top": 155,
+      "width": 365,
+      "height": 390
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 510,
+      "top": 790,
+      "width": 835,
+      "height": 145
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T18:26:10.723552+00:00",
+    "candidateSha256": "080c283cb54796e50a79627efb6b8ca94894f68d5deb9bb2ed22cc58a908a132",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "dr-farah",
+        "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 1040,
+          "top": 155,
+          "width": 365,
+          "height": 390
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah uses the mouse to inspect illustrative attention weights on the lab wall.",
+    "emotion": "Absorbed curiosity.",
+    "eyeline": "Toward the large wall flow.",
+    "narrativeReason": "She checks how scores become weights that blend values.",
+    "findings": [
+      "Former empty wall is a large upright display with exact scores [2,1,0] and weights [.665,.245,.090], all aligned to its plane.",
+      "Flow reaches Blend Values and weights sum to one without invented probabilities or task success.",
+      "Mouse and notebook hands have normal thumb sides, neutral wrists and coherent complete arm chains."
+    ]
+  },
+  "owner": "/root/quality_sequence",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__beyond-lstm-concept/candidate.png",
+  "publishedSource": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+  "webpSha256": "263b2e740fcd092d0c270b844381b494e36f0cb29fc4345f039986fd3fd8801f",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+    "sourceSha256": "6156faba3878c9d00bf7c702fd070de378fff6088b613badcd27f42b28a78a8d",
+    "webpSha256": "31c6d87bdceabb1c4075f70441dbe5c86e8b620649255681fa92af5e03114d2c",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a7bafbab-6279-43c5-8ba6-217f36909675.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_runtime",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "080c283cb54796e50a79627efb6b8ca94894f68d5deb9bb2ed22cc58a908a132",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Former empty wall is a large upright display with exact scores [2,1,0] and weights [.665,.245,.090], all aligned to its plane.",
+      "Flow reaches Blend Values and weights sum to one without invented probabilities or task success.",
+      "Mouse and notebook hands have normal thumb sides, neutral wrists and coherent complete arm chains.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

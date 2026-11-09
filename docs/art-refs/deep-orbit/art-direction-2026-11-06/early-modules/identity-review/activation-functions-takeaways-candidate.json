@@ -1,0 +1,63 @@
+{
+  "module": "neural-networks",
+  "lesson": "activation-functions",
+  "phase": "takeaways",
+  "src": "/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp",
+  "index": 3,
+  "characters": [
+    "chief-nazari",
+    "dr-farah"
+  ],
+  "prompt": "Use case: identity-preserve. Image 1 is canonical Chief Nazari. Image 2 is canonical Dr Farah. Image 3 is the edit target. Correct ONLY Farah's head on the right. The prior edit left a triangular chin, narrow lower cheeks and tiny pointed nose, which must be replaced. Turn her head slightly toward the camera while her eyes still glance warmly toward Nazari. Faithfully reproduce Image 2's SAME mature 38-year-old individual: full rounded lower cheeks, short broad rounded chin, compact broad nose with a round tip, exact brow and eye shape/spacing, adult eye and mouth detail, full restrained lip proportions, olive-tan complexion and same compact hairline/tied waves. A warm small smile is enough. Do not draw a teenager, narrow beauty face, pointy chin or tiny nose. Preserve her green AR lens on the same anatomical eye. Preserve Nazari's entire already-corrected face and body unchanged. Preserve both women's bodies, all four hands, slate, multitool, room and every screen curve/diagram exactly. No other changes, text, people or limbs. 1536x1024.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5f185371-ff04-4c49-8634-48127127f330.png"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae3a58b3-0b9a-4d0c-b099-cf241aff2f69.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5f185371-ff04-4c49-8634-48127127f330.png",
+      "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=444): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. DR-FARAH (portrait 2, scene head near x=1163): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene.",
+      "references": [
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/dr-farah.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp"
+      ],
+      "verdict": "withheld",
+      "reason": "Farah triangular lower face remains"
+    }
+  ],
+  "candidate": "/tmp/early-identity-candidates/3.webp",
+  "candidateSha256": "68a5e136aa534427d17c171075cc7162eeaf0cfc952d65cae80d42ca547ad99e",
+  "sourceSha256": "f14b24e47f0c91f5d54e01daaf009b70789a7d24b060b6bea866468d6c337703",
+  "beforeSha256": "6851ede3833aef6a02972097264db197a7404f418cc297a4efc8e2d384a443d4",
+  "bytes": 149688,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-takeaways-chief-nazari-correction.png",
+      "crop": {
+        "left": 309,
+        "top": 54,
+        "width": 270,
+        "height": 318
+      }
+    },
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-takeaways-dr-farah-correction.png",
+      "crop": {
+        "left": 999,
+        "top": 66,
+        "width": 327,
+        "height": 369
+      }
+    }
+  ]
+}

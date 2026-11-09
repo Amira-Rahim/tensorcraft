@@ -1,0 +1,99 @@
+{
+  "id": "browser-runtimes/inference-pipeline",
+  "phase": "epilogue",
+  "status": "published",
+  "prompt": "Use case: illustration-story. Restage the LAST image into a candid story moment at the exact high quality of reference4. Reference1 is Farah canonical identity, reference2 is Demir canonical identity. Preserve their individual face structure, age, complexion, hairline, nose and eyes through new natural expressions. Reference3 is bridge ROOM ONLY. Reference4 is ONLY the latest scene quality benchmark for restrained colors, natural adult proportions, fluid body posture, clean hands and clear perspective-correct display text; do not add Mirza. LAST is the older target with the correct unresolved sample, not a pose authority.\nShow exactly Farah and Demir in a warm, quietly intriguing ending. Farah sits at a bridge workstation on the LEFT, lightly leaning forward, concentrating with a small knowing smile as she uses a trackball to route an unexplained archive reading for review. Her near hand rests naturally on the empty desk beside the trackball, her other hand operates it, both wrists relaxed and continuous with their own sleeves. Demir stands just behind her left shoulder, one hand loosely resting on the top of her chair and the other holding a closed dark notebook down beside his own hip. He leans slightly toward her with a raised questioning eyebrow and a half-smile, reacting to the still-unknown sample. Farah looks at the display and Demir looks at Farah. Natural conversation and active work, not a posed photograph. Camera is beside the operators, slightly elevated, showing recognizable three-quarter faces and the readable FRONT of one shared physical display on the RIGHT. Compact natural necks, ordinary adult shoulder width and balanced head size. Exactly two attached arms and hands per person, natural five-finger anatomy and plausible object contact. Chair, knees and workbench have realistic clearance.\nThe display has a simple legible hierarchy with this exact text, all perspective-projected into the same glass plane: title 'Archive replay'; 'Sample 7741'; 'Anomaly score: 0.518'; 'Label: unknown'; a modest amber status 'Review queued'; a smaller bottom line 'Tensor count: steady for 1 hour'. No chart, progress bar, invented prediction, solved mystery or distracting background data. Unused auxiliary monitors are dark. Keep near-black space, quiet charcoal bridge, navy uniform, gray coat, controlled sage interface light and aged brass. No plants, neon glow, orange wash, thick accent bars or extra props. Clean matte cel shading with readable facial light, no glossy rendering. Landscape1536x1024.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical Demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "Bridge room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-openai-20261107.png",
+      "sha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+      "role": "Latest batch quality, palette and natural acting only; do not copy cast or information"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+      "sha256": "b4b1edc9cd55d41423376c4bb3056c2aa4dfeda83c127491e6794605235adf66",
+      "role": "Edit target; replace stiff staging while preserving source meaning"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+    }
+  ],
+  "candidatePath": "art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7fcd4518-5f34-4b20-bb9c-43a3805ffa1f.png",
+  "candidateSha256": "8ac40e7d2d8462a121b1966f340bea27053d19672753d9f2f3cb55819621d103",
+  "ownReview": {
+    "reviewer": "/root",
+    "verdict": "PASS",
+    "notes": "Fresh output inspected at full resolution. Candid routing action replaces symmetric idle pose. Four connected natural hands, compact necks and ordinary shoulders, recognizable faces, exact unknown sample values and steady-count status, clear screen plane, calm bridge palette."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7fcd4518-5f34-4b20-bb9c-43a3805ffa1f.png",
+  "publishedSource": "art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-epilogue.webp",
+  "sourceSha256": "8ac40e7d2d8462a121b1966f340bea27053d19672753d9f2f3cb55819621d103",
+  "webpSha256": "02781655be1f6b1dfe49d6fb481c72c4e2e1cf00fca4a76de376cbcee60efd5c",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+    "sourceSha256": "b4b1edc9cd55d41423376c4bb3056c2aa4dfeda83c127491e6794605235adf66",
+    "webpSha256": "44d45a23745f2d9414ab740b320fddc1cfbf038850ed6a12899eeabe99580b27",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7834930f-8ced-4409-a591-27913e319f6e.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "8ac40e7d2d8462a121b1966f340bea27053d19672753d9f2f3cb55819621d103",
+    "method": "Native exact-hash candidate review, 2x arm and hand crops, canonical face comparison, source data, display perspective and legibility. Adjacent peer.json preserves independent result.",
+    "checks": [
+      "canonical faces",
+      "two continuous arm chains per person",
+      "natural hands and contact",
+      "large readable working screen",
+      "plane-correct text",
+      "exact unresolved sample 7741 and score 0.518",
+      "candid story action",
+      "restrained palette"
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+        "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

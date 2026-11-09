@@ -139,10 +139,12 @@ Currently only `single` with `["deep-orbit"]` is purchasable.
 
 | `planId` | Distinct worlds | Price |
 |----------|-----------------|-------|
-| `single` | 1 | $50 |
+| `single` | 1 | $79 introductory, $99 regular |
 | `twoBundle` | 2 (unavailable at launch) | $90 |
 | `threeBundle` | 3 (unavailable at launch) | $135 |
 | `allFive` | 5 (unavailable at launch) | $225 |
+
+The introductory price is the current charge. The regular price describes the later offer and does not schedule an automatic increase. Bundle amounts remain unavailable at launch and require a separate pricing decision before sale.
 
 Checkout returns **503** without creating a session if the purchase-history or
 billing-profile lookup fails. This prevents charging an existing owner again

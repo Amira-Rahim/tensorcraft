@@ -1,0 +1,227 @@
+{
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical Demir"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room-only lab master"
+    },
+    {
+      "path": "/tmp/beyond-lstm-challenge-perspective-candidate.png",
+      "sha256": "26263474ac72fd260047feaa1580e5effb371f29614c370e35de641bc836f088",
+      "role": "exact previous perspective candidate, reader-direction edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "sourceMeaning": {
+    "section": "Challenge; simple-attention.yaml matching-key test fixture",
+    "query": [
+      1,
+      0
+    ],
+    "keys": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "values": [
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "operation": "Unscaled dot products, softmax over2 scores, weighted sum of value rows",
+    "visibleOutputs": {
+      "wallboard": "Scores, weights, blend [2] pending",
+      "deskTablet": "Plain flat pen input surface, no data",
+      "leftMonitor": "Back visible, front faces Demir"
+    },
+    "context": "Synthetic probe, no training or forecast claim"
+  },
+  "prompt": "Use case: precise-object-edit, identity and anatomy preservation. Image1 canonical Demir identity authority. Image2 lab master ROOM ARCHITECTURE ONLY. Image3 is the exact current candidate to repair, not an identity reference. Keep1536x1024, same Demir face, head scale, hair, freckles/stubble, anatomical-right comms, curious working expression, full chair/torso position, muted gray-sage pillar, charcoal/brass materials and natural warm lighting.\n\nCorrect reader-direction and physical interaction. Demir at right is working with the right stylus hand at screenleft. The current foreground screen tilts toward the camera, away from its operator. Replace ONLY this sloped display and its bulky triangular stand with a slim flat pen tablet resting horizontally on the same tabletop immediately under his stylus. Its active glass faces UP toward Demir and the ceiling, shallow foreshortening visible to camera. Give it a dark plain touch surface with one very faint neutral contact dot at the pen tip, no lettering, no diagrams, no glowing progress widget. It is an input device controlling the shared wall display. Orient its long edge naturally in front of his seated working position. Adjust the stylus tip and its right-hand grip minimally so the stylus touches this real flat tablet plane, no floating tip or hand through glass. Exactly one pen, five natural digits, thumb/index tripod grip, other fingers curled naturally, wrist neutral, both complete shoulder/elbow/wrist chains preserved. His other anatomical LEFT hand at screenright with wrist terminal stays on its existing three-key control. Preserve that control hand and all head/neck/body/chair geometry.\n\nThe tall left desk monitor currently displays Unscaled dot products toward the camera while Demir is behind it. Swivel that monitor on its existing brass base to face Demir at right. The camera should see its plain matte charcoal BACK with a brass edge, no backward screen text, no text on the back. Keep it compact so it does not block his hands or the wall information. Do not add another display.\n\nPut the needed visible diagnostics on the existing large shared wallboard, which Demir can glance up at naturally. Preserve its exact physical bezel/plane. It has:\nHeader: \"Synthetic attention probe\"\nThree input rows with exact data:\n\"Query\" \"[1, 0]\"\n\"Keys\" \"[1, 0]   [0, 1]\"\n\"Values\" \"[2, 0]   [0, 2]\"\nThen a modest two-line footer inside wallboard glass, above foreground apparatus:\n\"Unscaled dot products\"\n\"Scores, weights, blend [2] pending\"\nReflow the existing rows slightly upward ONLY as necessary to make this footer readable; no overlap with foreground machinery. No calculated result, no invented graph, no completed check.\nCritical: all wallboard typography, boxes, grid, spacing and glyphs must share ONE coherent projective mapping to its actual quadrilateral. Higher rows slope down toward right more strongly; lower rows progressively less. Vertical glyph strokes follow panel sides. Never flat camera-facing type on this receding wallboard. This panel must read as equipment used by Demir, not a posed card.\n\nKeep all other displays dark/inactive. Restrained gray-sage thin borders, no neon/lime pillar, hair rim or screen glare. Preserve room atmosphere and exact facial morphology, no realism or head shrink, no extra people/limbs. Natural candid task action, clean cel-shaded illustration.",
+  "originalImageProofPolicy": "Store original paths, hashes, crop coordinates and decisions. Temporary previews only in /tmp, no permanent proof rasters.",
+  "generationHistory": [
+    {
+      "prompt": "Use case: precise-object-edit with identity preservation. Image1 is canonical Demir identity authority. Image2 is lab ROOM ARCHITECTURE ONLY, not its fluorescent lights or display content. Image3 LAST is the exact target to edit. Preserve this scene exactly outside display typography/boxes and the bright vertical pillar. In particular preserve Demir canonical face, expression, downward working gaze, age, broad round adult jaw/nose, hair, right-ear comms, exact head/body scale, neck/torso/chair, BOTH full arms and hands, the stylus grip and tip contact, the other hand pressing controls, uniform and wrist unit, all furniture and hardware. No pose change or new objects.\nPRIMARY REQUEST: fix the perspective of ALL text and outlined interface boxes on ALL THREE active displays. Treat each screen as its own flat physical rectangular plane, with its own four glass corners. Map a flat drawing into that quadrilateral with a single projective homography per screen. Text, glyph shape, grid, boxes, baselines, row spacing and padding must ALL obey that same physical plane. This is not merely rotated text: vertical letter strokes tilt with the side edges and letters shorten in the foreshortened direction. Never paste camera-facing lettering over oblique glass. Do not rotate or move the hardware or glass frame to accommodate flat type.\n1. BIG REAR WALLBOARD: its top edge slopes steeply down toward screen-right, bottom edge almost horizontal. Project heading and all three data rows accordingly, upper baselines slope more, lower baselines less. Preserve exact words and data: heading \"Synthetic attention probe\"; row1 \"Query\" and \"[1, 0]\"; row2 \"Keys\" and \"[1, 0]   [0, 1]\"; row3 \"Values\" and \"[2, 0]   [0, 2]\". Three ordered rows only. Every row outline and divider belongs to wallboard plane, with comfortable internal spacing. No invented chart or values.\n2. UPRIGHT LEFT MONITOR: map this exact three-line text \"Unscaled\" / \"dot\" / \"products\" and its simple inner border into that monitor glass plane. Its vertical edges slant down toward viewer-right; glyph verticals share that slant. Top and bottom text baselines follow the monitor's own converging top/bottom edges, not wallboard angle. Preserve every exact word.\n3. SLOPED FOREGROUND DESK SCREEN: map three rows EXACTLY \"Scores: pending\", \"Weights: pending\", \"Blend [2]: pending\" with their rounded row outlines onto the heavily foreshortened sloped glass. The screen top edge is almost horizontal, its lower edge rises markedly toward screen-right, and both side edges angle down/right. Text verticals must follow this down/right shear, heights compressed with plane depth. Row baselines increasingly rise toward screen-right as they approach lower edge. Keep all three rows comfortably inside actual glass, avoiding hand/stylus overlap. Do not change any pending field to a calculated result. Preserve the actual hardware plane, not a new screen floating over it.\nPALETTE: dim/desaturate the vertical lime column, all its bright bands and immediate glass reflection to dark gray-sage with faint lines; no lime glow. Change screen ink and border outlines to restrained muted sage, preserve contrast and lively warm task light. Thin any glaring mint rim stroke only, never shift skin. All other screens stay inactive charcoal exactly as target. Preserve natural brass/charcoal room and composition1536x1024. Cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical Demir"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room-only lab master"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+          "sha256": "e5576c4bcb365ba983bb49564246ad89e5ce9ea691c682ea7bf7e64ca1785681",
+          "role": "exact original target"
+        }
+      ],
+      "output": {
+        "path": "/tmp/beyond-lstm-challenge-perspective-candidate.png",
+        "sha256": "26263474ac72fd260047feaa1580e5effb371f29614c370e35de641bc836f088",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c3d3465d-00c2-4dc8-8f98-77cdf93922a1.png"
+      },
+      "review": "Perspective/source/identity passed, reader-direction held by root"
+    },
+    {
+      "prompt": "Use case: precise-object-edit, identity and anatomy preservation. Image1 canonical Demir identity authority. Image2 lab master ROOM ARCHITECTURE ONLY. Image3 is the exact current candidate to repair, not an identity reference. Keep1536x1024, same Demir face, head scale, hair, freckles/stubble, anatomical-right comms, curious working expression, full chair/torso position, muted gray-sage pillar, charcoal/brass materials and natural warm lighting.\n\nCorrect reader-direction and physical interaction. Demir at right is working with the right stylus hand at screenleft. The current foreground screen tilts toward the camera, away from its operator. Replace ONLY this sloped display and its bulky triangular stand with a slim flat pen tablet resting horizontally on the same tabletop immediately under his stylus. Its active glass faces UP toward Demir and the ceiling, shallow foreshortening visible to camera. Give it a dark plain touch surface with one very faint neutral contact dot at the pen tip, no lettering, no diagrams, no glowing progress widget. It is an input device controlling the shared wall display. Orient its long edge naturally in front of his seated working position. Adjust the stylus tip and its right-hand grip minimally so the stylus touches this real flat tablet plane, no floating tip or hand through glass. Exactly one pen, five natural digits, thumb/index tripod grip, other fingers curled naturally, wrist neutral, both complete shoulder/elbow/wrist chains preserved. His other anatomical LEFT hand at screenright with wrist terminal stays on its existing three-key control. Preserve that control hand and all head/neck/body/chair geometry.\n\nThe tall left desk monitor currently displays Unscaled dot products toward the camera while Demir is behind it. Swivel that monitor on its existing brass base to face Demir at right. The camera should see its plain matte charcoal BACK with a brass edge, no backward screen text, no text on the back. Keep it compact so it does not block his hands or the wall information. Do not add another display.\n\nPut the needed visible diagnostics on the existing large shared wallboard, which Demir can glance up at naturally. Preserve its exact physical bezel/plane. It has:\nHeader: \"Synthetic attention probe\"\nThree input rows with exact data:\n\"Query\" \"[1, 0]\"\n\"Keys\" \"[1, 0]   [0, 1]\"\n\"Values\" \"[2, 0]   [0, 2]\"\nThen a modest two-line footer inside wallboard glass, above foreground apparatus:\n\"Unscaled dot products\"\n\"Scores, weights, blend [2] pending\"\nReflow the existing rows slightly upward ONLY as necessary to make this footer readable; no overlap with foreground machinery. No calculated result, no invented graph, no completed check.\nCritical: all wallboard typography, boxes, grid, spacing and glyphs must share ONE coherent projective mapping to its actual quadrilateral. Higher rows slope down toward right more strongly; lower rows progressively less. Vertical glyph strokes follow panel sides. Never flat camera-facing type on this receding wallboard. This panel must read as equipment used by Demir, not a posed card.\n\nKeep all other displays dark/inactive. Restrained gray-sage thin borders, no neon/lime pillar, hair rim or screen glare. Preserve room atmosphere and exact facial morphology, no realism or head shrink, no extra people/limbs. Natural candid task action, clean cel-shaded illustration.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical Demir"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room-only lab master"
+        },
+        {
+          "path": "/tmp/beyond-lstm-challenge-perspective-candidate.png",
+          "sha256": "26263474ac72fd260047feaa1580e5effb371f29614c370e35de641bc836f088",
+          "role": "exact previous perspective candidate, reader-direction edit target"
+        }
+      ],
+      "output": {
+        "path": "/tmp/beyond-lstm-challenge-reader-candidate.png",
+        "sha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-75dcf4e8-de23-42e4-abde-dcdd7778ad4b.png"
+      }
+    }
+  ],
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+  "candidateSha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-75dcf4e8-de23-42e4-abde-dcdd7778ad4b.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+    "nativeFullFrame": "pass",
+    "readerDirection": "Tablet lies flat as a plain pen input device with tip contact, no camera-facing writing. Left upright monitor faces Demir and camera sees matte back. Shared wallboard carries all source data and pending states.",
+    "surfacePerspective": "Q/K/V input rows, heading, footer and boxes share wallboard projective plane, decreasing down-right slope toward lower rows.",
+    "semanticChecks": "Exact query[1,0], keys[[1,0],[0,1]], values[[2,0],[0,2]], synthetic probe, unscaled dot products. Scores, weights and rank1 blend[2] pending.",
+    "anatomy": "Two complete arm chains. Right thumb/index grip holds one stylus with remaining fingers curled; tip touches tablet. Other hand remains natural on three-key control. Head/neck/chair preserved.",
+    "identity": "Native and canonical/before/final comparison passed rounded adult nose/jaw, eyes/brows, hair, stubble and ear device.",
+    "palette": "Pillar stays muted gray-sage; thin restrained edge light.",
+    "originalImageEvidence": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "crop": {
+          "left": 125,
+          "top": 10,
+          "width": 255,
+          "height": 305
+        }
+      },
+      {
+        "path": "/tmp/beyond-lstm-challenge-perspective-candidate.png",
+        "sha256": "26263474ac72fd260047feaa1580e5effb371f29614c370e35de641bc836f088",
+        "crop": {
+          "left": 923,
+          "top": 145,
+          "width": 290,
+          "height": 340
+        }
+      },
+      {
+        "path": "/tmp/beyond-lstm-challenge-reader-candidate.png",
+        "sha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+        "crop": {
+          "left": 923,
+          "top": 145,
+          "width": 290,
+          "height": 340
+        }
+      }
+    ],
+    "handDetailCrop": {
+      "left": 590,
+      "top": 685,
+      "width": 260,
+      "height": 220
+    },
+    "proofPolicy": "Viewed temporary face and hand crops then deleted. Exact original evidence retained."
+  },
+  "temporaryCandidatePathAtReview": "/tmp/beyond-lstm-challenge-reader-candidate.png",
+  "publishedSource": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+  "sourceSha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+  "webpSha256": "bed3d273dc899e0206f70b58a30f0b4347e79d4594ab794477955a4b72c60950",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+    "sourceSha256": "e5576c4bcb365ba983bb49564246ad89e5ce9ea691c682ea7bf7e64ca1785681",
+    "webpSha256": "83d19fedb5efc65655cdc90703b747887ce8586891e44fdcc509f5e47766c49a",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "readerDirection": "Plain flat pen-input surface and operator-facing swivel screen replace backward-facing work screens.",
+      "sourceMeaning": "Query[1,0], keys[1,0][0,1], values[2,0][0,2], unscaled outputs pending.",
+      "perspective": "Entire rear input table follows wall plane.",
+      "anatomy": "Natural stylus contact and control hand, supported chair/body.",
+      "identity": "Canonical Demir structure preserved."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+        "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

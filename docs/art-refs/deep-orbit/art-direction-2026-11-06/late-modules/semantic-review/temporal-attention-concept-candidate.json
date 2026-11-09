@@ -1,0 +1,180 @@
+{
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "concept",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Demir as a candid engineer debugging at the bridge console, sitting sideways to the camera in a supported chair. His body, shoulders and head face the working screen at a natural angle; camera sees his recognizable three-quarter face as he follows the lower route with a stylus. His other hand rests beside the keyboard. Focused, slightly furrowed brow and alert eyes on the route, not a smile to an audience. Replace the outward upright presentation glass with a low sloped screen built into the console. Compact diagram: top path Readings + Position feeds Scorer then Softmax weights. The weights connect downward into Summary. A separate original Readings box connects directly into that same Summary. Under Summary: Original features only. Small title: Position affects scores. The key distinction is position feeding only the scorer, never the returned feature list. All arrows connect, text and lines follow the actual console plane. Turn the unused central emitter and background monitors off. Muted charcoal bridge with worn brass, restrained sage display, soft warm face light. No thick green outlines, no held cards or lecture-poster pose. Two distinct connected arms and hands, ordinary stylus grip. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/temporal-attention-concept-target.png",
+      "sha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+    "sha256": "252f484fc8875a091ae3a3267b4899166eef346858e15af1b6bd0080127defd6"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+    }
+  ],
+  "panelSpecification": {
+    "state": "operation",
+    "panels": [
+      "Holo: Readings [T,d] plus Position [T,1] feed Scorer [d+1,1], then Scores [T], Softmax weights [T].",
+      "Lower strip: weights combine original Readings [T,d] into Summary [d]. Route the position column only into scoring, outside the returned feature summary."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Restage Demir as a candid engineer debugging at the bridge console, sitting sideways to the camera in a supported chair. His body, shoulders and head face the working screen at a natural angle; camera sees his recognizable three-quarter face as he follows the lower route with a stylus. His other hand rests beside the keyboard. Focused, slightly furrowed brow and alert eyes on the route, not a smile to an audience. Replace the outward upright presentation glass with a low sloped screen built into the console. Compact diagram: top path Readings + Position feeds Scorer then Softmax weights. The weights connect downward into Summary. A separate original Readings box connects directly into that same Summary. Under Summary: Original features only. Small title: Position affects scores. The key distinction is position feeding only the scorer, never the returned feature list. All arrows connect, text and lines follow the actual console plane. Turn the unused central emitter and background monitors off. Muted charcoal bridge with worn brass, restrained sage display, soft warm face light. No thick green outlines, no held cards or lecture-poster pose. Two distinct connected arms and hands, ordinary stylus grip.",
+    "finalLocalizedCorrection": null
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-a03b99a3-19a1-47be-b595-f17c0219895d.png",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit cinematic cel-shaded adventure-comic scene,1536x1024. First references are exact canonical people, then bridge room master for muted palette and materials, LAST reference is exact scene to edit. Keep the same composition, room geometry, people, expressions and story action. Preserve canonical face morphology exactly, including nose, jaw, eyes, brows, complexion, adult stubble/age marks, hair and side-specific equipment. Demir comms on anatomical RIGHT ear. Keep each entire shoulder-elbow-wrist-hand chain connected, all original grips and physical contacts, torso/neck gaze alignment, chair and body support. Preserve stylized adult warmth. Do not replace the scene with an infographic: integrate one concise task display into existing equipment, keeping people and story dominant. All other screens, wrist displays and peripheral monitors must be inactive charcoal glass with NO arbitrary graphics, text, waveforms, bars, circles or invented data. Physical hardware buttons may remain. No fake technical decoration. Keep Demir exact seated dial-turning action, expression and continuous hands. His head is somewhat heavy: only a tiny reduction to about93 percent of current width/height is allowed, retaining full facial proportions, hair and natural short neck. Do not make a small head or long neck. The existing transparent upright teaching pane shows a simple two-row flow. Upper row: \"Readings + Position\" goes to \"Scorer\" then \"Softmax weights\". Lower row: \"Readings\" and the upper \"Softmax weights\" both feed \"Summary\". Put small annotation \"Position only scores\" beside the upper row, and \"Original features only\" under Summary. Keep the lower reading route separate from the added position: no position arrow directly into Summary. Use just these readable nodes and connecting arrows, no miscellaneous waves or decorative bars. All other monitor screens, tablet screens and wrist terminal OFF charcoal glass. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Preserve natural skin and restrained sage/brass, no cyan, neon mint or mustard wash. Output one full scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/temporal-attention-concept-before.png",
+          "sha256": "68ae31a9b5659a36440ad8a26be933ea6cbe1ec2fbc74c59d060df2ee45d15ba",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "68ae31a9b5659a36440ad8a26be933ea6cbe1ec2fbc74c59d060df2ee45d15ba",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-concept-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "9ac0ee1e05012330cb822a1f6cde9b61c8b4ccde3966e09f464cab886f694329",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0672abf2-43c9-4cd1-af4a-82a5501e2f54.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-concept-identity-proof.jpg",
+      "status": "candidate-awaiting-review"
+    }
+  ],
+  "requestedDisplayCorrections": "Make ONE tiny text correction only. Replace the top note Position only scores with the exact clearer phrase \"Position affects scores\". Preserve every other label, arrow and diagram connection, every person pixel, face, head size, body, hand, chair, room and palette unchanged.",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "be8d3e8675e03aeace2538db1efd77dba07c41e93cebc885cbe2c9c95d326908",
+    "proofSha256": "3ffdc54735b74515d456cae055ed44a430e53dd4d26ce86331ad0514c2c4a086",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Demir checks that position reaches the scorer but stays out of the returned readings, with a concentrated double-check before using the summary."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__temporal-attention-concept-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+  "publishedOutputSha256": "252f484fc8875a091ae3a3267b4899166eef346858e15af1b6bd0080127defd6",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 175132
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/temporal-attention-concept-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/temporal-attention-concept-target.png",
+    "sha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/temporal-attention-concept-runtime-before.png",
+    "sha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir checks that position reaches the scorer but stays out of the returned readings, with a concentrated double-check before using the summary.",
+    "fullSpecification": "Restage Demir as a candid engineer debugging at the bridge console, sitting sideways to the camera in a supported chair. His body, shoulders and head face the working screen at a natural angle; camera sees his recognizable three-quarter face as he follows the lower route with a stylus. His other hand rests beside the keyboard. Focused, slightly furrowed brow and alert eyes on the route, not a smile to an audience. Replace the outward upright presentation glass with a low sloped screen built into the console. Compact diagram: top path Readings + Position feeds Scorer then Softmax weights. The weights connect downward into Summary. A separate original Readings box connects directly into that same Summary. Under Summary: Original features only. Small title: Position affects scores. The key distinction is position feeding only the scorer, never the returned feature list. All arrows connect, text and lines follow the actual console plane. Turn the unused central emitter and background monitors off. Muted charcoal bridge with worn brass, restrained sage display, soft warm face light. No thick green outlines, no held cards or lecture-poster pose. Two distinct connected arms and hands, ordinary stylus grip."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "be8d3e8675e03aeace2538db1efd77dba07c41e93cebc885cbe2c9c95d326908",
+  "faceBoxes": {
+    "demir": [
+      405,
+      60,
+      345,
+      455
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-concept-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "operation",
+    "panels": [
+      "Holo: Readings [T,d] plus Position [T,1] feed Scorer [d+1,1], then Scores [T], Softmax weights [T].",
+      "Lower strip: weights combine original Readings [T,d] into Summary [d]. Route the position column only into scoring, outside the returned feature summary."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0672abf2-43c9-4cd1-af4a-82a5501e2f54.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-a03b99a3-19a1-47be-b595-f17c0219895d.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+      "art-src/scenes/advanced-time-series__temporal-attention-concept-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/advanced-time-series__temporal-attention-concept-narrative-stage1-openai-20261107.png",
+    "sha256": "be8d3e8675e03aeace2538db1efd77dba07c41e93cebc885cbe2c9c95d326908",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/advanced-time-series__temporal-attention-concept.json"
+}

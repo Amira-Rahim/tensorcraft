@@ -1,0 +1,76 @@
+{
+  "index": 18,
+  "module": "optimization-edge",
+  "lesson": "webgpu-acceleration",
+  "phase": "takeaways",
+  "room": "bridge",
+  "characters": [
+    "chief-nazari"
+  ],
+  "aria": false,
+  "alt": "Nazari records the timing only after the output has returned to the console.",
+  "scene": "Nazari alone at the bridge table, near-frontal mature face with an approving but restrained half-smile. One hand holds a physical stopwatch just above the table; the other places a finished waveform printout beside a notebook. On the nearby monitor, a simple three-stage path ends in a clearly visible waveform output box. No numerical timings or universal GPU speed claims, no comparison that ends before readback. Keep notebook, stopwatch and paper separate and plausible, with both hands fully traceable. Warm close scene, different composition from the two-person concept, calm practical confidence.",
+  "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari alone at the bridge table, near-frontal mature face with an approving but restrained half-smile. One hand holds a physical stopwatch just above the table; the other places a finished waveform printout beside a notebook. On the nearby monitor, a simple three-stage path ends in a clearly visible waveform output box. No numerical timings or universal GPU speed claims, no comparison that ends before readback. Keep notebook, stopwatch and paper separate and plausible, with both hands fully traceable. Warm close scene, different composition from the two-person concept, calm practical confidence. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "src": "/scenes/deep-orbit/optimization-edge/webgpu-acceleration-takeaways.webp",
+  "source": "art-src/scenes/optimization-edge__webgpu-acceleration-takeaways-openai-20261107.png",
+  "location": "Archimedes, Bridge",
+  "status": "generated-awaiting-review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e73adb3f-4d7d-4294-af91-712989f72b37.png",
+  "candidate": "/tmp/optimization-candidates/18.webp",
+  "candidateSha256": "2a56ef6e5e8657d51514e7953f7c7ee4ea8fc2bb760e51cfe93a6ca04824a115",
+  "sourceSha256": "bbaacd3ba37a12f9add2ee3a4d4fe883810694e77cae274be1dd8cfab58aa9d2",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room reference",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 157354,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/webgpu-acceleration-takeaways-chief-nazari-proof.png",
+      "crop": {
+        "left": 485,
+        "top": 0,
+        "width": 390,
+        "height": 420
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e73adb3f-4d7d-4294-af91-712989f72b37.png",
+      "art-src/scenes/optimization-edge__webgpu-acceleration-takeaways-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

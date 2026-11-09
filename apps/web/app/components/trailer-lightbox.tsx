@@ -6,8 +6,8 @@ import { FocusTrap } from "@tensorcraft/ui/a11y";
 /**
  * The shared trailer dialog: a FocusTrap lightbox whose mp4 mounts only
  * while open. Extracted from learn/trailer-hero.tsx (2026-08-29) so world
- * pages reuse the exact surface /learn shipped. The films carry no speech;
- * their title cards are the captions, so no track element is needed.
+ * pages reuse the exact surface /learn shipped. A supplied caption track
+ * makes the introduction's on-screen titles available in the native player.
  *
  * `endCard` renders over the video once playback finishes: the moment of
  * peak intent, used by the world page to make the film's closing offer
@@ -17,12 +17,14 @@ import { FocusTrap } from "@tensorcraft/ui/a11y";
 export function TrailerLightbox({
   src,
   poster,
+  captionsSrc,
   ariaLabel,
   onClose,
   endCard,
 }: {
   src: string;
   poster?: string;
+  captionsSrc?: string;
   ariaLabel: string;
   onClose: () => void;
   endCard?: React.ReactNode;
@@ -53,7 +55,16 @@ export function TrailerLightbox({
               onEnded={() => setEnded(true)}
               onPlay={() => setEnded(false)}
               className="block w-full h-auto border border-border bg-[#0a0a0a]"
-            />
+            >
+              {captionsSrc && (
+                <track
+                  kind="captions"
+                  src={captionsSrc}
+                  srcLang="en"
+                  label="English"
+                />
+              )}
+            </video>
             {ended && endCard && (
               <div
                 data-testid="trailer-endcard"

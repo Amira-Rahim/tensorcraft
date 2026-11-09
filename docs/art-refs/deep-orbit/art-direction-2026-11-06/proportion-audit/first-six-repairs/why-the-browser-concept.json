@@ -1,0 +1,60 @@
+{
+  "key": "why-the-browser-concept",
+  "id": "browser-runtimes/why-the-browser",
+  "phase": "concept",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "status": "candidate-awaiting-review",
+  "input": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+  "inputSha256": "45ac93deedc012628d68914fdc4e936805fa9ab62705132b9bedfe2bb0fdfcae",
+  "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-0979209c-4508-40f2-879d-22cdf3f104d2.png",
+  "archivedInputSha256": "45ac93deedc012628d68914fdc4e936805fa9ab62705132b9bedfe2bb0fdfcae",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+      "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+      "sha256": "45ac93deedc012628d68914fdc4e936805fa9ab62705132b9bedfe2bb0fdfcae"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+      "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+    }
+  ],
+  "screenMeaning": "Compare local browser computation with data sent to a server and response returned.",
+  "screenSpecification": "On the tilted teaching screen, replace generic branching boxes with TWO clean labeled lanes: BROWSER shows INPUT -> MODEL -> OUTPUT contained entirely within one device outline; SERVER shows input traveling from device across LINK to SERVER and a prediction arrow returning to device. Add a short footer Offline: cache app + runtime + model. Keep the diagram uncluttered and arrows directionally correct. No unsupported latency winner, guaranteed privacy badge, or ungrounded numerical chart. Dim unrelated background traces so this comparison is the clear teaching display.",
+  "proportionSpecification": "Preserve every head and body size exactly, with no proportion changes.",
+  "paletteReference": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+  "prompt": "Precise scene edit for an educational adventure comic. The first 2 images are immutable canonical identity portraits for chief-nazari, ensign-demir. The next image is COLOR STYLE ONLY: muted sage screens, aged brass and natural skin; do not borrow its person, composition, pose or diagram. The LAST image is the target. Preserve the target camera, room, phase action, character identities, age, hair, face geometry, expression, gaze, head angle, costumes, body poses, all continuous arm chains and natural fingers, hands and furniture. Preserve every head and body size exactly, with no proportion changes. Use warm stylized adult comic proportions, consistent recognizable faces, and flat cel shadows. Correct the target palette to muted sage #6BAA8A-family screens and aged brass #A89060-family metal with charcoal/navy room surfaces; natural tan skin, no orange cast, neon mint bloom, luminous green hair outlines, bright yellow-gold metal, or glossy3D gradients. Keep attractive contrast and the direction of warm practical lighting, not blanket gray desaturation. SCREEN CONTENT IS PRECISE: On the tilted teaching screen, replace generic branching boxes with TWO clean labeled lanes: BROWSER shows INPUT -> MODEL -> OUTPUT contained entirely within one device outline; SERVER shows input traveling from device across LINK to SERVER and a prediction arrow returning to device. Add a short footer Offline: cache app + runtime + model. Keep the diagram uncluttered and arrows directionally correct. No unsupported latency winner, guaranteed privacy badge, or ungrounded numerical chart. Dim unrelated background traces so this comparison is the clear teaching display. All visible labels must be concise, accurately spelled, large enough to read, and integrated naturally into the screen perspective. No extra diagrams, random shapes or fabricated metrics. Preserve distinctive phase composition. Output one1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-concept.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-concept.json",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-8ab022be-670a-46df-9529-686096918488.png",
+  "candidateSha256": "99a830a800bf34b74f06d2fbe7adb21137121d22e00511b3459e8e8783f004e8",
+  "generationMethod": "builtin-imagegen",
+  "recoveryNote": "Metadata persistence callback failed after image generation. Recovered exact output by full-frame content and prompt match before any retry.",
+  "ownReview": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "palette": "pass",
+    "screen": "pass",
+    "reason": "Current full frame matches exact lesson-grounded screen content with readable labels. Await independent review."
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__model-profiling-takeaways/candidate.png",
+  "candidateSha256": "725d62304b187c12d830b890edcab0da1a8ded27d18f43065e2b1aedbba5e621",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x or 3x face/hand/prop crops, full shoulder-elbow-wrist chains traced in original, direct canonical portrait comparison, and current lesson source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 2,
+      "name": "runtime-next-profiling-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__model-profiling-takeaways/candidate.png",
+      "box": [
+        205,
+        760,
+        1095,
+        1008
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "runtime-next-profiling-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__model-profiling-takeaways/candidate.png",
+      "box": [
+        205,
+        175,
+        540,
+        580
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Both of Nazari's arm chains remain connected at ordinary angles. The near hand wraps the mouse, with forefinger and middle finger on the controls and the thumb along the near side; the other hand rests flat on the closed binder with coherent finger overlap.",
+    "displayLegibilityAndSource": "The large board separates Weight storage, Completed prediction time and Peak runtime memory, then requires the Same workload before and after. Current profiling source supports all three distinctions and does not substitute parameter bytes for process peak memory.",
+    "identityExpressionAndStory": "Nazari's attentive, slightly skeptical expression and glance toward the board fit the baseline reminder. Mature face, swept grey hair and adult shoulder/head balance match the canon.",
+    "palette": "Muted sage, charcoal and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Main glyphs and borders follow the physical display plane. The characters can see the same readable face of the display.",
+    "largeDisplayRule": "Essential lesson information uses the available wall area in large, clear type."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T06:47:10.501084+00:00"
+}

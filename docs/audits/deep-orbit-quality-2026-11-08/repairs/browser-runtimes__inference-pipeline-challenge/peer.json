@@ -1,0 +1,78 @@
+{
+  "reviewer": "quality_early",
+  "reviewedAt": "2026-11-08T19:21:29.415364+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__inference-pipeline-challenge/candidate.png",
+  "candidateSha256": "374cdabab52cbdf018a3d7748d7c13a9d613372c4924e039ff87aa0ab640e9ba",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x or 3x face/hand/prop crops, full shoulder-elbow-wrist chains traced in original, direct canonical portrait comparison, current lesson and relevant exercise source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": "rt7face",
+      "k": 7,
+      "box": [
+        280,
+        160,
+        570,
+        500
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__inference-pipeline-challenge/candidate.png"
+    },
+    {
+      "i": "rt7hands",
+      "k": 7,
+      "box": [
+        440,
+        755,
+        835,
+        900
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__inference-pipeline-challenge/candidate.png"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Both wrists connect cleanly from separate shoulders and elbows to naturally curled keyboard fingers. Thumb occlusion is plausible and there is no extra hand.",
+    "displayLegibilityAndSource": "Raw probe 512, 21 and pi/2 matches inference-pipeline.yaml. Scaling follows the training contract, one [1, 3] input is predicted and the result read within synchronous tf.tidy; class remains pending.",
+    "identityExpressionAndStory": "Demir is visibly typing and concentrating, with canonical hair, earpiece, freckles and stubble.",
+    "palette": "Muted sage, charcoal and aged brass with warm skin and restrained lighting.",
+    "perspectiveAndOperator": "Readable physical display fronts with consistent text plane and plausible operator orientation.",
+    "largeDisplayRule": "Essential lesson information is large and clear, using the available scene space rather than a tiny rear console."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true
+}

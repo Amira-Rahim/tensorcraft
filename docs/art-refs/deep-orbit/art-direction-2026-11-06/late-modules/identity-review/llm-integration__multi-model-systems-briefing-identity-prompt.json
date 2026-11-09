@@ -1,0 +1,41 @@
+{
+  "queueIndex": 55,
+  "key": "deep-orbit/llm-integration/multi-model-systems",
+  "phase": "briefing",
+  "status": "awaiting-identity-correction",
+  "inputScene": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems.webp",
+  "inputSceneSha256": "46dde71d699bc4cbaaec6a0d90efb3fefab460d14ed8339c3cceb5664f25ff20",
+  "cast": [
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      1080,
+      270,
+      285,
+      315
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__multi-model-systems-identity-stage-openai-20261107.png",
+      "sha256": "41f4c4099aeb63e111dbf68fb3e403bd29376d836ef8b24fe34e178f219d9880",
+      "role": "target scene with corrected crew identity"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Image 1 is the canonical Demir portrait, image2 the target with his corrected identity. Change ONLY the diagram inside the wide transparent display at lower left. Keep Demir face, all human features, body, arms/hands, chair, console, room, lighting and frame exactly unchanged. Replace the existing single serial chain with a simple four-stage system diagram: ONE waveform capture tile at far left, splitting into THREE separate parallel middle input tiles vertically stacked (top a row of three small cells, middle a taller vertical stack of feature cells, bottom a small rectangular time-window grid). Each middle tile has its own outgoing line and all three lines converge into ONE draft-page tile at far right. No middle input connects to another middle input. All three branches active and visible. No code, letters, numbers, logo or approval stamp. Preserve the display glass border and green restrained glow, give large simple geometric tiles generous spacing. This portrays one shared capture feeding three model-specific representations before drafting. One1536x1024 scene.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/llm-integration__multi-model-systems-briefing-identity-prompt.json",
+  "newSource": "art-src/scenes/llm-integration__multi-model-systems-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems.webp",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/llm-integration__multi-model-systems-identity-stage-openai-20261107.png",
+      "reason": "Existing briefing diagram implies models in a chain; source capture must feed three model-specific inputs separately before prose drafting."
+    }
+  ]
+}

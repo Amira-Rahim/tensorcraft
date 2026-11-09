@@ -23,7 +23,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { createHash } from "node:crypto";
 import { renderAria } from "./render-aria.mjs";
+import {
+  readCanonicalIdentity,
+  resolveIdentityReferences,
+} from "./scene-identity-contract.mjs";
 
 const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -106,8 +111,15 @@ async function emit(src, destRel, spec) {
   const resized =
     "size" in spec
       ? pipeline.resize(spec.size, spec.size, { fit: "cover" })
-      : pipeline.resize(spec.width, spec.height, { fit: "cover" });
-  const buf = await resized.webp({ quality: spec.quality }).toBuffer();
+      : pipeline.resize(spec.width, spec.height, { fit: spec.fit ?? "cover" });
+  const buf = await resized
+    .webp({ quality: spec.quality, effort: spec.effort ?? 4 })
+    .toBuffer();
+
+  if (spec.expectedHash && sha256(buf) !== spec.expectedHash)
+    throw new Error(
+      `${destRel}: encoding differs from the reviewed WebP. Ingest aborted.`,
+    );
 
   if (buf.length > spec.budget) {
     results.overBudget.push(
@@ -180,35 +192,53 @@ function lessonIds(root, world) {
   return ids;
 }
 
-const APPROVED_SCENES =
-  "docs/art-refs/deep-orbit/face-visible-scenes-2026-11-06/approved-scenes.json";
+const IDENTITY_APPROVED_SCENES =
+  "docs/art-refs/deep-orbit/approved-scene-art.json";
+const SECTION_SUFFIXES = ["concept", "challenge", "takeaways", "epilogue"];
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+
+function splitSceneId(id) {
+  const phase = SECTION_SUFFIXES.find((phase) => id.endsWith(`-${phase}`));
+  return phase
+    ? { lesson: id.slice(0, -phase.length - 1), suffix: `-${phase}` }
+    : { lesson: id, suffix: "" };
+}
 
 /** Resolve every source before emitting, so a missing approval cannot fall
  * back to an older candidate or leave a partially ingested batch. */
 export function planSceneIngest(
   root,
-  { world = "deep-orbit", approvedIndex = APPROVED_SCENES } = {},
+  { world = "deep-orbit", approvedIndex } = {},
 ) {
+  const strictDefault = approvedIndex === undefined;
+  approvedIndex ??= IDENTITY_APPROVED_SCENES;
   const runtimeIds = lessonIds(root, world);
   const validLessons = new Set(runtimeIds.values());
   const runtimeSceneId = (id) => {
-    const epilogue = id.endsWith("-epilogue");
-    const base = epilogue ? id.slice(0, -"-epilogue".length) : id;
-    return `${runtimeIds.get(base) ?? base}${epilogue ? "-epilogue" : ""}`;
+    const { lesson, suffix } = splitSceneId(id);
+    return `${runtimeIds.get(lesson) ?? lesson}${suffix}`;
   };
-  const validScene = (id) =>
-    validLessons.has(
-      id.endsWith("-epilogue") ? id.slice(0, -"-epilogue".length) : id,
-    );
+  const validScene = (id) => validLessons.has(splitSceneId(id).lesson);
   const destination = (id) => `apps/web/public/scenes/${world}/${id}.webp`;
   const sources = new Map();
   const missing = [];
   const approvedFile = path.join(root, approvedIndex);
+  if (strictDefault && !fs.existsSync(approvedFile))
+    throw new Error(
+      "Missing strict scene approval registry. Scene ingest aborted.",
+    );
 
   if (fs.existsSync(approvedFile)) {
     const approved = JSON.parse(fs.readFileSync(approvedFile, "utf8"));
+    if (strictDefault && approved.identityReviewRequired !== true)
+      throw new Error(
+        "Strict scene registry must require character identity review.",
+      );
     if (!Array.isArray(approved.scenes))
       throw new Error(`${approvedIndex}: expected a scenes array`);
+    const canonical = approved.identityReviewRequired
+      ? readCanonicalIdentity(root)
+      : undefined;
     for (const scene of approved.scenes) {
       if (typeof scene.id !== "string" || !validScene(scene.id))
         throw new Error(
@@ -236,13 +266,50 @@ export function planSceneIngest(
         throw new Error(
           `Approved scene '${scene.id}' is missing source '${scene.source}'. Scene ingest aborted.`,
         );
+      if (approved.identityReviewRequired) {
+        if (scene.identityStatus !== "approved")
+          throw new Error(`${scene.id}: missing character identity approval`);
+        resolveIdentityReferences(root, scene, canonical);
+        if (
+          !/^[a-f0-9]{64}$/.test(scene.sourceSha256 ?? "") ||
+          sha256(fs.readFileSync(source)) !== scene.sourceSha256
+        )
+          throw new Error(
+            `${scene.id}: source differs from the reviewed image`,
+          );
+        if (
+          !/^[a-f0-9]{64}$/.test(scene.webpSha256 ?? "") ||
+          !Number.isInteger(scene.webpQuality) ||
+          scene.webpQuality < 1 ||
+          scene.webpQuality > 100 ||
+          !Number.isInteger(scene.webpEffort) ||
+          scene.webpEffort < 0 ||
+          scene.webpEffort > 6 ||
+          !["cover", "fill", "contain"].includes(scene.resizeFit)
+        )
+          throw new Error(`${scene.id}: missing reviewed WebP encoding`);
+      }
       sources.set(scene.id, {
         id: scene.id,
         source,
         destination: scene.destination,
         approved: true,
+        ...(approved.identityReviewRequired
+          ? {
+              spec: {
+                ...SCENE,
+                quality: scene.webpQuality,
+                effort: scene.webpEffort,
+                fit: scene.resizeFit,
+                expectedHash: scene.webpSha256,
+              },
+            }
+          : {}),
       });
     }
+    // A candidate with an unreviewed face must never be selected by date.
+    if (approved.identityReviewRequired)
+      return { sources: [...sources.values()], missing };
   }
 
   const staged = path.join(root, "art-src/scenes");
@@ -262,10 +329,11 @@ export function planSceneIngest(
   for (const [filenameId, runtimeId] of runtimeIds) {
     for (const id of [filenameId, runtimeId]) {
       knownStems.set(id.replace("/", "__"), runtimeId);
-      knownStems.set(
-        `${id.replace("/", "__")}-epilogue`,
-        `${runtimeId}-epilogue`,
-      );
+      for (const phase of SECTION_SUFFIXES)
+        knownStems.set(
+          `${id.replace("/", "__")}-${phase}`,
+          `${runtimeId}-${phase}`,
+        );
     }
   }
   // Longest first keeps an unindexed epilogue separate from an approved
@@ -299,7 +367,7 @@ async function scenes() {
   const plan = planSceneIngest(ROOT);
   results.missing.push(...plan.missing);
   for (const scene of plan.sources)
-    await emit(scene.source, scene.destination, SCENE);
+    await emit(scene.source, scene.destination, scene.spec ?? SCENE);
 }
 
 /** Location master plates, reused as marketing / world-page art. Unlike

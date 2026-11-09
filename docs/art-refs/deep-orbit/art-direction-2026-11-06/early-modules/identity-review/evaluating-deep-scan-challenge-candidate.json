@@ -1,0 +1,103 @@
+{
+  "module": "training-loop",
+  "lesson": "evaluating-deep-scan",
+  "phase": "challenge",
+  "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+  "index": 32,
+  "characters": [
+    "commander-mirza",
+    "ensign-demir"
+  ],
+  "prompt": "Strict head-only identity correction. Image1 is canonical Ensign Demir, authoritative facial identity. Any intermediate portrait is another character to preserve. LAST image is scene target. Correct ONLY Demir's face/hair/neck transition. His current pointed narrow nose and long tapering chin are wrong. Turn his head toward camera into a gentle near-frontal three-quarter view, with eye gaze still directed at his current task or companion. Faithfully reproduce image1's compact broad softly squared lower face, SHORT rounded chin, wider rounded nose base with round tip and full nostrils, same nose bridge and eye spacing, distinctive straight eyebrows, sparse freckles and uneven stubble. Keep compact dark forelock and right-anatomical-ear green earpiece. Preserve his current warm smile or concentration through expression alone. This must be the same individual at a new angle, not a generic handsome sharp-faced version. Preserve every other person exactly, especially their already approved face. Preserve exact body, all arms/hands/fingers, neck contact with hands if any, clothing, furniture, equipment, screen graphics, diagrams, lighting, framing and size. No other changes. 1536x1024.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2f5accd9-5ac7-4b14-8d30-2ad5853da6a1.png"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-3362829f-0be8-4c5f-9f52-e0bbf7d5f3ea.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2f5accd9-5ac7-4b14-8d30-2ad5853da6a1.png",
+      "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=317): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. ENSIGN-DEMIR (portrait 2, scene head near x=957): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+      "references": [
+        "docs/art-refs/deep-orbit/commander-mirza.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png",
+        "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp"
+      ],
+      "reason": "Peer hold: Demir thin pointed nose and narrowing chin remain; angle does not preserve canonical morphology."
+    }
+  ],
+  "candidate": "/tmp/early-identity-candidates/32.webp",
+  "candidateSha256": "4668ef5f48d4aac16970a0d90e5e3aa6ea0f45f2ec7e2bdef9b3ecd56016c804",
+  "sourceSha256": "f46a225bee3e40407d5e110721ba4bbd52ef01754b8b597a0431587b56b08d79",
+  "beforeSha256": "8ebae6d6974a42bd98138f582ed13e3ce8fae6a4b68fc5e25ecf2366d8cb26a0",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "canonical identity",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2f5accd9-5ac7-4b14-8d30-2ad5853da6a1.png",
+      "role": "edit target",
+      "sha256": "f5c807f48ad75b5d8e97b1c50ccee871452765e823b0246bc2c3eb6b53dedb0e"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 160588,
+  "proofs": [
+    {
+      "character": "commander-mirza",
+      "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "referenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-challenge-commander-mirza-correction.png",
+      "crop": {
+        "left": 183,
+        "top": 54,
+        "width": 267,
+        "height": 351
+      }
+    },
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-challenge-ensign-demir-correction.png",
+      "crop": {
+        "left": 816,
+        "top": 165,
+        "width": 282,
+        "height": 369
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2f5accd9-5ac7-4b14-8d30-2ad5853da6a1.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-3362829f-0be8-4c5f-9f52-e0bbf7d5f3ea.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

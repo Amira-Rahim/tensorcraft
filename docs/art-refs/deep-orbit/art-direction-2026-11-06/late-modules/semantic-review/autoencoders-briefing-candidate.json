@@ -1,0 +1,147 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "briefing",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Farah discovering a mismatch at the lab bench, alone and actively investigating. Camera diagonally beside her small work console reveals a natural three-quarter profile, not front-facing. She has set her tablet down and leans slightly forward, one hand bracing the desk while her stylus circles the combination status. Her eyes narrow with curiosity and one eyebrow rises in concern. Remove the lecture-sized wallboard and switch it off. The single compact angled console shows three short rows: Amplitude: normal; Frequency: normal; Phase: normal. Beneath them, a subtle amber outline around Combination unseen in eleven days. Small task note Check feature relationships. This is a qualitative mission observation, no made-up values or probability. All type and rules follow the console plane, not flat pasted text. Tablet now face down on the bench, other monitors inactive. Natural shoulders, two continuous arm chains, realistic stylus grip and supporting palm. Preserve her exact canonical adult face, hair, left-eye lens and balanced head size. Dim sage pillar, aged brass instruments, charcoal surfaces, warm skin, no neon. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-briefing-target.png",
+      "sha256": "75aab5d1de5014efc99813cb1048b78e0bb01f4f1d9efa6e5409485a35bd12d4",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "75aab5d1de5014efc99813cb1048b78e0bb01f4f1d9efa6e5409485a35bd12d4",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+    "sha256": "89690b0d81832e60fc18f9028924e8114868d1deeede4aa1ca20463347a5e783"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "problem / proposed mission model",
+    "concreteGenerationSpecification": "Restage Farah discovering a mismatch at the lab bench, alone and actively investigating. Camera diagonally beside her small work console reveals a natural three-quarter profile, not front-facing. She has set her tablet down and leans slightly forward, one hand bracing the desk while her stylus circles the combination status. Her eyes narrow with curiosity and one eyebrow rises in concern. Remove the lecture-sized wallboard and switch it off. The single compact angled console shows three short rows: Amplitude: normal; Frequency: normal; Phase: normal. Beneath them, a subtle amber outline around Combination unseen in eleven days. Small task note Check feature relationships. This is a qualitative mission observation, no made-up values or probability. All type and rules follow the console plane, not flat pasted text. Tablet now face down on the bench, other monitors inactive. Natural shoulders, two continuous arm chains, realistic stylus grip and supporting palm. Preserve her exact canonical adult face, hair, left-eye lens and balanced head size. Dim sage pillar, aged brass instruments, charcoal surfaces, warm skin, no neon.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Opening dialogue and Encoder to Bottleneck to Decoder"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": null
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7c20c5cf-5d97-4f0a-95c7-a62d6d811f60.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+    "proofSha256": "72a80fda981caa27fefb611562a7eff969a625c71660bc5cec584ce7ca7fca79",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah catches an unfamiliar combination that individual checks cleared, and leans in to inspect it with alert concern."
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/autoencoders-briefing-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-briefing-target.png",
+    "sha256": "75aab5d1de5014efc99813cb1048b78e0bb01f4f1d9efa6e5409485a35bd12d4",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "75aab5d1de5014efc99813cb1048b78e0bb01f4f1d9efa6e5409485a35bd12d4",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-briefing-runtime-before.png",
+    "sha256": "f8c0f7d46be745daac2d0c4fe56410bd5be6cb1e3264a86d1629d4f044b2e5af",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "f8c0f7d46be745daac2d0c4fe56410bd5be6cb1e3264a86d1629d4f044b2e5af",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah catches an unfamiliar combination that individual checks cleared, and leans in to inspect it with alert concern.",
+    "fullSpecification": "Restage Farah discovering a mismatch at the lab bench, alone and actively investigating. Camera diagonally beside her small work console reveals a natural three-quarter profile, not front-facing. She has set her tablet down and leans slightly forward, one hand bracing the desk while her stylus circles the combination status. Her eyes narrow with curiosity and one eyebrow rises in concern. Remove the lecture-sized wallboard and switch it off. The single compact angled console shows three short rows: Amplitude: normal; Frequency: normal; Phase: normal. Beneath them, a subtle amber outline around Combination unseen in eleven days. Small task note Check feature relationships. This is a qualitative mission observation, no made-up values or probability. All type and rules follow the console plane, not flat pasted text. Tablet now face down on the bench, other monitors inactive. Natural shoulders, two continuous arm chains, realistic stylus grip and supporting palm. Preserve her exact canonical adult face, hair, left-eye lens and balanced head size. Dim sage pillar, aged brass instruments, charcoal surfaces, warm skin, no neon."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+  "faceBoxes": {
+    "farah": [
+      880,
+      170,
+      340,
+      365
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-briefing-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "problem / proposed mission model",
+    "concreteGenerationSpecification": "Keep Farah standing with stylus raised and tablet held, exact face and head scale unchanged. Replace the entire large board with three compact equal cards: \"Amplitude: normal\", \"Frequency: normal\", \"Phase: normal\". Below the three cards one larger outlined group label \"Combination unseen in eleven days\". A small footer \"Check feature relationships\". These are qualitative status cards, no invented measurement values or diagram. Farah points naturally toward the combination label. Erase all previous hourglass nodes and decorative waveforms. Her tablet back remains plain. All other screens off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Opening dialogue and Encoder to Bottleneck to Decoder"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7c20c5cf-5d97-4f0a-95c7-a62d6d811f60.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+      "art-src/scenes/anomaly-detection__autoencoders-briefing-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/anomaly-detection__autoencoders-briefing-narrative-stage1-openai-20261107.png",
+    "sha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__autoencoders-briefing.json"
+}

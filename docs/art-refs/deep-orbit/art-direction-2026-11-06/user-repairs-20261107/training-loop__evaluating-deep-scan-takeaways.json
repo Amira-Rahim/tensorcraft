@@ -1,0 +1,105 @@
+{
+  "key": "evaluating-deep-scan-takeaways",
+  "id": "training-loop/evaluating-deep-scan",
+  "phase": "takeaways",
+  "cast": [
+    "commander-mirza",
+    "dr-farah"
+  ],
+  "prompt": "Use case: precise-object-edit. First2 images canonical Mirza and Farah portraits, third Bridge room geometry only, fourth EDIT TARGET. Preserve fourth image exactly: faces, characters, expressions, hands, proportions, posture, entire room, lighting, palette and composition. Make exactly one correction on its working monitor: REMOVE the two horizontal filled percentage bars and their surrounding tracks entirely. Keep the exact readable labels 'Training 95%' and 'Test 60%' as two simple rows of numerical values, with short thin separating rules if needed, all following screen perspective. The title 'Gap review example' and two bottom investigation notes remain unchanged. No newly invented icons, graphs or text. This makes the numerical comparison unambiguous without potentially mis-sized bars. Keep the engaged crew's plausible eyelines and canonical anatomy completely unchanged. Landscape1536x1024.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "canonical identity",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room geometry only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-284a5514-4c10-492a-aa2a-f1eafc549fec.png",
+      "sha256": "aaa5596f5043dc715997b0917e1a2d4fabeb5a1f5112215c569d0bc32bea9ab2",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+    }
+  ],
+  "candidatePath": "art-src/scenes/training-loop__evaluating-deep-scan-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-e316e38b-e5e9-4ece-bc34-42c3a97ed82a.png",
+  "candidateSha256": "c60f2de9db919c37ae0f93f2858384ee1b8a5677becfc9ca2d2dfc4a3db7baf3",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "reviewer": "/root",
+    "status": "pass pending independent peer",
+    "method": "Native 1536x1024 complete frame and canonical portraits inspected",
+    "notes": "Numerical rows replace inaccurate bars. Canonical faces, four natural arm chains and engaged eyelines. Text follows monitor plane. Source95/60 example correctly labeled."
+  },
+  "rejectedCandidate": {
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-284a5514-4c10-492a-aa2a-f1eafc549fec.png",
+    "sha256": "aaa5596f5043dc715997b0917e1a2d4fabeb5a1f5112215c569d0bc32bea9ab2",
+    "reason": "Bar fill does not exactly match printed percentage"
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-e316e38b-e5e9-4ece-bc34-42c3a97ed82a.png",
+  "publishedSource": "art-src/scenes/training-loop__evaluating-deep-scan-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp",
+  "sourceSha256": "c60f2de9db919c37ae0f93f2858384ee1b8a5677becfc9ca2d2dfc4a3db7baf3",
+  "webpSha256": "0525dfc84e779b1a1263f75389d7ddb8390c46afef2a4d906fcc841393a92ff4",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-takeaways-openai-20261107.png",
+    "sourceSha256": "6e464cecb171d02c248a4f95c85b63bc249f56841d646e8e416e38387f21fd53",
+    "webpSha256": "d8637f9310ae8b3443b9aa45a55f92ba055754b038d47080de91ff7ad245f1c8",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-3775ba13-b87b-40b0-a9b3-99fc2ecc00ff.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "c60f2de9db919c37ae0f93f2858384ee1b8a5677becfc9ca2d2dfc4a3db7baf3",
+    "method": "Native1536x1024 complete frame and currentMDX",
+    "checks": {
+      "combinedNativeReview": "Mirza gestures while Farah leans on the chair, both inspect the shared operator-facing display. All four arms coherent, hands natural, canonical faces and modest necks/proportions. Correct95/60 numerical example avoids misleading barfill; investigation notes match source. Perspective varies with board depth correctly. Muted brass/sage/charcoal and blank rear screens. Engaged review moment.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+          "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__evaluating-deep-scan-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

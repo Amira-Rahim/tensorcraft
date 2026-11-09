@@ -50,12 +50,13 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
     expect(screen.getByTestId("comparison-col-paid")).toBeInTheDocument();
   });
 
-  it("comparison columns surface Free $0 and Paid From $50 pricing", () => {
+  it("comparison columns show free access and the introductory paid offer", () => {
     render(<PaywallPage />);
     const free = screen.getByTestId("comparison-col-free");
     const paid = screen.getByTestId("comparison-col-paid");
     expect(free).toHaveTextContent("$0");
-    expect(paid).toHaveTextContent(/From \$50/);
+    expect(paid).toHaveTextContent("$79");
+    expect(paid).toHaveTextContent("Introductory price. Regular price $99.");
   });
 
   it("comparison table includes the core paid-only feature rows", () => {

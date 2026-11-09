@@ -1,0 +1,413 @@
+{
+  "id": "neural-networks__forward-pass-challenge",
+  "lesson": "neural-networks/forward-pass",
+  "phase": "challenge",
+  "owner": "/root/quality_sequence",
+  "status": "published",
+  "tool": "built-in image_gen",
+  "attempt": 2,
+  "preparedAt": "2026-11-09T14:03:16.047953+00:00",
+  "priorApproval": {
+    "status": "reopened by user",
+    "source": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+    "sourceSha256": "cd43f2b0dd05e3f6b4aec13bb6e0f7edcf6665367396778653a7fa2a46956c0b",
+    "reason": "The giant torso, broad shoulders and foreground arms create an unacceptable head-to-body ratio. Repair body scale and posture coherently while keeping a natural canonical adult head."
+  },
+  "cast": [
+    "ensign-demir"
+  ],
+  "room": "Bridge",
+  "prompt": "Use case: precise-object-edit with identity preservation.\nMake only the large monitor and its contents fully frontal. Output one 1536x1024 image.\n\nReference 1 is Demir's canonical portrait. Reference 2 is the Bridge room master. Reference 3 is the current repaired composition, the edit target.\n\nPreserve exactly the target's corrected Demir proportions: same naturally sized head, lean torso, sloping shoulders, neck, arms, two hands, hair, face, expression, charcoal uniform, chair, lap, legs, keyboard action and cartridge grip. Preserve the surrounding Bridge, desk and lighting. Do not re-enlarge the body, hands or head.\n\nThe entire monitor FRONT MUST BE A TRUE RECTANGLE parallel to the camera sensor. Fix the remaining shallow tilt of its top edge. Both top and bottom bezel edges must be perfectly horizontal, and both side edges perfectly vertical. The glass inner border must also be exactly rectangular with its top and bottom level. Its four corners should be approximately (920,225), (1480,225), (1480,660), (920,660). No trapezoidal front bezel, no sloping upper glass edge. The existing swivel pedestal supports this frontal orientation. The cartridge slot remains accessible on the monitor's left outer edge, preserving the hand grip exactly.\n\nKeep every title, divider, box edge, arrow and text baseline on this same frontal plane: horizontal baselines and horizontal/vertical box edges. Retain the same large readable task content, precise values and roomy layout. Use these exact labels:\n\"Practice task\"\n\"Input\"\n\"[[1,2],[3,4]]\"\n\"shape [2,2]\"\n\"Dense:\"\n\"3 units\"\n\"Expected shape\"\n\"[2,3]\"\n\"Single reading\"\n\"[5,6]\"\n\"Add one batch axis\"\n\"Awaiting code\"\n\nKeep the upper flow Input to Dense to Expected shape and the separate lower Single reading to Add one batch axis flow. Exactly the same task, no numeric predicted outputs and no completion tick. Demir remains on the visible front side of the screen.\n\nThe only change is the monitor's perfectly frontal rectangular geometry and its matching content plane. Preserve all corrected anatomy and the natural hopeful, focused expression.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "f85f996560396d8cba38a4571037f259403edb5e83c0a44f1cbfa94d5a4863f9",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity: Ensign Demir"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room master: Bridge"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-6632011f-cae7-4bf7-b601-27484c5ec53d.png",
+      "sha256": "a6a7097e952cfe0682e8404501d11321de6617851c845df8b02435b25cef272f",
+      "role": "edit target: candidate 1 with repaired proportions",
+      "pathAtGeneration": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/rejected-v1.png",
+      "resolutionNote": "The obsolete project copy was removed after publication. The original builtin generated file retains the exact bytes."
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d",
+      "facts": [
+        "Challenge follows the failed demo and asks the learner to run a supplied batch and add a batch axis to one flat reading.",
+        "The exercise is distinct from the three-feature narrative model."
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+      "sha256": "16d0d96d4f1cdeee1209f21a273e55bac29d1e398f00771c82a78c087f8cb9a7",
+      "facts": [
+        "Supplied input is [[1.0,2.0],[3.0,4.0]], shape [2,2].",
+        "One dense layer has 3 units and inputShape [2]. Expected output shape is [2,3].",
+        "The supplied single reading is [5.0,6.0]. Add one leading batch axis while preserving values.",
+        "Random initial weights do not establish prediction accuracy. The challenge image must keep results pending."
+      ]
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nMake only the large monitor and its contents fully frontal. Output one 1536x1024 image.\n\nReference 1 is Demir's canonical portrait. Reference 2 is the Bridge room master. Reference 3 is the current repaired composition, the edit target.\n\nPreserve exactly the target's corrected Demir proportions: same naturally sized head, lean torso, sloping shoulders, neck, arms, two hands, hair, face, expression, charcoal uniform, chair, lap, legs, keyboard action and cartridge grip. Preserve the surrounding Bridge, desk and lighting. Do not re-enlarge the body, hands or head.\n\nThe entire monitor FRONT MUST BE A TRUE RECTANGLE parallel to the camera sensor. Fix the remaining shallow tilt of its top edge. Both top and bottom bezel edges must be perfectly horizontal, and both side edges perfectly vertical. The glass inner border must also be exactly rectangular with its top and bottom level. Its four corners should be approximately (920,225), (1480,225), (1480,660), (920,660). No trapezoidal front bezel, no sloping upper glass edge. The existing swivel pedestal supports this frontal orientation. The cartridge slot remains accessible on the monitor's left outer edge, preserving the hand grip exactly.\n\nKeep every title, divider, box edge, arrow and text baseline on this same frontal plane: horizontal baselines and horizontal/vertical box edges. Retain the same large readable task content, precise values and roomy layout. Use these exact labels:\n\"Practice task\"\n\"Input\"\n\"[[1,2],[3,4]]\"\n\"shape [2,2]\"\n\"Dense:\"\n\"3 units\"\n\"Expected shape\"\n\"[2,3]\"\n\"Single reading\"\n\"[5,6]\"\n\"Add one batch axis\"\n\"Awaiting code\"\n\nKeep the upper flow Input to Dense to Expected shape and the separate lower Single reading to Add one batch axis flow. Exactly the same task, no numeric predicted outputs and no completion tick. Demir remains on the visible front side of the screen.\n\nThe only change is the monitor's perfectly frontal rectangular geometry and its matching content plane. Preserve all corrected anatomy and the natural hopeful, focused expression.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-6632011f-cae7-4bf7-b601-27484c5ec53d.png"
+    ],
+    "transparent_background": false
+  },
+  "candidatePath": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+  "publicationStatus": "not published",
+  "publication": {
+    "date": "2026-11-09",
+    "replacement": "in-place",
+    "source": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-4291ee29-c2f7-4dd4-9058-4ecb587a0bfb.png",
+  "generatedAt": "2026-11-09T14:05:09.781011+00:00",
+  "candidateSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+  "diagnosticReview": {
+    "crops": [
+      {
+        "name": "face",
+        "kind": "face",
+        "rect": [
+          345,
+          230,
+          180,
+          230
+        ],
+        "scale": 2
+      },
+      {
+        "name": "keyboard-hand",
+        "kind": "hand",
+        "rect": [
+          575,
+          755,
+          230,
+          125
+        ],
+        "scale": 2
+      },
+      {
+        "name": "cartridge-hand",
+        "kind": "hand",
+        "rect": [
+          750,
+          420,
+          135,
+          240
+        ],
+        "scale": 2
+      }
+    ],
+    "fullFramePreview": {
+      "dimensions": [
+        768,
+        512
+      ]
+    },
+    "temporaryFilesRemoved": true
+  },
+  "candidateDimensions": [
+    1536,
+    1024
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-6632011f-cae7-4bf7-b601-27484c5ec53d.png",
+      "candidateSha256": "a6a7097e952cfe0682e8404501d11321de6617851c845df8b02435b25cef272f",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-6632011f-cae7-4bf7-b601-27484c5ec53d.png",
+      "prompt": "Use case: identity-preserve.\nAsset type: one finished 1536x1024 landscape Deep Orbit lesson scene, Forward Pass challenge.\n\nReference images in this exact order:\n1. Ensign Demir's canonical neutral portrait is the fixed identity authority.\n2. The Bridge master defines room architecture and materials.\n3. The current Forward Pass challenge is the edit target and task-content reference.\n\nPrimary correction: rebuild Demir's seated upper body, shoulders, neck, arms and chair as one naturally proportioned young adult. The target's giant torso, broad shoulders and oversized foreground arm make his head look too small. Reduce this inflated body mass and extreme foreshortening. Keep his canonical head at a normal adult scale instead of enlarging it into a bobblehead. Use a lean average young-adult build, comfortably sloping shoulders, a normal neck emerging between them, ordinary upper-arm thickness and hands proportional to his face. At comparable depth the shoulders should read around two to two-and-a-half head widths, with perspective allowed, not the huge padded body in the target. Preserve the canonical face width, jaw, chin, nose, eye spacing, brown eyes, freckles, swept dark hair, stubble, ear device and charcoal uniform from image 1.\n\nCandid action: seated at the Bridge workstation after the failed demo, Demir has a small focused, hopeful smile and looks toward the practice display. His left hand holds a small plain rectangular data cartridge beside its visible reader slot, with a relaxed grip and neutral wrist. His right index finger presses one keyboard key while the other fingers curl naturally. Show a separate traceable shoulder, upper arm, elbow, forearm and wrist for each arm. Keep the cartridge and hands at ordinary scale. His chair supports his pelvis and back, with believable desk clearance, lap and thigh placement. Use a calm medium three-quarter camera position with less wide-angle exaggeration. Keep his head, neck and torso aligned with the work.\n\nDisplay geometry is mandatory: use a large shared monitor on the right on a plausible swivel support. Its complete front bezel and glass are frontal rectangles parallel to the camera sensor. Top and bottom edges are level and left and right edges are vertical. The title, all boxes, arrows, dividers and text baselines share that exact horizontal/vertical plane. Demir and the camera are both on the visible front side, and his gaze reaches the displayed task. Show all four glass corners with generous margins. Use available space for the main task text, large enough to read at 768x512.\n\nExact display content, preserving the exercise:\nTitle: \"Practice task\"\nUpper row has three boxes with arrows from left to right:\nBox 1: \"Input\", \"[[1,2],[3,4]]\", \"shape [2,2]\"\nBox 2: \"Dense:\", \"3 units\"\nBox 3: \"Expected shape\", \"[2,3]\"\nA separate lower row has:\n\"Single reading\", \"[5,6]\" then an arrow to \"Add one batch axis\".\nFooter: \"Awaiting code\".\nNo predicted numeric output, completed result or success tick. These are the supplied practice data and expected shapes before the learner runs code.\n\nPreserve the Bridge, warm practical light, muted green interface and aged brass palette, the cartridge action and engaged expression. Other screens stay quiet dark glass. No new people, pointer or paper. Avoid muscular or swollen shoulders, tiny-head proportions, oversized hands, a long thin neck, a bobblehead, twisted grips, duplicate limbs, screen-plane mismatch, clipped labels or camera-facing presentation pose.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "8a598c341ee78298f671dc52275f66e4d79e00864b9b64141c8255d221a72507",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity: Ensign Demir"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room master: Bridge"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ea9183c5-b602-4cea-a9ed-6f9ed34edeb0.png",
+          "sha256": "cd43f2b0dd05e3f6b4aec13bb6e0f7edcf6665367396778653a7fa2a46956c0b",
+          "role": "edit target: current challenge with rejected body proportions",
+          "pathAtGeneration": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png"
+        }
+      ],
+      "generationArgs": {
+        "prompt": "Use case: identity-preserve.\nAsset type: one finished 1536x1024 landscape Deep Orbit lesson scene, Forward Pass challenge.\n\nReference images in this exact order:\n1. Ensign Demir's canonical neutral portrait is the fixed identity authority.\n2. The Bridge master defines room architecture and materials.\n3. The current Forward Pass challenge is the edit target and task-content reference.\n\nPrimary correction: rebuild Demir's seated upper body, shoulders, neck, arms and chair as one naturally proportioned young adult. The target's giant torso, broad shoulders and oversized foreground arm make his head look too small. Reduce this inflated body mass and extreme foreshortening. Keep his canonical head at a normal adult scale instead of enlarging it into a bobblehead. Use a lean average young-adult build, comfortably sloping shoulders, a normal neck emerging between them, ordinary upper-arm thickness and hands proportional to his face. At comparable depth the shoulders should read around two to two-and-a-half head widths, with perspective allowed, not the huge padded body in the target. Preserve the canonical face width, jaw, chin, nose, eye spacing, brown eyes, freckles, swept dark hair, stubble, ear device and charcoal uniform from image 1.\n\nCandid action: seated at the Bridge workstation after the failed demo, Demir has a small focused, hopeful smile and looks toward the practice display. His left hand holds a small plain rectangular data cartridge beside its visible reader slot, with a relaxed grip and neutral wrist. His right index finger presses one keyboard key while the other fingers curl naturally. Show a separate traceable shoulder, upper arm, elbow, forearm and wrist for each arm. Keep the cartridge and hands at ordinary scale. His chair supports his pelvis and back, with believable desk clearance, lap and thigh placement. Use a calm medium three-quarter camera position with less wide-angle exaggeration. Keep his head, neck and torso aligned with the work.\n\nDisplay geometry is mandatory: use a large shared monitor on the right on a plausible swivel support. Its complete front bezel and glass are frontal rectangles parallel to the camera sensor. Top and bottom edges are level and left and right edges are vertical. The title, all boxes, arrows, dividers and text baselines share that exact horizontal/vertical plane. Demir and the camera are both on the visible front side, and his gaze reaches the displayed task. Show all four glass corners with generous margins. Use available space for the main task text, large enough to read at 768x512.\n\nExact display content, preserving the exercise:\nTitle: \"Practice task\"\nUpper row has three boxes with arrows from left to right:\nBox 1: \"Input\", \"[[1,2],[3,4]]\", \"shape [2,2]\"\nBox 2: \"Dense:\", \"3 units\"\nBox 3: \"Expected shape\", \"[2,3]\"\nA separate lower row has:\n\"Single reading\", \"[5,6]\" then an arrow to \"Add one batch axis\".\nFooter: \"Awaiting code\".\nNo predicted numeric output, completed result or success tick. These are the supplied practice data and expected shapes before the learner runs code.\n\nPreserve the Bridge, warm practical light, muted green interface and aged brass palette, the cartridge action and engaged expression. Other screens stay quiet dark glass. No new people, pointer or paper. Avoid muscular or swollen shoulders, tiny-head proportions, oversized hands, a long thin neck, a bobblehead, twisted grips, duplicate limbs, screen-plane mismatch, clipped labels or camera-facing presentation pose.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ea9183c5-b602-4cea-a9ed-6f9ed34edeb0.png"
+        ],
+        "transparent_background": false
+      },
+      "ownReview": {
+        "reviewer": "/root/quality_sequence",
+        "reviewedAt": "2026-11-09T14:03:16.047447+00:00",
+        "candidateSha256": "a6a7097e952cfe0682e8404501d11321de6617851c845df8b02435b25cef272f",
+        "verdict": "FAIL",
+        "nativeReviewed": true,
+        "handAndFaceCropsReviewedAt2x": true,
+        "canonicalPortraitCompared": true,
+        "preview768Reviewed": true,
+        "checks": {
+          "proportions": "Torso and shoulder bulk are reduced coherently. The natural head scale, neck, lean adult chest, pelvis, lap and chair support remain plausible.",
+          "hands": "Both complete arms have traceable shoulders and elbows. The left hand grips the cartridge beside its slot, while the right index contacts a keyboard key. Enlarged crops show plausible digit placement and wrists.",
+          "identity": "Canonical freckled face, nose, eye spacing, stubble, hair and ear device retained.",
+          "source": "Both exercise arrays, dense units and expected shape remain correct, with Awaiting code status.",
+          "readability": "All task labels and values are readable at 768x512.",
+          "displayGeometry": "The glass top rises by about 13 pixels across its width while the task boxes remain level. The front bezel is also shallowly trapezoidal. This fails the requested explicit frontal geometry."
+        },
+        "findings": [
+          "Remaining physical screen plane mismatch despite successful body-proportion correction."
+        ],
+        "repairDirection": "Preserve the whole repaired character and correct only the physical monitor to a level rectangular front with matching interior geometry."
+      },
+      "diagnosticReview": {
+        "crops": [
+          {
+            "name": "face",
+            "kind": "face",
+            "rect": [
+              345,
+              230,
+              180,
+              230
+            ],
+            "scale": 2
+          },
+          {
+            "name": "keyboard-hand",
+            "kind": "hand",
+            "rect": [
+              575,
+              755,
+              230,
+              125
+            ],
+            "scale": 2
+          },
+          {
+            "name": "cartridge-hand",
+            "kind": "hand",
+            "rect": [
+              750,
+              420,
+              135,
+              240
+            ],
+            "scale": 2
+          }
+        ],
+        "fullFramePreview": {
+          "dimensions": [
+            768,
+            512
+          ]
+        },
+        "temporaryFilesRemoved": true
+      },
+      "retainUntil": "Revision review and publication, then remove the rejected working image.",
+      "candidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/rejected-v1.png",
+      "generationArgsAtGeneration": {
+        "prompt": "Use case: identity-preserve.\nAsset type: one finished 1536x1024 landscape Deep Orbit lesson scene, Forward Pass challenge.\n\nReference images in this exact order:\n1. Ensign Demir's canonical neutral portrait is the fixed identity authority.\n2. The Bridge master defines room architecture and materials.\n3. The current Forward Pass challenge is the edit target and task-content reference.\n\nPrimary correction: rebuild Demir's seated upper body, shoulders, neck, arms and chair as one naturally proportioned young adult. The target's giant torso, broad shoulders and oversized foreground arm make his head look too small. Reduce this inflated body mass and extreme foreshortening. Keep his canonical head at a normal adult scale instead of enlarging it into a bobblehead. Use a lean average young-adult build, comfortably sloping shoulders, a normal neck emerging between them, ordinary upper-arm thickness and hands proportional to his face. At comparable depth the shoulders should read around two to two-and-a-half head widths, with perspective allowed, not the huge padded body in the target. Preserve the canonical face width, jaw, chin, nose, eye spacing, brown eyes, freckles, swept dark hair, stubble, ear device and charcoal uniform from image 1.\n\nCandid action: seated at the Bridge workstation after the failed demo, Demir has a small focused, hopeful smile and looks toward the practice display. His left hand holds a small plain rectangular data cartridge beside its visible reader slot, with a relaxed grip and neutral wrist. His right index finger presses one keyboard key while the other fingers curl naturally. Show a separate traceable shoulder, upper arm, elbow, forearm and wrist for each arm. Keep the cartridge and hands at ordinary scale. His chair supports his pelvis and back, with believable desk clearance, lap and thigh placement. Use a calm medium three-quarter camera position with less wide-angle exaggeration. Keep his head, neck and torso aligned with the work.\n\nDisplay geometry is mandatory: use a large shared monitor on the right on a plausible swivel support. Its complete front bezel and glass are frontal rectangles parallel to the camera sensor. Top and bottom edges are level and left and right edges are vertical. The title, all boxes, arrows, dividers and text baselines share that exact horizontal/vertical plane. Demir and the camera are both on the visible front side, and his gaze reaches the displayed task. Show all four glass corners with generous margins. Use available space for the main task text, large enough to read at 768x512.\n\nExact display content, preserving the exercise:\nTitle: \"Practice task\"\nUpper row has three boxes with arrows from left to right:\nBox 1: \"Input\", \"[[1,2],[3,4]]\", \"shape [2,2]\"\nBox 2: \"Dense:\", \"3 units\"\nBox 3: \"Expected shape\", \"[2,3]\"\nA separate lower row has:\n\"Single reading\", \"[5,6]\" then an arrow to \"Add one batch axis\".\nFooter: \"Awaiting code\".\nNo predicted numeric output, completed result or success tick. These are the supplied practice data and expected shapes before the learner runs code.\n\nPreserve the Bridge, warm practical light, muted green interface and aged brass palette, the cartridge action and engaged expression. Other screens stay quiet dark glass. No new people, pointer or paper. Avoid muscular or swollen shoulders, tiny-head proportions, oversized hands, a long thin neck, a bobblehead, twisted grips, duplicate limbs, screen-plane mismatch, clipped labels or camera-facing presentation pose.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png"
+        ],
+        "transparent_background": false
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T14:05:44.869798+00:00",
+    "candidateSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "handAndFaceCropsReviewedAt2x": true,
+    "canonicalPortraitCompared": true,
+    "preview768Reviewed": true,
+    "checks": {
+      "proportions": "Torso and shoulder bulk are reduced coherently. The natural head scale, neck, lean adult chest, pelvis, lap and chair support remain plausible.",
+      "hands": "Both complete arms have traceable shoulders and elbows. The left hand grips the cartridge beside its slot, while the right index contacts a keyboard key. Enlarged crops show plausible digit placement and wrists.",
+      "identity": "Canonical freckled face, nose, eye spacing, stubble, hair and ear device retained.",
+      "source": "Both exercise arrays, dense units and expected shape remain correct, with Awaiting code status.",
+      "readability": "All task labels and values are readable at 768x512.",
+      "displayGeometry": "All four glass corners form a frontal rectangle. Glass, bezel, rules, task boxes and text baselines now share horizontal/vertical families. The screen front is visible to Demir and the camera.",
+      "bodyComparison": "Compared with the user-rejected original, the swollen shoulder/chest mass and oversized foreground arm are reduced. A normal neck joins a lean young-adult torso. The naturally sized canonical head remains integrated with the visible chair, supported pelvis and lap."
+    },
+    "findings": [],
+    "repairDirection": null,
+    "attempt": 2,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "method": "Fresh native candidate, repeated 2x face and both hand crops, canonical identity comparison, complete shoulder-elbow-wrist tracing, explicit glass-corner/content-plane check and 768x512 preview.",
+    "limits": [
+      "Independent peer review remains pending.",
+      "The 768x512 review uses the PNG candidate. Check the final compressed WebP after publication."
+    ],
+    "glassGeometryApproxXY": {
+      "topLeft": [
+        906,
+        232
+      ],
+      "topRight": [
+        1478,
+        232
+      ],
+      "bottomRight": [
+        1478,
+        658
+      ],
+      "bottomLeft": [
+        906,
+        658
+      ],
+      "titleDivider": [
+        [
+          923,
+          304
+        ],
+        [
+          1463,
+          304
+        ]
+      ],
+      "upperTaskBoxesTopY": 329,
+      "upperTaskBoxesBottomY": 444,
+      "middleDivider": [
+        [
+          923,
+          465
+        ],
+        [
+          1463,
+          465
+        ]
+      ],
+      "lowerTaskBoxesTopY": 484,
+      "lowerTaskBoxesBottomY": 567,
+      "footerDivider": [
+        [
+          923,
+          588
+        ],
+        [
+          1463,
+          588
+        ]
+      ],
+      "operatorPosition": "Demir sits to the left and in front of the screen plane, looking at its visible content."
+    }
+  },
+  "faceCropCoordinates": [
+    {
+      "name": "face",
+      "kind": "face",
+      "rect": [
+        345,
+        230,
+        180,
+        230
+      ],
+      "scale": 2
+    }
+  ],
+  "handCropCoordinates": [
+    {
+      "name": "keyboard-hand",
+      "kind": "hand",
+      "rect": [
+        575,
+        755,
+        230,
+        125
+      ],
+      "scale": 2
+    },
+    {
+      "name": "cartridge-hand",
+      "kind": "hand",
+      "rect": [
+        750,
+        420,
+        135,
+        240
+      ],
+      "scale": 2
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+  "sourceSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+  "webpSha256": "ecfd883b68c3111cc87f5d2f4ccd41509c01be94604f0d167fe67031345a700f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+    "sourceSha256": "cd43f2b0dd05e3f6b4aec13bb6e0f7edcf6665367396778653a7fa2a46956c0b",
+    "webpSha256": "6a42166b7251e46d0c930ead5355c7050e9001b2fbc8cb33344a9b06238d557e",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ea9183c5-b602-4cea-a9ed-6f9ed34edeb0.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+    "method": "Reopened after user correction. Exact current candidate independently inspected for screen plane and operator direction, canonical faces, full arm chains and magnified hands, plus 768px readability. Adjacent peer.json records the decision.",
+    "checks": [
+      "Natural young-adult head, neck, shoulder, torso and hand proportions.",
+      "Separate shoulder-elbow-wrist chains with plausible cartridge grip and keyboard contact.",
+      "Whole physical monitor and its content share a frontal rectangular plane.",
+      "Exact exercise data and expected shapes stay readable at 768x512, with Awaiting code status."
+    ],
+    "reviewedSourceFiles": []
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root",
+  "generationArgsAtGeneration": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nMake only the large monitor and its contents fully frontal. Output one 1536x1024 image.\n\nReference 1 is Demir's canonical portrait. Reference 2 is the Bridge room master. Reference 3 is the current repaired composition, the edit target.\n\nPreserve exactly the target's corrected Demir proportions: same naturally sized head, lean torso, sloping shoulders, neck, arms, two hands, hair, face, expression, charcoal uniform, chair, lap, legs, keyboard action and cartridge grip. Preserve the surrounding Bridge, desk and lighting. Do not re-enlarge the body, hands or head.\n\nThe entire monitor FRONT MUST BE A TRUE RECTANGLE parallel to the camera sensor. Fix the remaining shallow tilt of its top edge. Both top and bottom bezel edges must be perfectly horizontal, and both side edges perfectly vertical. The glass inner border must also be exactly rectangular with its top and bottom level. Its four corners should be approximately (920,225), (1480,225), (1480,660), (920,660). No trapezoidal front bezel, no sloping upper glass edge. The existing swivel pedestal supports this frontal orientation. The cartridge slot remains accessible on the monitor's left outer edge, preserving the hand grip exactly.\n\nKeep every title, divider, box edge, arrow and text baseline on this same frontal plane: horizontal baselines and horizontal/vertical box edges. Retain the same large readable task content, precise values and roomy layout. Use these exact labels:\n\"Practice task\"\n\"Input\"\n\"[[1,2],[3,4]]\"\n\"shape [2,2]\"\n\"Dense:\"\n\"3 units\"\n\"Expected shape\"\n\"[2,3]\"\n\"Single reading\"\n\"[5,6]\"\n\"Add one batch axis\"\n\"Awaiting code\"\n\nKeep the upper flow Input to Dense to Expected shape and the separate lower Single reading to Add one batch axis flow. Exactly the same task, no numeric predicted outputs and no completion tick. Demir remains on the visible front side of the screen.\n\nThe only change is the monitor's perfectly frontal rectangular geometry and its matching content plane. Preserve all corrected anatomy and the natural hopeful, focused expression.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/rejected-v1.png"
+    ],
+    "transparent_background": false
+  }
+}

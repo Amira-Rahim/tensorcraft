@@ -1,8 +1,7 @@
 # Scene Bible: Deep Orbit
 
-Single source of truth for the per-lesson scene portrait art (the
-establishing shots rendered by `ScenePortrait` under each Briefing slugline
-and on the 7 distinct-location Epilogues). Companion to
+Art direction for the scene images in all five sections of every lesson:
+Briefing, Concept, Challenge, Takeaways and Consequence. Companion to
 `docs/character-bible.md` and `docs/patch-bible.md` (module mission patches
 + world seal), same contract: **the prompts here are the contract.** Art may be regenerated at any time, but it must keep matching
 each entry's location canon, moment and staging notes. Nothing here blocks a
@@ -10,7 +9,12 @@ build; until an image ships, the lesson renders exactly as it does today.
 
 Asset convention (wired in code 2026-08-05):
 `apps/web/public/scenes/deep-orbit/<module-slug>/<lesson-slug>.webp`,
-epilogue variants `<lesson-slug>-epilogue.webp`. Ship size 1536x1024 webp
+section variants `<lesson-slug>-concept.webp`, `<lesson-slug>-challenge.webp`,
+`<lesson-slug>-takeaways.webp` and `<lesson-slug>-epilogue.webp`.
+Approved assignments live in `apps/web/lib/lesson-scene-art.manifest.json`.
+Each section needs a genuinely distinct composition and story action. A crop,
+renamed duplicate, or changed color treatment does not count as a new scene.
+Ship size 1536x1024 webp
 q80, budget 150 KB target / 200 KB hard cap per image
 (`scripts/art/ingest.mjs` enforces). Alt text lands in the lesson
 frontmatter as `scene.portraitAlt` / `scene.epiloguePortraitAlt`.
@@ -27,6 +31,20 @@ Append verbatim to every scene prompt:
 
 ## Staging rules
 
+0. **Fixed character identity (binding, 2026-11-07).** Every image must show
+   the same individual for each named character. The neutral portraits in
+   `docs/art-refs/deep-orbit/<character-slug>.png` are the identity authority.
+   Supply the actual portrait files for every depicted human as the first
+   reference images. Label their roles explicitly. A prior scene is not an
+   identity authority: it may already contain drift. Room references come
+   after the identity references. Preserve facial width, jaw and chin shape,
+   nose bridge and tip, eye shape and spacing, brows, mouth proportions,
+   complexion, age markers, hairline and signature equipment. Pose, expression
+   and lighting can vary while facial structure stays consistent. Matching
+   hair, an AR lens or a uniform does not establish identity. Compare face
+   crops beside the neutral portraits before approving any image. Withhold
+   mismatches and make targeted identity corrections. Recheck the corrected
+   image's hands, body, furniture and teaching displays too.
 1. **Visible character faces (binding, 2026-11-06).** Show the actual named
    crew with visible, recognizable faces. Use the approved portraits in
    `docs/art-refs/deep-orbit/<character-slug>.png` as identity references for
@@ -46,8 +64,103 @@ Append verbatim to every scene prompt:
 3. **Alt text** is authored with the prompt: 150 characters or less,
    present tense, describes the depicted moment plainly, no "image of",
    fictional names allowed.
-4. **No text in frame.** Screens show waveforms, charts and glyphs, never
-   readable words (generated text always artifacts).
+4. **Meaningful screens.** Ground every prominent panel in the current lesson
+   and section. Record the source task, data, operation and visible result in
+   the art brief. Generic cards, progress bars and waveforms need a specific
+   instructional meaning. Remove panels that cannot be explained. Use short,
+   verified labels when they make the diagram understandable, and inspect
+   every rendered label, value, axis, count and connection. Never use fake
+   code, unreadable glyphs or invented results as technical decoration.
+5. **Physical coherence.** Inspect each complete shoulder, elbow, wrist and
+   hand chain. Reject extra or detached limbs, fused or duplicated fingers,
+   implausible object grips, and bodies passing through chairs, tables or
+   rails. Check the head, neck, shoulders and gaze together. A face turned
+   toward another character needs a plausible torso turn and seated chair
+   orientation. Correct the whole pose when needed to avoid a backward neck
+   twist. Trace each arm from its own shoulder to its hand, including raised
+   and crossing arms. Check adult torso-to-leg proportions, pelvis support,
+   thigh length, knee clearance and feet on the floor in seated scenes.
+   Adjust the chair and console together when they compress the body.
+   Preserve the established stylized adult proportions. Correct visibly
+   oversized heads moderately and review the whole figure. The owner rejected
+   both oversized heads and the small-head correction. Use the balanced
+   Inference Pipeline ending reference from the current proportion review.
+   Check occlusion before calling a hidden limb defective. A prompt
+   instruction alone is not a visual quality check.
+6. **Story and tone.** Read the current lesson before generating each section.
+   Current MDX and the owner's directions supersede obsolete staging briefs
+   below. Keep the adventure warm, curious and lighthearted through specific
+   character actions and reactions. Preserve earned serious moments. Do not
+   invent success verdicts, solved mysteries or results before the learner's
+   task. Exact diagram counts, topology and status meanings need visual review.
+7. **Candid story action (binding, 2026-11-07 owner correction).** Every scene
+   must depict a specific moment with an action, a reaction and a reason tied
+   to the current story. Reject stiff front-facing portraits, symmetrical
+   pairs displaying lesson cards, empty smiles and props held toward the
+   viewer solely to deliver information. Characters look at their work or
+   each other. Show recognizable faces through natural three-quarter staging,
+   without forcing their gaze toward the camera. Let posture, expression and
+   interaction carry curiosity, dry humor, frustration, discovery or earned
+   relief appropriate to that moment. A smiling portrait is not a story.
+   Place accurate lesson information on equipment the crew is actually using.
+   Use only the information needed to understand the moment, rather than
+   turning the room into a teaching poster. Vary the action and composition
+   across all five sections. Recheck existing approved scenes against this
+   requirement. Record the depicted action, emotion, eyeline and narrative
+   reason separately from identity and technical approval.
+8. **Continuous asset cleanup (binding, 2026-11-07).** After a replacement
+   passes review and takes the active asset path, remove superseded local
+   candidates and duplicate working images that no longer serve a live
+   reference or review purpose. Keep the current approved source and necessary
+   canonical references. Verify runtime and review references after cleanup.
+   Do not retain rejected alternatives in the project merely as history.
+   Comparison sheets, face crops, detail crops and audit collages are temporary
+   review output. Keep the original image paths, hashes, crop coordinates and
+   review decisions. Recreate previews in temporary storage when needed, then
+   remove them. Permanent audit records should reference the original assets.
+9. **Surface perspective and visual coherence (binding, 2026-11-07).** Text,
+   grids, diagram lines and interface boxes must share the perspective of the
+   physical screen, board, tablet or paper carrying them. Baselines, spacing
+   and character foreshortening follow that plane and its vanishing direction.
+   Reject camera-facing text pasted onto an angled surface. Check the complete
+   composition for readable hierarchy, comfortable spacing, plausible light,
+   object contact and a clear flow between the crew's gaze, action and work.
+   Technical correctness alone does not make an image acceptable. Check hands
+   and necks at native resolution even when a new composition feels lively.
+10. **Reader and operator direction (binding, 2026-11-07).** A document's
+    printed side must face the character reading it. A working screen must
+    face its operator. Trace the character's gaze to the visible surface and
+    check the view from their position. Place the camera beside the reader,
+    use a shared display, or show the back of the document when appropriate.
+    Text on a flat desk page may be upside down to the audience. Show needed
+    lesson information elsewhere in the same plausible workspace. Never make
+    a character read or write through the back of a paper or screen simply to
+    expose its content to the audience. Apply this check to existing scenes
+    as well as every new image and replacement.
+11. **Display size and detailed anatomy review (binding, 2026-11-08).**
+    Use available scene space for the primary lesson information. Enlarge
+    the working display or move its content to a shared upright screen when
+    a small console leaves a large wall or much of the frame unused. Keep
+    the key text as large as the composition reasonably allows, with short
+    labels, clear spacing and readable contrast. Check the image at its
+    lesson display size as well as native resolution. Preserve operator
+    direction and surface perspective when changing the composition.
+    Background detail must not consume space needed for essential text.
+    Review each hand at enlarged detail, then trace it through its wrist,
+    elbow and shoulder in the full image. Check left/right thumb placement,
+    finger count, grip and object contact. Pens and other rigid props must
+    stay straight and continuous across the grip. A lively expression or
+    attractive palette cannot excuse a broken hand or unreadable display.
+    Reopen earlier approvals when these checks reveal a defect.
+12. **Explicit screen geometry check (2026-11-09 correction).** Before
+    approving a screen repair, identify all four glass corners and the
+    operator's position. The operator must be on the visible side of that
+    plane. Check that interior rules, box edges and text baselines converge
+    with the corresponding glass edges. A readable table still fails when
+    its projection disagrees with the bezel. Use a plausible swivel-mounted
+    frontal display when the angled projection cannot be drawn consistently.
+    Check the new file independently. An earlier approval does not establish
+    that the corrected screen or surrounding hands are sound.
 
 ## Location canon: master plates
 

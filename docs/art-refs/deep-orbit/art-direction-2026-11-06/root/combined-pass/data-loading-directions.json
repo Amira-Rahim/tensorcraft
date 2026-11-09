@@ -1,0 +1,94 @@
+[
+  {
+    "id": "foundations/data-loading",
+    "phase": "briefing",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-briefing-input.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+    "screenMeaning": "Opening story: loading every raw capture into one array stops at19,204 of28,800 records and about40GB, requiring the lazy-loading fix.",
+    "alt": "Demir studies the failed full-archive load, stopped at 19,204 readings with about 40 GB held in memory.",
+    "location": "Archimedes, Engineering",
+    "spec": {
+      "scale": "Preserve current head size and tired leaned pose. The red warning lamp belongs to this failed-load story and stays red.",
+      "screen": "Replace the large main screen with ONE archive-memory chart titled Full archive load. Horizontal axis Archive readings, from0 to28,800. Vertical axis Memory. Draw a rising line that STOPS at an amber X at19,204 readings, around40GB. Label the stop 19,204 /28,800 and about40GB. Short status Allocation failed. Do NOT draw a fall back to zero or claim the full archive loaded. Remove unrelated pie charts, clocks, battery segments and decorative dashboards from this main screen. Other small displays remain dim archive status, no unrelated fake plots. Right ARIA display is one thin ring and a single horizontal waveform.",
+      "alt": "Demir studies the failed full-archive load, stopped at19,204 readings with about40GB held in memory.",
+      "meaning": "Opening story: loading every raw capture into one array stops at19,204 of28,800 records and about40GB, requiring the lazy-loading fix."
+    },
+    "status": "pending"
+  },
+  {
+    "id": "foundations/data-loading",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-challenge-input.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+    "screenMeaning": "Current challenge reserves earlier12 IDs for training and last4 for validation, with no model training. This is supplied task input/membership, not an executed success claim.",
+    "alt": "Demir checks the 16 practice row IDs, reserving IDs 12 through 15 for validation while preparing the loader.",
+    "location": "Archimedes, Engineering",
+    "spec": {
+      "scale": "Correct only the visibly heavy head with a modest10percent reduction of head/hair/ears together, retaining exact internal facial features. Preserve body, supported chair, hips, legs, separate arms and natural fingerpoint. Never make a small realistic head.",
+      "screen": "Main angled console shows the actual16-row practice archive input. Title Archive row IDs. Upper section labeled Training IDs has exactly12 numbered cards in3 rows of4, numbers0,1,2,3 then4,5,6,7 then8,9,10,11. Below a clear separation is Validation IDs with exactly4 numbered cards12,13,14,15 inone row. Training cards muted sage, validation cards muted amber. Demir points near the separation without hiding numbers. No row crosses the boundary, no shuffled validation, no completed batch output, no success verdict or progress bar. Replace randomwaveformcards and the blank topcard. Keep background monitors dim and unobtrusive, no decorative data graphs.",
+      "alt": "Demir checks the16 practice row IDs, reserving IDs12 through15 for validation while preparing the loader.",
+      "meaning": "Current challenge reserves earlier12 IDs for training and last4 for validation, with no model training. This is supplied task input/membership, not an executed success claim."
+    },
+    "status": "pending"
+  },
+  {
+    "id": "foundations/data-loading",
+    "phase": "takeaways",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-takeaways-input.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+    "screenMeaning": "Recall teaches shuffle before batch, while actualexercise uses shufflebuffer10 and batches4. ExampleIDs0,3,5,9 produce shown featurevalues and matchingbinarylabels from suppliedreadSample formula.",
+    "alt": "Demir reviews shuffling before batching beside one example with feature shape [4,3] and label shape [4,1].",
+    "location": "Archimedes, Engineering",
+    "spec": {
+      "scale": "Reduce the overlarge head only modestly, around10percent inwidth andheight, with exactsame face. Preserve both connected arms, two natural tablet grips and adult torso.",
+      "screen": "Replace the tablet randomfilecards with a simple order diagram: shuffle(10) then anarrow then batch(4), short clearlabels. Main monitor on right shows Example batch, with featurematrix xs [4,3] and adjacent labelcolumn ys [4,1]. Featurematrix EXACTLY4rows and3columns: row1 0,0,0; row2 300,3,0.3; row3 500,5,0.5; row4 900,9,0.9. Adjacent labelcolumn EXACTLY4rows with0,1,1,1 aligned to these feature rows. This is a possiblebatch from exampleIDs0,3,5,9, notthe learneractualresult. A small ARIAthinring withonehorizontalwaveform may sit inunusedtopcorner, nootherrandomchart. No successcheckmark or accuracyresult. Keep font legible and every cell count correct.",
+      "alt": "Demir reviews shuffling before batching beside one example with feature shape[4,3] and label shape[4,1].",
+      "meaning": "Recall teaches shuffle before batch, while actualexercise uses shufflebuffer10 and batches4. ExampleIDs0,3,5,9 produce shown featurevalues and matchingbinarylabels from suppliedreadSample formula."
+    },
+    "status": "pending"
+  },
+  {
+    "id": "foundations/data-loading",
+    "phase": "epilogue",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-epilogue-input.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+    "screenMeaning": "Epilogue explicitly says11days archive processed in4minutes withsteady memory; timingisfictionalstory, notbenchmark. Demirsbelatedfistpump retained.",
+    "alt": "Demir celebrates the completed 28,800-reading archive replay while the working-memory line stays level.",
+    "location": "Archimedes, Engineering",
+    "spec": {
+      "scale": "Reduce head only mildly around10percent while keeping facial morphology and fistpump expression unchanged. Preserve correct seated torso and both separate arms, one fist and one hand onconsole.",
+      "screen": "Replace main monitor genericline/progressbar with Archive replay complete as smalltitle. Show short fields28,800 readings and4 min (story). Lowerpanel labeled Working memory shows a flat bounded line against an Archive rows horizontal axis, ending at28,800. This is fictional story completion, notareal benchmark. Do notshow accuracy or predictions. Adjacent ARIAmonitor remains exactlyone thinring withsinglehorizontalwaveform. Dim incidentalbackgroundscreens, nofakecode.",
+      "alt": "Demir celebrates the completed28,800-reading archive replay while the working-memory line stays level.",
+      "meaning": "Epilogue explicitly says11days archive processed in4minutes withsteady memory; timingisfictionalstory, notbenchmark. Demirsbelatedfistpump retained."
+    },
+    "status": "pending"
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "id": "neural-networks/first-neuron",
+  "phase": "briefing",
+  "cast": [
+    "dr-farah"
+  ],
+  "prompt": "Use case: precise-object-edit. Input1 immutable canonical Dr.Farah portrait. Input2 is TARGET scene. Make ONE small text replacement inside the central neuron circle on the big wallboard: replace 'Weighted sum' with exactly 'Weighted sum + bias', arranged on three short lines to fit. Preserve circle, exactlythreeinputconnections,oneoutputconnection,and all other words/numbers. Preserve literally everythingelse, especiallyFarahface/headsize/hair/expression/neck/body/arms/hands, warm mutedpalette,furniture and1536x1024framing. No leftaccentbars or incidentalplots.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-af7d910b-57c7-4266-b571-5e1e7a23edc4.png"
+  ],
+  "status": "generated-awaiting-review",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-52216e14-3dec-4d29-8b42-d73d6db937e2.png",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/first-neuron-briefing-dr-farah-proof.png",
+      "sha256": "3da6ee4318dd221ffa36b2a5a08307e0bab6fce727b62958a40a5b461f1eec13",
+      "crop": {
+        "left": 740,
+        "top": 270,
+        "width": 250,
+        "height": 310
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-181b1e1a-48a7-4a33-b352-df86b20b958b.png",
+      "priorSha256": "517d3a01735dee5aae4ebd6863ee61ff18b5dc46e57cf4a213d053cf08e30eec",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-52216e14-3dec-4d29-8b42-d73d6db937e2.png",
+      "candidateSha256": "ba554ddcc916ca411a8f00421e0347ad73a42d66bf3965965b58ccde9b883f3e"
+    }
+  ],
+  "pathSha256": "ba554ddcc916ca411a8f00421e0347ad73a42d66bf3965965b58ccde9b883f3e",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml"
+  ]
+}

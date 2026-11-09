@@ -1,0 +1,118 @@
+{
+  "id": "browser-runtimes/model-loading",
+  "phase": "epilogue",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical dr-farah identity; image 2: Canonical ensign-demir identity; image 3: bridge room only; image 4: Edit target; enlarge teaching display while preserving story action.\nScene: Farah stands LEFT leaning toward seated Demir at RIGHT, one hand lightly on the chair top and the other braced on the console. Demir has stopped typing, one hand resting on the keyboard and the other on the desk, turning toward her with surprise and raised brows. Farah's questioning face is intent. Large shared upright display fills LEFT/center upper wall, camera beside their station so the same readable surface is in both eyelines. Exact title 'Same reading'; large center statement '3 percentage points apart'; two spacious rows 'Notebook: retrained v2' and 'Dashboard: cached v1'; footer 'Check the cached model version'. No fabricated class, score or solved status. Preserve canonical age and face shapes.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "df373f160ad511f5891ef8ff997a46c53c8caf852d2261aaa7e620aa80c6644f",
+  "source": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+  "sourceSha256": "2610c08ebfec89035bf0a404941769b2ac31f789b32fb796cac3d1a226cb2d18",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical dr-farah identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "bridge room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+      "sha256": "2610c08ebfec89035bf0a404941769b2ac31f789b32fb796cac3d1a226cb2d18",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+    "lessonSha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6",
+    "context": "Epilogue has the notebook and dashboard three percentage points apart, retrained weights on server and stale deep-scan-v1 cache on dashboard.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "dr-farah",
+        "path": "docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+  "candidateSha256": "33ec6f57acdfc1f61186ae3ebcddaf27dc06d041cb0e9a4b014b51369f056fef",
+  "publication": {
+    "alt": "Farah and Demir discover that the notebook and dashboard use different model versions.",
+    "location": "bridge",
+    "action": "Farah and Demir discover that the notebook and dashboard use different model versions.",
+    "emotion": "Surprise at the version discrepancy.",
+    "eyeline": "Characters see and use the same readable display surface.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-01a2e863-b8d2-4cd2-b63c-843a687b80c0.png",
+  "generatedSha256": "33ec6f57acdfc1f61186ae3ebcddaf27dc06d041cb0e9a4b014b51369f056fef",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "33ec6f57acdfc1f61186ae3ebcddaf27dc06d041cb0e9a4b014b51369f056fef",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      830,
+      200,
+      660,
+      390
+    ],
+    "handCropCoordinatesXYWH": [
+      595,
+      805,
+      590,
+      200
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "The shared surprise and Farah's chair/desk contacts remain natural. Both canonical faces retain their distinct structures. Four hands traced to four arm chains; large version comparison makes the three-point discrepancy immediately readable."
+  },
+  "publishedSource": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/model-loading-epilogue.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__model-loading-epilogue/candidate.png",
+      "sha256": "33ec6f57acdfc1f61186ae3ebcddaf27dc06d041cb0e9a4b014b51369f056fef",
+      "bytes": 1958960,
+      "retainedEquivalent": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

@@ -107,7 +107,7 @@ For operations and data loading, start with actual code output and an annotated 
 
 Keep character responses specific to the evidence. Farah exposes a method's limitation, Nazari notices a cost, and ARIA reports what her rules cannot establish. Mirza asks questions or makes decisions. Preserve sample timing, existing character arcs, and the final mystery.
 
-At the free-module boundary, connect the unresolved question to the next module. Describe the existing $50 course's actual model and project work. Preserve accurate effort and refund information. The homepage headline and removal of its live demo remain established decisions.
+At the free-module boundary, connect the unresolved question to the next module. Describe the Deep Orbit course's actual model and project work and its $79 introductory price ($99 regular). Preserve accurate effort and refund information. The homepage headline and removal of its live demo remain established decisions.
 
 ## Required teaching and beginner exercise ramp
 

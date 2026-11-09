@@ -10,6 +10,7 @@ import { TensorInvestigation } from "./tensor-investigation";
 import * as tensorExample from "./tensor-example";
 import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
 import { WORKED_PACKET } from "../mdx/channel-layout-data";
+import { LESSON_SCENE_ART } from "@/lib/lesson-scene-art";
 
 afterEach(() => {
   cleanup();
@@ -23,6 +24,26 @@ const renderExample = () =>
   );
 
 describe("the opening signal chart", () => {
+  it("uses the approved Concept image in the first lesson's dedicated experiment", () => {
+    const key = "deep-orbit/foundations/introduction-to-tensors";
+    const previous = LESSON_SCENE_ART[key];
+    LESSON_SCENE_ART[key] = {
+      ...previous,
+      concept: {
+        src: `/scenes/${key}-concept.webp`,
+        alt: "Demir prepares the selected readings.",
+      },
+    };
+    try {
+      renderExample();
+      expect(
+        screen.getByAltText("Demir prepares the selected readings."),
+      ).toHaveAttribute("src", `/scenes/${key}-concept.webp`);
+    } finally {
+      LESSON_SCENE_ART[key] = previous!;
+    }
+  });
+
   it("uses the same twelve readings as the mission without a time-window choice", async () => {
     const run = vi
       .spyOn(tensorExample, "runTensorExample")

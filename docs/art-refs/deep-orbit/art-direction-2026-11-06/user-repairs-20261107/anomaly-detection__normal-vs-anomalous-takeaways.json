@@ -1,0 +1,285 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portraits first and room reference next, LAST image is target. Correct only the notebook reader direction. Nazari sits on the left and writes from the upper-left side of the page. Rotate the notebook and its writing as one physical object to face her: the TOP of the two-line note is toward the lower-right camera edge, its letter BOTTOMS toward Nazari at upper-left. To the camera the writing is visibly turned around, not a headline aimed at us. Exact text Measure observed rate. Keep her pen nib touching the note naturally, with no changed arm or detached fingers. Preserve the exact monitor content, body, face, seated pose, expression, head scale, chair, mug and room. Muted cel-shaded adventure comic. One1536x1024 image.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-narrative-stage1-openai-20261107.png",
+      "sha256": "8b24a7e5a09658b08c1d48b404741164b134070184916b2a6b7940a41c893f5c",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "8b24a7e5a09658b08c1d48b404741164b134070184916b2a6b7940a41c893f5c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+    "sha256": "11fede63507d43606f09364b2303d4d013ecdfc5b83f90a3be1ff2b03da16b69"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+      "matchesCandidateMetadata": true
+    }
+  ],
+  "panelSpecification": {
+    "state": "conditional rate example",
+    "concreteGenerationSpecification": "Completely RESTAGE Nazari as a candid working chief at her bridge console. Remove the two tablets held to camera entirely. She sits sideways in a swivel chair with torso and chair turned toward a low sloping console, natural three-quarter face visible from the console corner. One hand taps the calculator field while her other hand writes in a small notebook lying flat beside it. Her eyebrows pinch in weary disbelief at the workload estimate, with a restrained exasperated mouth; she looks at the calculation, never the viewer. Two anatomically coherent connected arms, natural shoulders and neck. The active console is angled toward her and reads Rate estimate, Assumed Gaussian: 0.27%, 100,000 normal readings / hour, Expected: about 270 flags / hour. No measured incident or actual alarm storm is asserted. The small notebook contains only Measure observed rate. No graphs or decorative numeric controls. All other monitors and unused holo table off. A used plain mug sits within reach, with a couple of ordinary blank-backed work papers to make this feel like an interrupted watch, no extra readable text. Preserve canonical Nazari age, short grey-streaked hair, rugged olive coverall, no eyewear. Muted sage, brass and charcoal with natural warm skin, no mint or gold cast.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "RecallPrompt and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portraits first and room reference next, LAST image is target. Correct only the notebook reader direction. Nazari sits on the left and writes from the upper-left side of the page. Rotate the notebook and its writing as one physical object to face her: the TOP of the two-line note is toward the lower-right camera edge, its letter BOTTOMS toward Nazari at upper-left. To the camera the writing is visibly turned around, not a headline aimed at us. Exact text Measure observed rate. Keep her pen nib touching the note naturally, with no changed arm or detached fingers. Preserve the exact monitor content, body, face, seated pose, expression, head scale, chair, mug and room. Muted cel-shaded adventure comic. One1536x1024 image."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7cd2369f-c369-4c3c-b61a-c77ca4704743.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+    "proofSha256": "223bb99551603c1065400f03a44ec530f229e7155527d92293553d77f77205e6",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Nazari calculates the expected false-alarm workload and reacts with weary disbelief, then makes a note to measure the actual rate."
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/normal-vs-anomalous-takeaways-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-takeaways-target.png",
+    "sha256": "64709142694fbc93c4b70361c95bb8c3c0715511af9627d1b633ac6187dd42ba",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "64709142694fbc93c4b70361c95bb8c3c0715511af9627d1b633ac6187dd42ba",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-takeaways-runtime-before.png",
+    "sha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Nazari calculates the expected false-alarm workload and reacts with weary disbelief, then makes a note to measure the actual rate.",
+    "fullSpecification": "Completely RESTAGE Nazari as a candid working chief at her bridge console. Remove the two tablets held to camera entirely. She sits sideways in a swivel chair with torso and chair turned toward a low sloping console, natural three-quarter face visible from the console corner. One hand taps the calculator field while her other hand writes in a small notebook lying flat beside it. Her eyebrows pinch in weary disbelief at the workload estimate, with a restrained exasperated mouth; she looks at the calculation, never the viewer. Two anatomically coherent connected arms, natural shoulders and neck. The active console is angled toward her and reads Rate estimate, Assumed Gaussian: 0.27%, 100,000 normal readings / hour, Expected: about 270 flags / hour. No measured incident or actual alarm storm is asserted. The small notebook contains only Measure observed rate. No graphs or decorative numeric controls. All other monitors and unused holo table off. A used plain mug sits within reach, with a couple of ordinary blank-backed work papers to make this feel like an interrupted watch, no extra readable text. Preserve canonical Nazari age, short grey-streaked hair, rugged olive coverall, no eyewear. Muted sage, brass and charcoal with natural warm skin, no mint or gold cast."
+  },
+  "narrativeVisualReview": "approved",
+  "candidateSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+  "faceBoxes": {
+    "nazari": [
+      410,
+      25,
+      385,
+      420
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-takeaways-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Completely RESTAGE Nazari as a candid working chief at her bridge console. Remove the two tablets held to camera entirely. She sits sideways in a swivel chair with torso and chair turned toward a low sloping console, natural three-quarter face visible from the console corner. One hand taps the calculator field while her other hand writes in a small notebook lying flat beside it. Her eyebrows pinch in weary disbelief at the workload estimate, with a restrained exasperated mouth; she looks at the calculation, never the viewer. Two anatomically coherent connected arms, natural shoulders and neck. The active console is angled toward her and reads Rate estimate, Assumed Gaussian: 0.27%, 100,000 normal readings / hour, Expected: about 270 flags / hour. No measured incident or actual alarm storm is asserted. The small notebook contains only Measure observed rate. No graphs or decorative numeric controls. All other monitors and unused holo table off. A used plain mug sits within reach, with a couple of ordinary blank-backed work papers to make this feel like an interrupted watch, no extra readable text. Preserve canonical Nazari age, short grey-streaked hair, rugged olive coverall, no eyewear. Muted sage, brass and charcoal with natural warm skin, no mint or gold cast. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "8b24a7e5a09658b08c1d48b404741164b134070184916b2a6b7940a41c893f5c",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0be180b1-dc9f-4677-8482-e0e08bea39d8.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-takeaways-target.png",
+          "sha256": "64709142694fbc93c4b70361c95bb8c3c0715511af9627d1b633ac6187dd42ba",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "64709142694fbc93c4b70361c95bb8c3c0715511af9627d1b633ac6187dd42ba",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-takeaways-identity-proof.jpg"
+    }
+  ],
+  "nextCandidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-narrative-stage2-openai-20261107.png",
+  "previousPanelSpecification": {
+    "state": "conditional rate example",
+    "concreteGenerationSpecification": "Preserve Nazari canonical face and two raised tablets, all grips and shoulders. If needed reduce complete head very slightly, no more than5 percent, preserving natural short neck and face geometry. Left tablet shows \"Assumed Gaussian\" then \"False-alarm rate\" and \"0.27%\". Right tablet shows \"100,000 normal\" then \"readings / hour\" then \"About 270 flags / hour\". One rear monitor shows only \"Measure the observed rate\". This is a conditional expectation example, no measured result. No dots or charts. Turn foreground unused holo emitter and all other screens off. Natural warm skin, thin subdued sage rim.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "RecallPrompt and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "approved",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0be180b1-dc9f-4677-8482-e0e08bea39d8.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7cd2369f-c369-4c3c-b61a-c77ca4704743.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+      "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "independentPeerReview": {
+    "index": 15,
+    "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+    "phase": "takeaways",
+    "path": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-narrative-stage2-openai-20261107.png",
+    "metadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-takeaways-candidate.json",
+    "candidateSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+    "readerDirection": "pass",
+    "rationale": "No impossible outward-facing reading or writing detected in the temporary full-scene screen.",
+    "inspection": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "currentFileSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+    "publicationAuthorized": false,
+    "hashStillMatches": true,
+    "activeSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+    "activeSha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+    "ledgerSha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+    "peerStatus": "pass",
+    "peerRationale": "Nazari calculates expected270 flags/hour from assumed Gaussian0.27% and100000 normal readings/hour, then notes need to measure observed rate. Replaces camera-facing dot cards; coherent desk pose, source-specific information and muted palette.",
+    "currentSourceHashes": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+        "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+        "matchesCandidateMetadata": true
+      }
+    ],
+    "gates": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    }
+  },
+  "temporaryCandidatePathAtReview": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-narrative-stage2-openai-20261107.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+  "sourceSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+  "webpSha256": "61071d9fbc61bb118d05e89bb90733c55e4e0b2a4c1c30d962b5888acbc7f92a",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+    "sourceSha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+    "webpSha256": "11fede63507d43606f09364b2303d4d013ecdfc5b83f90a3be1ff2b03da16b69",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+    "method": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "checks": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+        "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+        "matchesCandidateMetadata": true
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

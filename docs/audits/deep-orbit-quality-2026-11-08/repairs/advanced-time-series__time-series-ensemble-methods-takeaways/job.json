@@ -1,0 +1,148 @@
+{
+  "id": "advanced-time-series__time-series-ensemble-methods-takeaways",
+  "lesson": "advanced-time-series/time-series-ensemble-methods",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah"
+  ],
+  "room": "engineering",
+  "src": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+  "alt": "Farah checks the blend against every member and finds that the best member still wins.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.043343+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Preserve Farah seated at the engineering comparison, her concerned analytical expression and head turn toward the data. Remove the kinked stylus entirely. Recompose both complete arms: one hand naturally uses the mouse at the console, other rests flat on the notebook. No pointing gesture or pen. Keep a large upright comparison screen and enlarge it slightly so no line is small.\nExact visible display content: Title \"Illustrative comparison\". Table \"Member 1 | 0.052\", \"Member 2 | 0.036\", \"Member 3 | 0.050\", \"Blend | 0.041\", with numeric column header \"MAE\". Highlight Member 2 gently. Footer \"Best member wins this comparison\". These are illustrative values, not the story held-out-week result.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "45a1e11f81815de53d9a4936be766950121b9a795e021aec440e32654fd4dd1d",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room master",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "dfc4996e9f0739f0462fe80e2acbc51f6991c65438e62a336859e3fd90cb71ab"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+    "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa"
+  },
+  "sourceSha256": "dfc4996e9f0739f0462fe80e2acbc51f6991c65438e62a336859e3fd90cb71ab",
+  "sourceEvidence": {
+    "task": "Preserve Farah seated at the engineering comparison, her concerned analytical expression and head turn toward the data. Remove the kinked stylus entirely. Recompose both complete arms: one hand naturally uses the mouse at the console, other rests flat on the notebook. No pointing gesture or pen. Keep a large upright comparison screen and enlarge it slightly so no line is small.",
+    "visibleDataOperationAndResult": "Title \"Illustrative comparison\". Table \"Member 1 | 0.052\", \"Member 2 | 0.036\", \"Member 3 | 0.050\", \"Blend | 0.041\", with numeric column header \"MAE\". Highlight Member 2 gently. Footer \"Best member wins this comparison\". These are illustrative values, not the story held-out-week result.",
+    "defects": [
+      {
+        "category": "prop-anatomy",
+        "detail": "Farah's stylus has a visible angle change between tip and barrel at her fingers.",
+        "repairDirection": "Redraw complete hand and straight pen, or replace pointing with a relaxed open-hand explanation. Preserve clear MAE comparison."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Preserve Farah seated at the engineering comparison, her concerned analytical expression and head turn toward the data. Remove the kinked stylus entirely. Recompose both complete arms: one hand naturally uses the mouse at the console, other rests flat on the notebook. No pointing gesture or pen. Keep a large upright comparison screen and enlarge it slightly so no line is small.\nExact visible display content: Title \"Illustrative comparison\". Table \"Member 1 | 0.052\", \"Member 2 | 0.036\", \"Member 3 | 0.050\", \"Blend | 0.041\", with numeric column header \"MAE\". Highlight Member 2 gently. Footer \"Best member wins this comparison\". These are illustrative values, not the story held-out-week result.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah checks the blend against every member and finds that the best member still wins.",
+    "location": "Archimedes, Engineering",
+    "action": "Farah checks the illustrative result using a mouse while resting her other hand on a closed notebook.",
+    "emotion": "Skeptical attention to the stronger individual model.",
+    "eyeline": "Toward Member 2 and the comparison panel.",
+    "checks": [
+      "Large readable panel correctly shows member errors 0.052, 0.036, 0.050 and blend 0.041, with Member 2 highlighted and illustrative labeling.",
+      "The former bent pen is removed; both wrists and hand contacts are natural and connected.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ]
+  },
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-af14c6fb-3dfd-490f-a7b6-37a22934fb31.png",
+  "candidatePath": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+  "candidateSha256": "52134b683cfe92acb41e60adcff0a653159ff76a9be96acd8dcd21f8e5bcee4e",
+  "generatedAt": "2026-11-08T18:46:16.942320+00:00",
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 960,
+      "top": 140,
+      "width": 350,
+      "height": 390
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 495,
+      "top": 740,
+      "width": 550,
+      "height": 195
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T19:06:40.227316+00:00",
+    "candidateSha256": "52134b683cfe92acb41e60adcff0a653159ff76a9be96acd8dcd21f8e5bcee4e",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "dr-farah",
+        "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 960,
+          "top": 140,
+          "width": 350,
+          "height": 390
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah checks the illustrative result using a mouse while resting her other hand on a closed notebook.",
+    "emotion": "Skeptical attention to the stronger individual model.",
+    "eyeline": "Toward Member 2 and the comparison panel.",
+    "narrativeReason": "The recap shows that the blend does not necessarily beat its best member.",
+    "findings": [
+      "Large readable panel correctly shows member errors 0.052, 0.036, 0.050 and blend 0.041, with Member 2 highlighted and illustrative labeling.",
+      "The former bent pen is removed; both wrists and hand contacts are natural and connected."
+    ]
+  },
+  "owner": "/root/quality_sequence",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+      "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa"
+    }
+  ],
+  "publishedSource": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp"
+}

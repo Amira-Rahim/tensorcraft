@@ -1,0 +1,176 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "concept",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portraits are identity references first; room master is palette reference; LAST image is the only edit target. Change only the open notebook: erase the decorative waveform and box sketch on its two pages, leaving ordinary faint ruled lines and no graph, labels or other drawing. Preserve everything else exactly: canonical Farah face, hair and lens, adult head size, leaning torso and supported chair, both arms/hands/stylus grip, exact Mission model11->4->11 screen and all its perspective text, inactive background monitors, subdued palette. Notebook is a blank working page, not another lesson graphic. Output one1536x1024 image.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-concept-narrative-stage1-openai-20261107.png",
+      "sha256": "99d62f67b25dcbda52a617e86b1ad6355eae0e3a2faee632808b96413b7ea7eb",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "99d62f67b25dcbda52a617e86b1ad6355eae0e3a2faee632808b96413b7ea7eb",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+    "sha256": "b1bba199ba459762c63112e3d5c3fd50bdf6dccada7839fdf239ff28e1fb934c"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "operation",
+    "concreteGenerationSpecification": "Restage Farah doing model inspection in the lab, seated sideways to the camera with chair and torso naturally facing her work. She leans toward a small low sloped console, stylus following the bottleneck-to-reconstruction connection. The other hand rests on the notebook next to it, not holding a display. Her eyebrows are intent and her lips slightly pursed, eyes on the work. Camera sees recognizable three-quarter face and both arm chains. The compact console reads Mission model and a three-stage vertical path: Input: 11 features feeds Bottleneck: 4 via Encoder, then Rebuilt: 11 features via Decoder. Below: Evaluate reconstruction error. A small line on this SAME screen reads 3 raw + 8 FFT features. Remove the unnecessary rear feature poster and switch all background monitors off. No node counts to invent, no measured losses, no success verdict. Every baseline, box and connector follows the real sloping screen perspective with consistent spacing. Exact canonical face, adult proportions and natural neck preserved, no further head shrink. Muted sage, aged brass, charcoal lab and natural warm skin, no neon edges.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Encoder to Bottleneck to Decoder"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portraits are identity references first; room master is palette reference; LAST image is the only edit target. Change only the open notebook: erase the decorative waveform and box sketch on its two pages, leaving ordinary faint ruled lines and no graph, labels or other drawing. Preserve everything else exactly: canonical Farah face, hair and lens, adult head size, leaning torso and supported chair, both arms/hands/stylus grip, exact Mission model11->4->11 screen and all its perspective text, inactive background monitors, subdued palette. Notebook is a blank working page, not another lesson graphic. Output one1536x1024 image."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-cb65505b-49a7-4fab-9b26-6fbb9aa68ca1.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc",
+    "proofSha256": "9cb28c8552e383fb75cbc9f87e003a98406fdffef426df7a0b0a178ff9f13455",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah traces the mission model bottleneck and compares the rebuilt feature count at her bench, absorbed in the reconstruction path."
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/autoencoders-concept-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-concept-target.png",
+    "sha256": "d1700e166a1515c2cff421c1910a7204f0a24c3f208ad262ef2d7f08da9b6fdb",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "d1700e166a1515c2cff421c1910a7204f0a24c3f208ad262ef2d7f08da9b6fdb",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-concept-runtime-before.png",
+    "sha256": "457e323312ebd166d1ca2847d02fc8b4078e379ed9e5640424c23c46f85f77f4",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "457e323312ebd166d1ca2847d02fc8b4078e379ed9e5640424c23c46f85f77f4",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah traces the mission model bottleneck and compares the rebuilt feature count at her bench, absorbed in the reconstruction path.",
+    "fullSpecification": "Restage Farah doing model inspection in the lab, seated sideways to the camera with chair and torso naturally facing her work. She leans toward a small low sloped console, stylus following the bottleneck-to-reconstruction connection. The other hand rests on the notebook next to it, not holding a display. Her eyebrows are intent and her lips slightly pursed, eyes on the work. Camera sees recognizable three-quarter face and both arm chains. The compact console reads Mission model and a three-stage vertical path: Input: 11 features feeds Bottleneck: 4 via Encoder, then Rebuilt: 11 features via Decoder. Below: Evaluate reconstruction error. A small line on this SAME screen reads 3 raw + 8 FFT features. Remove the unnecessary rear feature poster and switch all background monitors off. No node counts to invent, no measured losses, no success verdict. Every baseline, box and connector follows the real sloping screen perspective with consistent spacing. Exact canonical face, adult proportions and natural neck preserved, no further head shrink. Muted sage, aged brass, charcoal lab and natural warm skin, no neon edges."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Farah doing model inspection in the lab, seated sideways to the camera with chair and torso naturally facing her work. She leans toward a small low sloped console, stylus following the bottleneck-to-reconstruction connection. The other hand rests on the notebook next to it, not holding a display. Her eyebrows are intent and her lips slightly pursed, eyes on the work. Camera sees recognizable three-quarter face and both arm chains. The compact console reads Mission model and a three-stage vertical path: Input: 11 features feeds Bottleneck: 4 via Encoder, then Rebuilt: 11 features via Decoder. Below: Evaluate reconstruction error. A small line on this SAME screen reads 3 raw + 8 FFT features. Remove the unnecessary rear feature poster and switch all background monitors off. No node counts to invent, no measured losses, no success verdict. Every baseline, box and connector follows the real sloping screen perspective with consistent spacing. Exact canonical face, adult proportions and natural neck preserved, no further head shrink. Muted sage, aged brass, charcoal lab and natural warm skin, no neon edges. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-concept-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "99d62f67b25dcbda52a617e86b1ad6355eae0e3a2faee632808b96413b7ea7eb",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-25a84ac6-415a-4adb-baf9-bdaf4ddd7fec.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-concept-target.png",
+          "sha256": "d1700e166a1515c2cff421c1910a7204f0a24c3f208ad262ef2d7f08da9b6fdb",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "d1700e166a1515c2cff421c1910a7204f0a24c3f208ad262ef2d7f08da9b6fdb",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ]
+    }
+  ],
+  "faceBoxes": {
+    "farah": [
+      725,
+      55,
+      390,
+      445
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-concept-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "operation",
+    "concreteGenerationSpecification": "Keep Farah seated with stylus and naturally resting other hand. Her head is slightly heavy: reduce the COMPLETE head including hair by only about 5 percent at most, preserving exact facial proportions and a natural short neck. No other body changes. Replace tablet waves with a compact VERTICAL schematic headed \"Mission model\". Three clearly connected boxes top-to-bottom: \"Input: 11 features\", then \"Bottleneck: 4\", then \"Rebuilt: 11 features\". Arrow from first to middle labeled \"Encoder\". Arrow from middle to last labeled \"Decoder\". Footer \"Evaluate reconstruction error\". One rear monitor shows only \"3 raw + 8 FFT features\". No circles to count, no extra numerical results or graphs. All remaining displays off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Encoder to Bottleneck to Decoder"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-25a84ac6-415a-4adb-baf9-bdaf4ddd7fec.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-cb65505b-49a7-4fab-9b26-6fbb9aa68ca1.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+      "art-src/scenes/anomaly-detection__autoencoders-concept-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/anomaly-detection__autoencoders-concept-narrative-stage2-openai-20261107.png",
+    "sha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__autoencoders-concept.json"
+}

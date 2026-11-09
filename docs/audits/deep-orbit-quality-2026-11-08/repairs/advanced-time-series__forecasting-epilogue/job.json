@@ -1,0 +1,208 @@
+{
+  "id": "advanced-time-series__forecasting-epilogue",
+  "lesson": "advanced-time-series/forecasting",
+  "phase": "epilogue",
+  "cast": [
+    "dr-farah",
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "room": "bridge",
+  "src": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+  "alt": "Farah, Demir and Nazari review an early arrival and shrinking gaps on the bridge display.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.029772+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 3 are canonical identity authorities in this order: dr-farah, chief-nazari, ensign-demir. Reference 4 is the room authority; reference 5 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 3 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Chief Nazari: mature woman, silver-streaked dark bob, weathered tan face and olive engineering coveralls. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Farah uses the console to collect interval evidence, focused and concerned. Demir leans beside her with one hand braced on the table and the other resting on the chair back, glancing from her to the report. Chief Nazari stands to the side with a skeptical expression, one hand relaxed on the rail and a closed notebook in the other. Exactly these three people. Move all needed timing evidence from upside-down notes to one large upright shared report.\nExact visible display content: Title \"Timing review\". Table \"Forecast 03:12\", \"Observed 03:08\", \"4 minutes early\". Separate clearly labeled archive anchors: \"Initial pulse gap: 73.4 seconds\" and \"Initial larger cycle: 47 minutes\". Under both: \"Both measured gaps are shrinking\". Footer \"Cause and zero date unresolved\". Do not imply the two intervals are equal or current measurements.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "b37097fa079c7f0fa75c4f0f669c929525f17d2dd254bc065c05aff75dc6da72",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room master",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "a85e281ad6e591d9f7a922a5206a3ecd7476c03241653256e5e3fed9f6224c26"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+    "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+  },
+  "sourceSha256": "a85e281ad6e591d9f7a922a5206a3ecd7476c03241653256e5e3fed9f6224c26",
+  "sourceEvidence": {
+    "task": "Farah uses the console to collect interval evidence, focused and concerned. Demir leans beside her with one hand braced on the table and the other resting on the chair back, glancing from her to the report. Chief Nazari stands to the side with a skeptical expression, one hand relaxed on the rail and a closed notebook in the other. Exactly these three people. Move all needed timing evidence from upside-down notes to one large upright shared report.",
+    "visibleDataOperationAndResult": "Title \"Timing review\". Table \"Forecast 03:12\", \"Observed 03:08\", \"4 minutes early\". Separate clearly labeled archive anchors: \"Initial pulse gap: 73.4 seconds\" and \"Initial larger cycle: 47 minutes\". Under both: \"Both measured gaps are shrinking\". Footer \"Cause and zero date unresolved\". Do not imply the two intervals are equal or current measurements.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The initial 73.4-second and 47-minute measurements, and their shared shrinking trend, are confined to a small upside-down note despite available upper space.",
+        "repairDirection": "Use a large upright report for the observed 0308 versus predicted 0312 timing and the separate shrinking pulse and macro-cycle values. Keep the skeptical three-person reaction and document-facing direction coherent."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 3 are canonical identity authorities in this order: dr-farah, chief-nazari, ensign-demir. Reference 4 is the room authority; reference 5 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 3 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Chief Nazari: mature woman, silver-streaked dark bob, weathered tan face and olive engineering coveralls. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Farah uses the console to collect interval evidence, focused and concerned. Demir leans beside her with one hand braced on the table and the other resting on the chair back, glancing from her to the report. Chief Nazari stands to the side with a skeptical expression, one hand relaxed on the rail and a closed notebook in the other. Exactly these three people. Move all needed timing evidence from upside-down notes to one large upright shared report.\nExact visible display content: Title \"Timing review\". Table \"Forecast 03:12\", \"Observed 03:08\", \"4 minutes early\". Separate clearly labeled archive anchors: \"Initial pulse gap: 73.4 seconds\" and \"Initial larger cycle: 47 minutes\". Under both: \"Both measured gaps are shrinking\". Footer \"Cause and zero date unresolved\". Do not imply the two intervals are equal or current measurements.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah, Demir and Nazari review an early arrival and shrinking gaps on the bridge display.",
+    "location": "Archimedes, Bridge",
+    "action": "Farah selects the timing report as Demir leans over her chair and Nazari studies it skeptically.",
+    "emotion": "Concern, questioning and skepticism.",
+    "eyeline": "All three faces track the shared timing evidence or Farah's response.",
+    "checks": [
+      "Large upright report shows forecast03:12, observed03:08, four minutes early, initial73.4-second gap and initial47-minute larger cycle without conflation.",
+      "Both measured gaps shrinking and unresolved zero date preserve current source uncertainty.",
+      "Six arms accounted for with one Farah arm naturally occluded; visible button hand, chair hand, table brace, rail hand and notebook grip are coherent.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ]
+  },
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-8bc2bf6c-3caa-40ee-b712-130b007af38c.png",
+  "candidatePath": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+  "candidateSha256": "3a6e3faf67dcd342ba3421d4a2ef18f998adbb89d277a14ab11bfbe8e61c7a2f",
+  "generatedAt": "2026-11-08T17:53:35.132175+00:00",
+  "faceCropCoordinates": {
+    "chief-nazari": {
+      "left": 100,
+      "top": 100,
+      "width": 250,
+      "height": 290
+    },
+    "ensign-demir": {
+      "left": 460,
+      "top": 200,
+      "width": 255,
+      "height": 285
+    },
+    "dr-farah": {
+      "left": 790,
+      "top": 315,
+      "width": 270,
+      "height": 290
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 630,
+      "top": 445,
+      "width": 130,
+      "height": 140
+    },
+    {
+      "left": 50,
+      "top": 590,
+      "width": 1300,
+      "height": 345
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T18:26:10.734861+00:00",
+    "candidateSha256": "3a6e3faf67dcd342ba3421d4a2ef18f998adbb89d277a14ab11bfbe8e61c7a2f",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "chief-nazari",
+        "referencePath": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "candidateCropCoordinates": {
+          "left": 100,
+          "top": 100,
+          "width": 250,
+          "height": 290
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      },
+      {
+        "character": "ensign-demir",
+        "referencePath": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "candidateCropCoordinates": {
+          "left": 460,
+          "top": 200,
+          "width": 255,
+          "height": 285
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      },
+      {
+        "character": "dr-farah",
+        "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 790,
+          "top": 315,
+          "width": 270,
+          "height": 290
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah selects the timing report as Demir leans over her chair and Nazari studies it skeptically.",
+    "emotion": "Concern, questioning and skepticism.",
+    "eyeline": "All three faces track the shared timing evidence or Farah's response.",
+    "narrativeReason": "The forecast miss and shrinking measured intervals need separate investigation.",
+    "findings": [
+      "Large upright report shows forecast03:12, observed03:08, four minutes early, initial73.4-second gap and initial47-minute larger cycle without conflation.",
+      "Both measured gaps shrinking and unresolved zero date preserve current source uncertainty.",
+      "Six arms accounted for with one Farah arm naturally occluded; visible button hand, chair hand, table brace, rail hand and notebook grip are coherent."
+    ]
+  },
+  "owner": "/root/quality_sequence",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+    }
+  ],
+  "publishedSource": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp"
+}

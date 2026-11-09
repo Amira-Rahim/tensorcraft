@@ -1,0 +1,2327 @@
+[
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+    "sourceSha256": "e3c09d107e9ee7fde988cdd487ac4546fcdcdcf8b19b23e628cf6a00a145df0f",
+    "reviewedAt": "2026-11-08T17:23:17.347442+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        480,
+        750,
+        950,
+        250
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms across the two crew; Farah's lifted forearm and Demir's notebook arm trace to their own shoulders.",
+      "thumbsFingers": "Farah's open palm, resting hand, Demir's planted palm and notebook grip have plausible thumb sides and visible or legitimately hidden fingers.",
+      "props": "The pen lies straight on the desk. Notebook is gripped along its edge.",
+      "mainDisplay": "Large wall screen carries short readable timing labels, with no competing tiny lesson display."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+    "sourceSha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+    "reviewedAt": "2026-11-08T17:23:17.349297+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        620,
+        690,
+        650,
+        240
+      ]
+    ],
+    "checks": {
+      "armChains": "Both Demir arms are connected with natural elbows and wrists.",
+      "thumbsFingers": "Writing grip and three-key hand use plausible thumb sides and finger overlap.",
+      "props": "Stylus is straight and touches the graphics tablet.",
+      "mainDisplay": "Synthetic probe fills the wall screen in readable large text."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+    "sourceSha256": "6156faba3878c9d00bf7c702fd070de378fff6088b613badcd27f42b28a78a8d",
+    "reviewedAt": "2026-11-08T17:23:17.350980+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        590,
+        580,
+        760,
+        400
+      ]
+    ],
+    "checks": {
+      "armChains": "Farah has two connected arms, a modest bent stylus arm and a resting hand.",
+      "thumbsFingers": "Grip has a plausible index-thumb pinch with remaining fingers curled.",
+      "props": "Single straight stylus.",
+      "mainDisplay": "Attention details are on a smaller tabletop monitor while the much larger wall screen remains blank."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Small weights and value-flow labels compete within the tabletop monitor beneath a large unused wall.",
+        "repairDirection": "Move the exact scores, weights and blend diagram onto the wall display. Keep the scene action but make the main technical content large and generously spaced."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-openai-20261107.png",
+    "sourceSha256": "530c41724cfbdfc89c4d9aa5c37bbd6c0ba214c82a97bf0186d4a49b75506338",
+    "reviewedAt": "2026-11-08T17:23:17.352665+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        630,
+        800,
+        570,
+        200
+      ],
+      [
+        1150,
+        260,
+        100,
+        170
+      ],
+      [
+        1350,
+        670,
+        120,
+        180
+      ]
+    ],
+    "checks": {
+      "armChains": "Demir's two hands rest on their respective chair arms. Farah's door hand and lowered pen hand connect to separate natural arms.",
+      "thumbsFingers": "Chair grips, door contact and lowered pen grip are coherent.",
+      "props": "Pen is a single straight object.",
+      "mainDisplay": "Large wall timing comparison is the primary display. The smaller console repeats the already readable measured interval."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+    "sourceSha256": "d25f0965aa4a551ec27ebc0c6da404cc7affed3ab4db0507b96aa5e442d3665f",
+    "reviewedAt": "2026-11-08T17:23:17.354515+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        420,
+        550,
+        980,
+        400
+      ]
+    ],
+    "checks": {
+      "armChains": "Farah's two arms are coherent; Demir's visible arm traces to his shoulder and the far arm is legitimately occluded behind her.",
+      "thumbsFingers": "Stylus pinch and resting palms are plausible.",
+      "props": "Stylus is straight and contacts the indicated blend box.",
+      "mainDisplay": "The small angled console contains the main flow and unresolved-cause line while the large wall screen is empty."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The process diagram and event labels are unnecessarily small relative to the available unused wall display.",
+        "repairDirection": "Put the flow, Step 4 / Step 78 labels and unresolved-cause status on the large lab wall. Recompose the pair so they can clearly see it without blocking the content."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__forecasting-openai-20261107.png",
+    "sourceSha256": "7a0fe2033722e16b3a0f36035c0fa9e01901ec8f120ff9bbb80687e4017c291b",
+    "reviewedAt": "2026-11-08T17:24:50.877441+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        300,
+        550,
+        520,
+        340
+      ],
+      [
+        880,
+        430,
+        480,
+        220
+      ]
+    ],
+    "checks": {
+      "armChains": "Four arms trace coherently to Farah and Mirza, including Mirza's hand on the rail and hand on her hip.",
+      "thumbsFingers": "Farah's pen grip and open palm, and Mirza's rail contact are plausible in their respective orientations.",
+      "props": "Stylus is straight and touches the table.",
+      "mainDisplay": "The sole lesson display lies flat and upside down to the audience, with strongly foreshortened text while the upper frame carries unused screens and windows."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The main observed-history and forecast comparison is difficult to read on the flat table. No upright display provides the same lesson information.",
+        "repairDirection": "Keep reader-facing tabletop direction if retained, but move the main comparison to a large upright shared bridge screen visible to crew and audience. Use the available upper scene area."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+    "sourceSha256": "5845a91ad6598a9a7abb626afd424342691f99ac632076904fd35e97ebe66ce1",
+    "reviewedAt": "2026-11-08T17:24:50.879544+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        550,
+        630,
+        730,
+        310
+      ]
+    ],
+    "checks": {
+      "armChains": "Two Demir arms connect through bent elbows to keyboard and dial, with relaxed wrists.",
+      "thumbsFingers": "Dial hand has plausible opposed thumb and index contact. Keyboard hand has normal finger overlap.",
+      "props": "No pen or bent prop.",
+      "mainDisplay": "The main console occupies a substantial right-hand area with a sparse pending chart and readable axis meaning. No large unused wall screen competes."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+    "sourceSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+    "reviewedAt": "2026-11-08T17:24:50.881435+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        410,
+        395,
+        690,
+        550
+      ]
+    ],
+    "checks": {
+      "armChains": "Farah's raised forearm connects to the near shoulder through a visible elbow. The other hand rests on her notebook.",
+      "thumbsFingers": "The stylus grip is plausible with the thumb partly hidden by the shaft and fingers; no detached or duplicate digit.",
+      "props": "Stylus remains straight through the grip.",
+      "mainDisplay": "Two short process paths occupy a generously sized monitor and remain readable, with no blank larger wall screen."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+    "sourceSha256": "a85e281ad6e591d9f7a922a5206a3ecd7476c03241653256e5e3fed9f6224c26",
+    "reviewedAt": "2026-11-08T17:24:50.884164+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        0,
+        585,
+        1380,
+        420
+      ]
+    ],
+    "checks": {
+      "armChains": "Six arms belong to their own characters. Demir's rail and pointing arms, Nazari's hip and tablet arms, and Farah's button and resting arms are coherent.",
+      "thumbsFingers": "Pointing fingers and supporting hands have credible thumb sides and no detached digits.",
+      "props": "No bent pen. Tablet and flat note have physical support.",
+      "mainDisplay": "The large four-minute timing is readable, but the distinct pulse and macro-cycle context remains exclusively on an upside-down tabletop note."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The initial 73.4-second and 47-minute measurements, and their shared shrinking trend, are confined to a small upside-down note despite available upper space.",
+        "repairDirection": "Use a large upright report for the observed 0308 versus predicted 0312 timing and the separate shrinking pulse and macro-cycle values. Keep the skeptical three-person reaction and document-facing direction coherent."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__forecasting-takeaways-openai-20261107.png",
+    "sourceSha256": "b0fd8a55c3ed62c8a96bde6e7c11e942d4ca488f940ff85da599a86125c6147c",
+    "reviewedAt": "2026-11-08T17:24:50.886014+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        470,
+        590,
+        430,
+        350
+      ]
+    ],
+    "checks": {
+      "armChains": "Farah's stylus and resting arms and Mirza's open-palm and console arms are connected.",
+      "thumbsFingers": "The stylus grip and Mirza's low conversational palm are coherent.",
+      "props": "Stylus is straight.",
+      "mainDisplay": "The one-step replay explanation is constrained to a low oblique console with small text and a largely unused upper half."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The important no-feedback explanation sits near the lower edge of a steeply angled small panel while most upper scene space is empty.",
+        "repairDirection": "Raise and enlarge the one-step replay display in the available bridge space. Keep the earlier/later observed histories and the fact that predictions are not fed into later inputs large and readable."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261107.png",
+    "sourceSha256": "5bc182229029424d9e23372318d9cbdfbab6f5325f8a7c59e1fc6553b5c4cc07",
+    "reviewedAt": "2026-11-08T17:26:28.273134+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        370,
+        600,
+        370,
+        330
+      ],
+      [
+        880,
+        420,
+        580,
+        570
+      ]
+    ],
+    "checks": {
+      "armChains": "All four arms are connected. Farah's writing arm bends naturally and Demir's chin-rest and conversational hand belong to separate arms.",
+      "thumbsFingers": "Hand crops show credible fingers and thumb sides in the pen grip, chin support and open gesture.",
+      "props": "One straight stylus.",
+      "mainDisplay": "Eight-day chart uses the large wall, with readable axes and a short comparison footer."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-challenge-openai-20261107.png",
+    "sourceSha256": "9686347dceffc3e4c3b12a4c29f2b2021ece929faa1b39cfb781a2b79605fe7d",
+    "reviewedAt": "2026-11-08T17:26:28.275150+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        905,
+        480,
+        500,
+        280
+      ]
+    ],
+    "checks": {
+      "armChains": "Two connected arms hold and operate the tablet.",
+      "thumbsFingers": "Lower hand supports the tablet edge with a correctly opposed thumb. Upper index contacts the top control with a normal wrist.",
+      "props": "Tablet has coherent support; no pen.",
+      "mainDisplay": "Exact eight-day values and initial parameters are on a large wall screen."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-concept-openai-20261107.png",
+    "sourceSha256": "0d599cb65b65028c15cfb84ab5b508275abae3d8c2cde9c1c9a3d5837683a90f",
+    "reviewedAt": "2026-11-08T17:26:28.276758+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        625,
+        450,
+        770,
+        460
+      ]
+    ],
+    "checks": {
+      "armChains": "Farah's stylus and slider arms trace continuously through elbows and wrists.",
+      "thumbsFingers": "Stylus pinch and slider grip are plausible with no duplicate fingers.",
+      "props": "Pen shaft is straight.",
+      "mainDisplay": "Small console carries the loop and variances beneath an entirely unused larger wall screen."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The important update cycle and Q/R assumptions are unnecessarily small while the large wall is empty.",
+        "repairDirection": "Move the cycle and verified variance assumptions to the large lab wall. Keep Farah operating the filter with simple hands and a readable main display."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png",
+    "sourceSha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b",
+    "reviewedAt": "2026-11-08T17:26:28.278677+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        285,
+        550,
+        900,
+        380
+      ]
+    ],
+    "checks": {
+      "armChains": "Farah's held pen and supporting hand, plus Mirza's writing and paper hand, form four coherent arms.",
+      "thumbsFingers": "Both grips and the resting hand have plausible anatomy.",
+      "props": "Both pens are straight.",
+      "mainDisplay": "The interval review is confined to a small narrow monitor, with important estimate and assumptions in small type."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The eight-day estimate, latest reading and model assumptions are small on a narrow desk screen despite broad available bridge space.",
+        "repairDirection": "Put the interval review on a larger upright display visible to both crew. Preserve Mirza writing the backup-plan deadline, with the note still facing her."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-openai-20261107.png",
+    "sourceSha256": "f6b289401dc479f3af102710ff143da6eb38bcaa60c22a32e77f16b63aac16b2",
+    "reviewedAt": "2026-11-08T17:26:28.280383+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        340,
+        585,
+        1160,
+        300
+      ]
+    ],
+    "checks": {
+      "armChains": "The pair's four arms connect coherently to a pen hand, pointer and two supporting palms.",
+      "thumbsFingers": "Pen grip, downward index and resting hands are plausible.",
+      "props": "Straight pen; report faces the crew.",
+      "mainDisplay": "All takeaway values are exclusively on a foreshortened upside-down sheet in the foreground."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The final estimate, latest reading, gap and level-model limitation are difficult to read on the sole flat paper surface.",
+        "repairDirection": "Add a large upright shared result display with 72.43 s estimate, 72.0 s reading, 0.43 s gap and the daily-change limitation. Preserve the pair's comparison action without relying on audience reading upside-down text."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+    "sourceSha256": "a362ffba38ef8c9cc122cb0a6405a7d0a6cafe09fd572d3febe99f9f5bf59d73",
+    "reviewedAt": "2026-11-08T17:30:01.266518+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        600,
+        625,
+        850,
+        330
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent shoulder-to-elbow chains.",
+      "thumbsFingers": "Grip pinches unnaturally around two directions of the same prop.",
+      "props": "Visible pen bends at the fingers.",
+      "mainDisplay": "Main step evidence is on a small oblique console with spare wall space."
+    },
+    "defects": [
+      {
+        "category": "prop-anatomy",
+        "detail": "User override confirmed: one pen visibly kinks at the grip.",
+        "repairDirection": "Use one straight pen with ordinary grip or remove pen."
+      },
+      {
+        "category": "main-display-legibility",
+        "detail": "Main step evidence is unnecessarily confined to a small console.",
+        "repairDirection": "Use available wall area for large readable Step 4 and Step 78 evidence."
+      }
+    ],
+    "repairJob": "repairs/advanced-time-series__temporal-attention-briefing/job.json",
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+    "sourceSha256": "59d5ab26c5f271dcd893c711d384cfdac6513b361261ab22c4536f3f7df6f1fd",
+    "reviewedAt": "2026-11-08T17:30:01.270574+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        700,
+        365,
+        500,
+        570
+      ]
+    ],
+    "checks": {
+      "armChains": "Both arms trace to shoulders; raised hand reaches display, lower hand rests keyboard.",
+      "thumbsFingers": "Natural pinch grip and relaxed keyboard fingers.",
+      "props": "One straight pen.",
+      "mainDisplay": "Upright main monitor has large legible synthetic inputs and pending result, without an unused larger screen."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-concept-openai-20261107.png",
+    "sourceSha256": "be8d3e8675e03aeace2538db1efd77dba07c41e93cebc885cbe2c9c95d326908",
+    "reviewedAt": "2026-11-08T17:30:01.268731+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        470,
+        630,
+        570,
+        330
+      ]
+    ],
+    "checks": {
+      "armChains": "Two connected arms.",
+      "thumbsFingers": "User-flagged stylus grip is awkward and hand angle is forced.",
+      "props": "Straight stylus but poor grip.",
+      "mainDisplay": "Small low diagram with unused wall."
+    },
+    "defects": [
+      {
+        "category": "hand-anatomy",
+        "detail": "User override confirmed: twisted stylus wrist and grasp.",
+        "repairDirection": "Recompose complete arm with ordinary wrist and remove pen if needed."
+      },
+      {
+        "category": "main-display-legibility",
+        "detail": "Main diagram is too small for available wall space.",
+        "repairDirection": "Large upright wall diagram."
+      }
+    ],
+    "repairJob": "repairs/advanced-time-series__temporal-attention-concept/job.json",
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-epilogue-openai-20261107.png",
+    "sourceSha256": "16418c806ce3def2700197dba9cdefa06444b95609564534266b79d968bcc3f9",
+    "reviewedAt": "2026-11-08T17:30:01.274368+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        150,
+        450,
+        380,
+        460
+      ],
+      [
+        710,
+        595,
+        700,
+        395
+      ]
+    ],
+    "checks": {
+      "armChains": "Nazari tablet and hanging arms, Demir dial and thigh arms all trace naturally.",
+      "thumbsFingers": "Thumb side, tablet grip, dial grip and relaxed thigh hand are coherent.",
+      "props": "No bent writing prop.",
+      "mainDisplay": "Large monitor has sparse readable seven-capture, six-hour and missing-32-second report; secondary tablet communicates wider-window capture."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-openai-20261107.png",
+    "sourceSha256": "c54d706fe99976ab48943d87421213ce150a9274972b46fc8ec84545c00d48b0",
+    "reviewedAt": "2026-11-08T17:30:01.272459+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        210,
+        470,
+        1080,
+        440
+      ]
+    ],
+    "checks": {
+      "armChains": "Three visible forearms for Demir; pointing arm is detached from a valid two-arm chain.",
+      "thumbsFingers": "Pointing grip attaches to duplicate arm.",
+      "props": "Straight pen itself.",
+      "mainDisplay": "Important full versus truncated comparison is low and undersized."
+    },
+    "defects": [
+      {
+        "category": "arm-anatomy",
+        "detail": "User override confirmed: duplicated third forearm and corrupt shoulder chains.",
+        "repairDirection": "Recompose both entire arms and hands, exactly two coherent chains."
+      },
+      {
+        "category": "main-display-legibility",
+        "detail": "Complete 80 versus retained 48 comparison is on cramped console.",
+        "repairDirection": "Move comparison to large upright wall display."
+      }
+    ],
+    "repairJob": "repairs/advanced-time-series__temporal-attention-takeaways/job.json",
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-openai-20261107.png",
+    "sourceSha256": "7289f1e9657a400f4f563cef240da3eac6fc1a0325f9f106d33bc5e0e7ff6284",
+    "reviewedAt": "2026-11-08T17:30:54.419570+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        70,
+        630,
+        1110,
+        360
+      ]
+    ],
+    "checks": {
+      "armChains": "Four complete plausible arm chains.",
+      "thumbsFingers": "Farah palm and table hand, Demir keyboard and resting fist are coherent.",
+      "props": "Desk pens are straight.",
+      "mainDisplay": "Large upright sparse forecast-blend diagram."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-challenge-openai-20261107.png",
+    "sourceSha256": "cac09f006bb1465c1f9ac72a6a7262ced3dbb5dbbb465d5ae80e403361bc63d6",
+    "reviewedAt": "2026-11-08T17:30:54.423980+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        675,
+        495,
+        355,
+        360
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent arms.",
+      "thumbsFingers": "Natural writing grip and keyboard hand.",
+      "props": "One straight pen.",
+      "mainDisplay": "Large clear synthetic evaluation table and pending results on substantial monitor."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-concept-openai-20261107.png",
+    "sourceSha256": "2a16aaa8d2d347eb8c477ba0b7c6fe991190332a3a783af09dddc1ce80f6eb47",
+    "reviewedAt": "2026-11-08T17:30:54.422148+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        390,
+        490,
+        1010,
+        380
+      ]
+    ],
+    "checks": {
+      "armChains": "Farah leaning arms and Demir rail/dial arms connect correctly.",
+      "thumbsFingers": "Natural pen grip, table rest, rail and dial grips.",
+      "props": "Straight pen.",
+      "mainDisplay": "The sole weights/error diagram is upside down on flat tabletop despite available wall area."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Main prior-error and rounded-weight evidence requires the learner to rotate the entire scene to read it.",
+        "repairDirection": "Place exact .045/.038/.058 errors and .333/.467/.200 weights on a large upright shared display; preserve hands-on blending action."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-epilogue-openai-20261107.png",
+    "sourceSha256": "023ca53289dc24bfa0ce899fc965c1f48e725bd8828824e53c2af5c64e52d92e",
+    "reviewedAt": "2026-11-08T17:30:54.427753+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        370,
+        640,
+        930,
+        285
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent shoulder chains.",
+      "thumbsFingers": "Demir writes and steadies notebook; Nazari rests hand and holds book naturally.",
+      "props": "One straight pencil with correct paper contact.",
+      "mainDisplay": "Large upright concise extrapolation warning is legible."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+    "sourceSha256": "dfc4996e9f0739f0462fe80e2acbc51f6991c65438e62a336859e3fd90cb71ab",
+    "reviewedAt": "2026-11-08T17:30:54.425905+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        470,
+        500,
+        520,
+        375
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Farah arms.",
+      "thumbsFingers": "Grip connects but encloses a kinked prop.",
+      "props": "The pen tip points left-down while the barrel extends right-up on a different axis, visibly bending at the grip.",
+      "mainDisplay": "Upright main MAE table is legible and adequately large."
+    },
+    "defects": [
+      {
+        "category": "prop-anatomy",
+        "detail": "Farah's stylus has a visible angle change between tip and barrel at her fingers.",
+        "repairDirection": "Redraw complete hand and straight pen, or replace pointing with a relaxed open-hand explanation. Preserve clear MAE comparison."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+    "sourceSha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+    "reviewedAt": "2026-11-08T17:31:50.487663+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        700,
+        580,
+        465,
+        300
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Farah arms.",
+      "thumbsFingers": "Plausible pen grip and supporting hand.",
+      "props": "Pen is straight.",
+      "mainDisplay": "User override confirmed: small tilted console under enormous blank rear wall."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Main combination-unseen evidence occupies a small console while a large rear display is blank.",
+        "repairDirection": "Use the large wall for amplitude/frequency/phase normal and combination unseen in eleven days."
+      }
+    ],
+    "repairJob": "repairs/anomaly-detection__autoencoders-briefing/job.json",
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+    "sourceSha256": "5235b2c6cd137ec39c62cb65767cb3fa35606b3e4567be9f06ab196a6d39d772",
+    "reviewedAt": "2026-11-08T17:31:50.491281+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        575,
+        625,
+        650,
+        270
+      ]
+    ],
+    "checks": {
+      "armChains": "Both Demir arms connect naturally to shoulders.",
+      "thumbsFingers": "Keyboard and notebook hands have coherent thumb placement.",
+      "props": "No held writing prop.",
+      "mainDisplay": "Very large upright archive screen with clear 72/8 and 48/24 split."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+    "sourceSha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc",
+    "reviewedAt": "2026-11-08T17:31:50.489340+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        490,
+        605,
+        735,
+        290
+      ]
+    ],
+    "checks": {
+      "armChains": "Two connected Farah arms.",
+      "thumbsFingers": "Natural pointing pen grip and notebook hand.",
+      "props": "Straight pen.",
+      "mainDisplay": "Main architecture is confined to a low small console while wall screen is unused."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The 11-feature to 4-unit bottleneck diagram is on a small tabletop panel beneath unused wall area.",
+        "repairDirection": "Create large upright main architecture display, preserve 3 raw plus 8 FFT features, input 11, bottleneck 4, rebuilt 11 and reconstruction-error evaluation."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+    "sourceSha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+    "reviewedAt": "2026-11-08T17:31:50.495617+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        340,
+        720,
+        1090,
+        180
+      ]
+    ],
+    "checks": {
+      "armChains": "Four complete arm chains.",
+      "thumbsFingers": "Pen and table/notebook contact are natural.",
+      "props": "Both pens straight.",
+      "mainDisplay": "Tiny mission review console sits below a huge blank rear wall."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "1.4x baseline, suspect 412/28800 rows, 73.4 Hz and next-run 01:15 are squeezed into a small tilted console while rear screen is unused.",
+        "repairDirection": "Move mission evidence and unresolved-cause status to large upright rear display. Keep Nazari's notes reader-facing."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-takeaways-openai-20261107.png",
+    "sourceSha256": "c7a6b9bfc5dfd0a7e3f3d4151450a82556a901d9ec0d543db4bbd8f25e4cf2d5",
+    "reviewedAt": "2026-11-08T17:31:50.493649+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        450,
+        500,
+        710,
+        370
+      ]
+    ],
+    "checks": {
+      "armChains": "Demir points with one arm and braces with the other; Farah's near arm writes, far arm is plausibly occluded.",
+      "thumbsFingers": "Pointer, brace and pen grip are coherent.",
+      "props": "Straight pen with appropriate tip contact.",
+      "mainDisplay": "Broad console occupies most of lower right frame and keeps the clearly labeled two-row held-out excerpt readable; no unused larger wall screen."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+    "sourceSha256": "4944e6847e0930c3e800e11531e6528ee5f163d812bdc119513cc1d6fd33e5b3",
+    "reviewedAt": "2026-11-08T17:32:56.568312+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        280,
+        485,
+        1150,
+        410
+      ]
+    ],
+    "checks": {
+      "armChains": "Six shoulder-to-hand chains connect naturally.",
+      "thumbsFingers": "Nazari hip/table, Farah keyboard/table and Mirza chair/hanging hands are coherent.",
+      "props": "No held pen.",
+      "mainDisplay": "Short upright shift list remains legible; no unused large wall screen."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+    "sourceSha256": "7df5015d21de5c4960c941ca3532d80f60c883ffe8c053afec7ee32e842b4f40",
+    "reviewedAt": "2026-11-08T17:32:56.571784+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        180,
+        710,
+        890,
+        230
+      ]
+    ],
+    "checks": {
+      "armChains": "Both Demir arms connect to shoulders.",
+      "thumbsFingers": "Natural pencil and keyboard hands.",
+      "props": "Straight pencil with paper contact.",
+      "mainDisplay": "Large upright synthetic baseline values and pending decision."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+    "sourceSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+    "reviewedAt": "2026-11-08T17:32:56.570191+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        280,
+        770,
+        455,
+        205
+      ],
+      [
+        945,
+        500,
+        470,
+        195
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms, with Farah pen/dial and Nazari tablet/rail.",
+      "thumbsFingers": "Grip and contact directions are plausible.",
+      "props": "One straight pen.",
+      "mainDisplay": "Broad low console uses substantial frame width with large short threshold labels and exact boundary explanation."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+    "sourceSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+    "reviewedAt": "2026-11-08T17:32:56.575225+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        245,
+        670,
+        720,
+        310
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Hovering button hand and resting report hand have normal thumb sides.",
+      "props": "No held pen.",
+      "mainDisplay": "Very large upright unresolved-sample report; paper is secondary status."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+    "sourceSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+    "reviewedAt": "2026-11-08T17:32:56.573592+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        185,
+        635,
+        1040,
+        290
+      ]
+    ],
+    "checks": {
+      "armChains": "Nazari's writing and keyboard arms connect naturally.",
+      "thumbsFingers": "Ordinary writing and keyboard grip.",
+      "props": "Straight pen touches reader-facing notebook.",
+      "mainDisplay": "Upright sparse rate estimate is readable; notebook is secondary action note."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+    "sourceSha256": "bc74730fc3e938899eec786c1679d9cf52accd3ef5d54c21e94a723b4172878f",
+    "reviewedAt": "2026-11-08T17:33:47.565569+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        490,
+        600,
+        965,
+        385
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arm chains.",
+      "thumbsFingers": "Demir open palm and keyboard, Farah lowered pen and table hand are natural.",
+      "props": "Straight held pen.",
+      "mainDisplay": "Large wall diagram and pending score are crisp."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+    "sourceSha256": "8de48d1f4d5ea596ed58383212e8cc008ec4802afeadd0b3c143f080a1721934",
+    "reviewedAt": "2026-11-08T17:33:47.569078+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        520,
+        665,
+        530,
+        270
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Pen pinch and keyboard hand normal.",
+      "props": "Straight pen.",
+      "mainDisplay": "Eight-feature arrays and pending outputs are tiny on desktop console beneath huge blank display."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Synthetic arrays are densely packed in small oblique panel; ample rear display is unused.",
+        "repairDirection": "Large upright main display with exact A/B arrays, add .1 rebuild and pending MSE/tensor outputs."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+    "sourceSha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718",
+    "reviewedAt": "2026-11-08T17:33:47.567417+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        700,
+        500,
+        410,
+        445
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Farah arms.",
+      "thumbsFingers": "Normal pen grip and table brace.",
+      "props": "Straight pen.",
+      "mainDisplay": "Flow labels are squeezed into small low console under a huge unused wall."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Per-feature squared error versus mean MSE distinction is confined to a small angled console despite a blank large wall display.",
+        "repairDirection": "Move subtract, square each gap, 11 per-feature squared errors, mean over 11 features, one MSE per reading to large upright wall diagram."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-openai-20261107.png",
+    "sourceSha256": "401311284363174d6a02f1119d558dbc19d0e5c564b4b69a66828d3fbd32c379",
+    "reviewedAt": "2026-11-08T17:33:47.572542+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        245,
+        610,
+        410,
+        350
+      ]
+    ],
+    "checks": {
+      "armChains": "Both Demir arms trace to shoulders.",
+      "thumbsFingers": "Button index and bracing hand have coherent finger/thumb placement.",
+      "props": "No held pen.",
+      "mainDisplay": "ARIA report is upright but main per-feature evidence is rotated 90 degrees on circular table."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Primary fft_5, fft_6, amplitude and remaining-feature table runs sideways across the tabletop.",
+        "repairDirection": "Use large upright shared bridge display for squared-error evidence and 72 Hz bin nearest 73.4 Hz; retain ARIA 400 decisions, Priority 3 queued as secondary report."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+    "sourceSha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c",
+    "reviewedAt": "2026-11-08T17:33:47.570856+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        275,
+        625,
+        1050,
+        275
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms.",
+      "thumbsFingers": "Demir pen and brace, Farah two resting hands are natural.",
+      "props": "Straight pen.",
+      "mainDisplay": "Sole constructed-mapping counterexample is upside down flat on table with unused wall."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Essential low-error counterexample requires rotation to read while the large wall is blank.",
+        "repairDirection": "Move exact [1000,0] rebuilt [1000,0] MSE 0 and [0,.2] rebuilt [0,0] MSE .02 plus limitation to large upright wall."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+    "sourceSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+    "reviewedAt": "2026-11-08T17:34:46.805873+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        20,
+        445,
+        1050,
+        445
+      ],
+      [
+        530,
+        775,
+        850,
+        225
+      ]
+    ],
+    "checks": {
+      "armChains": "Eight arms trace to the four characters without duplicates.",
+      "thumbsFingers": "Nazari open palm/tablet, Mirza rail/draped hand, Farah pen/table and Demir button/fist are coherent.",
+      "props": "Farah pen has aligned straight visible tip and shaft.",
+      "mainDisplay": "Main archive/live comparison is upright, readable and occupies center of action; side report is sparse."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+    "sourceSha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+    "reviewedAt": "2026-11-08T17:34:46.809122+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        245,
+        465,
+        810,
+        510
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Pointing index and folded fingers with plausible thumb, other hand relaxed on desk.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright exact challenge inputs and pending votes/alert."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+    "sourceSha256": "d8c19185fe9b71d1556bb08db8c18909767ad0fc2c154f3304b7f66619a95437",
+    "reviewedAt": "2026-11-08T17:34:46.807574+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        415,
+        645,
+        1030,
+        260
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms.",
+      "thumbsFingers": "Farah book/keyboard and Demir brace/hanging hand have correct contact and thumb placement.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright concise three-check comparison with source-correct values."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+    "sourceSha256": "695d8c93bb1b6a487ab9c25a74e6913257469731f29546f158492486b3e67400",
+    "reviewedAt": "2026-11-08T17:34:46.812736+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        175,
+        690,
+        1075,
+        290
+      ]
+    ],
+    "checks": {
+      "armChains": "Nazari holds tablet and braces; Farah keyboard and resting hands connect naturally.",
+      "thumbsFingers": "All four hands have coherent thumb sides and contact.",
+      "props": "Straight pencil lies on desk.",
+      "mainDisplay": "Large upright replay report has readable gap sequence, .9987 correlation and pending instrument check."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-takeaways-openai-20261107.png",
+    "sourceSha256": "92166392b334ea8e3fb4715af5b32b18b615b96927f50c3f35bcd9ff6be8a31c",
+    "reviewedAt": "2026-11-08T17:34:46.811029+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        310,
+        700,
+        1190,
+        245
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arm chains.",
+      "thumbsFingers": "Farah pen/table and Nazari pointer/rail grip coherent.",
+      "props": "One straight pen.",
+      "mainDisplay": "Only main vote diagram is upside down on flat tabletop."
+    },
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Shared-capture voting and correlated-data limitation are upside down and foreshortened for the learner.",
+        "repairDirection": "Recompose large upright shared display with statistical quiet, autoencoder flag, LSTM flag, votes 2, investigate, unresolved cause and shared-training-data caution."
+      }
+    ],
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-openai-20261107.png",
+    "sourceSha256": "af7f3249dba7bc9396759c328839e9cc42f0470aa3b2a2f84bf11ab346692342",
+    "reviewedAt": "2026-11-08T17:36:07.856636+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        215,
+        585,
+        990,
+        355
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms.",
+      "thumbsFingers": "Farah mug/book and Nazari open palm/brace have plausible grip and contact.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright sparse 14-alert/12-background report."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+    "sourceSha256": "625b359c7916a20349cd59b39882ef444ed29b9878284f6bc9e6671b90c0d5fb",
+    "reviewedAt": "2026-11-08T17:36:07.860235+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        720,
+        565,
+        240,
+        280
+      ]
+    ],
+    "checks": {
+      "armChains": "Both Demir arms connect naturally.",
+      "thumbsFingers": "Ordinary stylus pinch and keyboard hand.",
+      "props": "Straight stylus contacting round illuminated input surface.",
+      "mainDisplay": "Large upright six-case challenge table and pending outputs."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+    "sourceSha256": "6f02e7e3feaa8140d400e45093b37844e6925b33ba53df5a8572b9aa8aeb1d51",
+    "reviewedAt": "2026-11-08T17:36:07.858477+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        280,
+        490,
+        1170,
+        455
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms.",
+      "thumbsFingers": "Farah pen/dial and Nazari handset/hip hands are coherent.",
+      "props": "Straight pen.",
+      "mainDisplay": "Upright validation table uses substantial screen area and legible exact data."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+    "sourceSha256": "1f134f37950956f0524892e4349d3fc52dea98f63af59755e4ae33d9d4bcfcb2",
+    "reviewedAt": "2026-11-08T17:36:07.863660+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        145,
+        530,
+        1270,
+        425
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent chains; both characters jointly hold logbook.",
+      "thumbsFingers": "Demir button/book and Nazari book/flashlight contact plausible.",
+      "props": "Straight cylindrical flashlight.",
+      "mainDisplay": "Upright sparse replay report remains readable and meaningfully tied to log handoff."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+    "sourceSha256": "835e4196a5d4abd450bef9fd543f3cfcb321784a601a8e19aa13ac794ae2577d",
+    "reviewedAt": "2026-11-08T17:36:07.861906+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        215,
+        705,
+        1060,
+        230
+      ]
+    ],
+    "checks": {
+      "armChains": "Two connected Nazari arms.",
+      "thumbsFingers": "User-flagged button hand has an awkward pinch/point configuration and compressed wrist.",
+      "props": "No held pen.",
+      "mainDisplay": "Upright report readable, but replacement enlarges shared report further."
+    },
+    "defects": [
+      {
+        "category": "hand-anatomy",
+        "detail": "User override confirmed: Chief Nazari button hand needs complete natural wrist and index reconstruction.",
+        "repairDirection": "Recompose complete two-arm action with relaxed wrist and simple button press or keyboard input."
+      }
+    ],
+    "repairJob": "repairs/anomaly-detection__threshold-tuning-takeaways/job.json",
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+    "sourceSha256": "fbc557b7f4ec41abfff1b661e7c42584b98ba32ee297e1e575c21ad06c07f7ee",
+    "reviewedAt": "2026-11-08T17:36:59.446840+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        185,
+        535,
+        1000,
+        470
+      ]
+    ],
+    "checks": {
+      "armChains": "Six arm chains coherent including Nazari crossed arms with one hand naturally concealed.",
+      "thumbsFingers": "Demir forehead/table, Farah mouse/brace and Nazari crossed-arm hand natural.",
+      "props": "No held writing prop.",
+      "mainDisplay": "Large upright LSTM proposal and prior loss."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+    "sourceSha256": "da0f6c80fc7352e0152886554af45f846a6d6a6291a2c5dd75abd77d7286f062",
+    "reviewedAt": "2026-11-08T17:36:59.450524+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        590,
+        750,
+        410,
+        185
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Both keyboard hands plausible, no fused fingers.",
+      "props": "Straight pens in cup.",
+      "mainDisplay": "Large upright packed-column order and pending checks."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-concept-openai-20261107.png",
+    "sourceSha256": "fd514ccbc86c300a38cefb1d6b1a46f137f15dcce0c063ea77478882945674ee",
+    "reviewedAt": "2026-11-08T17:36:59.448716+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        430,
+        765,
+        670,
+        180
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Farah arms.",
+      "thumbsFingers": "Mouse and notebook-side hands have correct thumb/contact.",
+      "props": "Desk pen straight.",
+      "mainDisplay": "Large upright equations and gate legend."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+    "sourceSha256": "bed5ca3b204431e5354c00ca8ac76a0d0e6f1dd60fd5ac349956deb3539d34b9",
+    "reviewedAt": "2026-11-08T17:36:59.454043+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        325,
+        810,
+        1110,
+        185
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms; Farah bracing and hanging, Demir mouse and keyboard.",
+      "thumbsFingers": "Contact and thumb sides plausible.",
+      "props": "No held pen.",
+      "mainDisplay": "Two upright displays clearly separate mission replay from ARIA four-second silence; all lines readable."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-takeaways-openai-20261107.png",
+    "sourceSha256": "e7f2a9f8b311941634e04635c89ca40c3e61a4ae3974cc97737f7077ee87e907",
+    "reviewedAt": "2026-11-08T17:36:59.452328+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        50,
+        715,
+        1100,
+        280
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms.",
+      "thumbsFingers": "Farah braces both palms, Demir button and resting hand natural.",
+      "props": "No held pen.",
+      "mainDisplay": "Substantial upright panel has large sparse 80-step, loaded weights and zero h/c labels."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-openai-20261107.png",
+    "sourceSha256": "cd070091cf51070d30feae83a11331d9cdfb67c666821d8b9feb325ea7f8bf11",
+    "reviewedAt": "2026-11-08T17:38:08.131123+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        80,
+        700,
+        370,
+        225
+      ],
+      [
+        895,
+        500,
+        510,
+        245
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent chains; Demir braces and Farah explains.",
+      "thumbsFingers": "Rail grips, ordinary pen pinch and open palm are plausible.",
+      "props": "One straight pen.",
+      "mainDisplay": "Large upright projection clearly separates recorded waveform from future dotted forecast at a boundary, with no tiny text."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+    "sourceSha256": "62c717d8813c556047871bf0827e1b7fe063f4e8c18ede89a2eab00f1f021ed8",
+    "reviewedAt": "2026-11-08T17:38:08.134679+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        370,
+        775,
+        820,
+        215
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Trackball grip and resting hand natural.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright next-reading workflow and pending checks."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+    "sourceSha256": "9a09074ea50fcd0ba325eb4dbdd7129b6a2dcfa54937ba8a9d4cdd5a99dbb1c7",
+    "reviewedAt": "2026-11-08T17:38:08.133036+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        410,
+        710,
+        675,
+        225
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Farah arms.",
+      "thumbsFingers": "Natural dial grip and button-panel rest.",
+      "props": "No held pen.",
+      "mainDisplay": "Very large upright readable rolling loop and scaling/baseline reminders."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261107.png",
+    "sourceSha256": "e31301b8b44a0d5d6a59cfee84e4e167989ab15020757878981d930d5813d747",
+    "reviewedAt": "2026-11-08T17:38:08.138430+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        10,
+        710,
+        1510,
+        310
+      ]
+    ],
+    "checks": {
+      "armChains": "Eight coherent arm chains across all four crew.",
+      "thumbsFingers": "Nazari lever/hanging, Mirza both lowered, Farah two tablet grips and Demir console hands are plausible.",
+      "props": "Straight lever.",
+      "mainDisplay": "Large upper-left pulse spike is the visible narrative result; no tiny lesson text or blank wall beneath a small main display."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+    "sourceSha256": "5b3c75784343e5cde40ca190d4a009025a0a59af884f869209480e54221815fc",
+    "reviewedAt": "2026-11-08T17:38:08.136514+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        475,
+        380,
+        825,
+        545
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms including Demir arm draped on chair and hanging hand.",
+      "thumbsFingers": "Farah mouse/rest and Demir relaxed hands natural.",
+      "props": "Straight pens in cup.",
+      "mainDisplay": "Large upright horizon contrast clearly distinguishes 47 one-second demo steps from bridge 47-minute separate pulse series."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-openai-20261107.png",
+    "sourceSha256": "49c57099135f42406b538678cb3783647e256b8a355a6ec5b733203580bca1b5",
+    "reviewedAt": "2026-11-08T17:39:27.776886+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        385,
+        450,
+        435,
+        320
+      ],
+      [
+        1035,
+        630,
+        185,
+        260
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms including Demir chin/tablet and Farah raised pointer/open palm.",
+      "thumbsFingers": "All thumb sides, grips and contact plausible.",
+      "props": "One straight stylus.",
+      "mainDisplay": "Huge upright five-reading wall table."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+    "sourceSha256": "abd65b5897fed79d24fbbe6757fbde1cca465fdb89485bf316fd08473e0b8061",
+    "reviewedAt": "2026-11-08T17:39:27.782125+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        575,
+        745,
+        400,
+        150
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Keyboard hands and thumb placement natural.",
+      "props": "No held pen.",
+      "mainDisplay": "Huge upright one-feature challenge stream and parameters."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+    "sourceSha256": "884715d4eed82b96f92de0c2f5efcfbb8d29feea625f976cee08696957f3d378",
+    "reviewedAt": "2026-11-08T17:39:27.779368+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        775,
+        765,
+        480,
+        180
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Farah arms.",
+      "thumbsFingers": "Mouse and tabletop brace natural.",
+      "props": "No held pen.",
+      "mainDisplay": "Huge upright ordered/reordered amplitude comparison."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+    "sourceSha256": "974f340a1e8e9a1b9a18941d480b88d7b9928be9572e4b07ca80de6d50385716",
+    "reviewedAt": "2026-11-08T17:39:27.786839+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        370,
+        700,
+        395,
+        260
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Mouse and book-rest hands have plausible contact.",
+      "props": "No held pen.",
+      "mainDisplay": "Huge upright illustrative order test preserves each-reading score meaning."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+    "sourceSha256": "1320313e1069b8c0a604dcfaa8e4749fbaf911d6afe4fb59341d5f7a25e319c1",
+    "reviewedAt": "2026-11-08T17:39:27.785145+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        530,
+        715,
+        850,
+        160
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms; Farah hands overlap naturally, Demir types.",
+      "thumbsFingers": "Normal overlapping hand and keyboard finger silhouettes.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright worked pairs, shapes and split reminder."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+    "sourceSha256": "7812222c5f89cb7e9b818c86158165cac2509202f2a12f0d4a90ae63bffa6dd7",
+    "reviewedAt": "2026-11-08T17:40:32.873304+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        235,
+        415,
+        910,
+        320
+      ],
+      [
+        775,
+        820,
+        350,
+        115
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent chains; Farah extended arm passes behind Demir's head with plausible occlusion.",
+      "thumbsFingers": "Farah pointer and pen, Demir controls have coherent joints/contact.",
+      "props": "Straight held stylus.",
+      "mainDisplay": "Large upright formula and exact three-state table."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-challenge-openai-20261107.png",
+    "sourceSha256": "ab6eb78e19463129d6157be531f472b8822390a0192875e901e2c4bd602e4cfd",
+    "reviewedAt": "2026-11-08T17:40:32.877017+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        620,
+        690,
+        500,
+        175
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Mouse and keyboard grips natural.",
+      "props": "Straight pen and tools on desk.",
+      "mainDisplay": "Large upright sparse checklist and pending status."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-concept-openai-20261107.png",
+    "sourceSha256": "852c31814f861a667ad58ac25570cf2dd86a4c54a1b852cc1130bca2bf1ee10a",
+    "reviewedAt": "2026-11-08T17:40:32.875252+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        440,
+        525,
+        850,
+        440
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent chains.",
+      "thumbsFingers": "Farah chin and table, Demir mouse and resting hand natural.",
+      "props": "Straight pen lies on table.",
+      "mainDisplay": "Large upright recurrence and exact values."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+    "sourceSha256": "d44c35c18c3af8ee57fe1c1c140e23f0bd39bd6f3a9495b31060fc43b5e196ff",
+    "reviewedAt": "2026-11-08T17:40:32.880626+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        390,
+        565,
+        830,
+        335
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arms including Nazari brace/hanging and Demir mug/rest.",
+      "thumbsFingers": "Normal thumb sides and mug contact.",
+      "props": "No held pen.",
+      "mainDisplay": "Upright clear overnight-run report, concise limitation and 74-step gap."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+    "sourceSha256": "0ab95d1870ea5dbb69a3a752f37aaa104ea6d80846666ce51eb7ce4431e5e5c4",
+    "reviewedAt": "2026-11-08T17:40:32.878771+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        990,
+        545,
+        140,
+        180
+      ],
+      [
+        635,
+        825,
+        185,
+        135
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Farah arms.",
+      "thumbsFingers": "Chin hand and mouse hand natural.",
+      "props": "Straight pen lies on notebook.",
+      "mainDisplay": "Large upright scalar-path warning with correctly scoped no-fixed-failure-length caveat."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+    "sourceSha256": "528ecdcde2f8ffd81b0ae757a4c6557ba95ff7159c8776bbd1bf42e2f60c4efd",
+    "reviewedAt": "2026-11-08T17:41:49.393267+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        335,
+        745,
+        980,
+        140
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Mouse and book-rest hands natural.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright clearly labeled four-reading illustrative overlap."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+    "sourceSha256": "d63f411dfe8b943d5c8bb6d7a09db82c58dea6407e7b2c19c363a802b5cd0ab5",
+    "reviewedAt": "2026-11-08T17:41:49.396871+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        670,
+        765,
+        280,
+        180
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Both keyboard hands natural.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright checklist is readable, but the unqualified 80-reading window conflicts with the challenge's small exercise."
+    },
+    "defects": [
+      {
+        "category": "display-source-meaning",
+        "detail": "Challenge illustration says Window length: 80 readings without identifying it as the mission setting. The current exercise uses 12 synthetic index-valued readings, window size 4, split at 8, and also tests other parameter values.",
+        "repairDirection": "Keep large upright screen and keyboard action; show Synthetic check, readings 0 through 11, window 4, split at 8, stride 1, labels from last reading and checks pending. Do not leak solved outputs."
+      }
+    ],
+    "sourceEvidence": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx:205 and exercises/sliding-window.yaml:37 onward",
+    "verdict": "repair-required"
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+    "sourceSha256": "950767e373ec12d5f3451ac16f26418da31a0b54c675784930bac3fa6e3b2ee3",
+    "reviewedAt": "2026-11-08T17:41:49.395195+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        95,
+        775,
+        630,
+        210
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent arm chains.",
+      "thumbsFingers": "Demir mouse/brace and Farah two table hands plausible.",
+      "props": "No held pen.",
+      "mainDisplay": "Large upright training/validation split diagram with readable reminders."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-epilogue-openai-20261107.png",
+    "sourceSha256": "21dcc343faa8496acdb4b52927aa432f084edda79e99528704ea3549ab0d868b",
+    "reviewedAt": "2026-11-08T17:41:49.400171+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        165,
+        820,
+        1290,
+        185
+      ]
+    ],
+    "checks": {
+      "armChains": "Four coherent chains, Farah brace/hanging and Demir keyboard.",
+      "thumbsFingers": "Normal finger counts and contact.",
+      "props": "No held pen.",
+      "mainDisplay": "Large wall live-window classification diagram and next forecast question."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+    "sourceSha256": "16311080dd681b740f5e2a9f08ebebcc3078e3d2f577f668eae12be7519b5d34",
+    "reviewedAt": "2026-11-08T17:41:49.398378+00:00",
+    "nativeReviewed": true,
+    "handCropReviewed": true,
+    "method": "Focused second native review after user corrections, with full shoulder-to-hand tracing and original-pixel hand/prop crops. Applied the new available-space display legibility rule.",
+    "cropConvention": "left, top, width, height",
+    "temporaryCropsRemoved": true,
+    "cropCoordinates": [
+      [
+        225,
+        780,
+        500,
+        125
+      ]
+    ],
+    "checks": {
+      "armChains": "Two coherent Demir arms.",
+      "thumbsFingers": "Trackball and brace contacts natural.",
+      "props": "No held pen.",
+      "mainDisplay": "Huge upright 75-endpoint minimum and 80-window explanation."
+    },
+    "defects": [],
+    "verdict": "PASS"
+  }
+]

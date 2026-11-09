@@ -1,0 +1,118 @@
+{
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, strictly preserve identity. The first reference images are the canonical human faces. The LAST image is the edit target. Make only the requested teaching-display corrections. Preserve every person exactly: full face morphology, head scale, hair, gaze, expression, accessories, torso, neck, shoulders, continuous arms/hands, fingers, clothing, chair pose. Preserve the same muted room, materials, lighting and composition. No new people, props or decorative graphics. One full final 1536x1024 scene only. Keep all main board numeric matrices, the Synthetic attention probe heading, Unscaled dot products panel, and the foreground Scores: pending, Weights: pending, Blend [2]: pending exactly unchanged. Switch OFF the unrelated small screens: two at far left edge, two desktop monitors behind his working hands, the small far-right wall screen, and his wrist terminal. These screens must be unlit charcoal glass with no graphs, lines, bars, gauges, text or symbols. Keep colored physical hardware buttons as physical controls. Preserve Demir exact current face, head size, body and hands.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/advanced-time-series__beyond-lstm-challenge-semantics-stage1-openai-20261107.png",
+      "sha256": "207f6e1519d2a8c6dbbd8013645206a7670b5cad3d9b2fdd78b0b831a1f5c509",
+      "role": "target scene with approved body construction",
+      "originalPath": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-challenge-semantics-stage1-openai-20261107.png",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "207f6e1519d2a8c6dbbd8013645206a7670b5cad3d9b2fdd78b0b831a1f5c509",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+    "sha256": "16423d000acf7fe1ae2fe5b84d71eb9b6f990e73f584c5aa486a241430bab6ba"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "panelSpecification": {
+    "state": "pending learner calculation",
+    "panels": [
+      "Board: Synthetic probe, query [1, 0], keys [[1, 0], [0, 1]], values [[2, 0], [0, 2]]. Keep keys and values visually distinct.",
+      "Tablet: Scores, Softmax weights, Blended values with empty output cells marked Pending. Show output shape [2]. No filled success state."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "bodyConstraints": "Preserve current connected anatomy and natural pose.",
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+  "candidateSha256": "e5576c4bcb365ba983bb49564246ad89e5ce9ea691c682ea7bf7e64ca1785681",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-449500a9-68dc-4676-a75a-f7deb303a5b0.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-challenge-identity-proof.jpg",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit lesson scene, 1536x1024 adventure-comic illustration. The first input(s) are immutable canonical face identity references. The LAST input is the exact scene to edit. Preserve the same people, same facial morphology and story moment. Preserve Demir's canonical broad rounded nose, eyes, cheeks, short jaw, hair, stubble and right-ear comms. Keep his seated pose, two arms, stylus grip, keypad hand, furniture and room unchanged. Replace the large waveform board with a precise small exercise fixture, headed \"Synthetic attention probe\". Show three distinct labeled rows: \"Query [1, 0]\", \"Keys [1, 0] [0, 1]\", and \"Values [2, 0] [0, 2]\". The rows must be clean and readable; values belong to a visibly separate row from keys. Replace tablet waveforms with a tidy work area: \"Scores: pending\", \"Weights: pending\", \"Blend [2]: pending\". No calculated solution or green success check. The standing small screen can show \"Unscaled dot products\" as a simple task reminder, without extra data. Other background screens stay dim inactive. These screens show the exact synthetic exercise, no arbitrary wave shapes. Demir's complete head is slightly oversized: resize it to about90 percent of its current linear dimensions, keeping face morphology identical and rejoining the neck naturally. Body, shoulders and hands stay fixed in size. Preserve muted sage and worn brass lab colors. Output one final full scene only, no before/after collage, no caption outside the art, no new characters or props.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/beyond-lstm-challenge-before.png",
+          "sha256": "b7ac30834a92b9bf28085b32b91ad47c413f1829e0144e9ffd3db66c20d544c2",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "b7ac30834a92b9bf28085b32b91ad47c413f1829e0144e9ffd3db66c20d544c2",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "207f6e1519d2a8c6dbbd8013645206a7670b5cad3d9b2fdd78b0b831a1f5c509",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-63be9888-94ac-4f19-b95e-13dc11d124f5.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-challenge-identity-proof.jpg",
+      "status": "candidate-awaiting-review"
+    }
+  ],
+  "requestedDisplayCorrections": "Keep all main board numeric matrices, the Synthetic attention probe heading, Unscaled dot products panel, and the foreground Scores: pending, Weights: pending, Blend [2]: pending exactly unchanged. Switch OFF the unrelated small screens: two at far left edge, two desktop monitors behind his working hands, the small far-right wall screen, and his wrist terminal. These screens must be unlit charcoal glass with no graphs, lines, bars, gauges, text or symbols. Keep colored physical hardware buttons as physical controls. Preserve Demir exact current face, head size, body and hands.",
+  "independentReview": {
+    "reviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "e5576c4bcb365ba983bb49564246ad89e5ce9ea691c682ea7bf7e64ca1785681",
+    "proofSha256": "639c9dd2f1434c6187654f7c92914564ba7145df20e5966d063ae22e5c6a3ae0",
+    "notes": "Exact syntheticQ[1,0], K[[1,0],[0,1]], V[[2,0],[0,2]], unscaled operation and pendingoutputs. Other monitors inactive. Canonical face and2continuous arm/hand chains pass.",
+    "scope": "fresh canonical face proof, complete frame, proportions, anatomy, palette, every prominent screen and current source values"
+  },
+  "ownReview": "Exact syntheticQ[1,0], K[[1,0],[0,1]], V[[2,0],[0,2]], unscaled operation and pendingoutputs. Other monitors inactive. Canonical face and2continuous arm/hand chains pass.",
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+  "publishedOutputSha256": "83d19fedb5efc65655cdc90703b747887ce8586891e44fdcc509f5e47766c49a",
+  "encoding": {
+    "format": "webp",
+    "quality": 83,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 184494
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-449500a9-68dc-4676-a75a-f7deb303a5b0.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-63be9888-94ac-4f19-b95e-13dc11d124f5.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+      "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

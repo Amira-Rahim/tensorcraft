@@ -1,0 +1,73 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "phase": "challenge",
+      "sourceSha256": "2eb05bbd6316be74106e31ccdaa22721d331cd420fe41b2ca9d3a51495a7d240",
+      "outputSha256": "7e9f06a5989c3c375bae87190c47bd02a764b045c2c2366daf0cf445e68a7867",
+      "bytes": 163220,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "takeaways",
+      "sourceSha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+      "outputSha256": "d41bc9f475b74d34b355c8f9e9c5ea6e2f34b694100582f48485078008b3c222",
+      "bytes": 162346,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "briefing",
+      "sourceSha256": "fc09f3ebb8b21603a334df6c3bf6515b1166e7c4ce0a82d55471c6976165e836",
+      "outputSha256": "5a5e8932d6b921d1ab8b96e60a051c17cf2e92e9e3e1d62c6598603c4e602a84",
+      "bytes": 129474,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "epilogue",
+      "sourceSha256": "16418c806ce3def2700197dba9cdefa06444b95609564534266b79d968bcc3f9",
+      "outputSha256": "e7e55106911fcda8c52390d6c05948d6113f439f515b7b3e4a5d3d793ab88ed6",
+      "bytes": 187560,
+      "quality": 83,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "concept",
+      "sourceSha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+      "outputSha256": "252f484fc8875a091ae3a3267b4899166eef346858e15af1b6bd0080127defd6",
+      "bytes": 175132,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    }
+  ],
+  "removed": [
+    "art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage3-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-challenge-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-concept-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-concept-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-epilogue-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage3-openai-20261107.png"
+  ],
+  "archive": "Current source inputs retained in semantic-review/inputs; current outputs and proofs retained."
+}

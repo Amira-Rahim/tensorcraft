@@ -1,0 +1,31 @@
+{
+  "module": "neural-networks",
+  "lesson": "first-neuron",
+  "phase": "challenge",
+  "room": "lab",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "moment": "Demir actively checks a weighted-sum calculation at a small lab console, right hand pressing one physical input key and left holding a slim tablet. Farah stands at his side in the open aisle, holding her stylus down in one hand and her other hand relaxed, watching his test with a small encouraging smile. One screen shows three separate input bars feeding one unapproved score marker. No success checkmarks and no solved numerical answer. Their friendly shared concentration is the focal point, not a wall of graphs.",
+  "alt": "Demir tests the neuron calculation while Farah watches his inputs.",
+  "location": "Archimedes, Lab",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/lab.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit neural-networks/first-neuron, challenge section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 2 are canonical character identity references; the final image is the lab set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Dr. Farah, adult woman aged 38, olive-tan skin, dark wavy hair loosely tied back, a green AR lens over one eye, muted slate lab jacket; Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal. Scene: Demir actively checks a weighted-sum calculation at a small lab console, right hand pressing one physical input key and left holding a slim tablet. Farah stands at his side in the open aisle, holding her stylus down in one hand and her other hand relaxed, watching his test with a small encouraging smile. One screen shows three separate input bars feeding one unapproved score marker. No success checkmarks and no solved numerical answer. Their friendly shared concentration is the focal point, not a wall of graphs. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 2 humans, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.\nTargeted correction after initial QA: Use case: precise-object-edit. Edit only the foreground monitor display in this exact image. Replace the red circled X at the end of the weighted-sum diagram with a small neutral pale-green output dot on a short unnumbered score rail. Remove all red from that monitor. No pass/fail verdict has been established. Keep the three input bars and sum symbol. Preserve the two canonical characters exactly: same faces, expressions, skin, hair, clothes, AR lens, earpiece, hands, poses, furniture, camera, light and background. Absolutely no new hand, limb, text or object.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7cc4ba9b-684d-43b4-83e5-ecada6893f0c.png",
+  "source": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261106.png",
+  "src": "/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir has a keyboard hand and tablet hand. Farah has a stylus hand and a relaxed hand. All arms attach coherently.",
+    "furniture": "Bodies and limbs remain outside solid furniture. Contacts with keyboard, stylus and tablet are coherent.",
+    "identity": "Canonical visible faces, adult ages, hair and equipment retained.",
+    "story": "Replaced invented failure X with a neutral score marker. No outcome is asserted before the test.",
+    "tone": "Warm cooperation and small natural smiles.",
+    "method": "Built-in imagegen. Full frame visually inspected; targeted display correction where noted."
+  }
+}

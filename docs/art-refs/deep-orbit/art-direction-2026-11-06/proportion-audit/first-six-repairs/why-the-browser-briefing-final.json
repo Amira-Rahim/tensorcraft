@@ -1,0 +1,125 @@
+{
+  "key": "why-the-browser-briefing",
+  "id": "browser-runtimes/why-the-browser",
+  "phase": "briefing",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "status": "candidate-awaiting-root-review",
+  "input": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+  "inputSha256": "9fd9594266f4889db70245c3c272bc30861315b5374723db2a0b8a9b6eea85d9",
+  "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-99762fdf-9824-4a33-91ce-2fe2e6c73657.png",
+  "archivedInputSha256": "9fd9594266f4889db70245c3c272bc30861315b5374723db2a0b8a9b6eea85d9",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+      "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+      "sha256": "9fd9594266f4889db70245c3c272bc30861315b5374723db2a0b8a9b6eea85d9"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+      "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+    }
+  ],
+  "screenMeaning": "Bridge must classify locally when the compute-bay link fails; live signal is the input, not a network benchmark.",
+  "screenSpecification": "Keep the large live signal trace on the foreground holo table, but label it LIVE INPUT. Replace the center rear branching-glyph display with a simple planning diagram titled LOCAL PLAN: a single device boundary enclosing INPUT -> MODEL -> VERDICT. A separate small broken connection leads outward to COMPUTE BAY, showing dependence the crew wants to remove, not a measured speed result. On the right screen Nazari points at, retain the empty grid but label DASHBOARD and Awaiting local runtime. Remove unrelated prominent circular pie/dial drawings; small ambient instruments may be dim and unobtrusive. This is a briefing before implementation, no success tick or completed classification.",
+  "proportionSpecification": "Only Demir's head receives a very gentle approximately8percent linear reduction, preserving his internal facial geometry and pensive expression; naturally integrate the neck. Nazari's head and all bodies keep their current sizes. Do not shorten or rotate any arm.",
+  "paletteReference": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+  "prompt": "Use case: precise-object-edit. First 2 images are canonical identity portraits. LAST image is the target. Make a narrow background-screen correction only. Replace every secondary monitor containing an unrelated waveform, generic bars or decorative scientific diagram with inactive dark charcoal glass in its same physical frame. Preserve the main meaningful lesson display. Inactive monitors have no trace, icon, text or data. Physical console buttons and the real wall clock are room props and remain. Do not alter wrist accessories, characters, face geometry, age, hair, expression, gaze, head/body scale, poses, continuous arm chains, fingers, costumes, furniture, camera, composition or the approved muted sage and aged brass palette. On the center LOCAL PLAN display remove the dashed connection between VERDICT and COMPUTE BAY entirely. The COMPUTE BAY box remains fully disconnected outside the local device boundary, with the short readable label \"Link unavailable\" below it. Preserve INPUT -> MODEL -> VERDICT entirely within the local device boundary. On the foreground holo table replace LIVE INPUT with exact label \"Signal input (schematic)\". Preserve the existing schematic trace. Keep DASHBOARD and Awaiting local runtime on the right screen unchanged. Keep all labels precisely spelled and readable, no invented metrics, no success marks. Output one 1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-briefing.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-briefing.json",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-ab816afe-ddcc-4d4b-a051-630efd1b3c9c.png",
+  "candidateSha256": "ecfef4b31aecbf306aac7af27d25294c978eab2dfeca914c60087bf455222535",
+  "generationMethod": "builtin-imagegen",
+  "recoveryNote": "Metadata persistence callback failed after image generation. Recovered exact output by full-frame content and prompt match before any retry.",
+  "ownReview": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeckShoulder": "pass",
+    "proportions": "pass",
+    "palette": "pass",
+    "screenSemantics": "pass",
+    "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+  },
+  "revision": 2,
+  "inputCandidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-666fef31-7e92-497a-82c0-a5f46ca8237a.png",
+  "inputCandidateSha256": "4318136badfd89dd2bfeb93e93cbe7cc1ba79ade327af73ddd76afd3576e7b63",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-666fef31-7e92-497a-82c0-a5f46ca8237a.png"
+  ],
+  "revisionReason": "Root reviewed main panels, palette, proportion and anatomy PASS. Requires every secondary screen to be semantically grounded or inactive.",
+  "faceProofs": [
+    {
+      "character": "demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "referenceCrop": {
+        "left": 110,
+        "top": 0,
+        "width": 290,
+        "height": 330
+      },
+      "crop": {
+        "left": 145,
+        "top": 105,
+        "width": 235,
+        "height": 285
+      },
+      "before": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-99762fdf-9824-4a33-91ce-2fe2e6c73657.png",
+      "beforeSha256": "9fd9594266f4889db70245c3c272bc30861315b5374723db2a0b8a9b6eea85d9",
+      "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-ab816afe-ddcc-4d4b-a051-630efd1b3c9c.png",
+      "reviewedImageSha256": "ecfef4b31aecbf306aac7af27d25294c978eab2dfeca914c60087bf455222535",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/proofs/why-the-browser-briefing-demir.png",
+      "proofSha256": "989231bc7bc511e80f28e771e980752f28886ea9004cf114aaa602df0e4d7f15"
+    },
+    {
+      "character": "nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "referenceCrop": {
+        "left": 110,
+        "top": 0,
+        "width": 290,
+        "height": 330
+      },
+      "crop": {
+        "left": 825,
+        "top": 185,
+        "width": 245,
+        "height": 265
+      },
+      "before": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-99762fdf-9824-4a33-91ce-2fe2e6c73657.png",
+      "beforeSha256": "9fd9594266f4889db70245c3c272bc30861315b5374723db2a0b8a9b6eea85d9",
+      "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-ab816afe-ddcc-4d4b-a051-630efd1b3c9c.png",
+      "reviewedImageSha256": "ecfef4b31aecbf306aac7af27d25294c978eab2dfeca914c60087bf455222535",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/proofs/why-the-browser-briefing-nazari.png",
+      "proofSha256": "255518a03b0cc6334e405954905d1ee227caf343673d3469379b00df1555a396"
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

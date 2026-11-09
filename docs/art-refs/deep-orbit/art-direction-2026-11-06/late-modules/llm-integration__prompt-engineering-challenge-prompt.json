@@ -1,0 +1,25 @@
+{
+  "key": "llm-integration/prompt-engineering",
+  "phase": "challenge",
+  "room": "lab",
+  "refs": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/lab.png"
+  ],
+  "prompt": "Use case: illustration-story. Generate one distinctly staged1536x1024 Deep Orbit challenge scene. The FIRST 1 references are the authoritative neutral crew portraits, in this order: ensign-demir. The LAST reference defines room materials and architecture only. Reproduce each exact individual, especially facial morphology and age, not merely clothing. Stage exactly these humans: Ensign Demir, adult male mid-twenties, warm light-medium skin, dark tousled hair, light uneven stubble, slate junior uniform, green comms earpiece and one green wrist terminal. DEMIR must be exactly the reference man: mid-twenties warm light-medium face, broad softly squared lower jaw, short round chin, compact round-ended nose of canonical width, fairly straight brows and exact eye spacing, sparse freckles and uneven short stubble. Compact tousled dark hair with the same front locks, green round earpiece on anatomical RIGHT ear. Do not make a long thin pointed nose, tapered anime face, tall quiff or a teenager. Favor frontal or gentle three-quarter faces with both eyes and full nose width visible; retain natural story gaze. Faces should be large enough to verify, not tiny profiles. Medium close view of Demir assembling a prompt at a tilted tabletop display. He holds a small reference catalogue card in one hand and places it into a separate middle slot with a stylus in the other hand. A waveform card remains visibly separate below it. Catalogue versus current reading must remain distinct. No text, numbers or claim about a generated answer. All human faces are clearly visible, expressive and well lit. Keep the adventure inviting, curious and lightly warm, with restrained humor where appropriate. Each human has exactly two continuous arms and two hands with natural thumbs and fingers. Trace every limb to its shoulder. Separate bodies, sleeves, hands, chairs, rails and tabletop volumes with clear silhouettes and natural contact shadows. Avoid crossed or overlapping limbs where they obscure anatomy. No extra limb, forked forearm, fused fingers, floating hand, duplicated person, body through furniture, black silhouettes, humanoid ARIA, readable words, letters, numerals, watermark or fake code. Displays use simple unlabeled visual marks without invented claims. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Any background display copied from the room master must be simplified to plain dark panels or simple waveform plots. No letter-like glyphs, pseudo-equations, decorative scribbles, astronomical pictures, planets, clouds, crystals or arbitrary science pictograms anywhere on displays. ",
+  "alt": "Demir inserts the reference catalogue while keeping the current signal reading separate.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+  "lessonSha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room master"
+    }
+  ]
+}

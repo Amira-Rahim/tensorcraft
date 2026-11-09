@@ -1,0 +1,2743 @@
+{
+  "reviewedAt": "2026-11-07T11:11:33.116967+00:00",
+  "owner": "/root/browser_final",
+  "scope": "All70 current canonical assets, separate new narrative gate. Prior combinedVisualReview is technical only.",
+  "summary": {
+    "pass": 26,
+    "repair": 44
+  },
+  "entries": [
+    {
+      "index": 1,
+      "id": "browser-runtimes/model-loading",
+      "phase": "briefing",
+      "source": "art-src/scenes/browser-runtimes__model-loading-openai-20261107.png",
+      "sourceSha256": "47e12b3f273665ca7b2c724578e291fb5b9ae90550663aaca8e52f272332a1a4",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet01.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir troubleshoots the failed URL at his console, chin in hand.",
+        "emotionAndEyeline": "Focused puzzlement at the404, gaze on the work.",
+        "storyReason": "Wrong model URL returns404; the loader needs model.json plus its referenced binary weights.",
+        "repairDirection": "Preserve the seated investigation.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+          "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+          "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 2,
+      "id": "browser-runtimes/model-loading",
+      "phase": "concept",
+      "source": "art-src/scenes/browser-runtimes__model-loading-concept-openai-20261107.png",
+      "sourceSha256": "4c178be0b43ce8bac1b792e9bfdc0ac6a6c844dc6234265b0d053ded6b848702",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet01.jpg",
+      "owner": "optimization-modules",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir faces the audience and points at an explanatory board.",
+        "emotionAndEyeline": "Pleasant presentation smile replaces investigation.",
+        "storyReason": "Manifest topology and binary weights reconstruct a runnable model; cache is a separate load source.",
+        "repairDirection": "Restage Demir inspecting manifest and weight files on his workstation, looking between the files and loader.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+          "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+          "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained.",
+      "originalSourceSha256": "c486031d8d7053b9ff48dfb5ef89ef1d0c350c67b4899fc38a675975ac00f57d",
+      "resolution": {
+        "status": "published",
+        "narrativeReview": {
+          "status": "approved",
+          "reviewer": "late_final",
+          "candidateSha256": "4c178be0b43ce8bac1b792e9bfdc0ac6a6c844dc6234265b0d053ded6b848702",
+          "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/independent-late-final-model-loading3.json",
+          "action": "Replace the presenter composition entirely with a candid side view of Demir seated at the bridge dashboard alcove, body and chair facing his workstation at screen-left. Camera sees his natural three-quarter face as he looks intently at a file browser, not toward us. His right hand uses a mouse, left hand rests naturally beside the keyboard. His eyebrows lift and he gives a small sheepish aha smile at his earlier wrong URL. No held tablet, no pointer, no teaching board. The working screen shows a file browser folder \"/models/deep-scan/\" with exactly two file rows \"model.json\" and \"weights.bin\". An adjacent loader pane on the same screen reads \"LayersModel\" with short sublabel \"Manifest + weights\". This is an actual asset inspection on his console, not a poster."
+        },
+        "sourceSha256": "4c178be0b43ce8bac1b792e9bfdc0ac6a6c844dc6234265b0d053ded6b848702",
+        "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/final-review.json"
+      }
+    },
+    {
+      "index": 3,
+      "id": "browser-runtimes/model-loading",
+      "phase": "challenge",
+      "source": "art-src/scenes/browser-runtimes__model-loading-challenge-openai-20261107.png",
+      "sourceSha256": "2fc820597ea1cd75fc186834afdeb35a249293d24510aa4c12c0ad2d1625fb10",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet01.jpg",
+      "owner": "optimization-modules",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir types at the loader console and watches its fields.",
+        "emotionAndEyeline": "Quiet concentration with an engaged half smile.",
+        "storyReason": "Load once, inspect input/output shapes and layer count, then dispose the inspected model.",
+        "repairDirection": "Preserve console work and directed gaze.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+          "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+          "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 4,
+      "id": "browser-runtimes/model-loading",
+      "phase": "takeaways",
+      "source": "art-src/scenes/browser-runtimes__model-loading-takeaways-openai-20261107.png",
+      "sourceSha256": "37115a0fa52f163dae1fd3d360ab5d5db6b2b7e3cb2414d0d9896a5072976ae4",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet01.jpg",
+      "owner": "optimization-modules",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir displays a cache checklist tablet toward the viewer.",
+        "emotionAndEyeline": "Static front-facing presenter.",
+        "storyReason": "Explicit versioned IndexedDB model caching changes the load path; old cached weights must not silently persist.",
+        "repairDirection": "Put the cache work on his console and show him verifying v2 before removing v1.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+          "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+          "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained.",
+      "originalSourceSha256": "44d42576d3167f6c3c99244b6bd3dcbced8704c6c13fafff670b9ad7ff75ae40",
+      "resolution": {
+        "status": "published",
+        "narrativeReview": {
+          "status": "approved",
+          "reviewer": "late_final",
+          "candidateSha256": "37115a0fa52f163dae1fd3d360ab5d5db6b2b7e3cb2414d0d9896a5072976ae4",
+          "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/independent-late-final-model-loading3.json",
+          "action": "Replace the held-tablet presentation entirely with Demir leaning into an actual bridge cache-management console, body oriented toward it, eyes following the selected cache entry. Use a natural side three-quarter face with a cautious, pleased expression. One hand uses the console trackpad, the other rests relaxed on its edge, no handheld tablet or paper. The single working display is a practical list titled \"IndexedDB\" with two rows \"deep-scan-v1\" and \"deep-scan-v2\". The v2 row is selected without a success tick. Below are two ordinary controls \"Load v2\" and \"Verify v2\", and the subdued reminder \"Verify v2 before removing v1\". No invented measurements or completed deletion. This is a candid careful maintenance action, not a lecture pose."
+        },
+        "sourceSha256": "37115a0fa52f163dae1fd3d360ab5d5db6b2b7e3cb2414d0d9896a5072976ae4",
+        "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/final-review.json"
+      }
+    },
+    {
+      "index": 5,
+      "id": "browser-runtimes/model-loading",
+      "phase": "epilogue",
+      "source": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+      "sourceSha256": "2610c08ebfec89035bf0a404941769b2ac31f789b32fb796cac3d1a226cb2d18",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet02.jpg",
+      "owner": "optimization-modules",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Farah holds a comparison laptop facing the viewer while Demir works.",
+        "emotionAndEyeline": "The comparison becomes an audience demonstration.",
+        "storyReason": "Notebook and dashboard scores differ by three percentage points because the dashboard loaded cachedv1 instead of retrainedv2.",
+        "repairDirection": "Restage both around the workstation comparing the notebook result and cached dashboard, naturally puzzled by disagreement.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+          "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+          "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained.",
+      "originalSourceSha256": "b18fdcfa9e2d3aa148756baca6f5dcbaf0ee4a16a75556f3b9910074856c709b",
+      "resolution": {
+        "status": "published",
+        "narrativeReview": {
+          "status": "approved",
+          "reviewer": "late_final",
+          "candidateSha256": "2610c08ebfec89035bf0a404941769b2ac31f789b32fb796cac3d1a226cb2d18",
+          "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/independent-late-final-model-loading3.json",
+          "action": "Restage the moment as a candid two-person investigation at the bridge dashboard bench. Farah has set her open notebook computer firmly on the bench beside the dashboard, both screens facing the crew and visible to the camera at an oblique angle. Farah leans in from the left, one hand relaxed on the bench and the other naturally touching the notebook trackpad. Demir leans in from the right with one hand by the dashboard keyboard and the other supported on the bench. Both bodies turn toward the two screens, with naturally visible three-quarter faces. Farah looks from her notebook toward Demir with a raised skeptical eyebrow and amused concern. Demir looks at the dashboard version with a dawning embarrassed realization, not a generic smile. Neither looks at camera or holds a device outward. Notebook screen exact text \"NOTEBOOK\" and \"Retrained v2\". Dashboard screen exact text \"DASHBOARD\" and \"Cached v1\". A small comparison strip on the dashboard reads \"Same reading: 3 percentage points apart\". No fabricated absolute scores. Preserve the story that the discrepancy has just been noticed, not already fixed."
+        },
+        "sourceSha256": "2610c08ebfec89035bf0a404941769b2ac31f789b32fb796cac3d1a226cb2d18",
+        "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/final-review.json"
+      }
+    },
+    {
+      "index": 6,
+      "id": "browser-runtimes/onnx-runtime-web",
+      "phase": "briefing",
+      "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-openai-20261107.png",
+      "sourceSha256": "558bec6cb78bb4995ee5fe86ae743925a5d721c9128028d880cf9d6a23fa56c4",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet02.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari addresses seated Demir at the runtime bench.",
+        "emotionAndEyeline": "Relational eye contact and practical curiosity.",
+        "storyReason": "Nazari asks for output parity, cold first prediction and200 completed warm calls on target consoles.",
+        "repairDirection": "Preserve the candid runtime discussion.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+          "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 7,
+      "id": "browser-runtimes/onnx-runtime-web",
+      "phase": "concept",
+      "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+      "sourceSha256": "a5516b0746f58c65a9c1f887ffab19fd0fc43143c7552faffe3812e33a332286",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet02.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Both characters face forward beside a diagram and tablet.",
+        "emotionAndEyeline": "Posed explanation instead of working through conversion.",
+        "storyReason": "ONNX portability depends on graph operators, opset and execution provider, not file format alone.",
+        "repairDirection": "Restage Nazari and Demir checking a model export at the bench, eyes on the compatibility checks.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+          "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 8,
+      "id": "browser-runtimes/onnx-runtime-web",
+      "phase": "challenge",
+      "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-challenge-openai-20261107.png",
+      "sourceSha256": "ef202a7f533be345f870abcfd019d2b88943f4124706f15538ecfee24e62cde1",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet02.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir types but turns his face toward the audience.",
+        "emotionAndEyeline": "Camera smile disconnects him from the comparison.",
+        "storyReason": "Feed both runtimes identical[1,3]float32 values, await output, compare returned scores within0.0001; fixture intervals are simulated.",
+        "repairDirection": "Turn chair, torso and gaze toward both runtime terminals, focused on the same input.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+          "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 9,
+      "id": "browser-runtimes/onnx-runtime-web",
+      "phase": "takeaways",
+      "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-takeaways-openai-20261107.png",
+      "sourceSha256": "a859667456b49018f580833e60016071c1ef7b7d1d3f14b85aac0a894d950bdd",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet03.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari displays a checklist tablet toward the viewer.",
+        "emotionAndEyeline": "Portrait-like instruction pose.",
+        "storyReason": "Check output parity before controlled timing; keep distributions and separate cold startup from warm inference.",
+        "repairDirection": "Show Nazari recording comparison conditions while checking a target terminal, tablet facing her.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+          "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+        }
+      ],
+      "originalSourceSha256": "0a91785fd8841e1b2d57e9aa88c203ccfe22756a282ffb6d18a235d0cf06a237",
+      "resolution": {
+        "status": "published",
+        "narrativeReview": {
+          "status": "approved",
+          "reviewer": "/root/art_peer_final",
+          "candidateSha256": "a859667456b49018f580833e60016071c1ef7b7d1d3f14b85aac0a894d950bdd",
+          "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/independent-art-peer-review3.json",
+          "action": "Entirely restage Nazari alone seated side-on at the engineering benchmark terminal, looking screen-left into its actual display. Camera sees her naturally in three-quarter view. She has a comfortably short, substantial neck seated into broad relaxed shoulders like the canonical portrait, with normal chin-to-collar distance, not a long narrow neck. Her right hand rests on the mouse and her left hand holds the edge of a small notebook laid flat on the bench, facing her. She studies the comparison settings with a skeptical raised brow and a faint wry smile. No handheld display or teaching-board pose. The working terminal is a benchmark form titled \"TARGET BENCH\". Two columns \"TFJS\" and \"ONNX\" with empty measurement fields for \"Output agreement\", \"Warm median / P95\", and \"First usable prediction\". A short settings line says \"Same weights, input and batch\". This is a pending controlled comparison, no winner, numeric latency or success tick. The form must sit naturally in the terminal perspective."
+        },
+        "sourceSha256": "a859667456b49018f580833e60016071c1ef7b7d1d3f14b85aac0a894d950bdd",
+        "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/final-review.json"
+      },
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 10,
+      "id": "browser-runtimes/onnx-runtime-web",
+      "phase": "epilogue",
+      "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-epilogue-openai-20261107.png",
+      "sourceSha256": "59ba359948988ebf437fba0112c6ff377fd7836a1bf11f7abaf9c0ca0531a833",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet03.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir leans into the unexpected ARIA log.",
+        "emotionAndEyeline": "Surprised interest directed at the display.",
+        "storyReason": "ARIA records rules0.4ms/wrong sample7741, WASMbench0.9ms/uncertain and liveWebGL3.4ms/uncertain; these cover different work.",
+        "repairDirection": "Preserve the startled inspection.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+          "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 11,
+      "id": "browser-runtimes/tensorflow-js-setup",
+      "phase": "briefing",
+      "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-openai-20261107.png",
+      "sourceSha256": "94aced4e2c17143f9b73657dbdab768e0099d35e54daf8857ec61c7bad302318",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet03.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari consults seated Demir with her timer.",
+        "emotionAndEyeline": "Warm urgency, natural seated swivel and shared eyeline.",
+        "storyReason": "Same matrix multiplication on story console:WebGL0.5ms,WASM3.0ms,CPU110.0ms.",
+        "repairDirection": "Preserve the deadline conversation.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+          "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+          "sha256": "c7bdafbbfd6e5b2df2b4f4323989a337ccb0ec573b1c0fe1f4a2482867fcb6d9"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 12,
+      "id": "browser-runtimes/tensorflow-js-setup",
+      "phase": "concept",
+      "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-concept-openai-20261107.png",
+      "sourceSha256": "03f00d6c73ab018d0982b5bc820182981ce5608544228ddbcf6c970e6da23c40",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet03.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari points at a setup poster while Demir faces forward with a tablet.",
+        "emotionAndEyeline": "Paired instructional pose.",
+        "storyReason": "Installation/import is followed by readiness and actual backend inspection, not guaranteedGPU access.",
+        "repairDirection": "Restage actual installation and initialization at the console, Nazari leaning in to inspect status and Demir responding.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+          "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+          "sha256": "c7bdafbbfd6e5b2df2b4f4323989a337ccb0ec573b1c0fe1f4a2482867fcb6d9"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 13,
+      "id": "browser-runtimes/tensorflow-js-setup",
+      "phase": "challenge",
+      "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-challenge-openai-20261107.png",
+      "sourceSha256": "bb080ce5230b20fed2116decfedeafa6b9cfd34f184d2ad010a2782c26ee69b5",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet04.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir works the keyboard while looking toward the startup console.",
+        "emotionAndEyeline": "Alert concentration at the pending initialization.",
+        "storyReason": "Optional setBackend preference can fail; await ready, then read actual backend and version from the runtime.",
+        "repairDirection": "Preserve work action and coherent gaze.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+          "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+          "sha256": "c7bdafbbfd6e5b2df2b4f4323989a337ccb0ec573b1c0fe1f4a2482867fcb6d9"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 14,
+      "id": "browser-runtimes/tensorflow-js-setup",
+      "phase": "takeaways",
+      "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+      "sourceSha256": "fe4c0ca4bec9ab491473a2eda052233ee104914b51542562d6832e060cf5df42",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet04.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari times the device while Demir leans over the work surface.",
+        "emotionAndEyeline": "Amused exchange during a practical timing check.",
+        "storyReason": "Benchmark the same256x256 matmul, warm it and await readback before stopping time; actual device results vary.",
+        "repairDirection": "Preserve the timer interaction, with benchmark panel integrated into the console.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+          "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+          "sha256": "c7bdafbbfd6e5b2df2b4f4323989a337ccb0ec573b1c0fe1f4a2482867fcb6d9"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 15,
+      "id": "browser-runtimes/tensorflow-js-setup",
+      "phase": "epilogue",
+      "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-epilogue-openai-20261107.png",
+      "sourceSha256": "56e4a502aa41eacc9a0ab0210b2ad3c0db51713a6d3dc046b16859fe5780469b",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet04.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir",
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir writes the station log while Nazari waits beside the chair.",
+        "emotionAndEyeline": "Satisfied, low-key end-of-task exchange.",
+        "storyReason": "Five bridge consoles reportWebGL0.5ms; oldest engineering panel reportsWASM3.0ms for the same matmul.",
+        "repairDirection": "Preserve the log entry and relational glance.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+          "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+          "sha256": "c7bdafbbfd6e5b2df2b4f4323989a337ccb0ec573b1c0fe1f4a2482867fcb6d9"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 16,
+      "id": "browser-runtimes/transformers-js",
+      "phase": "briefing",
+      "source": "art-src/scenes/browser-runtimes__transformers-js-openai-20261107.png",
+      "sourceSha256": "c111aa081f71b4f18ca0cd2691f1532193e2fe84b95469b3464974cb40bbdea5",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet04.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir turns to camera and offers an open laptop.",
+        "emotionAndEyeline": "Audience-facing demonstration.",
+        "storyReason": "Crew status reports feed a pretrained sentiment pipeline returningPOSITIVE/NEGATIVE labels and scores.",
+        "repairDirection": "Restage him opening a crew report on the bench while Nazari reacts to the workload, both looking at their work or each other.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+          "sha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+          "sha256": "dc76646a105bdda27a5773fd96d4da1f2bc3451ec31b6e1a104340b306b7660e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 17,
+      "id": "browser-runtimes/transformers-js",
+      "phase": "concept",
+      "source": "art-src/scenes/browser-runtimes__transformers-js-concept-openai-20261107.png",
+      "sourceSha256": "4ca69d5e60339b44eaf643ea4911d21b269cb6279f73ea2468ce9baf664c1754",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet05.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir holds the laptop screen toward camera while Nazari points.",
+        "emotionAndEyeline": "Paired teaching-card pose.",
+        "storyReason": "Transformers.js bundles preprocessing, model inference and output handling for a supported task.",
+        "repairDirection": "Place the laptop on the bench facing the crew; have Nazari trace a real report through the pipeline while Demir operates it.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+          "sha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+          "sha256": "dc76646a105bdda27a5773fd96d4da1f2bc3451ec31b6e1a104340b306b7660e"
+        }
+      ],
+      "originalSourceSha256": "0bab5f7aa5dd34902e04791cd7a878b9213da16fcee8cc257bd0c34e690b2e21",
+      "resolution": {
+        "status": "published",
+        "narrativeReview": {
+          "status": "approved",
+          "reviewer": "/root/art_peer_final",
+          "candidateSha256": "4ca69d5e60339b44eaf643ea4911d21b269cb6279f73ea2468ce9baf664c1754",
+          "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/independent-art-peer-review3.json",
+          "action": "Entirely restage the scene around a laptop resting firmly on the lab bench at screen-left, screen turned toward Demir and Nazari on the right. Demir sits at the keyboard, chair, hips, chest and gaze oriented toward the laptop. Nazari stands just behind his far shoulder, leaning slightly to look at the same screen, one hand resting on the chair back and her other arm relaxed at her side. Camera from the side shows both naturally in three-quarter view, neither looks at us. Demir has a delighted but slightly sheepish realization, Nazari an amused knowing eyebrow. Demir has two ordinary supported hands: one on the trackpad and one beside the keyboard. Do not hold the laptop, point a floating hand, intertwine arms or pose them as presenters. The laptop working app is titled \"Pipeline inspector\" and shows one compact connected sequence \"Reports\" then \"Preprocess\" then \"ONNX model\" then \"Label + score\". Its footer reads \"Assets: weights, tokenizer, runtime\". No invented score, download percentage or completion tick. Camera sees screen contents obliquely from the same side as the crew, never through the back of a screen."
+        },
+        "sourceSha256": "4ca69d5e60339b44eaf643ea4911d21b269cb6279f73ea2468ce9baf664c1754",
+        "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/final-review.json"
+      },
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 18,
+      "id": "browser-runtimes/transformers-js",
+      "phase": "challenge",
+      "source": "art-src/scenes/browser-runtimes__transformers-js-challenge-openai-20261107.png",
+      "sourceSha256": "06e88f31a0237de73d1d3b162dc16a4131a7b3753835ceda893ae58d86464fab",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet05.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir operates the keyboard and looks at unsorted input pairs.",
+        "emotionAndEyeline": "Focused anticipation before sorting.",
+        "storyReason": "Simulated report queue sorts scores descending while each text stays paired with its label and score.",
+        "repairDirection": "Preserve the natural console task.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+          "sha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+          "sha256": "dc76646a105bdda27a5773fd96d4da1f2bc3451ec31b6e1a104340b306b7660e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 19,
+      "id": "browser-runtimes/transformers-js",
+      "phase": "takeaways",
+      "source": "art-src/scenes/browser-runtimes__transformers-js-takeaways-openai-20261107.png",
+      "sourceSha256": "15fb767a47354ae3282c2916650336eb3dbb3803d0605b513cc1ba60505e505e",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet05.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari reads a tablet in a static portrait beside the MODEL CHECKS panel.",
+        "emotionAndEyeline": "User explicitly rejects the panel perspective and moment; prior provisional narrative pass withdrawn.",
+        "storyReason": "Check supported task, model license, representative report performance, assets and latency; model confidence is not urgency.",
+        "repairDirection": "Restage actual model evaluation at a lab bench, natural hand chains and all display text on one coherent physical plane.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication.",
+        "requiredByUser": true
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+          "sha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+          "sha256": "dc76646a105bdda27a5773fd96d4da1f2bc3451ec31b6e1a104340b306b7660e"
+        }
+      ],
+      "originalSourceSha256": "e56fc64a7903b35fdea9e0b59e349197d4d494650a2f4aba32514386ed0ae3a0",
+      "resolution": {
+        "status": "published",
+        "narrativeReview": {
+          "status": "approved",
+          "reviewer": "/root/art_peer_final",
+          "candidateSha256": "15fb767a47354ae3282c2916650336eb3dbb3803d0605b513cc1ba60505e505e",
+          "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/independent-art-peer-review3.json",
+          "action": "Entirely restage Nazari alone seated at the lab workstation, her chair and body angled toward a working monitor at screen-right. She looks at the actual model-review fields with focused scrutiny and a wry half-smile, face naturally three-quarter visible. She uses the mouse with one hand and steadies a notebook lying flat on the bench with the other. Normal relaxed shoulder-to-neck connection, short substantial neck like the canonical portrait. No held tablet, no front-facing portrait, no large teaching poster. The working app is titled \"Model review\". Its sparse fields read \"Task: sentiment-analysis\", \"Labels: POSITIVE / NEGATIVE\", \"License: review\", \"Representative crew reports: pending\", \"Download + startup: measure\". A small footer reminder says \"Scores are not urgency\". These are required checks, not passed outcomes. No measurements, scores or success ticks. The old wall board is inactive dark glass. Every word and field must share the monitor plane and its vanishing direction, not flat text pasted over a receding surface."
+        },
+        "sourceSha256": "15fb767a47354ae3282c2916650336eb3dbb3803d0605b513cc1ba60505e505e",
+        "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/final-review.json"
+      },
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 20,
+      "id": "browser-runtimes/transformers-js",
+      "phase": "epilogue",
+      "source": "art-src/scenes/browser-runtimes__transformers-js-epilogue-openai-20261107.png",
+      "sourceSha256": "8959d3081a2458c4eb6e4485d8b06c77a036680bc1c6531feb8f86d063ee2cca",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet05.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir",
+        "dr-farah"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir's notebook faces the viewer while Farah stands beside the signal.",
+        "emotionAndEyeline": "Work materials appear displayed to the audience.",
+        "storyReason": "Epilogue explicitly returns to Sector7-G raw time-domain plot while Demir begins a list about waves.",
+        "repairDirection": "Turn notebook toward Demir and restage Farah calling his attention to the signal, both reacting to the next question.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+          "sha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+          "sha256": "dc76646a105bdda27a5773fd96d4da1f2bc3451ec31b6e1a104340b306b7660e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 21,
+      "id": "browser-runtimes/why-the-browser",
+      "phase": "briefing",
+      "source": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+      "sourceSha256": "ecfef4b31aecbf306aac7af27d25294c978eab2dfeca914c60087bf455222535",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet06.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari points at the waiting dashboard while Demir thinks.",
+        "emotionAndEyeline": "Practical urgency and curiosity with relational gaze.",
+        "storyReason": "Bridge must classify locally when the compute-bay link fails; live signal is the input, not a network benchmark.",
+        "repairDirection": "Preserve discussion around the unavailable compute link.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+          "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+          "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 22,
+      "id": "browser-runtimes/why-the-browser",
+      "phase": "concept",
+      "source": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+      "sourceSha256": "fc741b33d987aa56c2eaf74864d58cbae4ccb6b543042734f6e5953b6076bb6d",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet06.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari and Demir stand beside a teaching diagram with little task action.",
+        "emotionAndEyeline": "Polite paired explanation dominates the shot.",
+        "storyReason": "Compare local browser computation with data sent to a server and response returned.",
+        "repairDirection": "Restage Nazari disconnecting the link at a console while Demir checks the local browser route, exchanging a skeptical look.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+          "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+          "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 23,
+      "id": "browser-runtimes/why-the-browser",
+      "phase": "challenge",
+      "source": "art-src/scenes/browser-runtimes__why-the-browser-challenge-openai-20261107.png",
+      "sourceSha256": "6742a07c0b25bf042b8e4464cdb7d4ccb6e25e747d03e830c2040b3c5cad825e",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet06.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir faces the viewer while pressing a console button.",
+        "emotionAndEyeline": "A posed demonstration instead of deciding a case.",
+        "storyReason": "Deployment policy handles privacy/offline requirements before50MB budget and strict50ms latency preference.",
+        "repairDirection": "Turn him naturally toward the policy cases, comparing the conditions before touching a selection.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+          "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+          "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 24,
+      "id": "browser-runtimes/why-the-browser",
+      "phase": "takeaways",
+      "source": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+      "sourceSha256": "ebcf1fa9ac4a066a88f61518fedb02f4a1139a5133dc1c54f681ee91f7750e00",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet06.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari holds the offline-assets tablet toward the audience.",
+        "emotionAndEyeline": "Static lesson-card presentation.",
+        "storyReason": "Local inference saves per-prediction network trips but needs app/runtime/model downloads, memory and device compute.",
+        "repairDirection": "Show her checking cached assets on a terminal during a link interruption, watching the console with practical satisfaction.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+          "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+          "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 25,
+      "id": "browser-runtimes/why-the-browser",
+      "phase": "epilogue",
+      "source": "art-src/scenes/browser-runtimes__why-the-browser-epilogue-openai-20261107.png",
+      "sourceSha256": "611144dda29356c0f805f4dae21027d648ac521e0d5622f5fd41425d230051cb",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet07.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir",
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir and Nazari exchange a look across the chair while the runtime downloads.",
+        "emotionAndEyeline": "Relaxed relief and anticipation of the next step.",
+        "storyReason": "Nazari approves local predictions for86,400 daily readings; Demir starts npm install and console survey.",
+        "repairDirection": "Preserve the quiet waiting moment.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+          "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+          "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 26,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "concept",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-concept-openai-20261107.png",
+      "sourceSha256": "00776445694295c32cc3736ab042baf734b7f1fc31f080d065e3a9de31d3a2ea",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet07.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir holds a waveform card to the viewer and points at monitors.",
+        "emotionAndEyeline": "Camera-facing teaching pose.",
+        "storyReason": "Cache key includes dtype,shape and every rounded value; hit returns saved copy and miss calls model.",
+        "repairDirection": "Replace the card presentation with inspecting a cache hit at the workstation using grounded cache data.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+          "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+          "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+          "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 27,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "challenge",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-challenge-openai-20261107.png",
+      "sourceSha256": "890b9dc1f43fc81460fb4d897d9dba4336a686940da54675b383aacfb3607dd7",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet07.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir and Nazari face the viewer beside a table.",
+        "emotionAndEyeline": "Paired portrait with timer prop.",
+        "storyReason": "Challenge covers reuse and an incident audit of model/preprocessing version plusTTL.",
+        "repairDirection": "Restage a timed cache experiment, Nazari watching the timer and Demir checking the task result.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+          "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+          "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+          "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 28,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "takeaways",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+      "sourceSha256": "a4d2c12b32a7c9633f381e05d8e63292e91fe6beb7cae6a2a1423b5822623ef8",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet07.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir sorts physical records into a file box and looks down at them.",
+        "emotionAndEyeline": "Careful concentration on selection.",
+        "storyReason": "LRU refreshes a hit's recency and evicts the least recently used entry at capacity; model changes invalidate reuse.",
+        "repairDirection": "Preserve the sorting action while grounding the artifacts in cache keys and entries.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+          "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+          "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+          "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 29,
+      "id": "optimization-edge/caching-strategies",
+      "phase": "epilogue",
+      "source": "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+      "sourceSha256": "c0f246ddc10cd94b72f210c267b16cc80a06ec0998c9ce76ec23b777224a28de",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet08.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir displays a waveform sheet while its matching sheet lies on the desk.",
+        "emotionAndEyeline": "The sheet faces the audience instead of its reader.",
+        "storyReason": "Retained cache log has no anomaly hit; this does not determine whether the physical source repeats.",
+        "repairDirection": "Turn the report toward him and show comparison with the current cache behavior, with a story-specific reaction.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+          "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+          "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+          "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 30,
+      "id": "optimization-edge/model-profiling",
+      "phase": "concept",
+      "source": "art-src/scenes/optimization-edge__model-profiling-concept-openai-20261107.png",
+      "sourceSha256": "36673bfa174c9449505daae75aff76bd8faf258bd7a06606b271d1a91a2d4a1d",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet08.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari presents a chart while Demir holds up a timer.",
+        "emotionAndEyeline": "Staged explanation rather than examining a bottleneck.",
+        "storyReason": "Read every layer's parameter count; storage is distinct from latency and peak memory.",
+        "repairDirection": "Restage both tracing the measured slow step at the engineering console.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+          "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+          "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 31,
+      "id": "optimization-edge/model-profiling",
+      "phase": "challenge",
+      "source": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+      "sourceSha256": "865ae9ea4931030e4a59f2d3086ef7ce1c3095d3b48e669961f18fcae17ee7f5",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet08.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir looks directly at camera and holds a stopwatch up.",
+        "emotionAndEyeline": "Posed benchmark demonstration.",
+        "storyReason": "One untimed warmup precedes exactly five controlled measured durations4,4,4,4,104ms; mean24ms.",
+        "repairDirection": "Show him timing an actual call, gaze on output completion and hand operating the console.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+          "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+          "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 32,
+      "id": "optimization-edge/model-profiling",
+      "phase": "takeaways",
+      "source": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+      "sourceSha256": "ee5a8328fb9f0d1999ab5115e74bdcbaa4068205af585ed4172ecb0018659e36",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet08.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari opens a chart binder toward the viewer.",
+        "emotionAndEyeline": "Front-facing report display.",
+        "storyReason": "Profiling report separates weight bytes, completed-call latency and open peak-memory check.",
+        "repairDirection": "Lay the report on the bench facing Nazari as she marks the actual bottleneck.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+          "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+          "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 33,
+      "id": "optimization-edge/model-profiling",
+      "phase": "epilogue",
+      "source": "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+      "sourceSha256": "2c59aa5b5d6202c8d3360f623d380823dc475a58e6b49300929b6c56c086ea02",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet09.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir studies a small note with its blank back toward the viewer.",
+        "emotionAndEyeline": "Surprised concern about the result.",
+        "storyReason": "ARIA retained211KB partial telemetry; last clean pulse interval61.2s, down from73.4s, not recovered full capture.",
+        "repairDirection": "Preserve candid reading, replacing generic monitors with the grounded profiling aftermath.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+          "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+          "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 34,
+      "id": "optimization-edge/pruning",
+      "phase": "concept",
+      "source": "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+      "sourceSha256": "1123079373fb86576e0501fd53b2e72932cd0783414e5d34d95009ed3aa6478b",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet09.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir faces camera while holding an open clipboard.",
+        "emotionAndEyeline": "Static note-taking portrait.",
+        "storyReason": "Eight-weight example zeros four smallest weights, preserves all eight slots, and changes all-ones dot product0.994->1.000.",
+        "repairDirection": "Restage him adjusting the pruning control while checking the resulting weight mask.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+          "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+          "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 35,
+      "id": "optimization-edge/pruning",
+      "phase": "challenge",
+      "source": "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+      "sourceSha256": "54708e1b0962d895d59320a9326afd7491283a526f6e206ab636b01f7b834de0",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet09.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir operates the bench while Farah watches his hand and work.",
+        "emotionAndEyeline": "Collaborative concentration with warm curiosity.",
+        "storyReason": "Pruning challenge reports per-class recall at each requested sparsity and restores original weights.",
+        "repairDirection": "Preserve the shared pruning experiment.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+          "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+          "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 36,
+      "id": "optimization-edge/pruning",
+      "phase": "takeaways",
+      "source": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+      "sourceSha256": "22992886d9444e0d4f045dfaab6dcc3f8b6263f71072abe4ad192f184157ae13",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet09.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari displays two grid cards toward camera.",
+        "emotionAndEyeline": "Explicit lesson-card pose.",
+        "storyReason": "Unstructured pruning leaves dense tensor shape and stored slots unchanged; repeated values may compress better.",
+        "repairDirection": "Restage a before-and-after check on the bench, Nazari examining the mask and recording tradeoffs.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+          "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+          "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 37,
+      "id": "optimization-edge/pruning",
+      "phase": "epilogue",
+      "source": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+      "sourceSha256": "062e868951eed664195df7ad2354379656445eb6e8a98a6c76c2b47e939b3e75",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet10.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir holds a report toward camera while Nazari poses at a notebook.",
+        "emotionAndEyeline": "Paired approval portrait.",
+        "storyReason": "Separate mission replay gives85MBdisk,42MBserved and91.8%accuracy after pruning, with2.4point loss.",
+        "repairDirection": "Restage them checking the measured outcome together, no audience-facing report or invented success.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+          "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+          "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 38,
+      "id": "optimization-edge/quantization",
+      "phase": "concept",
+      "source": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+      "sourceSha256": "fb6514b169c7a10d0f4fa7e0186524018dfa8c7b68dcce13116ff6de2689aaa5",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet10.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari faces camera and points at a quantization chart.",
+        "emotionAndEyeline": "Instructional presenter pose.",
+        "storyReason": "Float32 uses4bytes per weight;uint16 uses2;uint8 uses1; TFJS reloads decoded float32.",
+        "repairDirection": "Show her adjusting a precision setting and checking the actual comparison at the work surface.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+          "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+          "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 39,
+      "id": "optimization-edge/quantization",
+      "phase": "challenge",
+      "source": "art-src/scenes/optimization-edge__quantization-challenge-openai-20261107.png",
+      "sourceSha256": "35627b7de2c6dc941f6a448817cd3592a92048016cda4842eb24a46f285e2b73",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet10.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Both face the camera while Demir rests at the keyboard.",
+        "emotionAndEyeline": "Emotionless paired task portrait.",
+        "storyReason": "The stretched-grid fixture changes3 of5 classes after decoding uint8 weights; disagreement is not correctness.",
+        "repairDirection": "Turn both toward the comparison task, one operating and the other reading the observed discrepancy.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+          "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+          "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 40,
+      "id": "optimization-edge/quantization",
+      "phase": "takeaways",
+      "source": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+      "sourceSha256": "afa90923f2275f3cfce5fbcadfa7942445003ce09b285ce098e61e1be49d16ac",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet10.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Farah holds a waveform card to camera while posing over a checklist.",
+        "emotionAndEyeline": "Lesson-card presentation.",
+        "storyReason": "Compare predictions before and after decoded weights; equal verdicts on checked inputs do not prove all future behavior.",
+        "repairDirection": "Show her inspecting accuracy differences in the real comparison, notebook facing her.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+          "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+          "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 41,
+      "id": "optimization-edge/quantization",
+      "phase": "epilogue",
+      "source": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+      "sourceSha256": "c25e76f4c6d25ae3fc0a3a9e61d9a6a84b839585db9cce36abd3d3336a71310c",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet11.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari stands idle beside a monitor, gazing away without an action.",
+        "emotionAndEyeline": "Static portrait detached from the ending.",
+        "storyReason": "Epilogue explicitly has Nazari open the raw waveform and watch one full cycle followed by two more pulses.",
+        "repairDirection": "Restage her reacting to the story's result while putting down the report or returning to the workstation.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+          "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+          "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 42,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "concept",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+      "sourceSha256": "db620b1d3a3892621203abde9a3737a75ccbabd518adcb0cf1639646a8656f67",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet11.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "The crew flanks a floating flowchart with open presentation gestures.",
+        "emotionAndEyeline": "Animated faces but still a lecture display.",
+        "storyReason": "WebGL can execute tensor ops through graphics shaders;WebGPU provides compute pipelines; neither API name proves speed.",
+        "repairDirection": "Restage an actual backend trial at adjacent bridge terminals with timer and task-directed eyelines.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+          "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+          "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 43,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "challenge",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+      "sourceSha256": "2e8a14e1d0b0f67242b28e9b212438e463e7217f269fbb3e275f1d21c3b28c83",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet11.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir faces camera while touching one control.",
+        "emotionAndEyeline": "Posed keyboard interaction.",
+        "storyReason": "Try preference order;false or throw proceeds;firsttrue stops;awaitready exactly once.",
+        "repairDirection": "Show him checking backend selection and awaiting the task result, eyes on the terminal.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+          "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+          "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 44,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "takeaways",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-takeaways-openai-20261107.png",
+      "sourceSha256": "bbaacd3ba37a12f9add2ee3a4d4fe883810694e77cae274be1dd8cfab58aa9d2",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet11.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari holds a stopwatch toward camera beside a report.",
+        "emotionAndEyeline": "Audience-facing measurement prop.",
+        "storyReason": "GPU timing must include readback; file size, served bytes,latency and classifier accuracy are different quantities.",
+        "repairDirection": "Restage her stopping the timer while reading the actual completed output.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+          "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+          "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 45,
+      "id": "optimization-edge/webgpu-acceleration",
+      "phase": "epilogue",
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-epilogue-openai-20261107.png",
+      "sourceSha256": "266693d568930bc654e8a8b5447761691d975da74c9cf91fa1c6da14bacc6824",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet12.jpg",
+      "owner": "optimization-modules",
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir displays a check-mark card while both face camera.",
+        "emotionAndEyeline": "Ceremonial success portrait.",
+        "storyReason": "Separate target-device rehearsal holds:WebGL15ms,WebGPU5ms,engineeringWASM45ms;live pulse interval47.9s.",
+        "repairDirection": "Restage the crew checking and logging the verified outcome, no card or unearned success symbol.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+          "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+          "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 46,
+      "id": "signal-processing/fft-as-features",
+      "phase": "briefing",
+      "source": "art-src/scenes/signal-processing__fft-as-features-openai-20261107.png",
+      "sourceSha256": "9a62817f95cbbd7704a94a16e4cea1d6af8cc8828e5bdf74a87c1974a54b81bb",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet12.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir",
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Farah points at a monitor but Demir's writing tablet faces the audience.",
+        "emotionAndEyeline": "Presented teaching material weakens the working group.",
+        "storyReason": "Mission held-out400readings:3raw inputs312/400=78%;3+8FFT inputs348/400=87%.",
+        "repairDirection": "Restage three-person feature inspection, tablet facing Demir and all gaze toward the task or each other.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+          "sha256": "34a53be2548f6acec51bd3d04485fd34d1a452587e4a9d778fa7b5e6c25604dd"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 47,
+      "id": "signal-processing/fft-as-features",
+      "phase": "concept",
+      "source": "art-src/scenes/signal-processing__fft-as-features-concept-openai-20261107.png",
+      "sourceSha256": "554406246d3e7d1393db1be8a12b0f73269a6d950b34cd670773ce9e8c154b0a",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet12.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir presents a tablet while Farah points beside him.",
+        "emotionAndEyeline": "Paired lesson display.",
+        "storyReason": "Mission model adds eight fixed bins13-20 to three raw features, making11inputs; never sort by magnitude.",
+        "repairDirection": "Restage a sample-to-feature extraction at the engineering bench with both inspecting its columns.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+          "sha256": "34a53be2548f6acec51bd3d04485fd34d1a452587e4a9d778fa7b5e6c25604dd"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 48,
+      "id": "signal-processing/fft-as-features",
+      "phase": "challenge",
+      "source": "art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261107.png",
+      "sourceSha256": "3822a7e8f64ddfb4c01441941830d2fdfbf61ebfdc48e51424094afb189f010a",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet12.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir types but looks directly at camera.",
+        "emotionAndEyeline": "Camera turn disconnects him from his task.",
+        "storyReason": "Exercise returns peak amplitude,zero crossings,eight fixed FFT magnitudes52-80Hz; phase is omitted.",
+        "repairDirection": "Turn chair and face naturally toward the feature output, preserve visible three-quarter morphology.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+          "sha256": "34a53be2548f6acec51bd3d04485fd34d1a452587e4a9d778fa7b5e6c25604dd"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 49,
+      "id": "signal-processing/fft-as-features",
+      "phase": "takeaways",
+      "source": "art-src/scenes/signal-processing__fft-as-features-takeaways-openai-20261107.png",
+      "sourceSha256": "b4541f50677e4932fbc13a347a96a5389ec594e70a58aa192850f08e5eeaadc3",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet13.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "dr-farah"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari holds the feature rows outward while Farah poses beside her.",
+        "emotionAndEyeline": "Paired card display.",
+        "storyReason": "Three inputs become11, adding8x32=256 first-layer weights; total parameters673->929.",
+        "repairDirection": "Lay the comparison on a work surface and show them checking corresponding features.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+          "sha256": "34a53be2548f6acec51bd3d04485fd34d1a452587e4a9d778fa7b5e6c25604dd"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 50,
+      "id": "signal-processing/fft-as-features",
+      "phase": "epilogue",
+      "source": "art-src/scenes/signal-processing__fft-as-features-epilogue-openai-20261107.png",
+      "sourceSha256": "c94ca64bad254fc5ea5d81d31f3ae9b2055996a1517daf9689df282bacf0b5d8",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet13.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Nazari writes the new figure while exchanging a look with Demir.",
+        "emotionAndEyeline": "Wry satisfaction tied to their comparison.",
+        "storyReason": "Demir's signed forecast85 remains beside Nazari's actual mission score87 in the epilogue.",
+        "repairDirection": "Preserve the candid annotation, verify the exact story values separately.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+          "sha256": "34a53be2548f6acec51bd3d04485fd34d1a452587e4a9d778fa7b5e6c25604dd"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 51,
+      "id": "signal-processing/fourier-transform",
+      "phase": "briefing",
+      "source": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+      "sourceSha256": "6b0447910ec004e50f4006d9036b528f92efcedd1f14a4f9bd35d94ade79fe0c",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet13.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah points at the spectrum while seated Demir considers it.",
+        "emotionAndEyeline": "Curiosity and relational attention.",
+        "storyReason": "The verified decomposition example is5Hz amplitude1 plus20Hz amplitude0.3,128samples at128Hz.",
+        "repairDirection": "Preserve the analytic exchange, with grounded FFT content.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+          "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 52,
+      "id": "signal-processing/fourier-transform",
+      "phase": "concept",
+      "source": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+      "sourceSha256": "1840da02f66caa1d1772988ba0d39f71aa0cc763277aa70dc463b070691f895c",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet13.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir holds the spectrum tablet outward while Farah points at a panel.",
+        "emotionAndEyeline": "Posed teaching display.",
+        "storyReason": "N128 atfs128 gives1Hz bins;two-tone fixture has5Hz/64 and20Hz/19.2 peaks.",
+        "repairDirection": "Restage them examining the frequency components on one working instrument, no outward-held tablet.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+          "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 53,
+      "id": "signal-processing/fourier-transform",
+      "phase": "challenge",
+      "source": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+      "sourceSha256": "e02b62bd1c03c8decbf60de2a7672a39813dc911a45e1d3c2fe65e6f1168c5a7",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet14.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir operates the instrument and looks up toward its display.",
+        "emotionAndEyeline": "Engaged concentration on the transform.",
+        "storyReason": "Find highest non-DC magnitude and convert index using sampleRate/N.",
+        "repairDirection": "Preserve the natural operation and directed gaze.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+          "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 54,
+      "id": "signal-processing/fourier-transform",
+      "phase": "takeaways",
+      "source": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+      "sourceSha256": "bfcfe1645443f77f589745d982390a6c278e7a07767914d40b10c7a0750d4201",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet14.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Farah smiles toward the viewer while touching a dial.",
+        "emotionAndEyeline": "Presented demonstration rather than observing an experiment.",
+        "storyReason": "FFT magnitudes represent fixed frequency bins;bin centers depend on sample rate and capture length.",
+        "repairDirection": "Make her actually adjust the setting and watch the measured spectral consequence, expression tied to the result.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+          "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 55,
+      "id": "signal-processing/fourier-transform",
+      "phase": "epilogue",
+      "source": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+      "sourceSha256": "178d3450804dd603539bbaf059b0aca07ef37464f6ef147360675d7cf6b4f4e8",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet14.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah catches Demir's wrist and points out the small peak.",
+        "emotionAndEyeline": "Surprise and urgent curiosity shared around the work.",
+        "storyReason": "Catalog5,12,23,47Hz plus fifth73.5Hz at12.0 on0.5Hz grid;longer capture refines strongest bin73.375.",
+        "repairDirection": "Preserve the discovery action, inspect the grasp and fingers at native resolution.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+          "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 56,
+      "id": "signal-processing/spectrograms",
+      "phase": "briefing",
+      "source": "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+      "sourceSha256": "74351764a08ab97d3f222ead21b393cb21676f87a82cd01187731c06f360cee4",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet14.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah indicates a pattern while Demir studies it thoughtfully.",
+        "emotionAndEyeline": "Joint curiosity directed at the spectrogram.",
+        "storyReason": "Short-window spectra reveal intermittent tone that whole-capture magnitude hides.",
+        "repairDirection": "Preserve the discussion, with accurate source-grounded bands.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+          "sha256": "64cbf86be5652084f4c66fc7abd220ae0c3470199e1dbdc79902e8772347ef1a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 57,
+      "id": "signal-processing/spectrograms",
+      "phase": "concept",
+      "source": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+      "sourceSha256": "226a79bff9a33636408071b0095ee24c18fb39a1f240cec00396c84c698c2588",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet15.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah marks a selected signal window at the console.",
+        "emotionAndEyeline": "Concentrated, animated investigation.",
+        "storyReason": "Concept demoW256,hop128 on1024samples gives7frames/129bins with a steady23Hz line and intermittent73.4Hz.",
+        "repairDirection": "Preserve the working stylus action and gaze toward the plot.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+          "sha256": "64cbf86be5652084f4c66fc7abd220ae0c3470199e1dbdc79902e8772347ef1a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 58,
+      "id": "signal-processing/spectrograms",
+      "phase": "challenge",
+      "source": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+      "sourceSha256": "9a42d2f17d729822f431ef68a985637c8c91b6a146c1574fa79d098858036d68",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet15.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir turns from his keyboard to smile at the viewer.",
+        "emotionAndEyeline": "Camera-facing pose during supposed work.",
+        "storyReason": "One256-sample capture at256Hz contains40Hz burst only samples64-127;W64,hop64 yields four frames.",
+        "repairDirection": "Turn chair, torso and gaze toward the spectrogram task, with a focused reaction.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+          "sha256": "64cbf86be5652084f4c66fc7abd220ae0c3470199e1dbdc79902e8772347ef1a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 59,
+      "id": "signal-processing/spectrograms",
+      "phase": "takeaways",
+      "source": "art-src/scenes/signal-processing__spectrograms-takeaways-openai-20261107.png",
+      "sourceSha256": "fc8e08039044893e895f3141992c6ed562683b1af80874f5c01d54a65e5005be",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet15.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir presents a comparison tablet outward beside Farah.",
+        "emotionAndEyeline": "Paired lesson-card pose.",
+        "storyReason": "Window length trades time span against bin spacing:W64=.25s/4Hz;W512=2s/.5Hz at256Hz.",
+        "repairDirection": "Place the comparison facing the crew on a bench and show them checking the difference together.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+          "sha256": "64cbf86be5652084f4c66fc7abd220ae0c3470199e1dbdc79902e8772347ef1a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 60,
+      "id": "signal-processing/spectrograms",
+      "phase": "epilogue",
+      "source": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+      "sourceSha256": "20544cd5678ddaaae092bfe3beea415e46089e47da3713a7641b4dbb979ad192",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet15.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah places measurement markers on the displayed events.",
+        "emotionAndEyeline": "Focused interest in timing, eyes on her mark.",
+        "storyReason": "Same approximately73.4number appears as tone frequency inHz and pulse gap inseconds; they are different axes.",
+        "repairDirection": "Preserve the actual measurement action and align all markers to the board plane.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+          "sha256": "64cbf86be5652084f4c66fc7abd220ae0c3470199e1dbdc79902e8772347ef1a"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 61,
+      "id": "signal-processing/time-vs-frequency",
+      "phase": "briefing",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+      "sourceSha256": "210cf668c77c0680fddaa5fa58f2c50de2c0c9726a40b70d490d0f6d12187cac",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet16.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah points between traces while Demir thinks.",
+        "emotionAndEyeline": "Shared puzzlement about visually similar captures.",
+        "storyReason": "Archive450x64 grid reveals slow swell in sensor columns;Farah compares archive andlive context.",
+        "repairDirection": "Preserve investigation at the twin displays.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+          "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+          "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 62,
+      "id": "signal-processing/time-vs-frequency",
+      "phase": "concept",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-concept-openai-20261107.png",
+      "sourceSha256": "f6d619f35d1765140474fb1618e85039c1813984425b8a8a8f03ecf23a8035a5",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet16.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah traces the comparison while Demir leans on the console and listens.",
+        "emotionAndEyeline": "Warm curiosity and relational eye contact.",
+        "storyReason": "Concept uses5Hz/.8,12Hz/.6,23Hz/.4 over256samples at256Hz.",
+        "repairDirection": "Preserve the candid explanation around a working instrument.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+          "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+          "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 63,
+      "id": "signal-processing/time-vs-frequency",
+      "phase": "challenge",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+      "sourceSha256": "d33b31d1971e8e0f7ec1b0e3b7b3d77bfe362b2ff5e499f476904991af278f42",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet16.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir's seated torso faces the workstation but his head is turned out toward the viewer.",
+        "emotionAndEyeline": "A camera-friendly face weakens the focused task.",
+        "storyReason": "Baseline and suspect match sample tolerance.05 but first FFT difference above5 isbin147/73.5Hz in512samples at256Hz.",
+        "repairDirection": "Restage chair and gaze toward the comparison result with a natural three-quarter face.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+          "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+          "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 64,
+      "id": "signal-processing/time-vs-frequency",
+      "phase": "takeaways",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-takeaways-openai-20261107.png",
+      "sourceSha256": "581717f53a39c764c252d474b686b37c5c5a8745ed80268f354408458cf41c04",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet16.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Farah displays a signal tablet toward camera.",
+        "emotionAndEyeline": "Explicit lesson-card portrait.",
+        "storyReason": "Same capture's frequency view reveals known5,12,23,47Hz lines and weak73.4Hz component near coarse bins146-147.",
+        "repairDirection": "Restage her checking a reconstruction at the workstation, hands using the controls and eyes on the work.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+          "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+          "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 65,
+      "id": "signal-processing/time-vs-frequency",
+      "phase": "epilogue",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-epilogue-openai-20261107.png",
+      "sourceSha256": "d1248009d236ff014e5cd8568ea408b508c057d67debbf4fa0df13ad61889ea1",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet17.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir stands idle facing camera while Farah pauses in the doorway.",
+        "emotionAndEyeline": "The end-of-shift moment loses its story action.",
+        "storyReason": "Epilogue pins confirmed background and suspect capture time plots that cannot be distinguished by eye.",
+        "repairDirection": "Show Demir staying with the queued analysis and looking toward the traces while Farah exchanges a tired parting remark.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+          "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+          "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 66,
+      "id": "signal-processing/windowing-and-overlap",
+      "phase": "briefing",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+      "sourceSha256": "21e86b7d7d89beda539ba995e898dcd089106c6c3f4fd7fa71b8ac65ddef22c9",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet17.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir",
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah explains a result to Demir and Nazari gathered around her tablet.",
+        "emotionAndEyeline": "Lively group exchange, attention on each other and the work.",
+        "storyReason": "Hann taper reduces far leakage while broadening and lowering a peak, matching the lesson's central tradeoff.",
+        "repairDirection": "Preserve the conversation, with the tablet facing its users.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+          "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 67,
+      "id": "signal-processing/windowing-and-overlap",
+      "phase": "concept",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+      "sourceSha256": "fa704250189c9f52f526d73d8c836aec3f617c421ee206aa2966f06141e0a5d7",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet17.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Farah faces the camera with a pointer resting on a plot.",
+        "emotionAndEyeline": "Front-facing lecture pose.",
+        "storyReason": "Elementwise windowing changes amplitudes at identical sample positions, not carrierfrequency or phase.",
+        "repairDirection": "Restage an actual window adjustment while she watches its effect on the spectrum.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+          "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 68,
+      "id": "signal-processing/windowing-and-overlap",
+      "phase": "challenge",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+      "sourceSha256": "385e72b4e51fc9b55115a73f06fb3cf408ff8d12201a31bf27b66019d029da52",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet17.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir",
+        "chief-nazari"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Demir leans over the keyboard and exchanges a look with Nazari reading her tablet.",
+        "emotionAndEyeline": "Collaborative checking with a restrained amused reaction.",
+        "storyReason": "Challenge measures changed far-bin magnitude sums and peak height after a symmetric Hann taper.",
+        "repairDirection": "Preserve the relational task moment.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+          "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 69,
+      "id": "signal-processing/windowing-and-overlap",
+      "phase": "takeaways",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-takeaways-openai-20261107.png",
+      "sourceSha256": "83539b0619ba66c2f2a83fe4f3cdba56c882f2f4e9e5e4f6beba64ad7540de19",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet18.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "repair",
+        "reviewer": "/root/browser_final",
+        "action": "Demir displays the overlap tablet to camera.",
+        "emotionAndEyeline": "Seated lesson-card portrait.",
+        "storyReason": "50%overlap lets adjacent windows cover boundary samples;periodicHann has constant interior overlap sum.",
+        "repairDirection": "Restage him sliding and comparing windows on a workstation, eyes following the overlap.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+          "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    },
+    {
+      "index": 70,
+      "id": "signal-processing/windowing-and-overlap",
+      "phase": "epilogue",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-epilogue-openai-20261107.png",
+      "sourceSha256": "475a72c4f36a66948bf0b7566a4c50ef63560fddce55e0281bf8c1f409e11e2f",
+      "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/sheet18.jpg",
+      "owner": "signal-repairs",
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "narrativeReview": {
+        "status": "pass",
+        "reviewer": "/root/browser_final",
+        "action": "Farah pins the second result beside the first while Demir watches.",
+        "emotionAndEyeline": "Quiet satisfaction and curiosity about the comparison.",
+        "storyReason": "Epilogue prints the tapered spectrum and pins it beside sample7741;peak survives taper but physical source remains unproven.",
+        "repairDirection": "Preserve the physical pinning action, verify hand geometry and paper-plane perspective at native resolution.",
+        "reviewScope": "Current source full-frame contact inspection, source hash bound. Pass is owner narrative assessment only; independent/native hand and perspective verification required before final publication."
+      },
+      "perspectiveReview": {
+        "status": "pending-native-final-check",
+        "requirement": "Labels, baselines, boxes and grids must share the physical display plane and vanishing direction. No front-facing text pasted on an angled board."
+      },
+      "anatomyFinalGate": "Inspect every connected shoulder, elbow, wrist, palm, thumb and finger at native size after any restaging.",
+      "sourceReferences": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+          "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+        }
+      ],
+      "sheetDeletedWorkingCopy": true,
+      "sheetRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+    }
+  ],
+  "resolvedNarrativeRepairs": 6,
+  "checkpoint": {
+    "at": "2026-11-07T13:33:33.694849+00:00",
+    "activeGenerationCalls": 0,
+    "latestPendingReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/browser-next8/final-review.json",
+    "note": "Stopped new generation at parent cleanup checkpoint. Baseline44 repair findings retained;6 have independently approved published resolutions."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "reviewer": "/root/art_peer_final",
+  "reviewedAt": "2026-11-07T08:49:30.794Z",
+  "id": "foundations/data-loading",
+  "phase": "concept",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-06f31007-8d3b-41c7-8abc-9571f3d0ecac.png",
+  "sha256": "161bfe31832c5f183925de5a388e96f4a6d0a50eade8a1d2811e3d3f73ecf6ee",
+  "status": "pass",
+  "identity": "pass",
+  "anatomy": "pass",
+  "proportions": "pass",
+  "palette": "pass",
+  "screenMeaning": "pass",
+  "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/data-loading-concept-anatomy-identity-proof.png",
+  "sources": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "sections": [
+        "Reading samples on demand",
+        "Shuffling before batching",
+        "Challenge"
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "sections": [
+        "instructions",
+        "starterCode readSample",
+        "solutionCode sensorGen"
+      ]
+    }
+  ],
+  "notes": [
+    "Two separate shoulder-elbow-wrist-hand chains; natural head/neck/chest alignment.",
+    "Canonical broad adult jaw, compact rounded nose, eyes, freckles, stubble and anatomical right-ear comms retained.",
+    "Screen:16-row stand-in \u2192 ID1; two arrows to xs[3]=[100,1,0.1] and ys[1]=[1]. Values exactly match readSample(1).",
+    "No batches, model training or success verdict shown. Side panel is ARIA single-ring waveform.",
+    "Muted sage and brass retained with warm lamp lighting."
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

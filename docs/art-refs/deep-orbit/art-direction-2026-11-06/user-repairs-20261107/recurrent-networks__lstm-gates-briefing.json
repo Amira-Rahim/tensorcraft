@@ -1,0 +1,255 @@
+{
+  "key": "lstm-gates-briefing",
+  "auditIndex": 34,
+  "id": "recurrent-networks/lstm-gates",
+  "phase": "briefing",
+  "cast": [
+    "dr-farah",
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-43ed885f-ca34-492a-a7f2-29a0585386f6.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+    "sha256": "ce2751ba00a3ed64b16df02606c43bf7a179025413f4dc72e94c57578886d0b7"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Three-person candid followup to failed overnight run. Demir seated LEFT rubbing his forehead with one relaxed hand, other ondesk, slightly sheepish smile; Farah stands RIGHT beside him, watching screen thoughtfully with interested smile and one hand onmouse, other ondesk; Nazari furtherback between them with armscomfortablyfolded, wry eyebrow. KEEP exactcanonicalfaces, noadditionalcrew. REMOVE everyheldboard/clipboard/tablet. Shared large upright display RIGHT faces allcrew on frontside and camera alongside. Heading \"LSTM proposal\". Three concise rows \"Forget: keep a fraction\", \"Input: add candidate\", \"Output: expose state\". Footer \"Range still needs testing\". Small inset \"Last run: loss 0.693\". This is discussionofnexttest ratherthan claimedsolution; FarahgazeonproposalandDemironcolleague. Allhands physicallycoherent, no wrists reversed.",
+  "meaning": "LSTMbriefingfollowsfailedRNNrun,proposal3gateswithrange needing testing.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-43ed885f-ca34-492a-a7f2-29a0585386f6.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-43ed885f-ca34-492a-a7f2-29a0585386f6.png",
+      "sha256": "9d2f292c9a1e7c72f001c54ead1b9f12a9b6a1b61902d30b8c85fc5f38f60b6e",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5e766359-48ef-4636-8eba-a8bc0066002b.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/lstm-gates-briefing/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/lstm-gates-briefing/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+  "candidateSha256": "fbc557b7f4ec41abfff1b661e7c42584b98ba32ee297e1e575c21ad06c07f7ee",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Three-person candid followup to failed overnight run. Demir seated LEFT rubbing his forehead with one relaxed hand, other ondesk, slightly sheepish smile; Farah stands RIGHT beside him, watching screen thoughtfully with interested smile and one hand onmouse, other ondesk; Nazari furtherback between them with armscomfortablyfolded, wry eyebrow. KEEP exactcanonicalfaces, noadditionalcrew. REMOVE everyheldboard/clipboard/tablet. Shared large upright display RIGHT faces allcrew on frontside and camera alongside. Heading \"LSTM proposal\". Three concise rows \"Forget: keep a fraction\", \"Input: add candidate\", \"Output: expose state\". Footer \"Range still needs testing\". Small inset \"Last run: loss 0.693\". This is discussionofnexttest ratherthan claimedsolution; FarahgazeonproposalandDemironcolleague. Allhands physicallycoherent, no wrists reversed.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-43ed885f-ca34-492a-a7f2-29a0585386f6.png",
+          "sha256": "9d2f292c9a1e7c72f001c54ead1b9f12a9b6a1b61902d30b8c85fc5f38f60b6e",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5e766359-48ef-4636-8eba-a8bc0066002b.png",
+        "sha256": "fbc557b7f4ec41abfff1b661e7c42584b98ba32ee297e1e575c21ad06c07f7ee"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "LSTMbriefingfollowsfailedRNNrun,proposal3gateswithrange needing testing.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/lstm-gates-briefing/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/lstm-gates-briefing/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-43ed885f-ca34-492a-a7f2-29a0585386f6.png",
+      "sha256": "9d2f292c9a1e7c72f001c54ead1b9f12a9b6a1b61902d30b8c85fc5f38f60b6e",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+    }
+  ],
+  "independentReview": {
+    "key": "lstm-gates-briefing",
+    "id": "recurrent-networks/lstm-gates",
+    "phase": "briefing",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5e766359-48ef-4636-8eba-a8bc0066002b.png",
+    "candidateSha256": "fbc557b7f4ec41abfff1b661e7c42584b98ba32ee297e1e575c21ad06c07f7ee",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+        "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Candid three-way discussion, preserved failed result, gates briefly described and range still needs testing. No guaranteed range. Native full frame inspected, readable surfaces, coherent hands and furniture.",
+    "alt": "Farah proposes learned gates after the failed RNN run while Nazari questions the cost.",
+    "location": "Archimedes, Engineering"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5e766359-48ef-4636-8eba-a8bc0066002b.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates.webp",
+  "sourceSha256": "fbc557b7f4ec41abfff1b661e7c42584b98ba32ee297e1e575c21ad06c07f7ee",
+  "webpSha256": "c25750453f64704094ec067a6b40333e2c2c72792f0e9d1b02e26727f7afb2e4",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+    "sourceSha256": "ce2751ba00a3ed64b16df02606c43bf7a179025413f4dc72e94c57578886d0b7",
+    "webpSha256": "ea4955f4c0a08a064620244c009ba6457356a6e96f67ff130c736a330e9b573b",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a59d810d-9cd2-4b83-bba8-b19e21a86020.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "fbc557b7f4ec41abfff1b661e7c42584b98ba32ee297e1e575c21ad06c07f7ee",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+        "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

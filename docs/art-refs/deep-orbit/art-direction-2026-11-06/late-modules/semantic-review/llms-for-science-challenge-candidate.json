@@ -1,0 +1,155 @@
+{
+  "key": "deep-orbit/llm-integration/llms-for-science",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-challenge.webp",
+    "sha256": "e0f7ad4f6738853cce13d74d38359eb0fab7a5c6f143d0b0f4d44029c078e72a"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/llms-for-science-challenge-runtime-before.png",
+    "sha256": "1795a3c7bd27bb68bb3f6acb9309fb8ca4b87612db02c10e860f3d46f4c6b94a",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "1795a3c7bd27bb68bb3f6acb9309fb8ca4b87612db02c10e860f3d46f4c6b94a",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/llms-for-science-challenge-runtime-before.png",
+    "sha256": "1795a3c7bd27bb68bb3f6acb9309fb8ca4b87612db02c10e860f3d46f4c6b94a",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "1795a3c7bd27bb68bb3f6acb9309fb8ca4b87612db02c10e860f3d46f4c6b94a",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+    }
+  ],
+  "panelSpecification": {
+    "state": "challenge",
+    "concreteGenerationSpecification": "Candid Demir at a small bridge desk console, seated three-quarter side view and leaning toward the reply with concentrated uncertainty. One hand types, other rests naturally beside the keyboard; no tablet held outward. Screen genuinely faces Demir, camera beside his working side sees his face and the oblique screen. Header Supplied mock reply. Three exact field rows classification:\"anomaly\",confidence:0.95,reasoning:\"High amplitude\". Below it small fields Parse:pending;Field checks:pending;Evidence review:pending. The mock text is supplied input, not a proven mission claim or calibrated probability. No green checkmark, fabricated graph or confident completed verdict. All background monitors and holo emitter inactive. Head and torso balanced warm stylized adult proportions, not tiny heads. Two connected arms and anatomically plausible hands, believable seated support, aged brass/charcoal and muted sage.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+        "section": "Challenge and supplied mock reply fixture"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+        "section": "instructions and relevant supplied fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__llms-for-science-challenge-narrative-stage1-openai-20261107.png",
+      "sha256": "ecf20f7a4006483d27052586182dddacc83fbe2e53ac31738dbd0f64fc4f80d6",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "ecf20f7a4006483d27052586182dddacc83fbe2e53ac31738dbd0f64fc4f80d6",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: precise identity-preserving scene correction. Canonical portraits FIRST, room master next only a palette reference, LAST current target. Make ONLY a modest scale correction to Demir head: current hair crown to chin is visibly too large against his torso. Scale his entire head including hair, face and ear device to about88percent of its current size, anchored at the same chin/neck junction. Keep neck short and natural, no long exposed neck, retain warm stylized adult proportions, not tiny or realistic head. Preserve exactly the facial morphology, expression, gaze, canonical round nose and adult jaw. Change bright clothing/hair rim strokes to thin subdued sage. Entire torso, shoulders, arms, hands, keyboard, chair and all exact screen text and plane remain unchanged. Canonical identity remains exact, Demir comms anatomical RIGHT ear only, Farah lens anatomical LEFT eye only. One1536x1024 cel-shaded scene.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir stops to inspect the supplied mock reply before allowing it into the reporting pipeline.",
+    "fullSpecification": "Candid Demir at a small bridge desk console, seated three-quarter side view and leaning toward the reply with concentrated uncertainty. One hand types, other rests naturally beside the keyboard; no tablet held outward. Screen genuinely faces Demir, camera beside his working side sees his face and the oblique screen. Header Supplied mock reply. Three exact field rows classification:\"anomaly\",confidence:0.95,reasoning:\"High amplitude\". Below it small fields Parse:pending;Field checks:pending;Evidence review:pending. The mock text is supplied input, not a proven mission claim or calibrated probability. No green checkmark, fabricated graph or confident completed verdict. All background monitors and holo emitter inactive. Head and torso balanced warm stylized adult proportions, not tiny heads. Two connected arms and anatomically plausible hands, believable seated support, aged brass/charcoal and muted sage."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidatePath": "art-src/scenes/llm-integration__llms-for-science-challenge-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/llm-integration__llms-for-science-challenge-narrative-stage2-openai-20261107.png",
+  "candidateSha256": "8e28d344a33a30b69d23e9c4d29a8fc9b2a0e80c48d143da05b1176fd5504cc3",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-85f0af5e-0335-4115-88e8-171424cee961.png",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. Canonical identity portraits are FIRST; room master next is only architecture and palette; LAST original scene supplies cast, not pose. Preserve exact canonical facial morphology and adult ages, hair, equipment. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari has no eyewear. Warm clean cel-shaded adventure-comic illustration, balanced stylized heads without blanket shrink, natural supported anatomy. Candid Demir at a small bridge desk console, seated three-quarter side view and leaning toward the reply with concentrated uncertainty. One hand types, other rests naturally beside the keyboard; no tablet held outward. Screen genuinely faces Demir, camera beside his working side sees his face and the oblique screen. Header Supplied mock reply. Three exact field rows classification:\"anomaly\",confidence:0.95,reasoning:\"High amplitude\". Below it small fields Parse:pending;Field checks:pending;Evidence review:pending. The mock text is supplied input, not a proven mission claim or calibrated probability. No green checkmark, fabricated graph or confident completed verdict. All background monitors and holo emitter inactive. Head and torso balanced warm stylized adult proportions, not tiny heads. Two connected arms and anatomically plausible hands, believable seated support, aged brass/charcoal and muted sage. One1536x1024 scene. Natural word spacing on all labels.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/llms-for-science-challenge-runtime-before.png",
+          "sha256": "1795a3c7bd27bb68bb3f6acb9309fb8ca4b87612db02c10e860f3d46f4c6b94a",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "1795a3c7bd27bb68bb3f6acb9309fb8ca4b87612db02c10e860f3d46f4c6b94a",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/llm-integration__llms-for-science-challenge-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "ecf20f7a4006483d27052586182dddacc83fbe2e53ac31738dbd0f64fc4f80d6",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-6e314ab7-d244-4a1f-8adf-c98bdfb12737.png"
+    }
+  ],
+  "publicationHold": false,
+  "faceBoxes": {
+    "demir": [
+      415,
+      55,
+      360,
+      430
+    ]
+  },
+  "recoveryNote": "Recovered generated output after orchestration save helper failed; exact fullframe visually matched to prepared job before workspace copy.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/llms-for-science-challenge-identity-proof.jpg",
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "8e28d344a33a30b69d23e9c4d29a8fc9b2a0e80c48d143da05b1176fd5504cc3",
+    "proofSha256": "93aaaebf1822d0a1094029f2cf6c80e212d3df15c1b000464c4e32f588cdaf08",
+    "gates": [
+      "Candid task action and story-tied emotion",
+      "Canonical face morphology and age",
+      "Moderate stylized adult proportions",
+      "Supported head/neck/shoulder and two arm-hand chains",
+      "Muted palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Perspective and reader direction"
+    ],
+    "actionEmotionStory": "Demir stops to inspect the supplied mock reply before allowing it into the reporting pipeline."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-6e314ab7-d244-4a1f-8adf-c98bdfb12737.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-85f0af5e-0335-4115-88e8-171424cee961.png",
+      "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-challenge.webp",
+      "art-src/scenes/llm-integration__llms-for-science-challenge-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "publishedReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/llm-integration__llms-for-science-challenge.json",
+  "obsoleteWorkingImageRemoved": "art-src/scenes/llm-integration__llms-for-science-challenge-narrative-stage2-openai-20261107.png"
+}

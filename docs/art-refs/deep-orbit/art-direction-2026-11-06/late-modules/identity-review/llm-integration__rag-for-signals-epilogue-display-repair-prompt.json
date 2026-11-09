@@ -1,0 +1,56 @@
+{
+  "queueIndex": 71,
+  "key": "deep-orbit/llm-integration/rag-for-signals",
+  "phase": "epilogue",
+  "status": "awaiting-new-generation",
+  "newGeneration": true,
+  "cast": [
+    "demir",
+    "nazari"
+  ],
+  "faceBoxes": {
+    "demir": [
+      260,
+      106,
+      315,
+      399
+    ],
+    "nazari": [
+      907,
+      17,
+      338,
+      394
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__rag-for-signals-epilogue-display-stage1-openai-20261107.png",
+      "sha256": "e7406bcc6cdc3f8188ff65831482de69605536c2e7ba921c2f9e5f0a6e031381",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. First references are authoritative neutral crew portraits. LAST image is target scene. Change ONLY the invented tally marks on three places. The paper lying on the left tabletop must show the exact numeral 17 crossed out with a single red slash. The page Demir holds must show the exact numeral 14 in green where its old tally was. The small right monitor must show the exact numeral 14 in green where its old tally was. These are the only numerals permitted. Remove ALL five-stroke tally marks completely. Preserve report rows, waveform details and Nazari ledger check unchanged. This accurately depicts a draft claiming17 while source records show14. Do not introduce any other numbers, letters or glyphs. Preserve every face and hair exactly, all bodies, hands, arms, poses, uniforms, props, furniture, camera, colors and lighting. All existing human anatomy and identities have passed review. No new people or limbs. One1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/llm-integration__rag-for-signals-epilogue-display-repair-prompt.json",
+  "newSource": "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+  "alt": "Nazari initials a correction to her earlier summary while Demir keeps the failed draft for the audit.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+  "lessonSha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/llm-integration__rag-for-signals-epilogue-display-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/llm-integration__rag-for-signals-epilogue-prompt.json",
+      "reason": "Change ONLY the invented tally marks on three places. The paper lying on the left tabletop must show the exact numeral 17 crossed out with a single red slash. The page Demir holds must show the exact numeral 14 in green where its old tally was. The small right monitor must show the exact numeral 14 in green where its old tally was. These are the only numerals permitted. Remove ALL five-stroke tally marks completely. Preserve report rows, waveform details and Nazari ledger check unchanged. This accurately depicts a draft claiming17 while source records show14. Do not introduce any other numbers, letters or glyphs."
+    }
+  ]
+}

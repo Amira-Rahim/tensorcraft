@@ -1,0 +1,158 @@
+{
+  "id": "llm-integration__report-generation-briefing",
+  "lesson": "llm-integration/report-generation",
+  "phase": "briefing",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, ensign-demir.\nStory action: Farah catches an invented instrument and changes the drafting workflow. Expression: Farah shows focused exasperation; Demir responds with understanding.\nKeep Farah working at the desk and Demir beside her comparing his tablet, with visible three-quarter faces and physically sensible hands. Farah uses one single straight pen on an open paper facing HER, and her other hand holds the page flat. Demir holds a tablet naturally with both hands, screen facing HIM; viewer sees its back. Move the teaching information from the small side screen to ONE large shared wall display occupying the formerly blank wall. Exact text in spacious large rows: Methodology review; Instrument absent from ship inventory; Draft needs revision; One section per prompt. No unrelated screens or tiny repeated text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "32f2b5906186d80298a1a5d63a9b4417f6d9b1289bff454a2ad6a9e3c2d47b73",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room architecture only",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__report-generation-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "32f0404c145dc769188ed64847b90a2042ddd47a13bffbe0190aa9cedeaf66b7"
+    }
+  ],
+  "sourceSha256": "32f0404c145dc769188ed64847b90a2042ddd47a13bffbe0190aa9cedeaf66b7",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+    "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+  },
+  "source": "art-src/scenes/llm-integration__report-generation-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.339438+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, ensign-demir.\nStory action: Farah catches an invented instrument and changes the drafting workflow. Expression: Farah shows focused exasperation; Demir responds with understanding.\nKeep Farah working at the desk and Demir beside her comparing his tablet, with visible three-quarter faces and physically sensible hands. Farah uses one single straight pen on an open paper facing HER, and her other hand holds the page flat. Demir holds a tablet naturally with both hands, screen facing HIM; viewer sees its back. Move the teaching information from the small side screen to ONE large shared wall display occupying the formerly blank wall. Exact text in spacious large rows: Methodology review; Instrument absent from ship inventory; Draft needs revision; One section per prompt. No unrelated screens or tiny repeated text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__report-generation-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah catches an invented instrument and changes the drafting workflow.",
+    "location": "Archimedes, Lab",
+    "action": "Farah catches an invented instrument and changes the drafting workflow.",
+    "emotion": "Farah shows focused exasperation; Demir responds with understanding.",
+    "eyeline": "Toward task equipment and colleague as the narrative action requires.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-782713b4-04be-4be6-bade-582a53a6694a.png",
+  "candidatePath": "art-src/scenes/llm-integration__report-generation-openai-20261107.png",
+  "candidateSha256": "99eda3f4c50c96b1a06ec783a7a8d9c78ed05e08060717957f5a6d6fe6de00ca",
+  "generatedAt": "2026-11-08T19:40:45.890220+00:00",
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        445,
+        445,
+        300,
+        335
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__report-generation-briefing-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "faces",
+      "box": [
+        970,
+        85,
+        270,
+        350
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__report-generation-briefing-faces1.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        410,
+        805,
+        500,
+        200
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__report-generation-briefing-hands0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        970,
+        550,
+        340,
+        150
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__report-generation-briefing-hands1.png",
+      "removedAfterReview": true
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.714421+00:00",
+    "candidateSha256": "99eda3f4c50c96b1a06ec783a7a8d9c78ed05e08060717957f5a6d6fe6de00ca",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "publishedSource": "art-src/scenes/llm-integration__report-generation-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "temporaryDiagnosticCropsRemoved": true
+}

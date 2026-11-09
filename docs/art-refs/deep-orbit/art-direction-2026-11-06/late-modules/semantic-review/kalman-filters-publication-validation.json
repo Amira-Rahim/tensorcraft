@@ -1,0 +1,74 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "phase": "concept",
+      "sourceSha256": "a4d7d2d516856df5236de5cbd91a43b0dfe3ba054731564e0f2bf852f0a55169",
+      "outputSha256": "b07943930de006acb19e250fe8fa6a0d46c7cd3694677cddcb00ff2dcd0b08c3",
+      "bytes": 171208,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "challenge",
+      "sourceSha256": "9686347dceffc3e4c3b12a4c29f2b2021ece929faa1b39cfb781a2b79605fe7d",
+      "outputSha256": "3d02b1092df42491b10e43e97fd21ebf95bb86ee2e6feeaad716e464d8f725f5",
+      "bytes": 194606,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "takeaways",
+      "sourceSha256": "e48b4ff3c9cfb6d0f58adffa43cf6a762142fbe34db7f935d08e67a402c6714a",
+      "outputSha256": "aade2cc2224702807732f151f9e1edb78fb4a543fcebb47a19569a1f5c518ce3",
+      "bytes": 191844,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "epilogue",
+      "sourceSha256": "76e44b4f42ec8361fdac838155d021dea9574e4694dee40cb845bb0d774c1a85",
+      "outputSha256": "91e33db778a49851a18b63c3636463491ae728cebc7dd8db601329f25b8e64b4",
+      "bytes": 174160,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "briefing",
+      "sourceSha256": "5bc182229029424d9e23372318d9cbdfbab6f5325f8a7c59e1fc6553b5c4cc07",
+      "outputSha256": "aca7f7b1c146b446871e1c4733e3839f28ef112e47bbb5d7a711b8e8c2669da3",
+      "bytes": 188076,
+      "quality": 83,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    }
+  ],
+  "removed": [
+    "art-src/scenes/advanced-time-series__kalman-filters-briefing-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-briefing-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-challenge-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-challenge-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-concept-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-concept-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-epilogue-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-epilogue-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage3-openai-20261107.png"
+  ],
+  "archive": "Current source inputs retained in semantic-review/inputs; current outputs and proofs retained."
+}

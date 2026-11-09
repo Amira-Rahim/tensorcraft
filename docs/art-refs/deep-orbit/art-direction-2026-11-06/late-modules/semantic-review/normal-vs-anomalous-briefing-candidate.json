@@ -1,0 +1,102 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "briefing",
+  "status": "superseded",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next bridge ROOM reference only, LAST exact target. Preserve exact people, age, face morphology, expression, hairstyle, signature equipment, warm skin, body poses, natural neck alignment and every connected shoulder-elbow-wrist-hand chain. No anatomy or composition changes. Farah lens anatomical LEFT, Demir comms anatomical RIGHT, Nazari and Mirza have NO eyewear. Keep heads at current scale unless a tiny adjustment is explicitly requested. Story action stays dominant. All unmentioned monitors and wrist displays OFF, inactive charcoal glass; no arbitrary graphs, bars or fake code. Use subdued sage on dark glass and aged brass. Remove bright mint/rim neon, broad green or gold wash. Every unused holo emitter dark charcoal, used emitter faint sage with no bright bloom. Keep Mirza leaning on upper rail, Farah seated holding stylus and Nazari leaning on table with one questioning open hand. Replace tabletop signal plot with three compact incident cards stacked in the same holo plane: \"Alert 1: loose cable\", \"Alert 2: cosmic ray\", \"Alert 3: awaiting review\". No red waveform, no invented cause for third alert. One rear monitor shows only \"Define a baseline\" and \"Mean and spread: pending\". All remaining screens off. Muted sage low-opacity projection, no luminous cone. Exact faces, sizes and poses unchanged. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/normal-vs-anomalous-briefing-before.png",
+      "sha256": "cc3e01c7952fe403e321579630860ff27a452b4892aa7ad7987fdde7810a4440",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "cc3e01c7952fe403e321579630860ff27a452b4892aa7ad7987fdde7810a4440",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+    "sha256": "89e49301f5a593cd9241a6a8d3e99797b63bdd79544973383269111b13b620c5"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002"
+    }
+  ],
+  "panelSpecification": {
+    "state": "problem",
+    "concreteGenerationSpecification": "Keep Mirza leaning on upper rail, Farah seated holding stylus and Nazari leaning on table with one questioning open hand. Replace tabletop signal plot with three compact incident cards stacked in the same holo plane: \"Alert 1: loose cable\", \"Alert 2: cosmic ray\", \"Alert 3: awaiting review\". No red waveform, no invented cause for third alert. One rear monitor shows only \"Define a baseline\" and \"Mean and spread: pending\". All remaining screens off. Muted sage low-opacity projection, no luminous cone. Exact faces, sizes and poses unchanged.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "Opening dialogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses, anatomy and moderate stylized scale. No automatic realistic shrink.",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+  "candidateSha256": "4944e6847e0930c3e800e11531e6528ee5f163d812bdc119513cc1d6fd33e5b3",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5cbfa04c-7117-4264-8e22-1da03aa6a7ee.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-briefing-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5cbfa04c-7117-4264-8e22-1da03aa6a7ee.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+      "art-src/scenes/anomaly-detection__normal-vs-anomalous-briefing-semantics-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/anomaly-detection__normal-vs-anomalous-briefing-semantics-stage1-openai-20261107.png",
+    "sha256": "b54a942714a67917615f03330c8ab5149860c4ad4be08e9a6fe91c5115a995e1",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "publicationHold": false,
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__normal-vs-anomalous-briefing.json"
+}

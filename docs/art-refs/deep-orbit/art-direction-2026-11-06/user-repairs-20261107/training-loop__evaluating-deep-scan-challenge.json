@@ -1,0 +1,168 @@
+{
+  "i": 56,
+  "room": "bridge",
+  "moment": "Demir sits in the LEFT foreground and is starting the separate held-out evaluation. His right hand presses a console key and left hand holds a tablet back toward camera. Mirza stands behind his left shoulder, one hand lightly on the chair back and the other holding a closed report folio against her side. She watches his run with a measured encouraging expression; Demir turns slightly toward her in a brief candid check-in. Both remain naturally beside the huge RIGHT display, not blocking it. Exact display title 'Evaluation run'; two broad columns. Left heading 'Training only', rows '100 synthetic rows', '30 epochs', 'Batch size: 16'. Right heading 'Held-out evaluation', rows '43 separate rows', 'Loss: pending', 'Accuracy: pending', 'Gap label: pending'. No completed metrics. Keep every row large enough to read immediately.",
+  "id": "training-loop__evaluating-deep-scan-challenge",
+  "lesson": "training-loop/evaluating-deep-scan",
+  "phase": "challenge",
+  "source": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+  "sourceSha256": "74d4b194a8754fc84d9b41130386ffe79351ee9748c9107c3f7b991da016dca1",
+  "lessonSource": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+  "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: commander-mirza, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits in the LEFT foreground and is starting the separate held-out evaluation. His right hand presses a console key and left hand holds a tablet back toward camera. Mirza stands behind his left shoulder, one hand lightly on the chair back and the other holding a closed report folio against her side. She watches his run with a measured encouraging expression; Demir turns slightly toward her in a brief candid check-in. Both remain naturally beside the huge RIGHT display, not blocking it. Exact display title 'Evaluation run'; two broad columns. Left heading 'Training only', rows '100 synthetic rows', '30 epochs', 'Batch size: 16'. Right heading 'Held-out evaluation', rows '43 separate rows', 'Loss: pending', 'Accuracy: pending', 'Gap label: pending'. No completed metrics. Keep every row large enough to read immediately. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "Canonical identity: commander-mirza",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "Room only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+      "role": "Edit target, not identity authority",
+      "sha256": "df5d9a6e8f73a9039b320a000067bc3f6c2095a355989d3df04d1e09c854bc8d"
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: commander-mirza, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits in the LEFT foreground and is starting the separate held-out evaluation. His right hand presses a console key and left hand holds a tablet back toward camera. Mirza stands behind his left shoulder, one hand lightly on the chair back and the other holding a closed report folio against her side. She watches his run with a measured encouraging expression; Demir turns slightly toward her in a brief candid check-in. Both remain naturally beside the huge RIGHT display, not blocking it. Exact display title 'Evaluation run'; two broad columns. Left heading 'Training only', rows '100 synthetic rows', '30 epochs', 'Batch size: 16'. Right heading 'Held-out evaluation', rows '43 separate rows', 'Loss: pending', 'Accuracy: pending', 'Gap label: pending'. No completed metrics. Keep every row large enough to read immediately. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "status": "published",
+  "owner": "/root/quality_early",
+  "tool": "builtin image_gen",
+  "preparedAt": "2026-11-08T17:36:15.447996+00:00",
+  "promptSha256": "d92d080b0dbff3ed4f55589e05c3ab458e2b599d955c4912bd50133b1396ca36",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+    }
+  ],
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-50cc68a6-a213-4d0d-9670-42e83598976a.png",
+  "candidatePath": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+  "candidateSha256": "74d4b194a8754fc84d9b41130386ffe79351ee9748c9107c3f7b991da016dca1",
+  "ownReview": {
+    "reviewer": "quality_early",
+    "reviewedAt": "2026-11-08T18:49:38.955731+00:00",
+    "candidateSha256": "74d4b194a8754fc84d9b41130386ffe79351ee9748c9107c3f7b991da016dca1",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native generated original plus magnified hands/props and face comparison with independently viewed canonical portraits. All complete arm chains traced in original.",
+    "cropCoordinates": [
+      {
+        "i": "r9faces",
+        "k": 9,
+        "box": [
+          90,
+          85,
+          725,
+          610
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r9handsmirza",
+        "k": 9,
+        "box": [
+          100,
+          505,
+          465,
+          715
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r9handsdemir",
+        "k": 9,
+        "box": [
+          340,
+          790,
+          825,
+          995
+        ],
+        "scale": 2
+      }
+    ],
+    "canonicalFaceReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+        "role": "Canonical identity: commander-mirza",
+        "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "role": "Canonical identity: ensign-demir",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ],
+    "checks": "Training only shows 100 synthetic rows, 30 epochs and batch size 16. Held-out evaluation shows 43 separate rows and pending loss, accuracy and gap label, matching the current task without invented results. All four arm chains, correct thumb sides, key contact, tablet grip, chair contact and folio grip pass magnified review. Canonical faces remain recognizable.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "temporaryCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__evaluating-deep-scan-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+  "webpSha256": "74fa703d85e1502e779fd5731a8a786b9b8d1fe6851b1c1c4e6c123965186b10",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+    "sourceSha256": "df5d9a6e8f73a9039b320a000067bc3f6c2095a355989d3df04d1e09c854bc8d",
+    "webpSha256": "c9166c4020777d69273ad00ff2c1edddb133e4e03effe6ecacc619c659201ff1",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-e127b187-f17f-476d-9448-4a39210e9d5a.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_sequence",
+    "authorReviewer": "quality_early",
+    "status": "approved",
+    "candidateSha256": "74d4b194a8754fc84d9b41130386ffe79351ee9748c9107c3f7b991da016dca1",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Training only shows 100 synthetic rows, 30 epochs and batch size 16. Held-out evaluation shows 43 separate rows and pending loss, accuracy and gap label, matching the current task without invented results. All four arm chains, correct thumb sides, key contact, tablet grip, chair contact and folio grip pass magnified review. Canonical faces remain recognizable."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

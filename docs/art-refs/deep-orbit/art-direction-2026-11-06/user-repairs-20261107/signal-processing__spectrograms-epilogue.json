@@ -1,0 +1,121 @@
+{
+  "id": "signal-processing/spectrograms",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical dr-farah identity; image 2: lab room only; image 3: Edit target; replace staging while preserving section meaning.\nScene: Farah alone mid-discovery in the signal lab. Camera beside her at the wall display, three-quarter face fully recognizable. She stands on RIGHT with a slight forward lean and weight on one leg, brows lifted in concentrated surprise, lips slightly parted. Her stylus hand is at the end of a freshly written timing annotation; her other hand rests naturally on the brass bench edge. No idle tablet. Her eyes track the interval she has just measured. The LARGE lab work board fills LEFT and center nearly from top to bench, so the actual lesson data is maximally legible. Exact title 'Intermittent tone (schematic)'. A simple heatmap-like plot has horizontal axis 'Time (s)' and vertical axis 'Frequency (Hz)', a single row of separated bright dashes at a tick labeled '73.4'. Above two adjacent pulse onsets, two dashed vertical markers and a horizontal interval bracket; the annotation she is finishing reads '~73.4 s' in LARGE clear handwriting. Do not confuse Hz with seconds; avoid an exact time scale because timing is approximate. Lower board notes in large spaced text: 'Steady oscillator' crossed out by one deliberate line; 'Timing check next'. A separate modest but readable status area on the same board says 'ARIA: reference copy requested'. No solved-mystery verdict. Maintain the lab bench instruments, glass corridor and muted sage column, with quiet auxiliary screens.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "44c339c6c27497f022a2d30a80dbaa377782cbb068041d0835c7c96f1610bbd4",
+  "source": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+  "sourceSha256": "a11cceb740c313fcca1349b67972bdf54392e3c26e18450a5212338ac5ffcc26",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical dr-farah identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+      "sha256": "f13c4dbcc720e2c31e761163e3cfdb1d0d36a07c79ebba27393752c2142c904b",
+      "role": "Edit target; replace staging while preserving section meaning"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+    }
+  ],
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with an unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+  "candidateSha256": "a11cceb740c313fcca1349b67972bdf54392e3c26e18450a5212338ac5ffcc26",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-128d4ecd-ca87-46fa-8e87-5ce8f3635cb0.png",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "a11cceb740c313fcca1349b67972bdf54392e3c26e18450a5212338ac5ffcc26",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      1080,
+      160,
+      280,
+      340
+    ],
+    "handCropCoordinatesXYWH": [
+      755,
+      250,
+      155,
+      180
+    ],
+    "additionalHandCropCoordinatesXYWH": [
+      1080,
+      815,
+      170,
+      90
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Farah finishes the approximate 73.4 s annotation while considering the intermittent 73.4 Hz tone. One right hand grips a straight stylus, left hand braces the bench. Native face retains visor, cheek/nose/hair identity. Large board distinguishes frequency and time, brackets successive onsets, crosses out steady oscillator and leaves timing check next."
+  },
+  "generatedSha256": "a11cceb740c313fcca1349b67972bdf54392e3c26e18450a5212338ac5ffcc26",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-epilogue.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__spectrograms-epilogue/candidate.png",
+  "publishedSource": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-epilogue.webp",
+  "webpSha256": "ca2fc9a1d2ed393e18b16c092e66918e6a3495a7154ef971aefba81843d68c4c",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+    "sourceSha256": "f13c4dbcc720e2c31e761163e3cfdb1d0d36a07c79ebba27393752c2142c904b",
+    "webpSha256": "b9ccac7fdfba4475a65002d96e90a42dce267a8053987b7f6755da5d9c550cab",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-f97dce26-ad48-4f18-a874-32e9aceaad24.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "a11cceb740c313fcca1349b67972bdf54392e3c26e18450a5212338ac5ffcc26",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical portraits compared to enlarged face crop.",
+      "Complete arm chains, thumb sides and prop contact checked.",
+      "Large source-correct display and operator direction checked.",
+      "Natural adult proportions and phase-specific candid action checked."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+        "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

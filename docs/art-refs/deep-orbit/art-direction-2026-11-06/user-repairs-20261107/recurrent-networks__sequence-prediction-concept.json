@@ -1,0 +1,256 @@
+{
+  "key": "sequence-prediction-concept",
+  "id": "recurrent-networks/sequence-prediction",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+    "sha256": "8d5c8fc61c418fe5aed57fa06a474fd39fe814d85a0c43be9fc49e059bd4c016"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah seated LEFT at bridge console inspecting forecasting plan, one hand turning a physical dial and other resting on console. She leans forward slightly with curious thoughtful smile at display RIGHT, face in threequarter profile. Remove tablet and stylus. Display heading \"Rolling forecast\". Four connected boxes arranged logically left-to-right: \"Recent window\", \"Predict\", \"Clamp\", \"Append\". A return arrow from Append back to Recent window. Beneath \"Reuse saved scaling\", then \"Check errors against later readings\". Smaller note \"Compare with last-value baseline\". Draw arrows and text in exact monitor plane. No invented waveform or forecast result. The tangible dial selects the loop inspection, all screen content is lesson-specific. Warm muted bridge setting with dark stars.",
+  "meaning": "Multi-step forecast uses recentwindow,predict,clamp in savedzscoreunits,append andfeed back; evaluate laterreadings andlastvaluebaseline.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+      "sha256": "8d5c8fc61c418fe5aed57fa06a474fd39fe814d85a0c43be9fc49e059bd4c016",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0b6b090b-fb88-411c-a205-b673feec45c8.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 280,
+      "top": 155,
+      "width": 360,
+      "height": 410
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 820,
+      "top": 710,
+      "width": 250,
+      "height": 160
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 400,
+      "top": 825,
+      "width": 290,
+      "height": 120
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+  "candidateSha256": "9a09074ea50fcd0ba325eb4dbdd7129b6a2dcfa54937ba8a9d4cdd5a99dbb1c7",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah seated LEFT at bridge console inspecting forecasting plan, one hand turning a physical dial and other resting on console. She leans forward slightly with curious thoughtful smile at display RIGHT, face in threequarter profile. Remove tablet and stylus. Display heading \"Rolling forecast\". Four connected boxes arranged logically left-to-right: \"Recent window\", \"Predict\", \"Clamp\", \"Append\". A return arrow from Append back to Recent window. Beneath \"Reuse saved scaling\", then \"Check errors against later readings\". Smaller note \"Compare with last-value baseline\". Draw arrows and text in exact monitor plane. No invented waveform or forecast result. The tangible dial selects the loop inspection, all screen content is lesson-specific. Warm muted bridge setting with dark stars.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+          "sha256": "8d5c8fc61c418fe5aed57fa06a474fd39fe814d85a0c43be9fc49e059bd4c016",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0b6b090b-fb88-411c-a205-b673feec45c8.png",
+        "sha256": "9a09074ea50fcd0ba325eb4dbdd7129b6a2dcfa54937ba8a9d4cdd5a99dbb1c7"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Multi-step forecast uses recentwindow,predict,clamp in savedzscoreunits,append andfeed back; evaluate laterreadings andlastvaluebaseline.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 280,
+        "top": 155,
+        "width": 360,
+        "height": 410
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 820,
+        "top": 710,
+        "width": 250,
+        "height": 160
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 400,
+        "top": 825,
+        "width": 290,
+        "height": 120
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+      "sha256": "8d5c8fc61c418fe5aed57fa06a474fd39fe814d85a0c43be9fc49e059bd4c016",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "sequence-prediction-concept",
+    "id": "recurrent-networks/sequence-prediction",
+    "phase": "concept",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0b6b090b-fb88-411c-a205-b673feec45c8.png",
+    "candidateSha256": "9a09074ea50fcd0ba325eb4dbdd7129b6a2dcfa54937ba8a9d4cdd5a99dbb1c7",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T21:40:55.889351+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+        "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Hands, full arm chains, head/neck and physical furniture/device contacts coherent.",
+      "screenPlane": "Text/graphics follow physical screen perspective.",
+      "readerDirection": "Characters can see actual front from operator side; no outward-only card.",
+      "story": "Candid task action and character response connected to lesson.",
+      "palette": "Muted charcoal, sage and aged brass, localized warm light.",
+      "meaning": "Actual forecastMultiStep uses recent window, predict, clamp to limits in saved normalized scale, append and repeat. Saved scaling, evaluation against later readings and last-value baseline are appropriate current source checks; no measured accuracy claim. Farah physical dial grip and supported free hand plausible."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-concept.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-0b6b090b-fb88-411c-a205-b673feec45c8.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-concept.webp",
+  "sourceSha256": "9a09074ea50fcd0ba325eb4dbdd7129b6a2dcfa54937ba8a9d4cdd5a99dbb1c7",
+  "webpSha256": "59d0a420d97706900d19d2a127e69ca2b9faebbbab72bc9c7e77fb2ef2151f18",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+    "sourceSha256": "8d5c8fc61c418fe5aed57fa06a474fd39fe814d85a0c43be9fc49e059bd4c016",
+    "webpSha256": "50680877cfefd83b07830076946e0e9b45b8777714d5bafec8e31c3595c9c514",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-de06414a-ad9f-4038-adca-7bd3ca937cf1.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "9a09074ea50fcd0ba325eb4dbdd7129b6a2dcfa54937ba8a9d4cdd5a99dbb1c7",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Hands, full arm chains, head/neck and physical furniture/device contacts coherent.",
+      "screenPlane": "Text/graphics follow physical screen perspective.",
+      "readerDirection": "Characters can see actual front from operator side; no outward-only card.",
+      "story": "Candid task action and character response connected to lesson.",
+      "palette": "Muted charcoal, sage and aged brass, localized warm light.",
+      "meaning": "Actual forecastMultiStep uses recent window, predict, clamp to limits in saved normalized scale, append and repeat. Saved scaling, evaluation against later readings and last-value baseline are appropriate current source checks; no measured accuracy claim. Farah physical dial grip and supported free hand plausible."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+        "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

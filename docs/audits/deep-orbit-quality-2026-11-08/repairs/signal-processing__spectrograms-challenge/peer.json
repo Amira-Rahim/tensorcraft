@@ -1,0 +1,71 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__spectrograms-challenge/candidate.png",
+  "candidateSha256": "010fedb044d36219fc925dd4cdb5c00a95b4a6873539e8efdfc3116f4245e76f",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original review, 2x face and hand crops, complete shoulder-elbow-wrist chain and thumb-side check, canonical portrait comparison, and current lesson plus relevant exercise verification.",
+  "canonicalFaceReferences": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 5,
+      "name": "runtime-final-5-face-ensign-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__spectrograms-challenge/candidate.png",
+      "box": [
+        200,
+        230,
+        485,
+        575
+      ],
+      "scale": 2
+    },
+    {
+      "i": 5,
+      "name": "runtime-final-5-hands-0",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__spectrograms-challenge/candidate.png",
+      "box": [
+        545,
+        780,
+        755,
+        935
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+      "sha256": "64cbf86be5652084f4c66fc7abd220ae0c3470199e1dbdc79902e8772347ef1a"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's near right and far left arms reach separate typing hands at the keyboard. Bent fingers land on keys, with the far left thumb on its medial edge and the near right thumb reasonably occluded. Wrist and elbow directions remain consistent.",
+    "displayLegibilityAndSource": "Large synthetic burst test board accurately states 256 samples at 256 Hz, 40 Hz burst from 0.25 to 0.50 s, frame starts 0.00, 0.25, 0.50, 0.75, and 64-sample windows with hop 64 and no taper. All magnitude outputs remain pending.",
+    "identityExpressionAndStory": "Demir types with a focused slight smile and looks toward the board. His adult face, freckles, stubble and hair agree with the canonical portrait.",
+    "palette": "Muted Deep Orbit olive, charcoal, brass and controlled green light retain the benchmark palette.",
+    "perspectiveAndOperator": "Upright board and physical console are consistently oriented toward the operator; text follows the flat display surface.",
+    "largeDisplayRule": "The main lesson content occupies a large readable board in available wall space rather than a small console below unused wall."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:43:12.632422+00:00"
+}

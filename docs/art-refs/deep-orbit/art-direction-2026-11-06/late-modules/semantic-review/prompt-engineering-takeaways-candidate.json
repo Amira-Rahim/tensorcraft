@@ -1,0 +1,159 @@
+{
+  "key": "deep-orbit/llm-integration/prompt-engineering",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-takeaways.webp",
+    "sha256": "ce36322e975a41b2e004a3f55f5f8271f63bbbaeb87493803d084a4017f70300"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/prompt-engineering-takeaways-runtime-before.png",
+    "sha256": "76279a37dd8f37c8cec6fc20484d29e63f61c1cbd7370bcaf7878197b2417ae8",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "76279a37dd8f37c8cec6fc20484d29e63f61c1cbd7370bcaf7878197b2417ae8",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/prompt-engineering-takeaways-runtime-before.png",
+    "sha256": "76279a37dd8f37c8cec6fc20484d29e63f61c1cbd7370bcaf7878197b2417ae8",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "76279a37dd8f37c8cec6fc20484d29e63f61c1cbd7370bcaf7878197b2417ae8",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/prompt-template.yaml",
+      "sha256": "fbdb47d77bd67d37d411cdf4f8a62058cc96ee9190da893a10dd93751e835987"
+    }
+  ],
+  "panelSpecification": {
+    "state": "takeaways",
+    "concreteGenerationSpecification": "Candid Farah alone seated side-on at a lab console, leaning toward the review with thoughtful concentration, one hand on keyboard and the other stylus poised at Check reply. No cards or portraits, no eyes toward camera. Small work monitor genuinely faces her and is viewed from beside her shoulder. Heading Reply review. Three orderly pending fields JSON syntax:pending;Required fields:pending;Evidence review:pending. Bottom control Check reply. This is a work queue, not a finished approval. No fabricated response or invented numerical result. Leave a closed plain reference folder on the desk and all other displays dark. Full natural seated anatomy, two connected arms and credible stylus grip, balanced canonical adult Farah head and face, anatomical-left eye lens. Dim sage pillar and restrained warm brass/charcoal, natural skin. All type and divisions follow screen plane.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+        "section": "RecallPrompt and LessonRecap response parsing, validation and evidence review"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/prompt-template.yaml",
+        "section": "instructions and relevant supplied fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__prompt-engineering-takeaways-narrative-stage1-openai-20261107.png",
+      "sha256": "93c9398283b6e93430b52a7f4dcd47eb8511acf6caff5a06ef56abe8cfae497d",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "93c9398283b6e93430b52a7f4dcd47eb8511acf6caff5a06ef56abe8cfae497d",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: precise identity-preserving scene correction. Canonical portraits FIRST, room master next only a palette reference, LAST current target. Change ONLY the bright lime background pillar to dark desaturated sage glass with very faint dim lines. Remove fluorescent clothing/hair edge rim strokes, replace with thin low intensity sage. Preserve exact canonical face, head size, left-eye lens, expression, gaze, body and two connected arms, stylus grip and keyboard hand, ALL screen pending fields and Check reply button, their correct perspective. Keep ordinary room lighting and skin unchanged. Canonical identity remains exact, Demir comms anatomical RIGHT ear only, Farah lens anatomical LEFT eye only. One1536x1024 cel-shaded scene.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah pauses over the reply review, checking that a clearer prompt still leaves structure and evidence to inspect.",
+    "fullSpecification": "Candid Farah alone seated side-on at a lab console, leaning toward the review with thoughtful concentration, one hand on keyboard and the other stylus poised at Check reply. No cards or portraits, no eyes toward camera. Small work monitor genuinely faces her and is viewed from beside her shoulder. Heading Reply review. Three orderly pending fields JSON syntax:pending;Required fields:pending;Evidence review:pending. Bottom control Check reply. This is a work queue, not a finished approval. No fabricated response or invented numerical result. Leave a closed plain reference folder on the desk and all other displays dark. Full natural seated anatomy, two connected arms and credible stylus grip, balanced canonical adult Farah head and face, anatomical-left eye lens. Dim sage pillar and restrained warm brass/charcoal, natural skin. All type and divisions follow screen plane."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidatePath": "art-src/scenes/llm-integration__prompt-engineering-takeaways-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/llm-integration__prompt-engineering-takeaways-narrative-stage2-openai-20261107.png",
+  "candidateSha256": "94f2b1014c930f5ef417baef2ba87ae9ebd42c42161c6addd3650626a4d9da8b",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-082fbec4-ce1b-4ccd-a51d-f5c3bbcfe392.png",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. Canonical identity portraits are FIRST; room master next is only architecture and palette; LAST original scene supplies cast, not pose. Preserve exact canonical facial morphology and adult ages, hair, equipment. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari has no eyewear. Warm clean cel-shaded adventure-comic illustration, balanced stylized heads without blanket shrink, natural supported anatomy. Candid Farah alone seated side-on at a lab console, leaning toward the review with thoughtful concentration, one hand on keyboard and the other stylus poised at Check reply. No cards or portraits, no eyes toward camera. Small work monitor genuinely faces her and is viewed from beside her shoulder. Heading Reply review. Three orderly pending fields JSON syntax:pending;Required fields:pending;Evidence review:pending. Bottom control Check reply. This is a work queue, not a finished approval. No fabricated response or invented numerical result. Leave a closed plain reference folder on the desk and all other displays dark. Full natural seated anatomy, two connected arms and credible stylus grip, balanced canonical adult Farah head and face, anatomical-left eye lens. Dim sage pillar and restrained warm brass/charcoal, natural skin. All type and divisions follow screen plane. One1536x1024 scene. Natural word spacing on all labels.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/prompt-engineering-takeaways-runtime-before.png",
+          "sha256": "76279a37dd8f37c8cec6fc20484d29e63f61c1cbd7370bcaf7878197b2417ae8",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "76279a37dd8f37c8cec6fc20484d29e63f61c1cbd7370bcaf7878197b2417ae8",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/llm-integration__prompt-engineering-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "93c9398283b6e93430b52a7f4dcd47eb8511acf6caff5a06ef56abe8cfae497d",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b01ac146-ffda-46c6-9149-dd67318ce74c.png"
+    }
+  ],
+  "publicationHold": false,
+  "faceBoxes": {
+    "farah": [
+      870,
+      100,
+      415,
+      420
+    ]
+  },
+  "recoveryNote": "Recovered generated output after orchestration save helper failed; exact fullframe visually matched to prepared job before workspace copy.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-takeaways-identity-proof.jpg",
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "94f2b1014c930f5ef417baef2ba87ae9ebd42c42161c6addd3650626a4d9da8b",
+    "proofSha256": "7b4408203884a9a8c70990477e444e5b37b0af1983b97bff80d62d2a58ad4f81",
+    "gates": [
+      "Candid task action and story-tied emotion",
+      "Canonical face morphology and age",
+      "Moderate stylized adult proportions",
+      "Supported head/neck/shoulder and two arm-hand chains",
+      "Muted palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Perspective and reader direction"
+    ],
+    "actionEmotionStory": "Farah pauses over the reply review, checking that a clearer prompt still leaves structure and evidence to inspect."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-082fbec4-ce1b-4ccd-a51d-f5c3bbcfe392.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b01ac146-ffda-46c6-9149-dd67318ce74c.png",
+      "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-takeaways.webp",
+      "art-src/scenes/llm-integration__prompt-engineering-takeaways-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/llm-integration__prompt-engineering-takeaways-narrative-stage2-openai-20261107.png",
+    "sha256": "94f2b1014c930f5ef417baef2ba87ae9ebd42c42161c6addd3650626a4d9da8b",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/llm-integration__prompt-engineering-takeaways.json"
+}

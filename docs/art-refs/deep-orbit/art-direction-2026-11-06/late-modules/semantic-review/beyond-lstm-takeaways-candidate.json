@@ -1,0 +1,186 @@
+{
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "takeaways",
+  "status": "own-pass-awaiting-independent-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Completely RESTAGE the last image as a candid moment of collaborative investigation. No one faces or looks at the camera. Farah sits three-quarter at the lab bench, body and chair oriented toward the work. Demir leans in from her right, body angled toward her, one hand resting on the bench and the other index finger tracing a result on a low sloping console. Farah has a stylus poised above that same console and her other hand relaxed on the bench. Farah gives Demir a skeptical raised eyebrow, precise and engaged; Demir looks back at her with an interrupted half-smile, realizing his causal claim needs checking. Their eyes connect naturally, heads align with torsos and all four arms remain distinct. No held-up card or tablet. The shared sloping console is angled toward the crew, seen obliquely by the camera, with one compact actual attention-operation diagram: Query compares Keys, then Scores, then Softmax weights; a separate Values branch and the weights meet at Weighted blend. All arrows connected correctly. A small adjoining task panel has two review tabs Step 4 and Step 78, plus the note Cause unresolved. Other displays inactive. Avoid a giant teaching poster; the characters' disagreement and their hands on the actual work are the scene. Keep lab equipment and brass bench architecture from the target, dim the pillar to dark sage, no fluorescent outlines. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/beyond-lstm-takeaways-target.png",
+      "sha256": "55fc1ebcd4d98f0fe83f5980c89f3117b9162f044eee83f8a8571330468599a8",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "55fc1ebcd4d98f0fe83f5980c89f3117b9162f044eee83f8a8571330468599a8",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+    "sha256": "79b6e5def43dc482bf791f92701bee74d242e2350ac8361a548708bc9ae9a45c"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "panelSpecification": {
+    "state": "recall",
+    "panels": [
+      "Tablet: three labeled stages Query + Keys, Softmax weights, Weighted Values. Draw the weights touching the Values rows and ending at one blend.",
+      "Board: same 80-step window with event positions 4 and 78 labeled as areas to investigate, with the note Weight is not cause."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Completely RESTAGE the last image as a candid moment of collaborative investigation. No one faces or looks at the camera. Farah sits three-quarter at the lab bench, body and chair oriented toward the work. Demir leans in from her right, body angled toward her, one hand resting on the bench and the other index finger tracing a result on a low sloping console. Farah has a stylus poised above that same console and her other hand relaxed on the bench. Farah gives Demir a skeptical raised eyebrow, precise and engaged; Demir looks back at her with an interrupted half-smile, realizing his causal claim needs checking. Their eyes connect naturally, heads align with torsos and all four arms remain distinct. No held-up card or tablet. The shared sloping console is angled toward the crew, seen obliquely by the camera, with one compact actual attention-operation diagram: Query compares Keys, then Scores, then Softmax weights; a separate Values branch and the weights meet at Weighted blend. All arrows connected correctly. A small adjoining task panel has two review tabs Step 4 and Step 78, plus the note Cause unresolved. Other displays inactive. Avoid a giant teaching poster; the characters' disagreement and their hands on the actual work are the scene. Keep lab equipment and brass bench architecture from the target, dim the pillar to dark sage, no fluorescent outlines.",
+    "finalLocalizedCorrection": null
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-narrative-stage1-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5daf1871-7406-437a-a43a-0b208e19e3e6.png",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit lesson scene, 1536x1024 adventure-comic illustration. The first input(s) are immutable canonical face identity references. The LAST input is the exact scene to edit. Preserve the same people, same facial morphology and story moment. Preserve both canonical people, exact faces and expressions, Farah's left-eye lens and Demir's right-ear comms, their standing positions and all four continuous arms/hands, including Farah's grip on both sides of the tablet and Demir's resting hand on the desk. Replace the tablet's generic waveforms with one concise recall diagram: \"Query + Keys\" into \"Softmax weights\" into \"Weighted Values\" into \"Blend\". Make it visually clear the weight paths meet the Values, not Keys. Keep all paths visible and the words large enough to read. The board behind them shows an 80-step event timeline with markers at4 and78, headed \"Investigate high-weight steps\", and a small note \"Weight is not cause\". Use a simple timeline, not invented measured waveforms. Other readable small displays repeat a task-relevant node or remain inactive. Both heads are a little large: reduce each complete head to about90 percent current linear width and height, preserving facial morphology, hair, eyes, nose, jaw, expression, gaze and accessories. Preserve their body sizes and shoulder/arm chains; rejoin necks naturally. Keep the existing muted lab palette and adult adventure-comic warmth. Output one final full scene only, no before/after collage, no caption outside the art, no new characters or props. The 80-step board is indexed 0 through 79: use endpoint labels 0 and 79, never 80. Marker 4 is near the start and marker 78 near the end.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/beyond-lstm-takeaways-before.png",
+          "sha256": "d846504106f57cd97cf2c783318ce88a36ae000ebb41e9937ec46aafd6546345",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "d846504106f57cd97cf2c783318ce88a36ae000ebb41e9937ec46aafd6546345",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "252e042cafd2a5b72937140fd4e5aa79a9ae1a34a933d735d774a5acc9705c41",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-854f8a0f-86f8-4835-85f8-1b96aff68121.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-takeaways-identity-proof.jpg",
+      "status": "candidate-awaiting-review"
+    }
+  ],
+  "requestedDisplayCorrections": "On the tablet ONLY replace the ambiguous Query + Keys node text with the short clear text Query compares Keys, preserving its arrow into Softmax weights. The comparison means dot-product scores, so add a small Scores label above that first arrow. Keep the existing Softmax weights arrow into Weighted Values and the existing Values arrow into Weighted Values, then the arrow into Blend exactly connected. Do not add arithmetic plus signs anywhere. Turn OFF the two small upper side screens that show Q + K: far upper left and far right wall. Make their surfaces plain unlit charcoal glass. Also turn off the little left lower screen and the wrist terminal. Preserve the main board exact Investigate high-weight steps heading, 0 and79 endpoints, markers4 and78, Weight is not cause. Do not change either face, head size, arm, hand or tablet grip.",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "32ec49431ecfdd8b14044349dfbaca734e1f824591b069cb873b2a510a44bfd0",
+    "proofSha256": "5c1aaa27937a114a566c5e92ea2cd9fde062d7ffcf876cdb0a220d5c29da8ccd",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah and Demir actively inspect high-weight steps together; she stops a premature causal claim with a raised eyebrow, and he pauses mid-explanation."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+  "publishedOutputSha256": "79b6e5def43dc482bf791f92701bee74d242e2350ac8361a548708bc9ae9a45c",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 175296
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/beyond-lstm-takeaways-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/beyond-lstm-takeaways-target.png",
+    "sha256": "55fc1ebcd4d98f0fe83f5980c89f3117b9162f044eee83f8a8571330468599a8",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "55fc1ebcd4d98f0fe83f5980c89f3117b9162f044eee83f8a8571330468599a8",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/beyond-lstm-takeaways-runtime-before.png",
+    "sha256": "55fc1ebcd4d98f0fe83f5980c89f3117b9162f044eee83f8a8571330468599a8",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "55fc1ebcd4d98f0fe83f5980c89f3117b9162f044eee83f8a8571330468599a8",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah and Demir actively inspect high-weight steps together; she stops a premature causal claim with a raised eyebrow, and he pauses mid-explanation.",
+    "fullSpecification": "Completely RESTAGE the last image as a candid moment of collaborative investigation. No one faces or looks at the camera. Farah sits three-quarter at the lab bench, body and chair oriented toward the work. Demir leans in from her right, body angled toward her, one hand resting on the bench and the other index finger tracing a result on a low sloping console. Farah has a stylus poised above that same console and her other hand relaxed on the bench. Farah gives Demir a skeptical raised eyebrow, precise and engaged; Demir looks back at her with an interrupted half-smile, realizing his causal claim needs checking. Their eyes connect naturally, heads align with torsos and all four arms remain distinct. No held-up card or tablet. The shared sloping console is angled toward the crew, seen obliquely by the camera, with one compact actual attention-operation diagram: Query compares Keys, then Scores, then Softmax weights; a separate Values branch and the weights meet at Weighted blend. All arrows connected correctly. A small adjoining task panel has two review tabs Step 4 and Step 78, plus the note Cause unresolved. Other displays inactive. Avoid a giant teaching poster; the characters' disagreement and their hands on the actual work are the scene. Keep lab equipment and brass bench architecture from the target, dim the pillar to dark sage, no fluorescent outlines."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "32ec49431ecfdd8b14044349dfbaca734e1f824591b069cb873b2a510a44bfd0",
+  "faceBoxes": {
+    "farah": [
+      305,
+      165,
+      320,
+      355
+    ],
+    "demir": [
+      925,
+      115,
+      295,
+      350
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-takeaways-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "recall",
+    "panels": [
+      "Tablet: three labeled stages Query + Keys, Softmax weights, Weighted Values. Draw the weights touching the Values rows and ending at one blend.",
+      "Board: same 80-step window with event positions 4 and 78 labeled as areas to investigate, with the note Weight is not cause."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": true,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5daf1871-7406-437a-a43a-0b208e19e3e6.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-854f8a0f-86f8-4835-85f8-1b96aff68121.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+      "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

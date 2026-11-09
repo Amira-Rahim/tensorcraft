@@ -1,0 +1,184 @@
+{
+  "id": "signal-processing/fft-as-features",
+  "phase": "challenge",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: precise-text-edit. Edit ONLY the main teaching display label in the LAST reference image. The first reference is the canonical Ensign Demir face; the second is the engineering room; the last is the exact candidate to correct. Preserve the current composition, face identity, mature proportions, candid focused expression, connected arms and natural keyboard hands, all objects, lighting, muted green/charcoal/brass colors, and every other existing display value. In the right-hand group above the eight cells labelled 13, 14, 15, 16, 17, 18, 19, 20, replace the heading 'FFT magnitudes' with the exact clearly readable heading 'FFT magnitudes by bin'. Make enough room for that heading using two lines if needed, with generous spacing, crisp lettering and perspective matching the physical display. The numbers 13 through 20 are BIN INDICES, not magnitude output values. Keep the existing title 'Fixed-bin feature row', the synthetic capture, 64 samples at 256 Hz, band 50-82 Hz, Peak amplitude, Zero crossings, and footer 'Keep bin order / Output pending'. Do not add calculated magnitudes, extra numbers, phase, other humans or new objects. Exact original aspect ratio, landscape 1536 x 1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, green #6BAA8A interface glow, warm brass #A89060 metal trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "1b0c5048b1bc0fac8c4a060f5073895d33b69744f6009248200bb303c181130b",
+  "source": "art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261107.png",
+  "sourceSha256": "64af2d6ca48e0ce2ce6291314fcbaa1ea2550f08442b9fe5221a639cd37a6215",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "engineering room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/rejected-v1.png",
+      "sha256": "5f8bf0921eec482636467fc695590d257389085d5b8f5e615beaca4645e16fb6",
+      "role": "Exact candidate edit target; correct display label only"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+    "lessonSha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b",
+    "context": "Challenge fixture uses a synthetic 64-sample capture at 256 Hz and 50-82 Hz band, selecting bins 13 through 20 after amplitude and zero crossings. Exercise omits phase.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261107.png",
+  "candidateSha256": "d910f52add8f699fecb260c36411382b0222015e920f4686470b2538dc349d03",
+  "publication": {
+    "alt": "Demir builds a fixed-order feature row from amplitude, zero crossings and eight FFT bins.",
+    "location": "engineering",
+    "action": "Demir builds a fixed-order feature row from amplitude, zero crossings and eight FFT bins.",
+    "emotion": "Focused concentration.",
+    "eyeline": "Characters see and use the same readable display surface.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation.",
+      "Revised heading explicitly distinguishes selected bin indices from pending magnitude outputs."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-46b3ccb9-5f74-4ab7-b679-2dba22cd200d.png",
+  "generatedSha256": "d910f52add8f699fecb260c36411382b0222015e920f4686470b2538dc349d03",
+  "ownReview": {
+    "reviewedAt": "2026-11-09T07:46:45.808586+00:00",
+    "nativeReviewed": true,
+    "candidateSha256": "d910f52add8f699fecb260c36411382b0222015e920f4686470b2538dc349d03",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": {
+      "ensign-demir": [
+        230,
+        210,
+        255,
+        330
+      ]
+    },
+    "handCropCoordinatesXYWH": [
+      [
+        435,
+        700,
+        370,
+        160
+      ]
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "The revised heading explicitly reads FFT magnitudes by bin, clarifying the eight 13-20 bin indices while output remains pending. All other large source-correct labels remain intact. Fresh native review and enlarged face/hand crops confirm canonical Demir identity, two coherent arms and natural keyboard contact."
+  },
+  "generationAttempts": [
+    {
+      "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical ensign-demir identity; image 2: engineering room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Demir sits LEFT at the engineering keyboard, both hands naturally typing, focused eyes on the LARGE RIGHT display. Bring the camera beside him, preserve adult proportions and supported seated posture without spending most of the frame on empty floor. Exact title 'Fixed-bin feature row'; large subtitle '64 samples at 256 Hz'; line 'Band: 50-82 Hz'; simple large flow 'Peak amplitude' -> 'Zero crossings' -> 'FFT magnitudes'. Under FFT magnitudes, eight spacious equal boxes labeled '13', '14', '15', '16', '17', '18', '19', '20'. Footer 'Keep bin order / Output pending'. Label 'Synthetic capture'. No phase term or fabricated returned magnitudes.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "7d584ae338d363c5708fd464e69cb28b3fd2b9157088164e61a9a2eedabf553c",
+      "actualReferences": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "Canonical ensign-demir identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "engineering room only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261107.png",
+          "sha256": "64af2d6ca48e0ce2ce6291314fcbaa1ea2550f08442b9fe5221a639cd37a6215",
+          "role": "Edit target; enlarge teaching display while preserving story action"
+        }
+      ],
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-6c917c55-022d-4f09-953d-8c92e2b554ea.png",
+      "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/rejected-v1.png",
+      "candidateSha256": "5f8bf0921eec482636467fc695590d257389085d5b8f5e615beaca4645e16fb6",
+      "ownReview": {
+        "reviewedAt": "2026-11-09T06:57:12.332582+00:00",
+        "nativeReviewed": true,
+        "candidateSha256": "5f8bf0921eec482636467fc695590d257389085d5b8f5e615beaca4645e16fb6",
+        "canonicalPortraitsCompared": true,
+        "faceCropCoordinatesXYWH": {
+          "ensign-demir": [
+            230,
+            210,
+            255,
+            330
+          ]
+        },
+        "handCropCoordinatesXYWH": [
+          [
+            435,
+            700,
+            370,
+            160
+          ]
+        ],
+        "cropScale": 2,
+        "temporaryCropsDeleted": true,
+        "scores": {
+          "color": 4,
+          "pose": 4,
+          "expression": 4,
+          "displays": 5,
+          "composition": 5,
+          "identity": 4,
+          "story": 4
+        },
+        "verdict": "matches-benchmark",
+        "findings": "Demir types with two naturally connected hands and supported adult posture, studying the upright board. Large synthetic-capture labels correctly show 64 samples at 256 Hz, 50-82 Hz, the fixed feature order and bins 13 through 20 with output pending. No phase feature or calculated result is invented."
+      },
+      "failure": "Independent peer: FFT magnitudes heading over numbers 13 through 20 can misidentify bin indices as magnitude values. Make the group label explicit."
+    }
+  ],
+  "preparedAt": "2026-11-09T07:39:08.098709+00:00",
+  "publishedSource": "art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/fft-as-features-challenge.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/rejected-v1.png",
+      "sha256": "5f8bf0921eec482636467fc695590d257389085d5b8f5e615beaca4645e16fb6",
+      "bytes": 2031808,
+      "retainedEquivalent": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-6c917c55-022d-4f09-953d-8c92e2b554ea.png",
+      "reason": "Rejected intermediate, preserved in tool archive"
+    },
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/candidate.png",
+      "sha256": "d910f52add8f699fecb260c36411382b0222015e920f4686470b2538dc349d03",
+      "bytes": 1969000,
+      "retainedEquivalent": "art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

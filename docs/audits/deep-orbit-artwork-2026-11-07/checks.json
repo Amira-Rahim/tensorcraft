@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-07",
+  "uiTests": {
+    "files": 5,
+    "passed": 168,
+    "scope": "Phase resolver, shared lesson workbench, first-lesson tensor layout, lesson steps and em dash rule."
+  },
+  "artToolTests": {
+    "passed": 23,
+    "scope": "Approval gates, source hashes, cast/portrait contract, content-derived phase coverage and missing registry handling."
+  },
+  "webTypecheck": "passed",
+  "browserPhaseChecks": {
+    "passed": 50,
+    "viewports": [
+      1440,
+      320
+    ],
+    "lessons": [
+      "introduction-to-tensors",
+      "sliding-windows",
+      "launch",
+      "beyond-lstm",
+      "inference-pipeline"
+    ]
+  },
+  "historicalScreenshotCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/global-review-image-cleanup.json",
+    "note": "Obsolete browser screenshots removed. Structured layout and image-load results remain available. These checks do not approve later artwork revisions."
+  },
+  "resumedArtworkChecks20261108": {
+    "artToolTests": {
+      "passed": 24,
+      "failed": 0,
+      "command": "node --test scripts/art/ingest.test.mjs scripts/art/sync-scene-approvals.test.mjs"
+    },
+    "phaseResolverTests": {
+      "passed": 5,
+      "failed": 0,
+      "command": "pnpm exec vitest run apps/web/lib/lesson-scene-art.test.ts"
+    },
+    "scope": "Asset publication and five-section image resolution. Native visual approval is tracked separately by exact source hash."
+  },
+  "latestUserFeedbackVerification20261108": [
+    {
+      "lesson": "advanced-time-series/beyond-lstm",
+      "phase": "concept",
+      "source": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+      "sourceSha256": "6156faba3878c9d00bf7c702fd070de378fff6088b613badcd27f42b28a78a8d",
+      "verdict": "pass",
+      "reviewer": "/root",
+      "method": "Native full frame follow-up against the latest user-reported examples.",
+      "notes": "Farah has a compact natural neck and canonical features. One physical foreground monitor carries the accurate attention example, aligned to its plane; unused background screens are dark. Natural stylus and desk contact, restrained lab palette."
+    },
+    {
+      "lesson": "advanced-time-series/beyond-lstm",
+      "phase": "takeaways",
+      "source": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+      "sourceSha256": "d25f0965aa4a551ec27ebc0c6da404cc7affed3ab4db0507b96aa5e442d3665f",
+      "verdict": "pass",
+      "reviewer": "/root",
+      "method": "Native full frame follow-up against the latest user-reported examples.",
+      "notes": "Farah has a compact natural neck and canonical features; Demir has ordinary shoulder proportions. Restrained lab palette, meaningful foreground attention diagram aligned to its display plane, unused background screens dark, natural task-directed action and coherent hands."
+    }
+  ],
+  "finalArtworkVerification20261108": {
+    "status": "passed",
+    "reviewedScenes": 280,
+    "lessons": 56,
+    "distinctImagesPerLesson": 5,
+    "validatedAssets": 321,
+    "currentRepairRecords": 218,
+    "currentLessonAndExerciseFiles": 112,
+    "sourceHashMismatches": 0,
+    "missingReviewEvidence": 0,
+    "galleryLessons": 56,
+    "galleryImages": 280,
+    "galleryMissingImages": 0,
+    "activeSceneOriginals": 280,
+    "activeRuntimeScenes": 280,
+    "unusedSceneOriginals": 0,
+    "unusedRuntimeScenes": 0,
+    "diffWhitespaceCheck": "passed",
+    "validationReport": "docs/audits/deep-orbit-artwork-2026-11-07/validation.json"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "id": "threshold-concept-reader",
+  "key": "deep-orbit/anomaly-detection/threshold-tuning",
+  "phase": "concept",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+    "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml"
+  ],
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Image1 canonical Farah, image2 canonical Nazari, image3 bridge master ROOM ONLY, image4 EDIT TARGET. Correct the backward workstation and replace the unlabeled decorative curves with the exact lesson comparison. Preserve canonical facial morphology and age, signature equipment, adult stylized scale with moderate heads and short natural necks. Keep the friendly but mildly skeptical exchange, Farah engaged in actual comparison and Nazari holding her pager.\nRestage one upright physical monitor on LEFT facing RIGHT toward both women on its SAME FRONT/RIGHT reading side. Farah sits near it center-right and Nazari stands beside her farther right, both physically able to read its front. Camera diagonally beside the crew sees their natural three-quarter faces and screen front. Farah's free hand operates a simple selector on the accessible near control edge while her other hand holds a stylus aimed at the comparison. Nazari glances to Farah with one eyebrow raised, one hand holding her pager and other relaxed against her hip; remove the unnecessary tablet. Exactly two plausible connected arms/hands per person, no extra fingers, straight wrists, no furniture intersections or long necks. Nobody looks at the audience. Candid moment of choosing what wakes the crew.\nScreen exact heading 'Validation comparison'. Four columns 'Cutoff', 'Precision', 'Recall', 'F1'. Three exact rows: '0.2' '0.34' '1.00' '0.51'; '0.4' '0.89' '0.95' '0.92'; '1.0' '1.00' '0.72' '0.84'. Small footer 'Compare false alarms and misses'. These are the fictional mission's reported values, not a universal precision trend. No newly invented measurements or finalized winner. Every letter, cell and baseline follows monitor perspective, not camera-horizontal pasted UI. Remove both old table displays entirely. All incidental screens dark/inactive, with no graphs or glyphs. Muted sage, slate/olive and brushed brass, restrained light. Landscape1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "candidatePath": "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+  "candidateSha256": "6f02e7e3feaa8140d400e45093b37844e6925b33ba53df5a8572b9aa8aeb1d51",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+      "sha256": "8c34d7e976ac75a46afa22e046fc7d2062627ec2c85b5e1aabec1ca4513ab17f",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+      "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+    }
+  ],
+  "ownerQa": {
+    "status": "pass",
+    "reviewer": "/root/reader_late",
+    "method": "Native full frame, temporary face crops compared against exact canonical portraits, all visible labels read against current MDX/YAML.",
+    "identity": "Farah and Nazari retain ages, face morphology, hairline and signature equipment under natural yaw. Neck length and head/body proportion balanced.",
+    "anatomy": "Two connected arm chains per person. Natural stylus and pager/book grips, supported free hands. Science r1 ambiguous opposite-side arm removed in r2; both free and stylus arms now connected visibly on appropriate sides.",
+    "readerDirection": "Both crew share the monitor front viewing side. Science ledger pages face Nazari while blank cover faces audience.",
+    "screenMeaning": "Threshold precise three-row fictional validation table, no invented winner. Science concept uses exact numeric-screen example with absent9 and caveat that all claims still need evidence.",
+    "style": "Candid task/relational eyelines, natural modest expressions, muted sage/brass, background screens inactive.",
+    "publication": "Pending independent root review. No shared ledger/runtime changes."
+  },
+  "canonicalComparisons": [
+    {
+      "character": "dr-farah",
+      "canonicalPath": "docs/art-refs/deep-orbit/dr-farah.png",
+      "candidateCrop": {
+        "left": 730,
+        "top": 295,
+        "width": 295,
+        "height": 355
+      }
+    },
+    {
+      "character": "chief-nazari",
+      "canonicalPath": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "candidateCrop": {
+        "left": 1140,
+        "top": 135,
+        "width": 285,
+        "height": 330
+      }
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+      "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-3137bf9a-7175-4b3a-bfa6-a36f3fd04a53.png",
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-3137bf9a-7175-4b3a-bfa6-a36f3fd04a53.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-concept.webp",
+  "sourceSha256": "6f02e7e3feaa8140d400e45093b37844e6925b33ba53df5a8572b9aa8aeb1d51",
+  "webpSha256": "608db70cb2b14458bc90a908f4e1f8b4dc017a9849c9623a0ac3765102fb68ed",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+    "sourceSha256": "8c34d7e976ac75a46afa22e046fc7d2062627ec2c85b5e1aabec1ca4513ab17f",
+    "webpSha256": "e3dea1206f0e7d00126afcd9331832cb1c74cc253dc7c0c911735b86272571fd",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_late",
+    "status": "approved",
+    "candidateSha256": "6f02e7e3feaa8140d400e45093b37844e6925b33ba53df5a8572b9aa8aeb1d51",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsBodyAndFurniture": "pass",
+      "headNeckAndShoulders": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "screenMeaning": "Threshold precise three-row fictional validation table, no invented winner. Science concept uses exact numeric-screen example with absent9 and caveat that all claims still need evidence."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+        "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-concept.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

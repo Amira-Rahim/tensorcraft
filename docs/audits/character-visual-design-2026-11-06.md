@@ -19,9 +19,12 @@ The Deep Orbit cast has a clear foundation: distinct hair shapes, useful uniform
 
 UI source checks used the [Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md) for image labeling, focus, and motion. Visual judgments below come from the local artwork and project design contracts.
 
-[Full expression comparison](character-visual-design-2026-11-06/all-expressions.jpg). Each row shows neutral followed by the three shipped expressions.
+Current portrait originals remain available for [Mirza](../../art-src/neutrals/commander-mirza-openai-20261106.png), [Farah](../../art-src/neutrals/dr-farah-openai-20261106.png), [Nazari](../../art-src/neutrals/chief-nazari-openai-20261106.png), and [Demir](../../art-src/neutrals/ensign-demir-openai-20261106.png). The [portrait source record](../art-refs/deep-orbit/2026-11-06-human-portrait-repairs/prompts.json) lists the expression originals.
 
-![All 20 shipped character portraits](character-visual-design-2026-11-06/all-expressions.jpg)
+The November 9 cleanup removed the obsolete expression comparison sheets,
+including the 44px and 88px previews. The [cleanup record](deep-orbit-quality-2026-11-08/unused-artwork-cleanup.json)
+preserves their hashes and retained original paths. Findings below describe
+the November 6 audit. Image links open the current artwork.
 
 ## Findings by priority
 
@@ -65,10 +68,6 @@ Direct each state through a specific mouth, brow, and gaze change while preservi
 [AnimatedAvatar](../../packages/ui/src/animated-avatar.tsx) defaults to 44px in lesson dialogue. [The speech styles](../../apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-dialogue.css) use 22px speaker names and 24px body text on desktop. The retained screenshots confirm that the portrait functions mainly as a small identity marker inside a much larger dialogue card.
 
 The characters remain broadly distinguishable at 44px. Subtle expressions, mature facial detail, the chronometer, and uniform markings carry much less meaning at that size. Compare a 64px dialogue portrait with the current layout, including 320px screens, before adopting a new size. A slightly tighter dialogue crop may help without enlarging every surface. This proposed size has not been browser-tested.
-
-![Expressions at 44px](character-visual-design-2026-11-06/expressions-at-44px.png)
-
-![Expressions at 88px](character-visual-design-2026-11-06/expressions-at-88px.png)
 
 ### 6. Low: small prop details drift between states
 

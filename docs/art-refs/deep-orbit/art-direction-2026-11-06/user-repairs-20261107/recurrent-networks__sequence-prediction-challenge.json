@@ -1,0 +1,219 @@
+{
+  "key": "sequence-prediction-challenge",
+  "auditIndex": 28,
+  "id": "recurrent-networks/sequence-prediction",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+    "sha256": "5547b2af3b944835c080edc5fb200e3a3b5c620b13f169bcd8bb37aa64e5cfb3"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir stands LEFT at bridge forecasting console, one hand on trackball, other lightly on desktop, leaning toward monitor RIGHT with delighted concentrated expression as he checks next-step loop. No camera gaze or heldtablet. Display heading \"Next-reading forecast\". Flow \"Recent window\" -> \"Predict next\" -> \"Clamp\" -> \"Append\" with returnarrow fromAppend toRecentwindow. Separate bottom lines \"Reuse saved scaling\" and \"Compare with last-value baseline\". Footer \"Checks pending\". Labels and arrows followonephysicalplane, leave generousspace. No fabricated score, futureevent timestamp or toyforecastpresented asreal. Demir single earpiece is on anatomical RIGHT ear only, as canonical portrait. If his left profile is visible, draw a bare left ear and keep earpiece hidden on far right side. Never mirror equipment.",
+  "meaning": "Forecastchallenge iterative nextreadingprediction,clamp,andappendwithsavedscaling;validatebaseline.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+      "sha256": "5547b2af3b944835c080edc5fb200e3a3b5c620b13f169bcd8bb37aa64e5cfb3",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-594349ff-0ce1-446e-82b6-7525ce8f6fad.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/sequence-prediction-challenge/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/sequence-prediction-challenge/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+  "candidateSha256": "62c717d8813c556047871bf0827e1b7fe063f4e8c18ede89a2eab00f1f021ed8",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir stands LEFT at bridge forecasting console, one hand on trackball, other lightly on desktop, leaning toward monitor RIGHT with delighted concentrated expression as he checks next-step loop. No camera gaze or heldtablet. Display heading \"Next-reading forecast\". Flow \"Recent window\" -> \"Predict next\" -> \"Clamp\" -> \"Append\" with returnarrow fromAppend toRecentwindow. Separate bottom lines \"Reuse saved scaling\" and \"Compare with last-value baseline\". Footer \"Checks pending\". Labels and arrows followonephysicalplane, leave generousspace. No fabricated score, futureevent timestamp or toyforecastpresented asreal. Demir single earpiece is on anatomical RIGHT ear only, as canonical portrait. If his left profile is visible, draw a bare left ear and keep earpiece hidden on far right side. Never mirror equipment.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+          "sha256": "5547b2af3b944835c080edc5fb200e3a3b5c620b13f169bcd8bb37aa64e5cfb3",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-594349ff-0ce1-446e-82b6-7525ce8f6fad.png",
+        "sha256": "62c717d8813c556047871bf0827e1b7fe063f4e8c18ede89a2eab00f1f021ed8"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Forecastchallenge iterative nextreadingprediction,clamp,andappendwithsavedscaling;validatebaseline.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/sequence-prediction-challenge/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/sequence-prediction-challenge/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+      "sha256": "5547b2af3b944835c080edc5fb200e3a3b5c620b13f169bcd8bb37aa64e5cfb3",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+    }
+  ],
+  "independentReview": {
+    "key": "sequence-prediction-challenge",
+    "id": "recurrent-networks/sequence-prediction",
+    "phase": "challenge",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-594349ff-0ce1-446e-82b6-7525ce8f6fad.png",
+    "candidateSha256": "62c717d8813c556047871bf0827e1b7fe063f4e8c18ede89a2eab00f1f021ed8",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+        "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Predict, clamp, append loop is exact challenge; checks pending, scaling retained, baseline meaningful. Native full frame inspected, readable surfaces, coherent hands and furniture.",
+    "alt": "Demir builds the rolling forecast loop and checks its bounds against the saved training scale.",
+    "location": "Archimedes, Bridge"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-594349ff-0ce1-446e-82b6-7525ce8f6fad.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-challenge.webp",
+  "sourceSha256": "62c717d8813c556047871bf0827e1b7fe063f4e8c18ede89a2eab00f1f021ed8",
+  "webpSha256": "06ec4d0f7422fbcdd7d578b25224c034305677b429e70cc568e283cf15c448d6",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+    "sourceSha256": "5547b2af3b944835c080edc5fb200e3a3b5c620b13f169bcd8bb37aa64e5cfb3",
+    "webpSha256": "ea79264f92b75778eef008f81bc6e8c60c6521d3d2ecd67df486ad8004a28231",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-545b7c0b-11b8-49b0-8b8f-d8a14c401d00.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "62c717d8813c556047871bf0827e1b7fe063f4e8c18ede89a2eab00f1f021ed8",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+        "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-challenge.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

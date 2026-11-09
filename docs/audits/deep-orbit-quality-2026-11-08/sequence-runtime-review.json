@@ -1,0 +1,783 @@
+[
+  {
+    "id": "advanced-time-series__beyond-lstm-concept",
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "concept",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+    "runtimeSha256": "263b2e740fcd092d0c270b844381b494e36f0cb29fc4345f039986fd3fd8801f",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:10:36.524709+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Illustrative attention",
+      "Query + Keys",
+      "Scores [2, 1, 0]",
+      "Softmax",
+      "Weights [0.665, 0.245, 0.090]",
+      "Blend Values",
+      "Weights sum to 1"
+    ],
+    "notes": "All flow labels and numeric weights remain readable, with clear panel edges and no clipped characters."
+  },
+  {
+    "id": "advanced-time-series__beyond-lstm-takeaways",
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+    "runtimeSha256": "75c6535c8cd3b563c0a5c26932a8692cbea1b0babf696013dc8b5c4abb0746c1",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:10:36.525613+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Read earlier states",
+      "Query + Keys",
+      "Scores",
+      "Softmax",
+      "Value blend",
+      "High weights: Step 4 and Step 78",
+      "Influence in this blend, not proof of cause"
+    ],
+    "notes": "Both attention peaks and the causal limitation remain readable on the large wall display."
+  },
+  {
+    "id": "advanced-time-series__forecasting-briefing",
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "briefing",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting.webp",
+    "runtimeSha256": "87ef27e8fb0ae735cc6958b4f610c9aa4dd35e3a7c74d615a065d27ddede45fd",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:10:36.526111+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Two forecast runs",
+      "Start from observed history",
+      "Rollout",
+      "Recent window",
+      "Forecast",
+      "Feed back prediction",
+      "Once predictions feed back, the window is no longer exclusively observed history.",
+      "Replay",
+      "Observed history",
+      "One-step prediction",
+      "Add next observation",
+      "Compare with readings that arrive"
+    ],
+    "notes": "The two loops and the smaller feedback-history caveat can be read at 768x512. No label is clipped."
+  },
+  {
+    "id": "advanced-time-series__forecasting-epilogue",
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "epilogue",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp",
+    "runtimeSha256": "ec50c75960303f1b86851a0f872e82a965c840ddca67d01945d8049f06ed37c2",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:10:36.526836+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Timing review",
+      "Forecast 03:12",
+      "Observed 03:08",
+      "4 minutes early",
+      "Initial pulse gap: 73.4 seconds",
+      "Initial larger cycle: 47 minutes",
+      "Both measured gaps are shrinking",
+      "Cause and zero date unresolved"
+    ],
+    "notes": "All key timing facts are readable on the upright wall display. The duplicate paper is smaller, while the main display preserves the complete evidence."
+  },
+  {
+    "id": "advanced-time-series__forecasting-takeaways",
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-takeaways.webp",
+    "runtimeSha256": "e511ffa9711d70cb60cac7fe4706108ea1f872dbdea6c20e9192428bc1fe3d33",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:10:36.527392+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Compare the same horizon",
+      "Earlier period",
+      "Later period",
+      "Observed history",
+      "One-step prediction",
+      "No prediction feedback",
+      "Rising error prompts investigation",
+      "Cause unresolved"
+    ],
+    "notes": "Both comparison columns, small feedback labels and the unresolved-cause line remain readable."
+  },
+  {
+    "id": "advanced-time-series__kalman-filters-concept",
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "concept",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+    "runtimeSha256": "3dd348b528814e5fe65005ea3114db83422d28c0d8c0970abd472008a5eb2757",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:11:55.900209+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Scalar Kalman update",
+      "Predict variance",
+      "Compute gain",
+      "Correct estimate and variance",
+      "Next reading",
+      "Q = 0.1",
+      "R = 1",
+      "Initial variance = 1",
+      "A level model; daily change is not a state"
+    ],
+    "notes": "All loop labels and parameters remain readable. The lower model limitation fits inside the display."
+  },
+  {
+    "id": "advanced-time-series__kalman-filters-epilogue",
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "epilogue",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+    "runtimeSha256": "11228fb692ab569e8b9dfdefa29b0d9d67eae8edcba662b9d2473b427848bca9",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:11:55.901088+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Interval review",
+      "Smoothed estimate: 72.4 s",
+      "Latest reading: 72.0 s",
+      "Q = 0.1 R = 1",
+      "Noise assumptions need checking",
+      "Backup transmission and full-thrust plans by 0800"
+    ],
+    "notes": "The measurement comparison, uncertainty caveat and deadline remain readable in full."
+  },
+  {
+    "id": "advanced-time-series__kalman-filters-takeaways",
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-takeaways.webp",
+    "runtimeSha256": "809aad9a92496c43506674343032ca63a8951dc3b535d2d9d693199a9b9f885f",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:11:55.901710+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Smoother, but lagging",
+      "Final estimate 72.43 s",
+      "Latest reading 72.00 s",
+      "Gap 0.43 s",
+      "Q = 0.1 R = 1",
+      "Tracks level, not change per day"
+    ],
+    "notes": "Large numeric evidence and the smaller state-model limitation remain readable. Nothing is cut off."
+  },
+  {
+    "id": "advanced-time-series__temporal-attention-briefing",
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "briefing",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+    "runtimeSha256": "52afb243f0b4f426db0ad65dd90e977b0244e2f94c1fe25a2bfcb7342d08fbe7",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:11:55.902164+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "80-reading window",
+      "Step 4",
+      "Amplitude spike",
+      "Step 78",
+      "Frequency shift",
+      "74 positions apart",
+      "4.0 s",
+      "77.4 s",
+      "Raw gap: 73.4 s",
+      "Schematic mission capture"
+    ],
+    "notes": "The complete capture labels and both time-versus-position distinctions remain readable without clipping."
+  },
+  {
+    "id": "advanced-time-series__temporal-attention-concept",
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "concept",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+    "runtimeSha256": "8f087dfd4e76daeb9faa12239c378f16632ba51a903eabf37c5e2aa0d7f1c14b",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:11:55.902624+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Position affects scores",
+      "Readings + position",
+      "Scorer",
+      "Softmax weights",
+      "Original readings",
+      "Weighted summary",
+      "Summary keeps original features only"
+    ],
+    "notes": "The two data paths are clear, and the full lower explanatory line fits on the main display."
+  },
+  {
+    "id": "advanced-time-series__temporal-attention-takeaways",
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+    "runtimeSha256": "02f6c39528974b1cdbdc448816c14e22f533639d6ae9a58b17cf7415a8a26197",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:12:51.202514+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Check the whole window",
+      "Complete: 80 readings",
+      "Steps 0-79",
+      "Onset at step 4",
+      "Truncated: 48 readings",
+      "Kept: 32-79",
+      "Missing: 0-31",
+      "Onset lost",
+      "Weight sum = 1",
+      "Normalization does not restore missing readings",
+      "Same captured window"
+    ],
+    "notes": "All retained and missing ranges remain readable. The normalization limitation fits fully across the lower display."
+  },
+  {
+    "id": "advanced-time-series__time-series-ensemble-methods-concept",
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "concept",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-concept.webp",
+    "runtimeSha256": "d95e631e4ac239ca3ec9a0e2ae11e88ba98bafee579b158ffc2293b9d462b45b",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:12:51.203491+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Prior-period errors set weights",
+      "Model",
+      "MAE",
+      "Rounded weight",
+      "LSTM 0.045 0.333",
+      "Attention 0.038 0.467",
+      "Kalman 0.058 0.200",
+      "Weighted blend",
+      "Weights sum to 1. Evaluate on a separate period."
+    ],
+    "notes": "The three numeric rows and the evaluation caveat remain readable, including the smaller table headers."
+  },
+  {
+    "id": "advanced-time-series__time-series-ensemble-methods-takeaways",
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+    "runtimeSha256": "e62daaa1e2cd19b6a6dab3581ab2acd5f0c83d259f26d8efb0b28ae5b7623626",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:12:51.204006+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Illustrative comparison",
+      "MAE",
+      "Member 1 0.052",
+      "Member 2 0.036",
+      "Member 3 0.050",
+      "Blend 0.041",
+      "Best member wins this comparison."
+    ],
+    "notes": "All values and the conclusion remain clear on the angled display, with no clipped letters."
+  },
+  {
+    "id": "anomaly-detection__autoencoders-briefing",
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "briefing",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+    "runtimeSha256": "6e9a49d565cdcc8a53b0adf429a14c28656cb19be0c9368ee9d2d9fd4186e900",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:12:51.204473+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "One reading, three checks",
+      "Amplitude normal",
+      "Frequency normal",
+      "Phase normal",
+      "Combination unseen in eleven days",
+      "Check feature relationships"
+    ],
+    "notes": "The three individual checks and the relationship warning are large and readable."
+  },
+  {
+    "id": "anomaly-detection__autoencoders-concept",
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "concept",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+    "runtimeSha256": "2e2555364e1d17ea3434549945e12572241df78e9b0057095abf49304cdac57d",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:12:51.205066+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Mission autoencoder",
+      "3 raw + 8 FFT features",
+      "Input: 11 features",
+      "Encoder",
+      "Bottleneck: 4",
+      "Decoder",
+      "Rebuilt: 11 features",
+      "Evaluate reconstruction error"
+    ],
+    "notes": "The architecture sizes, transition labels and evaluation instruction remain readable at the requested size."
+  },
+  {
+    "id": "anomaly-detection__autoencoders-epilogue",
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "epilogue",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+    "runtimeSha256": "e43e1916527eea24bbbbc8ede9880e09e92adf0a2aca6dd07a3df36414b64662",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:14:08.463746+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Mission review",
+      "Error: 1.4x baseline",
+      "Below this run cutoff",
+      "412 suspect rows / 28,800",
+      "Activity near 73.4 Hz",
+      "Next run: 01:15",
+      "Review training rows",
+      "Cause unresolved"
+    ],
+    "notes": "All mission facts and the action remain readable. Farah overlaps the lower display border without hiding any key text."
+  },
+  {
+    "id": "anomaly-detection__reconstruction-error-challenge",
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "challenge",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+    "runtimeSha256": "2be1e41666885db4db9cff1837f73d11c257ae05369081b4740928053682f7a1",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:14:08.464784+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Synthetic offset model",
+      "A: [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]",
+      "B: [0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1]",
+      "Rebuild: add 0.1 to every feature",
+      "MSE A: pending",
+      "MSE B: pending",
+      "Tensor change: pending"
+    ],
+    "notes": "Both complete input arrays remain readable, including the final values and closing brackets. All pending result labels fit."
+  },
+  {
+    "id": "anomaly-detection__reconstruction-error-concept",
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "concept",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+    "runtimeSha256": "6deee76c43022755b8e8098334bd35c4e927d5509bf36f1dc6796c2ad6bcecad",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:14:08.465406+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Input vs rebuilt features",
+      "Subtract",
+      "Square each gap",
+      "Mean over 11 features",
+      "One MSE per reading",
+      "11 per-feature squared errors"
+    ],
+    "notes": "All operation boxes and the separate per-feature error branch remain readable."
+  },
+  {
+    "id": "anomaly-detection__reconstruction-error-epilogue",
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "epilogue",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+    "runtimeSha256": "fcda957dfd7f1669940f2ec1fb921f2c48c926264e91036a8f999e6b8133c824",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:14:08.466537+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Mission squared errors",
+      "fft_5: 64.12",
+      "fft_6: 2.89",
+      "amplitude: 0.71",
+      "Other eight: each below 0.1",
+      "fft_5: 72 Hz bin nearest 73.4 Hz",
+      "ARIA replay",
+      "400 decisions",
+      "Priority 3",
+      "Queued"
+    ],
+    "notes": "The error table, frequency-bin clarification and secondary replay status all remain readable and unclipped."
+  },
+  {
+    "id": "anomaly-detection__reconstruction-error-takeaways",
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+    "runtimeSha256": "800722f3304165b24e760f7b74b17ffc39fd36279342442282e9734640b7e54f",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:14:08.467175+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Constructed mapping",
+      "[1000, 0] rebuilt [1000, 0] MSE 0",
+      "[0, 0.2] rebuilt [0, 0] MSE 0.02",
+      "Low error can miss an anomaly"
+    ],
+    "notes": "Both constructed examples and their distinct errors remain readable. The lower limitation line is fully visible."
+  },
+  {
+    "id": "anomaly-detection__the-anomaly-takeaways",
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-takeaways.webp",
+    "runtimeSha256": "ae8f1a0342deb90827cc0d29943a3be5f47fad737f6a31bd1c1c1e413610ef27",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:15:15.575374+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Shared capture",
+      "One input",
+      "Statistical: quiet",
+      "Autoencoder: flag",
+      "LSTM: flag",
+      "Votes: 2",
+      "Alert: investigate",
+      "Cause unresolved",
+      "Shared training data can affect multiple votes"
+    ],
+    "notes": "The three model states, vote count and shared-training caveat remain readable. Both lower warning lines fit inside the panel."
+  },
+  {
+    "id": "anomaly-detection__threshold-tuning-takeaways",
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "takeaways",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp",
+    "runtimeSha256": "392fcf5e56125cf585c6309f557eb29b35a64ec6212258eca6604d47ab864117",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:15:15.576286+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Fictional validation report",
+      "Capture",
+      "Crew pager",
+      "Cutoff 0.2 1.0",
+      "Precision 0.34 1.00",
+      "Recall 1.00 0.72",
+      "Save events",
+      "Limit wakeups",
+      "Future rate: unverified"
+    ],
+    "notes": "Both threshold columns and every numeric value remain readable, with the fictional and unverified qualifiers intact."
+  },
+  {
+    "id": "recurrent-networks__sliding-windows-challenge",
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "challenge",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-challenge.webp",
+    "runtimeSha256": "9ecabc923db448daa0c704fd0dc41632cce5fef2653ba03a20c4eed0f25492d2",
+    "runtimeDimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T08:15:15.576744+00:00",
+    "method": "Viewed a full-frame 768x512 PNG made by Sharp from the exact published WebP. Diagnostic resize only, with no crop or editing. Checked key lesson text and clipping at the requested display size.",
+    "verdict": "PASS",
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "findings": [],
+    "temporaryPreviewRemoved": true,
+    "readableText": [
+      "Synthetic window check",
+      "Readings: 0 through 11",
+      "Window: 4",
+      "Split at: 8",
+      "Stride: 1",
+      "Split the recording first",
+      "Keep windows within each side",
+      "Use the last reading label",
+      "Checks pending"
+    ],
+    "notes": "All fixture values, the three checklist items and pending status remain readable on the angled monitor."
+  }
+]

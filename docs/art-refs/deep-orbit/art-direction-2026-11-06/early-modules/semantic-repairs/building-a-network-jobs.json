@@ -1,0 +1,89 @@
+[
+  {
+    "id": "neural-networks/building-a-network",
+    "phase": "briefing",
+    "cast": [
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Preserve Mirza currentheadsize and natural seatedauthority/raisedopenhand/otherhandrail pose. Replace cylindricalholo with concise readable 'Bridge classifier' diagram: '3 inputs' rightarrow '32 ReLU' rightarrow '16 ReLU' rightarrow '1 sigmoid'. Footer '673 parameters' and 'Ready to compile'. No trainingresults or madeupnodeweb/radar. All rear screens inactive.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/building-a-network",
+    "phase": "concept",
+    "cast": [
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Subtly reduce Mirza fullhead5percent only, preservefacialshape, neck andtabletgrip. Replace floatingpanel with3separatewide rows: 'Build layers' arrow 'predict() available'; 'compile()' arrow 'Adam / binaryCrossentropy / accuracy'; 'fit()' arrow 'Updates weights'. Footer 'compile() does not train or reset weights'. No other diagrams orprogressbars. All ancillaryscreens dark.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-concept-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/building-a-network",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Subtly reduce Demir fullhead8percent only, preserveidentity. Maintainindexonkey andoppositehandholdingnotecard. Two mainconsolepanels: LEFT title 'Copy A',subtitle '24 / 12 / 1 units, 529 parameters', orderedworkflow 'Save initial weights + scores' downwardarrow 'fit: 50 epochs, batch 16' downwardarrow 'Save new scores'. RIGHT title 'Copy B',same subtitle '24 / 12 / 1 units, 529 parameters', 'Save initial scores', 'Leave untrained'. Both are TASK PLAN, no scores/results/success. Physicalnotecard clearlyreads 'Practice data [120,8]' and '0-59 calm' and '60-119 flagged'. Wristdisplayoff. Allotherpanels dark.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-challenge-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/building-a-network",
+    "phase": "takeaways",
+    "cast": [
+      "ensign-demir",
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Reduce both wholeheads just5percent while preservingcanonicaladultmorphology; retain four connectedarms, Demirtablet andMirzapocketwatch hand/hiphand. Replace fulltabletcontent with3spaciousrows: 'Build: predict() works', 'Compile: training settings', 'Fit: updates weights'. Footer 'Same training rows; no unseen-data test'. No extra charts orsuccessbars. All backgroundscreens and wristinactive.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-takeaways-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/building-a-network",
+    "phase": "epilogue",
+    "cast": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Reduce Farahwholehead only8percent preservingidentity, naturalneck andtwo connectedarms, cardandkeyboardcontacts. Replace two largemonitors: LEFT title 'Initial state A', below 'Starting weights saved'; RIGHT title 'Initial state B',below 'Starting weights saved'. Smalluppermonitor title 'Sample 7741' and note 'Rank changed'. Physicalcard sheholds reads 'Train and test'. Show no exactranks orabsolutescores because storydoesnotgive them. No alertcolors. Allrear/wrist/roundradarscreens inactive. These saved untrainedinitializations are compared beforetraining, not evidenceofsuccessfulclassifier.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-epilogue-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+    ],
+    "status": "prepared"
+  }
+]

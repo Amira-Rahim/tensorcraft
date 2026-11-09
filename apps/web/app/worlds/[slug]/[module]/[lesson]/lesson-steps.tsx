@@ -77,6 +77,7 @@ import {
   historyStep,
 } from "@/lib/lesson-phases";
 import { LessonConceptWorkbench } from "@/app/components/lesson-visuals/lesson-workbench";
+import { resolveLessonSceneArt } from "@/lib/lesson-scene-art";
 
 /**
  * Per-world vocabulary. The reader used to hardcode Deep Orbit's words
@@ -1679,6 +1680,13 @@ function StepBriefing({
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const spaciousBriefing = worldSlug === "deep-orbit";
+  const briefingArt = resolveLessonSceneArt({
+    worldSlug,
+    moduleSlug,
+    lessonSlug,
+    phase: "briefing",
+    scene: lesson.scene,
+  })!;
   const hasAuthoredNote = lesson.body.includes("BriefingTakeaway");
   const visual = DEEP_ORBIT_VISUALS[lessonSlug];
   const investigation = LESSON_INVESTIGATIONS[lessonSlug];
@@ -2066,8 +2074,8 @@ function StepBriefing({
               scriptState !== "idle" ? (
                 <SceneClip
                   clipUrl={clipUrl}
-                  posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-                  alt={lesson.scene.portraitAlt}
+                  posterSrc={briefingArt.src}
+                  alt={briefingArt.alt}
                   autoPlayEligible={
                     scriptAutoPlay &&
                     !prefersSkippedScript() &&
@@ -2079,8 +2087,8 @@ function StepBriefing({
               ) : lesson.scene ? (
                 <ScenePortrait
                   beat
-                  src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-                  alt={lesson.scene.portraitAlt}
+                  src={briefingArt.src}
+                  alt={briefingArt.alt}
                 />
               ) : null}
             </div>
@@ -2307,6 +2315,13 @@ function StepTakeaways({
   recallSettled: boolean;
   onRecallPending: (pending: number) => void;
 }) {
+  const art = resolveLessonSceneArt({
+    worldSlug,
+    moduleSlug,
+    lessonSlug,
+    phase: "takeaways",
+    scene: lesson.scene,
+  });
   const shared = {
     lesson,
     exercises,
@@ -2329,6 +2344,13 @@ function StepTakeaways({
       </div>
       {recallSettled && (
         <>
+          {art && (
+            <ScenePortrait
+              src={art.src}
+              alt={art.alt}
+              className="lesson-takeaways-scene mb-7 w-full"
+            />
+          )}
           <div className="lesson-prose" data-testid="takeaways-prose">
             <LessonContent {...shared} visibleComponents={TAKEAWAYS_AFTER} />
           </div>
@@ -2364,6 +2386,13 @@ function StepConsequence({
    *  its module; null otherwise (replay, mid-module, no patch art). */
   award?: { src: string; moduleName: string; moduleTerm: string } | null;
 }) {
+  const art = resolveLessonSceneArt({
+    worldSlug,
+    moduleSlug,
+    lessonSlug,
+    phase: "epilogue",
+    scene: lesson.scene,
+  })!;
   if (worldSlug === "deep-orbit") {
     const shared = {
       lesson,
@@ -2379,11 +2408,9 @@ function StepConsequence({
         scene={
           lesson.scene
             ? {
-                src: `/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}${lesson.scene.epilogueLocation ? "-epilogue" : ""}.webp`,
-                alt:
-                  lesson.scene.epiloguePortraitAlt ?? lesson.scene.portraitAlt,
-                location:
-                  lesson.scene.epilogueLocation ?? lesson.scene.location,
+                src: art.src,
+                alt: art.alt,
+                location: art.location ?? lesson.scene.location,
               }
             : undefined
         }
@@ -2421,18 +2448,17 @@ function StepConsequence({
       {lesson.scene && (
         <SceneHeading
           prefix="Epilogue"
-          location={lesson.scene.epilogueLocation ?? lesson.scene.location}
+          location={art.location ?? lesson.scene.location}
         />
       )}
 
-      {/* Epilogue shot, only for the lessons with a distinct epilogue
-          location (the -epilogue asset variant). No beat: this step has no
-          playback. Missing art removes itself, as on the Briefing. */}
+      {/* The approved ending can change the moment without changing rooms.
+          No playback beat runs on this step. */}
       {lesson.scene && (
         <ScenePortrait
-          src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}${lesson.scene.epilogueLocation ? "-epilogue" : ""}.webp`}
-          alt={lesson.scene.epiloguePortraitAlt ?? lesson.scene.portraitAlt}
-          aspectRatio="21/9"
+          src={art.src}
+          alt={art.alt}
+          aspectRatio={worldSlug === "deep-orbit" ? "3 / 2" : "21 / 9"}
           className="lesson-ending-scene mb-7 w-full"
         />
       )}

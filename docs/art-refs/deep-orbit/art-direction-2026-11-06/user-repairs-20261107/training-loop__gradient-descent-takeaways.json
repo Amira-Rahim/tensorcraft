@@ -1,0 +1,187 @@
+{
+  "id": "training-loop/gradient-descent",
+  "phase": "takeaways",
+  "name": "gradient-descent-takeaways-reader",
+  "cast": [
+    "ensign-demir",
+    "chief-nazari"
+  ],
+  "room": "engineering",
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+  "meaning": "Compare same quadratic loss(x-3)^2 fromx0, rates.1 and1.5. Correct xtrace .1:[0,.6,1.08,1.464];1.5:[0,9,-9,27]. Small enough step local; not universalnetworkthreshold.",
+  "prompt": "Candid narrative restaging of takeaway. First2 canonical Demir/Nazari, third engineeringROOMONLY, final rejected outward-card scene. Remove held teaching tablet. Demir and Nazari work side-by-side at a real engineering diagnostic console, camera obliquely beside them, both faces naturally visible3quarter. Demir sits or leans near keyboard, curious relieved halfsmile, eyes on smaller-rate row. Nazari stands just behind his left shoulder, skeptical raised brow directed at the divergent numbers, one hand naturally resting on nearby counter, other on her hip. Demir's one hand rests on keyboard and other gently turns a physical rate-selector knob with thumb/index opposed, no pointing towardviewer. Rebuild whole torsos/arms/console so each hand has neutralwrist contact and all shoulders connect. Show one console facing BOTH crew and camera on same view side. Exact concise content: 'Quadratic probe'; 'Loss = (x - 3)^2'; 'x by step'; two spacious rows 'Rate 0.1' with '0, 0.6, 1.08, 1.464' and 'Rate 1.5' with '0, 9, -9, 27'. These are two small supplied mathematical traces, not results from trained DEEPSCAN. No additional graph, lossvalues or universalclaim. Text and row boxes strongly follow actual monitor plane with appropriate glyph shear, readable hierarchy. This is active investigation, not two people presenting cards. Full1536x1024, clean cel-shaded illustration. Canonical portraits are identity authority, room master is architecture ONLY, final image is target. Preserve exact canonical face shape/nose/jaw/eyes/age/hair/equipment; Farah lens anatomical LEFT, Demir comms anatomical RIGHT. Moderate warm stylized adult proportions, no shrinking heads. Natural working or relational eyelines, no camera gaze. All shoulders/elbows/wrists/hands continuous; one thumb and four fingers per hand with plausible contact, neutral wrists, no extra arms or mirrored hands. Text/graphs must share supporting screen/paper plane and face the person using them, including foreshortening and baselines. Inactive secondary screens, no arbitrary waves/bars. Muted gray-sage, charcoal/worn brass, natural warm skin; no neon mint or mustard wash.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "ROOM ONLY",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+      "role": "exact active or ready target",
+      "sha256": "ae609362d0437aa477795dd8b899b7cea641b53b06e5a1ffa3f7553a5193f70c"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+      "sha256": "1ff5952eb7da68d094f13533c6a1720674167fde98749ac548d1013b29518253"
+    }
+  ],
+  "status": "published",
+  "tool": "built-in imagegen",
+  "generationHistory": [
+    {
+      "prompt": "Candid narrative restaging of takeaway. First2 canonical Demir/Nazari, third engineeringROOMONLY, final rejected outward-card scene. Remove held teaching tablet. Demir and Nazari work side-by-side at a real engineering diagnostic console, camera obliquely beside them, both faces naturally visible3quarter. Demir sits or leans near keyboard, curious relieved halfsmile, eyes on smaller-rate row. Nazari stands just behind his left shoulder, skeptical raised brow directed at the divergent numbers, one hand naturally resting on nearby counter, other on her hip. Demir's one hand rests on keyboard and other gently turns a physical rate-selector knob with thumb/index opposed, no pointing towardviewer. Rebuild whole torsos/arms/console so each hand has neutralwrist contact and all shoulders connect. Show one console facing BOTH crew and camera on same view side. Exact concise content: 'Quadratic probe'; 'Loss = (x - 3)^2'; 'x by step'; two spacious rows 'Rate 0.1' with '0, 0.6, 1.08, 1.464' and 'Rate 1.5' with '0, 9, -9, 27'. These are two small supplied mathematical traces, not results from trained DEEPSCAN. No additional graph, lossvalues or universalclaim. Text and row boxes strongly follow actual monitor plane with appropriate glyph shear, readable hierarchy. This is active investigation, not two people presenting cards. Full1536x1024, clean cel-shaded illustration. Canonical portraits are identity authority, room master is architecture ONLY, final image is target. Preserve exact canonical face shape/nose/jaw/eyes/age/hair/equipment; Farah lens anatomical LEFT, Demir comms anatomical RIGHT. Moderate warm stylized adult proportions, no shrinking heads. Natural working or relational eyelines, no camera gaze. All shoulders/elbows/wrists/hands continuous; one thumb and four fingers per hand with plausible contact, neutral wrists, no extra arms or mirrored hands. Text/graphs must share supporting screen/paper plane and face the person using them, including foreshortening and baselines. Inactive secondary screens, no arbitrary waves/bars. Muted gray-sage, charcoal/worn brass, natural warm skin; no neon mint or mustard wash.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical ensign-demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical chief-nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "role": "ROOM ONLY",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+          "role": "exact active or ready target",
+          "sha256": "ae609362d0437aa477795dd8b899b7cea641b53b06e5a1ffa3f7553a5193f70c"
+        }
+      ],
+      "output": {
+        "path": "/tmp/gradient-descent-takeaways-reader-candidate.png",
+        "sha256": "bf8e9c7e9ab82459601ddf7908d92a044a2d45b50bf66419363b0bd5d6a04a93",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-972cfac4-daef-4a7b-9dde-5c8ea114102b.png"
+      }
+    }
+  ],
+  "candidate": {
+    "path": "/tmp/gradient-descent-takeaways-reader-candidate.png",
+    "sha256": "bf8e9c7e9ab82459601ddf7908d92a044a2d45b50bf66419363b0bd5d6a04a93",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-972cfac4-daef-4a7b-9dde-5c8ea114102b.png"
+  },
+  "ownReview": {
+    "native": "pass",
+    "identity": "Fresh canonical comparisons for Demir and Nazari pass adult morphology and equipment.",
+    "anatomy": "Demir seated with supported keyboard hand and opposed thumb/index on physical knob; remaining fingers naturally occluded behind knob. Nazari one hand on hip, other supported on counter. Full chains and necks natural.",
+    "readerDirection": "Single console faces both crew, camera shares viewing side; no outward card.",
+    "screen": "Loss(x-3)^2, x by step, rate.1:[0,.6,1.08,1.464];rate1.5:[0,9,-9,27]. Source-matched, independently recomputed with x-=rate*2*(x-3). All type follows monitor plane.",
+    "palette": "muted sage/brass/charcoal, no neon wash",
+    "originalEvidence": {
+      "candidate": {
+        "path": "/tmp/gradient-descent-takeaways-reader-candidate.png",
+        "sha256": "bf8e9c7e9ab82459601ddf7908d92a044a2d45b50bf66419363b0bd5d6a04a93",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-972cfac4-daef-4a7b-9dde-5c8ea114102b.png"
+      },
+      "DemirCrop": {
+        "left": 345,
+        "top": 200,
+        "width": 325,
+        "height": 400
+      },
+      "NazariCrop": {
+        "left": 619,
+        "top": 72,
+        "width": 285,
+        "height": 320
+      },
+      "knobHandCrop": {
+        "left": 900,
+        "top": 760,
+        "width": 240,
+        "height": 170
+      },
+      "canonicalReferences": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical ensign-demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical chief-nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "temporaryProofs": "Fresh face and hand crops viewed then removed."
+  },
+  "candidatePath": "art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+  "candidateSha256": "bf8e9c7e9ab82459601ddf7908d92a044a2d45b50bf66419363b0bd5d6a04a93",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-972cfac4-daef-4a7b-9dde-5c8ea114102b.png",
+  "temporaryCandidatePathAtReview": "/tmp/gradient-descent-takeaways-reader-candidate.png",
+  "publishedSource": "art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp",
+  "sourceSha256": "bf8e9c7e9ab82459601ddf7908d92a044a2d45b50bf66419363b0bd5d6a04a93",
+  "webpSha256": "9247939cf3bb5e60e65237e6d845665a6a6a23faa58230ca5ecbe14cf87a104e",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+    "sourceSha256": "ae609362d0437aa477795dd8b899b7cea641b53b06e5a1ffa3f7553a5193f70c",
+    "webpSha256": "899bf06b7331f446e9271bdf2254bcfa50a6d5e13c3647dec8c073e996f7febb",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-68f9654f-bdd8-4ea5-8ace-2b3a0db6a5ae.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/late_final",
+    "status": "approved",
+    "candidateSha256": "bf8e9c7e9ab82459601ddf7908d92a044a2d45b50bf66419363b0bd5d6a04a93",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsAndBody": "pass",
+      "readerDirection": "pass",
+      "screenPerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "Compare same quadratic loss(x-3)^2 fromx0, rates.1 and1.5. Correct xtrace .1:[0,.6,1.08,1.464];1.5:[0,9,-9,27]. Small enough step local; not universalnetworkthreshold."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+        "sha256": "1ff5952eb7da68d094f13533c6a1720674167fde98749ac548d1013b29518253"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

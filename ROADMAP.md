@@ -1,6 +1,6 @@
 # Tensorcraft product roadmap
 
-Updated November 3, 2026. This roadmap covers the learning platform, all five
+Updated November 9, 2026. This roadmap covers the learning platform, all five
 worlds, course production, learner evidence, operations, and growth.
 
 This roadmap includes the complete retained implementation inventory from the
@@ -34,7 +34,7 @@ new deadline, spending commitment, or promise to build every deferred idea.
 
 Deep Orbit is the only launched world: 11 modules, 56 lessons, and 65
 exercises. Its first five lessons work without an account. The current offer
-is a one-time $50 purchase. Sequential module unlock and purchaser-only
+is $79 introductory and $99 regular, paid once. Sequential module unlock and purchaser-only
 route/readiness controls remain owner decisions.
 
 The shared five-phase lesson experience, visual/story rollout, training
@@ -293,9 +293,9 @@ a revenue forecast or an instruction to implement every growth proposal.
 - Collect consented reviews and project examples before adding testimonials,
   customer counts, ratings, or similar proof. Revisit search indexing and
   content discoverability using real results.
-- Evaluate the later $70 offer only through an owner-approved test informed
-  by learning, purchases, refunds, and support. Preserve current purchase
-  commitments. Positive contribution and qualified demand determine whether
+- Evaluate the $79 introductory and $99 regular offer using learning,
+  purchases, refunds, and support evidence. The owner approved these prices
+  on November 9. Preserve current purchase commitments. Positive contribution and qualified demand determine whether
   acquisition spend can increase.
 
 Sources: [growth strategy](docs/roadmap.md),
@@ -1189,7 +1189,11 @@ implementation. One contact address is omitted from this reading inventory.
 
   **Prepare the revised course for the existing formal novice pilot.** Gate: B, prerequisite coverage, opening implementation, and internal checks are complete; review opening diagnostics before freezing the study version. Refresh the Q6 handoff below and retain the [pilot protocol](docs/learning-study/pilot-protocol.md), including all five free lessons, early independent model work, the final project, delayed checks, and 30-day use evidence. Schedule and budget this separately from the twelve-person opening round. Required resource fields and recruitment remain pending; no participants or results are implied. Treat observed enjoyment, independent skill, and genuine purchases as separate evidence. Full-course learner evidence remains required before claiming beginner effectiveness or scaling an unproven paid funnel.
 
-### Current content priority: the $70 course standard (2026-09-17)
+### Content quality and learner evidence (2026-09-17)
+
+The November 9 owner decision sets $79 introductory and $99 regular. It
+supersedes the earlier $50 launch and $70 later pricing instructions in this
+retained inventory. Quality and learner-evidence requirements remain open.
 
 - **CB-018**, source line 259. Status: Open as recorded / reproduce current state.
 
@@ -1197,7 +1201,7 @@ implementation. One contact address is omitted from this reading inventory.
 
 - **CB-019**, source line 300. Status: Open as recorded / reproduce current state.
 
-  **After quality and learner gates, Q7:** validate the $70 offer using actual purchase/refund evidence. Keep the live price at $50 during repairs.
+  **Q7 price validation:** assess the $79 introductory and $99 regular offer using actual purchase, refund, support and learner evidence. The November 9 owner decision supersedes the earlier price hold.
 
 - **CB-020**, source line 302. Status: Open as recorded / reproduce current state.
 

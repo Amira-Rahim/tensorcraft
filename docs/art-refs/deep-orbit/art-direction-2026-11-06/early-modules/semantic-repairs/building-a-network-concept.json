@@ -1,0 +1,51 @@
+{
+  "id": "neural-networks/building-a-network",
+  "phase": "concept",
+  "cast": [
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Subtly reduce Mirza fullhead5percent only, preservefacialshape, neck andtabletgrip. Replace floatingpanel with3separatewide rows: 'Build layers' arrow 'predict() available'; 'compile()' arrow 'Adam / binaryCrossentropy / accuracy'; 'fit()' arrow 'Updates weights'. Footer 'compile() does not train or reset weights'. No other diagrams orprogressbars. All ancillaryscreens dark.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-concept-openai-20261107.png"
+  ],
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+  ],
+  "status": "generated-awaiting-review",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-beb2e10a-50ab-4f5b-aa86-c69d83890dc8.png",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "commander-mirza",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/building-a-network-concept-commander-mirza-proof.png",
+      "sha256": "5859b37f3960c9a31fe4e960c0654d17382dea494c6efb54af56f098542b2bdb",
+      "crop": {
+        "left": 230,
+        "top": 80,
+        "width": 240,
+        "height": 320
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "canonicalSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-752182a3-adf4-4ecd-bde2-2262dbd8190c.png",
+      "priorSha256": "5ce8f566ea2bd9c6c4fee3d320fc20a06cf15271e36a5db7a56ffdb801fce491",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-beb2e10a-50ab-4f5b-aa86-c69d83890dc8.png",
+      "candidateSha256": "9689d20506e8bc0a88b026b46bb4ec93451f537aecf0945f93eb768a185f4d55"
+    }
+  ],
+  "pathSha256": "9689d20506e8bc0a88b026b46bb4ec93451f537aecf0945f93eb768a185f4d55",
+  "screenMeaning": {
+    "section": "Network setup",
+    "spec": "Two separate stages Build layers→predict available, then Compile(Adam,BCE,accuracy)→Fit updates weights. State compile does not train/reset; random initial weights, zero biases.",
+    "currentSource": "art-src/scenes/neural-networks__building-a-network-concept-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-concept.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/commander-mirza.png"
+    ],
+    "cast": [
+      "commander-mirza"
+    ]
+  }
+}

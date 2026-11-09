@@ -1,0 +1,59 @@
+{
+  "phase": "challenge",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "detail": "Demir sits left, Farah stands right. Subtly reduce each full head including hair8percent versus TARGET, preserving exact morphology, yaw, neck attachment and bodies. Main foreground console task header 'One neuron'. Lines 'inputs [1, 2, 3]', 'weights [0.2, 0.8, -0.5]', 'bias 0.1'. Beneath, operation boxes 'dot' then '+ bias' then 'scalar []' with connecting arrows. Small last line 'Expected check: 0.4'. Exercise arithmetic only, not probability or classifier success. Secondary tablet shows 'scalar []'. Remove meaningless bars and waves.",
+  "prompt": "Use case: identity-preserve. Edit the existing Deep Orbit story illustration. The first input image(s) are immutable canonical character portraits; the LAST image is the TARGET scene. Keep each character the exact same adult person: eye spacing, compact nose, cheek and chin width, mouth, hair, age, skin and expression. Farah lens stays on anatomical LEFT eye. Demir comms only anatomical RIGHT ear, never invent a visible-left-ear device. Preserve all limb chains, hands, body pose, furniture, room geometry, camera, framing and scene scale unless a mild head-size adjustment is specifically requested below. Retain warm stylized adult comic art. Muted sage on charcoal-green screens, restrained aged brass, warm lamps. No neon mint bloom, shiny yellow-gold dominance, colored left accent bars, extra people or limbs. No arbitrary decorative plots on incidental monitors: dark standby or relevant short task text. One1536x1024 scene.\nDemir sits left, Farah stands right. Subtly reduce each full head including hair8percent versus TARGET, preserving exact morphology, yaw, neck attachment and bodies. Main foreground console task header 'One neuron'. Lines 'inputs [1, 2, 3]', 'weights [0.2, 0.8, -0.5]', 'bias 0.1'. Beneath, operation boxes 'dot' then '+ bias' then 'scalar []' with connecting arrows. Small last line 'Expected check: 0.4'. Exercise arithmetic only, not probability or classifier success. Secondary tablet shows 'scalar []'. Remove meaningless bars and waves.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png"
+  ],
+  "status": "generated-awaiting-review",
+  "id": "neural-networks/first-neuron",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-1d74f22b-7f0e-4895-bffa-82d5d80af665.png",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/first-neuron-challenge-dr-farah-proof.png",
+      "sha256": "a56b1fb62edf933860d9594300914ae2ab92d61e881bc49f23494143cf14e77a",
+      "crop": {
+        "left": 1040,
+        "top": 35,
+        "width": 260,
+        "height": 330
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-22bc5161-07c2-45e5-8c89-6e419bb2e247.png",
+      "priorSha256": "e9c52ffc397133aaa5460c4675f5dffe7771d07fd50a608ec30e528aa4f3e094",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-1d74f22b-7f0e-4895-bffa-82d5d80af665.png",
+      "candidateSha256": "f939eb6968632f717d04b0f5496a35fcf9ef2b06c62f5da4c554ed6152f5be02"
+    },
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/first-neuron-challenge-ensign-demir-proof.png",
+      "sha256": "2887f1504930872c1c0f1ee6f8127233fd4efa2f425cf0d346c1cf768460bfc8",
+      "crop": {
+        "left": 600,
+        "top": 180,
+        "width": 250,
+        "height": 330
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-22bc5161-07c2-45e5-8c89-6e419bb2e247.png",
+      "priorSha256": "e9c52ffc397133aaa5460c4675f5dffe7771d07fd50a608ec30e528aa4f3e094",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-1d74f22b-7f0e-4895-bffa-82d5d80af665.png",
+      "candidateSha256": "f939eb6968632f717d04b0f5496a35fcf9ef2b06c62f5da4c554ed6152f5be02"
+    }
+  ],
+  "pathSha256": "f939eb6968632f717d04b0f5496a35fcf9ef2b06c62f5da4c554ed6152f5be02",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml"
+  ]
+}

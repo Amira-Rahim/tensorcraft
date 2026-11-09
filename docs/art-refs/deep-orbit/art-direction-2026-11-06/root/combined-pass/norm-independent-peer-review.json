@@ -1,0 +1,101 @@
+{
+  "reviewer": "/root/late_final",
+  "status": "approved",
+  "reviewedAt": "2026-11-07T10:01:55.037885+00:00",
+  "method": "Viewed all five native fullframes and all nine canonical face comparisons. Read current lesson, relevant exercise implementation, exact STREAM and executed-score evidence. No model execution repeated during this peer review.",
+  "sources": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    },
+    {
+      "path": "apps/web/app/components/mdx/deep-scan-demo.tsx",
+      "sha256": "228dacd179b0cd4d42ea46b7f351c9685b70cb9d837ab18b82a742d899879873"
+    },
+    {
+      "path": "apps/web/public/models/deep-scan-preview/model.json",
+      "sha256": "4b958be5be64224c6a3c8d601a5acfae55f8ca2caba97d5d650e2d7d814967e9"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/norm-directions.json",
+      "sha256": "816484933b4e8d4049935c45be5a0df67fa2972dd61ff95ad176ef8d3ec608ea"
+    }
+  ],
+  "records": [
+    {
+      "phase": "briefing",
+      "status": "approved",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-ccbd6811-0267-4e84-b76b-c9c0013b5e02.png",
+      "candidateSHA256": "3c904766c27d949419b1b0732cf690cc608bf62cc593660f034946646e86b5df",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/norm-briefing-identity-proof.png",
+      "proofSHA256": "4ba87555c538f7ae801c8621174acda347c4cd86a58622c462bf6f07b009a9e3",
+      "screenReview": "Four supplied training rows exactly match MDX/YAML with temperature and signal strength correctly paired. No early anomaly reveal.",
+      "identity": "All visible canonical face pairs preserve morphology, adult age, hairstyle and equipment.",
+      "anatomy": "Natural head-neck-shoulder alignment; two coherent arm chains and supported hands/props.",
+      "proportions": "Balanced stylized adult scale, no visible over-reduction or disproportion defect.",
+      "palette": "Muted sage and aged brass, natural warm skin, inactive secondary displays."
+    },
+    {
+      "phase": "concept",
+      "status": "approved",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-5127d719-f0d7-4721-8b7a-4230eb53b573.png",
+      "candidateSHA256": "8ed4c6dbc305b4efa6228eb09e8f77cb22398a1a9a1ce0236b31d9ee16cf76b9",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/norm-concept-identity-proof.png",
+      "proofSHA256": "6a36c2503773371f51d83a38c848e50bed8cb65298b8f4e3c2c4bc642c0395b2",
+      "screenReview": "Means [23,0.5], population standard deviations [2.236,0.224] and first standardized row [-1.342,-1.342] correctly rounded and explicitly marked. Formula correct.",
+      "identity": "All visible canonical face pairs preserve morphology, adult age, hairstyle and equipment.",
+      "anatomy": "Natural head-neck-shoulder alignment; two coherent arm chains and supported hands/props.",
+      "proportions": "Balanced stylized adult scale, no visible over-reduction or disproportion defect.",
+      "palette": "Muted sage and aged brass, natural warm skin, inactive secondary displays."
+    },
+    {
+      "phase": "challenge",
+      "status": "approved",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-bca26cd9-6f85-4b0e-aea6-d463396f79d3.png",
+      "candidateSHA256": "184ab3773c9506f3883caffbf5137bf870af5eead163f7b9d4b41ba4db2db0fc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/norm-challenge-identity-proof.png",
+      "proofSHA256": "0ac724a5efe80803316644145ceb318c380d8cd5381619a31a789fed90e3313c",
+      "screenReview": "Four-row [4,2] batch, weights [0.9,-1.4], bias -0.3, sigmoid and pending scores [4,1] accurately reflect supplied fixed model.",
+      "identity": "All visible canonical face pairs preserve morphology, adult age, hairstyle and equipment.",
+      "anatomy": "Natural head-neck-shoulder alignment; two coherent arm chains and supported hands/props.",
+      "proportions": "Balanced stylized adult scale, no visible over-reduction or disproportion defect.",
+      "palette": "Muted sage and aged brass, natural warm skin, inactive secondary displays."
+    },
+    {
+      "phase": "takeaways",
+      "status": "approved",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cd0ac8d4-3005-4f96-8f08-7b22d8e24d59.png",
+      "candidateSHA256": "40c6c538642177866de6b152bb70c99f723d62ba5e6d4f97553c91dd3d91c101",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/norm-takeaways-identity-proof.png",
+      "proofSHA256": "e582227100a3313701988fd2a314112d56569bd996cdc9db32fa194f82253b8b",
+      "screenReview": "Min/max per feature 20/26 and0.2/0.8 correct. Formula and training-bound reuse correct, later values beyond0..1 and zero-scale divisor1 accurately represent source.",
+      "identity": "All visible canonical face pairs preserve morphology, adult age, hairstyle and equipment.",
+      "anatomy": "Natural head-neck-shoulder alignment; two coherent arm chains and supported hands/props.",
+      "proportions": "Balanced stylized adult scale, no visible over-reduction or disproportion defect.",
+      "palette": "Muted sage and aged brass, natural warm skin, inactive secondary displays."
+    },
+    {
+      "phase": "epilogue",
+      "status": "approved",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-382a3d3f-50a4-462e-851a-d66654b587f6.png",
+      "candidateSHA256": "c89d9b085e5a1c23246bf51491525b8613de6246d6005f5f135d56cccd30258e",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/norm-epilogue-identity-proof.png",
+      "proofSHA256": "d73af12cc22beb481e96a5bd8fc4ba43805fff482293f17eac0dd4640cebebb9",
+      "screenReview": "Six sample IDs agree with actual STREAM. Displayed scores equal rounded root-executed pinned CPU model outputs in norm-directions.json. Sample7741 eight-day archive, review status and unknown cause preserve uncertainty.",
+      "identity": "All visible canonical face pairs preserve morphology, adult age, hairstyle and equipment.",
+      "anatomy": "Natural head-neck-shoulder alignment; two coherent arm chains and supported hands/props.",
+      "proportions": "Balanced stylized adult scale, no visible over-reduction or disproportion defect.",
+      "palette": "Muted sage and aged brass, natural warm skin, inactive secondary displays."
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

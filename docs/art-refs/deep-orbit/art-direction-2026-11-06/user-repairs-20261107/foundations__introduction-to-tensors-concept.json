@@ -1,0 +1,210 @@
+{
+  "key": "introduction-to-tensors-concept",
+  "auditIndex": 44,
+  "id": "foundations/introduction-to-tensors",
+  "phase": "concept",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+    "sha256": "50e1494a9279071028d8a622bf8a4a07b64ff75ddf57a43f8b0d57af097731a0"
+  },
+  "prompt": "Use case: identity-preserve. Replace a Deep Orbit lesson scene, 1536x1024. First references are strict canonical character portraits; preserve facial morphology, age, complexion, brow, eyes, nose, jaw, mouth, hair, costume. Next reference is ROOM ARCHITECTURE ONLY. Last is the edit target, which may have incorrect staging. Balanced stylized adult proportions, short relaxed necks, ordinary shoulders. Exactly two coherent arm chains and natural five-finger hands per person. Furniture contact physically plausible. Faces visible in natural three-quarter working poses, candid curiosity or warm dry humor, no camera gaze. Every screen must face its actual operator, camera sharing the same readable side. Put the physical monitor at the side of the composition and all characters in FRONT of its screen, not behind it. All text and lines share its perspective and foreshortening. Remove front-facing handheld placards and backwards desk documents. Only specified data on main display; all incidental panels and wrist screens dark charcoal. Restrained charcoal/navy, sage #6BAA8A and aged brass #A89060, natural skin, localized soft practical light. No plants, neon lime, golden wash or random waveforms. Demir's communicator belongs on anatomical RIGHT ear, Farah's AR lens on anatomical LEFT eye. Mirza's uniform has its canonical round brass badge, never a clock. Demir alone sits LEFT at a bridge desk, both hands naturally typing on a low keyboard. He leans slightly toward a physical monitor at far RIGHT, focused and pleasantly curious. Its front faces diagonally left toward him and camera. Header \"One tensor axis\". Exact array on two lines: \"[2, 20, 5, 8, 3, 18,\" and \"7, 8, 4, 16, 6, 9]\". Beneath: \"tf.tensor(streamValues)\", then \"shape: [12]\". Footer \"Order comes from the archive header\". Remove tablet and paper, no presenting gesture. Show believable seated pelvis and desk clearance. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+      "sha256": "50e1494a9279071028d8a622bf8a4a07b64ff75ddf57a43f8b0d57af097731a0",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+      "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+      "sha256": "43cf393eb31f1937477fd8dac7b8b5696e05c9ce9211cd404e4771d5822cef70"
+    }
+  ],
+  "status": "published",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+      "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+      "sha256": "43cf393eb31f1937477fd8dac7b8b5696e05c9ce9211cd404e4771d5822cef70"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+      "sha256": "50e1494a9279071028d8a622bf8a4a07b64ff75ddf57a43f8b0d57af097731a0",
+      "role": "exact edit target"
+    }
+  ],
+  "rootTakeover": true,
+  "jobPath": "/tmp/tensorcraft-combined-repairs/introduction-to-tensors-concept/job.json",
+  "candidatePath": "art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d18b9d32-0922-43d4-934f-fb467b29f211.png",
+  "ownReview": {
+    "reviewer": "/root",
+    "verdict": "PASS",
+    "nativeFull": true,
+    "notes": "Native full image inspected against current lesson and canonical original portraits. Exact requested data and screen perspective retained, normal adult neck and shoulder proportions, natural coherent hand chains, candid task gaze and readable operator side, unused displays dark."
+  },
+  "candidateSha256": "b4818e77bd46fe60626a78e669d513648f3ffd34ac589d3ac6cbeab834d02a35",
+  "promptSha256": "f2fa51b41e3a8a55ad0afcd66b8de5e94081130657554af571018c2393299bf5",
+  "independentPeerReview": {
+    "key": "introduction-to-tensors-concept",
+    "metadataPath": "/tmp/tensorcraft-combined-repairs/introduction-to-tensors-concept/job.json",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d18b9d32-0922-43d4-934f-fb467b29f211.png",
+    "candidateSha256": "b4818e77bd46fe60626a78e669d513648f3ffd34ac589d3ac6cbeab834d02a35",
+    "sourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+        "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+        "sha256": "43cf393eb31f1937477fd8dac7b8b5696e05c9ce9211cd404e4771d5822cef70"
+      }
+    ],
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "method": "Independent native full-frame inspection, current lesson and exercise verification, canonical face crops compared side by side.",
+    "notes": "Demir types on a real keyboard while reading the monitor face. Exact 12-value source array, tf.tensor(streamValues), shape [12], and archive-header ordering are correct. No training claim or invented chart. Both hand chains and seated contact are plausible, facial geometry matches canonical portrait, head and neck balanced. Every text box shares monitor perspective, auxiliary displays dark.",
+    "faceCropCoordinates": [
+      {
+        "character": "ensign-demir",
+        "left": 375,
+        "top": 135,
+        "width": 320,
+        "height": 405
+      }
+    ],
+    "temporaryFaceCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d18b9d32-0922-43d4-934f-fb467b29f211.png",
+  "publishedSource": "art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors-concept.webp",
+  "sourceSha256": "b4818e77bd46fe60626a78e669d513648f3ffd34ac589d3ac6cbeab834d02a35",
+  "webpSha256": "94c4066a16a7b4391c59fc7f6c055650bdafe3a902bd04321f722cb3624db6dd",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+    "sourceSha256": "50e1494a9279071028d8a622bf8a4a07b64ff75ddf57a43f8b0d57af097731a0",
+    "webpSha256": "7af815b761d58b8030d3c9d70317bbf9aeb305f83cc70f0dce8fb1fcc2cbe3cb",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-615f2c91-3630-4275-9fbb-6a2fdae992bd.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "b4818e77bd46fe60626a78e669d513648f3ffd34ac589d3ac6cbeab834d02a35",
+    "method": "Independent native full-frame inspection, current lesson and exercise verification, canonical face crops compared side by side.",
+    "checks": {
+      "combinedNativeReview": {
+        "key": "introduction-to-tensors-concept",
+        "metadataPath": "/tmp/tensorcraft-combined-repairs/introduction-to-tensors-concept/job.json",
+        "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d18b9d32-0922-43d4-934f-fb467b29f211.png",
+        "candidateSha256": "b4818e77bd46fe60626a78e669d513648f3ffd34ac589d3ac6cbeab834d02a35",
+        "sourceFiles": [
+          {
+            "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+            "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+          },
+          {
+            "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+            "sha256": "43cf393eb31f1937477fd8dac7b8b5696e05c9ce9211cd404e4771d5822cef70"
+          }
+        ],
+        "verdict": "PASS",
+        "reviewer": "/root/remaining_late",
+        "method": "Independent native full-frame inspection, current lesson and exercise verification, canonical face crops compared side by side.",
+        "notes": "Demir types on a real keyboard while reading the monitor face. Exact 12-value source array, tf.tensor(streamValues), shape [12], and archive-header ordering are correct. No training claim or invented chart. Both hand chains and seated contact are plausible, facial geometry matches canonical portrait, head and neck balanced. Every text box shares monitor perspective, auxiliary displays dark.",
+        "faceCropCoordinates": [
+          {
+            "character": "ensign-demir",
+            "left": 375,
+            "top": 135,
+            "width": 320,
+            "height": 405
+          }
+        ],
+        "temporaryFaceCropsRemoved": true
+      },
+      "authorReview": {
+        "reviewer": "/root",
+        "verdict": "PASS",
+        "nativeFull": true,
+        "notes": "Native full image inspected against current lesson and canonical original portraits. Exact requested data and screen perspective retained, normal adult neck and shoulder proportions, natural coherent hand chains, candid task gaze and readable operator side, unused displays dark."
+      },
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+          "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+          "sha256": "43cf393eb31f1937477fd8dac7b8b5696e05c9ce9211cd404e4771d5822cef70"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+        "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+        "sha256": "43cf393eb31f1937477fd8dac7b8b5696e05c9ce9211cd404e4771d5822cef70"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors-concept.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

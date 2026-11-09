@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:29:33.924278+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__evaluating-deep-scan-epilogue/candidate.png",
+  "candidateSha256": "236f60831a9aff293ae22350a943bf48490892c6753fdc35c680640713e6d84e",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-training-loop__evaluating-deep-scan-epilogue-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__evaluating-deep-scan-epilogue/candidate.png",
+      "rect": [
+        1065,
+        165,
+        330,
+        440
+      ]
+    },
+    {
+      "name": "peer-training-loop__evaluating-deep-scan-epilogue-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__evaluating-deep-scan-epilogue/candidate.png",
+      "rect": [
+        480,
+        735,
+        780,
+        245
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The large wall panel clearly preserves Archive 7741, Signal 3 score 0.518 and the unresolved calibration check, matching the epilogue without calling the score a probability.",
+    "Farah's canonical face, thoughtful gaze, archive-card grip and keyboard hand pass native comparison. Both arm chains and contact points are natural."
+  ],
+  "repairDirection": "None."
+}

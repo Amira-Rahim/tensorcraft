@@ -1,0 +1,21 @@
+{
+  "key": "anomaly-detection/the-anomaly",
+  "phase": "challenge",
+  "source": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261106.png",
+  "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+  "tool": "built-in imagegen",
+  "sourceSha256": "25d25707a32662f212a72057aff34078a5fb421bcdccfb9e8b04b46b142a5b09",
+  "outputSha256": "3934329229d1bb8355d341c2f6f6c32fc5209751f5bfa75e67e97953849d2fb1",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 160728,
+  "webpQuality": 86,
+  "alt": "Demir combines the detector verdicts into a review decision.",
+  "review": {
+    "status": "accepted",
+    "method": "Visual inspection of full generated image, tracing all visible limbs and furniture boundaries; canonical face comparison; source story review.",
+    "notes": "Demir has one pointing hand and one resting hand, natural finger lengths and continuous arms. Two flagged detector indicators and one quiet indicator illustrate majority voting. No origin claim or unanimity."
+  }
+}

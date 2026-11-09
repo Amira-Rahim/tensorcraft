@@ -1,0 +1,151 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "challenge",
+  "index": 32,
+  "cast": [
+    "ensign-demir"
+  ],
+  "prompt": "Use case: precise-object-edit. Reference1 canonical Demir identity, reference2 Bridge ROOM ONLY, reference3 exact correction target. Remove only the thick pale-green vertical accent bar to the left of the Reading/Mean/Standard deviation text block on the monitor. Preserve the existing thin rectangular border around the screen data, all exact words and values, and every other feature including canonical face, natural hands, muted palette, notebook and monitor perspective. No new graphics or symbols. 1536x1024.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-91fb0060-2b25-4b55-b2e2-16c9f1d19f05.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+    "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml"
+  ],
+  "location": "Archimedes, Bridge",
+  "alt": "Demir prepares a z-score check using the supplied synthetic reading and baseline.",
+  "tool": "built-in image_gen",
+  "replacesSha256": "463ff3d48fb6ba4cb550e0e82ca599ac4723623fb193787c24bf1429663c6481",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-5056-73d0-b51c-24bc29e1d898/exec-c57674af-b840-46f5-a132-db054841d3cd.png",
+  "candidateSha256": "7df5015d21de5c4960c941ca3532d80f60c883ffe8c053afec7ee32e842b4f40",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-91fb0060-2b25-4b55-b2e2-16c9f1d19f05.png",
+      "sha256": "907fab3ab72fdf814dbc1d93304f09797a8908f0e553de013c24843dffa37bb5",
+      "role": "exact edit target"
+    }
+  ],
+  "previousCandidate": {
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-91fb0060-2b25-4b55-b2e2-16c9f1d19f05.png",
+    "candidateSha256": "907fab3ab72fdf814dbc1d93304f09797a8908f0e553de013c24843dffa37bb5",
+    "prompt": "Use case: identity-preserve. Replace this Deep Orbit lesson scene,1536x1024. The first reference portraits are strict canonical identities, preserve facial morphology, age, complexion, nose, brow, eyes, mouth, hair, signature equipment. Next reference is the room master for ROOM ARCHITECTURE ONLY, not its old screens or bright colors. Last reference is the edit target to restage. Normal balanced stylized adult heads, short relaxed necks and ordinary shoulders. Exactly two coherent arm chains per person, natural five-finger hands and wrists, convincing contact with solid objects. Characters look at their task or each other with candid curiosity, dry amusement or modest delight, never camera posing or holding information out for the viewer. Every legible display faces its actual operator, with camera beside operator seeing that same front. All text, axes, rules and graphs are projected together onto physical screen plane, not independently pasted upright. Restrained sage #6BAA8A and aged brass #A89060 against charcoal/navy, natural skin and soft practical lights. All incidental screens and wrist displays inactive dark charcoal. Hologram table inactive charcoal; dim lab tube olive-sage. No neon outlining, no fake graphs, arbitrary symbols, invented results or furniture intersections. Demir at a side-on bridge workstation, visible face in three-quarter view, soft engaged smile and eyes on his working screen. One hand on natural keyboard immediately in front of him, other hand holds pencil over a small notebook laid flat facing him. No backward keyboard or floating touch dots. Main physical screen exact setup: \"Synthetic baseline check\"; \"Reading: 100\"; \"Mean: 50\"; \"Standard deviation: 10\"; \"Rule: absolute z-score > 3\"; bottom \"Decision: pending\". This is the supplied exercise example, not mission result. No solved z-score or completed verdict. All text in screen perspective. Recess inactive holographic table, blank unused screens, normal wrist and elbow positions. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "actualReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "role": "canonical identity"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+        "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+        "role": "ROOM ONLY"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+        "sha256": "463ff3d48fb6ba4cb550e0e82ca599ac4723623fb193787c24bf1429663c6481",
+        "role": "edit target"
+      }
+    ]
+  },
+  "ownQA": {
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "inspection": "Native1536x1024 plus temporary face crops side by side with canonical original portraits, current MDX and exercise facts verified",
+    "notes": "Demir prepares a synthetic baseline check with natural keyboard hand and pencil grip over a notebook facing him. Reading100,mean50,standard deviation10 and strict absolute z-score>3 match first exercise fixture; decision pending avoids solved answer. Thick accidental left accent bar removed. Canonical face, normal neck and shoulders, plausible chair/desk clearance, dark wrist and auxiliary panels. Text aligns with tilted screen.",
+    "faceCropCoordinates": [
+      [
+        "ensign-demir",
+        [
+          305,
+          110,
+          665,
+          540
+        ]
+      ]
+    ],
+    "temporaryCropsRemoved": true
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-5056-73d0-b51c-24bc29e1d898/exec-c57674af-b840-46f5-a132-db054841d3cd.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp",
+  "sourceSha256": "7df5015d21de5c4960c941ca3532d80f60c883ffe8c053afec7ee32e842b4f40",
+  "webpSha256": "8904953841e799054ca6e20596675b78c767b5f7eeb027fa47612d28489de33e",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+    "sourceSha256": "463ff3d48fb6ba4cb550e0e82ca599ac4723623fb193787c24bf1429663c6481",
+    "webpSha256": "6a686d029d39254e8db0fa81a2128d7cc6e51cf2a64293f894c7784d07c4a8d7",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_late",
+    "status": "approved",
+    "candidateSha256": "7df5015d21de5c4960c941ca3532d80f60c883ffe8c053afec7ee32e842b4f40",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Demir prepares a synthetic baseline check with natural keyboard hand and pencil grip over a notebook facing him. Reading100,mean50,standard deviation10 and strict absolute z-score>3 match first exercise fixture; decision pending avoids solved answer. Thick accidental left accent bar removed. Canonical face, normal neck and shoulders, plausible chair/desk clearance, dark wrist and auxiliary panels. Text aligns with tilted screen.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+          "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+          "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

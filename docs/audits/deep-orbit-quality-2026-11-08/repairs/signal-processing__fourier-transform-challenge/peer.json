@@ -1,0 +1,83 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fourier-transform-challenge/candidate.png",
+  "candidateSha256": "7b2a57fe9bfdfaea27e573ea6e95481148d64a85b5681aca80a7f5bf6613eddb",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original review, 2x face and hand crops, complete shoulder-elbow-wrist chain and thumb-side check, canonical portrait comparison, and current lesson plus relevant exercise verification.",
+  "canonicalFaceReferences": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 3,
+      "name": "runtime-final-3-face-ensign-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fourier-transform-challenge/candidate.png",
+      "box": [
+        1160,
+        160,
+        1425,
+        515
+      ],
+      "scale": 2
+    },
+    {
+      "i": 3,
+      "name": "runtime-final-3-hands-0",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fourier-transform-challenge/candidate.png",
+      "box": [
+        740,
+        795,
+        945,
+        950
+      ],
+      "scale": 2
+    },
+    {
+      "i": 3,
+      "name": "runtime-final-3-hands-1",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fourier-transform-challenge/candidate.png",
+      "box": [
+        1150,
+        730,
+        1370,
+        910
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+      "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's right shoulder and forearm lead to an index finger pressing the green control, with the correct medial thumb. His left hand supports the tablet edge with a distinct thumb and fingers; tablet and forearm remain continuous.",
+    "displayLegibilityAndSource": "Large upright board correctly states the synthetic 128 samples at 128 Hz task, skip bin 0, find the largest magnitude, and frequency = bin times sample rate divided by samples. Result remains pending.",
+    "identityExpressionAndStory": "Demir looks toward the task while deliberately starting the calculation. Adult proportions, freckles, swept hair and stubble match the canonical identity.",
+    "palette": "Muted Deep Orbit olive, charcoal, brass and controlled green light retain the benchmark palette.",
+    "perspectiveAndOperator": "Upright board and physical console are consistently oriented toward the operator; text follows the flat display surface.",
+    "largeDisplayRule": "The main lesson content occupies a large readable board in available wall space rather than a small console below unused wall."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:43:12.625801+00:00"
+}

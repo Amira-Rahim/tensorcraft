@@ -1,0 +1,72 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "takeaways",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next bridge ROOM reference only, LAST exact target. Preserve exact people, age, face morphology, expression, hairstyle, signature equipment, warm skin, body poses, natural neck alignment and every connected shoulder-elbow-wrist-hand chain. No anatomy or composition changes. Farah lens anatomical LEFT, Demir comms anatomical RIGHT, Nazari and Mirza have NO eyewear. Keep heads at current scale unless a tiny adjustment is explicitly requested. Story action stays dominant. All unmentioned monitors and wrist displays OFF, inactive charcoal glass; no arbitrary graphs, bars or fake code. Use subdued sage on dark glass and aged brass. Remove bright mint/rim neon, broad green or gold wash. Every unused holo emitter dark charcoal, used emitter faint sage with no bright bloom. Preserve Nazari canonical face and two raised tablets, all grips and shoulders. If needed reduce complete head very slightly, no more than5 percent, preserving natural short neck and face geometry. Left tablet shows \"Assumed Gaussian\" then \"False-alarm rate\" and \"0.27%\". Right tablet shows \"100,000 normal\" then \"readings / hour\" then \"About 270 flags / hour\". One rear monitor shows only \"Measure the observed rate\". This is a conditional expectation example, no measured result. No dots or charts. Turn foreground unused holo emitter and all other screens off. Natural warm skin, thin subdued sage rim. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/normal-vs-anomalous-takeaways-before.png",
+      "sha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+    "sha256": "11fede63507d43606f09364b2303d4d013ecdfc5b83f90a3be1ff2b03da16b69"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002"
+    }
+  ],
+  "panelSpecification": {
+    "state": "conditional rate example",
+    "concreteGenerationSpecification": "Preserve Nazari canonical face and two raised tablets, all grips and shoulders. If needed reduce complete head very slightly, no more than5 percent, preserving natural short neck and face geometry. Left tablet shows \"Assumed Gaussian\" then \"False-alarm rate\" and \"0.27%\". Right tablet shows \"100,000 normal\" then \"readings / hour\" then \"About 270 flags / hour\". One rear monitor shows only \"Measure the observed rate\". This is a conditional expectation example, no measured result. No dots or charts. Turn foreground unused holo emitter and all other screens off. Natural warm skin, thin subdued sage rim.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "RecallPrompt and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses, anatomy and moderate stylized scale. No automatic realistic shrink.",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "64709142694fbc93c4b70361c95bb8c3c0715511af9627d1b633ac6187dd42ba",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b622fbfa-4d72-4d80-bf81-e516810c38be.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-takeaways-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

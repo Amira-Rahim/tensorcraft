@@ -1,0 +1,46 @@
+[
+  {
+    "id": "browser-runtimes/inference-pipeline",
+    "phase": "concept",
+    "cast": [
+      "ensign-demir",
+      "chief-nazari"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-f6480ac1-2d92-4f69-b030-cf0a554b2861.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First portraits are immutable canonical identities; next bridge reference is room only; LAST image is exact edit target. Change ONLY the small bottom sentence on the main screen. Replace the semicolon sentence with two separate lines: \"Input released\" and \"Output kept for readback\". Preserve all other diagrams, labels, people, faces, lighting, poses and fingers exactly. One1536x1024 cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Nazari traces which tensors tidy releases and which output Demir must dispose after asynchronous readback.",
+    "location": "Archimedes, Bridge",
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+    "screenMeaning": "Replace central monitor with two clear rows showing asynchronous tensor ownership. Upper row title \"Inside sync tf.tidy()\" with connected boxes \"Input\" -> \"Predict\" -> \"Return output\". Lower row title \"Outside tidy\" with connected boxes \"await output.data()\" -> \"finally: output.dispose()\". A short note \"Input released; output kept for readback\". This is an ownership diagram, not a success result. Keep Nazari pointing and Demir holding his tablet with natural hands.",
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-f6480ac1-2d92-4f69-b030-cf0a554b2861.png",
+    "previousCandidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-f6480ac1-2d92-4f69-b030-cf0a554b2861.png"
+  },
+  {
+    "id": "browser-runtimes/inference-pipeline",
+    "phase": "takeaways",
+    "cast": [
+      "chief-nazari"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1edd7f76-c7d5-47b2-a5d0-217192e65e8c.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First portraits are immutable canonical identities; next bridge reference is room only; LAST image is exact edit target. Remove ONLY the invented dark black earpiece inside Nazari visible ear on image-left. Nazari has a natural bare ear with normal warm skin and subtle ordinary ear-fold shading as in her canonical portrait. No earbud, ring, headphones or other added accessory. Preserve her exact face, hair, expression, head scale, hands, tablet labels, background text and muted palette unchanged. One1536x1024 cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Nazari checks tensor ownership and reminds the crew to inspect counts and bytes after warmup.",
+    "location": "Archimedes, Bridge",
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+    "screenMeaning": "Replace tablet graphs with concise ownership reminder. Title \"After readback\". Three clearly spaced rows \"Temporary input: tidy\", \"Returned output: dispose\", \"Model weights: keep until teardown\". On the one large rear monitor directly at screen-right of her head put \"Check counts AND bytes\" and \"After warmup\". Every other display off. No invented graphs or claim that a flat tensor count proves all memory safe. Preserve both natural tablet grips.",
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1edd7f76-c7d5-47b2-a5d0-217192e65e8c.png",
+    "previousCandidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1edd7f76-c7d5-47b2-a5d0-217192e65e8c.png"
+  }
+]

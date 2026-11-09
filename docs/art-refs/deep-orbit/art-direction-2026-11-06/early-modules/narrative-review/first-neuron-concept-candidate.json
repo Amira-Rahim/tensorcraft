@@ -1,0 +1,63 @@
+{
+  "id": "neural-networks/first-neuron",
+  "phase": "concept",
+  "currentSource": "art-src/scenes/neural-networks__first-neuron-concept-openai-20261107.png",
+  "currentSha256": "3d35a757a550628147fb2fc75fdf48242f4d2b6cb861f82a86c793910f7228b7",
+  "reviewedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3d7bf62d-b0e9-45da-ac43-1ba74e5c350c.png",
+  "reviewedSha256": "3d35a757a550628147fb2fc75fdf48242f4d2b6cb861f82a86c793910f7228b7",
+  "pendingCandidate": false,
+  "cast": [
+    "dr-farah"
+  ],
+  "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/first-neuron-sheet.jpg",
+  "slug": "first-neuron",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-61bf6a93-8b7a-49b3-847f-690b11731dd8.png"
+  ],
+  "prompt": "Use case: precise-object-edit. FIRST1canonical identity portraits for ONLY dr-farah. NEXT labmaster is ROOM ONLY, do not copy diagrams or addpeople. LAST isTARGET. Correct ONLY the ink on Farah's notebook. She sits on the FAR side of this notebook. Remove the giant camera-facing0.26 and replace it with a much smaller handwritten '0.26' oriented to HER reading/writing direction, rotated180degrees relative to the viewer. It must lie in the page plane and look upside-down from our side. Pencil tip must touch the end of this small calculation in a plausible writing pose; alter only fingertip/pencil contact if necessary, no extra fingers. Leave monitor arithmetic and0.26clearly readable and unchanged. Keep face/neck/hair/body/twohands completely stable. Text is for the character using it, not automatically the viewer. No newtext exceptspecified correction, no accidental charts/gadgets/people, no emdash, no leftaccentbars. Preserve1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/first-neuron-concept-reader-direction-fix.json",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b4369f11-1b28-4216-af0c-5447448b7843.png",
+  "tool": "built-in image_gen",
+  "date": "2026-11-07",
+  "status": "pending reader-direction review",
+  "previousNarrativeCandidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-61bf6a93-8b7a-49b3-847f-690b11731dd8.png",
+  "pathSha256": "bb678eda0d0f20fd8b7cc5438cb1ca6b9b276e3d95c0f2879c95b51a20c06e3c",
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/first-neuron-concept-dr-farah-proof.png",
+      "sha256": "f8e9dafe2e298eb13a8d6b6fc861035b89a70f5d84424987b4388d0d960641f8",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b4369f11-1b28-4216-af0c-5447448b7843.png",
+      "candidateSha256": "bb678eda0d0f20fd8b7cc5438cb1ca6b9b276e3d95c0f2879c95b51a20c06e3c",
+      "crop": {
+        "left": 725,
+        "top": 25,
+        "width": 480,
+        "height": 500
+      }
+    }
+  ],
+  "checkpointStatus": "Own fullframe, exact face proof and rotated notebook proof pass; awaiting root peer.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3d7bf62d-b0e9-45da-ac43-1ba74e5c350c.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-61bf6a93-8b7a-49b3-847f-690b11731dd8.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b4369f11-1b28-4216-af0c-5447448b7843.png",
+      "art-src/scenes/neural-networks__first-neuron-concept-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

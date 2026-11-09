@@ -1,0 +1,143 @@
+{
+  "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage as a candid engineering-bench investigation, not a presenter. Farah sits sideways at a working console, body and chair toward the screen. The camera peers diagonally from the screen side so her canonical three-quarter face and the actual surface are visible. Her eyebrows lift with skeptical disappointment as she notices the blend lost; she underlines the best member row with a stylus in her anatomical right hand while the left hand steadies the notebook beside the console. No held-up tablet, no camera gaze. The console has a compact source-grounded table headed Illustrative comparison: Member 1 MAE0.052; Member 2 MAE0.036; Member 3 MAE0.050; Blend MAE0.041. Highlight only the Member2 row with a subdued sage wash. A small annotation next to the table reads Best member wins this comparison. All labels and rules match the oblique screen plane, naturally legible from the side, never pasted frontally. Other displays off. A plain mug and ordinary blank-backed notes sit on the bench. Muted brass and charcoal engineering bay, no neon. Hands and stylus contact realistic, shoulder and neck alignment natural. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/time-series-ensemble-methods-takeaways-target.png",
+      "sha256": "2b0bf316bc103f68d14c629371f12e738c69dbb10d275cfff94800f142bb796f",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "2b0bf316bc103f68d14c629371f12e738c69dbb10d275cfff94800f142bb796f",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+    "sha256": "a5872fc7be7307cf75e31ece6676f88b936f48cfc52a3eee7ec21adb2ff9336c"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+      "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+      "sha256": "4bc36260abe0e077a5a75aa8da5e3198501ce29f3b36fbe32282ee47fb01a872"
+    }
+  ],
+  "panelSpecification": {
+    "state": "recall counterexample",
+    "concreteGenerationSpecification": "Restage as a candid engineering-bench investigation, not a presenter. Farah sits sideways at a working console, body and chair toward the screen. The camera peers diagonally from the screen side so her canonical three-quarter face and the actual surface are visible. Her eyebrows lift with skeptical disappointment as she notices the blend lost; she underlines the best member row with a stylus in her anatomical right hand while the left hand steadies the notebook beside the console. No held-up tablet, no camera gaze. The console has a compact source-grounded table headed Illustrative comparison: Member 1 MAE0.052; Member 2 MAE0.036; Member 3 MAE0.050; Blend MAE0.041. Highlight only the Member2 row with a subdued sage wash. A small annotation next to the table reads Best member wins this comparison. All labels and rules match the oblique screen plane, naturally legible from the side, never pasted frontally. Other displays off. A plain mug and ordinary blank-backed notes sit on the bench. Muted brass and charcoal engineering bay, no neon. Hands and stylus contact realistic, shoulder and neck alignment natural.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "section": "RecallPrompt with MAE 0.041 and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": null
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-367d1bfa-e6be-48b2-8b70-8f4927194f81.png",
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/time-series-ensemble-methods-takeaways-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/time-series-ensemble-methods-takeaways-target.png",
+    "sha256": "2b0bf316bc103f68d14c629371f12e738c69dbb10d275cfff94800f142bb796f",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "2b0bf316bc103f68d14c629371f12e738c69dbb10d275cfff94800f142bb796f",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/time-series-ensemble-methods-takeaways-runtime-before.png",
+    "sha256": "784339c1ec33aaac48253bc5a261a67ce470b823b8097bcc02693c1106bbf634",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "784339c1ec33aaac48253bc5a261a67ce470b823b8097bcc02693c1106bbf634",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah stops at the losing blend in the comparison and rechecks it with skepticism, rather than displaying a successful result.",
+    "fullSpecification": "Restage as a candid engineering-bench investigation, not a presenter. Farah sits sideways at a working console, body and chair toward the screen. The camera peers diagonally from the screen side so her canonical three-quarter face and the actual surface are visible. Her eyebrows lift with skeptical disappointment as she notices the blend lost; she underlines the best member row with a stylus in her anatomical right hand while the left hand steadies the notebook beside the console. No held-up tablet, no camera gaze. The console has a compact source-grounded table headed Illustrative comparison: Member 1 MAE0.052; Member 2 MAE0.036; Member 3 MAE0.050; Blend MAE0.041. Highlight only the Member2 row with a subdued sage wash. A small annotation next to the table reads Best member wins this comparison. All labels and rules match the oblique screen plane, naturally legible from the side, never pasted frontally. Other displays off. A plain mug and ordinary blank-backed notes sit on the bench. Muted brass and charcoal engineering bay, no neon. Hands and stylus contact realistic, shoulder and neck alignment natural."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "dfc4996e9f0739f0462fe80e2acbc51f6991c65438e62a336859e3fd90cb71ab",
+  "faceBoxes": {
+    "farah": [
+      855,
+      90,
+      425,
+      445
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-takeaways-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "recall counterexample",
+    "concreteGenerationSpecification": "Preserve Farah exact canonical face, smile, lens and two natural tablet grips. Reduce her complete head only modestly, approximately 5 percent of its linear size, retaining facial geometry and a natural short neck. Tablet replaces all waveforms with a concise table headed \"Recall example\". Rows \"Member 1 0.052\", \"Member 2 0.036\", \"Member 3 0.050\", \"Blend 0.041\". Heading over numeric column \"MAE\". Highlight entire Member2 row with muted sage wash, no left accent. Bottom conclusion \"Best member: 0.036\" and \"Blend loses this comparison\". No unrelated graph or fake score. All background and wrist screens off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "section": "RecallPrompt with MAE 0.041 and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "dfc4996e9f0739f0462fe80e2acbc51f6991c65438e62a336859e3fd90cb71ab",
+    "proofSha256": "357905a8e9f93b4334dd8d2e5c1e5cced0ee52419902cf21745dc73336eb0e3c",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah stops at the losing blend in the comparison and rechecks it with skepticism, rather than displaying a successful result."
+  },
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-367d1bfa-e6be-48b2-8b70-8f4927194f81.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+      "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "publishedReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/advanced-time-series__time-series-ensemble-methods-takeaways.json",
+  "obsoleteWorkingImageRemoved": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-narrative-stage1-openai-20261107.png"
+}

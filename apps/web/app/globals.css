@@ -1334,18 +1334,9 @@ body {
 }
 
 /* ===== World-card scheme-aware primary =====
-   Shared by dashboard/world-cards.tsx (a server component - no useScheme()
-   hook available) AND worlds/world-cards-grid.tsx (a client component that
-   could use the hook, but deliberately doesn't: re-rendering every card on
-   scheme toggle just to recompute a style string mints fresh style-prop
-   values and defeats memoization for no benefit - the CSS engine already
-   re-resolves custom properties for free on a data-scheme attribute flip).
-   Both set the same two local custom props per card (--card-primary /
-   --card-primary-light, from the world's dark/light primary) on any element
-   carrying this class; this rule picks the active one into
-   --card-active-primary, which every card.primary-driven style in both
-   files reads instead of the raw hex. Dark stays the no-attribute default,
-   same convention as every other --tc-* token. */
+   World cards set --card-primary and --card-primary-light from each world's
+   palette. CSS selects --card-active-primary when data-scheme changes,
+   without requiring a React render. Dark is the no-attribute default. */
 .tc-world-card {
   --card-active-primary: var(--card-primary);
 }

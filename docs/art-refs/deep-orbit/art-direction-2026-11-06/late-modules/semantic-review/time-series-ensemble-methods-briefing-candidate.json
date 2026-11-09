@@ -1,0 +1,91 @@
+{
+  "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+  "phase": "briefing",
+  "status": "superseded",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identities. First images are canonical portraits, next is the engineering ROOM reference, LAST exact target. Preserve exact facial morphology, eyes, noses, jaws, adult ages, expressions, hairstyles, skin, body poses and continuous two-arm chains, natural grips and furniture contact. Preserve cinematic adventure-comic staging and room geometry. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear. Keep natural short necks. Every unspecified rear, side and wrist screen is inactive charcoal glass, no decorative graphs or fake code. Retain physical buttons. Muted sage interfaces and aged brass, no neon mint, fluorescent lime or broad mustard wash. Warm engineering lamps remain local. Preserve Farah stylus and open hand, Demir pointing and resting hands. Farah complete head may be only slightly reduced, about 5 percent, preserving internal face geometry and natural neck; Demir head size unchanged. Correct Demir earpiece: the visible near ear on viewer-right is his anatomical LEFT, leave it bare and natural. His canonical RIGHT comms may be hidden on the far side, do not add another visible gadget. Main vertical rack of four panels: top panel \"LSTM\", second \"Attention\", third \"Kalman\". Each of these three has the same subtitle \"Same target and time\". Bottom panel \"Blend: pending\" and smaller \"Compare MAE with best member\". No waves, gauges or outcome yet. All other screen panels inactive. Keep all people, pointing fingertips and room unchanged. Clean bold linework, flat cel shading, slight adult stylization, cinematic character framing. Output one full 1536x1024 scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/time-series-ensemble-methods-briefing-before.png",
+      "sha256": "6e8f3c5cb4491adc123eced5c3b1a65e7bfd6703f6cc7f096d0d98c90f8f8d83",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "6e8f3c5cb4491adc123eced5c3b1a65e7bfd6703f6cc7f096d0d98c90f8f8d83",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods.webp",
+    "sha256": "0147f7eb82b9c35d0d2870118ab90c40e7a9c6234c1c303053224c6f40f83f8c"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+      "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+      "sha256": "4bc36260abe0e077a5a75aa8da5e3198501ce29f3b36fbe32282ee47fb01a872"
+    }
+  ],
+  "panelSpecification": {
+    "state": "problem",
+    "concreteGenerationSpecification": "Preserve Farah stylus and open hand, Demir pointing and resting hands. Farah complete head may be only slightly reduced, about 5 percent, preserving internal face geometry and natural neck; Demir head size unchanged. Correct Demir earpiece: the visible near ear on viewer-right is his anatomical LEFT, leave it bare and natural. His canonical RIGHT comms may be hidden on the far side, do not add another visible gadget. Main vertical rack of four panels: top panel \"LSTM\", second \"Attention\", third \"Kalman\". Each of these three has the same subtitle \"Same target and time\". Bottom panel \"Blend: pending\" and smaller \"Compare MAE with best member\". No waves, gauges or outcome yet. All other screen panels inactive. Keep all people, pointing fingertips and room unchanged.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "section": "Opening dialogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Keep current approved poses and connected limbs. Only explicitly noted tiny head adjustments; no blanket realism.",
+  "candidatePath": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-openai-20261107.png",
+  "candidateSha256": "7289f1e9657a400f4f563cef240da3eac6fc1a0325f9f106d33bc5e0e7ff6284",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-2a96fa86-3f76-48f1-9a33-107a4c379517.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/time-series-ensemble-methods-briefing-identity-proof.jpg",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-2a96fa86-3f76-48f1-9a33-107a4c379517.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods.webp",
+      "art-src/scenes/advanced-time-series__time-series-ensemble-methods-briefing-semantics-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-briefing-semantics-stage1-openai-20261107.png",
+    "sha256": "93f84069cf51f8d6ce5607a81a2ddc785cb43e857f847ffd57b089339bf4d2e4",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "publicationHold": false,
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/advanced-time-series__time-series-ensemble-methods-briefing.json"
+}

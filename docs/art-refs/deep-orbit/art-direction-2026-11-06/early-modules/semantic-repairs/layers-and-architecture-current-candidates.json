@@ -1,0 +1,318 @@
+[
+  {
+    "id": "neural-networks/layers-and-architecture",
+    "phase": "briefing",
+    "cast": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. Edit the Deep Orbit existing story scene. The first input(s) are immutable canonical character portraits in the listed order. The LAST input is the TARGET scene. Preserve those exact adult faces: age, compact nose, eye spacing, broad cheek/chin morphology, mouth, hair and expression. Preserve camera, character positions, natural head yaw/neck connection, both separate shoulder-arm-hand chains per person, furniture, chair clearance and all room geometry. Keep warm stylized adult comic proportions: apply ONLY a subtle8percent reduction to full heads including hair versus target, keep facial shape and bodies unchanged; no tiny realistic heads. Farah lens anatomical LEFT eye. Demir comms anatomical RIGHT ear only; if visible anatomical-left ear has device, remove it and leave natural bare ear, right device may be occluded. Replace all unrelated background screen plots with plain dark standby glass. Change brightneonmint lights and blooms to muted sage, shinyyellowgold to aged restrained brass; ceiling lamps warm neutral. Purposeful colored hardware buttons stay. No colored left accent bars, no extra people/hands, no arbitrary charts. Main lesson content clear, compact, perspectively integrated. 1536x1024.\nCanonical portrait order: chief-nazari.\nMain upper holo displays exactly input box '3 inputs' feeding three sequential blocks '32 ReLU', '16 ReLU', '1 sigmoid'. Heading 'Bridge model'. Footer '673 parameters' and 'Not trained'. Remove arbitrary bar chart and trianglebadge. Nazari crossed arms/multitool pose preserved. All incidental monitors dark.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__layers-and-architecture-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ef3bb680-3f15-4a5e-9669-3b628ed70008.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-briefing-chief-nazari-proof.png",
+        "sha256": "e7c0fd793d9132b59f86071dbe837fa676260564ec061acaa90777383d2aeada",
+        "crop": {
+          "left": 890,
+          "top": 260,
+          "width": 240,
+          "height": 310
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f26f50af-0554-4df1-8d73-89742a4c6555.png",
+        "priorSha256": "bc916e62aaa63b4d79a7037fc502ff661a4eef3b09f67031573255a48f51ef2a",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ef3bb680-3f15-4a5e-9669-3b628ed70008.png",
+        "candidateSha256": "589008d5a56ff5eb3a98406803c1c3b879eebc954c9760da9d6e9f68a7177e1b"
+      }
+    ],
+    "pathSha256": "589008d5a56ff5eb3a98406803c1c3b879eebc954c9760da9d6e9f68a7177e1b",
+    "screenMeaning": {
+      "section": "Opening dialogue; The three-layer network",
+      "spec": "Nazari's engineering quote shows Bridge inputs3\u219232\u219216\u21921, parameter budget673, status not trained. Contrast old96/32/1 quote3521 as rejected oversized configuration only if space permits.",
+      "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "cast": [
+        "chief-nazari"
+      ]
+    },
+    "alt": "Nazari quotes673parameters for the three-input bridge model before training."
+  },
+  {
+    "id": "neural-networks/layers-and-architecture",
+    "phase": "concept",
+    "cast": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. Edit the Deep Orbit existing story scene. The first input(s) are immutable canonical character portraits in the listed order. The LAST input is the TARGET scene. Preserve those exact adult faces: age, compact nose, eye spacing, broad cheek/chin morphology, mouth, hair and expression. Preserve camera, character positions, natural head yaw/neck connection, both separate shoulder-arm-hand chains per person, furniture, chair clearance and all room geometry. Keep warm stylized adult comic proportions: apply ONLY a subtle8percent reduction to full heads including hair versus target, keep facial shape and bodies unchanged; no tiny realistic heads. Farah lens anatomical LEFT eye. Demir comms anatomical RIGHT ear only; if visible anatomical-left ear has device, remove it and leave natural bare ear, right device may be occluded. Replace all unrelated background screen plots with plain dark standby glass. Change brightneonmint lights and blooms to muted sage, shinyyellowgold to aged restrained brass; ceiling lamps warm neutral. Purposeful colored hardware buttons stay. No colored left accent bars, no extra people/hands, no arbitrary charts. Main lesson content clear, compact, perspectively integrated. 1536x1024.\nCanonical portrait order: chief-nazari.\nMain right screen shows Bridge model: input3\u219232ReLU\u219216ReLU\u21921sigmoid. Beneath each of the three layers respectively: '128 params', '528 params', '17 params'. Footer 'Total 673'. Large exact labels establish width; blocks need not contain32nodes. Preserve Nazari tabletgrips. Every secondary monitor including smallonebeneathmain becomesdarkstandby.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__layers-and-architecture-concept-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-02d21a37-3f4c-4ff6-a38c-76312258c4fe.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-concept-chief-nazari-proof.png",
+        "sha256": "f5bafac5dc8d9f434b554148dd6bdab8deddf83f07707f2ef61822716adee691",
+        "crop": {
+          "left": 390,
+          "top": 180,
+          "width": 250,
+          "height": 340
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-0af97cca-a2a1-40de-bf57-deebd4469216.png",
+        "priorSha256": "c34731254121023a5f11c17d58262f45c3c80612c68a686746139943d4baa582",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-02d21a37-3f4c-4ff6-a38c-76312258c4fe.png",
+        "candidateSha256": "24218536e1662634ea939c1b30500e066de55ffcf8422c28fa8c5c916e47f979"
+      }
+    ],
+    "pathSha256": "24218536e1662634ea939c1b30500e066de55ffcf8422c28fa8c5c916e47f979",
+    "screenMeaning": {
+      "section": "The three-layer network",
+      "spec": "Show labeled Bridge3\u219232ReLU\u219216ReLU\u21921sigmoid with per-layer counts128,528,17. Diagram block size may suggest width but labels establish exact counts.",
+      "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-concept-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "cast": [
+        "chief-nazari"
+      ]
+    },
+    "alt": "Nazari counts128,528and17parameters across the bridge model\u2019s three layers."
+  },
+  {
+    "id": "neural-networks/layers-and-architecture",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-2f154a5b-3ab6-4377-9205-b3e55ba34d63.png",
+    "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-c3531342-db20-4fff-b450-bca84a44a370.png",
+    "prompt": "Precise localized teaching-board edit. First reference exact canonical Demir. LAST target image. Preserve entire fullframe exactly: adult Demir face morphology head size expression hair anatomy right-earcomm, neck/torso orientation, both full arms/hands holding card/tablet, room geometry, muted palette. Change only physical wall board: replace top 'Practice model' title with 'Target practice model'. Add small clear RIGHT-pointing arrow in blankgap between16 ReLU card and8 ReLU card, matching existing8-to1arrow, so4inputs flows16ReLU then8ReLU then1sigmoid. Change bottom '225 parameters' to 'Expected: 225 parameters'. Preserve16/8/1 units,80/136/9 counts and4inputs exactly. Keep all else unchanged, no extra screen decorations.1536x1024.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-c3531342-db20-4fff-b450-bca84a44a370.png"
+    ],
+    "status": "generated-awaiting-review",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-challenge-ensign-demir-proof.png",
+        "sha256": "51bb87ca768b38f1f5c7d62b6173f17c2904d9b60624334dbad4a1bfd3818638",
+        "crop": {
+          "left": 760,
+          "top": 120,
+          "width": 260,
+          "height": 370
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-66d04e34-01d2-445b-a169-c20ae00a099c.png",
+        "priorSha256": "8b75d0c06582921d76a82750e08e804eeef5747f77edafb7ff6d6edc900177dd",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-2f154a5b-3ab6-4377-9205-b3e55ba34d63.png",
+        "candidateSha256": "a633d8f1b56d429c438230b19ad965fa86deff0291922b8c815ac9da14bacdbb"
+      }
+    ],
+    "pathSha256": "a633d8f1b56d429c438230b19ad965fa86deff0291922b8c815ac9da14bacdbb",
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+    ],
+    "screenMeaning": {
+      "section": "Challenge; build-layer instructions",
+      "spec": "Practice architecture explicitly4\u219216ReLU\u21928ReLU\u21921sigmoid, counts80,136,9 totaling225. Include predictParams(width) formula; do not accidentally show bridge32/16/1 or673.",
+      "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-challenge-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "ensign-demir"
+      ]
+    },
+    "alt": "Demir assembles the target16/8/1practice stack with four inputs and225expected parameters.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-66d04e34-01d2-445b-a169-c20ae00a099c.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-2f154a5b-3ab6-4377-9205-b3e55ba34d63.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-c3531342-db20-4fff-b450-bca84a44a370.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+        "art-src/scenes/neural-networks__layers-and-architecture-challenge-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "id": "neural-networks/layers-and-architecture",
+    "phase": "takeaways",
+    "cast": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. Edit the Deep Orbit existing story scene. The first input(s) are immutable canonical character portraits in the listed order. The LAST input is the TARGET scene. Preserve those exact adult faces: age, compact nose, eye spacing, broad cheek/chin morphology, mouth, hair and expression. Preserve camera, character positions, natural head yaw/neck connection, both separate shoulder-arm-hand chains per person, furniture, chair clearance and all room geometry. Keep warm stylized adult comic proportions: apply ONLY a subtle8percent reduction to full heads including hair versus target, keep facial shape and bodies unchanged; no tiny realistic heads. Farah lens anatomical LEFT eye. Demir comms anatomical RIGHT ear only; if visible anatomical-left ear has device, remove it and leave natural bare ear, right device may be occluded. Replace all unrelated background screen plots with plain dark standby glass. Change brightneonmint lights and blooms to muted sage, shinyyellowgold to aged restrained brass; ceiling lamps warm neutral. Purposeful colored hardware buttons stay. No colored left accent bars, no extra people/hands, no arbitrary charts. Main lesson content clear, compact, perspectively integrated. 1536x1024.\nCanonical portrait order: chief-nazari.\nLeft wall main board becomes a compact parameterledger headed 'Practice model'. Row1 '(4 \u00d7 16) + 16 = 80'; row2 '(16 \u00d7 8) + 8 = 136'; row3 '(8 \u00d7 1) + 1 = 9'. Adjacent narrowpanel says 'Total 225'. Remove emptycheckmarks and arbitrarycards. Nazariholdsrolledpaperunchanged. All backgroundscreenplots off.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-afe09ff1-78ac-4da3-95ec-bcdadcef3ed6.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-takeaways-chief-nazari-proof.png",
+        "sha256": "8aa0c13f92746719a951af7fdf3e8a5210d02d1e1edda46e0e01f071c256150d",
+        "crop": {
+          "left": 870,
+          "top": 100,
+          "width": 230,
+          "height": 300
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-c3fcfa2c-4846-4aec-a114-f28ca9308ef8.png",
+        "priorSha256": "a4396733fdd34b72b6165c7de5d3916e310325ee909ec355a5714ce9f3a7c4ef",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-afe09ff1-78ac-4da3-95ec-bcdadcef3ed6.png",
+        "candidateSha256": "ebf5bd91d4fa40f82d1962d24210cada6fb1ef223e7ed1ec224afcfeb3df97ab"
+      }
+    ],
+    "pathSha256": "ebf5bd91d4fa40f82d1962d24210cada6fb1ef223e7ed1ec224afcfeb3df97ab",
+    "screenMeaning": {
+      "section": "LessonRecap; parameter count rule",
+      "spec": "Parameter-count rule(inputs\u00d7units)+units; practice4\u219216 layer gives64weights+16biases=80. Next136 and9 sum225, labeled Practice; no unverified performance claim.",
+      "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "cast": [
+        "chief-nazari"
+      ]
+    },
+    "alt": "Nazari checks each dense layer\u2019s weights and biases to reach225parameters in the practice model."
+  },
+  {
+    "id": "neural-networks/layers-and-architecture",
+    "phase": "epilogue",
+    "cast": [
+      "ensign-demir",
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. Edit the Deep Orbit existing story scene. The first input(s) are immutable canonical character portraits in the listed order. The LAST input is the TARGET scene. Preserve those exact adult faces: age, compact nose, eye spacing, broad cheek/chin morphology, mouth, hair and expression. Preserve camera, character positions, natural head yaw/neck connection, both separate shoulder-arm-hand chains per person, furniture, chair clearance and all room geometry. Keep warm stylized adult comic proportions: apply ONLY a subtle8percent reduction to full heads including hair versus target, keep facial shape and bodies unchanged; no tiny realistic heads. Farah lens anatomical LEFT eye. Demir comms anatomical RIGHT ear only; if visible anatomical-left ear has device, remove it and leave natural bare ear, right device may be occluded. Replace all unrelated background screen plots with plain dark standby glass. Change brightneonmint lights and blooms to muted sage, shinyyellowgold to aged restrained brass; ceiling lamps warm neutral. Purposeful colored hardware buttons stay. No colored left accent bars, no extra people/hands, no arbitrary charts. Main lesson content clear, compact, perspectively integrated. 1536x1024.\nCanonical portrait order: ensign-demir, chief-nazari.\nMain paper Demir writes on becomes exact table headed 'Bridge model': columns 'Layer' and 'Parameters', rows '32 ReLU'/'128', '16 ReLU'/'528', '1 sigmoid'/'17'. Under table '128 + 528 + 17 = 673'. Smaller clipboardleft says 'Training pending'. Keep Demir'swritinghandandflatpaperhand eachattachednaturally, Nazari crossedarms. All backgroundscreenplots off. No training-successclaim.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__layers-and-architecture-epilogue-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-eac88d88-a4eb-4153-a4ee-425dbb7e65ec.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-epilogue-chief-nazari-proof.png",
+        "sha256": "92c8936c9df8a373a7c7e7be089b80cde9a91b15411c4c3b38daa0a95af74d7e",
+        "crop": {
+          "left": 150,
+          "top": 140,
+          "width": 285,
+          "height": 345
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6d2d45be-198b-4059-a045-8b42ed806016.png",
+        "priorSha256": "9a83e89b328af6051b151dca2a5b09a8316f4a607ebe6d12702adc60b841fdc4",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-eac88d88-a4eb-4153-a4ee-425dbb7e65ec.png",
+        "candidateSha256": "452f10cea92aa69b33f2a27ed93581b719a87d3bb5f11525309eeb37249f0939"
+      },
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-epilogue-ensign-demir-proof.png",
+        "sha256": "64c85e64d6cbd68643a1d20078e84694c7e10822f649e75643b54b8510eecdf4",
+        "crop": {
+          "left": 800,
+          "top": 130,
+          "width": 250,
+          "height": 370
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6d2d45be-198b-4059-a045-8b42ed806016.png",
+        "priorSha256": "9a83e89b328af6051b151dca2a5b09a8316f4a607ebe6d12702adc60b841fdc4",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-eac88d88-a4eb-4153-a4ee-425dbb7e65ec.png",
+        "candidateSha256": "452f10cea92aa69b33f2a27ed93581b719a87d3bb5f11525309eeb37249f0939"
+      }
+    ],
+    "pathSha256": "452f10cea92aa69b33f2a27ed93581b719a87d3bb5f11525309eeb37249f0939",
+    "screenMeaning": {
+      "section": "Epilogue",
+      "spec": "Paper on engineering board labeled Bridge model summary:32ReLU128params;16ReLU528params;1sigmoid17params;Total673. Demir verifies128+528+17. Status still needs training.",
+      "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-epilogue-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-epilogue.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png",
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "cast": [
+        "ensign-demir",
+        "chief-nazari"
+      ]
+    },
+    "alt": "Demir records the673parameter bridge model while Nazari waits for training.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6d2d45be-198b-4059-a045-8b42ed806016.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-eac88d88-a4eb-4153-a4ee-425dbb7e65ec.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-epilogue.webp",
+        "art-src/scenes/neural-networks__layers-and-architecture-epilogue-openai-20261107.png",
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  }
+]

@@ -1,0 +1,84 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-epilogue/candidate.png",
+  "candidateSha256": "ec1a263f15c87ecae272919a0b1de764746ed96d9678d1b3d591e78e6f3d9a2a",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original review, 2x face and hand crops, complete shoulder-elbow-wrist chain and thumb-side check, canonical portrait comparison, and current lesson plus relevant exercise verification.",
+  "canonicalFaceReferences": [
+    {
+      "character": "chief-nazari",
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "runtime-final-0-face-chief-nazari",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-epilogue/candidate.png",
+      "box": [
+        610,
+        260,
+        895,
+        585
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "runtime-final-0-face-ensign-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-epilogue/candidate.png",
+      "box": [
+        1105,
+        110,
+        1395,
+        450
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "runtime-final-0-hands-0",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-epilogue/candidate.png",
+      "box": [
+        495,
+        760,
+        1485,
+        960
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Nazari's right hand rests across the open ledger and her left on the desk; each wrist joins its own elbow and shoulder. Demir braces both palms on the same desktop with four fingers and a medial thumb on each hand. No merged fingers or floating contact.",
+    "displayLegibilityAndSource": "Large pruning replay board correctly distinguishes the 85 MB dense file from the 42 MB gzip artifact and shows 94.2% to 91.8% accuracy, three hours, and rejected-class replay pending.",
+    "identityExpressionAndStory": "Nazari's raised brow and sideways question meet Demir's lowered, concerned gaze. Both remain recognizable adult canonical characters.",
+    "palette": "Muted Deep Orbit olive, charcoal, brass and controlled green light retain the benchmark palette.",
+    "perspectiveAndOperator": "Upright board and physical console are consistently oriented toward the operator; text follows the flat display surface.",
+    "largeDisplayRule": "The main lesson content occupies a large readable board in available wall space rather than a small console below unused wall."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:43:12.618358+00:00"
+}

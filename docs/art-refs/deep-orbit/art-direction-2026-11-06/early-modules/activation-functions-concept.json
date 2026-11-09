@@ -1,0 +1,29 @@
+{
+  "module": "neural-networks",
+  "lesson": "activation-functions",
+  "phase": "concept",
+  "room": "bridge",
+  "cast": [
+    "dr-farah"
+  ],
+  "moment": "Farah stands at a bridge side display, using one stylus to sketch a simple rectified curve: horizontal on the negative-input side and a straight rising diagonal on the positive-input side, on clean unlabeled axes. She holds a plain tablet with her other hand. A separate physical alert control remains visibly apart from this instructional display. Her expression is animated and lightly amused by the distinction. No sigmoid probability claim, no text, no equation.",
+  "alt": "Farah separates the activation sketch from the bridge's alert control.",
+  "location": "Archimedes, Bridge",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit neural-networks/activation-functions, concept section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the bridge set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Dr. Farah, adult woman aged 38, olive-tan skin, dark wavy hair loosely tied back, a green AR lens over one eye, muted slate lab jacket. Scene: Farah stands at a bridge side display, using one stylus to sketch a simple rectified curve: horizontal on the negative-input side and a straight rising diagonal on the positive-input side, on clean unlabeled axes. She holds a plain tablet with her other hand. A separate physical alert control remains visibly apart from this instructional display. Her expression is animated and lightly amused by the distinction. No sigmoid probability claim, no text, no equation. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-217a3a05-3581-4ded-b784-6c71579e990b.png",
+  "source": "art-src/scenes/neural-networks__activation-functions-concept-openai-20261106.png",
+  "src": "/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Two arms and hands, stylus grip and tablet grip coherent. Farah stands beside the console.",
+    "furniture": "Hands contact objects naturally. Torso stays outside furniture, with clear console and bench edges.",
+    "identity": "Farah's canonical face, hair, slate layer and green AR lens retained.",
+    "story": "ReLU sketch has a flat negative side and rising positive side. Alert control is visibly separate.",
+    "tone": "Warm curiosity and earned small satisfaction.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

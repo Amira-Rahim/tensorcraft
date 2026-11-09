@@ -1,0 +1,177 @@
+{
+  "id": "llm-integration__rag-for-signals-concept",
+  "lesson": "llm-integration/rag-for-signals",
+  "phase": "concept",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, ensign-demir.\nStory action: Farah helps Demir inspect the retrieval rules before they trust the draft. Expression: Collaborative concentration and genuine curiosity.\nBoth crew work at the left side of one large upright physical display filling the right half and upper right. Demir seated with hands naturally at keyboard and mouse. Farah stands beside him, one hand lightly on the chair back, the other carrying a closed notebook by her side. Visible three-quarter faces looking toward the display, no staged smiles at viewer. Exact display title Retrieval rules. Spacious rows: Query filters: band, age, anomalies; Keep database order; Count matches before the 20-row cap; Report matched and truncated. Separate footer: Claims need row IDs, fields and units. No decorative graphs. One primary monitor rather than little panel below empty wall.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "d58296600dd5d92482dbcbac6c14d0090e06a25225926711609e832ff67a0f6c",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room architecture only",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "8672563ec031143945b465b6d676fd9699fcad1e730ce3bfd389070929f67e15"
+    }
+  ],
+  "sourceSha256": "a281a902bae21b5d159f6b43b4ce763db2eb1e2537b240a0e914c76f154f8066",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+    "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+  },
+  "source": "art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.331009+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, ensign-demir.\nStory action: Farah helps Demir inspect the retrieval rules before they trust the draft. Expression: Collaborative concentration and genuine curiosity.\nBoth crew work at the left side of one large upright physical display filling the right half and upper right. Demir seated with hands naturally at keyboard and mouse. Farah stands beside him, one hand lightly on the chair back, the other carrying a closed notebook by her side. Visible three-quarter faces looking toward the display, no staged smiles at viewer. Exact display title Retrieval rules. Spacious rows: Query filters: band, age, anomalies; Keep database order; Count matches before the 20-row cap; Report matched and truncated. Separate footer: Claims need row IDs, fields and units. No decorative graphs. One primary monitor rather than little panel below empty wall.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-concept.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-86ee9def-d27a-4195-b047-a38ea231434b.png",
+  "candidatePath": "art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png",
+  "candidateSha256": "a281a902bae21b5d159f6b43b4ce763db2eb1e2537b240a0e914c76f154f8066",
+  "generatedAt": "2026-11-08T19:16:54.876276+00:00",
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        130,
+        40,
+        560,
+        500
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-concept-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        445,
+        775,
+        540,
+        170
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-concept-hands0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        80,
+        480,
+        340,
+        210
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__rag-for-signals-concept-hands1.png",
+      "removedAfterReview": true
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.692005+00:00",
+    "candidateSha256": "a281a902bae21b5d159f6b43b4ce763db2eb1e2537b240a0e914c76f154f8066",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-concept/candidate.png",
+  "publishedSource": "art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-concept.webp",
+  "webpSha256": "5ba6ec0074af1ed4000410c526cdc041ca144934eacfe32d57baf09e7f0fcf20",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png",
+    "sourceSha256": "8672563ec031143945b465b6d676fd9699fcad1e730ce3bfd389070929f67e15",
+    "webpSha256": "be463a34821281d8baefb5b39c1cdd64adbcf209efe2cef5199d9e1ffda564ee",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-31786fbe-d397-432d-93ec-9783ca80cbf9.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "a281a902bae21b5d159f6b43b4ce763db2eb1e2537b240a0e914c76f154f8066",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+        "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__rag-for-signals-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root",
+  "temporaryDiagnosticCropsRemoved": true
+}

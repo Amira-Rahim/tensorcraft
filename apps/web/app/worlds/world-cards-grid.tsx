@@ -140,14 +140,8 @@ function WorldCard({ card, variant, onNotify }: WorldCardProps) {
     [card.primaryLight],
   );
 
-  // `tc-world-card` opts into the scheme-aware --card-active-primary
-  // rule in globals.css (shared with dashboard/world-cards.tsx - see
-  // that rule's doc comment). No useScheme() here: this is a client
-  // component, so the hook WOULD work, but every card re-rendering on
-  // scheme toggle just to recompute a style string is unnecessary
-  // churn the CSS mechanism avoids entirely (and it keeps this file
-  // symmetric with the server-rendered dashboard grid, which has no
-  // hook available at all).
+  // `tc-world-card` selects --card-active-primary in globals.css.
+  // Scheme changes update the CSS variable without re-rendering each card.
   const shellClassName = `tc-world-card group relative flex flex-col h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover${isHero && card.plateSrc ? " tc-on-art" : ""}`;
 
   const shellStyle = {

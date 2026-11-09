@@ -1,0 +1,70 @@
+{
+  "module": "training-loop",
+  "lesson": "gradient-descent",
+  "phase": "challenge",
+  "src": "/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+  "index": 37,
+  "characters": [
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=554): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f9cc6047-8650-480b-803d-167d9a08d33a.png",
+  "candidate": "/tmp/early-identity-candidates/37.webp",
+  "candidateSha256": "0fbaf737ad858ca93a6f4d2b41af0b34acbd68961f3f56e5909461d38b8ef3ad",
+  "sourceSha256": "f1f19f8c69f4087baa879766f2b066634c73db5b372c3d2a449201388ce5d5b0",
+  "beforeSha256": "cd015c2d8340b6ba00e4ba40788b77c381102a3c4561d9f291a44a7720f3155d",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+      "role": "edit target",
+      "sha256": "cd015c2d8340b6ba00e4ba40788b77c381102a3c4561d9f291a44a7720f3155d"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 124864,
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/gradient-descent-challenge-ensign-demir-correction.png",
+      "crop": {
+        "left": 366,
+        "top": 117,
+        "width": 375,
+        "height": 450
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f9cc6047-8650-480b-803d-167d9a08d33a.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

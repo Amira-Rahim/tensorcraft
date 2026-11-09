@@ -1,0 +1,76 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:02:54.398302+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-epilogue/candidate.png",
+  "candidateSha256": "8686760e5d325ba7430cb6d44caf932a966dd59322d960ce04e7cc52b5fe78cc",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+      "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "Canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-foundations__tensor-operations-epilogue-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-epilogue/candidate.png",
+      "rect": [
+        990,
+        185,
+        180,
+        230
+      ]
+    },
+    {
+      "name": "peer-foundations__tensor-operations-epilogue-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-epilogue/candidate.png",
+      "rect": [
+        1125,
+        300,
+        260,
+        320
+      ]
+    },
+    {
+      "name": "peer-foundations__tensor-operations-epilogue-2",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-epilogue/candidate.png",
+      "rect": [
+        910,
+        600,
+        235,
+        105
+      ]
+    },
+    {
+      "name": "peer-foundations__tensor-operations-epilogue-3",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-epilogue/candidate.png",
+      "rect": [
+        785,
+        800,
+        630,
+        200
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The main display uses the wall and clearly labels four selected channels as schematic within the one-hour, 64-channel capture. Synchronized repeated ripples and pass 2/pass 3 labels match the epilogue.",
+    "Nazari's trackball hand and resting hand show coherent thumb sides and contact. Demir holds a closed notebook with two natural grips. Canonical faces and candid concern remain recognizable."
+  ],
+  "repairDirection": "None."
+}

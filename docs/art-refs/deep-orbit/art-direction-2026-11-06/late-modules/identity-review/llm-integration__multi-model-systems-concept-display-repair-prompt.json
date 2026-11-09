@@ -1,0 +1,44 @@
+{
+  "queueIndex": 76,
+  "key": "deep-orbit/llm-integration/multi-model-systems",
+  "phase": "concept",
+  "status": "awaiting-new-generation",
+  "newGeneration": true,
+  "cast": [
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      244,
+      174,
+      252,
+      337
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__multi-model-systems-concept-display-stage1-openai-20261107.png",
+      "sha256": "ad8f06d4d2d04d586d7239550b2e18f3c233423c016d1971aa07757abd19e17a",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. First references are authoritative neutral crew portraits. LAST image is target scene. Change ONLY input shapes inside the THREE preprocessor rectangles in the large teaching display. Top branch rectangle: a horizontal row of EXACTLY THREE plain small equal square cells, no waveform or graph inside, representing classifier three features. Middle branch rectangle: EXACTLY ELEVEN thin horizontal equal cells stacked vertically, no waveform, representing autoencoder11features. Bottom branch rectangle: a small temporal grid, preserve existing grid. Preserve one capture waveform splitting in parallel to these3inputs, the3output charts, and their convergence to the right draft page. Do not change arrow routes, page or bars. No words or numerals. Preserve every face and hair exactly, all bodies, hands, arms, poses, uniforms, props, furniture, camera, colors and lighting. All existing human anatomy and identities have passed review. No new people or limbs. One1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/llm-integration__multi-model-systems-concept-display-repair-prompt.json",
+  "newSource": "art-src/scenes/llm-integration__multi-model-systems-concept-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-concept.webp",
+  "alt": "Demir routes the same capture through three model-specific inputs before drafting a report.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+  "lessonSha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/llm-integration__multi-model-systems-concept-display-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/llm-integration__multi-model-systems-concept-prompt.json",
+      "reason": "Change ONLY input shapes inside the THREE preprocessor rectangles in the large teaching display. Top branch rectangle: a horizontal row of EXACTLY THREE plain small equal square cells, no waveform or graph inside, representing classifier three features. Middle branch rectangle: EXACTLY ELEVEN thin horizontal equal cells stacked vertically, no waveform, representing autoencoder11features. Bottom branch rectangle: a small temporal grid, preserve existing grid. Preserve one capture waveform splitting in parallel to these3inputs, the3output charts, and their convergence to the right draft page. Do not change arrow routes, page or bars. No words or numerals."
+    }
+  ]
+}

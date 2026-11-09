@@ -4,6 +4,7 @@ import { isLaunched } from "@tensorcraft/shared";
 import { getWorldLessons, getModules, getPosts } from "@tensorcraft/content";
 import { worldTrailer } from "@/lib/world-trailer";
 import { buildWorldVideoJsonLd } from "./worlds/[slug]/world-video-jsonld";
+import { buildLearnVideo } from "./learn/learn-jsonld";
 
 const BASE_URL = "https://tensorcraft.app";
 
@@ -17,6 +18,7 @@ const BASE_URL = "https://tensorcraft.app";
 const SITEMAP_PHASE: "core" | "full" = "core";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const introduction = buildLearnVideo();
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
@@ -45,10 +47,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       // search alongside the page's VideoObject JSON-LD.
       videos: [
         {
-          title: "How Tensorcraft works",
-          thumbnail_loc: `${BASE_URL}/media/learn-trailer-poster.webp`,
-          description:
-            "How Tensorcraft teaches machine learning to JavaScript developers: ML concepts mapped to code you already write, taught inside the story of the Deep Orbit research station. No Python required.",
+          title: introduction.name,
+          thumbnail_loc: introduction.thumbnailUrl[0],
+          description: introduction.description,
         },
       ],
     },

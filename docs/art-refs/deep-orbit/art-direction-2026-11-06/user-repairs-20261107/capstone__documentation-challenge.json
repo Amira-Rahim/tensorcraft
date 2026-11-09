@@ -1,0 +1,236 @@
+{
+  "key": "documentation-challenge",
+  "id": "capstone/documentation",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir sits LEFT at lab workstation, naturally typing with BOTH hands supported at keyboard, leaning forward slightly with concentrated eager expression as he composes handover. Monitor RIGHT is physically facing him and camera. Remove handheld tablet and unnecessary wall graphics. A split screen: left heading \"Supplied fictional metadata\", lines \"DEEP SCAN v1.0.0\", \"Accuracy: 0.918\", \"Benchmark: pruning review\", \"Weight file: 3988 bytes\", \"Inference: 0.035 ms\"; right heading \"Model card draft\", three sections \"Performance\", \"Limitations\", \"Usage\", each with small label \"pending\". No fabricated completed card or test pass. Warm bench lamp and closed notebook beside keyboard, actual lab coils visible behind, no plants. Text projection follows monitor. Face/torso/seat face the task together.",
+  "meaning": "Challenge renders supplied fictional metadata; input DEEP SCANv1.0.0,accuracy.918,pruning review,3988bytes,.035ms; draft remains pending.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-challenge-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+      "sha256": "5f90e6172fb9d8e19cf9f2bd4336500ba2a261b22c02ca6db53830c470637cf3",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+      "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-99895b6d-5ee0-427c-b48d-7009a40c5912.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 340,
+      "top": 50,
+      "width": 370,
+      "height": 480
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 410,
+      "top": 730,
+      "width": 440,
+      "height": 160
+    }
+  ],
+  "candidatePath": "art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+  "candidateSha256": "d4afeda85a4f84e16842f1ac2772224536f6be810ba07793f75c2a3b23c1a160",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir sits LEFT at lab workstation, naturally typing with BOTH hands supported at keyboard, leaning forward slightly with concentrated eager expression as he composes handover. Monitor RIGHT is physically facing him and camera. Remove handheld tablet and unnecessary wall graphics. A split screen: left heading \"Supplied fictional metadata\", lines \"DEEP SCAN v1.0.0\", \"Accuracy: 0.918\", \"Benchmark: pruning review\", \"Weight file: 3988 bytes\", \"Inference: 0.035 ms\"; right heading \"Model card draft\", three sections \"Performance\", \"Limitations\", \"Usage\", each with small label \"pending\". No fabricated completed card or test pass. Warm bench lamp and closed notebook beside keyboard, actual lab coils visible behind, no plants. Text projection follows monitor. Face/torso/seat face the task together.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+          "sha256": "5f90e6172fb9d8e19cf9f2bd4336500ba2a261b22c02ca6db53830c470637cf3",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-99895b6d-5ee0-427c-b48d-7009a40c5912.png",
+        "sha256": "d4afeda85a4f84e16842f1ac2772224536f6be810ba07793f75c2a3b23c1a160"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Challenge renders supplied fictional metadata; input DEEP SCANv1.0.0,accuracy.918,pruning review,3988bytes,.035ms; draft remains pending.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 340,
+        "top": 50,
+        "width": 370,
+        "height": 480
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 410,
+        "top": 730,
+        "width": 440,
+        "height": 160
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+      "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+      "sha256": "5f90e6172fb9d8e19cf9f2bd4336500ba2a261b22c02ca6db53830c470637cf3",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "documentation-challenge",
+    "id": "capstone/documentation",
+    "phase": "challenge",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-99895b6d-5ee0-427c-b48d-7009a40c5912.png",
+    "candidateSha256": "d4afeda85a4f84e16842f1ac2772224536f6be810ba07793f75c2a3b23c1a160",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:50:28.354113+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+        "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+        "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Supplied fictional metadata exactly matches actual write-model-card fixture: DEEP SCAN 1.0.0, accuracy .918, pruning review, 3988 weight bytes, .035ms. Performance, Limitations and Usage remain pending while Demir composes; no premature answer or measurement claim."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/documentation-challenge.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-99895b6d-5ee0-427c-b48d-7009a40c5912.png",
+  "publishedSource": "art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation-challenge.webp",
+  "sourceSha256": "d4afeda85a4f84e16842f1ac2772224536f6be810ba07793f75c2a3b23c1a160",
+  "webpSha256": "6ae5ce753508ed0c52d1d1408b215f5f2c1ddba6f16188fb934189b208e11b60",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+    "sourceSha256": "5f90e6172fb9d8e19cf9f2bd4336500ba2a261b22c02ca6db53830c470637cf3",
+    "webpSha256": "2968444c2f070b427c6411bfb52fde6b45450465d73caaa530be9ee292461e9c",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-b875f660-c1b1-44e0-a3cc-6455da12c7ba.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "d4afeda85a4f84e16842f1ac2772224536f6be810ba07793f75c2a3b23c1a160",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Supplied fictional metadata exactly matches actual write-model-card fixture: DEEP SCAN 1.0.0, accuracy .918, pruning review, 3988 weight bytes, .035ms. Performance, Limitations and Usage remain pending while Demir composes; no premature answer or measurement claim."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+        "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+        "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/documentation-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

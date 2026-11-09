@@ -36,6 +36,30 @@ test.describe("Landing Page", () => {
     await expect(page.getByTestId("deep-scan-demo")).toHaveCount(0);
   });
 
+  test("the approved introduction plays from the homepage", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByTestId("landing-cta-secondary").click();
+    const section = page.getByTestId("intro-video-section");
+    const player = page.getByTestId("intro-video-player");
+    await expect(section).toBeInViewport();
+    await expect(player).toHaveAttribute("src", "/media/tensorcraft-intro.mp4");
+    await expect(player).not.toHaveAttribute("autoplay");
+    await player.focus();
+    await player.press("Space");
+    await expect
+      .poll(() =>
+        player.evaluate((element) => (element as HTMLVideoElement).currentTime),
+      )
+      .toBeGreaterThan(0);
+    await expect
+      .poll(() =>
+        player.evaluate((element) => (element as HTMLVideoElement).duration),
+      )
+      .toBe(27);
+  });
+
   test("landing FAQ renders with answers visible", async ({ page }) => {
     await page.goto("/");
     const faq = page.getByTestId("landing-faq");

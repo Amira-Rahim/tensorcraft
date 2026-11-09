@@ -1,0 +1,151 @@
+{
+  "id": "science-concept-reader-r2",
+  "key": "deep-orbit/llm-integration/llms-for-science",
+  "phase": "concept",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-87b11228-75e3-46df-82af-f7c27b2afd12.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+    "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml"
+  ],
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Image1 canonical Farah, image2 canonical Nazari, image3 bridge ROOM ONLY, image4 EDIT TARGET. NARROW ANATOMY CORRECTION ONLY: Farah's free hand currently protrudes at the far bottom-left while its arm is hidden behind her torso and opposite reaching arm. Remove that hand and its sleeve remnant from bottom-left completely. Redraw Farah's free arm as a clearly connected shoulder-to-elbow-to-wrist chain down the RIGHT SIDE of her torso as seen in the image, the elbow relaxed beside her waist. Its free hand rests gently palm-down on the desk immediately below and left of the screen, around x785,y930. Show the separate gray sleeve and cuff attached to that hand, with the free forearm clear from the existing stylus arm. Exactly two arms and two hands for Farah, one pointing with pen at screen and one resting at her own side, no crossed arms and no detached hand. Preserve existing stylus arm and face, correct short neck, body scale, smile, Nazari and her two correct attached hands/book/pen. Preserve ALL monitor content letter-for-letter and its readable orientation, room, muted sage/brass. Every background screen remains dark. Landscape1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "candidatePath": "art-src/scenes/llm-integration__llms-for-science-concept-openai-20261107.png",
+  "candidateSha256": "d5abb9857f98e0f0a341b76550a4558fd5422b2e2c1e71ce14b023e68c2585b9",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-87b11228-75e3-46df-82af-f7c27b2afd12.png",
+      "sha256": "5b89b4f77ea20916dbd51f52adcbc5a739601407b0bf3e280a6d7dd20f78646a",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+    }
+  ],
+  "ownerQa": {
+    "status": "pass",
+    "reviewer": "/root/reader_late",
+    "method": "Native full frame, temporary face crops compared against exact canonical portraits, all visible labels read against current MDX/YAML.",
+    "identity": "Farah and Nazari retain ages, face morphology, hairline and signature equipment under natural yaw. Neck length and head/body proportion balanced.",
+    "anatomy": "Two connected arm chains per person. Natural stylus and pager/book grips, supported free hands. Science r1 ambiguous opposite-side arm removed in r2; both free and stylus arms now connected visibly on appropriate sides.",
+    "readerDirection": "Both crew share the monitor front viewing side. Science ledger pages face Nazari while blank cover faces audience.",
+    "screenMeaning": "Threshold precise three-row fictional validation table, no invented winner. Science concept uses exact numeric-screen example with absent9 and caveat that all claims still need evidence.",
+    "style": "Candid task/relational eyelines, natural modest expressions, muted sage/brass, background screens inactive.",
+    "publication": "Pending independent root review. No shared ledger/runtime changes."
+  },
+  "canonicalComparisons": [
+    {
+      "character": "dr-farah",
+      "canonicalPath": "docs/art-refs/deep-orbit/dr-farah.png",
+      "candidateCrop": {
+        "left": 355,
+        "top": 160,
+        "width": 320,
+        "height": 395
+      }
+    },
+    {
+      "character": "chief-nazari",
+      "canonicalPath": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "candidateCrop": {
+        "left": 788,
+        "top": 55,
+        "width": 260,
+        "height": 305
+      }
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-afbbf54f-1c4a-413b-b25b-fff6611e890f.png",
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-afbbf54f-1c4a-413b-b25b-fff6611e890f.png",
+  "publishedSource": "art-src/scenes/llm-integration__llms-for-science-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-concept.webp",
+  "sourceSha256": "d5abb9857f98e0f0a341b76550a4558fd5422b2e2c1e71ce14b023e68c2585b9",
+  "webpSha256": "5d05362dbf91ba613c036bd7261c817fbee2edf531d60d21104f0dc9aab25c91",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__llms-for-science-concept-openai-20261107.png",
+    "sourceSha256": "4b174f4932c8a0a13fab1f7d96bc2971cb0aa2e8803bd3e4e666e33e52fd7be6",
+    "webpSha256": "9280d266b00f62b2bb2a0f897eec8ea6d983e764d1cd2053737d224070393165",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_late",
+    "status": "approved",
+    "candidateSha256": "d5abb9857f98e0f0a341b76550a4558fd5422b2e2c1e71ce14b023e68c2585b9",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsBodyAndFurniture": "pass",
+      "headNeckAndShoulders": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "screenMeaning": "Threshold precise three-row fictional validation table, no invented winner. Science concept uses exact numeric-screen example with absent9 and caveat that all claims still need evidence."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+        "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+        "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__llms-for-science-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__llms-for-science-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-concept.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

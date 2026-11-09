@@ -1,0 +1,43 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T17:21:24.928511+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-shapes-epilogue/candidate.png",
+  "candidateSha256": "8b3a36cbf5478eeb8dec45551c162971f212a2767a0dba72a4164ba403e058c2",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full 1536x1024 original inspection plus original-pixel face and hand crops, with current lesson source and canonical portraits. Traced shoulder-elbow-wrist-hand chains and checked thumb sides, prop continuity, display values, screen perspective and available display space.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+    "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+  },
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    }
+  ],
+  "cropCoordinates": {
+    "face": [
+      1110,
+      290,
+      300,
+      330
+    ],
+    "hands": [
+      825,
+      560,
+      665,
+      450
+    ]
+  },
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "findings": [
+    "PASS: [450,64] moments by sensors becomes [64,450] sensors by moments. The two selected sensor traces are explicitly illustrative and make no invented numerical claim or diagnosis.",
+    "The main wall display gives the shapes, axes and repeated waves ample readable area.",
+    "The stylus is a single straight object in a plausible writing grip. Its arm traces continuously to Farah's own shoulder through a bent elbow and neutral wrist. The other hand braces the bench naturally.",
+    "Canonical face crop retains Farah's identity and her expression fits the continuing investigation."
+  ],
+  "repairDirection": "None. Candidate is ready for root publication checks."
+}

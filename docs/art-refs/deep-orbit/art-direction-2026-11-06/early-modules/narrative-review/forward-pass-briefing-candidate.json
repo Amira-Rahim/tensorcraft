@@ -1,0 +1,76 @@
+{
+  "id": "neural-networks/forward-pass",
+  "phase": "briefing",
+  "currentSource": "art-src/scenes/neural-networks__forward-pass-openai-20261107.png",
+  "currentSha256": "3cffe75ea94e905bf76d208d081bbeaafabcd3e5166112c1efadacaa991eefd5",
+  "reviewedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a46ac1ec-b5eb-4d02-8ddd-b1822e027483.png",
+  "reviewedSha256": "3cffe75ea94e905bf76d208d081bbeaafabcd3e5166112c1efadacaa991eefd5",
+  "pendingCandidate": false,
+  "cast": [
+    "ensign-demir",
+    "dr-farah"
+  ],
+  "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/forward-pass-sheet.jpg",
+  "slug": "forward-pass",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a46ac1ec-b5eb-4d02-8ddd-b1822e027483.png"
+  ],
+  "prompt": "Use case: identity-preserve narrative restaging. Asset1536x1024 story illustration. First2inputs immutable canonical identities ensign-demir, dr-farah; LAST is TARGET for room/style/data. Rebuild WHOLE poses and furniture for candid story work, do not rotate only a head. Exact canonical morphology/age/eyes/compactnose/broadjaw preserved. Farah38 anatomicalLEFTlens; Demirmid20 stubble anatomicalRIGHTcomms, visibleLEFTearbare; Nazari48 graybob bareears. Keep current warm moderate stylized head size, not tiny heads or realistic elongation. Muted sage/gray/brass, no neonwash. Restage whole scene as candid debugging: Demir seated naturally at the bridge console, body and chair toward its screen, one hand paused above keyboard, the other supporting chin. Farah bends beside his chair, torso angled toward that same screen, one hand braced on desk edge, other holding her pencil down near her notebook laid on the desk. BOTH look at the error monitor, Demir frustrated and Farah intent with knitted brows. Camera is front-side three-quarter, not behind them, so canonical faces visible naturally without looking out. No folded-arm pose. Keep full adult chair/leg/desk geometry. Exact monitor: 'Shape error', 'Expected: [rows,3]', 'Received: [3]', 'Adapter result: [3,1]', 'Missing batch axis'. These are error diagnostic fields, not a teaching poster. Farah2arms2hands, Demir2arms2hands. Other screens off. No frontal portraits, no display cards to camera, no generic teacher gestures/smiles, no incidental diagrams or extra text, no left accent bars, no em dash. Natural3quarter facial visibility determined by camera, not backward neck twist.",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/forward-pass-briefing-candidate.json",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-9ced8be4-9200-4379-8d3d-1f124d3a6bea.png",
+  "tool": "built-in image_gen",
+  "date": "2026-11-07",
+  "status": "pending full-frame and independent narrative review",
+  "pathSha256": "ca33ad677feb26ba5834020f4682a5e7c5ffa2f698cb408893f900da979963f3",
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/forward-pass-briefing-ensign-demir-proof.png",
+      "sha256": "65d137b842df07313258da830a7575a65f253d749c0c55d0b102ed0b84915ede",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-9ced8be4-9200-4379-8d3d-1f124d3a6bea.png",
+      "candidateSha256": "ca33ad677feb26ba5834020f4682a5e7c5ffa2f698cb408893f900da979963f3",
+      "crop": {
+        "left": 590,
+        "top": 170,
+        "width": 220,
+        "height": 270
+      }
+    },
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/forward-pass-briefing-dr-farah-proof.png",
+      "sha256": "642ee427bbe87d5a9c0a641f82bad7bfca868398acf5ddec58a94c0d017cc05b",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-9ced8be4-9200-4379-8d3d-1f124d3a6bea.png",
+      "candidateSha256": "ca33ad677feb26ba5834020f4682a5e7c5ffa2f698cb408893f900da979963f3",
+      "crop": {
+        "left": 930,
+        "top": 85,
+        "width": 290,
+        "height": 280
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-9ced8be4-9200-4379-8d3d-1f124d3a6bea.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a46ac1ec-b5eb-4d02-8ddd-b1822e027483.png",
+      "art-src/scenes/neural-networks__forward-pass-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

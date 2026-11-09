@@ -1,0 +1,93 @@
+{
+  "id": "browser-runtimes/tensorflow-js-setup",
+  "phase": "briefing",
+  "status": "superseded-pose-hold",
+  "identityStatus": "superseded-pose-hold",
+  "approvalGate": "identity-approved",
+  "date": "2026-11-07",
+  "tool": "built-in image_gen",
+  "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-openai-20261107.png",
+  "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup.webp",
+  "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup.webp",
+  "sourceSha256": "789e897dbdb497740f1ea88f78d879657f7769cd13964e045e806ed9f600d986",
+  "webpSha256": "db0bcb26b3e07bbc2b8e3695931d899d80de7891d338b2c5b970d6623a9bbb01",
+  "publishedSha256": "db0bcb26b3e07bbc2b8e3695931d899d80de7891d338b2c5b970d6623a9bbb01",
+  "bytes": 187492,
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "contain",
+  "quality": 86,
+  "effort": 6,
+  "fit": "contain",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "width": 1536,
+    "height": 1024,
+    "fit": "contain"
+  },
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "identityReferences": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__tensorflow-js-setup-openai-20261106.png",
+      "sha256": "74853119db7470bcb775cc893c9e0172d44ab31620c647223df53361cddfa88f"
+    }
+  ],
+  "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-b733ad8a-ce09-49b8-842c-2d0752bde927.png",
+  "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/browser-runtimes__tensorflow-js-setup-briefing-identity-first.prompt.txt",
+  "faceProofs": [
+    {
+      "character": "demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "crop": {
+        "left": 185,
+        "top": 230,
+        "width": 320,
+        "height": 345
+      },
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/tensorflow-js-setup-briefing-demir.png"
+    },
+    {
+      "character": "nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "crop": {
+        "left": 980,
+        "top": 10,
+        "width": 330,
+        "height": 365
+      },
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/tensorflow-js-setup-briefing-nazari.png"
+    }
+  ],
+  "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/tensorflow-js-setup-faces.png",
+  "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/tensorflow-js-setup-faces.png",
+  "reviewers": [
+    "art_repair_batch",
+    "unique_lesson_art"
+  ],
+  "visualQA": {
+    "identity": true,
+    "identityMethod": "Canonical portrait face crops plus independent second-agent morphology pass.",
+    "anatomy": true,
+    "furniture": true,
+    "diagrams": true,
+    "notes": "Full-frame anatomy/display check passed after canonical face correction. Shoulder/elbow/wrist/hand chains and contacts coherent, bodies clear of furniture, approved teaching display relationships retained. Canonical crop peer pass."
+  },
+  "reason": "Head turns too far over back-facing torso. Replaced by full chair and body swivel."
+}

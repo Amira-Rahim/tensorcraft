@@ -1,0 +1,96 @@
+{
+  "index": 5,
+  "module": "optimization-edge",
+  "lesson": "quantization",
+  "phase": "challenge",
+  "room": "engineering",
+  "characters": [
+    "ensign-demir",
+    "chief-nazari"
+  ],
+  "aria": false,
+  "alt": "Demir compares decoded predictions while Nazari keeps the original results beside the test console.",
+  "scene": "Demir sits at the engineering console, near-frontal face, one hand on a key and the other holding a slate. Nazari stands a step behind him, face turned toward camera at a gentle three-quarter angle, both hands holding a small folder of original results. Their expressions show cooperative curiosity. Screen has two equal columns of THREE plain prediction cards each, aligned in three pairs. Each card contains one simple neutral circle, square or triangle as a class token, with two pairs matching and one pair differing. Do not color the differing pair as right or wrong: the inputs have no trusted labels and disagreement is not accuracy loss. No text, no numeric quality score, no hardware shrinking. Show clear separate limbs and coherent chair contact.",
+  "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of ensign-demir. Image 2 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Ensign Demir is the EXACT mid-twenties man in his neutral portrait: compact broad softly squared lower face, SHORT rounded chin, compact round-ended nose with broad base and full nostrils, distinctive straight brows, round alert eyes with the same spacing, sparse freckles and uneven stubble. Compact tousled dark-brown front locks and hairline, green round comms earpiece on HIS ANATOMICAL RIGHT ear, slate uniform. Do not elongate his jaw or nose, point his chin, inflate his quiff or make a different handsome anime man. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Demir sits at the engineering console, near-frontal face, one hand on a key and the other holding a slate. Nazari stands a step behind him, face turned toward camera at a gentle three-quarter angle, both hands holding a small folder of original results. Their expressions show cooperative curiosity. Screen has two equal columns of THREE plain prediction cards each, aligned in three pairs. Each card contains one simple neutral circle, square or triangle as a class token, with two pairs matching and one pair differing. Do not color the differing pair as right or wrong: the inputs have no trusted labels and disagreement is not accuracy loss. No text, no numeric quality score, no hardware shrinking. Show clear separate limbs and coherent chair contact. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 2 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "src": "/scenes/deep-orbit/optimization-edge/quantization-challenge.webp",
+  "source": "art-src/scenes/optimization-edge__quantization-challenge-openai-20261107.png",
+  "location": "Archimedes, Engineering",
+  "status": "generated-awaiting-review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-a2ef2977-9cb4-475a-a489-4d2ac330301e.png",
+  "candidate": "/tmp/optimization-candidates/5.webp",
+  "candidateSha256": "d2358b58a1e6dc6584baa8c52598b07c1ec388859b5aa6c50e577624ab5b5afc",
+  "sourceSha256": "35627b7de2c6dc941f6a448817cd3592a92048016cda4842eb24a46f285e2b73",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room reference",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 184776,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/quantization-challenge-chief-nazari-proof.png",
+      "crop": {
+        "left": 190,
+        "top": 60,
+        "width": 330,
+        "height": 360
+      }
+    },
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/quantization-challenge-ensign-demir-proof.png",
+      "crop": {
+        "left": 635,
+        "top": 200,
+        "width": 305,
+        "height": 385
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-a2ef2977-9cb4-475a-a489-4d2ac330301e.png",
+      "art-src/scenes/optimization-edge__quantization-challenge-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

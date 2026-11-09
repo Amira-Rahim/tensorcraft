@@ -1,0 +1,167 @@
+{
+  "key": "deep-orbit/advanced-time-series/kalman-filters",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: lighting-weather with immutable identity. First references canonical people and room, LAST exact target. Tone down only the bright neon mint outlines on hair, coats, shoulders, chair and any rim edges into thin subdued desaturated sage. The tall lab glass pillar must be dark muted sage, with dim pale grey-sage internal stripes and no bright lime fill or bloom, matching quiet laboratory ambient light. Preserve all exact faces, head sizes, facial geometry, expressions, complete poses, necks, arms, hands, grips and chair support. Every panel, word, number, diagram and screen state must remain EXACTLY unchanged. Keep natural warm skin and local warm practical lamps, aged brass and charcoal materials. No other changes, no head resizing. Output one full 1536x1024 cel-shaded scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/advanced-time-series__kalman-filters-takeaways-semantics-stage2-openai-20261107.png",
+      "sha256": "8ab137bde30ba26a45a6ec45fec3c763a7fc81fe7ddd8e458d6d5f0a9779dbba",
+      "role": "target scene",
+      "originalPath": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage2-openai-20261107.png",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "8ab137bde30ba26a45a6ec45fec3c763a7fc81fe7ddd8e458d6d5f0a9779dbba",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-takeaways.webp",
+    "sha256": "131084a8e975f1768439ed76a5a6c830e5f6fed448b59b430916c6f7c232abbf"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "sha256": "6cb732cf4fecd19c6a491f5e32b60d90220e29e02ac4daede37e9ada1a5490b0"
+    }
+  ],
+  "panelSpecification": {
+    "state": "recall",
+    "panels": [
+      "Preserve both exact canonical faces and expressions. Keep Farah holding the paper with two connected hands and Demir's one hand on the desk and other hand on his lap. Adjust only Farah's complete head slightly, to about95 percent of current linear size, keeping a natural neck. Demir is unchanged. Paper replaces the scatter plot with a short result summary headed \"Eight-day log\" and exactly three rows: \"Final estimate:72.43 s\", \"Latest reading:72.0 s\", \"Gap:0.43 s\". The foreground tablet shows \"Gain near0: prediction\" and \"Gain near1: measurement\", with footer \"One state tracks level\". Main background board shows only \"Change per day needs another state\". Every other screen and the wrist terminal are off. No unsupported accuracy claim or graph."
+    ],
+    "otherScreens": "All unspecified screens are inactive charcoal glass."
+  },
+  "numericVerification": {
+    "dailyLog": [
+      73.1,
+      72.9,
+      73,
+      72.6,
+      72.7,
+      72.3,
+      72.4,
+      72
+    ],
+    "ema0.2final": 72.56664064000002,
+    "ema0.8final": 72.07916416,
+    "kalmanFinal": 72.43168039656481,
+    "method": "CurrentMDX equations executed inPython withsameinitialization andsubsequent7updates."
+  },
+  "bodyConstraints": "Preserve wholebodyposes, gripandchaircoherence; anyheadadjustments remainmodest andcanonical.",
+  "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-openai-20261107.png",
+  "candidateSha256": "e48b4ff3c9cfb6d0f58adffa43cf6a762142fbe34db7f935d08e67a402c6714a",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-44ce74c9-1030-43a8-a1df-e89287c78b45.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-takeaways-identity-proof.jpg",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise-object-edit. Deep Orbit cinematic cel-shaded story scene,1536x1024. First references are canonical faces, next is the room master, and the LAST image is the exact scene to edit. Preserve facial morphology, adult age, nose, jaw, eyes, brows, expression, hair, warm complexion and signature equipment. Farah lens on anatomical LEFT eye, Demir comms on anatomical RIGHT ear. Preserve whole body poses, continuous shoulder-arm-hand chains, original grips, neck alignment, chair support, room geometry and composition. People and story remain dominant. Every unspecified monitor or wrist display is inactive charcoal glass, without decorative technical content. Use muted sage, aged brass and charcoal, with natural warm skin and no neon mint, cyan or mustard wash. Preserve both exact canonical faces and expressions. Keep Farah holding the paper with two connected hands and Demir's one hand on the desk and other hand on his lap. Adjust only Farah's complete head slightly, to about95 percent of current linear size, keeping a natural neck. Demir is unchanged. Paper replaces the scatter plot with a short result summary headed \"Eight-day log\" and exactly three rows: \"Final estimate:72.43 s\", \"Latest reading:72.0 s\", \"Gap:0.43 s\". The foreground tablet shows \"Gain near0: prediction\" and \"Gain near1: measurement\", with footer \"One state tracks level\". Main background board shows only \"Change per day needs another state\". Every other screen and the wrist terminal are off. No unsupported accuracy claim or graph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full final scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/kalman-filters-takeaways-before.png",
+          "sha256": "ba2175f64d8af6618a1424beab64ee79fac0937c2ac78f0e2a5eb2219357d758",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "ba2175f64d8af6618a1424beab64ee79fac0937c2ac78f0e2a5eb2219357d758",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "d0cc6010afe11142a1ed7c32a810e4328116c8e2cf3f5f1f316e9c0e09d5446c",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-48ee72e6-26f0-4d79-a9f8-db462eb929b8.png"
+    },
+    {
+      "prompt": "Use case: identity-preserve. First inputs canonical Farah and Demir portraits, third room reference, LAST exact scene edit target. Restore only Farah complete head to a modestly larger balanced stylized adult size, about 112 percent of its CURRENT linear dimensions. The previous edit reduced her head too much. Preserve her exact facial geometry and expression, rounded cheeks, nose, jaw, eyes, eyebrows, hair silhouette and anatomical-left green lens. Enlarge the complete head uniformly, retaining a natural short neck that joins her existing torso. Do not enlarge eyes or change facial proportions independently. Demir entire head, body and face must remain EXACTLY unchanged. Preserve both complete poses and arms, paper grips, all fingers, chair supports, every word and value on paper/tablet/rear screen, room and palette. Do not move or resize bodies, paper, tablet or furniture. Only Farah head and its natural neck connection may change. Output one full 1536x1024 cel-shaded scene.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage1-openai-20261107.png",
+          "sha256": "d0cc6010afe11142a1ed7c32a810e4328116c8e2cf3f5f1f316e9c0e09d5446c",
+          "role": "target scene"
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage2-openai-20261107.png",
+      "candidateSha256": "8ab137bde30ba26a45a6ec45fec3c763a7fc81fe7ddd8e458d6d5f0a9779dbba",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-8e3b94ff-3748-4a8b-8738-b3c15d4f9eb5.png"
+    }
+  ],
+  "ownReview": "Native fullframe and canonical proof checked: faces, balanced stylized proportions, natural whole poses, arm chains, contacts, restrained palette and all prominent panels pass.",
+  "independentReview": {
+    "status": "approved",
+    "reviewer": "/root",
+    "notes": "Root independently viewed current native fullframe and fresh canonical face comparisons. All exact screen data and operations, balanced head sizes, anatomy and canonical faces pass. Final muted sage palette eliminates fluorescent pillar and rim holds.",
+    "candidateSha256": "e48b4ff3c9cfb6d0f58adffa43cf6a762142fbe34db7f935d08e67a402c6714a",
+    "proofSha256": "a33f365859a1a2c98f39d360a73f917de921746f4078fe849301cb02439854d0",
+    "reviewedAt": "2026-11-07T10:30:12.517118+00:00"
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-semantics-stage3-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-takeaways.webp",
+  "publishedOutputSha256": "aade2cc2224702807732f151f9e1edb78fb4a543fcebb47a19569a1f5c518ce3",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 191844
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

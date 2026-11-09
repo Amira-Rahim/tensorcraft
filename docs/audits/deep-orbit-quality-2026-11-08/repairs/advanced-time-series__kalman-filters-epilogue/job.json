@@ -1,0 +1,289 @@
+{
+  "id": "advanced-time-series__kalman-filters-epilogue",
+  "lesson": "advanced-time-series/kalman-filters",
+  "phase": "epilogue",
+  "cast": [
+    "commander-mirza",
+    "dr-farah"
+  ],
+  "room": "bridge",
+  "src": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+  "alt": "Mirza notes a deadline while Farah presents the smoothed interval and its assumptions.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T20:07:32.380981+00:00",
+  "prompt": "Use case: illustration-story. Repair the LAST reference image with minimal scene changes. The preceding canonical portraits are identity authority, followed by the room reference. Preserve the current composition, mature recognizable faces, candid expressions, body positions, complete natural arm chains, neutral wrists, crisp large readable upright wall display and its exact text, muted charcoal/sage/brass palette, warm skin and restrained rim light. Correct only the foreground paper: REMOVE ALL READABLE WORDS, NUMERALS AND SYMBOLS from the paper or open notebook, including the 0800 note. The paper may show only a few faint abstract horizontal ruling lines that follow its plane. The exact lesson evidence remains on the large wall display, which must remain readable and unchanged. Retain one perfectly straight pen with normal writing grip and tip touching paper; correct any wrist/contact needed. Do not put text on paper facing the audience. The paper is secondary and should contain no legible label. Each visible person has exactly two coherent arms and anatomically correct thumb sides. No new people. Landscape 1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "d461a248c893117ae76d62da8c75d1ca46e20cbe6d87c13a0d2c8d5cc6b0a7c8",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "canonical identity: commander-mirza",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room master",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__kalman-filters-epilogue/rejected-v1.png",
+      "sha256": "dae192d15ad06b521d66349638eddcb198f7479353a6a627b0de438a67284e2c",
+      "role": "Current candidate edit target, not identity authority"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+    "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+  },
+  "sourceSha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b",
+  "sourceEvidence": {
+    "task": "Farah stands beside Commander Mirza at the bridge report. Mirza reads a paper facing her, then writes a short time in its margin with ONE straight pen and ordinary grip. Farah rests one hand on the console and holds the report edge with the other, watching the commander seriously. The main numbers are on a very large upright bridge display, not on the paper. Keep Mirza as her canonical short gray-templed hair, dark skin, gold-trim command uniform and round badge.",
+    "visibleDataOperationAndResult": "Title \"Interval review\". \"Smoothed estimate: 72.4 s\", \"Latest reading: 72.0 s\", \"Q = 0.1   R = 1\". Footer \"Backup transmission and full-thrust plans by 0800\". Secondary line \"Noise assumptions need checking\". Do not imply the level-only filter predicts a zero date.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The eight-day estimate, latest reading and model assumptions are small on a narrow desk screen despite broad available bridge space.",
+        "repairDirection": "Put the interval review on a larger upright display visible to both crew. Preserve Mirza writing the backup-plan deadline, with the note still facing her."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Repair the LAST reference image with minimal scene changes. The preceding canonical portraits are identity authority, followed by the room reference. Preserve the current composition, mature recognizable faces, candid expressions, body positions, complete natural arm chains, neutral wrists, crisp large readable upright wall display and its exact text, muted charcoal/sage/brass palette, warm skin and restrained rim light. Correct only the foreground paper: REMOVE ALL READABLE WORDS, NUMERALS AND SYMBOLS from the paper or open notebook, including the 0800 note. The paper may show only a few faint abstract horizontal ruling lines that follow its plane. The exact lesson evidence remains on the large wall display, which must remain readable and unchanged. Retain one perfectly straight pen with normal writing grip and tip touching paper; correct any wrist/contact needed. Do not put text on paper facing the audience. The paper is secondary and should contain no legible label. Each visible person has exactly two coherent arms and anatomically correct thumb sides. No new people. Landscape 1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__kalman-filters-epilogue/rejected-v1.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Mirza notes a deadline while Farah presents the smoothed interval and its assumptions.",
+    "location": "Archimedes, Bridge",
+    "action": "Mirza makes a pen note on a sheet steadied by Farah, who braces her other hand on the desk.",
+    "emotion": "Sober operational concentration.",
+    "eyeline": "Both study the sheet while the large wall display carries the planning evidence.",
+    "checks": [
+      "The large bridge display retains 72.4 s estimate, 72.0 s latest reading, Q = 0.1, R = 1, noise assumptions needing checks and plans due 0800.",
+      "Audience-facing paper text is removed; only abstract ruling remains. One straight pen now visibly contacts paper, with plausible grip and neutral wrist. Canonical faces and all arm chains pass fresh crops.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ]
+  },
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-8f9378c0-8849-4bef-a1a7-13c35bc33a83.png",
+  "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png",
+  "candidateSha256": "e579d9c2d8b9cc7d54b5429f6745c696f2c3f16aaae5d2d7101dc49c6c4d3c4e",
+  "generatedAt": "2026-11-09T06:54:23.077573+00:00",
+  "faceCropCoordinates": {
+    "commander-mirza": {
+      "left": 215,
+      "top": 360,
+      "width": 235,
+      "height": 320
+    },
+    "dr-farah": {
+      "left": 510,
+      "top": 250,
+      "width": 250,
+      "height": 350
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 320,
+      "top": 700,
+      "width": 730,
+      "height": 285
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-09T06:59:39.106038+00:00",
+    "candidateSha256": "e579d9c2d8b9cc7d54b5429f6745c696f2c3f16aaae5d2d7101dc49c6c4d3c4e",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "commander-mirza",
+        "referencePath": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+        "referenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+        "candidateCropCoordinates": {
+          "left": 215,
+          "top": 360,
+          "width": 235,
+          "height": 320
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      },
+      {
+        "character": "dr-farah",
+        "referencePath": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 510,
+          "top": 250,
+          "width": 250,
+          "height": 350
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Mirza makes a pen note on a sheet steadied by Farah, who braces her other hand on the desk.",
+    "emotion": "Sober operational concentration.",
+    "eyeline": "Both study the sheet while the large wall display carries the planning evidence.",
+    "narrativeReason": "The interval estimate informs backup-transmission and full-thrust plans due by 0800.",
+    "findings": [
+      "The large bridge display retains 72.4 s estimate, 72.0 s latest reading, Q = 0.1, R = 1, noise assumptions needing checks and plans due 0800.",
+      "Audience-facing paper text is removed; only abstract ruling remains. One straight pen now visibly contacts paper, with plausible grip and neutral wrist. Canonical faces and all arm chains pass fresh crops."
+    ]
+  },
+  "owner": "/root/quality_sequence",
+  "attempts": [
+    {
+      "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: commander-mirza, dr-farah. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Commander Mirza: dark-skinned mature woman, close-cropped dark hair with gray temples, gold-trim dark command uniform, round chest badge and small hoop earrings. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah stands beside Commander Mirza at the bridge report. Mirza reads a paper facing her, then writes a short time in its margin with ONE straight pen and ordinary grip. Farah rests one hand on the console and holds the report edge with the other, watching the commander seriously. The main numbers are on a very large upright bridge display, not on the paper. Keep Mirza as her canonical short gray-templed hair, dark skin, gold-trim command uniform and round badge.\nExact visible display content: Title \"Interval review\". \"Smoothed estimate: 72.4 s\", \"Latest reading: 72.0 s\", \"Q = 0.1   R = 1\". Footer \"Backup transmission and full-thrust plans by 0800\". Secondary line \"Noise assumptions need checking\". Do not imply the level-only filter predicts a zero date.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+      "promptSha256": "e6ae00dad72048d218be5671fc3792cb9b7c79e293285d6623646a406b0f8abc",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "role": "canonical identity: commander-mirza",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "role": "canonical identity: dr-farah",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "role": "room master",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+        },
+        {
+          "path": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png",
+          "role": "edit target, not identity authority",
+          "sha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b"
+        }
+      ],
+      "generationArgs": {
+        "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: commander-mirza, dr-farah. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Commander Mirza: dark-skinned mature woman, close-cropped dark hair with gray temples, gold-trim dark command uniform, round chest badge and small hoop earrings. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah stands beside Commander Mirza at the bridge report. Mirza reads a paper facing her, then writes a short time in its margin with ONE straight pen and ordinary grip. Farah rests one hand on the console and holds the report edge with the other, watching the commander seriously. The main numbers are on a very large upright bridge display, not on the paper. Keep Mirza as her canonical short gray-templed hair, dark skin, gold-trim command uniform and round badge.\nExact visible display content: Title \"Interval review\". \"Smoothed estimate: 72.4 s\", \"Latest reading: 72.0 s\", \"Q = 0.1   R = 1\". Footer \"Backup transmission and full-thrust plans by 0800\". Secondary line \"Noise assumptions need checking\". Do not imply the level-only filter predicts a zero date.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png"
+        ],
+        "transparent_background": false
+      },
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-782abbd2-aa02-437e-aeab-f7b1be44b969.png",
+      "candidateSha256": "dae192d15ad06b521d66349638eddcb198f7479353a6a627b0de438a67284e2c",
+      "ownReview": {
+        "reviewedAt": "2026-11-08T19:06:40.221872+00:00",
+        "candidateSha256": "dae192d15ad06b521d66349638eddcb198f7479353a6a627b0de438a67284e2c",
+        "nativeReviewed": true,
+        "dimensions": [
+          1536,
+          1024
+        ],
+        "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+        "scores": {
+          "color": 4,
+          "pose": 4,
+          "expression": 4,
+          "displays": 5,
+          "composition": 4,
+          "identity": 4,
+          "story": 4
+        },
+        "verdict": "candidate-passes-own-review",
+        "canonicalFaceComparison": [
+          {
+            "character": "commander-mirza",
+            "referencePath": "docs/art-refs/deep-orbit/commander-mirza.png",
+            "referenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+            "candidateCropCoordinates": {
+              "left": 215,
+              "top": 360,
+              "width": 235,
+              "height": 320
+            },
+            "nativeCropReviewed": true,
+            "temporaryCropRemoved": true
+          },
+          {
+            "character": "dr-farah",
+            "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+            "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+            "candidateCropCoordinates": {
+              "left": 510,
+              "top": 250,
+              "width": 250,
+              "height": 350
+            },
+            "nativeCropReviewed": true,
+            "temporaryCropRemoved": true
+          }
+        ],
+        "handCropsReviewed": true,
+        "temporaryCropsRemoved": true,
+        "action": "Mirza reviews a document with a straight pen while Farah steadies its top and braces on the desk.",
+        "emotion": "Sober operational concentration.",
+        "eyeline": "Both study the document while the large wall panel carries the interval and planning deadline.",
+        "narrativeReason": "The measured interval becomes a concrete backup-transmission and full-thrust planning deadline.",
+        "findings": [
+          "The large bridge display correctly shows 72.4 s estimate, 72.0 s latest reading, Q = 0.1, R = 1, noise assumptions needing checks and plans due 0800.",
+          "The pen is straight, the grip and paper occlusion are plausible, and all visible forearms connect to the correct shoulders."
+        ]
+      },
+      "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__kalman-filters-epilogue/rejected-v1.png",
+      "failure": "Independent peer found handwritten paper text oriented toward audience instead of writer."
+    }
+  ],
+  "generationAttemptsErrors": [
+    {
+      "error": "AbsolutePathBuf deserialized without a base path",
+      "resolution": "Normalize all reference paths to absolute paths before retry."
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+    }
+  ],
+  "publishedSource": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__kalman-filters-epilogue/rejected-v1.png",
+      "sha256": "dae192d15ad06b521d66349638eddcb198f7479353a6a627b0de438a67284e2c",
+      "bytes": 2204914,
+      "retainedEquivalent": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-782abbd2-aa02-437e-aeab-f7b1be44b969.png",
+      "reason": "Rejected intermediate, preserved in tool archive"
+    }
+  ]
+}

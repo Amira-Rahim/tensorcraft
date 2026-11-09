@@ -1,0 +1,21 @@
+{
+  "key": "anomaly-detection/normal-vs-anomalous",
+  "phase": "concept",
+  "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261106.png",
+  "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+  "tool": "built-in imagegen",
+  "sourceSha256": "d2920b737bce0e691eb559e6d21ff4507efa1e8d8dec304c821ffb000bb8b9da",
+  "outputSha256": "332068f2a39ef2c8540981e29b66e20c187206851c3fd848580fe3112f699980",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 181288,
+  "webpQuality": 86,
+  "alt": "Farah and Nazari compare false alarms and misses at an adjustable cutoff.",
+  "review": {
+    "status": "accepted",
+    "method": "Visual inspection of full generated image, tracing all visible limbs and furniture boundaries; canonical face comparison; source story review.",
+    "notes": "Farah and Nazari each have two continuous arms and natural hands; faces match canonical references. Overlapping distributions and cutoff remain unlabeled and nonconclusive."
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "i": 50,
+  "room": "engineering",
+  "moment": "Demir sits at the LEFT foreground, tired of waiting for numerical gradients. One elbow rests on the desk with that hand supporting his temple naturally; his other hand loosely rests on a mouse. Both arms are fully traceable. His eyebrows tilt with weary concern and eyes look toward a LARGE RIGHT main engineering display, not camera. The main screen uses almost all right half and center height; eliminate excess empty ceiling. Exact text: heading 'Numeric gradients'; rows 'Parameters checked: 500 / 673', 'Elapsed: 20 s', 'Still running', '673 extra forward passes'. A readable small bottom line 'Fictional mission timing'. A smaller secondary ARIA screen may show only 'ARIA' and a simple waveform. Keep primary status large.",
+  "id": "training-loop__backpropagation-briefing",
+  "lesson": "training-loop/backpropagation",
+  "phase": "briefing",
+  "source": "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+  "sourceSha256": "df7c6f6656b30008682fedaa61604c9b76ddb8e4296f83fe22a0c8f18ac59d02",
+  "lessonSource": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+  "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 1 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the LEFT foreground, tired of waiting for numerical gradients. One elbow rests on the desk with that hand supporting his temple naturally; his other hand loosely rests on a mouse. Both arms are fully traceable. His eyebrows tilt with weary concern and eyes look toward a LARGE RIGHT main engineering display, not camera. The main screen uses almost all right half and center height; eliminate excess empty ceiling. Exact text: heading 'Numeric gradients'; rows 'Parameters checked: 500 / 673', 'Elapsed: 20 s', 'Still running', '673 extra forward passes'. A readable small bottom line 'Fictional mission timing'. A smaller secondary ARIA screen may show only 'ARIA' and a simple waveform. Keep primary status large. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "Room only",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+      "role": "Edit target, not identity authority",
+      "sha256": "52a26ecb60431c10a7e15aa514f56b8d8ee6ce64a4dc8bddabc853f85a08f565"
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 1 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the LEFT foreground, tired of waiting for numerical gradients. One elbow rests on the desk with that hand supporting his temple naturally; his other hand loosely rests on a mouse. Both arms are fully traceable. His eyebrows tilt with weary concern and eyes look toward a LARGE RIGHT main engineering display, not camera. The main screen uses almost all right half and center height; eliminate excess empty ceiling. Exact text: heading 'Numeric gradients'; rows 'Parameters checked: 500 / 673', 'Elapsed: 20 s', 'Still running', '673 extra forward passes'. A readable small bottom line 'Fictional mission timing'. A smaller secondary ARIA screen may show only 'ARIA' and a simple waveform. Keep primary status large. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__backpropagation-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "status": "published",
+  "owner": "/root/quality_early",
+  "tool": "builtin image_gen",
+  "preparedAt": "2026-11-08T17:36:15.443112+00:00",
+  "promptSha256": "e6f6fbfb634e5991a524c5134e205331eb95a29319a6f84da6fb62aec069f149",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+      "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+    }
+  ],
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-477a0c1a-9996-4e58-b89a-90c44857fd61.png",
+  "candidatePath": "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+  "candidateSha256": "df7c6f6656b30008682fedaa61604c9b76ddb8e4296f83fe22a0c8f18ac59d02",
+  "ownReview": {
+    "reviewer": "quality_early",
+    "reviewedAt": "2026-11-08T18:44:32.032683+00:00",
+    "candidateSha256": "df7c6f6656b30008682fedaa61604c9b76ddb8e4296f83fe22a0c8f18ac59d02",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native generated original plus magnified hands/props and face comparison with independently viewed canonical portraits. All complete arm chains traced in original.",
+    "cropCoordinates": [
+      {
+        "i": "r8facehand",
+        "k": 8,
+        "box": [
+          285,
+          315,
+          610,
+          685
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r8mouse",
+        "k": 8,
+        "box": [
+          510,
+          815,
+          780,
+          945
+        ],
+        "scale": 3
+      }
+    ],
+    "canonicalFaceReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "role": "Canonical identity: ensign-demir",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ],
+    "checks": "The large display shows 500 / 673 checked, 20 seconds elapsed, still running and 673 extra forward passes, explicitly labeled fictional mission timing. Both arm chains, head support and natural mouse grip pass magnified review. The canonical face retains recognizable features and a specific waiting expression.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "temporaryCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__backpropagation-briefing/candidate.png",
+  "publishedSource": "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation.webp",
+  "webpSha256": "96eac5e13eb3b620b2cbdf57f949de369bda65a6b77506840ec6e7bf887f19d2",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+    "sourceSha256": "52a26ecb60431c10a7e15aa514f56b8d8ee6ce64a4dc8bddabc853f85a08f565",
+    "webpSha256": "eac79917974c982bad3798689274dd16a7ac90eb3d5b4ae82e15672f28318dd9",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-0a362a50-aa01-4f68-bfc8-28fa416b072a.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_sequence",
+    "authorReviewer": "quality_early",
+    "status": "approved",
+    "candidateSha256": "df7c6f6656b30008682fedaa61604c9b76ddb8e4296f83fe22a0c8f18ac59d02",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "The large display shows 500 / 673 checked, 20 seconds elapsed, still running and 673 extra forward passes, explicitly labeled fictional mission timing. Both arm chains, head support and natural mouse grip pass magnified review. The canonical face retains recognizable features and a specific waiting expression."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/backpropagation.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

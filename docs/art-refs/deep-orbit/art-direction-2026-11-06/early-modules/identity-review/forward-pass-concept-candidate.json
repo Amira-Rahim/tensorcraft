@@ -1,0 +1,74 @@
+{
+  "module": "neural-networks",
+  "lesson": "forward-pass",
+  "phase": "concept",
+  "src": "/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+  "index": 16,
+  "characters": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=290): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. ENSIGN-DEMIR (portrait 2, scene head near x=830): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-concept.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-efe22641-8d9d-45a6-acb7-c2798e6d7d68.png",
+  "candidate": "/tmp/early-identity-candidates/16.webp",
+  "candidateSha256": "494563c980984edbba46544880147d89887b91d91ce099550ccd1d395f0c642d",
+  "sourceSha256": "9417cd93e52a74c16fa28f71a1f3f81ddd9f9b5b67a971868f5a2f23df43c6c6",
+  "beforeSha256": "c29c9f8c52726c3bc8cbd741413fc9e52246b61fa3f59b35aa686a8453d18a7e",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+      "role": "edit target",
+      "sha256": "c29c9f8c52726c3bc8cbd741413fc9e52246b61fa3f59b35aa686a8453d18a7e"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 145282,
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-concept-dr-farah-correction.png",
+      "crop": {
+        "left": 135,
+        "top": 147,
+        "width": 309,
+        "height": 390
+      }
+    },
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-concept-ensign-demir-correction.png",
+      "crop": {
+        "left": 675,
+        "top": 72,
+        "width": 309,
+        "height": 405
+      }
+    }
+  ]
+}

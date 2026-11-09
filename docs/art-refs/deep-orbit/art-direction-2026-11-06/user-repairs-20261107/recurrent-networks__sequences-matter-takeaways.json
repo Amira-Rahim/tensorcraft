@@ -1,0 +1,290 @@
+{
+  "key": "sequences-matter-takeaways",
+  "id": "recurrent-networks/sequences-matter",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf4ca7f6-d007-49f3-814a-77082de350a1.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+    "sha256": "f94d83e6b360e55677d65a2fb1e454a4183b2e4dc433b10206774ef57cde500c"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah LEFT and Demir RIGHT seated shoulder to shoulder checking input-target windows on a shared lab console. Demir is typing with natural hands; Farah leans slightly toward his screen, hands resting gently on desk, eyes on his work with pleased smile. Demir glances toward her with relieved playful smile, no extreme neck turn. Remove handheld tablets. Upright shared monitor at LEFT foreground faces both, camera same lit side. Exact screen heading \"Worked practice pairs\". Two lines \"[1,2,3] -> [4]\" and \"[2,3,4] -> [5]\". Clearly label \"Input window\" over left side and \"Next target\" over right. Beneath \"xs [2,3,1]\" and \"windows, steps, features\"; then \"ys [2,1]\" and \"windows, features\". Footer \"Split before windowing\". No checkmarks or invented trainedscore. All content one monitor perspective, no flat overlays.",
+  "meaning": "Exercisefirstcase fiveonefeature readings1..5 gives two3stepwindowstarget4/5;xs[2,3,1],ys[2,1]; splitbeforewindowing.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf4ca7f6-d007-49f3-814a-77082de350a1.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf4ca7f6-d007-49f3-814a-77082de350a1.png",
+      "sha256": "ba62c647c382208d0992a04c53c018a2a4b2ad318fc0feda0adae57676e21eb3",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-178ba0db-64d6-46d2-903a-58f704effe58.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 530,
+      "top": 135,
+      "width": 310,
+      "height": 380
+    },
+    {
+      "kind": "face",
+      "index": 1,
+      "left": 975,
+      "top": 90,
+      "width": 300,
+      "height": 430
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 535,
+      "top": 725,
+      "width": 215,
+      "height": 140
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 950,
+      "top": 725,
+      "width": 430,
+      "height": 140
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+  "candidateSha256": "1320313e1069b8c0a604dcfaa8e4749fbaf911d6afe4fb59341d5f7a25e319c1",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah LEFT and Demir RIGHT seated shoulder to shoulder checking input-target windows on a shared lab console. Demir is typing with natural hands; Farah leans slightly toward his screen, hands resting gently on desk, eyes on his work with pleased smile. Demir glances toward her with relieved playful smile, no extreme neck turn. Remove handheld tablets. Upright shared monitor at LEFT foreground faces both, camera same lit side. Exact screen heading \"Worked practice pairs\". Two lines \"[1,2,3] -> [4]\" and \"[2,3,4] -> [5]\". Clearly label \"Input window\" over left side and \"Next target\" over right. Beneath \"xs [2,3,1]\" and \"windows, steps, features\"; then \"ys [2,1]\" and \"windows, features\". Footer \"Split before windowing\". No checkmarks or invented trainedscore. All content one monitor perspective, no flat overlays.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf4ca7f6-d007-49f3-814a-77082de350a1.png",
+          "sha256": "ba62c647c382208d0992a04c53c018a2a4b2ad318fc0feda0adae57676e21eb3",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-178ba0db-64d6-46d2-903a-58f704effe58.png",
+        "sha256": "1320313e1069b8c0a604dcfaa8e4749fbaf911d6afe4fb59341d5f7a25e319c1"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Exercisefirstcase fiveonefeature readings1..5 gives two3stepwindowstarget4/5;xs[2,3,1],ys[2,1]; splitbeforewindowing.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 530,
+        "top": 135,
+        "width": 310,
+        "height": 380
+      },
+      {
+        "kind": "face",
+        "index": 1,
+        "left": 975,
+        "top": 90,
+        "width": 300,
+        "height": 430
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 535,
+        "top": 725,
+        "width": 215,
+        "height": 140
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 950,
+        "top": 725,
+        "width": 430,
+        "height": 140
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf4ca7f6-d007-49f3-814a-77082de350a1.png",
+      "sha256": "ba62c647c382208d0992a04c53c018a2a4b2ad318fc0feda0adae57676e21eb3",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "sequences-matter-takeaways",
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-178ba0db-64d6-46d2-903a-58f704effe58.png",
+    "candidateSha256": "1320313e1069b8c0a604dcfaa8e4749fbaf911d6afe4fb59341d5f7a25e319c1",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-08T07:13:07.613372+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Practice pairs [1,2,3] to[4] and[2,3,4] to[5] correctly make xs[2,3,1] andys[2,1], matching current makeWindows contract. Split-before-windowing reminder correct. Natural typing and shared review."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-178ba0db-64d6-46d2-903a-58f704effe58.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-takeaways.webp",
+  "sourceSha256": "1320313e1069b8c0a604dcfaa8e4749fbaf911d6afe4fb59341d5f7a25e319c1",
+  "webpSha256": "ad11b382cb32601457d25f1e05f39ddf716d04748048b0552b636e6213fc651a",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+    "sourceSha256": "f94d83e6b360e55677d65a2fb1e454a4183b2e4dc433b10206774ef57cde500c",
+    "webpSha256": "89dfbad7ef626524257a6702c935c85e4c2892c093b674c649232ce611eb84f9",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-b7ca5ef8-67f0-4c53-af7c-e125d1552f3f.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "1320313e1069b8c0a604dcfaa8e4749fbaf911d6afe4fb59341d5f7a25e319c1",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Practice pairs [1,2,3] to[4] and[2,3,4] to[5] correctly make xs[2,3,1] andys[2,1], matching current makeWindows contract. Split-before-windowing reminder correct. Natural typing and shared review."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

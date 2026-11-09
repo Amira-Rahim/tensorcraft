@@ -1,0 +1,3257 @@
+[
+  {
+    "lesson": "browser-runtimes/inference-pipeline",
+    "phase": "briefing",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-openai-20261107.png",
+    "sourceSha256": "e648b37b0738ba550aa53bc9185fe0bbd28215d48b731d95ceab915c59c0646a",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "lessonSha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce",
+      "context": "Opening dialogue identifies cancelled async outputs and 120 retained tensors during the console check.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "e648b37b0738ba550aa53bc9185fe0bbd28215d48b731d95ceab915c59c0646a",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/inference-pipeline",
+    "phase": "challenge",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-challenge-openai-20261107.png",
+    "sourceSha256": "3d8db6f8d696a8a27e0982ce70f8336f5ee4e114a49fff814ed643daf597b6a0",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "lessonSha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce",
+      "context": "Challenge classifies a probe after training-contract scaling with synchronous tf.tidy. Exercise probe is amplitude 512, frequency 21, phase pi/2; no result is fabricated.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "3d8db6f8d696a8a27e0982ce70f8336f5ee4e114a49fff814ed643daf597b6a0",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 3,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The workflow and fixture text occupy a small right monitor while the left half is largely empty room. At course scale the step text is unnecessarily small.",
+    "repairDirection": "Enlarge the working workflow display and bring the camera beside Demir. Preserve the fixture and pending output, plus the candid Nazari/Demir interaction."
+  },
+  {
+    "lesson": "browser-runtimes/inference-pipeline",
+    "phase": "concept",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+    "sourceSha256": "686c53488227df0953179d5a4ed9eaa47505567951829faaa56b366ab50a4055",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "lessonSha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce",
+      "context": "Async example returns output from synchronous tf.tidy, awaits output.data outside it, then disposes in finally.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "686c53488227df0953179d5a4ed9eaa47505567951829faaa56b366ab50a4055",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/inference-pipeline",
+    "phase": "epilogue",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+    "sourceSha256": "b4b1edc9cd55d41423376c4bb3056c2aa4dfeda83c127491e6794605235adf66",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "lessonSha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce",
+      "context": "Epilogue reports steady tensor count for one hour, 3.4 ms story timing, archive replay and sample 7741 at anomaly score 0.518 routed for review.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": true,
+    "currentSourceSha256": "8ac40e7d2d8462a121b1966f340bea27053d19672753d9f2f3cb55819621d103",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 4,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: Faces and hands are coherent and sample 7741 remains correctly unknown. The symmetrical upright pair flanks a camera-facing result panel with idle smiles, a tablet held at chest height and a hand resting on the panel. It feels like a presentation of the outcome instead of the candid moment of routing an unexplained reading for review.",
+    "repairDirection": "Restage Farah actively routing sample 7741 at the console while Demir turns from archive replay with a questioning reaction. Keep the 0.518 score and unknown label, the muted palette and balanced figures. Use one shared operator-facing display and a less symmetric camera position."
+  },
+  {
+    "lesson": "browser-runtimes/inference-pipeline",
+    "phase": "takeaways",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-takeaways-openai-20261107.png",
+    "sourceSha256": "e5fcb80b1959f3ce624204d366b78f82fa2c164310d034873d4300a6078c1cb6",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "lessonSha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce",
+      "context": "Recall distinguishes synchronous temporary tensors, returned outputs requiring disposal, weights kept until teardown, and counts plus bytes after warmup.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "e5fcb80b1959f3ce624204d366b78f82fa2c164310d034873d4300a6078c1cb6",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/model-loading",
+    "phase": "briefing",
+    "source": "art-src/scenes/browser-runtimes__model-loading-openai-20261107.png",
+    "sourceSha256": "47e12b3f273665ca7b2c724578e291fb5b9ae90550663aaca8e52f272332a1a4",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "lessonSha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6",
+      "context": "Broken-code opening requests /models/deep-scan.json and fails with 404; correct manifest is /models/deep-scan/model.json and references weights.bin.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "47e12b3f273665ca7b2c724578e291fb5b9ae90550663aaca8e52f272332a1a4",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/model-loading",
+    "phase": "challenge",
+    "source": "art-src/scenes/browser-runtimes__model-loading-challenge-openai-20261107.png",
+    "sourceSha256": "2fc820597ea1cd75fc186834afdeb35a249293d24510aa4c12c0ad2d1625fb10",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "lessonSha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6",
+      "context": "Challenge loads once, reads inputShape, outputShape and layerCount from that model, then disposes the inspection-only model.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "2fc820597ea1cd75fc186834afdeb35a249293d24510aa4c12c0ad2d1625fb10",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/model-loading",
+    "phase": "concept",
+    "source": "art-src/scenes/browser-runtimes__model-loading-concept-openai-20261107.png",
+    "sourceSha256": "4c178be0b43ce8bac1b792e9bfdc0ac6a6c844dc6234265b0d053ded6b848702",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "lessonSha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6",
+      "context": "Concept reconstructs a LayersModel from model.json plus weights.bin in /models/deep-scan/.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "4c178be0b43ce8bac1b792e9bfdc0ac6a6c844dc6234265b0d053ded6b848702",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/model-loading",
+    "phase": "epilogue",
+    "source": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+    "sourceSha256": "2610c08ebfec89035bf0a404941769b2ac31f789b32fb796cac3d1a226cb2d18",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "lessonSha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6",
+      "context": "Epilogue has the notebook and dashboard three percentage points apart, retrained weights on server and stale deep-scan-v1 cache on dashboard.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "2610c08ebfec89035bf0a404941769b2ac31f789b32fb796cac3d1a226cb2d18",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 3,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The important three-percentage-point mismatch is compressed into a narrow monitor strip below substantial unused wall.",
+    "repairDirection": "Move the cached v1 versus retrained v2 comparison onto a large shared display while preserving Farah leaning toward the startled seated Demir."
+  },
+  {
+    "lesson": "browser-runtimes/model-loading",
+    "phase": "takeaways",
+    "source": "art-src/scenes/browser-runtimes__model-loading-takeaways-openai-20261107.png",
+    "sourceSha256": "37115a0fa52f163dae1fd3d360ab5d5db6b2b7e3cb2414d0d9896a5072976ae4",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "lessonSha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6",
+      "context": "Caching explanation requires loading and verifying v2 before removing the unused v1 entry. The two keys and verification sequence are accurate.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "37115a0fa52f163dae1fd3d360ab5d5db6b2b7e3cb2414d0d9896a5072976ae4",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/onnx-runtime-web",
+    "phase": "briefing",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-openai-20261107.png",
+    "sourceSha256": "558bec6cb78bb4995ee5fe86ae743925a5d721c9128028d880cf9d6a23fa56c4",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "lessonSha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a",
+      "context": "Opening demands first usable prediction and next 200 calls; concept lab uses 20 warmups. Same input fixture [0.42, 0.66, 0.31] is verified in onnx-comparison exercise.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "558bec6cb78bb4995ee5fe86ae743925a5d721c9128028d880cf9d6a23fa56c4",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The benchmark plan uses tiny lower-console text underneath mostly empty large boards.",
+    "repairDirection": "Use the large board for first usable prediction, 20 warmups and 200 measured calls, preserving the same weights and input comparison."
+  },
+  {
+    "lesson": "browser-runtimes/onnx-runtime-web",
+    "phase": "challenge",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-challenge-openai-20261107.png",
+    "sourceSha256": "1b369c6132718edd980840e15727e4b9acb84a433df2e90da12c32a21626d8d8",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "lessonSha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a",
+      "context": "Challenge compares the same three values with awaited output and tolerance 0.0001; both timer intervals are simulated fixtures, explicitly labeled in the image.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "1b369c6132718edd980840e15727e4b9acb84a433df2e90da12c32a21626d8d8",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/onnx-runtime-web",
+    "phase": "concept",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+    "sourceSha256": "a3008fb2e1246ae64dde6e34c92c2857f22792d5565f2aa2e312222a0e952609",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "lessonSha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a",
+      "context": "Concept exports the specific 3 to 32 ReLU to 16 ReLU to 1 sigmoid classifier, checking operators, opset and provider.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "a3008fb2e1246ae64dde6e34c92c2857f22792d5565f2aa2e312222a0e952609",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/onnx-runtime-web",
+    "phase": "epilogue",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-epilogue-openai-20261107.png",
+    "sourceSha256": "ba3a095f0b0cdb550f55e6a74dc41ba844d8e348e1726433548c4674299b14f1",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "lessonSha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a",
+      "context": "Epilogue ARIA log compares 0.4 ms rules, 0.9 ms WASM bench and 3.4 ms live WebGL, notes different work and uses the phrase My successor.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "ba3a095f0b0cdb550f55e6a74dc41ba844d8e348e1726433548c4674299b14f1",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/onnx-runtime-web",
+    "phase": "takeaways",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-takeaways-openai-20261107.png",
+    "sourceSha256": "a859667456b49018f580833e60016071c1ef7b7d1d3f14b85aac0a894d950bdd",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "lessonSha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a",
+      "context": "Recall requires output agreement, warm median/P95 and first usable prediction on target devices with the same weights, input and batch.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "a859667456b49018f580833e60016071c1ef7b7d1d3f14b85aac0a894d950bdd",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "Comparison rows are crowded into a narrow monitor below unused upper wall.",
+    "repairDirection": "Enlarge output agreement, warm median/P95 and first usable prediction comparison; retain same weights/input/batch and pending results."
+  },
+  {
+    "lesson": "browser-runtimes/tensorflow-js-setup",
+    "phase": "briefing",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-openai-20261107.png",
+    "sourceSha256": "94aced4e2c17143f9b73657dbdab768e0099d35e54daf8857ec61c7bad302318",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "lessonSha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d",
+      "context": "Opening story benchmark is same matMul: WebGL 0.5 ms, WASM 3.0 ms, CPU 110.0 ms. Nazari asks for a station survey.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "94aced4e2c17143f9b73657dbdab768e0099d35e54daf8857ec61c7bad302318",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/tensorflow-js-setup",
+    "phase": "challenge",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-challenge-openai-20261107.png",
+    "sourceSha256": "bb080ce5230b20fed2116decfedeafa6b9cfd34f184d2ad010a2782c26ee69b5",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "lessonSha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d",
+      "context": "Challenge optionally requests a backend, handles false or thrown requests, awaits ready, reads backend and version, and propagates initialization failure.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "bb080ce5230b20fed2116decfedeafa6b9cfd34f184d2ad010a2782c26ee69b5",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/tensorflow-js-setup",
+    "phase": "concept",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-concept-openai-20261107.png",
+    "sourceSha256": "03f00d6c73ab018d0982b5bc820182981ce5608544228ddbcf6c970e6da23c40",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "lessonSha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d",
+      "context": "Concept installs/imports TF.js, waits for tf.ready, then checks tf.getBackend and tf.version.tfjs.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "03f00d6c73ab018d0982b5bc820182981ce5608544228ddbcf6c970e6da23c40",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 4,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: The fixed front-facing pair flanks a centered instruction panel. Nazari points while smiling and Demir holds an unused tablet upright. Their gaze is toward each other, but their bodies and generic expressions make this a posed lesson presentation rather than a working setup moment.",
+    "repairDirection": "Show Demir installing or initializing TF.js at the console while Nazari catches his attempt to report the requested backend before readiness. Use an asymmetric three-quarter view, a specific questioning reaction and hands engaged with equipment. Preserve the correct four steps."
+  },
+  {
+    "lesson": "browser-runtimes/tensorflow-js-setup",
+    "phase": "epilogue",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-epilogue-openai-20261107.png",
+    "sourceSha256": "56e4a502aa41eacc9a0ab0210b2ad3c0db51713a6d3dc046b16859fe5780469b",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "lessonSha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d",
+      "context": "Epilogue logs five WebGL consoles at 0.5 ms and engineering WASM at 3.0 ms for the same story matMul, then adds the engineering chair to weekly checks.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "56e4a502aa41eacc9a0ab0210b2ad3c0db51713a6d3dc046b16859fe5780469b",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/tensorflow-js-setup",
+    "phase": "takeaways",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+    "sourceSha256": "fe4c0ca4bec9ab491473a2eda052233ee104914b51542562d6832e060cf5df42",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "lessonSha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d",
+      "context": "Takeaways require target-device timing that includes output readback, shown as start, matMul, await C.data, stop.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "fe4c0ca4bec9ab491473a2eda052233ee104914b51542562d6832e060cf5df42",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 4,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: The pair stands front-on beside a centered timing diagram. Nazari raises a blank stopwatch face toward the audience while holding a tablet, and Demir rests both hands on a rail with an idle smile. The props and symmetrical staging weaken the specific act of measuring completed work.",
+    "repairDirection": "Place Nazari timing a real console run beside Demir, who waits for readback or records the sample. Turn the stopwatch toward its user, keep the timing diagram on the operated screen, and show concentration or impatience appropriate to the wait."
+  },
+  {
+    "lesson": "browser-runtimes/transformers-js",
+    "phase": "briefing",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-openai-20261107.png",
+    "sourceSha256": "59ee6d7a5472edcf54190908dc343ed2996e51dbdefd34c9ccef1357627df603",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "lessonSha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6",
+      "context": "Briefing asks whether another model must be trained for the 41 reports per watch. Nazari proposes sentiment-analysis while source warns it needs evaluation on crew text.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "59ee6d7a5472edcf54190908dc343ed2996e51dbdefd34c9ccef1357627df603",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/transformers-js",
+    "phase": "challenge",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-challenge-openai-20261107.png",
+    "sourceSha256": "06e88f31a0237de73d1d3b162dc16a4131a7b3753835ceda893ae58d86464fab",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "lessonSha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6",
+      "context": "Exercise supplied inputs are coupling nominal POS 0.50, coolant loop warning NEG 0.99 and watch handover clean POS 0.70, to remain paired while sorting.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "06e88f31a0237de73d1d3b162dc16a4131a7b3753835ceda893ae58d86464fab",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/transformers-js",
+    "phase": "concept",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-concept-openai-20261107.png",
+    "sourceSha256": "4ca69d5e60339b44eaf643ea4911d21b269cb6279f73ea2468ce9baf664c1754",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "lessonSha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6",
+      "context": "Concept pipeline supplies preprocessing around ONNX inference and returns labels plus scores; weights, tokenizer and runtime are required assets.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "4ca69d5e60339b44eaf643ea4911d21b269cb6279f73ea2468ce9baf664c1754",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The entire teaching pipeline is confined to a small laptop while the wall board behind it is blank.",
+    "repairDirection": "Place Reports -> Preprocess -> ONNX model -> Label + score and the weights/tokenizer/runtime assets row on the large shared board. Preserve the active seated operator and chair-side interaction."
+  },
+  {
+    "lesson": "browser-runtimes/transformers-js",
+    "phase": "epilogue",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-epilogue-openai-20261107.png",
+    "sourceSha256": "feadb5b272e4129d9c22bdfc1bf1eda71f9935322a3f00c5894a09c3bb6f512c",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "lessonSha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6",
+      "context": "Epilogue Farah returns to Sector 7-G raw time plot and asks Demir to bring wave knowledge tomorrow. He starts a list.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "feadb5b272e4129d9c22bdfc1bf1eda71f9935322a3f00c5894a09c3bb6f512c",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/transformers-js",
+    "phase": "takeaways",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-takeaways-openai-20261107.png",
+    "sourceSha256": "15fb767a47354ae3282c2916650336eb3dbb3803d0605b513cc1ba60505e505e",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "lessonSha256": "9f43a11837c66d8482a47a2f37daff5c2a9c984f6b77a54fcbc9efa1afd5d2f6",
+      "context": "Takeaways require task and label fit, license review, representative evaluation and measured startup. Scores do not measure urgency.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "15fb767a47354ae3282c2916650336eb3dbb3803d0605b513cc1ba60505e505e",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/why-the-browser",
+    "phase": "briefing",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+    "sourceSha256": "ecfef4b31aecbf306aac7af27d25294c978eab2dfeca914c60087bf455222535",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "lessonSha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0",
+      "context": "Briefing requires local classifications when compute-bay link fails. The table carries a schematic input, and the dashboard awaits the runtime.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "ecfef4b31aecbf306aac7af27d25294c978eab2dfeca914c60087bf455222535",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: Nazari's extended pointing arm and Demir's thoughtful crossed arms give the opening an appropriate disagreement. The console is pending and the local plan is accurate. The foreground Signal input (schematic) label reads as upright camera-facing type on the strongly foreshortened horizontal holo-table surface, unlike its receding grid.",
+    "repairDirection": "Keep the candid debate and console. Put the signal label on a small vertical operator-facing panel or project every letter onto the same horizontal plane as the table grid. Preserve the schematic label and pending runtime."
+  },
+  {
+    "lesson": "browser-runtimes/why-the-browser",
+    "phase": "challenge",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-challenge-openai-20261107.png",
+    "sourceSha256": "6742a07c0b25bf042b8e4464cdb7d4ccb6e25e747d03e830c2040b3c5cad825e",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "lessonSha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0",
+      "context": "Policy challenge uses model size above 50 MB, latency below 50 ms and mandatory local needs. Cases at 50 MB/49 ms, 50 MB/50 ms and 51 MB/offline test these boundaries.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "6742a07c0b25bf042b8e4464cdb7d4ccb6e25e747d03e830c2040b3c5cad825e",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/why-the-browser",
+    "phase": "concept",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+    "sourceSha256": "fc741b33d987aa56c2eaf74864d58cbae4ccb6b543042734f6e5953b6076bb6d",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "lessonSha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0",
+      "context": "Concept compares per-prediction server requests with local inference and requires cached app, runtime and model for offline use.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "fc741b33d987aa56c2eaf74864d58cbae4ccb6b543042734f6e5953b6076bb6d",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 4,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: Technically clear browser/server diagrams sit beside an upright front-facing pair. Nazari points without engaging the controls while Demir holds an unused tablet with a generic smile. This repeats the briefing's instruction pose with less tension and lacks the benchmark's candid working moment.",
+    "repairDirection": "Restage them testing the compute-bay connection at the console, with Demir tracing the returning server request and Nazari checking the locally cached path. Give their gaze and reaction a concrete interruption or question while retaining the accurate offline-assets note."
+  },
+  {
+    "lesson": "browser-runtimes/why-the-browser",
+    "phase": "epilogue",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-epilogue-openai-20261107.png",
+    "sourceSha256": "611144dda29356c0f805f4dae21027d648ac521e0d5622f5fd41425d230051cb",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "lessonSha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0",
+      "context": "Epilogue approves local deployment for 86,400 daily readings, starts npm install and begins surveying consoles with the oldest chair.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "611144dda29356c0f805f4dae21027d648ac521e0d5622f5fd41425d230051cb",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "browser-runtimes/why-the-browser",
+    "phase": "takeaways",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+    "sourceSha256": "82a2f0af766b8ab0f08955e1d1d107c07f337ca3ea7c2de539bba0ef4adb8d10",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "lessonSha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0",
+      "context": "Recall requires app/runtime/model assets for offline inference and budgets download, memory and compute.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "82a2f0af766b8ab0f08955e1d1d107c07f337ca3ea7c2de539bba0ef4adb8d10",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "Key offline assets labels sit in a narrow partly cropped screen while much of the left scene remains empty room.",
+    "repairDirection": "Enlarge the local prediction chain and offline assets display, retaining Nazari using the controls and genuinely seeing the same surface."
+  },
+  {
+    "lesson": "optimization-edge/caching-strategies",
+    "phase": "briefing",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+    "sourceSha256": "ff983c3578e4f2cd37207a2b93e1ec58ccd93b1559bb053b8cfe7be7ef215ca7",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "lessonSha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83",
+      "context": "Opening has 214 identical classifications and 213 avoidable repeats, followed by Nazari's correction to time the classifier rather than the 45 ms language bundle and include lookup costs.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "ff983c3578e4f2cd37207a2b93e1ec58ccd93b1559bb053b8cfe7be7ef215ca7",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/caching-strategies",
+    "phase": "challenge",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-challenge-openai-20261107.png",
+    "sourceSha256": "1636970dcc94915274a8d9eb87efc3b5f2b81a0c16703d60396633b4a28bbdb7",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "lessonSha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83",
+      "context": "Challenge key includes dtype, shape and rounded values; hit reuses plain results, miss predicts and stores, LRU evicts least recently used, new pipeline requires new cache.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "1636970dcc94915274a8d9eb87efc3b5f2b81a0c16703d60396633b4a28bbdb7",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/caching-strategies",
+    "phase": "concept",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-concept-openai-20261107.png",
+    "sourceSha256": "1932da88ffa4ffcf372c37136a3ba2328166992a1b13f1af6d76f6e2665a7cd0",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "lessonSha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83",
+      "context": "Concept lookup reuses valid cached results on hit and predicts plus saves on miss, with model and preprocessing matching.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "1932da88ffa4ffcf372c37136a3ba2328166992a1b13f1af6d76f6e2665a7cd0",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/caching-strategies",
+    "phase": "epilogue",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+    "sourceSha256": "a732151033908547d0eac07165243c7e62cca3d1f661b099c0e3dd70d62c8430",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "lessonSha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83",
+      "context": "Epilogue finds no anomaly hit in the retained log but explicitly refuses to conclude the source never repeats. Raw captures still require comparison.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "a732151033908547d0eac07165243c7e62cca3d1f661b099c0e3dd70d62c8430",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/caching-strategies",
+    "phase": "takeaways",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+    "sourceSha256": "51e2843d3c56043acb83a780f57d305ced61d24a3447e08b21bf4c9d75e8984c",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "lessonSha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83",
+      "context": "Recall and BossBeat warn that rounding 0.499 and 0.501 to two decimals gives 0.50, despite possible opposing decisions. Versions, age, LRU, lookup cost and hit rate need checks.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "51e2843d3c56043acb83a780f57d305ced61d24a3447e08b21bf4c9d75e8984c",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/model-profiling",
+    "phase": "briefing",
+    "source": "art-src/scenes/optimization-edge__model-profiling-openai-20261107.png",
+    "sourceSha256": "cca546ba1d40802fd5eefc459918a2172f3f5f6ff44e0e88678fce9ee423eab4",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "lessonSha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5",
+      "context": "Opening incident loads 340 MB at 02:47:26 in 512 MB RAM; free memory reaches zero at 02:49:06, losing the capture. ARIA replays the watchdog record.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "cca546ba1d40802fd5eefc459918a2172f3f5f6ff44e0e88678fce9ee423eab4",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/model-profiling",
+    "phase": "challenge",
+    "source": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+    "sourceSha256": "3833e2915ace804f6ef3be8e59b594ed4b158682d12af15c628df0f71e6613af",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "lessonSha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5",
+      "context": "Challenge builds the first baseline after the crash: weight storage, layer counts, completed inference average and cleanup. Opening Demir explicitly says profiling first with no guessing after last night.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "3833e2915ace804f6ef3be8e59b594ed4b158682d12af15c628df0f71e6613af",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: The screen correctly leaves the baseline pending and the seated anatomy is sound. Demir's broad open grin and jaunty stopwatch action read as an upbeat victory while this section is the sober first measurement after an unrecoverable capture loss. That emotion weakens continuity with the source's focused response.",
+    "repairDirection": "Retain the working console, timing order and natural arm contact. Replace the grin with concentrated determination or concern as Demir starts the measured run. Keep the stopwatch as a used tool and the baseline pending."
+  },
+  {
+    "lesson": "optimization-edge/model-profiling",
+    "phase": "concept",
+    "source": "art-src/scenes/optimization-edge__model-profiling-concept-openai-20261107.png",
+    "sourceSha256": "56fa0f8f4b2289e6ae2f19eacfb8e51bcc629a813461b65bae3f3a2d9b3b46f6",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "lessonSha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5",
+      "context": "Concept fictional proxy counts are 12,800,000; 0; 67,996,920; 4,197,744, with 45 ms mean and 112 ms P95. Runtime peak memory still needs measurement.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "56fa0f8f4b2289e6ae2f19eacfb8e51bcc629a813461b65bae3f3a2d9b3b46f6",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/model-profiling",
+    "phase": "epilogue",
+    "source": "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+    "sourceSha256": "36f7156baf227d2c12afa8b329c12b88d6bb44d469f249e603f35392113f7178",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "lessonSha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5",
+      "context": "Epilogue recovers 211 KB partial watchdog telemetry, not the lost capture. Last clean interval is 61.2 seconds, down from 73.4.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "36f7156baf227d2c12afa8b329c12b88d6bb44d469f249e603f35392113f7178",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/model-profiling",
+    "phase": "takeaways",
+    "source": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+    "sourceSha256": "63bde52309240120075a14f8081e52911bcba4146bb2185726c8e597d2af7750",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "lessonSha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5",
+      "context": "Recall separates weight parameter storage from time and peak runtime memory and requires the same workload before and after.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "63bde52309240120075a14f8081e52911bcba4146bb2185726c8e597d2af7750",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The narrow right monitor carries dense small metric rows with substantial unused center wall.",
+    "repairDirection": "Use a large working display for the three separate baseline checks and same-workload before/after comparison; preserve mouse and notebook contact."
+  },
+  {
+    "lesson": "optimization-edge/pruning",
+    "phase": "briefing",
+    "source": "art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+    "sourceSha256": "bf5fcc8ec47c77233b5e17df60c31e38b2449f3ca54ee43e5e65b4057c1d4eb9",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "lessonSha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44",
+      "context": "Directive 44-C says half the weights are within 0.001 of zero and file is 85 MB. Learner must challenge unchanged predictions, smaller dense storage and missing per-class recall.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "bf5fcc8ec47c77233b5e17df60c31e38b2449f3ca54ee43e5e65b4057c1d4eb9",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The tiny laptop checklist sits in front of a giant blank wall display. Its meaningful pruning questions are hard to read at course size.",
+    "repairDirection": "Move Directive 44-C, half weights within 0.001 of zero, current dense file 85 MB and pending prediction/size/per-class checks onto the wall display."
+  },
+  {
+    "lesson": "optimization-edge/pruning",
+    "phase": "challenge",
+    "source": "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+    "sourceSha256": "7df67215621b59a15556874ad8f4ad1c65e1c4fa99f14a692f15dfc2e35f50c4",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "lessonSha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44",
+      "context": "Challenge starts every sparsity level from original weights, reports recall per class, restores weights after scoring and returns null for missing classes.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "7df67215621b59a15556874ad8f4ad1c65e1c4fa99f14a692f15dfc2e35f50c4",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/pruning",
+    "phase": "concept",
+    "source": "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+    "sourceSha256": "265591b60dfdbff0e7699e64b21c9a6ec675e4749e4460dfdcd49105ee88a743",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "lessonSha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44",
+      "context": "Concept eight-weight example requests 60 percent, zeros four of eight and changes the all-ones dot product from 0.994 to 1.000; dense slots remain.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "265591b60dfdbff0e7699e64b21c9a6ec675e4749e4460dfdcd49105ee88a743",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/pruning",
+    "phase": "epilogue",
+    "source": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+    "sourceSha256": "f027fb9c3dc4a4f47c4c9b5bc64caea25851ff4c9d5c650a624b513166fc69dd",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "lessonSha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44",
+      "context": "Epilogue keeps per-class comparison with sign-off, dense file 85 MB, gzip 42 MB, accuracy 94.2 to 91.8 percent and three lost hours. Rejected classifications still require replay.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "f027fb9c3dc4a4f47c4c9b5bc64caea25851ff4c9d5c650a624b513166fc69dd",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "Dense mission figures are crowded onto the slim left monitor while open wall space remains.",
+    "repairDirection": "Enlarge the replay comparison: dense 85 MB, gzip 42 MB, accuracy 94.2% to 91.8%, three-hour experiment and rejected-class replay pending."
+  },
+  {
+    "lesson": "optimization-edge/pruning",
+    "phase": "takeaways",
+    "source": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+    "sourceSha256": "8076b2008af28ed96d958b8ea13ca403d4718594eaaa23086988a4003093c1b1",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "lessonSha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44",
+      "context": "Recall says unstructured dense pruning preserves tensor shapes and zero slots; compressed bytes and per-class errors must be measured separately.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "8076b2008af28ed96d958b8ea13ca403d4718594eaaa23086988a4003093c1b1",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/quantization",
+    "phase": "briefing",
+    "source": "art-src/scenes/optimization-edge__quantization-openai-20261107.png",
+    "sourceSha256": "d1359a697d772038406713033a1a9b9491ee897f66de2f11f99ac87257272ab4",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "lessonSha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517",
+      "context": "Briefing uses rounded 85 million weights, 340 MB float32 to 85 MB uint8, decoded back to floats at load, with changed decisions still to measure.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "d1359a697d772038406713033a1a9b9491ee897f66de2f11f99ac87257272ab4",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The central weight-storage table is small within a wide room containing substantial unused upper wall.",
+    "repairDirection": "Enlarge the 85-million-weight table: float32 at 4 bytes is 340 MB; uint8 at 1 byte is 85 MB. Keep decode at load and changed decisions as the next check."
+  },
+  {
+    "lesson": "optimization-edge/quantization",
+    "phase": "challenge",
+    "source": "art-src/scenes/optimization-edge__quantization-challenge-openai-20261107.png",
+    "sourceSha256": "d203311dc69e9838f1a245c615cfc001782e92927cffc3776af19839d994933b",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "lessonSha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517",
+      "context": "Challenge compares predicted classes before/after decoded uint8 kernels, keeps biases unchanged and has no trusted labels, so disagreement is not measured accuracy loss.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "d203311dc69e9838f1a245c615cfc001782e92927cffc3776af19839d994933b",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/quantization",
+    "phase": "concept",
+    "source": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+    "sourceSha256": "3b5ba73ab76039ed83563771e2bf98f9785fb74a72e3aa4c683226b3fb7121a2",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "lessonSha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517",
+      "context": "Concept float32 takes four bytes per stored weight, uint8 one, with automatic decoding to float32 at load. Prediction changes require separate measurement.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "3b5ba73ab76039ed83563771e2bf98f9785fb74a72e3aa4c683226b3fb7121a2",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/quantization",
+    "phase": "epilogue",
+    "source": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+    "sourceSha256": "c25e76f4c6d25ae3fc0a3a9e61d9a6a84b839585db9cce36abd3d3336a71310c",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "lessonSha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517",
+      "context": "Epilogue Nazari stays after certifying the engineering rig, brings up raw waveform, watches a whole cycle and two more pulses, and writes nothing. Bridge-console approval remains open.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "c25e76f4c6d25ae3fc0a3a9e61d9a6a84b839585db9cce36abd3d3336a71310c",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 4,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: The pulse screen and warm light are attractive, but Nazari stands as an upright portrait with one hand resting on the desk. Her gaze goes up and beyond the display rather than following its pulses. This misses the source's unusual private act of staying to watch the raw signal, and reads as a posed character beside a waveform.",
+    "repairDirection": "Restage Nazari leaning or settling toward the rig after putting her tool down, eyes fixed on the operator-facing pulse screen, with quiet absorbed curiosity. Keep the empty notebook and unhurried mood, using a more candid three-quarter angle and preserving her age and facial structure."
+  },
+  {
+    "lesson": "optimization-edge/quantization",
+    "phase": "takeaways",
+    "source": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+    "sourceSha256": "77409c4ef39ca130673790444d7a2040ce0e556e6a3382400380106965d665bf",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "lessonSha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517",
+      "context": "Recall distinguishes uint8/uint16 plus scale and minimum metadata from decoded float32 and separate labeled quality, memory and speed measurements.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "77409c4ef39ca130673790444d7a2040ce0e556e6a3382400380106965d665bf",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/webgpu-acceleration",
+    "phase": "briefing",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+    "sourceSha256": "e0d0888f879be459c55cda48ced69b2e52e13a45a4847ee5b63ed95d21899332",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "lessonSha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb",
+      "context": "Opening requests another backend and fallback cost. Example order is webgpu, webgl, wasm, cpu, trying the next when initialization fails.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "e0d0888f879be459c55cda48ced69b2e52e13a45a4847ee5b63ed95d21899332",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/webgpu-acceleration",
+    "phase": "challenge",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+    "sourceSha256": "66f8ac89b7d2f614816ccb0b0edff1f694a7139587af1c6e3acac4416b54cac6",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "lessonSha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb",
+      "context": "Challenge tries supplied order, continues after false or throw, awaits readiness after first success and returns its name. Controlled runtime rehearses failures.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "66f8ac89b7d2f614816ccb0b0edff1f694a7139587af1c6e3acac4416b54cac6",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/webgpu-acceleration",
+    "phase": "concept",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+    "sourceSha256": "3a594c0371fac7609102fa8ccdf6ff717085346818c6a3ec89a09610c4859e80",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "lessonSha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb",
+      "context": "Concept first timer stops after predict at 0.4 ms; including output.data changes fictional bridge timing to 5 ms. Readback belongs inside timed region.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "3a594c0371fac7609102fa8ccdf6ff717085346818c6a3ec89a09610c4859e80",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/webgpu-acceleration",
+    "phase": "epilogue",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-epilogue-openai-20261107.png",
+    "sourceSha256": "2eb601ee054cc3f5685264c3e9d35c10155ad6fa97fef4719f66a9a55473aff8",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "lessonSha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb",
+      "context": "Epilogue bridge WebGL 15 ms, bridge WebGPU 5 ms, engineering WASM 45 ms. Dashboard survives rehearsal, but the earlier lost capture remains gone.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "2eb601ee054cc3f5685264c3e9d35c10155ad6fa97fef4719f66a9a55473aff8",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "optimization-edge/webgpu-acceleration",
+    "phase": "takeaways",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-takeaways-openai-20261107.png",
+    "sourceSha256": "0cf65e0d82edf52e98137df8907db8b1afefa2a027563a6529342da0bc0211a6",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "lessonSha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb",
+      "context": "Recall times start, predict, awaited output readback, stop, repeats target-device trials and treats file size as separate.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "0cf65e0d82edf52e98137df8907db8b1afefa2a027563a6529342da0bc0211a6",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "signal-processing/fft-as-features",
+    "phase": "briefing",
+    "source": "art-src/scenes/signal-processing__fft-as-features-openai-20261107.png",
+    "sourceSha256": "e3e26d2ad5ef3dd6520d255d1e744ee4d1566199e2552480091260d6db9be44d",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "lessonSha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b",
+      "context": "Briefing proposes three summary inputs plus eight FFT magnitudes for eleven features. Nazari makes Demir write and sign his expected 85 percent.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "e3e26d2ad5ef3dd6520d255d1e744ee4d1566199e2552480091260d6db9be44d",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "signal-processing/fft-as-features",
+    "phase": "challenge",
+    "source": "art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261107.png",
+    "sourceSha256": "64af2d6ca48e0ce2ce6291314fcbaa1ea2550f08442b9fe5221a639cd37a6215",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "lessonSha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b",
+      "context": "Challenge fixture uses a synthetic 64-sample capture at 256 Hz and 50-82 Hz band, selecting bins 13 through 20 after amplitude and zero crossings. Exercise omits phase.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "64af2d6ca48e0ce2ce6291314fcbaa1ea2550f08442b9fe5221a639cd37a6215",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 3,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The exercise diagram and tiny bin labels occupy a small upper-right monitor; the composition spends far more space on empty floor and room.",
+    "repairDirection": "Reframe beside the operator with a large fixed-bin feature display. Preserve 64 samples at 256 Hz, 50-82 Hz band, bins 13-20, fixed order and pending output."
+  },
+  {
+    "lesson": "signal-processing/fft-as-features",
+    "phase": "concept",
+    "source": "art-src/scenes/signal-processing__fft-as-features-concept-openai-20261107.png",
+    "sourceSha256": "d03a3ffb156e006a95d9601dcec1bb70072170f732e72dd623f2cec11858c535",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "lessonSha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b",
+      "context": "Concept uses the same 64 samples at 256 Hz, three summaries plus eight fixed bins centered at 52,56,60,64,68,72,76,80 Hz for eleven inputs.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "d03a3ffb156e006a95d9601dcec1bb70072170f732e72dd623f2cec11858c535",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "signal-processing/fft-as-features",
+    "phase": "epilogue",
+    "source": "art-src/scenes/signal-processing__fft-as-features-epilogue-openai-20261107.png",
+    "sourceSha256": "3c63f7c42dacc1823622600a09d1622d46ed1b40ebd3c324a53ed82c2fcc4273",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "lessonSha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b",
+      "context": "Epilogue Nazari leaves signed 85 and achieved 87 on the board after the same 400-reading evaluation. Her approval is earned and deliberately restrained.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "3c63f7c42dacc1823622600a09d1622d46ed1b40ebd3c324a53ed82c2fcc4273",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "signal-processing/fft-as-features",
+    "phase": "takeaways",
+    "source": "art-src/scenes/signal-processing__fft-as-features-takeaways-openai-20261107.png",
+    "sourceSha256": "adb89648b998af6a1f19611053e3c6cd84735dd482930462777127eaede36fa4",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "lessonSha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b",
+      "context": "Takeaways fit mean/scale on training rows, reuse them for validation, test and inference, and keep feature order fixed.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "adb89648b998af6a1f19611053e3c6cd84735dd482930462777127eaede36fa4",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None."
+  },
+  {
+    "lesson": "signal-processing/fourier-transform",
+    "phase": "briefing",
+    "source": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+    "sourceSha256": "f703e7a840e527ee33436adf0400dcd215cb40e3cab4f5e82a966837b338f819",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "lessonSha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980",
+      "context": "Opening: overnight FFT produced 257 bins per 512-sample window at 256 Hz. Demir needs to convert bin 10 to physical frequency; the board correctly leaves that answer unresolved.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "f703e7a840e527ee33436adf0400dcd215cb40e3cab4f5e82a966837b338f819",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve this specific metadata-reading action."
+  },
+  {
+    "lesson": "signal-processing/fourier-transform",
+    "phase": "challenge",
+    "source": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+    "sourceSha256": "2ceb83d1fb2d5fb4db52a48f7e9f1f99ef715c01a8f5721f94d0139317fcc708",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "lessonSha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980",
+      "context": "Challenge and exercises/compute-fft.yaml: the synthetic first fixture has 128 samples at 128 Hz. Skip DC bin 0, select the largest magnitude and convert the winning index to Hz; the scene appropriately keeps the result pending.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "2ceb83d1fb2d5fb4db52a48f7e9f1f99ef715c01a8f5721f94d0139317fcc708",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The process text is squeezed into a narrow side panel and the frequency formula is near the lower crop, while the right half has ample open room.",
+    "repairDirection": "Use a wider work display for synthetic 128 samples at 128 Hz, skip bin 0, largest magnitude, bin-to-Hz formula and pending result."
+  },
+  {
+    "lesson": "signal-processing/fourier-transform",
+    "phase": "concept",
+    "source": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+    "sourceSha256": "c5a29ece14a25c509b239df0335ec1dbf714c8e904a44760ec5c1314475a89f9",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "lessonSha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980",
+      "context": "Concept: a 128-sample, 128 Hz toy signal combines 5 Hz at amplitude 1 and 20 Hz at amplitude 0.3, yielding unnormalized FFT magnitudes 64 and 19.2. The image depicts those values meaningfully.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "c5a29ece14a25c509b239df0335ec1dbf714c8e904a44760ec5c1314475a89f9",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the shared peak-reading task."
+  },
+  {
+    "lesson": "signal-processing/fourier-transform",
+    "phase": "epilogue",
+    "source": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+    "sourceSha256": "9bf579159ef4d3e25d0869d769b35309d3983897b5d6eb48c7b984d41573c697",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "lessonSha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980",
+      "context": "Epilogue: known frequencies are 5, 12, 23 and 47 Hz; a fifth peak appears at 73.5 Hz with magnitude 12 on the initial 0.5 Hz grid. Farah catches Demir's wrist. A later longer window refines its reading to 73.4 Hz, so the depicted initial reading is consistent.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "9bf579159ef4d3e25d0869d769b35309d3983897b5d6eb48c7b984d41573c697",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 3,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The discovery data is cramped into a small monitor while a large wall board directly behind is blank.",
+    "repairDirection": "Enlarge catalogued 5, 12, 23 and 47 Hz tones, unexplained 73.5 Hz bin of magnitude 12.0 and 0.5 Hz grid. Preserve the surprised wrist contact and shared gaze."
+  },
+  {
+    "lesson": "signal-processing/fourier-transform",
+    "phase": "takeaways",
+    "source": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+    "sourceSha256": "c70a4f874773fe5315807440be5ca42cfa8fa0da04e6a348228083bff70210e3",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "lessonSha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980",
+      "context": "Takeaways: sample rate divided by sample count gives bin spacing. At 256 Hz, 512 samples yield 0.5 Hz spacing and 2048 samples yield 0.125 Hz spacing. Longer windows give finer frequency grids.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "c70a4f874773fe5315807440be5ca42cfa8fa0da04e6a348228083bff70210e3",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the active adjustment and quantitative comparison."
+  },
+  {
+    "lesson": "signal-processing/spectrograms",
+    "phase": "briefing",
+    "source": "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+    "sourceSha256": "fdcb4856e6c1eb840c77436f3f59934b9af83792a567241d555b7bc82efcead7",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "lessonSha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646",
+      "context": "Opening: a whole-capture magnitude plot hides when the tone appears. Farah switches from the steady-oscillator hypothesis to comparing short windows in time order. Dark cells mean low magnitude, not missing measurement.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "fdcb4856e6c1eb840c77436f3f59934b9af83792a567241d555b7bc82efcead7",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the question-led discussion and skeptical reaction."
+  },
+  {
+    "lesson": "signal-processing/spectrograms",
+    "phase": "challenge",
+    "source": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+    "sourceSha256": "23eb5777892166c7e76af8de9fd53238fb676c2e2555250ece0e8254551d6e1a",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "lessonSha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646",
+      "context": "Challenge and exercises/build-spectrogram.yaml: 256 samples at 256 Hz, a 40 Hz burst during samples 64 through 127, four 64-sample frames with hop 64 and no taper. Displayed starts 0, 0.25, 0.50 and 0.75 seconds and burst interval 0.25 to 0.50 seconds match the fixture.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "23eb5777892166c7e76af8de9fd53238fb676c2e2555250ece0e8254551d6e1a",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The burst table, times and window settings are tiny on a small monitor, with much of the frame devoted to empty floor and wall.",
+    "repairDirection": "Reframe close beside Demir and enlarge the 40 Hz burst fixture, frame starts, pending magnitudes, 64-sample windows/hop 64/no taper and 256 samples at 256 Hz."
+  },
+  {
+    "lesson": "signal-processing/spectrograms",
+    "phase": "concept",
+    "source": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+    "sourceSha256": "ff611a2e8bc7d3bf2cbd488d5719be2960bab48a60269bc62e79017803218ef1",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "lessonSha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646",
+      "context": "Concept: one FFT per complete window produces a row of magnitudes; windows advance through time and the display places time horizontally, frequency vertically and magnitude in color.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "ff611a2e8bc7d3bf2cbd488d5719be2960bab48a60269bc62e79017803218ef1",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the window-to-column explanation and surface geometry."
+  },
+  {
+    "lesson": "signal-processing/spectrograms",
+    "phase": "epilogue",
+    "source": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261107.png",
+    "sourceSha256": "f13c4dbcc720e2c31e761163e3cfdb1d0d36a07c79ebba27393752c2142c904b",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "lessonSha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646",
+      "context": "Epilogue: Farah measures gaps of roughly 73.4 seconds, explicitly writes ~73.4 s because the timing is approximate, and revises her hypothesis. ARIA requests a reference copy. The numerical coincidence with 73.4 Hz is unexplained; the ending is a working discovery, not a finished presentation.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "f13c4dbcc720e2c31e761163e3cfdb1d0d36a07c79ebba27393752c2142c904b",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 4,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "newFault": false,
+    "findings": "Existing repair remains required: Text and schematic are clean, but Farah stands upright with an idle tablet against her body and a generic satisfied smile aimed above the plot. The raised pen presents an already finished interval graphic. This repeats the explanatory pose instead of capturing her measured, uncertain discovery.",
+    "repairDirection": "Restage Farah mid-measurement, leaning toward the pulse plot with her eyes on the interval marks as she writes ~73.4 s or crosses out the steady-oscillator hypothesis. Show focused surprise and residual uncertainty, and keep ARIA's reference-copy request as a secondary screen. Preserve the distinction between Hz and seconds."
+  },
+  {
+    "lesson": "signal-processing/spectrograms",
+    "phase": "takeaways",
+    "source": "art-src/scenes/signal-processing__spectrograms-takeaways-openai-20261107.png",
+    "sourceSha256": "e6ef36bc9226568c6f4c58c6f02e0d9d90c6e07d2ef715018afb89cec56f41db",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "lessonSha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646",
+      "context": "Takeaways: at 256 Hz, 64-sample windows span 0.25 seconds with 4 Hz bins; 512-sample windows span 2 seconds with 0.5 Hz bins. Longer windows improve frequency spacing but blur timing across a longer span.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "e6ef36bc9226568c6f4c58c6f02e0d9d90c6e07d2ef715018afb89cec56f41db",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the shared operator review and actual control contact."
+  },
+  {
+    "lesson": "signal-processing/time-vs-frequency",
+    "phase": "briefing",
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+    "sourceSha256": "08290c2ab367fccc3dfd8b8b7f7f01248740b76f2fc4433ef7c545ff957bb8a9",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "lessonSha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5",
+      "context": "Opening: Farah reopens the first-week archive and places it beside the live plot to compare the same slow swell. A frequency view is the next investigative step, not yet an identified physical cause.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "08290c2ab367fccc3dfd8b8b7f7f01248740b76f2fc4433ef7c545ff957bb8a9",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the matching-trace discussion."
+  },
+  {
+    "lesson": "signal-processing/time-vs-frequency",
+    "phase": "challenge",
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+    "sourceSha256": "8157f9567997e470e5151e87c58a2b6ce20aa3be8e6748449e9384e67ba8f578",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "lessonSha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5",
+      "context": "Challenge and exercises/time-vs-frequency.yaml: synthetic captures have 512 samples at 256 Hz, sample tolerance 0.05 and FFT magnitude difference threshold 5.0. Return timeTwin and the first divergentBin using absolute differences. The image matches these inputs.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "8157f9567997e470e5151e87c58a2b6ce20aa3be8e6748449e9384e67ba8f578",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The synthetic-capture thresholds and pending fields use tiny text while broad empty floor and wall consume the frame.",
+    "repairDirection": "Enlarge the comparison work display with sample tolerance 0.05, FFT threshold 5.0, 512 samples at 256 Hz and pending results, preserving the active keyboard pose."
+  },
+  {
+    "lesson": "signal-processing/time-vs-frequency",
+    "phase": "concept",
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-concept-openai-20261107.png",
+    "sourceSha256": "118388dc1b06c460e0ee3a91faa508b7aaa4eb9de23847b10a5c9e31cef47a76",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "lessonSha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5",
+      "context": "Concept: the three-tone example uses 256 samples at 256 Hz and components 5 Hz at amplitude 0.8, 12 Hz at 0.6, and 23 Hz at 0.4. The screen labels its combined time trace as schematic.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "118388dc1b06c460e0ee3a91faa508b7aaa4eb9de23847b10a5c9e31cef47a76",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 3,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "newFault": true,
+    "findings": "The frequency/amplitude table labels and values are tightly compressed into the narrow monitor, reducing the teaching comparison at course scale.",
+    "repairDirection": "Enlarge the three-tone working display while retaining Farah at the mouse and Demir leaning in. Preserve 5/12/23 Hz with 0.8/0.6/0.4 amplitudes and 256 samples at 256 Hz."
+  },
+  {
+    "lesson": "signal-processing/time-vs-frequency",
+    "phase": "epilogue",
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-epilogue-openai-20261107.png",
+    "sourceSha256": "c77c976367b614080eebe0b85a34cdf3258197a8f5249f8acf8fcd3d514945f1",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "lessonSha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5",
+      "context": "Epilogue: Farah queues all 64 channels across eleven days for overnight transformation, pins confirmed background and disputed time plots, and leaves. Demir cannot distinguish the traces by eye. The screen shows that queue and two schematic time views without claiming a new result.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "c77c976367b614080eebe0b85a34cdf3258197a8f5249f8acf8fcd3d514945f1",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the doorway departure and Demir's lingering scrutiny."
+  },
+  {
+    "lesson": "signal-processing/time-vs-frequency",
+    "phase": "takeaways",
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-takeaways-openai-20261107.png",
+    "sourceSha256": "155d4e95e9523df929e735e84dd71e05bd66bde6bf4318cfb3f797f80da9b978",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "lessonSha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5",
+      "context": "Takeaways: the full complex FFT retains sampled information within numerical precision and supports inverse recovery. A magnitude-only view omits phase. The diagram explicitly preserves that distinction.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "155d4e95e9523df929e735e84dd71e05bd66bde6bf4318cfb3f797f80da9b978",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the focused operator review."
+  },
+  {
+    "lesson": "signal-processing/windowing-and-overlap",
+    "phase": "briefing",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+    "sourceSha256": "b762fc1a2d00fc30082d4a5fc046f8fc17464659f383c03841adf93c58fd7e98",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "lessonSha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717",
+      "context": "Opening: Nazari demands to know what tapering does to reported magnitudes after two phantom anomaly reports. Farah explains reduced distant leakage, changed heights and broader peaks. The screen calls its shape comparison schematic.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "b762fc1a2d00fc30082d4a5fc046f8fc17464659f383c03841adf93c58fd7e98",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve Nazari's skeptical response and the explicit peak-width tradeoff."
+  },
+  {
+    "lesson": "signal-processing/windowing-and-overlap",
+    "phase": "challenge",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+    "sourceSha256": "f13b8616233e738ccf5a6d3fced25f9501be1325b939d1c3744d3b85b1626632",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "lessonSha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717",
+      "context": "Challenge and exercises/apply-window.yaml: symmetric Hann weights are zero at both ends. The fixture uses 128 samples with 10.5 cycles; the task builds weights, multiplies samples elementwise and compares summed magnitudes more than three bins from the rounded tone bin. Display content matches and avoids an energy claim.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "chief-nazari",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "f13b8616233e738ccf5a6d3fced25f9501be1325b939d1c3744d3b85b1626632",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the evaluative exchange before running the test."
+  },
+  {
+    "lesson": "signal-processing/windowing-and-overlap",
+    "phase": "concept",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261107.png",
+    "sourceSha256": "1e1451e73930577f4d1abdde590f74466975d908a07aa47880f1998f56719266",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "lessonSha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717",
+      "context": "Concept: multiply each signal sample by its corresponding Hann weight. The schematic shows the original wave, raised-cosine taper and weighted signal approaching zero at the boundaries.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "1e1451e73930577f4d1abdde590f74466975d908a07aa47880f1998f56719266",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the endpoint-focused demonstration and plane-aligned curves."
+  },
+  {
+    "lesson": "signal-processing/windowing-and-overlap",
+    "phase": "epilogue",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-epilogue-openai-20261107.png",
+    "sourceSha256": "445d27336a89c9a9a56f667357b84940b29823814dc292cd95760bd4b8440726",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "lessonSha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717",
+      "context": "Epilogue: Farah prints the tapered spectrum and pins it beside sample 7741's transform. A broader peak remains near 73.4 Hz, but instrument checks and a second sensor chain remain necessary. The image preserves that unresolved status.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "dr-farah",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "445d27336a89c9a9a56f667357b84940b29823814dc292cd95760bd4b8440726",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the physical paper-pinning action and remaining verification."
+  },
+  {
+    "lesson": "signal-processing/windowing-and-overlap",
+    "phase": "takeaways",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-takeaways-openai-20261107.png",
+    "sourceSha256": "d637ae51348c1b374e58392208723c01639fb1f1bdb634c378bf574053085e07",
+    "sourceEvidence": {
+      "lessonSource": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "lessonSha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717",
+      "context": "Takeaways: the lesson's 10.5 Hz, 128-sample-at-128-Hz demonstration compares the raw tallest bin near 41.7 with periodic-Hann peak near 27.2. Hann reduces distant leakage, broadens the main peak and changes magnitudes. These displayed values belong to the worked demonstration, not the symmetric-Hann challenge.",
+      "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+      "identityReferences": [
+        {
+          "character": "ensign-demir",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        }
+      ]
+    },
+    "sourceChangedSinceReview": false,
+    "currentSourceSha256": "d637ae51348c1b374e58392208723c01639fb1f1bdb634c378bf574053085e07",
+    "requirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+    "method": "Second native 1536 x 1024 original review, specifically tracing hands/props and judging teaching-text legibility against available scene space.",
+    "nativeReviewed": true,
+    "handsAndProps": "No new concrete hand or prop-contact defect found in this focused pass. Original benchmark findings remain in runtime-review.json.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "newFault": false,
+    "findings": "Teaching display remains sufficiently readable for its content and framing. No additional concrete display-space defect identified.",
+    "repairDirection": "None. Preserve the note-taking pause and explicit magnitude comparison."
+  }
+]

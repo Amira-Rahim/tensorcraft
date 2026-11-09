@@ -1,0 +1,134 @@
+{
+  "id": "signal-processing/spectrograms",
+  "phase": "challenge",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical ensign-demir identity; image 2: lab room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Demir alone sits LEFT actively typing, shoulders relaxed, eyes focused on the shared surface, natural supported adult posture. Camera beside him and closer to the task. LARGE RIGHT display fills available wall. Exact title 'Synthetic burst test'; line '256 samples at 256 Hz'; small simple timeline labeled '40 Hz burst: 0.25-0.50 s'. Large table headers 'Frame start (s)' and '40 Hz magnitude'; rows '0.00 | pending', '0.25 | pending', '0.50 | pending', '0.75 | pending'. Footer '64-sample windows / Hop 64 / No taper'. No made-up magnitude or mission pulse interval. Keep table spacious and bright, no tiny labels.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "a4eef733e4bcfd18fc50be41187d7a12f0000149eded36cae162e99fe61b609e",
+  "source": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+  "sourceSha256": "010fedb044d36219fc925dd4cdb5c00a95b4a6873539e8efdfc3116f4245e76f",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+      "sha256": "23eb5777892166c7e76af8de9fd53238fb676c2e2555250ece0e8254551d6e1a",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+    "lessonSha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646",
+    "context": "Challenge and exercises/build-spectrogram.yaml: 256 samples at 256 Hz, a 40 Hz burst during samples 64 through 127, four 64-sample frames with hop 64 and no taper. Displayed starts 0, 0.25, 0.50 and 0.75 seconds and burst interval 0.25 to 0.50 seconds match the fixture.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+  "candidateSha256": "010fedb044d36219fc925dd4cdb5c00a95b4a6873539e8efdfc3116f4245e76f",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-challenge.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-f6b99241-b9fe-4aba-9820-2f37ab17b1c7.png",
+  "generatedSha256": "010fedb044d36219fc925dd4cdb5c00a95b4a6873539e8efdfc3116f4245e76f",
+  "ownReview": {
+    "reviewedAt": "2026-11-09T07:24:56.554745+00:00",
+    "nativeReviewed": true,
+    "candidateSha256": "010fedb044d36219fc925dd4cdb5c00a95b4a6873539e8efdfc3116f4245e76f",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": {
+      "ensign-demir": [
+        200,
+        230,
+        285,
+        345
+      ]
+    },
+    "handCropCoordinatesXYWH": [
+      [
+        545,
+        780,
+        210,
+        155
+      ]
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir has natural two-handed typing, supported adult posture and focused gaze. The enlarged display correctly shows 256 samples at 256 Hz, the 40 Hz burst at 0.25-0.50 s, four frame starts 0.00, 0.25, 0.50 and 0.75, 64-sample windows, hop 64 and no taper. Magnitudes remain pending."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__spectrograms-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-challenge.webp",
+  "webpSha256": "0f7e536f945e17ecb764dd3670b0e7dcab4231d4cdfd7c690ad90b8cd6eb20be",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+    "sourceSha256": "23eb5777892166c7e76af8de9fd53238fb676c2e2555250ece0e8254551d6e1a",
+    "webpSha256": "0cc71ac8474a8d20663dca6ad1db14c09e70b918af2869000ae01b0aa68fb79a",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-da96ee7f-2d34-4282-86f7-3594e95a8eb7.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "010fedb044d36219fc925dd4cdb5c00a95b4a6873539e8efdfc3116f4245e76f",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+        "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

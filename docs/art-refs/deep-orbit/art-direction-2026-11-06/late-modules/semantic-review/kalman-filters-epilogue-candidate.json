@@ -1,0 +1,325 @@
+{
+  "key": "deep-orbit/advanced-time-series/kalman-filters",
+  "phase": "epilogue",
+  "status": "own-pass-awaiting-independent-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portrait references first, room palette reference next, LAST input exact edit target. Correct ONLY the word spacing on the flat order sheet. Keep the line rotated upside down to the camera, upright to Mirza across the desk. Exact text: \"Backup plans by 0800\". Put a clear word space between \"by\" and \"0800\". Do not mirror or reorient the line. Preserve all other content, perspective, faces, entire poses and hand contact, lighting and room. Clean cel-shaded adventure-comic illustration,1536x1024. No changes outside requested detail.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage3-openai-20261107.png",
+      "sha256": "1240c76ed391d25b7abafca73b1100dec4f15c84013c3209186e5e3a21d8881b",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "1240c76ed391d25b7abafca73b1100dec4f15c84013c3209186e5e3a21d8881b",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+    "sha256": "91e33db778a49851a18b63c3636463491ae728cebc7dd8db601329f25b8e64b4"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "sha256": "6cb732cf4fecd19c6a491f5e32b60d90220e29e02ac4daede37e9ada1a5490b0"
+    }
+  ],
+  "panelSpecification": {
+    "state": "story result",
+    "panels": [
+      "Preserve exact Farah and Mirza faces and complete body poses. Farah stands with a stylus between her hands. Mirza sits, holding the paper with one hand and writing with the other. Preserve fingers, grips, neck alignment and chair support. Adjust only Farah's head slightly to about95 percent current linear size, retaining exact facial proportions. Mirza is unchanged. Paper replaces the invented error bars with a readable brief headed \"Eight-day interval review\", then \"Estimate:72.4 s\", \"Latest reading:72.0 s\", \"Assumed Q=0.1, R=1\". No error bars or confidence intervals. Mirza writes in a blank margin, without revealing the private time she writes. One small rear console reads \"Backup plans by0800\". All other screens are off. Keep the subdued bridge and warm desk lamp before dawn, without a broad gold cast."
+    ],
+    "otherScreens": "All unspecified screens are inactive charcoal glass.",
+    "concreteGenerationSpecification": "Restage as a quiet candid bridge decision late in the watch. Mirza sits turned naturally toward her desk under the brass lamp, writing backup orders on a sheet LYING FLAT, one hand holding the sheet and the other holding a pen. She looks down at the paper with a firm, worried decision expression. Farah stands at the side of the desk in three-quarter stance, leaning one hand on its edge, holding her stylus loosely with the other, watching the latest interval on a small work monitor and then Mirza with restrained concern. No held-up paper, no front-facing paired portrait, no camera gaze. Both heads align with torso angles, two connected arms each, hands and writing contact coherent. The compact work monitor, angled toward the crew and viewed from its side, reads Eight-day interval review, Estimate72.4s, Latest reading72.0s, Assumed Q0.1 R1. The flat paper has only Backup plans by0800, with a small unfinished signature line. No invented outcome, no huge heading behind them. All lettering and lines follow the monitor/paper planes. Other displays off, natural warm pool of lamp light, subdued sage accents, charcoal and aged brass, no neon.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portrait references first, room palette reference next, LAST input exact edit target. Correct ONLY the word spacing on the flat order sheet. Keep the line rotated upside down to the camera, upright to Mirza across the desk. Exact text: \"Backup plans by 0800\". Put a clear word space between \"by\" and \"0800\". Do not mirror or reorient the line. Preserve all other content, perspective, faces, entire poses and hand contact, lighting and room. Clean cel-shaded adventure-comic illustration,1536x1024. No changes outside requested detail."
+  },
+  "numericVerification": {
+    "dailyLog": [
+      73.1,
+      72.9,
+      73,
+      72.6,
+      72.7,
+      72.3,
+      72.4,
+      72
+    ],
+    "ema0.2final": 72.56664064000002,
+    "ema0.8final": 72.07916416,
+    "kalmanFinal": 72.43168039656481,
+    "method": "CurrentMDX equations executed inPython withsameinitialization andsubsequent7updates."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage4-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-e0a333be-1e64-4bea-8f66-ace91fd5c1a5.png",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise-object-edit. Deep Orbit cinematic cel-shaded story scene,1536x1024. First references are canonical faces, next is the room master, and the LAST image is the exact scene to edit. Preserve facial morphology, adult age, nose, jaw, eyes, brows, expression, hair, warm complexion and signature equipment. Farah lens on anatomical LEFT eye, Demir comms on anatomical RIGHT ear. Preserve whole body poses, continuous shoulder-arm-hand chains, original grips, neck alignment, chair support, room geometry and composition. People and story remain dominant. Every unspecified monitor or wrist display is inactive charcoal glass, without decorative technical content. Use muted sage, aged brass and charcoal, with natural warm skin and no neon mint, cyan or mustard wash. Preserve exact Farah and Mirza faces and complete body poses. Farah stands with a stylus between her hands. Mirza sits, holding the paper with one hand and writing with the other. Preserve fingers, grips, neck alignment and chair support. Adjust only Farah's head slightly to about95 percent current linear size, retaining exact facial proportions. Mirza is unchanged. Paper replaces the invented error bars with a readable brief headed \"Eight-day interval review\", then \"Estimate:72.4 s\", \"Latest reading:72.0 s\", \"Assumed Q=0.1, R=1\". No error bars or confidence intervals. Mirza writes in a blank margin, without revealing the private time she writes. One small rear console reads \"Backup plans by0800\". All other screens are off. Keep the subdued bridge and warm desk lamp before dawn, without a broad gold cast. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full final scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/kalman-filters-epilogue-before.png",
+          "sha256": "b113307a5ef46cf23dd52eea88438392b6ead8b089f49d9243abd4def183ab65",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "b113307a5ef46cf23dd52eea88438392b6ead8b089f49d9243abd4def183ab65",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "cef97729e9e9aa3fd90774e1a049a4ee2d92136034f70ca038a236e6e789df82",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-43f56005-7609-4d35-8a2a-10d2daa71249.png"
+    }
+  ],
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b",
+    "proofSha256": "69efdedcc8902c76459196b1227f310e2c5af3468fa62123a76c48042820e373",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Mirza writes backup orders under the desk lamp while Farah quietly reviews the shrinking interval, with concern tied to the deadline."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+  "publishedOutputSha256": "91e33db778a49851a18b63c3636463491ae728cebc7dd8db601329f25b8e64b4",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 174160
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/kalman-filters-epilogue-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/kalman-filters-epilogue-target.png",
+    "sha256": "76e44b4f42ec8361fdac838155d021dea9574e4694dee40cb845bb0d774c1a85",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "76e44b4f42ec8361fdac838155d021dea9574e4694dee40cb845bb0d774c1a85",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/kalman-filters-epilogue-runtime-before.png",
+    "sha256": "76e44b4f42ec8361fdac838155d021dea9574e4694dee40cb845bb0d774c1a85",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "76e44b4f42ec8361fdac838155d021dea9574e4694dee40cb845bb0d774c1a85",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Mirza writes backup orders under the desk lamp while Farah quietly reviews the shrinking interval, with concern tied to the deadline.",
+    "fullSpecification": "Restage as a quiet candid bridge decision late in the watch. Mirza sits turned naturally toward her desk under the brass lamp, writing backup orders on a sheet LYING FLAT, one hand holding the sheet and the other holding a pen. She looks down at the paper with a firm, worried decision expression. Farah stands at the side of the desk in three-quarter stance, leaning one hand on its edge, holding her stylus loosely with the other, watching the latest interval on a small work monitor and then Mirza with restrained concern. No held-up paper, no front-facing paired portrait, no camera gaze. Both heads align with torso angles, two connected arms each, hands and writing contact coherent. The compact work monitor, angled toward the crew and viewed from its side, reads Eight-day interval review, Estimate72.4s, Latest reading72.0s, Assumed Q0.1 R1. The flat paper has only Backup plans by0800, with a small unfinished signature line. No invented outcome, no huge heading behind them. All lettering and lines follow the monitor/paper planes. Other displays off, natural warm pool of lamp light, subdued sage accents, charcoal and aged brass, no neon."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b",
+  "faceBoxes": {
+    "farah": [
+      225,
+      40,
+      315,
+      345
+    ],
+    "mirza": [
+      800,
+      215,
+      270,
+      315
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-epilogue-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage as a quiet candid bridge decision late in the watch. Mirza sits turned naturally toward her desk under the brass lamp, writing backup orders on a sheet LYING FLAT, one hand holding the sheet and the other holding a pen. She looks down at the paper with a firm, worried decision expression. Farah stands at the side of the desk in three-quarter stance, leaning one hand on its edge, holding her stylus loosely with the other, watching the latest interval on a small work monitor and then Mirza with restrained concern. No held-up paper, no front-facing paired portrait, no camera gaze. Both heads align with torso angles, two connected arms each, hands and writing contact coherent. The compact work monitor, angled toward the crew and viewed from its side, reads Eight-day interval review, Estimate72.4s, Latest reading72.0s, Assumed Q0.1 R1. The flat paper has only Backup plans by0800, with a small unfinished signature line. No invented outcome, no huge heading behind them. All lettering and lines follow the monitor/paper planes. Other displays off, natural warm pool of lamp light, subdued sage accents, charcoal and aged brass, no neon. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/kalman-filters-epilogue-target.png",
+          "sha256": "76e44b4f42ec8361fdac838155d021dea9574e4694dee40cb845bb0d774c1a85",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "76e44b4f42ec8361fdac838155d021dea9574e4694dee40cb845bb0d774c1a85",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "f59c8459bd8054f94e4bce8a65c1caeec0d78e2bb4ee6b9132dc7c4cdd59ecd2",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-97258102-98b1-4b8d-8e73-98e1f828d477.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-epilogue-identity-proof.jpg",
+      "faceBoxes": {
+        "farah": [
+          225,
+          40,
+          315,
+          345
+        ],
+        "mirza": [
+          800,
+          215,
+          270,
+          315
+        ]
+      }
+    },
+    {
+      "prompt": "Use case: precise-object-edit with immutable canonical identity. Canonical portraits first, room reference next, LAST exact edit target. Preserve the complete candid scene, canonical faces and age, all poses and four arm chains, scale, expressions, desk, lamp and screen values. Change ONLY typographic spacing on the sheet and monitor. Paper must clearly read \"Backup plans by 0800\" with ordinary word spacing and baselines following the flat paper plane. Monitor lines must read \"Eight-day interval review\", \"Estimate: 72.4 s\", \"Latest reading: 72.0 s\", \"Assumed Q = 0.1, R = 1\". Keep font small and naturally spaced within the real tilted monitor, all baselines matching its perspective. No new labels, graphs or objects. Clean cel-shaded adventure-comic linework. One full1536x1024 scene.",
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "d41d6e99e22d9a389517f708e8bca5fbd703b965478e732e980799a3267f4f0d",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-e885a0ef-74a7-4366-aa34-e24ab01e3d77.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage1-openai-20261107.png",
+          "sha256": "f59c8459bd8054f94e4bce8a65c1caeec0d78e2bb4ee6b9132dc7c4cdd59ecd2",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "f59c8459bd8054f94e4bce8a65c1caeec0d78e2bb4ee6b9132dc7c4cdd59ecd2",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-epilogue-identity-proof.jpg"
+    },
+    {
+      "prompt": "Use case: precise-object-edit. Canonical portraits first are immutable identity references; room master palette reference; LAST input is target. Correct only the reader direction of Mirza's flat paper. She is writing from the far side of the desk. Rotate its content 180 degrees IN THE PAPER PLANE, so Backup plans by0800 and the unfinished signature line are upright to Mirza and visibly UPSIDE DOWN to the camera across the desk. Do not mirror letters; it must be ordinary text physically turned toward the writer. Exact wording Backup plans by0800 with natural spaces. Maintain perspective, paper shape and connected writing-hand contact. Preserve both exact faces, entire bodies, chair, pen grip, lamp and work-monitor text unchanged. One1536x1024 scene.",
+      "candidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage3-openai-20261107.png",
+      "candidateSha256": "1240c76ed391d25b7abafca73b1100dec4f15c84013c3209186e5e3a21d8881b",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-1794d8f3-5090-4453-a450-269381540b5a.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage2-openai-20261107.png",
+          "sha256": "d41d6e99e22d9a389517f708e8bca5fbd703b965478e732e980799a3267f4f0d",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "d41d6e99e22d9a389517f708e8bca5fbd703b965478e732e980799a3267f4f0d",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/kalman-filters-epilogue-identity-proof.jpg"
+    }
+  ],
+  "requestedDisplayCorrections": "Preserve the complete candid scene, canonical faces and age, all poses and four arm chains, scale, expressions, desk, lamp and screen values. Change ONLY typographic spacing on the sheet and monitor. Paper must clearly read \"Backup plans by 0800\" with ordinary word spacing and baselines following the flat paper plane. Monitor lines must read \"Eight-day interval review\", \"Estimate: 72.4 s\", \"Latest reading: 72.0 s\", \"Assumed Q = 0.1, R = 1\". Keep font small and naturally spaced within the real tilted monitor, all baselines matching its perspective. No new labels, graphs or objects.",
+  "surfacePerspectiveReview": {
+    "status": "approved",
+    "reviewer": "late_final",
+    "candidateSha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b",
+    "reason": "Final work-surface orientation and text baselines match reader and plane."
+  },
+  "nextCandidatePath": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage4-openai-20261107.png",
+  "previousPanelSpecification": {
+    "state": "story result",
+    "panels": [
+      "Preserve exact Farah and Mirza faces and complete body poses. Farah stands with a stylus between her hands. Mirza sits, holding the paper with one hand and writing with the other. Preserve fingers, grips, neck alignment and chair support. Adjust only Farah's head slightly to about95 percent current linear size, retaining exact facial proportions. Mirza is unchanged. Paper replaces the invented error bars with a readable brief headed \"Eight-day interval review\", then \"Estimate:72.4 s\", \"Latest reading:72.0 s\", \"Assumed Q=0.1, R=1\". No error bars or confidence intervals. Mirza writes in a blank margin, without revealing the private time she writes. One small rear console reads \"Backup plans by0800\". All other screens are off. Keep the subdued bridge and warm desk lamp before dawn, without a broad gold cast."
+    ],
+    "otherScreens": "All unspecified screens are inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": true,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-1794d8f3-5090-4453-a450-269381540b5a.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-43f56005-7609-4d35-8a2a-10d2daa71249.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-97258102-98b1-4b8d-8e73-98e1f828d477.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-e0a333be-1e64-4bea-8f66-ace91fd5c1a5.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-e885a0ef-74a7-4366-aa34-e24ab01e3d77.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+      "art-src/scenes/advanced-time-series__kalman-filters-epilogue-narrative-stage4-openai-20261107.png",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

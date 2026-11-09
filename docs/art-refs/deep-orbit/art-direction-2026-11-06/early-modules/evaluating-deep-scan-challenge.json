@@ -1,0 +1,31 @@
+{
+  "module": "training-loop",
+  "lesson": "evaluating-deep-scan",
+  "phase": "challenge",
+  "room": "bridge",
+  "cast": [
+    "ensign-demir",
+    "commander-mirza"
+  ],
+  "moment": "Demir runs the evaluation record at a bridge console while Mirza watches from the open aisle beside him, calm and encouraging. Demir's right hand selects the held-out archive on the keyboard; his left holds a plain report tablet. Mirza holds her hands loosely clasped at waist level, completely separate from his arms. Two compact result panels remain open for comparison, with a few amber unresolved markers. No numerical accuracy, no green approval stamp, no perfect-test implication.",
+  "alt": "Demir prepares the held-out evaluation record for Mirza.",
+  "location": "Archimedes, Bridge",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit training-loop/evaluating-deep-scan, challenge section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 2 are canonical character identity references; the final image is the bridge set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal; Commander Mirza, Black woman aged 52 with dark brown skin, close-cropped natural hair silvered at temples, mature facial lines, charcoal command uniform and a plain blank brass chronometer. Scene: Demir runs the evaluation record at a bridge console while Mirza watches from the open aisle beside him, calm and encouraging. Demir's right hand selects the held-out archive on the keyboard; his left holds a plain report tablet. Mirza holds her hands loosely clasped at waist level, completely separate from his arms. Two compact result panels remain open for comparison, with a few amber unresolved markers. No numerical accuracy, no green approval stamp, no perfect-test implication. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 2 humans, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers, correctness ticks, pass/fail stamps or glowing approval lights. No planet or crystal icons in data cells. Keep exact data and code in the lesson interface, not the illustration.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e4a49a98-f0ea-4a81-abf2-5c19fc0f4962.png",
+  "source": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261106.png",
+  "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir holds the report in one hand and selects a key with the other; Mirza's two hands are naturally clasped, four arms total.",
+    "furniture": "Bodies remain outside holo table and consoles; objects sit or are held with clear physical support.",
+    "identity": "Mirza retains dark skin, silver temples and brass uniform details; Farah has olive-tan skin, dark loose tied hair and green lens; Demir retains brown hair and green devices.",
+    "story": "Two signal case panels with sparse amber review markers keep evaluation open. No perfect score or fleet release implication.",
+    "tone": "Warm thoughtful smiles and modest curiosity, without panic or exaggerated triumph.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

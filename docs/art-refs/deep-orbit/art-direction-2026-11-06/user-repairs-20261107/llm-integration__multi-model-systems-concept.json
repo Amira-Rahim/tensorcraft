@@ -1,0 +1,172 @@
+{
+  "key": "multi-model-systems-concept",
+  "id": "llm-integration/multi-model-systems",
+  "phase": "concept",
+  "source": "art-src/scenes/llm-integration__multi-model-systems-concept-openai-20261107.png",
+  "sourceSha256": "fa510be2bb5063f147e45fef9cacc7d12749cd7ed0fb3f6be9bedc9433883c26",
+  "auditIndex": 61,
+  "auditHold": "Current diagram uses unlabeled rows and generic bar icons instead of model input contracts; wrist and rear waveforms arbitrary. Restage Demir checking a handoff on a real display labeled classifier[3],autoencoder[11],LSTMwindow[steps,3], with each frozen scaler and separate outputs; LLM draft waits for review. Keep canonical head/shortneck and normal pen/tablet handling, correct perspective.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Firstimage canonical Demir identity, second bridge ROOM ONLY, final exact edit target. Change ONLY the three little graph panels on the LEFT side of main display: erase all three arbitrary waveform plots and their inner outlines, leaving plain dark green space. Shift the existing exact contract text leftward within each large row so each row reads naturally. Keep all three complete texts: Classifier [3] / min-max scaler; Autoencoder [11] / training-period z-scores; LSTM [80, 3] / per-channel z-scores. Preserve footer, all faces, eyes, body, pen/tablet hands, perspective, room and colors. Add no new graphics, icons or information. 1536x1024.",
+  "promptSha256": "e91a1e83698a6b9469e75a346f53a333ef72815183327709be901ab0056d5ac6",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-0d92b8bc-0a66-4756-be35-abb98f0bdf69.png",
+      "sha256": "1f681dcadb4b45f7b5e7374eac696d5fed1efd260056cfb73ed8533f68432658"
+    }
+  ],
+  "alt": "Demir checks that each model receives the shape and scaling it was trained to use.",
+  "location": "Archimedes, Bridge",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-25db704c-9fec-4af9-b526-a43a0038825d.png",
+  "candidatePath": "art-src/scenes/llm-integration__multi-model-systems-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-25db704c-9fec-4af9-b526-a43a0038825d.png",
+  "candidateSha256": "fa510be2bb5063f147e45fef9cacc7d12749cd7ed0fb3f6be9bedc9433883c26",
+  "ownReview": {
+    "reviewer": "/root/remaining_signal_llm",
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Arbitrary waveform snippets removed. Exact3/11/80x3 input contracts and scaler descriptions remain in coherent board perspective; canonical adult face/shortneck, sensible stylusgrip and inwardtablet, propergaze.",
+    "identityCrops": "pass",
+    "comparisonImagesDeleted": true
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-0d92b8bc-0a66-4756-be35-abb98f0bdf69.png",
+      "sha256": "1f681dcadb4b45f7b5e7374eac696d5fed1efd260056cfb73ed8533f68432658",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    }
+  ],
+  "history": [
+    {
+      "prompt": "Use case: precise-object-edit. Image1: ensign-demir canonical identity authority. Image2: bridge ROOM ONLY master, not incidental UI or oversaturated light. Finalimage: exactedit target.\nPreserve standing Demir with inward-facing tablet in one hand and stylus in the other, but gaze and stylus go to the physical monitor he is inspecting, no presentation to viewer. Replace anonymous geometric rows with three distinct labeled preprocessing contracts: Classifier [3] / min-max scaler; Autoencoder [11] / training-period z-scores; LSTM [80, 3] / per-channel z-scores. Below all3 a simple footer Keep each model's preprocessing version. Do not draw a single common scaler or claim same vectors. Demir notices the different shapes with small raised eyebrow, short natural neck and narrow adult shoulders. Tablet back visible, monitor front readable to him. All rear displays and wrist dark.\n Demir has one communicator on anatomicalRIGHT ear; when hidden by head do not draw it floating beside eye/cheek. Canonical identity and age from portraits, naturally expressive faces in three-quarter view; normal adult head/body proportions and necks. Two arms per person, trace shoulders to elbows to wrists and exactly one natural five-finger hand each. No hand/furniture penetration. Every display has a physical frame; its front must face its actual readers as well as obliquely visible to camera. Every line, arrow and letter lies in its screen plane. Any notebook is blank faintly ruled, never fake handwriting. No mugshot or posed presentation, no one looks at camera. Warm light localized, muted charcoal/neutralgray/olive, sage #6BAA8A interfaces, aged brass #A89060. Avoid electriclime/yellowwash, no plants. Dark unused screens and wrist displays. Clean bold linework, flat celshading, cohesive Deep Orbit series. 1536x1024 landscape. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-0d92b8bc-0a66-4756-be35-abb98f0bdf69.png",
+          "sha256": "1f681dcadb4b45f7b5e7374eac696d5fed1efd260056cfb73ed8533f68432658"
+        }
+      ],
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-0d92b8bc-0a66-4756-be35-abb98f0bdf69.png",
+      "candidateSha256": "1f681dcadb4b45f7b5e7374eac696d5fed1efd260056cfb73ed8533f68432658",
+      "ownReview": {
+        "reviewer": "/root/remaining_signal_llm",
+        "verdict": "hold",
+        "nativeFull": true,
+        "notes": "Natural actor/tablet/stylus, accurate shapes/scalers but three ungrounded waveform plots need removal."
+      }
+    }
+  ],
+  "identityCropReview": [
+    {
+      "key": "multi-model-systems-concept",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-25db704c-9fec-4af9-b526-a43a0038825d.png",
+      "sourceSha256": "fa510be2bb5063f147e45fef9cacc7d12749cd7ed0fb3f6be9bedc9433883c26",
+      "crop": {
+        "left": 225,
+        "top": 180,
+        "width": 290,
+        "height": 340
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "referenceCrop": {
+        "left": 125,
+        "top": 5,
+        "width": 270,
+        "height": 330
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad brows, round brown eyes, nose bridge and tip, rounded jaw/chin, freckles, light stubble and swept hairline. Side-view foreshortening remains plausible; right-ear communicator is correctly visible or hidden with the pose, never moved to left ear.",
+      "comparisonDeleted": true
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-25db704c-9fec-4af9-b526-a43a0038825d.png",
+  "publishedSource": "art-src/scenes/llm-integration__multi-model-systems-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-concept.webp",
+  "webpSha256": "d443b4fb744f27ba466b2a54b520a6b733a333556f2ea4dc8548a3c13dc80c9d",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__multi-model-systems-concept-openai-20261107.png",
+    "sourceSha256": "15ad496688a7be145cefffacf13e2ed0e04d293041567d15e36e6cc1da4163dd",
+    "webpSha256": "606fa7fe8eed07a812c09af92bf7eb3b7ad1e72d8fd394e0f546bd3e66da1f96",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_signal_llm",
+    "status": "approved",
+    "candidateSha256": "fa510be2bb5063f147e45fef9cacc7d12749cd7ed0fb3f6be9bedc9433883c26",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Demir compares the three model input contracts on a physical board. Classifier3 min-max,autoencoder11 training-period z-scores and LSTM80x3 per-channel z-scores match current MDX. Natural stylus and tablet-back grips, canonical profile and ordinary shoulders/neck; board faces him, rows share perspective, no decorative graphs remain.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+          "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+        "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__multi-model-systems-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-concept.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__multi-model-systems-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-concept.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

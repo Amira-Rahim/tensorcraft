@@ -1,0 +1,82 @@
+{
+  "module": "training-loop",
+  "lesson": "loss-functions",
+  "phase": "briefing",
+  "src": "/scenes/deep-orbit/training-loop/loss-functions.webp",
+  "index": 40,
+  "characters": [
+    "dr-farah"
+  ],
+  "prompt": "Strict identity-only repair. Image1 is the authoritative neutral portrait of Dr Farah. Image2 is target scene. Correct ONLY Farah's head, hair and neck transition. Her current pointed narrow nose and triangular lower face are wrong. Turn her head gently toward camera into a near-frontal three-quarter view, keeping her slight lean and eye gaze toward the tabletop demonstration. Reproduce exactly the mature38-year-old portrait's facial proportions: broad rounded lower cheeks, compact rounded chin, full round-ended nose with broad base and nostrils, restrained almond eyes and their spacing, adult eye and mouth details. Keep olive-tan complexion, compact dark loosely tied waves and rectangular green AR lens on the anatomically correct eye. Do not merely add wrinkles to the wrong face. Preserve her stylus hand, tabletop-resting hand, body, neck/shoulder connection, furniture, screen graphics, exact demonstration, color, lighting and framing. No new limbs, people or text. 1536x1024.",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9866112f-afd2-416c-bdf2-0c4c7b193267.png"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-154e71e3-f512-464f-a786-e39174aba3ff.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9866112f-afd2-416c-bdf2-0c4c7b193267.png",
+      "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=1044): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+      "references": [
+        "docs/art-refs/deep-orbit/dr-farah.png",
+        "apps/web/public/scenes/deep-orbit/training-loop/loss-functions.webp"
+      ],
+      "reason": "Peer hold: Farah narrow triangular lower face and pointed nose/chin."
+    }
+  ],
+  "candidate": "/tmp/early-identity-candidates/40.webp",
+  "candidateSha256": "1f63979738457a4891aef9a299e994bd61ddc9ca934a034bbe2b5b582e19d9f2",
+  "sourceSha256": "7a8e3d5a5c4bf1e6e8cfa5f616c31310af4a12921ea18a5783459596e658b2b4",
+  "beforeSha256": "33f55c069afb1be63c2d4a871c5931f4facd4704f6bc0e4b1e629f547d4cdcaa",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9866112f-afd2-416c-bdf2-0c4c7b193267.png",
+      "role": "edit target",
+      "sha256": "3fafe6320cfa238e9cc0a52333edff83d9e7fd3c01cd344763f16199c5690898"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 160496,
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-briefing-dr-farah-correction.png",
+      "crop": {
+        "left": 849,
+        "top": 351,
+        "width": 390,
+        "height": 363
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-154e71e3-f512-464f-a786-e39174aba3ff.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9866112f-afd2-416c-bdf2-0c4c7b193267.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/loss-functions.webp",
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

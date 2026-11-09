@@ -1,0 +1,2423 @@
+{
+  "date": "2026-11-07",
+  "status": "hold-generation-and-publication",
+  "scope": {
+    "distinctImages": 46,
+    "faceComparisons": 82,
+    "newPublishedSectionImages": 20,
+    "pendingUnpublishedSectionImages": 8,
+    "moduleBriefings": 16,
+    "retainedEnding": 1,
+    "additionalKalmanBriefing": 1
+  },
+  "method": "Manually inspected close side-by-side canonical/scene crops. Crops preserve aspect ratio and use fit-contain, not geometry warping. No facial similarity model or numeric measurement was used. Head pose, expression and warm scene lighting were considered; accessory presence was not accepted as identity proof.",
+  "findings": [
+    "The prior identity approvals were too permissive. Clothing, hair color and green equipment were being treated as sufficient evidence.",
+    "The 20 new Signal Processing phase images inherited drift from retained briefing scene references and further changed faces.",
+    "Canonical portraits included after scene reference in the 8 pending Browser images improved some details, but did not reliably lock Demir identity.",
+    "Retained baseline briefings already have the same facial drift. Fixing only new phases would leave inconsistency.",
+    "Nazari is generally more consistent than Farah and Demir, particularly pending Why the Browser takeaways. Her age lines must remain a separate gate."
+  ],
+  "actions": {
+    "removedFromMergeFragment": 20,
+    "withheldEntries": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/withheld-manifest-entries.json",
+    "pendingSources": "art-src/scenes/pending-identity",
+    "deletedFiles": 0,
+    "sharedManifestChanged": false
+  },
+  "correctionStrategy": [
+    "Use canonical portrait references first, target scene last. Explicitly label identity sources and scene edit target.",
+    "Edit only heads, hair and neck transitions; preserve bodies, hand contacts, furniture, diagram values, composition and lighting.",
+    "State immutable facial proportions, nose tip and nostril width, cheek volume, chin, brow/eye shape, stubble/age lines and accessory geometry.",
+    "Inspect a paired crop for every visible character at every output. Do not approve merely because clothing and accessories match.",
+    "Review whole scene again after face edits for unintended body, graph, text or background changes.",
+    "Use independently reviewed pilot output as evidence that the prompt works, not as a replacement for each asset gate."
+  ],
+  "rootPilotReview": {
+    "source": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-3faa0461-a34d-4837-b611-191e4ace1947.png",
+    "verdict": "passes-identity-for-this-output",
+    "farah": "Broader nose tip, straighter brows, lower cheek volume, rounded chin and adult eye/mouth lines restored. Corrected face reads as the anchor at a three-quarter angle.",
+    "demir": "Round nose, eye spacing, broad lower face, freckles, uneven stubble and below-lip patch restored. Earpiece and front lock are much closer. Minor elevated hair spike variation is acceptable.",
+    "wholeScene": "Visible bodies, hand contacts and diagram remain coherent. This is visual review, not pixel invariance certification."
+  },
+  "faces": [
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "concept",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-concept-openai-20261106.png",
+      "crop": {
+        "left": 140,
+        "top": 40,
+        "width": 380,
+        "height": 330
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/time-vs-frequency-concept-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Very narrow lower cheek, tiny nose and bright elongated eye create a younger face. Lens remains correctly recognizable.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "0d5a6d5e20d20365f4fcd651dc66ebd068acda2c3a2087a27da8532d30b6c59a"
+    },
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "concept",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-concept-openai-20261106.png",
+      "crop": {
+        "left": 900,
+        "top": 40,
+        "width": 300,
+        "height": 340
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/time-vs-frequency-concept-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Angular chin, narrow eye apertures and enlarged round earpiece depart from the open round-eyed anchor.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "0d5a6d5e20d20365f4fcd651dc66ebd068acda2c3a2087a27da8532d30b6c59a"
+    },
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "challenge",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261106.png",
+      "crop": {
+        "left": 870,
+        "top": 50,
+        "width": 280,
+        "height": 300
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/time-vs-frequency-challenge-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Profile has a pointed nose and sharp jaw; earpiece and swept hair silhouette differ. Profile uncertainty does not resolve those differences.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "06039653a16f8bb7057aeb2a7ee3d14b46f8675e7166f8626b5248f6ee579eb0"
+    },
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "takeaways",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-takeaways-openai-20261106.png",
+      "crop": {
+        "left": 130,
+        "top": 48,
+        "width": 420,
+        "height": 410
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/time-vs-frequency-takeaways-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Added visible freckles, fuller lips, sculpted jaw and narrow nose are strong identity drift in a large clear face.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "cad286f44be59d590d23d562c05d4da2ac9fe1bb7cbbaf2c0cfc889f24c5faed"
+    },
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "epilogue",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 850,
+        "top": 180,
+        "width": 150,
+        "height": 160
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/time-vs-frequency-epilogue-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Small side view repeats the pointed nose, taller hair spikes and elongated jaw.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "f25cacfd556aac1f97a58d4087d21e1100efdf4c2381ee7297d671dca5838208"
+    },
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "epilogue",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 1260,
+        "top": 170,
+        "width": 160,
+        "height": 160
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/time-vs-frequency-epilogue-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Small face is narrowed and youthfully stylized, with much larger apparent eyes and tiny chin.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "f25cacfd556aac1f97a58d4087d21e1100efdf4c2381ee7297d671dca5838208"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "concept",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261106.png",
+      "crop": {
+        "left": 520,
+        "top": 90,
+        "width": 170,
+        "height": 190
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fourier-transform-concept-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Strongest Demir drift: almost smooth adolescent face, tiny tapered chin and much smaller nose. Light uneven adult stubble is largely lost.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "a838adbcb76cdf408ec0105892828f5680a86a5cb447ef1826eae139c4c2b128"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "concept",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261106.png",
+      "crop": {
+        "left": 740,
+        "top": 120,
+        "width": 160,
+        "height": 200
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fourier-transform-concept-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Strong drift: tiny nose, pointed chin, enlarged eyes and erased adult facial planes give a younger different face.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "a838adbcb76cdf408ec0105892828f5680a86a5cb447ef1826eae139c4c2b128"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "challenge",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261106.png",
+      "crop": {
+        "left": 750,
+        "top": 20,
+        "width": 360,
+        "height": 420
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fourier-transform-challenge-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Stubble remains but the longer sculpted jaw, narrow nose and swept-up hair create a different adult face.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "0332b7d034e797bd5fea3c7fb5da378fa907ac99f175ce580761fe7f496e41d3"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "takeaways",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261106.png",
+      "crop": {
+        "left": 860,
+        "top": 68,
+        "width": 300,
+        "height": 360
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fourier-transform-takeaways-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Large clear face has a narrower nose and pointed lower jaw, glamorized eyes and enlarged waves.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "e82bdc263ea6bf2832a0f38d1ea29975c3564ac13e5be035cd912434a686e0ad"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "epilogue",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 380,
+        "top": 40,
+        "width": 310,
+        "height": 360
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fourier-transform-epilogue-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Highly tapered lower face and pointed nose persist; open smile alone does not explain the shape change.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "620ab253e5c8d5a732c39df7147eb2d66a42c3dbe1e89c6b160267a2ab520285"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "epilogue",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 720,
+        "top": 90,
+        "width": 330,
+        "height": 370
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fourier-transform-epilogue-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Pointed chin and tiny nose persist despite the engaging expression; eye and mouth geometry differ from the anchor.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "620ab253e5c8d5a732c39df7147eb2d66a42c3dbe1e89c6b160267a2ab520285"
+    },
+    {
+      "lesson": "spectrograms",
+      "phase": "concept",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261106.png",
+      "crop": {
+        "left": 920,
+        "top": 40,
+        "width": 460,
+        "height": 440
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/spectrograms-concept-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Narrow triangular lower face, small nose and elongated eyes; mature facial planes are simplified.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "3e0d45d9542f8500f7a4595e354944f0cc17cf0ffd493898826bec03badccc93"
+    },
+    {
+      "lesson": "spectrograms",
+      "phase": "challenge",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__spectrograms-challenge-openai-20261106.png",
+      "crop": {
+        "left": 360,
+        "top": 50,
+        "width": 220,
+        "height": 280
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/spectrograms-challenge-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Profile is slender with narrow pointed nose and long jaw; regular beard contour replaces uneven stubble.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "f186b8a7bb78da1ad4395db95bd730f4dcf36d662c753b688d5b11f90669f7bc"
+    },
+    {
+      "lesson": "spectrograms",
+      "phase": "takeaways",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__spectrograms-takeaways-openai-20261106.png",
+      "crop": {
+        "left": 320,
+        "top": 48,
+        "width": 360,
+        "height": 380
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/spectrograms-takeaways-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Very narrow chin and smaller nose tip; swept hair and lens retain only the character shorthand.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "6ec7bae05059ce2835051068e2a0528f20b434702e36e46f26a774e0c56c38c9"
+    },
+    {
+      "lesson": "spectrograms",
+      "phase": "takeaways",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__spectrograms-takeaways-openai-20261106.png",
+      "crop": {
+        "left": 860,
+        "top": 8,
+        "width": 340,
+        "height": 410
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/spectrograms-takeaways-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Sharper jaw and narrower eyes than the canonical front portrait, with larger earpiece housing.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "6ec7bae05059ce2835051068e2a0528f20b434702e36e46f26a774e0c56c38c9"
+    },
+    {
+      "lesson": "spectrograms",
+      "phase": "epilogue",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__spectrograms-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 870,
+        "top": 160,
+        "width": 330,
+        "height": 340
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/spectrograms-epilogue-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Tapered cheeks and tiny nose remain, with eye and lip proportions unlike the anchor.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "6b73137e1ede8df6591c1bf1001feeab06015dab14afeeddbc7a661467ea1980"
+    },
+    {
+      "lesson": "spectrograms",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__spectrograms-openai-20261106.png",
+      "crop": {
+        "left": 790,
+        "top": 260,
+        "width": 250,
+        "height": 295
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/spectrograms-briefing-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Inherited baseline drift, preserved by graph-only edit: narrowed jaw, small nose and smoother adult features.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "88a9793109b2c33739c77d63e687262582f70d6259b8a98738ae0824b0503692"
+    },
+    {
+      "lesson": "spectrograms",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__spectrograms-openai-20261106.png",
+      "crop": {
+        "left": 1090,
+        "top": 260,
+        "width": 250,
+        "height": 310
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/spectrograms-briefing-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Inherited baseline drift: long pointed profile, regular beard contour and larger round earpiece.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "88a9793109b2c33739c77d63e687262582f70d6259b8a98738ae0824b0503692"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "concept",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fft-as-features-concept-openai-20261106.png",
+      "crop": {
+        "left": 250,
+        "top": 100,
+        "width": 280,
+        "height": 330
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fft-as-features-concept-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "High spiked quiff and hard beard edge pair with a longer chin and narrow nose.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "365538e6724f6be590cca0e6794fdd6e27f2b9fc98e74699ab50361bac2f5e62"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "concept",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__fft-as-features-concept-openai-20261106.png",
+      "crop": {
+        "left": 730,
+        "top": 175,
+        "width": 290,
+        "height": 300
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fft-as-features-concept-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Tiny nose, elongated eye, pointed chin and smoother young face are clear.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "365538e6724f6be590cca0e6794fdd6e27f2b9fc98e74699ab50361bac2f5e62"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "challenge",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fft-as-features-challenge-openai-20261106.png",
+      "crop": {
+        "left": 550,
+        "top": 110,
+        "width": 220,
+        "height": 240
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fft-as-features-challenge-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Small face has a pointed chin, uniformly edged beard and strong hair spikes.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "848188d7c2cf1d904b0cc6e64ac520a56afac703c6e7338c86e1ca24c7c31a8d"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "takeaways",
+      "character": "nazari",
+      "source": "art-src/scenes/signal-processing__fft-as-features-takeaways-openai-20261106.png",
+      "crop": {
+        "left": 200,
+        "top": 40,
+        "width": 370,
+        "height": 370
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fft-as-features-takeaways-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Gray bob and forehead lines are stable, but crow feet, cheek breadth and lower-mouth folds are reduced. Moderate drift.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "2c44fb2d1b9bfd48869095a677115e7e48291a9c47f41055d2b120aeade6b9fe"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "takeaways",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__fft-as-features-takeaways-openai-20261106.png",
+      "crop": {
+        "left": 770,
+        "top": 70,
+        "width": 350,
+        "height": 390
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fft-as-features-takeaways-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Very smooth younger face, reduced nose width and pointed chin; adult eye lines disappear.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "2c44fb2d1b9bfd48869095a677115e7e48291a9c47f41055d2b120aeade6b9fe"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "epilogue",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fft-as-features-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 315,
+        "top": 145,
+        "width": 240,
+        "height": 260
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fft-as-features-epilogue-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Long slim jaw and narrow sideways eyes remain; smile wrinkles do not restore canonical proportions.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "cbe9bfb3af6aba39904576785906dddcd1a2adff10d9f5f4a5b0558e7dbe35e2"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "epilogue",
+      "character": "nazari",
+      "source": "art-src/scenes/signal-processing__fft-as-features-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 835,
+        "top": 155,
+        "width": 250,
+        "height": 280
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/fft-as-features-epilogue-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Short gray hair and mature lines survive. Sharper chin, reduced nose width and more slanted eyes are moderate concerns.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "cbe9bfb3af6aba39904576785906dddcd1a2adff10d9f5f4a5b0558e7dbe35e2"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "concept",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-concept-openai-20261106.png",
+      "crop": {
+        "left": 940,
+        "top": 30,
+        "width": 310,
+        "height": 300
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-concept-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Small sharply tapered lower face with reduced nose and enlarged swept hair silhouette.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "0afe135ec104a0696f10e492579cc0e2eb4449e2c7bfa4249350b7c2d473dc0d"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "challenge",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261106.png",
+      "crop": {
+        "left": 630,
+        "top": 50,
+        "width": 270,
+        "height": 300
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-challenge-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Very tall quiff, triangular chin and larger stylized eyes differ from the anchor.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "81da6d41b9f4ca0c50bcb66cda4701961d70cdcc8c64e583f69670634aeb3608"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "challenge",
+      "character": "nazari",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261106.png",
+      "crop": {
+        "left": 1080,
+        "top": 105,
+        "width": 270,
+        "height": 300
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-challenge-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Gray pattern and lined face remain; narrower chin and smoothed cheek folds reduce the weathered shape.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "81da6d41b9f4ca0c50bcb66cda4701961d70cdcc8c64e583f69670634aeb3608"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "takeaways",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-takeaways-openai-20261106.png",
+      "crop": {
+        "left": 280,
+        "top": 8,
+        "width": 420,
+        "height": 470
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-takeaways-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Near-front view makes the narrower lower face, narrow nose and taller quiff easier to compare; clearly more sculpted than the anchor.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "2a421ad38ba866374326fa28ffab3b18391e151cc34a562f4859fbe3e537ff31"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "epilogue",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 220,
+        "top": 130,
+        "width": 210,
+        "height": 250
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-epilogue-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Raised quiff and pointed chin are obvious despite smaller face scale.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "8da7e9a1ef79f846554796638595dfbf2623c18ef8259eb6dc8132f6263bf7af"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "epilogue",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 500,
+        "top": 170,
+        "width": 380,
+        "height": 410
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-epilogue-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Strong pointed profile and chin, tiny nose and very large hair mass make the face look younger.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "8da7e9a1ef79f846554796638595dfbf2623c18ef8259eb6dc8132f6263bf7af"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261106.png",
+      "crop": {
+        "left": 710,
+        "top": 330,
+        "width": 230,
+        "height": 260
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-briefing-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Existing baseline already contains narrow chin, small nose and large youthful eyes.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "d82996abd0660beece8b6325e4140e69086eeb04331c9b6d8c0d9351af98a14c"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261106.png",
+      "crop": {
+        "left": 1065,
+        "top": 305,
+        "width": 220,
+        "height": 270
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-briefing-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Existing baseline has large eyes and small chin, differing from the broad lower face anchor.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "d82996abd0660beece8b6325e4140e69086eeb04331c9b6d8c0d9351af98a14c"
+    },
+    {
+      "lesson": "windowing-and-overlap",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261106.png",
+      "crop": {
+        "left": 1270,
+        "top": 330,
+        "width": 240,
+        "height": 265
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/windowing-and-overlap-briefing-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Stable gray bob and mature expression; angular narrowing and reduced nose breadth remain moderate concerns.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "d82996abd0660beece8b6325e4140e69086eeb04331c9b6d8c0d9351af98a14c"
+    },
+    {
+      "lesson": "kalman-filters",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261106.png",
+      "crop": {
+        "left": 175,
+        "top": 315,
+        "width": 330,
+        "height": 360
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/kalman-filters-briefing-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Inherited baseline has very high quiff, long projecting chin and narrowed nose. Graph edit retained it.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "2873769ee20929a1c86cab5e68d7ca0a0212dd347fee72d7bcc63cf151c10bde"
+    },
+    {
+      "lesson": "kalman-filters",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261106.png",
+      "crop": {
+        "left": 1060,
+        "top": 205,
+        "width": 300,
+        "height": 310
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/kalman-filters-briefing-farah-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Inherited baseline has smoother youthful face with smaller nose and narrowed jaw. Graph edit did not create it.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "2873769ee20929a1c86cab5e68d7ca0a0212dd347fee72d7bcc63cf151c10bde"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "concept",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-01188411-6e1c-41a4-bd12-04665ab39ac2.png",
+      "crop": {
+        "left": 165,
+        "top": 35,
+        "width": 300,
+        "height": 390
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/why-the-browser-concept-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Neutral references improved freckles and stubble, but did not prevent narrow nose, longer jaw and very high quiff.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "cf4fa62a5cc809913bf3df229376cb8638a455487e75e331c396de8bfeeceec6"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "concept",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-01188411-6e1c-41a4-bd12-04665ab39ac2.png",
+      "crop": {
+        "left": 825,
+        "top": 130,
+        "width": 310,
+        "height": 350
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/why-the-browser-concept-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Closer identity: mature folds, broad nose and gray bob remain. Slight jaw narrowing still deserves independent review.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "cf4fa62a5cc809913bf3df229376cb8638a455487e75e331c396de8bfeeceec6"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "challenge",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-f34e4183-0ffa-488f-a2ff-ee6208f5455a.png",
+      "crop": {
+        "left": 640,
+        "top": 45,
+        "width": 285,
+        "height": 350
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/why-the-browser-challenge-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Narrow lower face and nose persist even with canonical reference; hair spikes rise much higher.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "0c3637510c36e9f93c7dd814e3dd272beb4b9620c2b108b4056a1ed756755c9a"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "takeaways",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-51bfe14b-dd0a-4871-90aa-6ca9514eeb2d.png",
+      "crop": {
+        "left": 310,
+        "top": 15,
+        "width": 440,
+        "height": 470
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/why-the-browser-takeaways-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Strongest retained identity in this batch: mature cheek and mouth folds, broad nasal tip and gray bob are close to the anchor. Keep pending independent review, not automatic approval.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "closest-match-pending-independent-review",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "b95e618657ef22e0b8084778bd32b0ef75eeeede461ba24c93b0b64681ab0824"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "epilogue",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-9b229e98-659e-4173-8a92-af91ea99f215.png",
+      "crop": {
+        "left": 385,
+        "top": 45,
+        "width": 165,
+        "height": 200
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/why-the-browser-epilogue-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Small face still reads as a narrower-jawed version with tall hair spikes.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "c317624d30eb8cbc974cd393fc51f24f1b659baf1797380cfe139d9add13ba93"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "epilogue",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-9b229e98-659e-4173-8a92-af91ea99f215.png",
+      "crop": {
+        "left": 1100,
+        "top": 95,
+        "width": 185,
+        "height": 215
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/why-the-browser-epilogue-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Mature folds and gray bob preserved, with slight narrower cheek/chin silhouette.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "c317624d30eb8cbc974cd393fc51f24f1b659baf1797380cfe139d9add13ba93"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "concept",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-8b4dc9c7-2932-4d8a-8944-922c222ea17b.png",
+      "crop": {
+        "left": 260,
+        "top": 55,
+        "width": 300,
+        "height": 320
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/tensorflow-js-setup-concept-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Recognizable mature features; forehead/nose/eye structure close, lower jaw somewhat narrower in three-quarter pose.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "e9cffdadf5501d265df9b93a69add510aa418f1e92926d9cd62a1c272e6b0b9c"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "concept",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-8b4dc9c7-2932-4d8a-8944-922c222ea17b.png",
+      "crop": {
+        "left": 990,
+        "top": 45,
+        "width": 290,
+        "height": 330
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/tensorflow-js-setup-concept-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Freckles and stubble restored, but large eyes, long nose and narrow chin remain; earpiece is oversized.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "e9cffdadf5501d265df9b93a69add510aa418f1e92926d9cd62a1c272e6b0b9c"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "challenge",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-06fe9ad8-2e28-4b86-a21f-c4dc9c4a414d.png",
+      "crop": {
+        "left": 280,
+        "top": 15,
+        "width": 330,
+        "height": 420
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/tensorflow-js-setup-challenge-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Very tall quiff, narrow nose and long jaw remain despite canonical reference.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "5ee2e257a0ff2778d13af8b1c915dd07b2d962feeaf6905781b38e24c6615d84"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "takeaways",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-90e97251-c442-480b-8080-4f0620458b81.png",
+      "crop": {
+        "left": 150,
+        "top": 75,
+        "width": 350,
+        "height": 360
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/tensorflow-js-setup-takeaways-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Mature lines preserved; nasal tip and mouth region are narrower than the anchor.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "115c382bc85541c76584207d157d4babddf7d705f4dbc8d429f1d21b37072bb8"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "takeaways",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-90e97251-c442-480b-8080-4f0620458b81.png",
+      "crop": {
+        "left": 1020,
+        "top": 55,
+        "width": 300,
+        "height": 360
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/tensorflow-js-setup-takeaways-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Near-front tilted face shows improved freckles and stubble, but narrower chin and nose and more angular brows remain.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "115c382bc85541c76584207d157d4babddf7d705f4dbc8d429f1d21b37072bb8"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "epilogue",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-a01026ab-ae7c-44cf-bca6-18d5525d8036.png",
+      "crop": {
+        "left": 170,
+        "top": 50,
+        "width": 275,
+        "height": 300
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/tensorflow-js-setup-epilogue-nazari-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Good mature facial detail, but narrower lower face and sharper chin remain modest differences.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "8f7546b0852083421414f93e30465fbcb003a60db5f2acf0e4ac65a27dbe3b46"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "epilogue",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-a01026ab-ae7c-44cf-bca6-18d5525d8036.png",
+      "crop": {
+        "left": 1090,
+        "top": 30,
+        "width": 250,
+        "height": 310
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/tensorflow-js-setup-epilogue-demir-pair.png",
+      "scope": "new-or-screen-repair",
+      "specificObservation": "Downward gaze does not explain the elongated pointed chin and tall swept hair.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "8f7546b0852083421414f93e30465fbcb003a60db5f2acf0e4ac65a27dbe3b46"
+    },
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261106.png",
+      "crop": {
+        "left": 940,
+        "top": 265,
+        "width": 235,
+        "height": 280
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-time-vs-frequency-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Broadest concern is narrow lower face and small nose; pre-existing baseline already differs from neutral anchor.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "6b78e675dc1464d9749fa7ee9ae930109ab2eea42fd279b3b604fad4d80c1ab1"
+    },
+    {
+      "lesson": "time-vs-frequency",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261106.png",
+      "crop": {
+        "left": 1190,
+        "top": 250,
+        "width": 220,
+        "height": 280
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-time-vs-frequency-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Pointed profile, more angular chin and enlarged earpiece predate the new phase art.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "6b78e675dc1464d9749fa7ee9ae930109ab2eea42fd279b3b604fad4d80c1ab1"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__fourier-transform-openai-20261106.png",
+      "crop": {
+        "left": 990,
+        "top": 325,
+        "width": 210,
+        "height": 250
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-fourier-transform-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Very small nose and pointed chin, bright enlarged eyes and young smooth face.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "f9783efc3059eb41947d05069d2908c6c654b361c74ac34bf8af0964cadcd4c4"
+    },
+    {
+      "lesson": "fourier-transform",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fourier-transform-openai-20261106.png",
+      "crop": {
+        "left": 1240,
+        "top": 400,
+        "width": 180,
+        "height": 210
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-fourier-transform-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Longer pointed lower face, sharper nose and taller swept hair.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "f9783efc3059eb41947d05069d2908c6c654b361c74ac34bf8af0964cadcd4c4"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/signal-processing__fft-as-features-openai-20261106.png",
+      "crop": {
+        "left": 270,
+        "top": 385,
+        "width": 220,
+        "height": 260
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-fft-as-features-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Tall spiked quiff and hard outlined beard produce a narrower, more sculpted adult face.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "f85c207fc45cb9d97cee6fee4a167a8efbe30eaf921f89002e8ce478bfa2fd1f"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/signal-processing__fft-as-features-openai-20261106.png",
+      "crop": {
+        "left": 495,
+        "top": 380,
+        "width": 230,
+        "height": 255
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-fft-as-features-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Mature forehead and cheek folds remain. Narrower chin and strongly slanted eye shape deserve correction review.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "f85c207fc45cb9d97cee6fee4a167a8efbe30eaf921f89002e8ce478bfa2fd1f"
+    },
+    {
+      "lesson": "fft-as-features",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/signal-processing__fft-as-features-openai-20261106.png",
+      "crop": {
+        "left": 845,
+        "top": 435,
+        "width": 220,
+        "height": 255
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-fft-as-features-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Tiny nose and tapered youthful lower face are already present.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "f85c207fc45cb9d97cee6fee4a167a8efbe30eaf921f89002e8ce478bfa2fd1f"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261106.png",
+      "crop": {
+        "left": 145,
+        "top": 105,
+        "width": 235,
+        "height": 285
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-why-the-browser-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Pointed nose and chin, high spikes and uniformly edged beard differ from the anchor.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "694ab11289989b857bf5470a964f9fee2b0453ef8d0b8b9d1a7bb67c6602c3f1"
+    },
+    {
+      "lesson": "why-the-browser",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261106.png",
+      "crop": {
+        "left": 825,
+        "top": 185,
+        "width": 245,
+        "height": 265
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-why-the-browser-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "One of the closer baseline faces. Mature nose/mouth folds and gray bob remain, with slight jaw narrowing.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "694ab11289989b857bf5470a964f9fee2b0453ef8d0b8b9d1a7bb67c6602c3f1"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-openai-20261106.png",
+      "crop": {
+        "left": 185,
+        "top": 230,
+        "width": 320,
+        "height": 345
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-tensorflow-js-setup-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Side view combines exaggerated hair volume with a long jaw and narrow nasal tip.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "74853119db7470bcb775cc893c9e0172d44ab31620c647223df53361cddfa88f"
+    },
+    {
+      "lesson": "tensorflow-js-setup",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-openai-20261106.png",
+      "crop": {
+        "left": 980,
+        "top": 10,
+        "width": 330,
+        "height": 365
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-tensorflow-js-setup-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Angled face preserves age, but sharply narrowed nose/chin and more severe eye geometry differ.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "74853119db7470bcb775cc893c9e0172d44ab31620c647223df53361cddfa88f"
+    },
+    {
+      "lesson": "model-loading",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/browser-runtimes__model-loading-openai-20261106.png",
+      "crop": {
+        "left": 155,
+        "top": 150,
+        "width": 340,
+        "height": 390
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-model-loading-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Tall spikes, long nose and more squared projecting chin make a different profile silhouette.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "dff02061393df2cd24da60881c1eae9cc3a0f34bf8d2037ac3f0432c9b03b634"
+    },
+    {
+      "lesson": "inference-pipeline",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/browser-runtimes__inference-pipeline-openai-20261106.png",
+      "crop": {
+        "left": 340,
+        "top": 240,
+        "width": 280,
+        "height": 325
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-inference-pipeline-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Longer chin, more pointed nose and high quiff than canonical. Stubble is uniformly outlined.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "6041a5350c17110aa348f0b39cfad6bcfa32aacd63941dc5e94b47b6f81a4a87"
+    },
+    {
+      "lesson": "inference-pipeline",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/browser-runtimes__inference-pipeline-openai-20261106.png",
+      "crop": {
+        "left": 950,
+        "top": 25,
+        "width": 300,
+        "height": 340
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-inference-pipeline-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Mature face retained, but lower jaw and nasal tip are narrower; some difference is speaking expression.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "6041a5350c17110aa348f0b39cfad6bcfa32aacd63941dc5e94b47b6f81a4a87"
+    },
+    {
+      "lesson": "onnx-runtime-web",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-openai-20261106.png",
+      "crop": {
+        "left": 215,
+        "top": 315,
+        "width": 240,
+        "height": 275
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-onnx-runtime-web-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Gray bob and mature features remain, with elongated pointed chin and reduced nose breadth.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "73baf09c8b26b16479a47a4272f5380bc955ecbdc903bf1f5763f15a255b0c95"
+    },
+    {
+      "lesson": "onnx-runtime-web",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-openai-20261106.png",
+      "crop": {
+        "left": 1060,
+        "top": 470,
+        "width": 235,
+        "height": 270
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-onnx-runtime-web-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Narrow nose and long chin, heavy regular stubble and greatly expanded quiff.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "73baf09c8b26b16479a47a4272f5380bc955ecbdc903bf1f5763f15a255b0c95"
+    },
+    {
+      "lesson": "transformers-js",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/browser-runtimes__transformers-js-openai-20261106.png",
+      "crop": {
+        "left": 340,
+        "top": 470,
+        "width": 220,
+        "height": 270
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-transformers-js-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Larger elongated eyes, high quiff and projecting chin remain.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "e0cbf07a00cfb8239200a082be9bf852eed3cc3f6ea6ac5692c5184f87e105ee"
+    },
+    {
+      "lesson": "transformers-js",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/browser-runtimes__transformers-js-openai-20261106.png",
+      "crop": {
+        "left": 1180,
+        "top": 180,
+        "width": 220,
+        "height": 265
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-transformers-js-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Mature lines present, but sharply narrowed lower face and smaller nose read as drift.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "e0cbf07a00cfb8239200a082be9bf852eed3cc3f6ea6ac5692c5184f87e105ee"
+    },
+    {
+      "lesson": "sequences-matter",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/recurrent-networks__sequences-matter-openai-20261106.png",
+      "crop": {
+        "left": 625,
+        "top": 395,
+        "width": 180,
+        "height": 215
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequences-matter-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Lens and pulled-back hair preserved, but narrower chin and tiny nose persist.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "ffc8bbd94c001e2fb241e85c49f8def5a78304dc3ea4290bd001ccda66631835"
+    },
+    {
+      "lesson": "sequences-matter",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/recurrent-networks__sequences-matter-openai-20261106.png",
+      "crop": {
+        "left": 1085,
+        "top": 480,
+        "width": 165,
+        "height": 200
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequences-matter-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Sharp long profile and high spikes with uniform beard contour.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "ffc8bbd94c001e2fb241e85c49f8def5a78304dc3ea4290bd001ccda66631835"
+    },
+    {
+      "lesson": "simple-rnns",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261106.png",
+      "crop": {
+        "left": 270,
+        "top": 180,
+        "width": 330,
+        "height": 345
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-simple-rnns-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Head angle explains some foreshortening, but the tiny nasal tip and sharp chin remain compared with anchor.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "6320c89ffb428915efe5e00798da85f8db24b7141dd75a2b54569918a4eddd89"
+    },
+    {
+      "lesson": "simple-rnns",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261106.png",
+      "crop": {
+        "left": 495,
+        "top": 420,
+        "width": 270,
+        "height": 315
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-simple-rnns-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Long narrow nose, high spikes and harder beard outline.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "6320c89ffb428915efe5e00798da85f8db24b7141dd75a2b54569918a4eddd89"
+    },
+    {
+      "lesson": "lstm-gates",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261106.png",
+      "crop": {
+        "left": 95,
+        "top": 290,
+        "width": 290,
+        "height": 320
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-lstm-gates-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Strong drift: very small nose, large tilted eyes and smooth triangular lower face.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "0da43bce1d9f587ca0831b673c77470a85e6f974da4ce22c929d998d2442c46d"
+    },
+    {
+      "lesson": "lstm-gates",
+      "phase": "briefing",
+      "character": "nazari",
+      "source": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261106.png",
+      "crop": {
+        "left": 425,
+        "top": 290,
+        "width": 225,
+        "height": 250
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-lstm-gates-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Weathered age maintained; thinner nose and sharper long jaw are moderate concerns.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "0da43bce1d9f587ca0831b673c77470a85e6f974da4ce22c929d998d2442c46d"
+    },
+    {
+      "lesson": "lstm-gates",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261106.png",
+      "crop": {
+        "left": 975,
+        "top": 470,
+        "width": 225,
+        "height": 280
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-lstm-gates-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Downward pose makes width uncertain, but pointed chin and long narrow nose are clear.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "0da43bce1d9f587ca0831b673c77470a85e6f974da4ce22c929d998d2442c46d"
+    },
+    {
+      "lesson": "sliding-windows",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261106.png",
+      "crop": {
+        "left": 320,
+        "top": 165,
+        "width": 280,
+        "height": 315
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sliding-windows-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Longer nose/jaw, hard beard edge and expanded spikes, despite recognizable freckles.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "39679d6476faba3d5980869fe83a868fe0cea8b9b2f6addb821e6ea56c28a86e"
+    },
+    {
+      "lesson": "sequence-prediction",
+      "phase": "briefing",
+      "character": "demir",
+      "source": "art-src/scenes/recurrent-networks__sequence-prediction-openai-20261106.png",
+      "crop": {
+        "left": 220,
+        "top": 210,
+        "width": 270,
+        "height": 310
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequence-prediction-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Closer than the new Fourier concept, but nose and lower face remain narrowed and hair enlarged.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "1d43e4736ead62fe85be0ad645d0adad37cc8fd59fed48b7813e6fc9d62fc013"
+    },
+    {
+      "lesson": "sequence-prediction",
+      "phase": "briefing",
+      "character": "farah",
+      "source": "art-src/scenes/recurrent-networks__sequence-prediction-openai-20261106.png",
+      "crop": {
+        "left": 990,
+        "top": 195,
+        "width": 300,
+        "height": 325
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequence-prediction-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Adult mouth lines survive, yet the lower face is narrow and nose smaller than the anchor.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "1d43e4736ead62fe85be0ad645d0adad37cc8fd59fed48b7813e6fc9d62fc013"
+    },
+    {
+      "lesson": "sequence-prediction-epilogue",
+      "phase": "epilogue",
+      "character": "mirza",
+      "source": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 145,
+        "top": 320,
+        "width": 250,
+        "height": 310
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequence-prediction-epilogue-mirza-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Silver temples, skin and mature folds preserve identity strongly; extended lower cheek and sharper eye geometry need the same anchor-first correction check.",
+      "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "referenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The face has a more elongated lower cheek and stronger projected chin than the canonical oval.",
+        "eyesBrows": "Eye apertures are narrower and brows more sharply angled, partly explained by the speaking pose.",
+        "noseJaw": "Nose shape and jaw need an anchor correction check; the changed angle limits precision.",
+        "skinAge": "Dark skin and mature lines remain; no obvious age erasure.",
+        "hair": "Close crop and silver temples remain strongly recognizable.",
+        "accessories": "Gold hoop and command collar remain; face structure still needs comparison independently of those markers."
+      },
+      "sourceSha256": "5d5a384fb1f9e94621e85e9d1ed5951bc840a5710adc8732b9c6c86bfda788ed"
+    },
+    {
+      "lesson": "sequence-prediction-epilogue",
+      "phase": "epilogue",
+      "character": "farah",
+      "source": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 455,
+        "top": 360,
+        "width": 260,
+        "height": 295
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequence-prediction-epilogue-farah-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Smoother smaller nose, large tilted eyes and sharply tapered chin are strong drift.",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face narrows into a sharper chin and slimmer cheeks than the broad oval canonical face.",
+        "eyesBrows": "Eyes are more elongated and tilted with heavier cosmetic-looking lashes; brows are commonly more arched.",
+        "noseJaw": "Nose tip and nostril span are reduced; cheek-to-chin transition is more angular.",
+        "skinAge": "Warm skin family remains, but adult eye and mouth lines are reduced. Warm scene lighting alone is not counted as drift.",
+        "hair": "Larger swept waves and extra loose curls change the silhouette; tied-back hair remains recognizable.",
+        "accessories": "Green AR lens and earrings remain. These identify the role, but do not establish matching facial identity."
+      },
+      "sourceSha256": "5d5a384fb1f9e94621e85e9d1ed5951bc840a5710adc8732b9c6c86bfda788ed"
+    },
+    {
+      "lesson": "sequence-prediction-epilogue",
+      "phase": "epilogue",
+      "character": "nazari",
+      "source": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 885,
+        "top": 390,
+        "width": 285,
+        "height": 310
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequence-prediction-epilogue-nazari-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Mature features remain close; thinner nose and cheek/jaw shape are moderate differences.",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "reviewed": true,
+      "classification": "moderate-or-angle-sensitive",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "Recognizable mature broad face, but some views narrow the lower cheek and chin more than the anchor.",
+        "eyesBrows": "Dark firm brows and skeptical eye shape usually remain; several views exaggerate the slant and lashes.",
+        "noseJaw": "The angular jaw is recognizable; nasal width and rounded tip are sometimes reduced.",
+        "skinAge": "Tan skin, forehead lines and gray hair remain. In several Signal scenes, crow feet and mouth folds are softened.",
+        "hair": "Short gray-streaked bob remains recognizable; the gray pattern and puffed crown vary.",
+        "accessories": "Olive engineering clothing is consistent. It does not compensate for facial differences."
+      },
+      "sourceSha256": "5d5a384fb1f9e94621e85e9d1ed5951bc840a5710adc8732b9c6c86bfda788ed"
+    },
+    {
+      "lesson": "sequence-prediction-epilogue",
+      "phase": "epilogue",
+      "character": "demir",
+      "source": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261106.png",
+      "crop": {
+        "left": 1220,
+        "top": 390,
+        "width": 285,
+        "height": 320
+      },
+      "evidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-audit/retained-sequence-prediction-epilogue-demir-pair.png",
+      "scope": "retained-baseline",
+      "specificObservation": "Long pointed nose and hard beard outline plus expanded hair mass remain.",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "reviewed": true,
+      "classification": "material-morphology-drift",
+      "identityGate": "correction-review-required",
+      "checks": {
+        "facialProportions": "The lower face is longer or more sharply cut than the softly squared canonical jaw.",
+        "eyesBrows": "Eye openings are often more almond-shaped and smaller relative to face width; brow shape is more sharply angled.",
+        "noseJaw": "The nose is narrower and more pointed in most three-quarter views; chin is more tapered or projected.",
+        "skinAge": "Freckles usually remain, but stubble becomes a more uniform outlined beard. Some small faces read younger than the anchor.",
+        "hair": "Quiff is usually taller and more uniformly spiked than the compact, irregular canonical locks.",
+        "accessories": "The comms unit remains but changes size and housing; it sometimes occupies the opposite visible ear. That needs a consistent side rule."
+      },
+      "sourceSha256": "5d5a384fb1f9e94621e85e9d1ed5951bc840a5710adc8732b9c6c86bfda788ed"
+    }
+  ]
+}

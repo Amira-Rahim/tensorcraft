@@ -1,0 +1,1498 @@
+[
+  {
+    "id": "browser-runtimes/why-the-browser",
+    "phase": "challenge",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-challenge.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-challenge.webp",
+    "sourceSha256": "4a02a1ba96294fd73e86885b071886cf2ff2788fd894ed88c9873d8be0b1472f",
+    "webpSha256": "c867b697c3b3bd19c911aaba4d9cb0694f9fb0af7038fe75b0d4333676f45a18",
+    "publishedSha256": "c867b697c3b3bd19c911aaba4d9cb0694f9fb0af7038fe75b0d4333676f45a18",
+    "bytes": 169150,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-15f141e6-f725-4f75-b9e5-31e7902bf5a1.png",
+        "sha256": "7b57c9a118c7ce1f62dc1bb1540f9d0fbb10763024310e677714b43afb3d31ae"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-87f951a3-b5f1-4955-8d21-6c8d25abcc01.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/why-the-browser-challenge-final-repair.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. First references are the exact immutable character portraits; last image is the target scene. Correct ONLY requested regions, preserving all other approved faces, bodies, connected hands, natural grips, uniforms, furniture, camera, background and teaching display. Demir must match canonical mid-20s adult face: compact BROAD rounded nose tip and short bridge, broad softly squared lower cheeks, rounded chin, canonical eye spacing/brows, sparse freckles and uneven stubble including below-lip patch. Turn Demir near frontal/slight3quarter to preserve that exact individual. Comms on anatomical RIGHT ear (viewerleft on near-frontal face), never mirror the whole scene. No pointed handsome anime variant. Demir head only: his nose and lower face are too long/narrow. Turn head slightly toward viewer while retaining interested smile and gaze to terminal. Preserveallothers. Same1536x1024 cel-shadedcartoon, no newtext,numerals,props orpeople.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 635,
+          "top": 55,
+          "width": 265,
+          "height": 330
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-challenge-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "e1651d767e5723da7196ed2ea6d67aed4983c008bce132d4f72eec8519c4decf",
+        "reviewedImage": "art-src/scenes/browser-runtimes__why-the-browser-challenge-openai-20261107.png",
+        "reviewedImageSha256": "4a02a1ba96294fd73e86885b071886cf2ff2788fd894ed88c9873d8be0b1472f"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-challenge-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-challenge-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/why-the-browser",
+    "phase": "takeaways",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-takeaways.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-takeaways.webp",
+    "sourceSha256": "9a1a65471281cd832e7f52f5c445edcacedd8290c1ac79bc96661483d8a7dc4f",
+    "webpSha256": "2d8aea96b80878b3955b4fe014e9bf22f4b78934d412be854a396f2f45ed5893",
+    "publishedSha256": "2d8aea96b80878b3955b4fe014e9bf22f4b78934d412be854a396f2f45ed5893",
+    "bytes": 168692,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/pending-identity/browser-runtimes__why-the-browser-takeaways-openai-20261106.png",
+        "sha256": "b95e618657ef22e0b8084778bd32b0ef75eeeede461ba24c93b0b64681ab0824"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-fb01bd02-74f6-400c-8a4a-d4cfe6ba77cf.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/browser-runtimes__why-the-browser-takeaways-identity-first.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. STRICT HEAD-ONLY CHARACTER IDENTITY EDIT. Image 1 is the authoritative neutral portrait of chief-nazari. Last image is target scene, not identity authority. Replace only heads/hair and necessary neck transitions with the exact same individuals from portraits. NAZARI: faithfully reproduce the authoritative portrait's mature 48-year-old tan face, broad cheek and set jaw, rounded nasal tip, eye spacing, thick brows, pronounced forehead lines, crow feet, nose-to-mouth folds and practical short dark gray-streaked bob. Do not narrow her face, prettify her, erase age marks, sharpen her chin or add glamorous lashes. Turn any strongly profiled head gently toward camera into near-frontal three-quarter view, both eyes and full rounded nose base visible, compact short chin and broad lower face. Keep task and warm expressions; compact smile instead of broad grin if that helps same-person likeness. Earpiece on Demir's anatomical RIGHT ear, do not mirror body. Preserve ALL bodies, hand positions, fingers, contacts, clothes, furniture, props, room, lighting/framing and all displays. No new people, props, words or labels. One 1536x1024 scene.",
+    "faceProofs": [
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 350,
+          "top": 15,
+          "width": 415,
+          "height": 450
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-takeaways-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "a238f424a59be9fdde87f293d3af68ea7899eab239e423e0d7f1fe9f332f1fc0",
+        "reviewedImage": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+        "reviewedImageSha256": "9a1a65471281cd832e7f52f5c445edcacedd8290c1ac79bc96661483d8a7dc4f"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-takeaways-chief-nazari.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-takeaways-chief-nazari.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/why-the-browser",
+    "phase": "epilogue",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-epilogue.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-epilogue.webp",
+    "sourceSha256": "96d422a6ea34b61a1781bb8812e226e208710417174f25fdf95223a7782be6ea",
+    "webpSha256": "5f60949884338826d8764cac9ff50a09b6098576df2d57595496dbf1a67a1b0b",
+    "publishedSha256": "5f60949884338826d8764cac9ff50a09b6098576df2d57595496dbf1a67a1b0b",
+    "bytes": 200266,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir",
+      "chief-nazari"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/pending-identity/browser-runtimes__why-the-browser-epilogue-openai-20261106.png",
+        "sha256": "c317624d30eb8cbc974cd393fc51f24f1b659baf1797380cfe139d9add13ba93"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-bbe8c09a-000c-4132-8f6e-ade165f1401b.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/browser-runtimes__why-the-browser-epilogue-identity-first.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. STRICT HEAD-ONLY CHARACTER IDENTITY EDIT. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of chief-nazari. Last image is target scene, not identity authority. Replace only heads/hair and necessary neck transitions with the exact same individuals from portraits. DEMIR: faithfully reproduce the authoritative portrait's face proportions, warm light-medium skin, broad softly squared lower face, round-ended nose, distinctive eyebrows and eye spacing, short uneven stubble with small below-lip patch, sparse freckles, compact tousled hair with the same front locks and green round comms earpiece. Do not elongate his jaw, make a different handsome anime character, increase eye size, expand the quiff, or change his mid-twenties age. NAZARI: faithfully reproduce the authoritative portrait's mature 48-year-old tan face, broad cheek and set jaw, rounded nasal tip, eye spacing, thick brows, pronounced forehead lines, crow feet, nose-to-mouth folds and practical short dark gray-streaked bob. Do not narrow her face, prettify her, erase age marks, sharpen her chin or add glamorous lashes. Turn any strongly profiled head gently toward camera into near-frontal three-quarter view, both eyes and full rounded nose base visible, compact short chin and broad lower face. Keep task and warm expressions; compact smile instead of broad grin if that helps same-person likeness. Earpiece on Demir's anatomical RIGHT ear, do not mirror body. Preserve ALL bodies, hand positions, fingers, contacts, clothes, furniture, props, room, lighting/framing and all displays. No new people, props, words or labels. One 1536x1024 scene.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 390,
+          "top": 60,
+          "width": 160,
+          "height": 190
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-epilogue-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "18084a80c492b8b248f81cba58ce52342a8e0e34358b8797ab7685528c3682a8",
+        "reviewedImage": "art-src/scenes/browser-runtimes__why-the-browser-epilogue-openai-20261107.png",
+        "reviewedImageSha256": "96d422a6ea34b61a1781bb8812e226e208710417174f25fdf95223a7782be6ea"
+      },
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 1090,
+          "top": 95,
+          "width": 180,
+          "height": 190
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-epilogue-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "69398fcc030230d1145754f42087ee03faa26316e9cc1b5204aef496de98b2ef",
+        "reviewedImage": "art-src/scenes/browser-runtimes__why-the-browser-epilogue-openai-20261107.png",
+        "reviewedImageSha256": "96d422a6ea34b61a1781bb8812e226e208710417174f25fdf95223a7782be6ea"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-epilogue-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-why-the-browser-epilogue-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/tensorflow-js-setup",
+    "phase": "concept",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-concept.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-concept.webp",
+    "sourceSha256": "70002147385d9307148ff4cb95495c48ab419dd77581a5b38fe2513f487ffd82",
+    "webpSha256": "53e263c362750280a4d354e6675c99292bb090d541fc45b07ad028916a03a11b",
+    "publishedSha256": "53e263c362750280a4d354e6675c99292bb090d541fc45b07ad028916a03a11b",
+    "bytes": 157594,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-19ec0383-e332-46d1-860f-02396868e0e4.png",
+        "sha256": "bd446c2f89ba8ddf6c0bcdbcb1de2abd42133a46cddde4e789b0b82dd41a20e3"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-6c8ad7fd-4895-4d4b-b5f3-8a2172565159.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/tensorflow-js-setup-concept-final-repair.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. First references are the exact immutable character portraits; last image is the target scene. Correct ONLY requested regions, preserving all other approved faces, bodies, connected hands, natural grips, uniforms, furniture, camera, background and teaching display. Demir must match canonical mid-20s adult face: compact BROAD rounded nose tip and short bridge, broad softly squared lower cheeks, rounded chin, canonical eye spacing/brows, sparse freckles and uneven stubble including below-lip patch. Turn Demir near frontal/slight3quarter to preserve that exact individual. Comms on anatomical RIGHT ear (viewerleft on near-frontal face), never mirror the whole scene. No pointed handsome anime variant. Demir head only: current nose/jaw too pointed and earpiece on wrong ear. Make head nearfrontal and move comms to his anatomicalRIGHT ear. Preserve Nazari's face exactly, do not mirror body or display. Same1536x1024 cel-shadedcartoon, no newtext,numerals,props orpeople.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 1045,
+          "top": 55,
+          "width": 230,
+          "height": 295
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-concept-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "1dc827c7f1e1cf50d41c155942a2e9863302431ba5cba474dfeeae90dff7fe14",
+        "reviewedImage": "art-src/scenes/browser-runtimes__tensorflow-js-setup-concept-openai-20261107.png",
+        "reviewedImageSha256": "70002147385d9307148ff4cb95495c48ab419dd77581a5b38fe2513f487ffd82"
+      },
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 275,
+          "top": 60,
+          "width": 280,
+          "height": 300
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-concept-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "5377d90b3968124f5ad0fb94b6dae840e904026218c196e886d7a420bb84158a",
+        "reviewedImage": "art-src/scenes/browser-runtimes__tensorflow-js-setup-concept-openai-20261107.png",
+        "reviewedImageSha256": "70002147385d9307148ff4cb95495c48ab419dd77581a5b38fe2513f487ffd82"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-concept-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-concept-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/tensorflow-js-setup",
+    "phase": "challenge",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-challenge.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-challenge.webp",
+    "sourceSha256": "404837ad46e322ce892df3da8c92e3feeb1efd7dca9b4257b564ff4903d87de3",
+    "webpSha256": "79e27031477fbf51274744b37a8708a57105eab58381a2170d5211c1915e406c",
+    "publishedSha256": "79e27031477fbf51274744b37a8708a57105eab58381a2170d5211c1915e406c",
+    "bytes": 161102,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/pending-identity/browser-runtimes__tensorflow-js-setup-challenge-openai-20261106.png",
+        "sha256": "5ee2e257a0ff2778d13af8b1c915dd07b2d962feeaf6905781b38e24c6615d84"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-7f46d57c-dc7b-4ee2-a288-381d38e0fc99.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/browser-runtimes__tensorflow-js-setup-challenge-identity-first.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. STRICT HEAD-ONLY CHARACTER IDENTITY EDIT. Image 1 is the authoritative neutral portrait of ensign-demir. Last image is target scene, not identity authority. Replace only heads/hair and necessary neck transitions with the exact same individuals from portraits. DEMIR: faithfully reproduce the authoritative portrait's face proportions, warm light-medium skin, broad softly squared lower face, round-ended nose, distinctive eyebrows and eye spacing, short uneven stubble with small below-lip patch, sparse freckles, compact tousled hair with the same front locks and green round comms earpiece. Do not elongate his jaw, make a different handsome anime character, increase eye size, expand the quiff, or change his mid-twenties age. Turn any strongly profiled head gently toward camera into near-frontal three-quarter view, both eyes and full rounded nose base visible, compact short chin and broad lower face. Keep task and warm expressions; compact smile instead of broad grin if that helps same-person likeness. Earpiece on Demir's anatomical RIGHT ear, do not mirror body. Preserve ALL bodies, hand positions, fingers, contacts, clothes, furniture, props, room, lighting/framing and all displays EXCEPT simplify main screen backend choices to exactly THREE rectangular tiles in one row, middle tile softly green active, outer two dim, preserve existing progress bar below. No new people, props, words or labels. One 1536x1024 scene.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 315,
+          "top": 35,
+          "width": 285,
+          "height": 355
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-challenge-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "f2fb0adb234e0f55d67d172dc712ffab9ecf72e6d1866cde432530b378530e22",
+        "reviewedImage": "art-src/scenes/browser-runtimes__tensorflow-js-setup-challenge-openai-20261107.png",
+        "reviewedImageSha256": "404837ad46e322ce892df3da8c92e3feeb1efd7dca9b4257b564ff4903d87de3"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-challenge-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-challenge-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/tensorflow-js-setup",
+    "phase": "takeaways",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-takeaways.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-takeaways.webp",
+    "sourceSha256": "3e866d61050ed5ddaab1a070751c8b5953d303b67b6b20c26d3d28d5d8d397e4",
+    "webpSha256": "0df68eb3af2ac945741c8f2cbce30e11f11c6ae239e3920e08e00d40008ba9a4",
+    "publishedSha256": "0df68eb3af2ac945741c8f2cbce30e11f11c6ae239e3920e08e00d40008ba9a4",
+    "bytes": 175646,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/pending-identity/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261106.png",
+        "sha256": "115c382bc85541c76584207d157d4babddf7d705f4dbc8d429f1d21b37072bb8"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-7c658e7e-e588-40b9-80c7-571a7663f942.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/browser-runtimes__tensorflow-js-setup-takeaways-identity-first.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. STRICT HEAD-ONLY CHARACTER IDENTITY EDIT. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Last image is target scene, not identity authority. Replace only heads/hair and necessary neck transitions with the exact same individuals from portraits. NAZARI: faithfully reproduce the authoritative portrait's mature 48-year-old tan face, broad cheek and set jaw, rounded nasal tip, eye spacing, thick brows, pronounced forehead lines, crow feet, nose-to-mouth folds and practical short dark gray-streaked bob. Do not narrow her face, prettify her, erase age marks, sharpen her chin or add glamorous lashes. DEMIR: faithfully reproduce the authoritative portrait's face proportions, warm light-medium skin, broad softly squared lower face, round-ended nose, distinctive eyebrows and eye spacing, short uneven stubble with small below-lip patch, sparse freckles, compact tousled hair with the same front locks and green round comms earpiece. Do not elongate his jaw, make a different handsome anime character, increase eye size, expand the quiff, or change his mid-twenties age. Turn any strongly profiled head gently toward camera into near-frontal three-quarter view, both eyes and full rounded nose base visible, compact short chin and broad lower face. Keep task and warm expressions; compact smile instead of broad grin if that helps same-person likeness. Earpiece on Demir's anatomical RIGHT ear, do not mirror body. Preserve ALL bodies, hand positions, fingers, contacts, clothes, furniture, props, room, lighting/framing and all displays. No new people, props, words or labels. One 1536x1024 scene.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 1060,
+          "top": 70,
+          "width": 260,
+          "height": 310
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-takeaways-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "bc783eb7407e82cb4c6d506e9f48a3421b5b7ed5f31da67f622eb804701d554c",
+        "reviewedImage": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+        "reviewedImageSha256": "3e866d61050ed5ddaab1a070751c8b5953d303b67b6b20c26d3d28d5d8d397e4"
+      },
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 175,
+          "top": 75,
+          "width": 305,
+          "height": 325
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-takeaways-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "2a0406d98745cddd4c03febaca6da29191c3308902e28a96de13b4cb4a70981e",
+        "reviewedImage": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+        "reviewedImageSha256": "3e866d61050ed5ddaab1a070751c8b5953d303b67b6b20c26d3d28d5d8d397e4"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-takeaways-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-takeaways-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/tensorflow-js-setup",
+    "phase": "epilogue",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-epilogue.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-epilogue.webp",
+    "sourceSha256": "f1ca87178e3b4ec006dafc4c5894f0e6303146c028becf43d4108da7cf860acb",
+    "webpSha256": "b87f47d298792f36ab7cea754f77a6953ad3d3443adb3efd8260397d2281795d",
+    "publishedSha256": "b87f47d298792f36ab7cea754f77a6953ad3d3443adb3efd8260397d2281795d",
+    "bytes": 198062,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir",
+      "chief-nazari"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-a01026ab-ae7c-44cf-bca6-18d5525d8036.png",
+        "sha256": "8f7546b0852083421414f93e30465fbcb003a60db5f2acf0e4ac65a27dbe3b46"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-97a5bd2c-170f-4503-b32f-37c1bc5ce46f.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/tensorflow-js-setup-epilogue-final-repair.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. First references are the exact immutable character portraits; last image is the target scene. Correct ONLY requested regions, preserving all other approved faces, bodies, connected hands, natural grips, uniforms, furniture, camera, background and teaching display. Demir must match canonical mid-20s adult face: compact BROAD rounded nose tip and short bridge, broad softly squared lower cheeks, rounded chin, canonical eye spacing/brows, sparse freckles and uneven stubble including below-lip patch. Turn Demir near frontal/slight3quarter to preserve that exact individual. Comms on anatomical RIGHT ear (viewerleft on near-frontal face), never mirror the whole scene. No pointed handsome anime variant. Correct BOTH faces from portraits, keeping mature48 Nazari broadjaw/roundnose/crowfeet/shortgraystreakedhair and mid20s Demir exactface, nearfrontal. Also replace ONLY large central monitor with exactlySIX equal station status tiles in one row, firstFIVE green and lastONE amber, no letters/numerals. Beneath show TWO horizontal timing bars sharing left origin: short uppergreenbar and longloweramberbar exactlysix times itslength. FiveWebGL stations and oneWASMfallback, 0.5msvs3ms fictionalbenchmark. Preserve pose,chair,tablet,stylus,allhandsandroom. Same1536x1024 cel-shadedcartoon, no newtext,numerals,props orpeople.",
+    "faceProofs": [
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 168,
+          "top": 48,
+          "width": 262,
+          "height": 282
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-epilogue-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "e3cf045327a3eb8d0b64a6910d4916d19263ddd5af0b8a46304f98d9bcdcc9be",
+        "reviewedImage": "art-src/scenes/browser-runtimes__tensorflow-js-setup-epilogue-openai-20261107.png",
+        "reviewedImageSha256": "f1ca87178e3b4ec006dafc4c5894f0e6303146c028becf43d4108da7cf860acb"
+      },
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 1128,
+          "top": 20,
+          "width": 222,
+          "height": 287
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-epilogue-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "76aa0c2e5e8320cc5b6d287df35553bce0530393d500a1c3d871b9b4535b6411",
+        "reviewedImage": "art-src/scenes/browser-runtimes__tensorflow-js-setup-epilogue-openai-20261107.png",
+        "reviewedImageSha256": "f1ca87178e3b4ec006dafc4c5894f0e6303146c028becf43d4108da7cf860acb"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-epilogue-chief-nazari.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-tensorflow-js-setup-epilogue-chief-nazari.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "concept",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-concept.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-concept.webp",
+    "sourceSha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b",
+    "webpSha256": "637783dee64794dacf79b1704f88fb5dbad47f04c5c1bc9ddbd56309d969c963",
+    "publishedSha256": "637783dee64794dacf79b1704f88fb5dbad47f04c5c1bc9ddbd56309d969c963",
+    "bytes": 177040,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+        "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-3037ca2d-bfd1-4e65-afb4-c70381770a52.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/onnx-runtime-web-concept-final.prompt.txt",
+    "generationPrompt": "Use case: illustration-story. onnx-runtime-web concept. First 2 references define canonical people in order chief-nazari, ensign-demir. LAST defines roomonly. New distinct composition. Nazari and Demir in engineering, standing beside a small compatibility display, new front medium shot. Demir holds one model-file tablet in both hands, while Nazari points with her right hand to a modest diagram of one model graph beside two runtime containers, and keeps her left hand at her side. One small operation tile has an amber outline indicating support needs checking, no red alarm or universal portability promise. No letters, logos, fake code or giant benchmark wall. Their expressions are curious and practical, with a little dry amusement. All four hands natural and bodies separate from the console. Exact immutable identities: Demir mid20s, broad softly squared lowerface and round chin, compact BROAD rounded nose tip with short bridge, canonical eye/brow spacing, sparse freckles, uneven stubble and below-lip patch, compact dark forelock, comms anatomical RIGHT. Farah38 olive-tan with clearly adult rounded cheeks/chin, short rounded nose, adult eye/smile lines, loose dark ponytail, lens anatomical LEFT. Nazari48 weathered tan with broad mature jaw, rounded nose, forehead/crowfeet/smile folds and practical SHORT gray-streaked hair. Do not elongate, sharpen, slim, prettify, de-age or enlarge eyes. Faces near frontal or mildthree-quarter, both eyes inspectable, clear warm facial light. No blackshadows. Exactly two arms/hands per person with coherent fingers; every elbow/wrist connected; bodies outside furniture. Preserve task-specific uncertainty. Only named cast. No words, letters, numerals, fake code, logos orwatermarks. ARIA ifpresent only thin ring with one horizontalwave, no face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Single1536x1024.",
+    "faceProofs": [
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 196,
+          "top": 97,
+          "width": 285,
+          "height": 307
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-concept-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "b38984565ba7d5104a723c2a46c1bbd44367459ec281dbedd2e082c602e6a654",
+        "reviewedImage": "art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+        "reviewedImageSha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b"
+      },
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 1081,
+          "top": 84,
+          "width": 234,
+          "height": 311
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-concept-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "ed651c73582d5c666712629c1d80b083c811bb4b3390c1087a233e472863135d",
+        "reviewedImage": "art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+        "reviewedImageSha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-concept-chief-nazari.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-concept-chief-nazari.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "challenge",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-challenge.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-challenge.webp",
+    "sourceSha256": "98ed76d4f1a114bc8b54576dc0a6d2b294dd89781d189657d647567efe4f5a7a",
+    "webpSha256": "655a80724d089ac8cbd57abf505b7af4740e7931f0558d481c40d2af98f29f99",
+    "publishedSha256": "655a80724d089ac8cbd57abf505b7af4740e7931f0558d481c40d2af98f29f99",
+    "bytes": 198394,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-39a79e1f-4480-4ba4-b1d3-e2be48fa383d.png",
+        "sha256": "81db67ea9e27cb6878c4dfbb388263ed24fcbd7daebacb1b3d5bee58377bfc84"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-65033157-7e8a-4f60-a2c7-cdf8145fe5f0.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/onnx-runtime-web-challenge-display-repair.prompt.txt",
+    "generationPrompt": "Use case: precise-object-edit. Image1 is the immutable canonical identity portrait of Ensign Demir; image2 is the target scene. Change ONLY the contents of the three waveform input rows on EACH of the two monitors. Replace every waveform row with a simple ordered input row of THREE equal square cells: first cell pale green, second cell pale brass, third cell dark green. There are exactly three rows per monitor, and the ordered cell colors must be IDENTICAL between corresponding rows and identical in both terminals, preserving perspective. Both runtimes receive the exact same input. Preserve the output bar below each group, the two blank stopwatch faces, ALL approved facial geometry, natural head-neck-shoulder alignment, expression, eyes, hair, earpiece, uniform, two connected typing hands, body, chair, furniture, camera and room pixel-close. No other edit, no new words, numbers, code, objects or people. Preserve1536x1024 cel-shaded cartoon artwork.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 321,
+          "top": 88,
+          "width": 298,
+          "height": 347
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-challenge-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "3f2db0e15d7bca31a3eb61abb11128d2f00f146d4f793bb53ed46815b1eed62b",
+        "reviewedImage": "art-src/scenes/browser-runtimes__onnx-runtime-web-challenge-openai-20261107.png",
+        "reviewedImageSha256": "98ed76d4f1a114bc8b54576dc0a6d2b294dd89781d189657d647567efe4f5a7a"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-challenge-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-challenge-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "takeaways",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-takeaways.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-takeaways.webp",
+    "sourceSha256": "afbe35c361065ac93b2155d85c7eea251a836fa1a7f39a8f93756c253ba87f5d",
+    "webpSha256": "11a31c8ce81c4e91d471898f603b1d5a7683db93669b9697da6f1455e16b8981",
+    "publishedSha256": "11a31c8ce81c4e91d471898f603b1d5a7683db93669b9697da6f1455e16b8981",
+    "bytes": 178508,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+        "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-99f47e56-9cba-42a3-b112-ee2fea665827.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/onnx-runtime-web-takeaways-final.prompt.txt",
+    "generationPrompt": "Use case: illustration-story. onnx-runtime-web takeaways. First 1 references define canonical people in order chief-nazari. LAST defines roomonly. New distinct composition. Nazari alone standing in a new close medium engineering shot, holding a tablet with both hands and looking toward a worn older station with a small approving eyebrow. The tablet shows several simple distributions of timing marks rather than a single triumphant bar. The scene conveys checking actual target hardware and repeated samples. No claims that one runtime always wins, no code, numbers or lettering. Her short gray-streaked hair and lined face stay mature. Use a quiet tool wall, no new physical repair, clear space between body and station. Exact immutable identities: Demir mid20s, broad softly squared lowerface and round chin, compact BROAD rounded nose tip with short bridge, canonical eye/brow spacing, sparse freckles, uneven stubble and below-lip patch, compact dark forelock, comms anatomical RIGHT. Farah38 olive-tan with clearly adult rounded cheeks/chin, short rounded nose, adult eye/smile lines, loose dark ponytail, lens anatomical LEFT. Nazari48 weathered tan with broad mature jaw, rounded nose, forehead/crowfeet/smile folds and practical SHORT gray-streaked hair. Do not elongate, sharpen, slim, prettify, de-age or enlarge eyes. Faces near frontal or mildthree-quarter, both eyes inspectable, clear warm facial light. No blackshadows. Exactly two arms/hands per person with coherent fingers; every elbow/wrist connected; bodies outside furniture. Preserve task-specific uncertainty. Only named cast. No words, letters, numerals, fake code, logos orwatermarks. ARIA ifpresent only thin ring with one horizontalwave, no face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Single1536x1024.",
+    "faceProofs": [
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 200,
+          "top": 10,
+          "width": 408,
+          "height": 451
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-takeaways-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "abab20069c305b5c6b71cfea6aed8b9888f05844259277c3ba1cffcdb0d8a225",
+        "reviewedImage": "art-src/scenes/browser-runtimes__onnx-runtime-web-takeaways-openai-20261107.png",
+        "reviewedImageSha256": "afbe35c361065ac93b2155d85c7eea251a836fa1a7f39a8f93756c253ba87f5d"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-takeaways-chief-nazari.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-takeaways-chief-nazari.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "epilogue",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__onnx-runtime-web-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-epilogue.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-epilogue.webp",
+    "sourceSha256": "cda70a22028d81b3e580ce69578a8a2e0137a4543fdb3eb9e614fbd49900fc9d",
+    "webpSha256": "f2aef716cbe12772ae06626775582d7692723292ce062a9909ce359aa32dc362",
+    "publishedSha256": "f2aef716cbe12772ae06626775582d7692723292ce062a9909ce359aa32dc362",
+    "bytes": 163610,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+        "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-ae1d045e-391b-4464-89d6-e8ea9e77b847.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/onnx-runtime-web-epilogue-final.prompt.txt",
+    "generationPrompt": "Use case: illustration-story. onnx-runtime-web epilogue. First 1 references define canonical people in order ensign-demir. LAST defines roomonly. New distinct composition. An intimate new night-watch engineering composition with Demir alone leaning slightly forward toward a small log terminal, both hands resting on the desk outside edge. His face is visible in three-quarter view, surprised and softly moved, not frightened. The terminal shows three tidy abstract log-entry rectangles with no letters; the last has a subtle green outline. Beside it is ARIA's precise thin concentric ring with one horizontal waveform, strictly no face, eyes, humanoid shape or spirograph. Demir has just found ARIA's unsolicited successor comparison and reads it twice. Keep mystery as gentle curiosity, not horror. No fabricated text or timings, no extra people and no furniture clipping. Exact immutable identities: Demir mid20s, broad softly squared lowerface and round chin, compact BROAD rounded nose tip with short bridge, canonical eye/brow spacing, sparse freckles, uneven stubble and below-lip patch, compact dark forelock, comms anatomical RIGHT. Farah38 olive-tan with clearly adult rounded cheeks/chin, short rounded nose, adult eye/smile lines, loose dark ponytail, lens anatomical LEFT. Nazari48 weathered tan with broad mature jaw, rounded nose, forehead/crowfeet/smile folds and practical SHORT gray-streaked hair. Do not elongate, sharpen, slim, prettify, de-age or enlarge eyes. Faces near frontal or mildthree-quarter, both eyes inspectable, clear warm facial light. No blackshadows. Exactly two arms/hands per person with coherent fingers; every elbow/wrist connected; bodies outside furniture. Preserve task-specific uncertainty. Only named cast. No words, letters, numerals, fake code, logos orwatermarks. ARIA ifpresent only thin ring with one horizontalwave, no face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Single1536x1024.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 493,
+          "top": 88,
+          "width": 318,
+          "height": 373
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-epilogue-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "d192e1d20a86ed59062d415cd67780c2ff1c25010f6cc8004d08cfd3669dd1ac",
+        "reviewedImage": "art-src/scenes/browser-runtimes__onnx-runtime-web-epilogue-openai-20261107.png",
+        "reviewedImageSha256": "cda70a22028d81b3e580ce69578a8a2e0137a4543fdb3eb9e614fbd49900fc9d"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-epilogue-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-onnx-runtime-web-epilogue-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/transformers-js",
+    "phase": "briefing",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js.webp",
+    "sourceSha256": "edc8b3961819c34bae42420a78fe567bc82d606447aa1abfd5626a72a032886a",
+    "webpSha256": "518d5b460a92fa2fdccacdb570949fa53c1bd8535f2ebc3e24cd4688997e1d16",
+    "publishedSha256": "518d5b460a92fa2fdccacdb570949fa53c1bd8535f2ebc3e24cd4688997e1d16",
+    "bytes": 191888,
+    "webpQuality": 84,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 84,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 84,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-262b73c3-911e-494a-9a73-3ecb2a00a623.png",
+        "sha256": "df730a01648f7dfc34107fedd762a2d3b1fac08982bea165f44a666ca164d3ca"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-338d3977-999e-4f53-86c3-0caf8ce085d1.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/transformers-js-briefing-final-repair.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. First references are the exact immutable character portraits; last image is the target scene. Correct ONLY requested regions, preserving all other approved faces, bodies, connected hands, natural grips, uniforms, furniture, camera, background and teaching display. Demir must match canonical mid-20s adult face: compact BROAD rounded nose tip and short bridge, broad softly squared lower cheeks, rounded chin, canonical eye spacing/brows, sparse freckles and uneven stubble including below-lip patch. Turn Demir near frontal/slight3quarter to preserve that exact individual. Comms on anatomical RIGHT ear (viewerleft on near-frontal face), never mirror the whole scene. No pointed handsome anime variant. Demir head only: turn slightly towardviewer nearfrontal, restore canonical compact rounded nose and broader rounded lowerface, same warmincredulous expression. Preserve matureNazari's exactface and all crossedarms/anatomy/displays. Same1536x1024 cel-shadedcartoon, no newtext,numerals,props orpeople.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 363,
+          "top": 472,
+          "width": 193,
+          "height": 241
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-briefing-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "b167c40ec2779cb9e129e76474ed526c653339b3a2710f9abf3a1d24b8585214",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-openai-20261107.png",
+        "reviewedImageSha256": "edc8b3961819c34bae42420a78fe567bc82d606447aa1abfd5626a72a032886a"
+      },
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 1179,
+          "top": 185,
+          "width": 232,
+          "height": 239
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-briefing-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "30443547dbd981d0e73286bfca7e2b46eea47ad05b45a5e9580bae1224a5dc88",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-openai-20261107.png",
+        "reviewedImageSha256": "edc8b3961819c34bae42420a78fe567bc82d606447aa1abfd5626a72a032886a"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-briefing-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-briefing-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/transformers-js",
+    "phase": "concept",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-concept.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-concept.webp",
+    "sourceSha256": "6304f36f1b449ab2cab06877631f5f72fa3d1bca98d282030259211c89ec0c6f",
+    "webpSha256": "a6167d375bcf9360b92c7e1e441d7c9e77302eae0ab529692c8d31e1a0cd6629",
+    "publishedSha256": "a6167d375bcf9360b92c7e1e441d7c9e77302eae0ab529692c8d31e1a0cd6629",
+    "bytes": 160908,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-734bfc0f-1a1d-49a4-a98b-1350ad7ad91d.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/transformers-js-concept-final.prompt.txt",
+    "generationPrompt": "Use case: illustration-story. transformers-js concept. First 2 references define canonical people in order chief-nazari, ensign-demir. LAST defines roomonly. New distinct composition. Nazari and Demir in the lab, new close two-person composition on opposite sides of a small laptop. Demir holds the open laptop in BOTH hands at mid-torso with a stable natural grip. Nazari uses one index finger to indicate a simple ready-made model tile on its screen, while her other hand rests on her hip. The screen contains a few plain document-shaped input tiles and two neutral class-score bars, no urgency icons, no green correctness checks. Nazari gives a small dry smile and Demir looks pleasantly incredulous at how little integration is needed. They stand away from furniture. No training machine, pipeline pipes, fake code or text. Exact immutable identities: Demir mid20s, broad softly squared lowerface and round chin, compact BROAD rounded nose tip with short bridge, canonical eye/brow spacing, sparse freckles, uneven stubble and below-lip patch, compact dark forelock, comms anatomical RIGHT. Farah38 olive-tan with clearly adult rounded cheeks/chin, short rounded nose, adult eye/smile lines, loose dark ponytail, lens anatomical LEFT. Nazari48 weathered tan with broad mature jaw, rounded nose, forehead/crowfeet/smile folds and practical SHORT gray-streaked hair. Do not elongate, sharpen, slim, prettify, de-age or enlarge eyes. Faces near frontal or mildthree-quarter, both eyes inspectable, clear warm facial light. No blackshadows. Exactly two arms/hands per person with coherent fingers; every elbow/wrist connected; bodies outside furniture. Preserve task-specific uncertainty. Only named cast. No words, letters, numerals, fake code, logos orwatermarks. ARIA ifpresent only thin ring with one horizontalwave, no face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Single1536x1024.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 1000,
+          "top": 20,
+          "width": 340,
+          "height": 430
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-concept-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "3df54b7dd2628b5d350b77eefb19710db60ace6fc866a66f0e08bf18000961e2",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-concept-openai-20261107.png",
+        "reviewedImageSha256": "6304f36f1b449ab2cab06877631f5f72fa3d1bca98d282030259211c89ec0c6f"
+      },
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 240,
+          "top": 45,
+          "width": 405,
+          "height": 400
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-concept-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "725f6fecaf58343ddcc0cdcdd87be2692713fda6fd98521a8be016d4bdecb988",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-concept-openai-20261107.png",
+        "reviewedImageSha256": "6304f36f1b449ab2cab06877631f5f72fa3d1bca98d282030259211c89ec0c6f"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-concept-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-concept-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/transformers-js",
+    "phase": "challenge",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-challenge.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-challenge.webp",
+    "sourceSha256": "b3fa747918440358087b35913031734504754c709f6ef0fd879849891684c85a",
+    "webpSha256": "0e0c523cb6f3904f6b34a178faecc3bf7ae2a0be59c0550578d9d0157ed25e36",
+    "publishedSha256": "0e0c523cb6f3904f6b34a178faecc3bf7ae2a0be59c0550578d9d0157ed25e36",
+    "bytes": 199822,
+    "webpQuality": 84,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 84,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 84,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-7951bac7-8b1f-409f-a5f3-f9d5a6cc7198.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/transformers-js-challenge-final.prompt.txt",
+    "generationPrompt": "Use case: illustration-story. transformers-js challenge. First 1 references define canonical people in order ensign-demir. LAST defines roomonly. New distinct composition. Demir alone at a lab terminal, new medium side-front view with his face engaged and slightly amused. One hand operates the keyboard and the other rests on the outside desk edge. On the monitor are four simple report cards, each with a small paired score bar and a colored corner marker that stays attached to its card as the cards form an ordered queue. No readable text, no checkmarks, no urgency symbols and no class named neutral. He is preserving report-output pairing while sorting, not judging emergencies. Natural chair support, clear knees and two hands, no extra people. Exact immutable identities: Demir mid20s, broad softly squared lowerface and round chin, compact BROAD rounded nose tip with short bridge, canonical eye/brow spacing, sparse freckles, uneven stubble and below-lip patch, compact dark forelock, comms anatomical RIGHT. Farah38 olive-tan with clearly adult rounded cheeks/chin, short rounded nose, adult eye/smile lines, loose dark ponytail, lens anatomical LEFT. Nazari48 weathered tan with broad mature jaw, rounded nose, forehead/crowfeet/smile folds and practical SHORT gray-streaked hair. Do not elongate, sharpen, slim, prettify, de-age or enlarge eyes. Faces near frontal or mildthree-quarter, both eyes inspectable, clear warm facial light. No blackshadows. Exactly two arms/hands per person with coherent fingers; every elbow/wrist connected; bodies outside furniture. Preserve task-specific uncertainty. Only named cast. No words, letters, numerals, fake code, logos orwatermarks. ARIA ifpresent only thin ring with one horizontalwave, no face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Single1536x1024.",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 393,
+          "top": 53,
+          "width": 294,
+          "height": 363
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-challenge-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "20dd62cd02ca2cd398dbd57aac2ff98f5287c55996cde1d1a661b11b2a607631",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-challenge-openai-20261107.png",
+        "reviewedImageSha256": "b3fa747918440358087b35913031734504754c709f6ef0fd879849891684c85a"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-challenge-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-challenge-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/transformers-js",
+    "phase": "takeaways",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-takeaways.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-takeaways.webp",
+    "sourceSha256": "33c26dfde48ecdeb155710df62b353ee30a22c9d160f737822ca5e627bd800be",
+    "webpSha256": "5043f40d73612f5117eb266f296cec46a917f0a465566da0e14b085785196483",
+    "publishedSha256": "5043f40d73612f5117eb266f296cec46a917f0a465566da0e14b085785196483",
+    "bytes": 153262,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "chief-nazari"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-48e979aa-2f18-4cf6-826d-d3ee93153465.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/transformers-js-takeaways-final.prompt.txt",
+    "generationPrompt": "Use case: illustration-story. transformers-js takeaways. First 1 references define canonical people in order chief-nazari. LAST defines roomonly. New distinct composition. Nazari alone in a relaxed standing medium close-up in the lab. She holds a tablet with both hands and studies two modest report-result cards, one marked only by a small amber outline for human inspection, no words or correctness checks. Her expression is an amused but careful evaluator, not a scowl. The focus is checking whether a convenient pretrained model actually suits operational reports. Behind her a small unfilled download meter remains separate from the cards, reminding of deployment cost without making a measurement claim. No extra cast, hardware repair, paper, code or generated letters. Exact immutable identities: Demir mid20s, broad softly squared lowerface and round chin, compact BROAD rounded nose tip with short bridge, canonical eye/brow spacing, sparse freckles, uneven stubble and below-lip patch, compact dark forelock, comms anatomical RIGHT. Farah38 olive-tan with clearly adult rounded cheeks/chin, short rounded nose, adult eye/smile lines, loose dark ponytail, lens anatomical LEFT. Nazari48 weathered tan with broad mature jaw, rounded nose, forehead/crowfeet/smile folds and practical SHORT gray-streaked hair. Do not elongate, sharpen, slim, prettify, de-age or enlarge eyes. Faces near frontal or mildthree-quarter, both eyes inspectable, clear warm facial light. No blackshadows. Exactly two arms/hands per person with coherent fingers; every elbow/wrist connected; bodies outside furniture. Preserve task-specific uncertainty. Only named cast. No words, letters, numerals, fake code, logos orwatermarks. ARIA ifpresent only thin ring with one horizontalwave, no face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Single1536x1024.",
+    "faceProofs": [
+      {
+        "character": "chief-nazari",
+        "crop": {
+          "left": 370,
+          "top": 15,
+          "width": 430,
+          "height": 475
+        },
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-takeaways-chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "proofSha256": "f1913e5cda8cece5955c923c54de440a8033b5f621e325f48518feadb342f536",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-takeaways-openai-20261107.png",
+        "reviewedImageSha256": "33c26dfde48ecdeb155710df62b353ee30a22c9d160f737822ca5e627bd800be"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-takeaways-chief-nazari.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-takeaways-chief-nazari.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  },
+  {
+    "id": "browser-runtimes/transformers-js",
+    "phase": "epilogue",
+    "status": "approved",
+    "identityStatus": "approved",
+    "approvalGate": "identity-approved",
+    "date": "2026-11-07",
+    "tool": "built-in image_gen",
+    "source": "art-src/scenes/browser-runtimes__transformers-js-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-epilogue.webp",
+    "published": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-epilogue.webp",
+    "sourceSha256": "5661ec0e759d8da7bc67e944d2e276ea0acef38c9887be47fc22766bbb8521e7",
+    "webpSha256": "cc7919e784d5a619c7b8a313c1a96258eee75bca3c89e1b2866e503b2aad5a0d",
+    "publishedSha256": "cc7919e784d5a619c7b8a313c1a96258eee75bca3c89e1b2866e503b2aad5a0d",
+    "bytes": 203440,
+    "webpQuality": 86,
+    "webpEffort": 6,
+    "resizeFit": "contain",
+    "quality": 86,
+    "effort": 6,
+    "fit": "contain",
+    "encoding": {
+      "format": "webp",
+      "quality": 86,
+      "effort": 6,
+      "width": 1536,
+      "height": 1024,
+      "fit": "contain"
+    },
+    "cast": [
+      "ensign-demir",
+      "dr-farah"
+    ],
+    "identityReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-80cce4e5-b91d-4771-9aa5-e7964c972607.png",
+        "sha256": "be8d52bb376496eb4d44391a8d719d8054ada2503d0d310776b4657f5d6873c8"
+      }
+    ],
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-2b476e60-cc5b-4286-a690-baf716bd53f6.png",
+    "prompt": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/transformers-js-epilogue-alignment-repair.prompt.txt",
+    "generationPrompt": "Use case: identity-preserve. Image1 is immutable Dr Farah canonical portrait, image2 is immutable Ensign Demir portrait, image3 is the target lab scene. Correct ONLY Farah's complete body pose in the right half so her face, neck, shoulders, torso, hips and feet are anatomically aligned. Farah now stands OPEN three-quarter FRONT toward Demir and camera, with her chest and coat lapels visible, body oriented diagonally between Demir and monitor, both feet pointing naturally along that diagonal. Her head turns only gently, less than30degrees from shoulders, wearing the same knowing warm smile. Her left hand rests naturally on the nearby lower monitor rim, right arm hangs naturally at her side. Keep exact canonical Farah face:38-year-old adult olive-tan with broad rounded cheeks/chin, compact rounded nose, eye/smile lines, dark loose ponytail and green lens anatomical LEFT. Do not slim, sharpen or de-age her face. Keep full-body size and position coherent and clear of furniture. EXACTLY TWO connected arms and hands. Preserve Demir completely: his approved face, mild amused expression, head-neck-shoulder alignment, tablet, stylus, both hands and uniform. Preserve room, camera, lighting, display waveform, single raw time trace, no additional screens, people or text. Single1536x1024 cel-shaded cartoon, same linework.\n",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "crop": {
+          "left": 165,
+          "top": 5,
+          "width": 300,
+          "height": 375
+        },
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-epilogue-ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "proofSha256": "75120530aa2c67b3b2d452b466fe61120be456685f8f3c0796679ba690c94922",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-epilogue-openai-20261107.png",
+        "reviewedImageSha256": "5661ec0e759d8da7bc67e944d2e276ea0acef38c9887be47fc22766bbb8521e7"
+      },
+      {
+        "character": "dr-farah",
+        "crop": {
+          "left": 1015,
+          "top": 170,
+          "width": 185,
+          "height": 195
+        },
+        "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-epilogue-dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "proofSha256": "eee2a1dff2fd88d9939a1847b4ebfae9862b371228d770427c99bf76c46dbad8",
+        "reviewedImage": "art-src/scenes/browser-runtimes__transformers-js-epilogue-openai-20261107.png",
+        "reviewedImageSha256": "5661ec0e759d8da7bc67e944d2e276ea0acef38c9887be47fc22766bbb8521e7"
+      }
+    ],
+    "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-epilogue-ensign-demir.png",
+    "faceProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/peer-final16-transformers-js-epilogue-ensign-demir.png",
+    "reviewEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/peer-final-browser16.json",
+    "reviewers": [
+      "browser_final",
+      "art_peer_final"
+    ],
+    "visualQA": {
+      "identity": true,
+      "identityMethod": "Canonical portrait face crop comparisons and independent second-agent morphology review.",
+      "anatomy": true,
+      "headNeckShoulder": true,
+      "furniture": true,
+      "diagrams": true,
+      "story": true,
+      "notes": "Both reviewers checked canonical facial structure and age, complete head-neck-shoulder alignment, connected arms and hands, furniture contact, and task-specific display meaning. Distinct section composition preserves current lesson story."
+    }
+  }
+]

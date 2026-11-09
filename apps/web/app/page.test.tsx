@@ -170,7 +170,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       );
     });
 
-    it("says the free lessons need no account, next to the CTAs", () => {
+    it("names Deep Orbit's free lessons and account-free access next to the CTAs", () => {
       render(<LandingHero />);
       const note = screen.getByTestId("landing-cta-note");
       const freeLessons = getModuleLessonCount(
@@ -178,7 +178,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
         WORLD_CONTENT.freeModuleSlug,
       );
       expect(note.textContent).toBe(
-        `The first ${freeLessons} lessons are free, no account needed.`,
+        `Deep Orbit’s first ${freeLessons} lessons are free, no account needed.`,
       );
       // The note qualifies the buttons, so it sits right after their row.
       expect(note.previousElementSibling).toContainElement(
@@ -194,19 +194,27 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       ]);
     });
 
-    it("sends no free-lesson click for the About the course button", () => {
+    it("links the introduction without recording a free-lesson click", () => {
       render(<LandingHero />);
-      clickWithoutNavigating(screen.getByTestId("landing-cta-secondary"));
+      const explorerLink = screen.getByTestId("landing-cta-secondary");
+      expect(explorerLink).toHaveAccessibleName("Watch introduction");
+      expect(explorerLink).toHaveAttribute("href", "#introduction");
+      clickWithoutNavigating(explorerLink);
       expect(ctaClicks()).toEqual([]);
     });
 
-    it("subhead connects the crew story to the browser workflow", () => {
-      // 2026-08-19 (owner): the eyebrow, stat line, and trust line were cut
-      // from the hero; the differentiator now lives only in the subhead.
+    it("positions Deep Orbit as the first world within Tensorcraft", () => {
       const { container } = render(<LandingHero />);
-      expect(container.textContent).toMatch(/crew of the Archimedes/i);
-      expect(container.textContent).toMatch(/models in JavaScript/i);
-      expect(container.textContent).not.toMatch(/pipeline/i);
+      expect(container.textContent).toMatch(/build and evaluate models/i);
+      expect(container.textContent).toMatch(
+        /interactive stories and JavaScript exercises/i,
+      );
+      expect(container.textContent).toMatch(
+        /each Tensorcraft world explores a different part of ML/i,
+      );
+      expect(container.textContent).toMatch(
+        /Deep Orbit is the first world available/i,
+      );
     });
 
     it("no longer mounts the live-demo proof panel (removed 2026-08-31)", () => {
@@ -318,6 +326,28 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       // Two statements jammed on one line with "; " was the pre-redesign
       // state; the render-time formatter breaks at statement boundaries.
       expect(mlCode.textContent).not.toMatch(/;[ \t]+\S/);
+    });
+  });
+
+  describe("Introduction video", () => {
+    it("opens the approved introduction from the hero without autoplaying it", async () => {
+      const { default: Home } = await import("./page");
+      render(<Home />);
+      const intro = screen.getByTestId("intro-video-section");
+      expect(intro).toHaveAttribute("id", "introduction");
+      expect(screen.getByTestId("landing-cta-secondary")).toHaveAttribute(
+        "href",
+        `#${intro.id}`,
+      );
+      const player = screen.getByTestId("intro-video-player");
+      expect(player).toHaveAttribute("src", "/media/tensorcraft-intro.mp4");
+      expect(player).toHaveAttribute("controls");
+      expect(player).toHaveAttribute("preload", "none");
+      expect(player).not.toHaveAttribute("autoplay");
+      expect(player.querySelector("track")).toHaveAttribute(
+        "src",
+        "/media/tensorcraft-intro.vtt",
+      );
     });
   });
 

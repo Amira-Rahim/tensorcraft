@@ -1,0 +1,83 @@
+{
+  "sources": {
+    "lessonSource": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml"
+    ],
+    "verifiedData": "Same12 readings. Grid[3,4]=[[2,20,5,8],[3,18,7,8],[4,16,6,9]], transpose[4,3]=[[2,3,4],[20,18,16],[5,7,6],[8,8,9]]. Full recording[450,64]→[64,450].",
+    "phases": {
+      "briefing": {
+        "section": "StoryPassage and BriefingTakeaway",
+        "spec": "Show exact3x4 selected-readings grid with columns A B C D and rows moments1,2,3; highlight that one chart line must keep one sensor together.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "concept": {
+        "section": "Farah’s plan in JavaScript",
+        "spec": "Show exact3x4 grid → transpose → exact4x3 grid. Track A's2,3,4 through the swap with one muted highlight. Labels moments×sensors and sensors×moments.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; reshape-tensor instructions",
+        "spec": "Show flat12 verified values, target grid[3,4], second row highlighted3,18,7,8, and transpose target[4,3]. No3x3 or invented colored matrices.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "takeaways": {
+        "section": "Farah’s plan in JavaScript",
+        "spec": "Compare reshape[4,3] first row[2,20,5] marked mixes sensors against transpose first row[2,3,4] marked sensor A. Same shape, different meaning.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Show full-recording shape[450,64]→transpose→[64,450], and a clearly labeled Selected excerpt A-D chart with the verified3-point rows. Do not invent numerical full-recording waveforms.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      }
+    }
+  },
+  "custom": {
+    "briefing": {
+      "screen": "Replace the entire large decorative diagram wall with one clear table titled \"Same 12 readings\". Header columns \"Moment\", \"A\", \"B\", \"C\", \"D\". Three rows: \"1 | 2 | 20 | 5 | 8\"; \"2 | 3 | 18 | 7 | 8\"; \"3 | 4 | 16 | 6 | 9\". The vertical A column 2,3,4 has a subtle sage background highlight. Bottom note \"One sensor per chart line\". Farah points her stylus toward this A column instead of a floating polyhedron. No extra diagrams.",
+      "alt": "Farah follows sensor A through the same 12 readings before rebuilding the chart grouping."
+    },
+    "concept": {
+      "screen": "Main wall shows two precise numeric matrices with the arrow \"transpose()\" between them. LEFT matrix labeled \"[3,4] moments by sensors\", columns A B C D and row labels 1 2 3. Its rows are 2,20,5,8 then 3,18,7,8 then 4,16,6,9. RIGHT matrix labeled \"[4,3] sensors by moments\", columns 1 2 3 and rows A B C D. Its rows are 2,3,4 then 20,18,16 then 5,7,6 then 8,8,9. Highlight left A column and right A row with same subtle sage background. Exactly 12 cells in each matrix. Farah points at A column. No colored anonymous circles.",
+      "alt": "Farah shows how transposing the three-by-four grid gives each sensor its own row."
+    },
+    "challenge": {
+      "screen": "Handheld tablet shows exactly the flat input list \"[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]\" with title \"Same 12 readings\"; wrap text without adding extra brackets. Main monitor title \"Grouping task\". Three clearly spaced task rows: \"grid: [3,4]\" with \"one moment per row\"; \"step1: row index 1\"; \"bySensor: [4,3]\" with \"one sensor per row\". Bottom \"Awaiting code\". No completed numeric grid or result checkmark, this is before the learner executes. Remove empty anonymous matrix and fake chart panel.",
+      "alt": "Farah prepares the reshape, second-row lookup, and transpose tasks for the same selected readings."
+    },
+    "takeaways": {
+      "screen": "Tablet shows a clear two-row comparison, no colored checkerboards. Title \"First row comparison\". First row: \"reshape([4,3])\", \"[2,20,5]\", \"mixes sensors\". Second row: \"transpose()\", \"[2,3,4]\", \"sensor A\". The wall display repeats only the short conclusion \"Same shape [4,3]\", \"Different values\" and these two labeled first rows in larger lettering if needed, no waveforms or folders. This compares direct reshape of flat with transpose of the [3,4] grid.",
+      "alt": "Farah compares the first row from reshape with the sensor-preserving result of transpose."
+    },
+    "epilogue": {
+      "screen": "Main wall title \"Full recording\". Top concise diagram \"[450,64]\" then arrow labeled \"transpose()\" then \"[64,450]\". Captions \"moments by sensors\" and \"sensors by moments\". Below one panel clearly titled \"Selected excerpt\". Show a table with row labels A B C D and column labels Moment1,2,3. Four rows 2,3,4 /20,18,16 /5,7,6 /8,8,9. This is only the known 12-value excerpt, never invent numeric data for the whole full recording. Farah gestures at this verified excerpt. Remove arbitrary full-recording waveforms.",
+      "alt": "Farah applies the axis swap to the full recording and checks the selected sensor excerpt."
+    }
+  }
+}

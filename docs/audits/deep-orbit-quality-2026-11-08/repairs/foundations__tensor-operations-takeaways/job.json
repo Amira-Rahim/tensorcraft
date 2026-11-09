@@ -1,0 +1,137 @@
+{
+  "i": 19,
+  "room": "bridge",
+  "moment": "Demir sits at the LEFT foreground, checking the combined output with one hand on a keyboard and the other resting on the edge of a closed notebook. Chief Nazari leans over his left side with one palm on the back of his chair and her other hand holding a modest closed maintenance folio against her torso. Both look toward the LARGE RIGHT display, which occupies slightly over half the picture. Demir has a focused slight smile; Nazari is assessing the arithmetic with a restrained approving expression. Do not put text on the folio. Exact display content, large uncluttered blocks: title 'Combine and mix'; first section 'Worked first row', then 'Merged [3, 9]' followed by an arrow labeled 'gain 2' to 'Boosted [6, 18]'. Second section 'Channel mix'; two short rows 'block: [readings, channels]' and 'mix: [banks, channels]'; code line 'block.matMul(mix.transpose())'; result 'Result: [readings, banks]'. Keep all code and values crisp and on the screen plane.",
+  "id": "foundations__tensor-operations-takeaways",
+  "lesson": "foundations/tensor-operations",
+  "phase": "takeaways",
+  "source": "art-src/scenes/foundations__tensor-operations-takeaways-openai-20261107.png",
+  "sourceSha256": "89b48de2b355ab0542d4710f042e806eedee1394755312d4081074083a49b3f9",
+  "lessonSource": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+  "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: chief-nazari, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the LEFT foreground, checking the combined output with one hand on a keyboard and the other resting on the edge of a closed notebook. Chief Nazari leans over his left side with one palm on the back of his chair and her other hand holding a modest closed maintenance folio against her torso. Both look toward the LARGE RIGHT display, which occupies slightly over half the picture. Demir has a focused slight smile; Nazari is assessing the arithmetic with a restrained approving expression. Do not put text on the folio. Exact display content, large uncluttered blocks: title 'Combine and mix'; first section 'Worked first row', then 'Merged [3, 9]' followed by an arrow labeled 'gain 2' to 'Boosted [6, 18]'. Second section 'Channel mix'; two short rows 'block: [readings, channels]' and 'mix: [banks, channels]'; code line 'block.matMul(mix.transpose())'; result 'Result: [readings, banks]'. Keep all code and values crisp and on the screen plane. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "Canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "Room only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-operations-takeaways-openai-20261107.png",
+      "role": "Edit target, not identity authority",
+      "sha256": "89b48de2b355ab0542d4710f042e806eedee1394755312d4081074083a49b3f9"
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: chief-nazari, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the LEFT foreground, checking the combined output with one hand on a keyboard and the other resting on the edge of a closed notebook. Chief Nazari leans over his left side with one palm on the back of his chair and her other hand holding a modest closed maintenance folio against her torso. Both look toward the LARGE RIGHT display, which occupies slightly over half the picture. Demir has a focused slight smile; Nazari is assessing the arithmetic with a restrained approving expression. Do not put text on the folio. Exact display content, large uncluttered blocks: title 'Combine and mix'; first section 'Worked first row', then 'Merged [3, 9]' followed by an arrow labeled 'gain 2' to 'Boosted [6, 18]'. Second section 'Channel mix'; two short rows 'block: [readings, channels]' and 'mix: [banks, channels]'; code line 'block.matMul(mix.transpose())'; result 'Result: [readings, banks]'. Keep all code and values crisp and on the screen plane. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-operations-takeaways-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "status": "published",
+  "owner": "/root/quality_early",
+  "tool": "builtin image_gen",
+  "preparedAt": "2026-11-08T17:36:15.419650+00:00",
+  "promptSha256": "21eca6ba6118461b1dd56230a79f9d87b966db10991d05259815f2afb251d188",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+      "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+    }
+  ],
+  "publication": {
+    "alt": "Demir and Nazari check the gain calculation and channel-mixing shapes on a large bridge display.",
+    "action": "Demir checks the combined output at the keyboard while Nazari follows the arithmetic from behind his chair.",
+    "emotion": "Demir is focused and pleased; Nazari shows restrained approval.",
+    "eyeline": "Both toward the large right display.",
+    "checks": [
+      "Merged [3,9], gain2 and boosted [6,18] are exact. block [readings,channels], mix [banks,channels], transpose expression and result [readings,banks] are exact. Four arm chains and props pass magnified review."
+    ],
+    "location": "Archimedes, Bridge"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-b88270bf-e3e9-4f03-8fec-0c341ae59547.png",
+  "candidatePath": "art-src/scenes/foundations__tensor-operations-takeaways-openai-20261107.png",
+  "candidateSha256": "9b38889357b3b114c5839a4ae8a5b5472bd929bd625e85bf632ade0c25f4c4cc",
+  "ownReview": {
+    "reviewer": "quality_early",
+    "reviewedAt": "2026-11-08T18:11:20.523416+00:00",
+    "candidateSha256": "9b38889357b3b114c5839a4ae8a5b5472bd929bd625e85bf632ade0c25f4c4cc",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native generated original plus magnified hands/props and face comparison with independently viewed canonical portraits. All complete arm chains traced in original.",
+    "cropCoordinates": [
+      {
+        "i": "r2faces",
+        "k": 2,
+        "box": [
+          175,
+          75,
+          590,
+          535
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r2handsN",
+        "k": 2,
+        "box": [
+          105,
+          450,
+          630,
+          615
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r2handsD",
+        "k": 2,
+        "box": [
+          170,
+          805,
+          720,
+          960
+        ],
+        "scale": 2
+      }
+    ],
+    "canonicalFaceReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "role": "Canonical identity: chief-nazari",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "role": "Canonical identity: ensign-demir",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ],
+    "checks": "Merged [3,9], gain2 and boosted [6,18] are exact. block [readings,channels], mix [banks,channels], transpose expression and result [readings,banks] are exact. Four arm chains and props pass magnified review.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "temporaryCropsRemoved": true
+  },
+  "publishedSource": "art-src/scenes/foundations__tensor-operations-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-operations-takeaways.webp",
+  "publicationStatus": "published after independent exact-hash peer approval"
+}

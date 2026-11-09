@@ -1,0 +1,85 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/layers-and-architecture-takeaways/candidate.png",
+  "candidateSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh native comparison with user-rejected oversized sheet, new 2x face, hands/notebook and display crops, whole arm-chain check, canonical portrait, current MDX/exercise and 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical Nazari identity authority, first reference",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "followup-layers-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/layers-and-architecture-takeaways/candidate.png",
+      "box": [
+        780,
+        160,
+        1120,
+        500
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-layers-hands-notebook",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/layers-and-architecture-takeaways/candidate.png",
+      "box": [
+        620,
+        635,
+        1310,
+        945
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-layers-display",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/layers-and-architecture-takeaways/candidate.png",
+      "box": [
+        126,
+        130,
+        543,
+        504
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+      "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
+      "sha256": "9b3b4d1756293a028b60b873cd9c1fd4f4f9b839659d21b12ef88596bdcd6e8e"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Nazari's right shoulder and bent elbow lead to the pencil hand with a natural thumb/index grip and supporting curled fingers. The straight pencil touches the final digit. Her left forearm and hand steady the notebook with coherent contact; four fingers and the naturally obscured thumb have plausible placement.",
+    "identityExpressionAndStory": "Canonical mature Nazari facial structure, age lines, silver-streaked hair and focused faint satisfaction remain visible. Neck, shoulders and seated adult proportions are balanced.",
+    "notebookScaleAndOrientation": "The notebook is ordinary desk scale, lies directly in front of Nazari and is within comfortable reach. Its single 225 faces her and is correctly upside down to the camera; the writing action matches that orientation.",
+    "displayLegibilityAndSource": "Practice-model arithmetic is correct: (4 x 16)+16=80, (16 x 8)+8=136, (8 x 1)+1=9, total 225 parameters. This is the exercise's 16/8/1 stack, not the 673-parameter bridge model. Every main line remains readable at 768 x 512.",
+    "perspectiveAndOperator": "The display's upper horizontals descend right, midlines flatten and lower horizontals rise right, consistent with one physical glass family. The notebook lies in the desktop plane and its writing follows that plane. Nazari can view the monitor front from her seat.",
+    "largeDisplayRule": "Complete calculation is on a large readable upright display, while the notebook supports the story action at normal size.",
+    "palette": "Muted sage, charcoal and warm brass remain consistent."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 4,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:08:48.692329+00:00"
+}

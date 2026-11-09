@@ -1,0 +1,176 @@
+{
+  "key": "deep-orbit/llm-integration/rag-for-signals",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-takeaways.webp",
+    "sha256": "af7ce6864afeafbdbdb8ab2157eee6d72ba9d1e3b06009ad27417ca53cd59035"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/rag-for-signals-takeaways-runtime-before.png",
+    "sha256": "823562d6b256560b38ef5f3b3887409d4b0d3230d0b940003792bcc4b76f724e",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "823562d6b256560b38ef5f3b3887409d4b0d3230d0b940003792bcc4b76f724e",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/rag-for-signals-takeaways-runtime-before.png",
+    "sha256": "823562d6b256560b38ef5f3b3887409d4b0d3230d0b940003792bcc4b76f724e",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "823562d6b256560b38ef5f3b3887409d4b0d3230d0b940003792bcc4b76f724e",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/retrieve-signals.yaml",
+      "sha256": "c970ffa0b76cfd80c37e13a15be953e1308c2df8bd320cd67d9efc11fb78fd38"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/rag-pipeline.yaml",
+      "sha256": "174a2dbee287992a08a59d6ede6bf1174ebd826e5ede0453ff941da2a3d81272"
+    }
+  ],
+  "panelSpecification": {
+    "state": "takeaways",
+    "concreteGenerationSpecification": "Candid Farah and Nazari shoulder-adjacent at a low laboratory side console, facing the same screen. Farah seated leans forward with stylus touching frequencyHz; Nazari beside her leans one hand on bench and points with the other to the mistaken claim, skeptical raised eyebrow directed toward Farah. Farah looks back with concerned recognition. No held tablets or paper and no camera gaze. Screen sits to their RIGHT and faces toward the two readers on its LEFT; camera near the reading side sees their three-quarter faces plus the screen obliquely. Header Cited-record example. Source a fields:eventCount14events;frequencyHz73.4Hz. Below two small claim rows:14events from a /Verified field;14Hz from a /Unverified. Bottom status Free text:review separately. Exact field meanings from the lesson example, no claim that source correctness or whole report is approved. The bad claim is amber, good field subdued sage, no bright neon. All text/grid/labels align to its actual angled surface. Other screens and wallboard inactive, no invented waves. Four continuous shoulder-arm-hand chains, credible stylus and pointing contacts. Canonical faces ages and characteristic lens/hair preserved, moderate adult proportions, dark sage pillar and charcoal/aged brass.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+        "section": "Claims and their cited evidence and RecallPrompt"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/retrieve-signals.yaml",
+        "section": "instructions and relevant supplied fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__rag-for-signals-takeaways-narrative-stage1-openai-20261107.png",
+      "sha256": "0bf030571d994211ad84abbc29cf379e0a1e5a2f9d11ac40be1733f51cd75979",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "0bf030571d994211ad84abbc29cf379e0a1e5a2f9d11ac40be1733f51cd75979",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: precise identity-preserving scene correction. Canonical portraits FIRST, room master next only a palette reference, LAST current target. Change ONLY the bright lime background pillar to dark desaturated sage glass with very faint dim lines; thin bright rim lines. Fix exact words and spacing on working display: Source a; eventCount 14 events; frequencyHz 73.4 Hz. The correct claim row MUST read 14 events from a / Verified field (include the word field). The incorrect amber row 14 Hz from a / Unverified. Bottom Free text: review separately. Keep all baselines and grid on same angled screen plane. Preserve exact canonical two faces, head sizes, expressions, relational gazes, shoulders, all four arms/hands, stylus grip, pose and architecture. No new props. Canonical identity remains exact, Demir comms anatomical RIGHT ear only, Farah lens anatomical LEFT eye only. One1536x1024 cel-shaded scene.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "Nazari catches a field swap while Farah checks the cited record, keeping a matching number from being mistaken for supported evidence.",
+    "fullSpecification": "Candid Farah and Nazari shoulder-adjacent at a low laboratory side console, facing the same screen. Farah seated leans forward with stylus touching frequencyHz; Nazari beside her leans one hand on bench and points with the other to the mistaken claim, skeptical raised eyebrow directed toward Farah. Farah looks back with concerned recognition. No held tablets or paper and no camera gaze. Screen sits to their RIGHT and faces toward the two readers on its LEFT; camera near the reading side sees their three-quarter faces plus the screen obliquely. Header Cited-record example. Source a fields:eventCount14events;frequencyHz73.4Hz. Below two small claim rows:14events from a /Verified field;14Hz from a /Unverified. Bottom status Free text:review separately. Exact field meanings from the lesson example, no claim that source correctness or whole report is approved. The bad claim is amber, good field subdued sage, no bright neon. All text/grid/labels align to its actual angled surface. Other screens and wallboard inactive, no invented waves. Four continuous shoulder-arm-hand chains, credible stylus and pointing contacts. Canonical faces ages and characteristic lens/hair preserved, moderate adult proportions, dark sage pillar and charcoal/aged brass."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidatePath": "art-src/scenes/llm-integration__rag-for-signals-takeaways-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/llm-integration__rag-for-signals-takeaways-narrative-stage2-openai-20261107.png",
+  "candidateSha256": "59a53984aa13d7478cc31ab3d8515624adece7288710cef10d23660f5fcd9297",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-2a94379f-3d0a-4020-aeaf-d1ced6d2a985.png",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. Canonical identity portraits are FIRST; room master next is only architecture and palette; LAST original scene supplies cast, not pose. Preserve exact canonical facial morphology and adult ages, hair, equipment. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari has no eyewear. Warm clean cel-shaded adventure-comic illustration, balanced stylized heads without blanket shrink, natural supported anatomy. Candid Farah and Nazari shoulder-adjacent at a low laboratory side console, facing the same screen. Farah seated leans forward with stylus touching frequencyHz; Nazari beside her leans one hand on bench and points with the other to the mistaken claim, skeptical raised eyebrow directed toward Farah. Farah looks back with concerned recognition. No held tablets or paper and no camera gaze. Screen sits to their RIGHT and faces toward the two readers on its LEFT; camera near the reading side sees their three-quarter faces plus the screen obliquely. Header Cited-record example. Source a fields:eventCount14events;frequencyHz73.4Hz. Below two small claim rows:14events from a /Verified field;14Hz from a /Unverified. Bottom status Free text:review separately. Exact field meanings from the lesson example, no claim that source correctness or whole report is approved. The bad claim is amber, good field subdued sage, no bright neon. All text/grid/labels align to its actual angled surface. Other screens and wallboard inactive, no invented waves. Four continuous shoulder-arm-hand chains, credible stylus and pointing contacts. Canonical faces ages and characteristic lens/hair preserved, moderate adult proportions, dark sage pillar and charcoal/aged brass. One1536x1024 scene. Natural word spacing on all labels.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/rag-for-signals-takeaways-runtime-before.png",
+          "sha256": "823562d6b256560b38ef5f3b3887409d4b0d3230d0b940003792bcc4b76f724e",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "823562d6b256560b38ef5f3b3887409d4b0d3230d0b940003792bcc4b76f724e",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/llm-integration__rag-for-signals-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "0bf030571d994211ad84abbc29cf379e0a1e5a2f9d11ac40be1733f51cd75979",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c38f7974-c832-4e87-9337-321f5b2da91a.png"
+    }
+  ],
+  "publicationHold": false,
+  "faceBoxes": {
+    "farah": [
+      130,
+      115,
+      400,
+      420
+    ],
+    "nazari": [
+      545,
+      75,
+      345,
+      400
+    ]
+  },
+  "recoveryNote": "Recovered generated output after orchestration save helper failed; exact fullframe visually matched to prepared job before workspace copy.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/rag-for-signals-takeaways-identity-proof.jpg",
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "59a53984aa13d7478cc31ab3d8515624adece7288710cef10d23660f5fcd9297",
+    "proofSha256": "c9afc9628eac63239b5d9c33854f940d66f92973b7634bd1c8de1791b3b70be2",
+    "gates": [
+      "Candid task action and story-tied emotion",
+      "Canonical face morphology and age",
+      "Moderate stylized adult proportions",
+      "Supported head/neck/shoulder and two arm-hand chains",
+      "Muted palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Perspective and reader direction"
+    ],
+    "actionEmotionStory": "Nazari catches a field swap while Farah checks the cited record, keeping a matching number from being mistaken for supported evidence."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-2a94379f-3d0a-4020-aeaf-d1ced6d2a985.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c38f7974-c832-4e87-9337-321f5b2da91a.png",
+      "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-takeaways.webp",
+      "art-src/scenes/llm-integration__rag-for-signals-takeaways-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "publishedReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/llm-integration__rag-for-signals-takeaways.json",
+  "obsoleteWorkingImageRemoved": "art-src/scenes/llm-integration__rag-for-signals-takeaways-narrative-stage2-openai-20261107.png"
+}

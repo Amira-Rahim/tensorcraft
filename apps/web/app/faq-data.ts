@@ -29,7 +29,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit is free. You can start without an account or credit card. The full course costs $${PRICING.single.price}. Pay once for lifetime access to that world.`,
+    a: `Module 1 of Deep Orbit is free. You can start without an account or credit card. ${PRICING.single.price < PRICING.single.regularPrice ? `The introductory price for the full course is $${PRICING.single.price}. The regular price is $${PRICING.single.regularPrice}.` : `The full course costs $${PRICING.single.price}.`} Pay once for lifetime access to that world.`,
   },
   {
     q: "What if it turns out not to be for me?",

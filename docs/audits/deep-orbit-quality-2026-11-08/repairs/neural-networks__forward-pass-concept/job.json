@@ -1,0 +1,137 @@
+{
+  "i": 42,
+  "room": "bridge",
+  "moment": "Demir sits at the LEFT foreground, fixing a single reading's batch axis with one hand operating a keyboard and his other hand resting on a closed notebook. Farah stands just behind him at far left, both hands on a small tablet held low with back to camera. Demir has just recognized the correction, with a small delighted smile; Farah watches the result, gently focused. A LARGE RIGHT display is the visual center. Exact display: heading 'Add the batch axis'; first wide box '[0.5, 0.8, 0.2]' with label 'shape [3]'; a downward arrow labeled 'expandDims(0)'; second wide box '[[0.5, 0.8, 0.2]]' with label 'shape [1, 3]'; bottom '1 row, 3 features'. Values are unchanged. No additional text and no blank sibling screen.",
+  "id": "neural-networks__forward-pass-concept",
+  "lesson": "neural-networks/forward-pass",
+  "phase": "concept",
+  "source": "art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+  "sourceSha256": "7303eef4457a4767dae0fc7982e48fa4dab3b133ade247d227d37526c930b7f2",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+  "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: dr-farah, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the LEFT foreground, fixing a single reading's batch axis with one hand operating a keyboard and his other hand resting on a closed notebook. Farah stands just behind him at far left, both hands on a small tablet held low with back to camera. Demir has just recognized the correction, with a small delighted smile; Farah watches the result, gently focused. A LARGE RIGHT display is the visual center. Exact display: heading 'Add the batch axis'; first wide box '[0.5, 0.8, 0.2]' with label 'shape [3]'; a downward arrow labeled 'expandDims(0)'; second wide box '[[0.5, 0.8, 0.2]]' with label 'shape [1, 3]'; bottom '1 row, 3 features'. Values are unchanged. No additional text and no blank sibling screen. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "Room only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+      "role": "Edit target, not identity authority",
+      "sha256": "7303eef4457a4767dae0fc7982e48fa4dab3b133ade247d227d37526c930b7f2"
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 2 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: dr-farah, ensign-demir. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Demir sits at the LEFT foreground, fixing a single reading's batch axis with one hand operating a keyboard and his other hand resting on a closed notebook. Farah stands just behind him at far left, both hands on a small tablet held low with back to camera. Demir has just recognized the correction, with a small delighted smile; Farah watches the result, gently focused. A LARGE RIGHT display is the visual center. Exact display: heading 'Add the batch axis'; first wide box '[0.5, 0.8, 0.2]' with label 'shape [3]'; a downward arrow labeled 'expandDims(0)'; second wide box '[[0.5, 0.8, 0.2]]' with label 'shape [1, 3]'; bottom '1 row, 3 features'. Values are unchanged. No additional text and no blank sibling screen. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "status": "published",
+  "owner": "/root/quality_early",
+  "tool": "builtin image_gen",
+  "preparedAt": "2026-11-08T17:36:15.438833+00:00",
+  "promptSha256": "d3ae547267aff4ae00fbb8867e3ff4dd284d00352b32a07848d291ff71734bb9",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+    }
+  ],
+  "publication": {
+    "alt": "Demir adds a batch axis while Farah checks the tensor shapes on a large bridge display.",
+    "action": "Demir types with one hand and rests the other on his notebook; Farah holds a tablet with both hands.",
+    "emotion": "Demir shows recognition, with Farah quietly attentive.",
+    "eyeline": "Both look toward the batch-axis transformation at right.",
+    "checks": [
+      "The screen correctly transforms [0.5, 0.8, 0.2] shape [3] with expandDims(0) into [[0.5, 0.8, 0.2]] shape [1, 3], one row and three features. Four complete arm chains, natural thumbs, keyboard and notebook contact and both tablet grips pass magnified review. Canonical facial landmarks and mature proportions hold."
+    ],
+    "location": "Archimedes, Bridge"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-082ce1ba-b25f-4b6c-8c64-a2c22404801c.png",
+  "candidatePath": "art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+  "candidateSha256": "3c07202a80b9bd0463425c68f7cf12028c6eec0d730f10740e7fd714d9357e46",
+  "ownReview": {
+    "reviewer": "quality_early",
+    "reviewedAt": "2026-11-08T18:44:32.030304+00:00",
+    "candidateSha256": "3c07202a80b9bd0463425c68f7cf12028c6eec0d730f10740e7fd714d9357e46",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native generated original plus magnified hands/props and face comparison with independently viewed canonical portraits. All complete arm chains traced in original.",
+    "cropCoordinates": [
+      {
+        "i": "r7faces",
+        "k": 7,
+        "box": [
+          45,
+          115,
+          675,
+          545
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r7handfarah",
+        "k": 7,
+        "box": [
+          110,
+          530,
+          345,
+          690
+        ],
+        "scale": 3
+      },
+      {
+        "i": "r7handdemir",
+        "k": 7,
+        "box": [
+          470,
+          760,
+          1010,
+          970
+        ],
+        "scale": 2
+      }
+    ],
+    "canonicalFaceReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "role": "Canonical identity: dr-farah",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "role": "Canonical identity: ensign-demir",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ],
+    "checks": "The screen correctly transforms [0.5, 0.8, 0.2] shape [3] with expandDims(0) into [[0.5, 0.8, 0.2]] shape [1, 3], one row and three features. Four complete arm chains, natural thumbs, keyboard and notebook contact and both tablet grips pass magnified review. Canonical facial landmarks and mature proportions hold.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "temporaryCropsRemoved": true
+  },
+  "publishedSource": "art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+  "publicationStatus": "published after independent exact-hash peer approval"
+}

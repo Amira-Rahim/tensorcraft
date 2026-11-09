@@ -1,0 +1,859 @@
+{
+  "date": "2026-11-07",
+  "assets": [
+    {
+      "id": "deep-orbit-trailer-poster",
+      "source": "art-src/posters/deep-orbit-trailer-openai-20261107.png",
+      "destination": "apps/web/public/media/deep-orbit-trailer-poster.webp",
+      "sourceSha256": "921374b16836cd89bf97e3d7cd710ca6ebb581a7f78e403629436e8f01663b02",
+      "webpSha256": "09efd9cd588afee99bb36b7a819a02f20547d43109914f3f63de672684588e58",
+      "webpQuality": 86,
+      "webpEffort": 6,
+      "resizeFit": "cover",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "identityStatus": "approved",
+      "proofPaths": [
+        "art-src/posters/deep-orbit-trailer-openai-20261107.png",
+        "apps/web/public/media/deep-orbit-trailer-poster.webp"
+      ],
+      "promptEvidence": "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/poster-candidate.json",
+      "notes": "All four canonical faces compared at crop scale. Nazari short hairstyle restored; adult face widths, age lines, nose shapes and complexions retained. Full scene checked for connected hands and furniture clearance.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/poster-identity-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "chief-nazari-grudging-respect",
+      "destination": "apps/web/public/characters/deep-orbit/chief-nazari-grudging-respect.webp",
+      "webpSha256": "936653d07866ac3dd4764313733bafe7333526cd87e3e53e731a9ea1fa4f17f2",
+      "identityReference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "identityReferenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/chief-nazari-grudging-respect.webp",
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "chief-nazari-haunted",
+      "destination": "apps/web/public/characters/deep-orbit/chief-nazari-haunted.webp",
+      "webpSha256": "a4c0acbe027b0b2efd6b28b6024d6676a4749c6b6346a3c204a57b3942ec3f44",
+      "identityReference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "identityReferenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/chief-nazari-haunted.webp",
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "chief-nazari-skeptical",
+      "destination": "apps/web/public/characters/deep-orbit/chief-nazari-skeptical.webp",
+      "webpSha256": "acf921e5f08a51715fca7d09f875da721243bf6b08d7cb46a7c7d7d5bdd4d349",
+      "identityReference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "identityReferenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/chief-nazari-skeptical.webp",
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "chief-nazari",
+      "destination": "apps/web/public/characters/deep-orbit/chief-nazari.webp",
+      "webpSha256": "00e7e23cb5d60a7ac8a91f2c826800b27e872ea7ad8e79c20df84103d5bd03bd",
+      "identityReference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "identityReferenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/chief-nazari.webp",
+        "docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "commander-mirza-approving",
+      "destination": "apps/web/public/characters/deep-orbit/commander-mirza-approving.webp",
+      "webpSha256": "ee3ea5ff45c3d05619ffa3abe93f599bd9ba21bb225f53a4c13c44ff545db252",
+      "identityReference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "identityReferenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/commander-mirza-approving.webp",
+        "docs/art-refs/deep-orbit/commander-mirza.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "commander-mirza-concerned",
+      "destination": "apps/web/public/characters/deep-orbit/commander-mirza-concerned.webp",
+      "webpSha256": "eb2591262323871fa8281773bcdd2745f005c4fb91afda877917a5de38d24722",
+      "identityReference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "identityReferenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/commander-mirza-concerned.webp",
+        "docs/art-refs/deep-orbit/commander-mirza.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "commander-mirza-resolved",
+      "destination": "apps/web/public/characters/deep-orbit/commander-mirza-resolved.webp",
+      "webpSha256": "b3b8b37c579362ee3a028349e01265b5d389d9b859debe416145da071a6efad6",
+      "identityReference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "identityReferenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/commander-mirza-resolved.webp",
+        "docs/art-refs/deep-orbit/commander-mirza.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "commander-mirza",
+      "destination": "apps/web/public/characters/deep-orbit/commander-mirza.webp",
+      "webpSha256": "d65e8526d05154cd8349a80087da36c9ab62fbda4084bca4d9302042fbcd8a68",
+      "identityReference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "identityReferenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/commander-mirza.webp",
+        "docs/art-refs/deep-orbit/commander-mirza.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "dr-farah-absorbed",
+      "destination": "apps/web/public/characters/deep-orbit/dr-farah-absorbed.webp",
+      "webpSha256": "8d28525c944ad42a3d54a54f34ef069e6bfa87991c46d620be2b885cc3c299e4",
+      "identityReference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "identityReferenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/dr-farah-absorbed.webp",
+        "docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "dr-farah-delighted",
+      "destination": "apps/web/public/characters/deep-orbit/dr-farah-delighted.webp",
+      "webpSha256": "e10208340a025df9c99a4c572824e2f885a4f847c3514d977435e550251f0b64",
+      "identityReference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "identityReferenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/dr-farah-delighted.webp",
+        "docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "dr-farah-shaken",
+      "destination": "apps/web/public/characters/deep-orbit/dr-farah-shaken.webp",
+      "webpSha256": "71b9fb044f6e9efcc0f10b321849caf89d7706d8c07b87bcc2f2556aede3ded3",
+      "identityReference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "identityReferenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/dr-farah-shaken.webp",
+        "docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "dr-farah",
+      "destination": "apps/web/public/characters/deep-orbit/dr-farah.webp",
+      "webpSha256": "925c93d8ac3dd4cd3b28fd63b524bf02d88295ded2a6514d5a32adb970a9d6b6",
+      "identityReference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "identityReferenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/dr-farah.webp",
+        "docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "ensign-demir-breakthrough",
+      "destination": "apps/web/public/characters/deep-orbit/ensign-demir-breakthrough.webp",
+      "webpSha256": "5e76e83c63330f8d65e5047acacf6cfc0b388cdd50f9baf18f09afd36747a7b4",
+      "identityReference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "identityReferenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/ensign-demir-breakthrough.webp",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "ensign-demir-focused",
+      "destination": "apps/web/public/characters/deep-orbit/ensign-demir-focused.webp",
+      "webpSha256": "854ea7208351a5ee33a2ce6906d6a00be261431145b2650c1d7adc5160b420a1",
+      "identityReference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "identityReferenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/ensign-demir-focused.webp",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "ensign-demir-overwhelmed",
+      "destination": "apps/web/public/characters/deep-orbit/ensign-demir-overwhelmed.webp",
+      "webpSha256": "06b82cd5c871b6c2b3cfd65d685ac699b26f18bd692faf88c5f6a937f741249f",
+      "identityReference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "identityReferenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/ensign-demir-overwhelmed.webp",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "id": "ensign-demir",
+      "destination": "apps/web/public/characters/deep-orbit/ensign-demir.webp",
+      "webpSha256": "6cfea8ecb8efecc5cc80645643f6523586e1f90893520d21b08a023a05184a81",
+      "identityReference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "identityReferenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "identityStatus": "approved",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/ensign-demir.webp",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "notes": "Neutral and expression portrait retain the canonical individual; expression changes only.",
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/art-refs/deep-orbit/art-direction-2026-11-06/identity-lock/supporting-portraits-proof.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    }
+  ],
+  "scope": "Character stills and world-trailer poster. Moving-media edits are not covered by this image approval.",
+  "nonHumanAssets": [
+    {
+      "destination": "apps/web/public/seals/deep-orbit.webp",
+      "sha256": "db37e431ce9f26d66ce7f01d24fa9a3bd08f7b54a197a20e2f2e05b8f196d33c",
+      "category": "seals",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/seals/deep-orbit.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/og/deep-orbit/bridge.jpg",
+      "sha256": "19df236bb740177f1d03ac50ad4e6c774b2e2818b89332d74f02e89a3ac086b1",
+      "category": "og",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/og/deep-orbit/bridge.jpg"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/og/deep-orbit/seal.jpg",
+      "sha256": "0bc239c48173ad898495a65dfb10ce970e3acb05d4c97375acfdbdd25cb479c7",
+      "category": "og",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/og/deep-orbit/seal.jpg"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/characters/deep-orbit/aria-deadpan.webp",
+      "sha256": "e99526a6ba67ed5d1bb90f68f1959f48a9549e1f99bbd81bdfe2480aff152bfb",
+      "category": "characters",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/aria-deadpan.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/characters/deep-orbit/aria-emphasis.webp",
+      "sha256": "70b2a59f6c752670890038b3e73c781749aa7d75cbb6a9a8a25dc0dcc3c44a23",
+      "category": "characters",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/aria-emphasis.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/characters/deep-orbit/aria.webp",
+      "sha256": "1c4fcadc699aff63244e3a596f666af94ba509eba1ba26eb0d0233a1788b31d8",
+      "category": "characters",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/aria.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/characters/deep-orbit/aria-alarm.webp",
+      "sha256": "ec90b3fa8170fc60ca6d49f8eaad3517080a7d8300ca50dd45e372c5993206f5",
+      "category": "characters",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/characters/deep-orbit/aria-alarm.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/locations/deep-orbit/dashboard-station.webp",
+      "sha256": "e40acee65c126c9c4e6e5aa8cd2ab07f96c92e799ea97515dc4c39c9d2c54e14",
+      "category": "locations",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/locations/deep-orbit/dashboard-station.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/locations/deep-orbit/adrift.webp",
+      "sha256": "8d9e55d694c0b60477eb62090ddec7ad82b7541c4d6e5bb9a94ae62c24944c26",
+      "category": "locations",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/locations/deep-orbit/adrift.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/locations/deep-orbit/engineering.webp",
+      "sha256": "68c94435f96abbbead1f5ee5652da0433651db4394006334a024d0fd9ffa119e",
+      "category": "locations",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/locations/deep-orbit/engineering.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/locations/deep-orbit/bridge.webp",
+      "sha256": "d198bf77c83e93fe1d9ec080d1f1c6481845dc1a15243b381478019352bddb4e",
+      "category": "locations",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/locations/deep-orbit/bridge.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/locations/deep-orbit/lab.webp",
+      "sha256": "ac9d534a2e55e4bcdb578f79ff82b2a03527b4e1b14f0e86c09320eb9e3229fb",
+      "category": "locations",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/locations/deep-orbit/lab.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/advanced-time-series.webp",
+      "sha256": "17149df0b65169196a01ec4c47603a452095c0816f6b1afcf02f5c52a45dd4aa",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/advanced-time-series.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/browser-runtimes.webp",
+      "sha256": "83a164ee42b21390c52c0a651a1bd4cbc689bad4892b19916d72f930b4fe14cd",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/browser-runtimes.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/neural-networks.webp",
+      "sha256": "b24afc6795200a3bc97650cac46cbb0ecc9621c6a3085fb8f5209846be415554",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/neural-networks.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/recurrent-networks.webp",
+      "sha256": "656d21c04642a5b0cee7c5651eedfc3d1e2af7859ab4dfe71681eed000f2949d",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/recurrent-networks.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/capstone.webp",
+      "sha256": "8f761ee4ab9db24d9f6d2364210165665380e3a8ae5bd828af5ca50aa4cbc071",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/capstone.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/optimization-edge.webp",
+      "sha256": "8c5819a91d8d52521580c6810639907a4e6b49e585977bab2bdfeaae687e5f10",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/optimization-edge.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/training-loop.webp",
+      "sha256": "758f5000771a26e76d6c36448ecd93bc78a448b17bc007f1d7ac5a1c85289cee",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/training-loop.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/foundations.webp",
+      "sha256": "e4bf6c83c709f0092e24feaa01d4e6b95632815784957baf414a7ff3556713de",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/foundations.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/llm-integration.webp",
+      "sha256": "70c843874314902c8bad0d210389b1f077ae691ee022f00182c80f9bfdea5442",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/llm-integration.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/anomaly-detection.webp",
+      "sha256": "4a4414f14d86711f2b536da28699337e79822191e092bcb280f7ceb24cd4325f",
+      "category": "patches",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/patches/deep-orbit/anomaly-detection.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    },
+    {
+      "destination": "apps/web/public/patches/deep-orbit/signal-processing.webp",
+      "sha256": "e47b049fcd4807f9444474af3de2a1f2e224d0d5d6e2be388d9fe25b88c00a33",
+      "category": "patches",
+      "reviewStatus": "approved",
+      "notes": "White exterior replaced with series-matched near-black textile. Emblem preserved and reviewed at native and runtime sizes.",
+      "proofPaths": [
+        "docs/art-refs/deep-orbit/patches/signal-processing-fal-2026-08-15T07-51-19-1.png",
+        "apps/web/public/patches/deep-orbit/signal-processing.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images",
+      "source": "docs/art-refs/deep-orbit/patches/signal-processing-fal-2026-08-15T07-51-19-1.png",
+      "sourceSha256": "e37c19149b2b1f9257849b28fa66e19ec5f9d33cee7963ce9a7f527e09b7af3a",
+      "dimensions": [
+        320,
+        320
+      ],
+      "webpQuality": 82,
+      "webpEffort": 6,
+      "resizeFit": "cover",
+      "bytes": 9730,
+      "reviewRecord": "docs/audits/deep-orbit-quality-2026-11-08/repairs/supporting__signal-processing-patch/job.json",
+      "peerReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/supporting__signal-processing-patch/peer.json"
+    },
+    {
+      "destination": "apps/web/public/media/learn-trailer-poster.webp",
+      "sha256": "4010dd0db0597a40c6ef67df98f649e958b5f8795928410b5016352eb1a320c4",
+      "category": "shared-media",
+      "reviewStatus": "retained",
+      "notes": "Current artwork contains no human face. Retained after review of its established role.",
+      "proofPaths": [
+        "apps/web/public/media/learn-trailer-poster.webp"
+      ],
+      "historicalReviewDerivatives": {
+        "proofPaths": [
+          "docs/audits/deep-orbit-artwork-2026-11-07/evidence/nonhuman-artwork.png"
+        ],
+        "removed": true,
+        "regeneratable": true,
+        "cleanupRecord": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json"
+      },
+      "evidenceKind": "original-images"
+    }
+  ]
+}

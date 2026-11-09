@@ -1,0 +1,159 @@
+{
+  "key": "llms-for-science-takeaways",
+  "id": "llm-integration/llms-for-science",
+  "phase": "takeaways",
+  "source": "art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+  "sourceSha256": "c2d591e0c27dd7098d5fe1dbcbc9fc5ce50989a950be430c95f5a5e25a790d0a",
+  "auditIndex": 58,
+  "auditHold": "Farah presents paper/tablet in a stock pose beside an unexplained slider and circle; background waves are arbitrary. Restage her actively checking a draft against sources and recording a correction on an operator-facing display. Make validatefields->verifyclaims->approve release legible and source-grounded, not a camera-facing placard. Keep canonicalface and mute palette.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Image1: dr-farah canonical identity authority. Image2: bridge ROOM ONLY master, not incidental UI or oversaturated light. Finalimage: exactedit target.\nRestage Farah actively working, not posing with props. She sits at a bridge desk in three-quarter view, reading a physical monitor at imageleft with one hand on mouse and the other resting on a source notebook facing her. She pauses with a thoughtful halfsmile after spotting a claim to check. No held paper/tablet. Monitor header Review before release. Three connected simple rows: Validate fields / Verify claims against sources / Record approval. Small status Approval pending. This is the release workflow, no assertion that review has already passed. Nearby closed source binder normaldark. All graphics follow monitor plane. Remove the pointlessslider/circle and arbitraryrear waves.\n Farah wears translucent sage AR lens on anatomicalLEFT eye. Never omit it. Canonical identity and age from portraits, naturally expressive faces in three-quarter view; normal adult head/body proportions and necks. Two arms per person, trace shoulders to elbows to wrists and exactly one natural five-finger hand each. No hand/furniture penetration. Every display has a physical frame; its front must face its actual readers as well as obliquely visible to camera. Every line, arrow and letter lies in its screen plane. Any notebook is blank faintly ruled, never fake handwriting. No mugshot or posed presentation, no one looks at camera. Warm light localized, muted charcoal/neutralgray/olive, sage #6BAA8A interfaces, aged brass #A89060. Avoid electriclime/yellowwash, no plants. Dark unused screens and wrist displays. Clean bold linework, flat celshading, cohesive Deep Orbit series. 1536x1024 landscape.",
+  "promptSha256": "cbca4c31350f55089e5f0da6399f8e6cf58076071b4423ae5f3c1339ea391e53",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+      "sha256": "fc72e8eaf0e22c7bb40d03a814a471011ec735635660a0a6ef55648a6eb318e6"
+    }
+  ],
+  "alt": "Farah checks a draft against its sources before recording approval.",
+  "location": "Archimedes, Bridge",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-abddeae3-ec03-4244-9d19-a9d774db9d93.png",
+  "candidatePath": "art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-abddeae3-ec03-4244-9d19-a9d774db9d93.png",
+  "candidateSha256": "c2d591e0c27dd7098d5fe1dbcbc9fc5ce50989a950be430c95f5a5e25a790d0a",
+  "ownReview": {
+    "reviewer": "/root/remaining_signal_llm",
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Native full frame compared with canonical faces. Natural task hands, body support and eyelines; muted room, inactive auxiliary screens. Exact current MDX facts, physically framed display with coherent perspective. Candidate depicts planning/review/correction action rather than portrait presentation."
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+      "sha256": "fc72e8eaf0e22c7bb40d03a814a471011ec735635660a0a6ef55648a6eb318e6",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-abddeae3-ec03-4244-9d19-a9d774db9d93.png",
+  "publishedSource": "art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-takeaways.webp",
+  "webpSha256": "38aa514f2fd5215695337cac7599391cf0dc29091508f3cbd26a60ec378937ba",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+    "sourceSha256": "fc72e8eaf0e22c7bb40d03a814a471011ec735635660a0a6ef55648a6eb318e6",
+    "webpSha256": "5b253f433182d983ebf23b7f5b3142e046ed8f5a1cd94efcc2f4fc12f2faeef2",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_signal_llm",
+    "status": "approved",
+    "candidateSha256": "c2d591e0c27dd7098d5fe1dbcbc9fc5ce50989a950be430c95f5a5e25a790d0a",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah operates mouse with natural thumb and fingers and rests other hand on notebook. Gaze reaches screen front. Validation,evidence review and approvalpending match recap. Canonical face, balanced neck/shoulders, coherent display-plane baselines and muted palette.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+          "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+          "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+        "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+        "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__llms-for-science-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-takeaways.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root",
+  "identityCropReview": [
+    {
+      "key": "llms-for-science-takeaways",
+      "character": "farah",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-abddeae3-ec03-4244-9d19-a9d774db9d93.png",
+      "sourceSha256": "c2d591e0c27dd7098d5fe1dbcbc9fc5ce50989a950be430c95f5a5e25a790d0a",
+      "crop": {
+        "left": 855,
+        "top": 80,
+        "width": 380,
+        "height": 410
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "referenceCrop": {
+        "left": 115,
+        "top": 5,
+        "width": 290,
+        "height": 335
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad soft cheek/jaw, rounded chin, arched brows, almond eye spacing, nose shape, mouth proportions and mature complexion. Gaze and three-quarter rotation account for apparent width differences; low ponytail and anatomical left-eye AR lens remain consistent.",
+      "comparisonDeleted": true
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import { INTRO_VIDEO } from "@/lib/intro-video";
+
 const SITE = "https://tensorcraft.app";
 
 /**
@@ -40,12 +42,12 @@ export function buildLearnVideo() {
   return {
     "@context": "https://schema.org",
     "@type": "VideoObject" as const,
-    name: "How Tensorcraft works",
+    name: INTRO_VIDEO.title,
     description:
-      "ML lessons for JavaScript developers, set aboard the research ship Archimedes. Help the crew investigate a signal while writing and running code in your browser.",
-    thumbnailUrl: [`${SITE}/media/learn-trailer-poster.webp`],
-    contentUrl: `${SITE}/media/learn-trailer.mp4`,
-    uploadDate: "2026-08-27",
-    duration: "PT1M12S",
+      "Tensorcraft teaches machine learning to JavaScript developers through courses set in different story worlds. Deep Orbit is the first available world, with four more coming soon. Write and run JavaScript in your browser to help its crew investigate a signal.",
+    thumbnailUrl: [`${SITE}${INTRO_VIDEO.poster}`],
+    contentUrl: `${SITE}${INTRO_VIDEO.src}`,
+    uploadDate: INTRO_VIDEO.uploadDate,
+    duration: `PT${INTRO_VIDEO.durationSeconds}S`,
   };
 }

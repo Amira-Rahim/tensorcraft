@@ -1,0 +1,1014 @@
+[
+  {
+    "module": "neural-networks",
+    "lesson": "activation-functions",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/neural-networks/activation-functions.webp",
+    "index": 0,
+    "characters": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. Image 1 is canonical Chief Nazari. Image 2 is canonical Ensign Demir. Image 3 is the edit target. Correct ONLY Demir's head on the right. His previous correction still has a long flat jaw, pointed nose and oversized quiff. Turn his head slightly toward camera into a natural three-quarter view, still looking toward Nazari with his eyes. Reconstruct the SAME face as Image 2: short round-ended broad nose, broad soft cheeks, compact softly squared jaw, short rounded chin, canonical brow shapes and round eye spacing, sparse freckles and short uneven stubble. Reduce hair to the compact canonical front locks. Do not retain the target's elongated profile. Preserve Nazari's entire already-corrected face and body unchanged. Preserve Demir's body, seated posture, neck attachment, both keyboard hands, all furniture and every display shape exactly. No other changes, text, people or limbs. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-4a75ae9a-d240-412a-a82a-6af06627f5ac.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5c9b88da-edb0-4a07-baef-3a2af51db053.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-4a75ae9a-d240-412a-a82a-6af06627f5ac.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=758): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. ENSIGN-DEMIR (portrait 2, scene head near x=1304): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene.",
+        "references": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions.webp"
+        ],
+        "verdict": "withheld",
+        "reason": "Demir elongated profile remains"
+      }
+    ]
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "activation-functions",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+    "index": 1,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=629): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-180421df-7b34-4a4c-8845-f121052f8731.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "activation-functions",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+    "index": 2,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=698): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-aa9648ee-72e6-42f0-a5ac-d5ef95472087.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "activation-functions",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp",
+    "index": 3,
+    "characters": [
+      "chief-nazari",
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. Image 1 is canonical Chief Nazari. Image 2 is canonical Dr Farah. Image 3 is the edit target. Correct ONLY Farah's head on the right. The prior edit left a triangular chin, narrow lower cheeks and tiny pointed nose, which must be replaced. Turn her head slightly toward the camera while her eyes still glance warmly toward Nazari. Faithfully reproduce Image 2's SAME mature 38-year-old individual: full rounded lower cheeks, short broad rounded chin, compact broad nose with a round tip, exact brow and eye shape/spacing, adult eye and mouth detail, full restrained lip proportions, olive-tan complexion and same compact hairline/tied waves. A warm small smile is enough. Do not draw a teenager, narrow beauty face, pointy chin or tiny nose. Preserve her green AR lens on the same anatomical eye. Preserve Nazari's entire already-corrected face and body unchanged. Preserve both women's bodies, all four hands, slate, multitool, room and every screen curve/diagram exactly. No other changes, text, people or limbs. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5f185371-ff04-4c49-8634-48127127f330.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae3a58b3-0b9a-4d0c-b099-cf241aff2f69.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5f185371-ff04-4c49-8634-48127127f330.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=444): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. DR-FARAH (portrait 2, scene head near x=1163): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene.",
+        "references": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/dr-farah.png",
+          "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp"
+        ],
+        "verdict": "withheld",
+        "reason": "Farah triangular lower face remains"
+      }
+    ]
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "activation-functions",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/neural-networks/activation-functions-epilogue.webp",
+    "index": 4,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=1076): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6b446a25-1958-4994-bc15-6e28eb2a0c04.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "building-a-network",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/neural-networks/building-a-network.webp",
+    "index": 5,
+    "characters": [
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=473): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-d875df59-4d44-4035-9c4c-3475f6cd7621.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "building-a-network",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/neural-networks/building-a-network-concept.webp",
+    "index": 6,
+    "characters": [
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=371): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-752182a3-adf4-4ecd-bde2-2262dbd8190c.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "building-a-network",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/neural-networks/building-a-network-challenge.webp",
+    "index": 7,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=440): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-challenge.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-10eb5942-d34f-4c52-8eba-fa93018e4ba3.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "building-a-network",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp",
+    "index": 8,
+    "characters": [
+      "ensign-demir",
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of commander-mirza. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=486): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. COMMANDER-MIRZA (portrait 2, scene head near x=1086): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-67a23dbe-a80d-43da-9fbe-3817d89e3c35.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "building-a-network",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/neural-networks/building-a-network-epilogue.webp",
+    "index": 9,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=642): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-86e139ce-1417-4794-b15b-e52eb40d3942.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "first-neuron",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/neural-networks/first-neuron.webp",
+    "index": 10,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=876): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-181b1e1a-48a7-4a33-b352-df86b20b958b.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "first-neuron",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/neural-networks/first-neuron-concept.webp",
+    "index": 11,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=1118): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-fcac4868-4d8a-4587-954b-3eb706969915.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "first-neuron",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+    "index": 12,
+    "characters": [
+      "ensign-demir",
+      "dr-farah"
+    ],
+    "prompt": "Strict identity-only repair. Image1 canonical Demir, image2 canonical Farah, image3 target scene. Correct Farah's FACE at the right side of the target only: turn her head slightly toward camera into a natural near-frontal three-quarter view while preserving her task and neck/body connection. She is the EXACT adult 38-year-old in portrait2. Her current tiny pinched nose and narrow triangular lower face are wrong. Faithfully restore her wider round-ended nose with full nostrils, broad rounded lower cheeks, compact round chin, adult restrained eyes and mouth proportions. Keep mature eye and smile creases. Preserve olive-tan skin, compact dark waves loosely tied and rectangular green AR lens on the same anatomical eye. Do not merely add lines to the same wrong geometry. Preserve Demir's already approved facial proportions and all bodies, arms, hands, fingers, clothing, furniture, screens, diagrams, scene framing and lighting unchanged. No other people or text. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-96193c8a-6052-4fbc-9006-591c905acf0e.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-22bc5161-07c2-45e5-8c89-6e419bb2e247.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-96193c8a-6052-4fbc-9006-591c905acf0e.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=702): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. DR-FARAH (portrait 2, scene head near x=1163): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/dr-farah.png",
+          "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp"
+        ],
+        "reason": "Peer hold: Farah tiny nose, narrow pointed lower face."
+      }
+    ]
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "first-neuron",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/neural-networks/first-neuron-takeaways.webp",
+    "index": 13,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=1077): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-79a39f79-70ce-4b71-8da2-e65d7ecec22f.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "first-neuron",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+    "index": 14,
+    "characters": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=1100): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face. Nazari's current sharp side profile is not an identity authority. Turn her head slightly toward camera so her canonical broad nose and rounded lower face can be recognized, keeping the mug and both hands unchanged.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-fdd6bf06-f863-45f7-8883-ea1edace2eaa.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "forward-pass",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/neural-networks/forward-pass.webp",
+    "index": 15,
+    "characters": [
+      "ensign-demir",
+      "dr-farah"
+    ],
+    "prompt": "Strict identity-only repair. Image1 canonical Demir, image2 canonical Farah, image3 target scene. Correct Farah's FACE at the right side of the target only: turn her head slightly toward camera into a natural near-frontal three-quarter view while preserving her task and neck/body connection. She is the EXACT adult 38-year-old in portrait2. Her current tiny pinched nose and narrow triangular lower face are wrong. Faithfully restore her wider round-ended nose with full nostrils, broad rounded lower cheeks, compact round chin, adult restrained eyes and mouth proportions. Keep mature eye and smile creases. Preserve olive-tan skin, compact dark waves loosely tied and rectangular green AR lens on the same anatomical eye. Do not merely add lines to the same wrong geometry. Preserve Demir's already approved facial proportions and all bodies, arms, hands, fingers, clothing, furniture, screens, diagrams, scene framing and lighting unchanged. No other people or text. 1536x1024. One additional equipment correction: Demir's round green earpiece must be on HIS ANATOMICAL RIGHT EAR, matching portrait1. It currently sits on his anatomical left, viewer-right, which is wrong. Remove that wrong-side earpiece and place it correctly on the opposite anatomical ear, allowing natural partial occlusion. Do not mirror his face or body. Keep his chin-hand contact and gaze.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-bcfe190c-05c4-4194-9423-1cd29fa2157c.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-1bd7a069-20a8-42b2-a518-cf915004e39c.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-bcfe190c-05c4-4194-9423-1cd29fa2157c.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=897): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. DR-FARAH (portrait 2, scene head near x=1205): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face. Demir's current strict profile must turn slightly toward camera into a natural three-quarter view. Preserve his hand at the chin, keyboard hand and seated body exactly, adapting the neck and head above the hand. Restore his canonical compact rounded lower face and nose. Farah keeps her folded arms and stylus exactly.",
+        "references": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/dr-farah.png",
+          "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass.webp"
+        ],
+        "reason": "Peer hold: Farah narrow nose/lower face; Demir earpiece wrong anatomical side."
+      }
+    ]
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "forward-pass",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+    "index": 16,
+    "characters": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=290): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. ENSIGN-DEMIR (portrait 2, scene head near x=830): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-efe22641-8d9d-45a6-acb7-c2798e6d7d68.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "forward-pass",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+    "index": 17,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=534): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-690f7f0c-35ab-4f2d-81bc-a8acaec0692b.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "forward-pass",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+    "index": 18,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=776): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-94c25b8e-a2e3-402b-90b6-ed8d849d9b13.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "forward-pass",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp",
+    "index": 19,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=1068): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e0c4b4dd-cb14-4197-b7a3-6e1d7236ce61.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "layers-and-architecture",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture.webp",
+    "index": 20,
+    "characters": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=1014): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f26f50af-0554-4df1-8d73-89742a4c6555.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "layers-and-architecture",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp",
+    "index": 21,
+    "characters": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=530): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-0af97cca-a2a1-40de-bf57-deebd4469216.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "layers-and-architecture",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+    "index": 22,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=918): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-66d04e34-01d2-445b-a169-c20ae00a099c.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "layers-and-architecture",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+    "index": 23,
+    "characters": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=998): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-c3fcfa2c-4846-4aec-a114-f28ca9308ef8.png"
+  },
+  {
+    "module": "neural-networks",
+    "lesson": "layers-and-architecture",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-epilogue.webp",
+    "index": 24,
+    "characters": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "prompt": "Strict head-only identity correction. Image1 is canonical Ensign Demir, authoritative facial identity. Any intermediate portrait is another character to preserve. LAST image is scene target. Correct ONLY Demir's face/hair/neck transition. His current pointed narrow nose and long tapering chin are wrong. Turn his head toward camera into a gentle near-frontal three-quarter view, with eye gaze still directed at his current task or companion. Faithfully reproduce image1's compact broad softly squared lower face, SHORT rounded chin, wider rounded nose base with round tip and full nostrils, same nose bridge and eye spacing, distinctive straight eyebrows, sparse freckles and uneven stubble. Keep compact dark forelock and right-anatomical-ear green earpiece. Preserve his current warm smile or concentration through expression alone. This must be the same individual at a new angle, not a generic handsome sharp-faced version. Preserve every other person exactly, especially their already approved face. Preserve exact body, all arms/hands/fingers, neck contact with hands if any, clothing, furniture, equipment, screen graphics, diagrams, lighting, framing and size. No other changes. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-66f7bb6e-1b3d-4acc-89dd-464bdb03d135.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6d2d45be-198b-4059-a045-8b42ed806016.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-66f7bb6e-1b3d-4acc-89dd-464bdb03d135.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=309): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. ENSIGN-DEMIR (portrait 2, scene head near x=951): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-epilogue.webp"
+        ],
+        "reason": "Peer hold: Demir thin pointed nose and narrowing chin remain; angle does not preserve canonical morphology."
+      }
+    ]
+  },
+  {
+    "module": "training-loop",
+    "lesson": "backpropagation",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/training-loop/backpropagation.webp",
+    "index": 25,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=567): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/backpropagation.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-47dcb831-f7b1-4bc6-bf9a-748d68c263d2.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "backpropagation",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/training-loop/backpropagation-concept.webp",
+    "index": 26,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=386): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ddb6f335-421c-4bd8-9a04-9adf3dc987b2.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "backpropagation",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/training-loop/backpropagation-challenge.webp",
+    "index": 27,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Strict head-only identity correction. Image1 is canonical Ensign Demir, authoritative facial identity. Any intermediate portrait is another character to preserve. LAST image is scene target. Correct ONLY Demir's face/hair/neck transition. His current pointed narrow nose and long tapering chin are wrong. Turn his head toward camera into a gentle near-frontal three-quarter view, with eye gaze still directed at his current task or companion. Faithfully reproduce image1's compact broad softly squared lower face, SHORT rounded chin, wider rounded nose base with round tip and full nostrils, same nose bridge and eye spacing, distinctive straight eyebrows, sparse freckles and uneven stubble. Keep compact dark forelock and right-anatomical-ear green earpiece. Preserve his current warm smile or concentration through expression alone. This must be the same individual at a new angle, not a generic handsome sharp-faced version. Preserve every other person exactly, especially their already approved face. Preserve exact body, all arms/hands/fingers, neck contact with hands if any, clothing, furniture, equipment, screen graphics, diagrams, lighting, framing and size. No other changes. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-abdcda4c-99d1-4cc3-8c80-ac6d52774cbd.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-54dc566e-5159-4512-b8f0-c8864f4a5518.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-abdcda4c-99d1-4cc3-8c80-ac6d52774cbd.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=896): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-challenge.webp"
+        ],
+        "reason": "Peer hold: Demir thin pointed nose and narrowing chin remain; angle does not preserve canonical morphology."
+      }
+    ]
+  },
+  {
+    "module": "training-loop",
+    "lesson": "backpropagation",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp",
+    "index": 28,
+    "characters": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=636): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7d3c8332-4016-44d7-894e-f75c1894fe2c.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "backpropagation",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+    "index": 29,
+    "characters": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "prompt": "Strict head-only identity correction. Image1 is canonical Ensign Demir, authoritative facial identity. Any intermediate portrait is another character to preserve. LAST image is scene target. Correct ONLY Demir's face/hair/neck transition. His current pointed narrow nose and long tapering chin are wrong. Turn his head toward camera into a gentle near-frontal three-quarter view, with eye gaze still directed at his current task or companion. Faithfully reproduce image1's compact broad softly squared lower face, SHORT rounded chin, wider rounded nose base with round tip and full nostrils, same nose bridge and eye spacing, distinctive straight eyebrows, sparse freckles and uneven stubble. Keep compact dark forelock and right-anatomical-ear green earpiece. Preserve his current warm smile or concentration through expression alone. This must be the same individual at a new angle, not a generic handsome sharp-faced version. Preserve every other person exactly, especially their already approved face. Preserve exact body, all arms/hands/fingers, neck contact with hands if any, clothing, furniture, equipment, screen graphics, diagrams, lighting, framing and size. No other changes. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-60ec9701-de6e-49f0-a6e4-0f133edaa651.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ff3dc5a9-eebe-4f42-becd-851f28cb7cfb.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-60ec9701-de6e-49f0-a6e4-0f133edaa651.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=264): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. ENSIGN-DEMIR (portrait 2, scene head near x=1214): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp"
+        ],
+        "reason": "Peer hold: Demir thin pointed nose and narrowing chin remain; angle does not preserve canonical morphology."
+      }
+    ]
+  },
+  {
+    "module": "training-loop",
+    "lesson": "evaluating-deep-scan",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+    "index": 30,
+    "characters": [
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=605): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-52f880ad-c8d5-4475-b091-1616a9d78554.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "evaluating-deep-scan",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+    "index": 31,
+    "characters": [
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=497): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-b93353d8-fe6d-4fc3-893c-abf7ce1552b9.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "evaluating-deep-scan",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+    "index": 32,
+    "characters": [
+      "commander-mirza",
+      "ensign-demir"
+    ],
+    "prompt": "Strict head-only identity correction. Image1 is canonical Ensign Demir, authoritative facial identity. Any intermediate portrait is another character to preserve. LAST image is scene target. Correct ONLY Demir's face/hair/neck transition. His current pointed narrow nose and long tapering chin are wrong. Turn his head toward camera into a gentle near-frontal three-quarter view, with eye gaze still directed at his current task or companion. Faithfully reproduce image1's compact broad softly squared lower face, SHORT rounded chin, wider rounded nose base with round tip and full nostrils, same nose bridge and eye spacing, distinctive straight eyebrows, sparse freckles and uneven stubble. Keep compact dark forelock and right-anatomical-ear green earpiece. Preserve his current warm smile or concentration through expression alone. This must be the same individual at a new angle, not a generic handsome sharp-faced version. Preserve every other person exactly, especially their already approved face. Preserve exact body, all arms/hands/fingers, neck contact with hands if any, clothing, furniture, equipment, screen graphics, diagrams, lighting, framing and size. No other changes. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2f5accd9-5ac7-4b14-8d30-2ad5853da6a1.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-3362829f-0be8-4c5f-9f52-e0bbf7d5f3ea.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2f5accd9-5ac7-4b14-8d30-2ad5853da6a1.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=317): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. ENSIGN-DEMIR (portrait 2, scene head near x=957): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/commander-mirza.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp"
+        ],
+        "reason": "Peer hold: Demir thin pointed nose and narrowing chin remain; angle does not preserve canonical morphology."
+      }
+    ]
+  },
+  {
+    "module": "training-loop",
+    "lesson": "evaluating-deep-scan",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp",
+    "index": 33,
+    "characters": [
+      "dr-farah",
+      "commander-mirza"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the authoritative neutral portrait of commander-mirza. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=291): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. COMMANDER-MIRZA (portrait 2, scene head near x=768): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-3775ba13-b87b-40b0-a9b3-99fc2ecc00ff.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "evaluating-deep-scan",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+    "index": 34,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=858): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-494e8798-7336-49fe-a666-6c5d5ff0ecb4.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "gradient-descent",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/training-loop/gradient-descent.webp",
+    "index": 35,
+    "characters": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=347): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face. One explicit additional technical correction overrides the preserve-display instruction: on the large descent-curve monitor, make every circular step marker the SAME DIAMETER, about 16 pixels at output size, maintaining all existing center positions and the same narrowing spacing toward the bottom. The step markers must not shrink. Preserve the curve, dotted path and all other display content.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5a5ad103-482e-49df-92bf-ff9a837e5d76.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "gradient-descent",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/training-loop/gradient-descent-concept.webp",
+    "index": 36,
+    "characters": [
+      "chief-nazari"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=1040): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-53ac2768-345d-48dd-8cb1-d816039816cd.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "gradient-descent",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+    "index": 37,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=554): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f9cc6047-8650-480b-803d-167d9a08d33a.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "gradient-descent",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp",
+    "index": 38,
+    "characters": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=504): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. ENSIGN-DEMIR (portrait 2, scene head near x=1080): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-68f9654f-bdd8-4ea5-8ace-2b3a0db6a5ae.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "gradient-descent",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp",
+    "index": 39,
+    "characters": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=953): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. ENSIGN-DEMIR (portrait 2, scene head near x=494): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-8bc855c7-0e38-4c07-97a0-53c5b1ed2a27.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "loss-functions",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/training-loop/loss-functions.webp",
+    "index": 40,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Strict identity-only repair. Image1 is the authoritative neutral portrait of Dr Farah. Image2 is target scene. Correct ONLY Farah's head, hair and neck transition. Her current pointed narrow nose and triangular lower face are wrong. Turn her head gently toward camera into a near-frontal three-quarter view, keeping her slight lean and eye gaze toward the tabletop demonstration. Reproduce exactly the mature38-year-old portrait's facial proportions: broad rounded lower cheeks, compact rounded chin, full round-ended nose with broad base and nostrils, restrained almond eyes and their spacing, adult eye and mouth details. Keep olive-tan complexion, compact dark loosely tied waves and rectangular green AR lens on the anatomically correct eye. Do not merely add wrinkles to the wrong face. Preserve her stylus hand, tabletop-resting hand, body, neck/shoulder connection, furniture, screen graphics, exact demonstration, color, lighting and framing. No new limbs, people or text. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9866112f-afd2-416c-bdf2-0c4c7b193267.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-154e71e3-f512-464f-a786-e39174aba3ff.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9866112f-afd2-416c-bdf2-0c4c7b193267.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=1044): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/dr-farah.png",
+          "apps/web/public/scenes/deep-orbit/training-loop/loss-functions.webp"
+        ],
+        "reason": "Peer hold: Farah narrow triangular lower face and pointed nose/chin."
+      }
+    ]
+  },
+  {
+    "module": "training-loop",
+    "lesson": "loss-functions",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/training-loop/loss-functions-concept.webp",
+    "index": 41,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=1163): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9cc37407-db2b-4ac9-b5cd-8631dbf6d4f5.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "loss-functions",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+    "index": 42,
+    "characters": [
+      "ensign-demir",
+      "dr-farah"
+    ],
+    "prompt": "Strict identity-only repair. Image1 authoritative canonical Demir, image2 canonical Farah, last image target. Correct ONLY Demir's head, hair and neck transition. His current narrow pointed nose and pinched chin are wrong. Turn him gently toward camera into near-frontal three-quarter view, keeping his warm smile and gaze toward his task. Restore portrait1's compact broad softly squared lower face, SHORT rounded chin, broad round-ended nose and full nostrils, same bridge and eye spacing, distinctive straight brows, sparse freckles, uneven stubble and compact dark front locks. Keep earpiece on anatomical right. Preserve Farah exactly, including her already approved face. Preserve all bodies, arms, hands, fingers, tablet grips, keyboard contact, furniture, prediction-target rail graphics, lighting and framing. No other changes. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-143ffa51-92e5-45af-89e8-442160febade.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f35974d8-6c15-4db5-9ee2-065653368722.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-143ffa51-92e5-45af-89e8-442160febade.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=504): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. DR-FARAH (portrait 2, scene head near x=1247): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/dr-farah.png",
+          "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-challenge.webp"
+        ],
+        "reason": "Peer hold: Demir narrow nose and pinched chin."
+      }
+    ]
+  },
+  {
+    "module": "training-loop",
+    "lesson": "loss-functions",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp",
+    "index": 43,
+    "characters": [
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=1104): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-cd5684ce-1d46-4a23-a863-3615ca619041.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "loss-functions",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp",
+    "index": 44,
+    "characters": [
+      "ensign-demir",
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=486): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. DR-FARAH (portrait 2, scene head near x=1098): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae85a951-de31-4f2f-90a6-33327f5e05f1.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "training-loop",
+    "phase": "briefing",
+    "src": "/scenes/deep-orbit/training-loop/training-loop.webp",
+    "index": 45,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=977): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face. Turn Demir's head gently toward camera so the canonical rounded nose and broad short lower face are clearly visible. His green comms earpiece belongs on HIS ANATOMICAL RIGHT EAR as in the neutral portrait, not anatomical left as in the target. Correct the equipment side, allowing natural occlusion, without mirroring body or face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/training-loop.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-27a8c4a3-5827-4b5c-9362-f1ad047fda4c.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "training-loop",
+    "phase": "concept",
+    "src": "/scenes/deep-orbit/training-loop/training-loop-concept.webp",
+    "index": 46,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=446): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/training-loop-concept.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ff45ff9c-cbfd-4a6d-a906-b41e25f1db82.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "training-loop",
+    "phase": "challenge",
+    "src": "/scenes/deep-orbit/training-loop/training-loop-challenge.webp",
+    "index": 47,
+    "characters": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "prompt": "Strict head-only identity correction. Image1 is canonical Ensign Demir, authoritative facial identity. Image2 is canonical Chief Nazari whose scene face is already approved. LAST image is target. Correct ONLY Demir's face/hair/neck transition. His current long tapering pointed chin and compressed eyes/brows are wrong. Turn his head toward camera into a gentle near-frontal three-quarter view, with eyes still looking toward the console. Faithfully reproduce image1's compact broad softly squared lower face, SHORT rounded chin, wider round nose base and round tip, exact eye/brow spacing, distinctive straight brows, sparse freckles and uneven stubble. Keep compact dark forelock and right-anatomical-ear green earpiece. Preserve focused friendly expression. This must be the same individual at a new angle, not a generic sharp-faced character. Preserve Nazari exactly, including her approved face. Preserve all bodies, arms, hands, fingers, tablet grip, pause-button contact, clothing, furniture, screen curves and five-cell patience display, lighting, framing and size. No other changes. 1536x1024.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-fad36314-65ea-405f-8d80-13c0f7edbb6f.png"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f45a1129-5b91-4cdd-9065-8ae65b0d64ae.png",
+    "previousAttempts": [
+      {
+        "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-fad36314-65ea-405f-8d80-13c0f7edbb6f.png",
+        "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=285): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. ENSIGN-DEMIR (portrait 2, scene head near x=920): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+        "references": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "apps/web/public/scenes/deep-orbit/training-loop/training-loop-challenge.webp"
+        ],
+        "reason": "Peer hold: Demir lower face long and pointed, compressed eyes/brows."
+      }
+    ]
+  },
+  {
+    "module": "training-loop",
+    "lesson": "training-loop",
+    "phase": "takeaways",
+    "src": "/scenes/deep-orbit/training-loop/training-loop-takeaways.webp",
+    "index": 48,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=830): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/training-loop-takeaways.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-a387ddef-c74f-4ee8-9e35-efecd19b77f5.png"
+  },
+  {
+    "module": "training-loop",
+    "lesson": "training-loop",
+    "phase": "epilogue",
+    "src": "/scenes/deep-orbit/training-loop/training-loop-epilogue.webp",
+    "index": 49,
+    "characters": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=576): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+    "references": [
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/training-loop-epilogue.webp"
+    ],
+    "status": "identity-approved",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6cb70323-99e5-4b64-aa34-4fa08cbf29ed.png"
+  }
+]

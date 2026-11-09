@@ -193,7 +193,7 @@ stay allocated after their JavaScript objects are gone.
   `?utm_source=devto&utm_medium=article&utm_campaign=first1000&utm_content=tensor-cleanup-01`.
 - The plan's call to action for this piece: "Try the tensor exercise."
 - Disclose the offer the way the plan's drafts do: the first five lessons are
-  free without an account, and the full Deep Orbit course costs $50 once.
+  free without an account. The full Deep Orbit course costs $79 once at the introductory price, with a $99 regular price.
 
 ## Clip for the piece (30 to 60 seconds)
 

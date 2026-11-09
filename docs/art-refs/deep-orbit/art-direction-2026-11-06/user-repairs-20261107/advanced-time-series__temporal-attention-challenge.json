@@ -1,0 +1,136 @@
+{
+  "id": "temporal-challenge-reader-r3",
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "challenge",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-55d94fdd-845c-473b-9d98-700a4b5d9f68.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+    "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml"
+  ],
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Image1 canonical Demir, image2 bridge ARCHITECTURE ONLY, never copy its screen graphics or vivid green lighting, image3 EDIT TARGET. Narrow palette cleanup only. Make the circular holo-table behind Demir completely inactive dark charcoal glass, with no bright mint center and no mint strip around pedestal. Reduce saturated fluorescent mint rim light around Demir, his ear device and every screen bezel to faint muted gray-sage. Main monitor text must be soft desaturated gray-sage #8DAD98 with no glow or neon edge. Remove all green bloom. Keep flat shaded natural skin, slate uniform, aged matte brass. Do not make the image dark or lose face visibility.\nPreserve EVERYTHING else exactly: Demir canonical face/head/body/short neck, shoulders, absorbed expression, both correct hand and arm chains, pen and keyboard, accessible reader-side upright monitor and all numbers. Main table must remain Reading/Position with [0,4]/0; [0.25,2]/0.5; [0.5,0]/1, Scorer[1,0,0.5], Weights[3]:pending, Summary[2]:pending. Preserve decimal points, labels, grid and physical screen perspective. Every other display remains inactive charcoal, no new UI. One1536x1024 cel-shaded cartoon illustration, clean linework and flat shading.",
+  "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+  "candidateSha256": "59d5ab26c5f271dcd893c711d384cfdac6513b361261ab22c4536f3f7df6f1fd",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-55d94fdd-845c-473b-9d98-700a4b5d9f68.png",
+      "sha256": "145731e8a8c32142e1bf962ff09662e0444dd8cbaeb21c2cece234c126a1a3b3",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+    }
+  ],
+  "ownerQa": {
+    "status": "pass",
+    "reviewer": "/root/reader_late",
+    "method": "Native fullframe, exact canonical Demir visual comparison, numeric text verified against current MDX/YAML. Final correction independently inspected at native resolution.",
+    "identity": "Same hairline, freckles, stubble, brown eyes and facial morphology at natural yaw. Adult stylized proportions.",
+    "anatomy": "Two visible connected arm chains, natural stylus pinch and supported free hand. Neutral neck with torso.",
+    "readerDirection": "Upright monitor physically faces the character. Camera and character share readable front side.",
+    "screenMeaning": "All displayed data independently verified. Briefing separates 74 positions from raw timestamp gap 73.4 s. Challenge exact mild synthetic fixture and pending outputs, decimals checked.",
+    "style": "Candid absorbed task expression and restrained sage/brass.",
+    "publication": "Pending root peer review. No runtime or ledger mutation.",
+    "peerRequestedCorrection": "Background holo-table now inactive charcoal. Mint glow/rim/ink muted to gray-sage. All decimals, face and hands preserved."
+  },
+  "canonicalComparisons": [
+    {
+      "character": "ensign-demir",
+      "canonicalPath": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "candidateCrop": {
+        "left": 400,
+        "top": 40,
+        "width": 355,
+        "height": 485
+      }
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-d29c01c5-39d1-47bd-9613-588ddc99cad4.png",
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-d29c01c5-39d1-47bd-9613-588ddc99cad4.png",
+  "publishedSource": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+  "sourceSha256": "59d5ab26c5f271dcd893c711d384cfdac6513b361261ab22c4536f3f7df6f1fd",
+  "webpSha256": "4ef0c317a398a19d40eb1903a1e588f60a644150b5f331eb4b6df963a5a96215",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+    "sourceSha256": "2eb05bbd6316be74106e31ccdaa22721d331cd420fe41b2ca9d3a51495a7d240",
+    "webpSha256": "7e9f06a5989c3c375bae87190c47bd02a764b045c2c2366daf0cf445e68a7867",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_late",
+    "status": "approved",
+    "candidateSha256": "59d5ab26c5f271dcd893c711d384cfdac6513b361261ab22c4536f3f7df6f1fd",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsBodyAndFurniture": "pass",
+      "headNeckAndShoulders": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "screenMeaning": "All displayed data independently verified. Briefing separates 74 positions from raw timestamp gap 73.4 s. Challenge exact mild synthetic fixture and pending outputs, decimals checked."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+        "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+        "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

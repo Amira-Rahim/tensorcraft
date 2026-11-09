@@ -1,0 +1,115 @@
+{
+  "key": "gradient-descent-concept",
+  "id": "training-loop/gradient-descent",
+  "phase": "concept",
+  "cast": [
+    "chief-nazari"
+  ],
+  "prompt": "Use case: precise-object-edit. First reference canonical Chief Nazari identity, second Engineering master for room architecture only, third exact image target. Change ONLY the tiny background monitor contents: turn all four small rear displays inactive charcoal with subtle physical glass reflection, no lit graphs, boxes, rows or fake readings. This includes the small screen inside the open cabinet. Keep the large foreground work monitor and its exact text and perspective untouched, including First descent step, Loss=(x-3)^2, Start x=0, Gradient=-6, Rate=0.1, Next x=0.6, Illustrative example. Preserve Nazari's facial morphology, age, natural expression, hair, exact hands and knob contact, adult proportions, clothing and pose. Preserve the composition, charcoal/sage/aged brass palette, natural lighting, every other object. 1536x1024 landscape.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room geometry only",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-26d9f86f-9a4b-4931-b41d-ad005eec37c2.png",
+      "sha256": "584d64a782fb004aa3f0d51ce3bdec6a553f10f0fd8455f0f1028e6b6ffbc85e",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+    }
+  ],
+  "candidatePath": "art-src/scenes/training-loop__gradient-descent-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-5631f094-9930-444c-8bec-d525f462e875.png",
+  "candidateSha256": "a2c1d2f8c36553e173f60a3224e4dc624becc6f6b45edd9ed2a933a23afca775",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "reviewer": "/root",
+    "status": "pass",
+    "method": "Native1536x1024 complete frame and canonical portraits/source inspected",
+    "notes": "All small peripheral displays inactive. Main illustrative gradient update remains exact and aligned. Natural hand-knob contact and Nazari identity retained."
+  },
+  "previousCandidate": {
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-26d9f86f-9a4b-4931-b41d-ad005eec37c2.png",
+    "candidateSha256": "584d64a782fb004aa3f0d51ce3bdec6a553f10f0fd8455f0f1028e6b6ffbc85e",
+    "prompt": "Use case: identity-preserve story scene edit. First image(s) are authoritative neutral portraits of each named human, next is ROOM GEOMETRY ONLY, last is scene to replace. Preserve exact canonical facial structure, age markers, hair, equipment and uniforms. Natural moderately stylized adult proportions, short relaxed necks and ordinary shoulder widths. Two coherent arms per person, natural five-finger hands and wrist alignment. Text, rows, boxes, labels follow physical display perspective including foreshortening and vanishing directions. The operators must see the fronts of screens. Camera beside operators sees the same surface. No camera-facing placards or empty posed smiles. Muted sage #6BAA8A and aged brass #A89060 against charcoal, natural skin, restrained warm practical light. Unused screens dark. No decorative neon, random graphs, plants, extra people or invented results. Landscape1536x1024. Nazari works through the lesson's first numerical descent update at Engineering bench. Side three-quarter visible canonical face, focused small smile of recognition while one hand turns a simple physical knob under the monitor, other rests open on clear tabletop near closed multitool. Working display faces Nazari and audience from shared front side. Exact display title 'First descent step'. Four rows: 'Loss = (x - 3)^2', 'Start x = 0', 'Gradient = -6', 'Rate = 0.1'. Last emphasized numerical row 'Next x = 0.6'. Tiny footer 'Illustrative example'. No curve, no generic waveform. All text must follow screen plane. Real action and visible reaction, not camera pose. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "actualReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "role": "canonical identity",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+        "role": "room geometry only",
+        "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-26d9f86f-9a4b-4931-b41d-ad005eec37c2.png",
+        "sha256": "584d64a782fb004aa3f0d51ce3bdec6a553f10f0fd8455f0f1028e6b6ffbc85e",
+        "role": "exact edit target"
+      }
+    ]
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-5631f094-9930-444c-8bec-d525f462e875.png",
+  "publishedSource": "art-src/scenes/training-loop__gradient-descent-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-concept.webp",
+  "sourceSha256": "a2c1d2f8c36553e173f60a3224e4dc624becc6f6b45edd9ed2a933a23afca775",
+  "webpSha256": "0636aa9928aaec2a855a9b809cbc473917507c16070a1b359f13efe4ff47ad70",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__gradient-descent-concept-openai-20261107.png",
+    "sourceSha256": "363433638b9a4340414ff45ec214c5b9df1368cfde8b4e402d3f21d8bf4e659e",
+    "webpSha256": "81966bec12d1ff8bd6908955249d97d9dd3c299a0b556453f9a4979f9cbdbf10",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-53ac2768-345d-48dd-8cb1-d816039816cd.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "a2c1d2f8c36553e173f60a3224e4dc624becc6f6b45edd9ed2a933a23afca775",
+    "method": "Native complete1536x1024 plus currentMDX/exercise and canonical references",
+    "checks": {
+      "combinedNativeReview": "Canonical Nazari, natural knob grip/resting hand and normal seated proportions. Exact loss(x-3)^2,start0,gradient-6,rate.1,next.6 is mathematically correct and matches source example. Explicit illustrative label avoids mission-result claim. Board perspective coherent, auxiliary screens now dark, palette consistent.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+          "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__gradient-descent-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-concept.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__gradient-descent-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

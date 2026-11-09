@@ -1,0 +1,273 @@
+{
+  "key": "deep-orbit/advanced-time-series/forecasting",
+  "phase": "concept",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Farah working alone at a bridge analysis console, her body in a three-quarter side stance leaning slightly into the task, eyes following a loop on the screen. Camera is diagonally beside the screen, not directly facing her. Her right stylus traces the return path; her left hand rests on a small open notebook lying flat on the bench. Remove the held tablet and floating stage-like hologram. Use a compact angled working display with two method rows: Rollout: Past feeds Model feeds Prediction, and Prediction returns into Model by a clear loop labeled Next input. Second row One-step replay: Observed history feeds Model feeds Prediction; a separate New observation arrow joins Observed history. No arrow returning from the lower Prediction. Her focused half-smile is about catching the input difference. Every text baseline, box and connector lies in the perspective of the display. No numerical forecast, arbitrary chart, or confidence cone. Spare monitors and table emitter off. Keep balanced stylized proportions and exact canonical face, natural short neck, two connected arms, believable grip. Soft warm skin, muted sage and worn brass against charcoal, no neon. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/forecasting-concept-target.png",
+      "sha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+    "sha256": "3b9e42d4d237b95b38ef4c2095644fd75f98887fe8cf8f9edf0aab1c82598fc3"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1",
+      "matchesCandidateMetadata": true
+    }
+  ],
+  "panelSpecification": {
+    "state": "rollout and one-step replay operation",
+    "panels": [
+      "Hologram upper row: Past enters Model, output Prediction feeds back as Next input for Rollout.",
+      "Lower row: New observation joins Observed history, then Model predicts without feedback into its history."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Restage Farah working alone at a bridge analysis console, her body in a three-quarter side stance leaning slightly into the task, eyes following a loop on the screen. Camera is diagonally beside the screen, not directly facing her. Her right stylus traces the return path; her left hand rests on a small open notebook lying flat on the bench. Remove the held tablet and floating stage-like hologram. Use a compact angled working display with two method rows: Rollout: Past feeds Model feeds Prediction, and Prediction returns into Model by a clear loop labeled Next input. Second row One-step replay: Observed history feeds Model feeds Prediction; a separate New observation arrow joins Observed history. No arrow returning from the lower Prediction. Her focused half-smile is about catching the input difference. Every text baseline, box and connector lies in the perspective of the display. No numerical forecast, arbitrary chart, or confidence cone. Spare monitors and table emitter off. Keep balanced stylized proportions and exact canonical face, natural short neck, two connected arms, believable grip. Soft warm skin, muted sage and worn brass against charcoal, no neon.",
+    "sourceSection": "MDX Multi-Step Forecasting and Challenge; exercise instructions and solution loops",
+    "finalLocalizedCorrection": null
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-63e838ba-b2e3-49a4-a141-10bbc3cedc79.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+    "proofSha256": "214d2da65995eb14522728c2cae8b5719024af01689141f7a385d0528ef94b4d",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah tests which input enters the next forecast window, tracing the feedback loop with absorbed curiosity."
+  },
+  "iterations": [
+    {
+      "prompt": "Use case: precise-object-edit with immutable canonical identity. Cinematic Deep Orbit adventure-comic scene,1536x1024. First reference images are canonical faces, next is bridge master for room/palette, LAST is exact scene to edit. Preserve exact people, facial morphology, adult age markers, warm skin, nose/jaw/eye proportions, hair, side-specific accessories, expressions, story action and entire room composition. Keep every continuous shoulder-elbow-wrist-hand chain, grips, torso/head alignment, thighs, chair support and rail contacts intact. Demir comms anatomical RIGHT ear, Farah lens anatomical LEFT eye. Make only requested screens and small proportional adjustments. Keep narrative people dominant; embed concise task meaning in existing screens rather than turning scene into a full technical infographic. All peripheral monitors, wrist displays and unmentioned readable displays must be OFF, plain charcoal glass with no arbitrary bars, waveforms, gauges or text. Retain physical buttons. Muted sage, aged brass and charcoal with natural warm skin; no neon mint, cyan or mustard wash. Preserve Farah stylus grip and tablet grip, stance, face and smile. Her head is visibly large: reduce complete head modestly to about92 percent of current linear size, preserve exact face structure and natural short neck. On existing hologram replace rising arbitrary points with TWO simple method rows. Top heading \"Rollout\" with \"Past\" into \"Model\" into \"Prediction\". A visible return loop from Prediction back to Model is labeled \"Next input\". Bottom heading \"One-step replay\" with \"Observed history\" into \"Model\" into \"Prediction\"; a separate input arrow labeled \"New observation\" joins Observed history. No return arrow from this lower Prediction. All arrowheads and paths must be clear and connected. Keep this diagram compact with short labels. The tablet back remains unchanged; do not put a screen on its back. Turn all background monitors off. No numerical outcomes, fake sampled waves or invented forecasts. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/forecasting-concept-before.png",
+          "sha256": "5714f0e29ace586dcd0bb055d6bc254e4d2e2c1297809033d2c4be2e55df0c30",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "5714f0e29ace586dcd0bb055d6bc254e4d2e2c1297809033d2c4be2e55df0c30",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__forecasting-concept-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "5369ae63d8a1c2479e232f4864517038758081998da646a3d3126a7f8fad01bb",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c3938399-5d94-4ba6-b54f-41bac48351a4.png"
+    }
+  ],
+  "requestedDisplayCorrections": "Change only lighting and saturation of the hologram and its spill. Keep the complete exact Rollout and One-step replay diagrams, every word and arrow. Replace the neon mint cone, bright emitter disk and luminous border with a very faint desaturated sage translucent cone, subdued dark sage emitter and thin muted sage outline. Make all rim lighting thin and muted. Preserve exact Farah face and full anatomy, scale, stylus and tablet grip, room and all other contents.",
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__forecasting-concept-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+  "publishedOutputSha256": "3b9e42d4d237b95b38ef4c2095644fd75f98887fe8cf8f9edf0aab1c82598fc3",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 148392
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/forecasting-concept-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/forecasting-concept-target.png",
+    "sha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/forecasting-concept-runtime-before.png",
+    "sha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah tests which input enters the next forecast window, tracing the feedback loop with absorbed curiosity.",
+    "fullSpecification": "Restage Farah working alone at a bridge analysis console, her body in a three-quarter side stance leaning slightly into the task, eyes following a loop on the screen. Camera is diagonally beside the screen, not directly facing her. Her right stylus traces the return path; her left hand rests on a small open notebook lying flat on the bench. Remove the held tablet and floating stage-like hologram. Use a compact angled working display with two method rows: Rollout: Past feeds Model feeds Prediction, and Prediction returns into Model by a clear loop labeled Next input. Second row One-step replay: Observed history feeds Model feeds Prediction; a separate New observation arrow joins Observed history. No arrow returning from the lower Prediction. Her focused half-smile is about catching the input difference. Every text baseline, box and connector lies in the perspective of the display. No numerical forecast, arbitrary chart, or confidence cone. Spare monitors and table emitter off. Keep balanced stylized proportions and exact canonical face, natural short neck, two connected arms, believable grip. Soft warm skin, muted sage and worn brass against charcoal, no neon."
+  },
+  "narrativeVisualReview": "approved",
+  "candidateSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+  "faceBoxes": {
+    "farah": [
+      245,
+      55,
+      380,
+      410
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-concept-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "rollout and one-step replay operation",
+    "panels": [
+      "Hologram upper row: Past enters Model, output Prediction feeds back as Next input for Rollout.",
+      "Lower row: New observation joins Observed history, then Model predicts without feedback into its history."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Preserve Farah stylus grip and tablet grip, stance, face and smile. Her head is visibly large: reduce complete head modestly to about92 percent of current linear size, preserve exact face structure and natural short neck. On existing hologram replace rising arbitrary points with TWO simple method rows. Top heading \"Rollout\" with \"Past\" into \"Model\" into \"Prediction\". A visible return loop from Prediction back to Model is labeled \"Next input\". Bottom heading \"One-step replay\" with \"Observed history\" into \"Model\" into \"Prediction\"; a separate input arrow labeled \"New observation\" joins Observed history. No return arrow from this lower Prediction. All arrowheads and paths must be clear and connected. Keep this diagram compact with short labels. The tablet back remains unchanged; do not put a screen on its back. Turn all background monitors off. No numerical outcomes, fake sampled waves or invented forecasts.",
+    "sourceSection": "MDX Multi-Step Forecasting and Challenge; exercise instructions and solution loops"
+  },
+  "combinedVisualReview": "approved",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-63e838ba-b2e3-49a4-a141-10bbc3cedc79.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c3938399-5d94-4ba6-b54f-41bac48351a4.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+      "art-src/scenes/advanced-time-series__forecasting-concept-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "independentPeerReview": {
+    "index": 7,
+    "key": "deep-orbit/advanced-time-series/forecasting",
+    "phase": "concept",
+    "path": "art-src/scenes/advanced-time-series__forecasting-concept-narrative-stage1-openai-20261107.png",
+    "metadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-concept-candidate.json",
+    "candidateSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+    "readerDirection": "pass",
+    "rationale": "No impossible outward-facing reading or writing detected in the temporary full-scene screen.",
+    "inspection": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "currentFileSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+    "publicationAuthorized": false,
+    "hashStillMatches": true,
+    "activeSource": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+    "activeSha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+    "ledgerSha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+    "peerStatus": "pass",
+    "peerRationale": "Farah works directly at a readable monitor comparing recursive rollout with observed-history replay; all arrows accurately preserve distinct feedback paths. Replaces staged tablet/hologram with coherent physical interaction.",
+    "currentSourceHashes": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+        "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1",
+        "matchesCandidateMetadata": true
+      }
+    ],
+    "gates": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    }
+  },
+  "temporaryCandidatePathAtReview": "art-src/scenes/advanced-time-series__forecasting-concept-narrative-stage1-openai-20261107.png",
+  "publishedSource": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+  "sourceSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+  "webpSha256": "3facc7bcb85a29da83f53df3b98548cb5cf9d29eb95901c771af826d97bceaf9",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+    "sourceSha256": "11f0598c7264e2a3c935859e1960a6110366f4a6a6de3211a037e4b908fb4677",
+    "webpSha256": "3b9e42d4d237b95b38ef4c2095644fd75f98887fe8cf8f9edf0aab1c82598fc3",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+    "method": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "checks": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+        "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1",
+        "matchesCandidateMetadata": true
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

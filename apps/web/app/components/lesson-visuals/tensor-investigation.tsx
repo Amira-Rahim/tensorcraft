@@ -13,6 +13,7 @@ import { TensorFlowApiLink } from "../mdx/tensorflow-reference";
 import { WORKED_PACKET, WORKED_EXCERPT } from "../mdx/channel-layout-data";
 import type { LessonVisualSpec } from "./deep-orbit-visuals";
 import { runTensorExample } from "./tensor-example";
+import { resolveLessonSceneArt } from "@/lib/lesson-scene-art";
 
 const demir = portraitSources(
   "deep-orbit",
@@ -22,6 +23,12 @@ const demir = portraitSources(
 
 /** Plot the selected recording using actual TensorFlow.js output. */
 export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
+  const art = resolveLessonSceneArt({
+    worldSlug: "deep-orbit",
+    moduleSlug: "foundations",
+    lessonSlug: "introduction-to-tensors",
+    phase: "concept",
+  })!;
   const [completed, setCompleted] = useState<Awaited<
     ReturnType<typeof runTensorExample>
   > | null>(null);
@@ -67,9 +74,9 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
     >
       <div className="tensor-investigation-opening">
         <ScenePortrait
-          src="/scenes/deep-orbit/foundations/introduction-to-tensors.webp"
-          alt="Demir studies the signal chart at a console aboard the Archimedes."
-          aspectRatio="16 / 9"
+          src={art.src}
+          alt={art.alt}
+          aspectRatio="3 / 2"
           className="tensor-investigation-art"
         />
         <div className="tensor-investigation-request">

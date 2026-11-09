@@ -1,0 +1,64 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "epilogue",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next room reference only, LAST exact target. Preserve people, adult age, exact face morphology, expressions, hair, signature equipment, natural warm skin, whole poses, two connected arm chains per person, grips, neck alignment, chairs and contacts. Farah lens anatomical LEFT, Demir comms anatomical RIGHT. Narrative crew action stays dominant. All unmentioned monitors and wrist displays OFF, plain charcoal glass. No arbitrary waveforms, charts, code, meters or data. Restrained sage, aged brass, charcoal. Eliminate neon mint outlines and broad yellow wash. Any LAB PILLAR dark muted sage with thin dim grey internal bands, never fluorescent lime. Preserve Demir standing, full head size, canonical face, handheld tablet back and one hand resting on the holo control. Main table replaces unsupported bar chart with a ranked numeric table headed \"Mission squared errors\". Exact rows \"fft_5: 64.12\", \"fft_6: 2.89\", \"amplitude: 0.71\", \"Other eight: each below 0.1\". Footer \"fft_5: 72 Hz bin, nearest 73.4 Hz\". No bars to mis-scale. Side monitor replaces decorative rings with \"ARIA replay\" and \"400 decisions\", \"Priority 3\", \"Queued\". Do not show completed results. ARIA may have one small abstract voice waveform identified as ARIA, not measurement data, no face. Table projection dim sage on charcoal without luminous rim/cone. Every other display off. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/reconstruction-error-epilogue-before.png",
+      "sha256": "1d1024108276c2e158b216c37f0af171a52e591fc136c7a527acd7daf49870f9",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "1d1024108276c2e158b216c37f0af171a52e591fc136c7a527acd7daf49870f9",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+    "sha256": "a3bb41238713eb0365da6de4c51a3d3327dbebd67a9426e906f6f71afd35b649"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sha256": "dec34450564614d8f3963d95bf9a3cf627d276b42b576e430c9a5cae535425e6"
+    }
+  ],
+  "panelSpecification": {
+    "state": "story finding and queued work",
+    "concreteGenerationSpecification": "Preserve Demir standing, full head size, canonical face, handheld tablet back and one hand resting on the holo control. Main table replaces unsupported bar chart with a ranked numeric table headed \"Mission squared errors\". Exact rows \"fft_5: 64.12\", \"fft_6: 2.89\", \"amplitude: 0.71\", \"Other eight: each below 0.1\". Footer \"fft_5: 72 Hz bin, nearest 73.4 Hz\". No bars to mis-scale. Side monitor replaces decorative rings with \"ARIA replay\" and \"400 decisions\", \"Priority 3\", \"Queued\". Do not show completed results. ARIA may have one small abstract voice waveform identified as ARIA, not measurement data, no face. Table projection dim sage on charcoal without luminous rim/cone. Every other display off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Epilogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve whole poses and anatomical chains. Briefing Farah and takeaways both receive only subtle head adjustment, all others unchanged.",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "ccf1db88e136ef8d1f522bd8277695f863978fbb7d16937fae74f037082627ac",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-db58cdbe-d500-4e18-b94b-9c467b9cfd1a.png"
+}

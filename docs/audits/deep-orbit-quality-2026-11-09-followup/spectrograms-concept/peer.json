@@ -1,0 +1,94 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+  "candidateSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh independent native composition, 1.25x complete arm chains, 2x individual hand and face crops, canonical portrait, 1.5x screen, current lesson MDX and 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "name": "spectrogram-final-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+      "box": [
+        1010,
+        50,
+        1390,
+        500
+      ]
+    },
+    {
+      "name": "spectrogram-final-chain",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+      "box": [
+        430,
+        410,
+        1490,
+        970
+      ],
+      "scale": 1.25
+    },
+    {
+      "name": "spectrogram-final-pen",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+      "box": [
+        435,
+        460,
+        730,
+        690
+      ]
+    },
+    {
+      "name": "spectrogram-final-desk",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+      "box": [
+        820,
+        805,
+        1150,
+        975
+      ]
+    },
+    {
+      "name": "spectrogram-final-display",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+      "box": [
+        55,
+        105,
+        780,
+        725
+      ],
+      "scale": 1.5
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+    }
+  ],
+  "checks": {
+    "anatomyContact": "Right shoulder, elbow, forearm and wrist connect continuously to a natural stylus pinch. Thumb and index oppose around one straight continuous pen; three curled fingers remain distinct. Left arm has its own complete relaxed chain to the desk; four supported finger contours are visible, with the far-side thumb naturally occluded. No ghost prop or detached limb is present.",
+    "identityExpression": "Farah retains canonical swept dark hair, green left-eye lens, earrings, face morphology and ordinary adult proportions. Her speaking expression and gaze toward the lesson screen form a candid teaching action.",
+    "displayContent": "The schematic has three approximately equal-width overlapping sample windows and three chronological columns, one per window. Time runs horizontally and frequency vertically; magnitude is shown by color. The explicit schematic label avoids claiming these are exact capture values. This matches the current conceptual STFT explanation.",
+    "perspectiveOperator": "The physical monitor, glass and rules form one frontal rectangle. Farah sits in front and to its right, with the pointing arm visibly in front of the glass. Text and chart align to its plane.",
+    "largeDisplayRule": "The monitor uses most of the left half. All headings, window labels, axes, magnitude legend and complete-window rule are readable at 768 x 512; no teaching label is clipped.",
+    "palette": "Warm brass and muted slate/sage remain consistent with the lab."
+  },
+  "scores": {
+    "colorLight": 5,
+    "movementAnatomyContact": 4,
+    "expressionGaze": 5,
+    "identityProportions": 4,
+    "displayContentLegibilityPerspective": 5,
+    "compositionStoryAction": 5
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:15:16.159729+00:00"
+}

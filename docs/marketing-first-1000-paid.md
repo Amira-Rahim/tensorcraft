@@ -6,9 +6,11 @@ Audience size and available working hours are unknown. This plan assumes no exis
 
 This is the operating plan for this target. It supersedes the acquisition budgets, waitlist targets, launch forecasts and channel calendar in [the earlier marketing plan](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/marketing-plan.md). Conversion rates below are planning assumptions, not Tensorcraft results or industry benchmarks.
 
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. The price decision does not establish learning outcomes or willingness to pay.
+
 ## 1. Decision
 
-Keep the $50 Deep Orbit offer. Recruit the first buyers personally, use their experience to improve the sales explanation and opening lessons, then distribute useful course excerpts through JavaScript publications and community hosts.
+Use the $79 introductory Deep Orbit offer, with a $99 regular price. Recruit the first buyers personally, use their experience to improve the sales explanation and opening lessons, then distribute useful course excerpts through JavaScript publications and community hosts.
 
 The proposed positioning is:
 
@@ -27,7 +29,7 @@ I inspected the local product and content architecture, acquisition pages, free 
 | Finding | Consequence for marketing | Evidence |
 | --- | --- | --- |
 | Deep Orbit is the only launched world: 56 lessons, 11 modules, 65 exercises. | Sell one complete course. Other worlds are future interest, not purchased value. | [Constants](../packages/shared/src/constants.ts), [launch scope](launch-scope.md) |
-| Five foundations lessons are free without an account; the full course is $50 once. | Every campaign can lead to a usable sample. Avoid a new prelaunch waitlist. | [Live homepage](https://tensorcraft.app/), [pricing](https://tensorcraft.app/pricing) |
+| Five foundations lessons are free without an account. The November 9 offer is $79 introductory and $99 regular, paid once. | Every campaign can lead to a usable sample. Keep campaign prices aligned with the deployed checkout. | [Shared pricing source](../packages/shared/src/constants.ts), [pricing](https://tensorcraft.app/pricing) |
 | The deployed pricing page lists about 109 minutes for the free module and the homepage about 28 hours overall. | Do not describe Module 1 as a five-minute trial or the full course as a weekend project. Local timing edits differ from production. | [Pricing](https://tensorcraft.app/pricing), [first lesson source](../packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx) |
 | Lesson one teaches tensor storage, shape and disposal. Model architecture and training come later. | Explain the first task honestly. Show the eventual model outcome before asking for a long learning commitment. | [Foundations](../packages/content/content/deep-orbit/foundations/module.yaml), [first lesson](../packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx) |
 | The channel-layout experiment has a direct entry URL. A pretrained DEEP SCAN demonstration exists at the end of the free normalization lesson. | Existing interactions can supply clips and article demonstrations. Label inference with a supplied model separately from training your own model. | [Tensor shapes](../packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx), [normalization](../packages/content/content/deep-orbit/foundations/05-normalization.mdx), [demo](../apps/web/app/components/mdx/deep-scan-demo.tsx) |
@@ -42,7 +44,7 @@ The repo has enough product material for a sales experiment now. Prioritize obse
 
 ### The competitive reason to pay
 
-JavaScript ML itself is available free: TensorFlow publishes tutorials and a browser-ML course. Therefore, “no Python” is a useful audience filter, but it does not by itself justify $50. Tensorcraft's paid proposition is a coherent sequence, executable practice with feedback, explanations grounded in familiar JavaScript, and a continuing story. This is a positioning hypothesis to test, not a uniqueness or effectiveness claim. [TensorFlow's own learning resources](https://www.tensorflow.org/js/tutorials).
+JavaScript ML itself is available free: TensorFlow publishes tutorials and a browser-ML course. Therefore, “no Python” is a useful audience filter, but it does not by itself justify the purchase price. Tensorcraft's paid proposition is a coherent sequence, executable practice with feedback, explanations grounded in familiar JavaScript, and a continuing story. This is a positioning hypothesis to test, not a uniqueness or effectiveness claim. [TensorFlow's own learning resources](https://www.tensorflow.org/js/tutorials).
 
 Potential first customers want ML understanding in their existing language. Buyers seeking a Python/PyTorch career path, an accredited qualification, or a quick chatbot API tutorial need a different offer. Do not stretch the campaign to include them.
 
@@ -50,7 +52,7 @@ Potential first customers want ML understanding in their existing language. Buye
 
 Count **unique external customers with a successful real payment and positive retained revenue**, excluding staff, test transactions, complimentary access, fully refunded/disputed purchases and people whose purchase was funded by the study. Deduplicate by account and reconcile duplicate accounts if discovered. Keep gross purchasers, refunds and retained purchasers visible separately. Reassess the retained count as later refunds occur.
 
-At $50 each, 1,000 full-price purchases generate $50,000 gross revenue before refunds, fees, taxes and support costs. This is not profit or recurring revenue.
+At $79 each, 1,000 introductory purchases generate $79,000 gross revenue. At the $99 regular price, 1,000 purchases generate $99,000. A mixed cohort depends on the prices actually paid. These amounts precede refunds, fees, taxes and support costs. They are not profit or recurring revenue.
 
 Use the purchase ledger and verified payment records as the count. Client-side `payment_completed` events alone are insufficient: server and client events share that name, and the server also supports zero-value grants. Reconcile by payment/session identity and actual amount.
 
@@ -84,16 +86,16 @@ Reforecast monthly from actual sales. A launch spike is useful, but the plan mus
 **Working target: 10 retained buyers in the first 30 days.** This is a target to test the offer, not a predicted yield from the activity below.
 
 1. Recruit JavaScript engineers who have recently expressed an interest in learning ML. Start with relevant personal contacts if available. Otherwise, participate in two existing communities and arrange recruitment with their hosts. Avoid unsolicited bulk messages.
-2. Send 30 individually relevant invitations over two weeks. Explain that the free sample is available and the complete course costs $50 before asking them to try it.
+2. Send 30 individually relevant invitations over two weeks. Explain that the free sample is available and the complete course costs $79 at the introductory price ($99 regular) before asking them to try it.
 3. Observe five compensated discovery sessions at $20 each. Pay for time regardless of opinion. Keep these participants separate from the sales cohort; compensation must not be presented as purchase evidence.
 4. Invite additional interested people to try it independently. Ask what they hope to learn, what they tried before, where the explanation loses them, and what would make the full course worth buying.
-5. Offer the normal $50 product to people who find the sample useful. Offer a bounded, shared onboarding session for early buyers if there is capacity. Describe its actual date and scope; do not create an ongoing coaching obligation at this price.
+5. Offer the $79 introductory product ($99 regular) to people who find the sample useful. Offer a bounded, shared onboarding session for early buyers if there is capacity. Describe its actual date and scope; do not create an ongoing coaching obligation at this price.
 6. Follow up once with people who asked for it. Record purchases, reasons for declining, refund reasons and the exact source of each conversation.
 7. Contact buyers who opted into follow-up after a week. Find out what they completed and what stopped them. Ask permission before publishing a quote or project.
 
 The five compensated sessions are a small marketing discovery round. They do not replace the existing independent review or formal 12-20-person learner pilot.
 
-After 30 relevant invitations, a low response count first calls for a better recruiting venue or invitation. After 20 people have meaningfully tried the sample and discussed the $50 offer, zero purchases calls for interviews about the outcome, workload and value. Do not respond automatically with a price cut or more traffic. These are diagnostic rules, not statistical tests.
+After 30 relevant invitations, a low response count first calls for a better recruiting venue or invitation. After 20 people have meaningfully tried the sample and discussed the $79 introductory offer, zero purchases calls for interviews about the outcome, workload and value. Do not respond automatically with a price cut or more traffic. These are diagnostic rules, not statistical tests.
 
 ## 6. Stage two: reach 50 through repeatable distribution
 
@@ -136,7 +138,7 @@ Do not buy newsletter placements initially. A free review copy can help an edito
 
 Proposed session: **“What changes when a JavaScript array becomes a tensor?”** Use the free exercises and channel-layout experiment. Target 40 minutes of teaching and ten minutes for questions. Rehearse before offering a duration promise.
 
-Open with the eventual anomaly-detection system, then do one small foundation task. Let participants run it themselves. Explain what the paid course adds, show the $50 price and provide an optional purchase link. Nobody needs to buy to finish the session.
+Open with the eventual anomaly-detection system, then do one small foundation task. Let participants run it themselves. Explain what the paid course adds, show the $79 introductory price and $99 regular price and provide an optional purchase link. Nobody needs to buy to finish the session.
 
 Use the host's existing audience and meeting tools. Send the resources through the host or to people who explicitly requested follow-up. Do not turn attendee lists into a mailing list without their agreement.
 
@@ -178,7 +180,7 @@ Product Hunt is optional and lower priority than the channels above. The old pla
 
 Spending is optional. Free publishing, existing recording tools and host-provided meeting rooms are enough to begin. Keep unused budget. A paid experiment can be a small relevant placement or another clearly priced way to reach the tested audience; obtain an actual quote and reject offers above the cap.
 
-For later distribution tests, use a provisional cash acquisition ceiling of $20 per retained buyer. It is an operating limit, not a measured profitable CAC. Calculate an affordable ceiling from retained receipts minus fees, taxes, variable support and the contribution the business needs. Never treat the full $50 as advertising margin.
+For later distribution tests, use a provisional cash acquisition ceiling of $20 per retained buyer. It is an operating limit, not a measured profitable CAC. Calculate an affordable ceiling from retained receipts minus fees, taxes, variable support and the contribution the business needs. Never treat the full purchase price as advertising margin.
 
 One $100 test needs at least five attributable retained buyers to meet the provisional ceiling. Close the 30-day attribution window and allow for the stated refund period before evaluating. A five-sale result is encouraging, not enough evidence to scale aggressively. Recheck after a second comparable test.
 
@@ -238,11 +240,11 @@ These drafts have not been sent or published. Public Tensorcraft copy follows th
 
 **Product description**
 
-> Tensorcraft teaches machine learning to JavaScript engineers through a sci-fi mission. Work through executable exercises, learn to train and evaluate models, and build an anomaly-detection system. The first five lessons are free in your browser without an account. Deep Orbit costs $50 once.
+> Tensorcraft teaches machine learning to JavaScript engineers through a sci-fi mission. Work through executable exercises, learn to train and evaluate models, and build an anomaly-detection system. The first five lessons are free in your browser without an account. Deep Orbit costs $79 once at the introductory price, with a $99 regular price.
 
 **Invitation to an interested engineer**
 
-> You mentioned wanting to understand [specific ML topic]. We're building Tensorcraft for JavaScript engineers learning ML. The first five lessons are free, and the complete Deep Orbit course is $50. Would you try the opening exercise and tell us where the explanation gets unclear? Here's the sample: [lesson link].
+> You mentioned wanting to understand [specific ML topic]. We're building Tensorcraft for JavaScript engineers learning ML. The first five lessons are free, and the complete Deep Orbit course is $79 at the introductory price ($99 regular). Would you try the opening exercise and tell us where the explanation gets unclear? Here's the sample: [lesson link].
 
 **Editorial pitch**
 
@@ -250,17 +252,17 @@ These drafts have not been sent or published. Public Tensorcraft copy follows th
 
 **Community-host pitch**
 
-> Would a practical introduction to tensors fit an upcoming [community] session? We can teach one exercise using JavaScript arrays, then let attendees test a channel-layout experiment in their browsers. The sample is free without an account. We make the $50 Deep Orbit course and would disclose that, with an optional course link at the end. Here's the exercise and a short recording: [links].
+> Would a practical introduction to tensors fit an upcoming [community] session? We can teach one exercise using JavaScript arrays, then let attendees test a channel-layout experiment in their browsers. The sample is free without an account. We make Deep Orbit, priced at $79 introductory and $99 regular, and would disclose that, with an optional course link at the end. Here's the exercise and a short recording: [links].
 
 **Follow-up requested by a free learner**
 
-> You tried [specific exercise]. What are you hoping to build with ML, and did the lesson help? Deep Orbit continues into network architecture, training, evaluation and deployment across 56 lessons. The full course is $50 once. Here's the syllabus: [pricing link]. If the sample missed what you needed, we'd like to understand why.
+> You tried [specific exercise]. What are you hoping to build with ML, and did the lesson help? Deep Orbit continues into network architecture, training, evaluation and deployment across 56 lessons. The full course is $79 once at the introductory price, with a $99 regular price. Here's the syllabus: [pricing link]. If the sample missed what you needed, we'd like to understand why.
 
 **Show HN title**
 
 > Show HN: Tensorcraft, learn ML in JavaScript through a sci-fi mission
 
-The accompanying maker comment should explain the product's actual origin, link to the free exercise, disclose the $50 offer and ask a specific learning-design question. Do not invent an origin story or claim learner results that do not exist.
+The accompanying maker comment should explain the product's actual origin, link to the free exercise, disclose the $79 introductory and $99 regular offer and ask a specific learning-design question. Do not invent an origin story or claim learner results that do not exist.
 
 ## 12. Decisions after the first month
 

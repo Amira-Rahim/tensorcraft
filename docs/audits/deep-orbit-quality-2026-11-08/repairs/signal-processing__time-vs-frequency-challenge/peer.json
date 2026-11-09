@@ -1,0 +1,71 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-challenge/candidate.png",
+  "candidateSha256": "da21648afff1108932b6e35796fb330c54972cfef64bdfa0426ead14ebdd4a16",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original review, 2x face and hand crops, complete shoulder-elbow-wrist chain and thumb-side check, canonical portrait comparison, and current lesson plus relevant exercise verification.",
+  "canonicalFaceReferences": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 6,
+      "name": "runtime-final-6-face-ensign-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-challenge/candidate.png",
+      "box": [
+        1140,
+        165,
+        1430,
+        520
+      ],
+      "scale": 2
+    },
+    {
+      "i": 6,
+      "name": "runtime-final-6-hands-0",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-challenge/candidate.png",
+      "box": [
+        710,
+        745,
+        1000,
+        920
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+      "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's far right forearm reaches the upper typing hand with its medial thumb visible on the lower edge. His near left forearm leads to the lower typing hand with the thumb on the occluded far edge. Both pairs of bent fingers align with keyboard contact and no extra limb appears.",
+    "displayLegibilityAndSource": "Large board identifies 512 samples at 256 Hz, absolute differences, sample tolerance 0.05, and FFT difference threshold 5.0. Baseline and suspect traces are explicitly schematic; timeTwin and divergentBin remain pending.",
+    "identityExpressionAndStory": "Demir's attentive gaze is aimed at the comparison task while he types. Canonical facial proportions and features remain consistent.",
+    "palette": "Muted Deep Orbit olive, charcoal, brass and controlled green light retain the benchmark palette.",
+    "perspectiveAndOperator": "Upright board and physical console are consistently oriented toward the operator; text follows the flat display surface.",
+    "largeDisplayRule": "The main lesson content occupies a large readable board in available wall space rather than a small console below unused wall."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:43:12.635510+00:00"
+}

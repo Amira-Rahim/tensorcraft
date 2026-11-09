@@ -1,0 +1,30 @@
+{
+  "id": "recurrent-networks/simple-rnns",
+  "phase": "concept",
+  "cast": [
+    "ensign-demir",
+    "dr-farah"
+  ],
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/rnn-concept-input.png"
+  ],
+  "prompt": "Use case: precise-object-edit. First 2 inputs are immutable canonical people portraits, next approved engineering master ROOM ONLY, LAST is exact target. Preserve exact faces, adult age, eye/nose/jaw/cheek proportions and skin, hairstyles and expression. Farah anatomical LEFT lens, Demir anatomical RIGHT comms earpiece. Keep balanced stylized adult head/body scale unchanged, natural short neck, full shoulder-elbow-wrist-hand chains, two hands per person, believable object grip and supported seated anatomy. Preserve the distinct camera and warm playful adventure-comic mood. Main board shows exactly three recurrent cells in one left-to-right chain. Title \"Same update at every step\". Initial input state at far left \"h=0\". Each cell labeled \"tanh\" and each gets one lower input, respectively \"x=0.5\", \"x=0.9\", \"x=0.5\". State arrows between/after cells labeled \"0.4621\", \"0.8537\", \"0.8284\". Small footer \"Recurrent weight 0.8, input weight 1, bias 0\". All arrows clearly connect, no extra cells or unlabeled symbols. Preserve both faces and natural stylus/open-palm gestures. ALL secondary screens and wrist displays not assigned above are inactive charcoal glass, no decorative graphs, fakecode, random icons or waves. Physical buttons stay. Muted sage #6BAA8A ink, aged brass #A89060, charcoal navy and natural warm skin. Thin desaturated sage rimlight, no mint neon or thick luminous edges, no yellow-gold wash. No colored left accent bars. Exact readable text and counts. One1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "alt": "Demir and Farah unroll the same recurrent update across three readings and track every hidden state.",
+  "location": "Archimedes, Engineering",
+  "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+  "screenMeaning": "Main board shows exactly three recurrent cells in one left-to-right chain. Title \"Same update at every step\". Initial input state at far left \"h=0\". Each cell labeled \"tanh\" and each gets one lower input, respectively \"x=0.5\", \"x=0.9\", \"x=0.5\". State arrows between/after cells labeled \"0.4621\", \"0.8537\", \"0.8284\". Small footer \"Recurrent weight 0.8, input weight 1, bias 0\". All arrows clearly connect, no extra cells or unlabeled symbols. Preserve both faces and natural stylus/open-palm gestures.",
+  "status": "generated-awaiting-review",
+  "prefix": "rnn",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d01d5656-b9f5-4d25-8f3a-867510ce8321.png",
+  "deletedHistoricalImages": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/rnn-concept-input.png",
+      "sha256": "1e23e88af52315a4169a1b3e2334e4e5a57c6110f34d136b778b98c523a63e28",
+      "availability": "deleted-obsolete-working-copy"
+    }
+  ]
+}

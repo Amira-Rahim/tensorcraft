@@ -1,0 +1,31 @@
+{
+  "module": "training-loop",
+  "lesson": "loss-functions",
+  "phase": "challenge",
+  "room": "lab",
+  "cast": [
+    "ensign-demir",
+    "dr-farah"
+  ],
+  "moment": "Demir runs two loss comparisons at the lab bench while Farah watches from beside him with an encouraging half-smile. Demir uses his right hand on the console keyboard and holds a plain reference slate with his left. Farah's two hands hold a notebook near her chest. Two clean small display cards show a prediction near its target and another far from its target, without verdict checks or exact numerical answers. Face-led waist-up composition; no overlapping bodies or limbs.",
+  "alt": "Demir compares the error scores for two predictions while Farah checks the cases.",
+  "location": "Archimedes, Lab",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/masters/lab.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit training-loop/loss-functions, challenge section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 2 are canonical character identity references; the final image is the lab set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal; Dr. Farah, adult woman aged 38, olive-tan skin, dark wavy hair loosely tied back, a green AR lens over one eye, muted slate lab jacket. Scene: Demir runs two loss comparisons at the lab bench while Farah watches from beside him with an encouraging half-smile. Demir uses his right hand on the console keyboard and holds a plain reference slate with his left. Farah's two hands hold a notebook near her chest. Two clean small display cards show a prediction near its target and another far from its target, without verdict checks or exact numerical answers. Face-led waist-up composition; no overlapping bodies or limbs. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 2 humans, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers, correctness ticks, pass/fail stamps or glowing approval lights. Keep precise data or code off the illustration; it is shown by the lesson interface. Use the specified simple comparison without additional invented technical claims.\nTargeted correction after QA: Use case: precise-object-edit. Change ONLY the large wall display behind the two characters. Remove the invented decreasing training curves and waveform panels completely. Replace with exactly two simple horizontal comparison rails, one above the other: on the upper rail an outlined prediction circle sits close to a solid target circle; on the lower rail an outlined prediction circle sits far from a solid target circle. The solid target circles align vertically near the right end. The gap is the only comparison. No training history, no accuracy, no numerals or labels, no pass/fail ticks. Preserve both characters' exact faces, hair, glasses/earpiece, four hands, poses, tablets/notebook, bench, camera and lighting.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5af07063-12bc-41ce-aa6e-c0cc0f0fbca8.png",
+  "source": "art-src/scenes/training-loop__loss-functions-challenge-openai-20261106.png",
+  "src": "/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir has one keyboard hand and one slate hand; Farah has two hands around her notebook, four attached arms in total.",
+    "furniture": "Bodies and hands remain outside solid bench surfaces; slate and controls have clear contact.",
+    "identity": "Canonical warm skin, hair and uniform retained; Demir earpiece and wrist terminal visible; partner ages and equipment coherent.",
+    "story": "Two aligned target dots with near and far outlined predictions. Premature training history removed.",
+    "tone": "Attentive expressions and small smiles keep the task approachable.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

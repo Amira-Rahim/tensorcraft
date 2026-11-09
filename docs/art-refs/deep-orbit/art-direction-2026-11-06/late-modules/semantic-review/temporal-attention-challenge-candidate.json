@@ -1,0 +1,96 @@
+{
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit cinematic cel-shaded adventure-comic scene,1536x1024. First references are exact canonical people, then bridge room master for muted palette and materials, LAST reference is exact scene to edit. Keep the same composition, room geometry, people, expressions and story action. Preserve canonical face morphology exactly, including nose, jaw, eyes, brows, complexion, adult stubble/age marks, hair and side-specific equipment. Demir comms on anatomical RIGHT ear. Keep each entire shoulder-elbow-wrist-hand chain connected, all original grips and physical contacts, torso/neck gaze alignment, chair and body support. Preserve stylized adult warmth. Do not replace the scene with an infographic: integrate one concise task display into existing equipment, keeping people and story dominant. All other screens, wrist displays and peripheral monitors must be inactive charcoal glass with NO arbitrary graphics, text, waveforms, bars, circles or invented data. Physical hardware buttons may remain. No fake technical decoration. Preserve Demir exact head size, face, joyful focused expression, pointing right hand and other resting hand, torso and chair. Replace ONLY the two foreground console displays with the exact pending synthetic exercise. Left screen heading \"Synthetic probe\" above a compact3-row table with columns \"Reading\" and \"Position\". Row1 Reading[0,4], Position0. Row2 Reading[0.25,2], Position0.5. Row3 Reading[0.5,0], Position1. These are exactly three rows, none selected as a winner. Right screen shows \"Scorer [1,0,0.5]\" then \"Weights [3]: pending\" and \"Summary [2]: pending\". Do not display calculated results or success marks before the learner runs the task. Switch all peripheral bridge screens and the wrist display OFF. No extra graphics. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Preserve natural skin and restrained sage/brass, no cyan, neon mint or mustard wash. Output one full scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/temporal-attention-challenge-before.png",
+      "sha256": "7dea27ac189272f45b4f153ffe16e32ceb7d7088a6a1cf9b7d93c8f6018e737a",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "7dea27ac189272f45b4f153ffe16e32ceb7d7088a6a1cf9b7d93c8f6018e737a",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+    "sha256": "2a863f4fdb115aeda235e678e8dd1e4038a7fa764e38c85497ef8215eed39d18"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+    }
+  ],
+  "panelSpecification": {
+    "state": "pending learner calculation",
+    "panels": [
+      "Console: Synthetic probe rows [0,4], [0.25,2], [0.5,0], with position column 0, 0.5, 1 and scorer [1,0,0.5].",
+      "Second panel: weights [3] and summary [2] marked Pending. Every reading remains connected to the summary, with no winning-shape selection."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "bodyConstraints": "Preserve full original coherent poses, connected limbs and chair support. No global realistic re-proportioning.",
+  "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+  "candidateSha256": "2eb05bbd6316be74106e31ccdaa22721d331cd420fe41b2ca9d3a51495a7d240",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-878d04db-4bd4-4129-89c4-a45cd6a3c1b0.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-challenge-identity-proof.jpg",
+  "independentReview": {
+    "status": "approved",
+    "reviewer": "/root/art_peer_final",
+    "notes": "All five native fullframes and exact fresh face proofs approved. Final briefing/takeaways schematic sequences preserve indices, raw times, counts, membership and weight sums without misleading proportional axes. Concept scorer flow, actual challenge fixture and seven-capture ending source checked.",
+    "candidateSha256": "2eb05bbd6316be74106e31ccdaa22721d331cd420fe41b2ca9d3a51495a7d240",
+    "proofSha256": "ca9b903d689071c660a2d7e1b723ed5fb9accc3d69c3b1965e0d64a6b8dcb316",
+    "reviewedAt": "2026-11-07T10:00:21.044985+00:00"
+  },
+  "ownReview": "Native fullframe and canonical proof checked: faces, balanced stylized proportions, two connected arm chains, contacts, palette and all prominent panels pass.",
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__temporal-attention-challenge-semantics-stage1-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+  "publishedOutputSha256": "7e9f06a5989c3c375bae87190c47bd02a764b045c2c2366daf0cf445e68a7867",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 163220
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-878d04db-4bd4-4129-89c4-a45cd6a3c1b0.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+      "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

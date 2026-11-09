@@ -1,0 +1,100 @@
+{
+  "key": "backpropagation-epilogue",
+  "id": "training-loop/backpropagation",
+  "phase": "epilogue",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve story scene edit. First image(s) are authoritative neutral portraits of each named human, next is ROOM GEOMETRY ONLY, last is scene to replace. Preserve exact canonical facial structure, age markers, hair, equipment and uniforms. Natural moderately stylized adult proportions, short relaxed necks and ordinary shoulder widths. Two coherent arms per person, natural five-finger hands and wrist alignment. Text, rows, boxes, labels follow physical display perspective including foreshortening and vanishing directions. The operators must see the fronts of screens. Camera beside operators sees the same surface. No camera-facing placards or empty posed smiles. Muted sage #6BAA8A and aged brass #A89060 against charcoal, natural skin, restrained warm practical light. Unused screens dark. No decorative neon, random graphs, plants, extra people or invented results. Landscape1536x1024. Preserve the lively moment: Chief Nazari stands with natural folded arms and a dry skeptical smile at Demir; Demir stands opposite smiling ruefully, one hand rubbing back of neck with gentle elbow bend, other at hip. Both canonical faces visible through plausible torso orientation. The console between them is clearly a shared display they can both see, camera beside them. Replace meaningless waveforms with exact benchmark text: title 'Crew timing run'; row1 'Forward + backward: 120 ms'; row2 'Numeric gradients: 27 s'; row3 '673 gradients'; footer 'Story timings. Measure your device.' A small stopwatch lies face down on desk without extra readable dials. Keep every text baseline in physical screen plane. Demir's wrist display and every rear monitor dark. Preserve emotion, restrained palette, ordinary anatomy and room geometry. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room geometry only",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "57f26368d646a58a280ff546f4ea083ffd4bf099a45498679e5f3fb993a7c4f3"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+      "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+    }
+  ],
+  "candidatePath": "art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2e5336da-5c99-47b2-bff9-05f9e1d0555e.png",
+  "candidateSha256": "7e7af8158a7a76c58ff4896148e58fb020acead508d9c081f04ae91f2545b1d5",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "reviewer": "/root",
+    "status": "pass pending independent peer",
+    "method": "Native 1536x1024 complete frame and canonical portraits inspected",
+    "notes": "Natural arm chains, necks, identities, task-action and muted palette. Readable text in screen plane. Takeaways numerical bar fill looks about54percent for60percent, withhold pending removal of redundant bars."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2e5336da-5c99-47b2-bff9-05f9e1d0555e.png",
+  "publishedSource": "art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+  "sourceSha256": "7e7af8158a7a76c58ff4896148e58fb020acead508d9c081f04ae91f2545b1d5",
+  "webpSha256": "04b8e83190bd13fe79409bef583ac6d5bf1659996ea63ef5c611a28be5b469b6",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+    "sourceSha256": "57f26368d646a58a280ff546f4ea083ffd4bf099a45498679e5f3fb993a7c4f3",
+    "webpSha256": "0ee9b98a1dba1417145f78ec7fca40c33b58dfe626852dd301bfe35bbe924fca",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ff3dc5a9-eebe-4f42-becd-851f28cb7cfb.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "7e7af8158a7a76c58ff4896148e58fb020acead508d9c081f04ae91f2545b1d5",
+    "method": "Native complete1536x1024 plus canonical references and current MDX",
+    "checks": {
+      "combinedNativeReview": "Nazari folded arms and Demir neck-rub/hip hands form coherent anatomy with ordinary proportions and canonical faces. Shared console physically accessible from their sides. Text correctly states crew120ms versus27s for673gradients, marked storytimings and measureyourdevice. Display follows plane; wrist/rear monitors dark; conversational energy and dry humor preserved.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+          "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

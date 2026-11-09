@@ -1,0 +1,112 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+  "candidateSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Independent native candidate and original comparison, canonical face comparison at 2x, all four hands at 2x, complete chains at native and 1.25x Sharp diagnostic extract, 1.5x display, current MDX/exercise and 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "name": "sliding-final-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+      "box": [
+        180,
+        30,
+        505,
+        420
+      ]
+    },
+    {
+      "name": "sliding-final-farah",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+      "box": [
+        600,
+        120,
+        940,
+        475
+      ]
+    },
+    {
+      "name": "sliding-final-chains",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+      "box": [
+        0,
+        335,
+        870,
+        1024
+      ],
+      "scale": 1.25
+    },
+    {
+      "name": "sliding-final-demir-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+      "box": [
+        100,
+        770,
+        515,
+        995
+      ]
+    },
+    {
+      "name": "sliding-final-farah-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+      "box": [
+        505,
+        780,
+        745,
+        900
+      ]
+    },
+    {
+      "name": "sliding-final-display",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+      "box": [
+        880,
+        378,
+        1523,
+        825
+      ],
+      "scale": 1.5
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+    }
+  ],
+  "checks": {
+    "anatomyContact": "All four shoulders, elbows, forearms and wrists remain separately traceable. Demir's near right hand spans the mouse with four distinct curved fingers and a naturally hidden far thumb. His left desk hand has a clear near-side thumb and four supported fingers. Farah's right hand has four resting fingers with its thumb hidden on the far edge; her left hand has distinct curled fingers and a partial radial thumb between the hands. No crossing, fusion or detached digit is visible.",
+    "identityExpression": "Both canonical adult face morphologies, Demir's freckles and stubble, and Farah's left-eye lens are preserved. Farah looks at Demir while he concentrates on the work, maintaining the original candid interaction.",
+    "displayContent": "All five original labels are retained: Split before windowing; Earlier readings: training; Later readings: validation; Build windows within each split; Keep time order. These match the current chronological-split explanation and exercise. No numerical result is invented.",
+    "perspectiveOperator": "Frontal rectangular bezel and glass align with horizontal type and rules and the vertical split boundary. The stand supports that orientation. Both crew are visibly forward of the monitor plane, on the readable side.",
+    "largeDisplayRule": "The monitor uses the right half at a useful scale. All five labels remain legible at 768 x 512 and the text fits its boxes.",
+    "palette": "Muted slate, sage and warm brass preserve the bridge setting."
+  },
+  "scores": {
+    "colorLight": 5,
+    "movementAnatomyContact": 4,
+    "expressionGaze": 5,
+    "identityProportions": 5,
+    "displayContentLegibilityPerspective": 5,
+    "compositionStoryAction": 5
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:17:06.727195+00:00"
+}

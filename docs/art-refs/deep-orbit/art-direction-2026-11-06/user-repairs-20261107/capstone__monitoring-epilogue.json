@@ -1,0 +1,188 @@
+{
+  "key": "monitoring-epilogue",
+  "auditIndex": 8,
+  "id": "capstone/monitoring",
+  "phase": "epilogue",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+    "sha256": "007b691eb627957d0eddcb55601a20d0f824386da6a5ac71e140afddb8ea530c"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; Farah lens stays over anatomical LEFT eye. Nazari and Mirza have no monocle or earpiece. Only exact named cast. Farah LEFT leans onepalmonworkbench andlooks attentively at sharedmonitor while Demir RIGHT points with stylus at a new observation, eyesfollow it, a curious lightlyexcitedexchange rather than camera presentation. Noheldtablets. Screen \"Drift review\". Rows \"fft_5 center: 72 Hz\", \"Nearby component: 73.4 Hz\", \"Drift rising hourly\". Separatefooter \"Pulse interval: 37 s\" and \"Investigate before retraining\". Do notshow72to73.4asactualbincenterchange, nofakefrequencycurve. Bothcharacterssee screenfront, natural elbows and hands. IMPORTANT layout: place every working person on the same viewing side of the upright main screen, never behind its back; the physical screen is to one SIDE of all people so the camera beside them can see its face. Exactly these humans: dr-farah, ensign-demir. No extra people, portraits or anonymous technicians. All auxiliary screens, including tiny rear cabinet screens and wrist monitors, are plain dark glass with no graphs, text, lines or grids. Use no exotic biological lab plants.  cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "meaning": "Epiloguefeaturefft5center72close73.4component,risingdrift,37s secondalert,do notassumeautomaticretrain.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+      "sha256": "007b691eb627957d0eddcb55601a20d0f824386da6a5ac71e140afddb8ea530c",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+      "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+      "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+    }
+  ],
+  "status": "published",
+  "candidatePath": "art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-07a181b6-94f3-47cd-a370-870db611fd40.png",
+  "candidateSha256": "3ba963d4dc4526b8ecffedb08e7da9ab53267ba4f7e461815ce83b4be18f457f",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; Farah lens stays over anatomical LEFT eye. Nazari and Mirza have no monocle or earpiece. Only exact named cast. Farah LEFT leans onepalmonworkbench andlooks attentively at sharedmonitor while Demir RIGHT points with stylus at a new observation, eyesfollow it, a curious lightlyexcitedexchange rather than camera presentation. Noheldtablets. Screen \"Drift review\". Rows \"fft_5 center: 72 Hz\", \"Nearby component: 73.4 Hz\", \"Drift rising hourly\". Separatefooter \"Pulse interval: 37 s\" and \"Investigate before retraining\". Do notshow72to73.4asactualbincenterchange, nofakefrequencycurve. Bothcharacterssee screenfront, natural elbows and hands. IMPORTANT layout: place every working person on the same viewing side of the upright main screen, never behind its back; the physical screen is to one SIDE of all people so the camera beside them can see its face. Exactly these humans: dr-farah, ensign-demir. No extra people, portraits or anonymous technicians. All auxiliary screens, including tiny rear cabinet screens and wrist monitors, are plain dark glass with no graphs, text, lines or grids. Use no exotic biological lab plants.  cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+          "sha256": "007b691eb627957d0eddcb55601a20d0f824386da6a5ac71e140afddb8ea530c",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-07a181b6-94f3-47cd-a370-870db611fd40.png",
+        "sha256": "3ba963d4dc4526b8ecffedb08e7da9ab53267ba4f7e461815ce83b4be18f457f"
+      }
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+      "sha256": "007b691eb627957d0eddcb55601a20d0f824386da6a5ac71e140afddb8ea530c",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+      "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+      "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/remaining_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "method": "Native full-frame visual inspection against canonical portraits and current MDX",
+    "notes": "Farah leans beside Demir and both see the same monitor front. Four coherent hands, connected stylus arm, canonical faces and modest necks. Exact fft_5 center 72 Hz versus nearby 73.4 Hz distinction, rising drift, 37 s interval and investigate-before-retraining match MDX without invented graph."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-07a181b6-94f3-47cd-a370-870db611fd40.png",
+  "publishedSource": "art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/monitoring-epilogue.webp",
+  "sourceSha256": "3ba963d4dc4526b8ecffedb08e7da9ab53267ba4f7e461815ce83b4be18f457f",
+  "webpSha256": "8dcd69cbb57d94a5ea5fa9b2848f4677a7490bde01ad531d4227356cc211c486",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+    "sourceSha256": "007b691eb627957d0eddcb55601a20d0f824386da6a5ac71e140afddb8ea530c",
+    "webpSha256": "594e95bd52a89cb460d39e8dc42612fe8544a790bcc31ddedfb5860a709d988f",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-249d3cf6-100f-4cb4-b8c4-323d7e6d2a88.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root/remaining_root_opt",
+    "status": "approved",
+    "candidateSha256": "3ba963d4dc4526b8ecffedb08e7da9ab53267ba4f7e461815ce83b4be18f457f",
+    "method": "Independent native full-frame inspection and face crops beside canonical neutral portraits. Current MDX and exercise sources checked, including exact numeric claims.",
+    "checks": {
+      "combinedNativeReview": "Farah leans toward Demir as he follows the new observation with a stylus. Four hands/arms and both necks are coherent, warm curiosity and matching identities. Shared display front is readable to both. fft_5 center 72 Hz remains distinct from nearby component 73.4 Hz, hourly shift and 37 s pulse interval match the epilogue. It calls for investigation before retraining and makes no accuracy claim. All display content follows screen perspective, peripheral screens dark.",
+      "independentPeerRecord": "/tmp/rootopt-recovered-peer.json",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+          "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+          "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+        "sha256": "92959c47cc5d47a20648fffc54837909f970787e04a34740aaf08f502a4b5068"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+        "sha256": "6fee561dc439871611cdd2893377173cca0ba26343b587c60a9f9a837662c1ff"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/monitoring-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/monitoring-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

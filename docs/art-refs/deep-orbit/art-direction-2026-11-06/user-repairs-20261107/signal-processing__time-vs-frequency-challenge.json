@@ -1,0 +1,134 @@
+{
+  "id": "signal-processing/time-vs-frequency",
+  "phase": "challenge",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical ensign-demir identity; image 2: lab room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Demir alone sits RIGHT at the lab workstation, both hands naturally typing and eyes tracking a LARGE LEFT upright display. Bring camera beside him close to the work; keep neck compact and shoulder/arm chains relaxed. Exact title 'Synthetic captures'; subtitle '512 samples at 256 Hz'; two modest schematic traces labeled 'Baseline' and 'Suspect', clearly marked 'Schematic'. Beneath in large readable lines 'Compare absolute differences', 'Sample tolerance: 0.05', 'FFT difference threshold: 5.0'; two large statuses 'timeTwin: pending' and 'divergentBin: pending'. Use current lesson fixture only, no generated answer or additional data. Let the screen occupy available wall and frame.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "fde72a31ac00d5e4590affc2732580a5b9bc40c1790dc93c502230ee15423673",
+  "source": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+  "sourceSha256": "da21648afff1108932b6e35796fb330c54972cfef64bdfa0426ead14ebdd4a16",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+      "sha256": "8157f9567997e470e5151e87c58a2b6ce20aa3be8e6748449e9384e67ba8f578",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+    "lessonSha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5",
+    "context": "Challenge and exercises/time-vs-frequency.yaml: synthetic captures have 512 samples at 256 Hz, sample tolerance 0.05 and FFT magnitude difference threshold 5.0. Return timeTwin and the first divergentBin using absolute differences. The image matches these inputs.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+  "candidateSha256": "da21648afff1108932b6e35796fb330c54972cfef64bdfa0426ead14ebdd4a16",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency-challenge.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-3bc4ddd8-ef6c-495e-9115-e99fca7da848.png",
+  "generatedSha256": "da21648afff1108932b6e35796fb330c54972cfef64bdfa0426ead14ebdd4a16",
+  "ownReview": {
+    "reviewedAt": "2026-11-09T07:24:56.557372+00:00",
+    "nativeReviewed": true,
+    "candidateSha256": "da21648afff1108932b6e35796fb330c54972cfef64bdfa0426ead14ebdd4a16",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": {
+      "ensign-demir": [
+        1140,
+        165,
+        290,
+        355
+      ]
+    },
+    "handCropCoordinatesXYWH": [
+      [
+        710,
+        745,
+        290,
+        175
+      ]
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir studies explicitly schematic baseline and suspect traces while typing with two coherent hands. The large display accurately states 512 samples at 256 Hz, absolute differences, sample tolerance 0.05 and FFT difference threshold 5.0, with timeTwin and divergentBin pending. Canonical face, adult proportions and surface perspective pass."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency-challenge.webp",
+  "webpSha256": "d3c8708307a4b94223bb6a6fd028aaed656e0a84fbc440f59eaa51a0bd03d143",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+    "sourceSha256": "8157f9567997e470e5151e87c58a2b6ce20aa3be8e6748449e9384e67ba8f578",
+    "webpSha256": "13aebc0d9b2c5a3b7d091eec8e78f240254983e5fb7c715bc74f204e0a042a83",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-aedb46e5-2b96-411f-8509-b750e270668a.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "da21648afff1108932b6e35796fb330c54972cfef64bdfa0426ead14ebdd4a16",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+        "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

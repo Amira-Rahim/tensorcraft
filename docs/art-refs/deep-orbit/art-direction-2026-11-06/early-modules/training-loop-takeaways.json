@@ -1,0 +1,29 @@
+{
+  "module": "training-loop",
+  "lesson": "training-loop",
+  "phase": "takeaways",
+  "room": "engineering",
+  "cast": [
+    "ensign-demir"
+  ],
+  "moment": "Demir lays two physical chart prints side by side on the engineering console, one in each hand, the papers held above the surface with clear natural finger contact. He smiles slightly at finally having both curves available to inspect. Each print has one simple unlabeled loss-history line, no numerals, no words, no guaranteed accuracy. Frame him from the front at a gentle angle with the console below his waist and torso fully behind its edge.",
+  "alt": "Demir compares the two loss-history prints before saving the run.",
+  "location": "Archimedes, Engineering",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit training-loop/training-loop, takeaways section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the engineering set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal. Scene: Demir lays two physical chart prints side by side on the engineering console, one in each hand, the papers held above the surface with clear natural finger contact. He smiles slightly at finally having both curves available to inspect. Each print has one simple unlabeled loss-history line, no numerals, no words, no guaranteed accuracy. Frame him from the front at a gentle angle with the console below his waist and torso fully behind its edge. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers, correctness ticks, pass/fail stamps or glowing approval lights. No planet or crystal icons in data cells. Keep exact data and code in the lesson interface, not the illustration.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7a63a764-bf41-4aef-9fc4-bfa79516c963.png",
+  "source": "art-src/scenes/training-loop__training-loop-takeaways-openai-20261106.png",
+  "src": "/scenes/deep-orbit/training-loop/training-loop-takeaways.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir holds one paper in each hand, two attached arms and clean natural fingertip contact.",
+    "furniture": "Hands interact with papers or controls above intact console surfaces; torsos do not intersect furniture.",
+    "identity": "Demir's warm skin, stubble, tousled brown hair and green devices are consistent; Nazari is mature with gray-streaked hair.",
+    "story": "Two distinct loss-history prints are compared without scores or claims of generalization. No third hand, pseudo-code or premature approval.",
+    "tone": "Small satisfied smiles and attentive checking keep success modest and warm.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

@@ -240,17 +240,10 @@ vi.mock("../lib/operator-alert", () => ({
 }));
 
 vi.mock("@tensorcraft/shared", async (importOriginal) => ({
-  // Spread the real module so genuinely shared logic (slug validation,
-  // launch flags) is exercised rather than re-implemented in a stub.
-  // Only the pricing/slug surfaces below are pinned for test determinism.
+  // Exercise the real price table. Historical webhook amounts below stay
+  // fixed so a price change cannot rewrite an earlier purchase or refund.
+  // Launch every world here to exercise the future bundle upgrade paths.
   ...(await importOriginal<typeof import("@tensorcraft/shared")>()),
-  PRICING: {
-    free: { price: 0, worlds: 0, label: "Free Preview" },
-    single: { price: 49, worlds: 1, label: "Single World" },
-    twoBundle: { price: 79, worlds: 2, label: "Two Worlds" },
-    threeBundle: { price: 99, worlds: 3, label: "Three Worlds" },
-    allFive: { price: 129, worlds: 5, label: "All 5 Worlds" },
-  },
   isValidWorldSlug: (slug: string) =>
     [
       "deep-orbit",
@@ -1110,6 +1103,32 @@ describe("Upgrade path", () => {
     });
   }
 
+  it("charges the $79 introductory price for Deep Orbit", async () => {
+    const res = await checkout({
+      planId: "single",
+      worldIds: ["deep-orbit"],
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        line_items: [
+          expect.objectContaining({
+            price_data: expect.objectContaining({
+              currency: "usd",
+              unit_amount: 7900,
+            }),
+            quantity: 1,
+          }),
+        ],
+        metadata: expect.objectContaining({
+          originalPrice: "79",
+          creditApplied: "0",
+        }),
+      }),
+    );
+  });
+
   it.each([null, [], "single", 5, { planId: 5, worldIds: ["deep-orbit"] }])(
     "rejects malformed checkout data: %j",
     async (body) => {
@@ -1146,8 +1165,8 @@ describe("Upgrade path", () => {
   );
 
   it("allows upgrade when user owns some worlds", async () => {
-    // User paid $49 for deep-orbit. Requests twoBundle (deep-orbit + neon-protocol, $79).
-    // Not allOwned (neon-protocol not yet owned). credit=$49, adjustedPrice=$30.
+    // An earlier buyer paid $49 for deep-orbit. The current twoBundle costs $90.
+    // The new world is unowned, so credit=$49 and adjustedPrice=$41.
     // Should create a Stripe session with the reduced price.
     mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 49 }];
 
@@ -1160,13 +1179,13 @@ describe("Upgrade path", () => {
     const body = await res.json();
     expect(body.url).toBeDefined();
     expect(body.granted).toBeUndefined();
-    // Stripe session should be created with adjusted unit_amount (30 * 100 = 3000 cents)
+    // Stripe charges the current bundle price minus the amount actually paid.
     expect(mockSessionCreate).toHaveBeenCalledWith(
       expect.objectContaining({
         line_items: expect.arrayContaining([
           expect.objectContaining({
             price_data: expect.objectContaining({
-              unit_amount: 3000,
+              unit_amount: 4100,
             }),
           }),
         ]),
@@ -1260,8 +1279,8 @@ describe("Upgrade path", () => {
     // Mock a purchase whose credit (for overlapping worlds) is >= plan.price,
     // with at least one requested world NOT in ownedWorlds.
     // Purchase: deep-orbit at $200 (hypothetical inflated amount via mock).
-    // Request twoBundle (deep-orbit + neon-protocol) at $79. Not allOwned.
-    // credit=$200 → capped at plan.price ($79) → adjustedPrice=0 → auto-grant.
+    // Request twoBundle (deep-orbit + neon-protocol) at $90. Not allOwned.
+    // Credit caps at the $90 plan price, leaving a $0 auto-grant.
     mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 200 }];
     mockServerInsert.mockResolvedValue({ error: null });
 
@@ -1299,9 +1318,9 @@ describe("Upgrade path", () => {
   });
 
   it("caps credit at plan price so adjustedPrice is never negative", async () => {
-    // Credit ($80) exceeds plan price ($79 for twoBundle) for a partial overlap.
-    // credit is capped to $79, adjustedPrice = max(0, 79 - 79) = 0 → auto-grant, not negative.
-    mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 80 }];
+    // Credit ($100) exceeds the $90 twoBundle price for a partial overlap.
+    // Credit caps at $90, leaving a $0 auto-grant.
+    mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 100 }];
     mockServerInsert.mockResolvedValue({ error: null });
 
     const res = await checkout({
@@ -1309,7 +1328,7 @@ describe("Upgrade path", () => {
       worldIds: ["deep-orbit", "neon-protocol"],
     });
 
-    // credit=$80 capped to $79 (plan.price), adjustedPrice=0 → auto-grant
+    // Credit caps at the plan price, leaving a $0 auto-grant.
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.granted).toBe(true);

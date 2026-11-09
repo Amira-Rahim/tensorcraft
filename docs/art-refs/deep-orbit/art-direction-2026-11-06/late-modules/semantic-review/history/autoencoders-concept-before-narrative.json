@@ -1,0 +1,68 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "concept",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next LAB room reference only, LAST exact target. Preserve exact people, adult ages, facial morphology, expressions, hairstyle, signature equipment, natural warm skin, body poses, every connected shoulder-elbow-wrist-hand chain, grips, neck alignment, chairs and contacts. Farah lens anatomical LEFT eye, Demir comms anatomical RIGHT ear, Nazari has NO eyewear. Keep story action dominant. Every unmentioned monitor and wrist display OFF, plain charcoal glass. No arbitrary graph, wave, code, bars or meters. Keep restrained sage, aged brass and charcoal. Remove neon mint rims and broad yellow/gold wash. The tall glass LAB PILLAR must become dark muted sage with thin dim grey internal bands, never glowing lime. Natural warm lamp light. Keep Farah seated with stylus and naturally resting other hand. Her head is slightly heavy: reduce the COMPLETE head including hair by only about 5 percent at most, preserving exact facial proportions and a natural short neck. No other body changes. Replace tablet waves with a compact VERTICAL schematic headed \"Mission model\". Three clearly connected boxes top-to-bottom: \"Input: 11 features\", then \"Bottleneck: 4\", then \"Rebuilt: 11 features\". Arrow from first to middle labeled \"Encoder\". Arrow from middle to last labeled \"Decoder\". Footer \"Evaluate reconstruction error\". One rear monitor shows only \"3 raw + 8 FFT features\". No circles to count, no extra numerical results or graphs. All remaining displays off. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/autoencoders-concept-before.png",
+      "sha256": "457e323312ebd166d1ca2847d02fc8b4078e379ed9e5640424c23c46f85f77f4",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "457e323312ebd166d1ca2847d02fc8b4078e379ed9e5640424c23c46f85f77f4",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+    "sha256": "b1bba199ba459762c63112e3d5c3fd50bdf6dccada7839fdf239ff28e1fb934c"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "operation",
+    "concreteGenerationSpecification": "Keep Farah seated with stylus and naturally resting other hand. Her head is slightly heavy: reduce the COMPLETE head including hair by only about 5 percent at most, preserving exact facial proportions and a natural short neck. No other body changes. Replace tablet waves with a compact VERTICAL schematic headed \"Mission model\". Three clearly connected boxes top-to-bottom: \"Input: 11 features\", then \"Bottleneck: 4\", then \"Rebuilt: 11 features\". Arrow from first to middle labeled \"Encoder\". Arrow from middle to last labeled \"Decoder\". Footer \"Evaluate reconstruction error\". One rear monitor shows only \"3 raw + 8 FFT features\". No circles to count, no extra numerical results or graphs. All remaining displays off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Encoder to Bottleneck to Decoder"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses and connected anatomy. Only concept and epilogue Farah receive at most5 percent head adjustment after native review. Other heads unchanged.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-concept-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "d1700e166a1515c2cff421c1910a7204f0a24c3f208ad262ef2d7f08da9b6fdb",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-3df17f0f-a153-45ba-98ab-19c7332bc860.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-concept-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

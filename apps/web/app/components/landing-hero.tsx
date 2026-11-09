@@ -29,7 +29,7 @@ const FREE_LESSONS = getModuleLessonCount(
  *   so the type owns the width the panel vacated.
  *
  * The 2026-10-19 copy audit names the course and audience directly.
- * The supporting copy introduces the crew's task and browser-based models.
+ * The supporting copy introduces the platform's worlds and browser-based models.
  * Earlier design: docs/superpowers/specs/2026-08-31-landing-headline-story-first.md.
  */
 export function LandingHero() {
@@ -62,13 +62,14 @@ export function LandingHero() {
               of stacking in the left corner. Stacks below lg. */}
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-16">
             <p className="text-lg text-text-muted max-w-[520px] leading-relaxed font-sans">
-              Help the crew of the Archimedes investigate a signal. You’ll build
-              and train the models in JavaScript, then run them in your browser.
+              Learn to build and evaluate models through interactive stories and
+              JavaScript exercises in your browser. Each Tensorcraft world
+              explores a different part of ML. Deep Orbit is the first world
+              available.
             </p>
 
-            {/* The note under the buttons restores the hero's only risk
-                reversal (first-1,000 plan §9 item 2) without touching the
-                owner-decided headline or button labels. */}
+            {/* Name the free course so the preview does not imply that the
+                upcoming worlds are available. */}
             <div className="flex flex-col gap-3 shrink-0">
               <div className="flex gap-4 flex-wrap">
                 <FreeLessonCtaTracker source="landing_hero">
@@ -81,18 +82,19 @@ export function LandingHero() {
                   </Link>
                 </FreeLessonCtaTracker>
                 <Link
-                  href="/learn"
+                  href="#introduction"
                   data-testid="landing-cta-secondary"
                   className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
                 >
-                  About the course
+                  Watch introduction
                 </Link>
               </div>
               <p
                 data-testid="landing-cta-note"
                 className="font-mono text-xs text-text-muted tracking-wider"
               >
-                The first {FREE_LESSONS} lessons are free, no account needed.
+                Deep Orbit’s first {FREE_LESSONS} lessons are free, no account
+                needed.
               </p>
             </div>
           </div>

@@ -1,0 +1,69 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T07:15:32.536104+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__reconstruction-error-takeaways/candidate.png",
+  "candidateSha256": "62e2ddc0b78088dd6bf11ad52eea32c20b8f2f87f750b3eada51a8d21960bc3e",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full native original plus enlarged face and hand crops, compared with canonical portraits. Current lesson and required exercise facts checked. Arm chains, thumb sides, contact, operator direction and display perspective inspected.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+    "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 170,
+      "top": 380,
+      "width": 295,
+      "height": 300
+    },
+    "ensign-demir": {
+      "left": 1040,
+      "top": 365,
+      "width": 260,
+      "height": 320
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 260,
+      "top": 875,
+      "width": 255,
+      "height": 135
+    },
+    {
+      "left": 970,
+      "top": 825,
+      "width": 410,
+      "height": 165
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The explicitly constructed mapping correctly shows MSE 0 for [1000,0] rebuilt unchanged and MSE 0.02 for [0,0.2] rebuilt as [0,0]. The low-error limitation is large and clear.",
+    "Farah and Demir exchange restrained knowing/skeptical expressions. Four hands trace to correct arms and rest naturally on bench or keyboard; both canonical faces pass."
+  ],
+  "repairDirection": "None."
+}

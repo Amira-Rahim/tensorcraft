@@ -1,0 +1,181 @@
+{
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "concept",
+  "status": "own-pass-awaiting-independent-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identity. Canonical portraits first, room reference next, LAST exact edit target. Preserve all current candid action, precise face morphology and expression, profile angle, head/body scale, two connected arms and realistic hands. Change ONLY the tall glass pillar and neon highlights. Make the pillar dark desaturated sage with dim grey internal bands, no luminous lime or bloom. Reduce bright mint rim on hair, coat and display border to a thin subdued sage line. Keep exact Scores2,1,0, Weights0.665,0.245,0.090 and all three Value paths and labels completely unchanged. All typography remains aligned with the angled screen plane. Clean cel-shaded adventure-comic linework. One full1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-concept-narrative-stage1-openai-20261107.png",
+      "sha256": "a2a0adc530454f5a8d543d413e3d6af0acfc6c7b4a66794dc117796ccfafa5d8",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "a2a0adc530454f5a8d543d413e3d6af0acfc6c7b4a66794dc117796ccfafa5d8",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+    "sha256": "efd703e180d24793d8d9880061296f2c1628298653948d64905f9d17e891f26d"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "panelSpecification": {
+    "state": "worked example",
+    "panels": [
+      "Board: Query compared with Keys, producing scores [2, 1, 0], then Softmax weights [0.665, 0.245, 0.090]. Distinct Values cards feed a weighted blend. Label Scores, Weights, Values so waveforms cannot imply keys and values are interchangeable.",
+      "Small panel: sum of weights = 1; high weight means more influence, with no causal or anomaly verdict."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Restage Farah as a scientist actively checking the attention calculation at her lab console, not a lecturer facing the viewer. She stands in a natural three-quarter side stance toward an angled work screen, one hand resting on its lower frame and the other stylus following the largest weighted path. The camera is beside the screen, so her focused face, canonical left-eye lens and natural body posture are visible without her looking at camera. Eyebrows intent, lips slightly pursed while checking the numerical relationship. No held-up card or teaching pose. The compact screen contains the actual worked example: Scores2,1,0 feed Softmax, producing Weights0.665,0.245,0.090. Three clear Values labeled Value1,Value2,Value3 converge into Weighted blend, each connecting edge labeled with its matching weight0.665,0.245,0.090. The0.665 edge can be modestly thicker, the other two thinner. Preserve exact numeric correspondence and connected arrows. A small header reads Attention example. No decorative waves or invented outputs. All text, grid and diagram edges conform to the display perspective. Other screens off. Lab architecture preserved, dark muted sage pillar, aged brass and natural warm skin, no luminous bloom or neon outlines.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit with immutable canonical identity. Canonical portraits first, room reference next, LAST exact edit target. Preserve all current candid action, precise face morphology and expression, profile angle, head/body scale, two connected arms and realistic hands. Change ONLY the tall glass pillar and neon highlights. Make the pillar dark desaturated sage with dim grey internal bands, no luminous lime or bloom. Reduce bright mint rim on hair, coat and display border to a thin subdued sage line. Keep exact Scores2,1,0, Weights0.665,0.245,0.090 and all three Value paths and labels completely unchanged. All typography remains aligned with the angled screen plane. Clean cel-shaded adventure-comic linework. One full1536x1024 scene."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-concept-narrative-stage2-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-72012034-c420-446e-859c-05037dd1fe1f.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "6023a1a5efe1098fa00b28dff024187c3f2de521aa86fb1ecdbce47501be218a",
+    "proofSha256": "026a850711a9ef887bac510ab65b6553b4fcf0166e58b6214efec46e44f39667",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Farah works through a selected attention query, following the dominant weight into the value blend with focused curiosity."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-concept-semantics-stage1-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+  "publishedOutputSha256": "efd703e180d24793d8d9880061296f2c1628298653948d64905f9d17e891f26d",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 176942
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/beyond-lstm-concept-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/beyond-lstm-concept-target.png",
+    "sha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/beyond-lstm-concept-runtime-before.png",
+    "sha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Farah works through a selected attention query, following the dominant weight into the value blend with focused curiosity.",
+    "fullSpecification": "Restage Farah as a scientist actively checking the attention calculation at her lab console, not a lecturer facing the viewer. She stands in a natural three-quarter side stance toward an angled work screen, one hand resting on its lower frame and the other stylus following the largest weighted path. The camera is beside the screen, so her focused face, canonical left-eye lens and natural body posture are visible without her looking at camera. Eyebrows intent, lips slightly pursed while checking the numerical relationship. No held-up card or teaching pose. The compact screen contains the actual worked example: Scores2,1,0 feed Softmax, producing Weights0.665,0.245,0.090. Three clear Values labeled Value1,Value2,Value3 converge into Weighted blend, each connecting edge labeled with its matching weight0.665,0.245,0.090. The0.665 edge can be modestly thicker, the other two thinner. Preserve exact numeric correspondence and connected arrows. A small header reads Attention example. No decorative waves or invented outputs. All text, grid and diagram edges conform to the display perspective. Other screens off. Lab architecture preserved, dark muted sage pillar, aged brass and natural warm skin, no luminous bloom or neon outlines."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "6023a1a5efe1098fa00b28dff024187c3f2de521aa86fb1ecdbce47501be218a",
+  "faceBoxes": {
+    "farah": [
+      910,
+      75,
+      440,
+      395
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-concept-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Farah as a scientist actively checking the attention calculation at her lab console, not a lecturer facing the viewer. She stands in a natural three-quarter side stance toward an angled work screen, one hand resting on its lower frame and the other stylus following the largest weighted path. The camera is beside the screen, so her focused face, canonical left-eye lens and natural body posture are visible without her looking at camera. Eyebrows intent, lips slightly pursed while checking the numerical relationship. No held-up card or teaching pose. The compact screen contains the actual worked example: Scores2,1,0 feed Softmax, producing Weights0.665,0.245,0.090. Three clear Values labeled Value1,Value2,Value3 converge into Weighted blend, each connecting edge labeled with its matching weight0.665,0.245,0.090. The0.665 edge can be modestly thicker, the other two thinner. Preserve exact numeric correspondence and connected arrows. A small header reads Attention example. No decorative waves or invented outputs. All text, grid and diagram edges conform to the display perspective. Other screens off. Lab architecture preserved, dark muted sage pillar, aged brass and natural warm skin, no luminous bloom or neon outlines. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/beyond-lstm-concept-target.png",
+          "sha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-concept-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "a2a0adc530454f5a8d543d413e3d6af0acfc6c7b4a66794dc117796ccfafa5d8",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-09c7e720-3a8f-45ce-b0f8-fdc85ac5f3e2.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-concept-identity-proof.jpg",
+      "faceBoxes": {
+        "farah": [
+          910,
+          75,
+          440,
+          395
+        ]
+      }
+    }
+  ],
+  "requestedDisplayCorrections": "Preserve all current candid action, precise face morphology and expression, profile angle, head/body scale, two connected arms and realistic hands. Change ONLY the tall glass pillar and neon highlights. Make the pillar dark desaturated sage with dim grey internal bands, no luminous lime or bloom. Reduce bright mint rim on hair, coat and display border to a thin subdued sage line. Keep exact Scores2,1,0, Weights0.665,0.245,0.090 and all three Value paths and labels completely unchanged. All typography remains aligned with the angled screen plane.",
+  "previousPanelSpecification": {
+    "state": "worked example",
+    "panels": [
+      "Board: Query compared with Keys, producing scores [2, 1, 0], then Softmax weights [0.665, 0.245, 0.090]. Distinct Values cards feed a weighted blend. Label Scores, Weights, Values so waveforms cannot imply keys and values are interchangeable.",
+      "Small panel: sum of weights = 1; high weight means more influence, with no causal or anomaly verdict."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": true,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-09c7e720-3a8f-45ce-b0f8-fdc85ac5f3e2.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-72012034-c420-446e-859c-05037dd1fe1f.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+      "art-src/scenes/advanced-time-series__beyond-lstm-concept-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

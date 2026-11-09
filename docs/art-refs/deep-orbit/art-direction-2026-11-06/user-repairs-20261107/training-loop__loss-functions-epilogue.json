@@ -1,0 +1,135 @@
+{
+  "key": "loss-functions-epilogue",
+  "phase": "epilogue",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "source": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+  "scene": "Recompose from INSIDE the lab, camera on SAME writing side of glass as Farah and Demir. Large transparent glass wall board occupies RIGHT half at oblique perspective, corridor faintly beyond. Farah stands LEFT of its edge, shown recognizable three-quarter face, writing at shoulder height on the near front glass surface with natural marker grip. Demir slightly behind her to LEFT, hands casually resting on desk edge, smiling at her baseline entry. They and camera share front side of written marks, no looking through reversed writing, no reaching through glass. Farah's free hand naturally at hip, no tablet. Warm modest accomplishment and curiosity. On glass exact concise handwritten readable entries all perspective-aligned: \"Baseline record\", \"Always p = 0.5\", \"BCE = 0.6931\", \"Class-frequency baseline: pending\", \"Separate test score: pending\". Marker near pending line as she leaves space. No other screen readings. ",
+  "id": "training-loop/loss-functions",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png"
+  ],
+  "prompt": "Use case: precise-object-edit. First2 canonical Farah/Demir portraits, third lab ROOM ONLY, last exact correction target. Change ONLY Demir's tiny wrist display to inactive dark charcoal glass, no illuminated rows, lines, symbols or graphs. Preserve every other pixel-level feature including faces, poses, hands, glass writing front-side logic, all exact numbers and text, screen perspective and muted palette. No new objects. 1536x1024.",
+  "candidatePath": "art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1a669d72-2044-46aa-809c-434458b208fc.png",
+  "candidateSha256": "c8674dc268cb0734c443dcc517576f2775c85e7a2b358052565e93f93680a53e",
+  "tool": "built-in image_gen",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-760fb7ea-ca2a-439e-a1d6-8e997a739daa.png",
+      "sha256": "c673ede504acba14145a5cec2663175df764b3c1e2ed8591207cf093d20a4bda",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+      "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+    }
+  ],
+  "ownReview": {
+    "status": "pass-awaiting-independent-review",
+    "reviewer": "/root",
+    "method": "Native full frame compared with canonical references and MDX",
+    "notes": "Targeted meaningless tiny display turned inactive; all body, face, reader-direction and lesson information preserved."
+  },
+  "previousCandidate": {
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-760fb7ea-ca2a-439e-a1d6-8e997a739daa.png",
+    "candidateSha256": "c673ede504acba14145a5cec2663175df764b3c1e2ed8591207cf093d20a4bda",
+    "prompt": "Use case: identity-preserve. Restage this Deep Orbit story illustration at1536x1024. First canonical portraits are the exact identity authorities for face shape, nose, brows, jaw, age, skin, hair and signature equipment. Next lab room master for architecture only. Last image is restaging target, not identity authority. Balanced stylized adult proportions, ordinary shoulders and short relaxed neck. Two coherent arms and hands per character, plausible wrists, fingers and grip. Crew look at the task or each other, never camera. Same-side operator and camera view: the information faces actual reader. Every word, line and box shares the physical surface perspective. Unused peripheral screens are inactive charcoal; remove arbitrary waveforms, rings, gauges and plants. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, practical light. No lime neon, glossy orange flooding, poster pose or camera-only handheld sign. Recompose from INSIDE the lab, camera on SAME writing side of glass as Farah and Demir. Large transparent glass wall board occupies RIGHT half at oblique perspective, corridor faintly beyond. Farah stands LEFT of its edge, shown recognizable three-quarter face, writing at shoulder height on the near front glass surface with natural marker grip. Demir slightly behind her to LEFT, hands casually resting on desk edge, smiling at her baseline entry. They and camera share front side of written marks, no looking through reversed writing, no reaching through glass. Farah's free hand naturally at hip, no tablet. Warm modest accomplishment and curiosity. On glass exact concise handwritten readable entries all perspective-aligned: \"Baseline record\", \"Always p = 0.5\", \"BCE = 0.6931\", \"Class-frequency baseline: pending\", \"Separate test score: pending\". Marker near pending line as she leaves space. No other screen readings.  cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "actualReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "role": "canonical identity"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "role": "canonical identity"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+        "role": "room architecture only"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-760fb7ea-ca2a-439e-a1d6-8e997a739daa.png",
+        "sha256": "c673ede504acba14145a5cec2663175df764b3c1e2ed8591207cf093d20a4bda",
+        "role": "exact edit target"
+      }
+    ]
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1a669d72-2044-46aa-809c-434458b208fc.png",
+  "publishedSource": "art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp",
+  "sourceSha256": "c8674dc268cb0734c443dcc517576f2775c85e7a2b358052565e93f93680a53e",
+  "webpSha256": "b8f00c7f085ddf1f3bae086e38f3fb9ddaed9ba1df9a18c97a0342d0d03ce33b",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png",
+    "sourceSha256": "682772b99e983a1be041d9da8b575bd57d1c49ffec210ad248983b59ddb0745c",
+    "webpSha256": "5f21b3c8cd62c0ca2f188d12048b87d38944be4dd03e434517d1c6b91a20c4f1",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae85a951-de31-4f2f-90a6-33327f5e05f1.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "c8674dc268cb0734c443dcc517576f2775c85e7a2b358052565e93f93680a53e",
+    "method": "Full native inspection; canonical facial comparison; current source and exercise verification; hands, geometry, palette, narrative and reader-direction gates",
+    "checks": {
+      "combinedNativeReview": "Correction succeeds: Demir wrist fully dark. Farah writes on the near side of glass; camera and both crew share this side, so no mirrored or unreadable-side writing. Proper oblique baselines and paperless interaction. Always p=.5/BCE=.6931 and two pending baseline/test entries correct. Canonical faces, two coherent arms each, natural marker grip and bracing hands.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+          "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

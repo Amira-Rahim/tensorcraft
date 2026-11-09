@@ -1,0 +1,51 @@
+{
+  "id": "neural-networks/building-a-network",
+  "phase": "briefing",
+  "cast": [
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Preserve Mirza currentheadsize and natural seatedauthority/raisedopenhand/otherhandrail pose. Replace cylindricalholo with concise readable 'Bridge classifier' diagram: '3 inputs' rightarrow '32 ReLU' rightarrow '16 ReLU' rightarrow '1 sigmoid'. Footer '673 parameters' and 'Ready to compile'. No trainingresults or madeupnodeweb/radar. All rear screens inactive.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-openai-20261107.png"
+  ],
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+  ],
+  "status": "generated-awaiting-review",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b8d8e956-1d23-4a84-a1a6-3d26652311f4.png",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "commander-mirza",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/building-a-network-briefing-commander-mirza-proof.png",
+      "sha256": "23507ac5fbd5afb920b6e7c6623bc00804d328e239f56550d562caeefc564fe8",
+      "crop": {
+        "left": 315,
+        "top": 30,
+        "width": 300,
+        "height": 375
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "canonicalSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-d875df59-4d44-4035-9c4c-3475f6cd7621.png",
+      "priorSha256": "1e5a4de03a595a24299ef153d02e8b3d8d61739cdf1a1be4d29ee00b6818aa76",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b8d8e956-1d23-4a84-a1a6-3d26652311f4.png",
+      "candidateSha256": "7e023941fd4164188eed12653d020104f3654009ded6f91d99c0256367d5c887"
+    }
+  ],
+  "pathSha256": "7e023941fd4164188eed12653d020104f3654009ded6f91d99c0256367d5c887",
+  "screenMeaning": {
+    "section": "Mirza dialogue; Network setup",
+    "spec": "Bridge classifier3→32ReLU→16ReLU→1sigmoid,673parameters, status assemble/compile before training. Show compile settings Adam,binaryCrossentropy,accuracy, with no training-result chart.",
+    "currentSource": "art-src/scenes/neural-networks__building-a-network-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/commander-mirza.png"
+    ],
+    "cast": [
+      "commander-mirza"
+    ]
+  }
+}

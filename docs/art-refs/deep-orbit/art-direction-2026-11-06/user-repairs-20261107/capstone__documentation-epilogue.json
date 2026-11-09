@@ -1,0 +1,252 @@
+{
+  "key": "documentation-epilogue",
+  "id": "capstone/documentation",
+  "phase": "epilogue",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir sits RIGHT at a lab console under desk lamp late at night. He has just read the literal reviewer comment, leans comfortably back with an amused, slightly sheepish grin, and looks LEFT at work screen. One hand rests on mouse, other on chair arm, natural supported posture. No handheld tablet, stylus or reverse-screen writing. Screen heading \"Runbook calibration\". Sparse table rows \"Calm windows\" \"180\", \"Samples per window\" \"100\", \"99th percentile\" \"0.5\". Beneath: \"Starting cutoff only\". Final line \"Separate-period check: pending\". Small separate top notification \"Reviewer: define high\". This is a fictional mission record. Add small label \"Mission calibration\". No completed validation or invented outcome. Peripheral screens dark, preserve lab architecture and subdued sage lighting. Camera on front side of monitor alongside Demir, face visible, text perspective coherent.",
+  "meaning": "Epilogue ARIA asks threshold for high drift;180 calm windows of100samples yield99thpercentile.5 as starting cutoff; separateperiod validation pending.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-epilogue-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+      "sha256": "e60d1e6b737730494b02781f153141930d5c93613b421c6594238e10e6c09462",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+      "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-4bdccfd6-0fdc-476e-8169-8c39de9e8350.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 1120,
+      "top": 240,
+      "width": 300,
+      "height": 390
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 530,
+      "top": 730,
+      "width": 220,
+      "height": 130
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 1070,
+      "top": 790,
+      "width": 210,
+      "height": 220
+    }
+  ],
+  "candidatePath": "art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+  "candidateSha256": "bc349dfa6bddaeb087a23d17a13479942239c7cd4c573647eed36a2e2dd7d3ec",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir sits RIGHT at a lab console under desk lamp late at night. He has just read the literal reviewer comment, leans comfortably back with an amused, slightly sheepish grin, and looks LEFT at work screen. One hand rests on mouse, other on chair arm, natural supported posture. No handheld tablet, stylus or reverse-screen writing. Screen heading \"Runbook calibration\". Sparse table rows \"Calm windows\" \"180\", \"Samples per window\" \"100\", \"99th percentile\" \"0.5\". Beneath: \"Starting cutoff only\". Final line \"Separate-period check: pending\". Small separate top notification \"Reviewer: define high\". This is a fictional mission record. Add small label \"Mission calibration\". No completed validation or invented outcome. Peripheral screens dark, preserve lab architecture and subdued sage lighting. Camera on front side of monitor alongside Demir, face visible, text perspective coherent.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+          "sha256": "e60d1e6b737730494b02781f153141930d5c93613b421c6594238e10e6c09462",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-4bdccfd6-0fdc-476e-8169-8c39de9e8350.png",
+        "sha256": "bc349dfa6bddaeb087a23d17a13479942239c7cd4c573647eed36a2e2dd7d3ec"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Epilogue ARIA asks threshold for high drift;180 calm windows of100samples yield99thpercentile.5 as starting cutoff; separateperiod validation pending.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 1120,
+        "top": 240,
+        "width": 300,
+        "height": 390
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 530,
+        "top": 730,
+        "width": 220,
+        "height": 130
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 1070,
+        "top": 790,
+        "width": 210,
+        "height": 220
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+      "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+      "sha256": "e60d1e6b737730494b02781f153141930d5c93613b421c6594238e10e6c09462",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "documentation-epilogue",
+    "id": "capstone/documentation",
+    "phase": "epilogue",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-4bdccfd6-0fdc-476e-8169-8c39de9e8350.png",
+    "candidateSha256": "bc349dfa6bddaeb087a23d17a13479942239c7cd4c573647eed36a2e2dd7d3ec",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:50:28.358360+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+        "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+        "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Current fictional epilogue has ARIA demand definition of high drift; 180 calm windows of 100 samples give 99th percentile .5, a starting cutoff needing separate-period check. Display preserves provisional status. Demir reacts to reviewer while seated naturally."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/documentation-epilogue.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-4bdccfd6-0fdc-476e-8169-8c39de9e8350.png",
+  "publishedSource": "art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation-epilogue.webp",
+  "sourceSha256": "bc349dfa6bddaeb087a23d17a13479942239c7cd4c573647eed36a2e2dd7d3ec",
+  "webpSha256": "af9e9951a3f673c8f904159196c689ea9b4b9088f45cfb4e2d0e0c2bf55d7b7d",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+    "sourceSha256": "e60d1e6b737730494b02781f153141930d5c93613b421c6594238e10e6c09462",
+    "webpSha256": "1d22be7f222fe53d868aded6ce96af3f5d87dff6898530dd35a56520a778819b",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-422d7a66-2a3e-47d7-9a36-a5edd0823958.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "bc349dfa6bddaeb087a23d17a13479942239c7cd4c573647eed36a2e2dd7d3ec",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Current fictional epilogue has ARIA demand definition of high drift; 180 calm windows of 100 samples give 99th percentile .5, a starting cutoff needing separate-period check. Display preserves provisional status. Demir reacts to reviewer while seated naturally."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+        "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+        "sha256": "93760ad58afc9e64b53fa3ea3f6df5e206e602cbd5369191714d911f3915f73b"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/documentation-epilogue.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

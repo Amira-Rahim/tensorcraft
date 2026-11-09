@@ -1,0 +1,72 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "phase": "concept",
+      "sourceSha256": "b012647419c35a4e2f911de29795ed7685e6f42de3e25b1fabce364aacdff677",
+      "outputSha256": "efd703e180d24793d8d9880061296f2c1628298653948d64905f9d17e891f26d",
+      "bytes": 176942,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "takeaways",
+      "sourceSha256": "55fc1ebcd4d98f0fe83f5980c89f3117b9162f044eee83f8a8571330468599a8",
+      "outputSha256": "79b6e5def43dc482bf791f92701bee74d242e2350ac8361a548708bc9ae9a45c",
+      "bytes": 175296,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "epilogue",
+      "sourceSha256": "41e39662d433ccb39d7f47bbc674eb8d96193235d44199699ceac7aab775644c",
+      "outputSha256": "e1ec0fe9d6e81f9abe3ebdf5de37ad417961e804ce37d21214310fb4a9de8ee3",
+      "bytes": 195360,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "challenge",
+      "sourceSha256": "e5576c4bcb365ba983bb49564246ad89e5ce9ea691c682ea7bf7e64ca1785681",
+      "outputSha256": "83d19fedb5efc65655cdc90703b747887ce8586891e44fdcc509f5e47766c49a",
+      "bytes": 184494,
+      "quality": 83,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    },
+    {
+      "phase": "briefing",
+      "sourceSha256": "a9e7ae6140c3ff662fdc32e364c3b87721f19254fe4225000cb1bdb16c4ecc53",
+      "outputSha256": "8cd2f750e877bbe202e07601266d13167e0262b5dc04b4820167564f37ca34b1",
+      "bytes": 200626,
+      "quality": 86,
+      "effort": 6,
+      "fit": "cover",
+      "combinedVisualReview": "approved",
+      "passed": true
+    }
+  ],
+  "removed": [
+    "art-src/scenes/advanced-time-series__beyond-lstm-briefing-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-briefing-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-challenge-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-challenge-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-concept-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-semantics-stage2-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-semantics-stage1-openai-20261107.png",
+    "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-semantics-stage2-openai-20261107.png"
+  ],
+  "archive": "Current source inputs retained in semantic-review/inputs; current outputs and proofs retained."
+}

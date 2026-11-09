@@ -1,0 +1,198 @@
+{
+  "key": "deep-orbit/anomaly-detection/threshold-tuning",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+    "sha256": "731607d4ad0a940c14946cab4dcef010b4999d87c3090bad9aa01089f09d1ca4"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/threshold-tuning-challenge-runtime-before.png",
+    "sha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/threshold-tuning-challenge-runtime-before.png",
+    "sha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+      "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+      "sha256": "bbe8d4768261461bf9f5f17e66e6ab981f6ef455ca8caa6a2c2c16ca3d17ddd9"
+    }
+  ],
+  "panelSpecification": {
+    "state": "challenge",
+    "concreteGenerationSpecification": "Restage Demir in candid three-quarter side view at a compact bridge console angled toward him. He studies a six-row validation table, one hand on the keyboard and the other using a stylus at the candidate control. No held display or camera gaze. Header Six synthetic validation cases. Two columns Error and Anomaly, six exact rows in order: 0.2 false; 0.4 true; 0.5 false; 0.7 true; 0.9 true; 0.3 false. Below: Candidates 0.3,0.6. Rule error > cutoff. Two output fields Selected cutoff:pending and F1:pending. No chosen winner or fabricated score. Display perspective and all baselines match its actual plane, screen faces Demir with camera beside his left shoulder enough to see his three-quarter face. Slight furrow and thoughtful mouth, natural seated whole body and two connected arms/hands. Turn all background monitors and unused holo table off. No notebook text or decorative plots. Charcoal, aged brass, subdued sage.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "section": "Challenge and RecallPrompts and Epilogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+        "section": "testCode overlapping six-case fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/threshold-tuning-challenge-runtime-before.png",
+      "sha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve narrative restaging. Inputs first canonical portraits, then bridge master palette/architecture, LAST original scene. Rebuild candid story staging while preserving exact canonical face morphology, ages, hair, noses/jaws/eyes and equipment. Farah lens anatomical LEFT eye, Demir circular comms anatomical RIGHT ear; Nazari/Mirza no eyewear. Moderate stylized adult head/body balance, no tiny heads, clean cel-shaded adventure comic. Restage Demir in candid three-quarter side view at a compact bridge console angled toward him. He studies a six-row validation table, one hand on the keyboard and the other using a stylus at the candidate control. No held display or camera gaze. Header Six synthetic validation cases. Two columns Error and Anomaly, six exact rows in order: 0.2 false; 0.4 true; 0.5 false; 0.7 true; 0.9 true; 0.3 false. Below: Candidates 0.3,0.6. Rule error > cutoff. Two output fields Selected cutoff:pending and F1:pending. No chosen winner or fabricated score. Display perspective and all baselines match its actual plane, screen faces Demir with camera beside his left shoulder enough to see his three-quarter face. Slight furrow and thoughtful mouth, natural seated whole body and two connected arms/hands. Turn all background monitors and unused holo table off. No notebook text or decorative plots. Charcoal, aged brass, subdued sage. One full1536x1024 image, all text has natural word spacing.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir compares the overlapping validation cases with focused concern, preparing the cutoff sweep before the next watch.",
+    "fullSpecification": "Restage Demir in candid three-quarter side view at a compact bridge console angled toward him. He studies a six-row validation table, one hand on the keyboard and the other using a stylus at the candidate control. No held display or camera gaze. Header Six synthetic validation cases. Two columns Error and Anomaly, six exact rows in order: 0.2 false; 0.4 true; 0.5 false; 0.7 true; 0.9 true; 0.3 false. Below: Candidates 0.3,0.6. Rule error > cutoff. Two output fields Selected cutoff:pending and F1:pending. No chosen winner or fabricated score. Display perspective and all baselines match its actual plane, screen faces Demir with camera beside his left shoulder enough to see his three-quarter face. Slight furrow and thoughtful mouth, natural seated whole body and two connected arms/hands. Turn all background monitors and unused holo table off. No notebook text or decorative plots. Charcoal, aged brass, subdued sage."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidatePath": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-narrative-stage1-openai-20261107.png",
+  "candidateSha256": "625b359c7916a20349cd59b39882ef444ed29b9878284f6bc9e6671b90c0d5fb",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-fc9c8845-7285-4a78-8f12-02fdbf6baff3.png",
+  "faceBoxes": {
+    "demir": [
+      320,
+      10,
+      345,
+      420
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-challenge-identity-proof.jpg",
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "625b359c7916a20349cd59b39882ef444ed29b9878284f6bc9e6671b90c0d5fb",
+    "proofSha256": "7b80f15947c3b95b3dadfdd03bfaab2bc53508168fa1070fb3156f2535793bc0",
+    "gates": [
+      "Candid task action and story-tied emotion",
+      "Canonical face morphology and age",
+      "Moderate stylized adult proportions",
+      "Supported head/neck/shoulder and two arm-hand chains",
+      "Muted palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Perspective and reader direction"
+    ],
+    "actionEmotionStory": "Demir compares the overlapping validation cases with focused concern, preparing the cutoff sweep before the next watch."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-fc9c8845-7285-4a78-8f12-02fdbf6baff3.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+      "art-src/scenes/anomaly-detection__threshold-tuning-challenge-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "reusedCandidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/threshold-tuning-challenge-candidate.json",
+  "temporaryCandidatePathAtReview": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-narrative-stage1-openai-20261107.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+  "sourceSha256": "625b359c7916a20349cd59b39882ef444ed29b9878284f6bc9e6671b90c0d5fb",
+  "webpSha256": "85b4c52667337356ca6209f7f8da12628ef0e830d5758c2e75186e364f5df777",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+    "sourceSha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+    "webpSha256": "731607d4ad0a940c14946cab4dcef010b4999d87c3090bad9aa01089f09d1ca4",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/late_final",
+    "status": "approved",
+    "candidateSha256": "625b359c7916a20349cd59b39882ef444ed29b9878284f6bc9e6671b90c0d5fb",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsAndBody": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": {
+        "state": "challenge",
+        "concreteGenerationSpecification": "Restage Demir in candid three-quarter side view at a compact bridge console angled toward him. He studies a six-row validation table, one hand on the keyboard and the other using a stylus at the candidate control. No held display or camera gaze. Header Six synthetic validation cases. Two columns Error and Anomaly, six exact rows in order: 0.2 false; 0.4 true; 0.5 false; 0.7 true; 0.9 true; 0.3 false. Below: Candidates 0.3,0.6. Rule error > cutoff. Two output fields Selected cutoff:pending and F1:pending. No chosen winner or fabricated score. Display perspective and all baselines match its actual plane, screen faces Demir with camera beside his left shoulder enough to see his three-quarter face. Slight furrow and thoughtful mouth, natural seated whole body and two connected arms/hands. Turn all background monitors and unused holo table off. No notebook text or decorative plots. Charcoal, aged brass, subdued sage.",
+        "sourceSections": [
+          {
+            "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+            "section": "Challenge and RecallPrompts and Epilogue"
+          },
+          {
+            "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+            "section": "testCode overlapping six-case fixture"
+          }
+        ],
+        "otherScreens": "Inactive charcoal glass."
+      }
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+        "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+        "sha256": "bbe8d4768261461bf9f5f17e66e6ab981f6ef455ca8caa6a2c2c16ca3d17ddd9"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

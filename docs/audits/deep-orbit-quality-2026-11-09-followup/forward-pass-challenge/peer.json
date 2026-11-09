@@ -1,0 +1,106 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/candidate.png",
+  "candidateSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh native comparison with the user-rejected original, new 2x face and both hand crops, complete body/arm-chain crop, canonical portrait, current MDX and exercise, and 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity: Ensign Demir"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "followup-forward-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/candidate.png",
+      "box": [
+        345,
+        230,
+        525,
+        460
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-forward-keyboard-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/candidate.png",
+      "box": [
+        575,
+        755,
+        805,
+        880
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-forward-cartridge-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/candidate.png",
+      "box": [
+        750,
+        420,
+        885,
+        660
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-forward-body-chains",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/candidate.png",
+      "box": [
+        182,
+        410,
+        884,
+        1006
+      ],
+      "scale": 1
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d",
+      "facts": [
+        "Challenge follows the failed demo and asks the learner to run a supplied batch and add a batch axis to one flat reading.",
+        "The exercise is distinct from the three-feature narrative model."
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+      "sha256": "16d0d96d4f1cdeee1209f21a273e55bac29d1e398f00771c82a78c087f8cb9a7",
+      "facts": [
+        "Supplied input is [[1.0,2.0],[3.0,4.0]], shape [2,2].",
+        "One dense layer has 3 units and inputShape [2]. Expected output shape is [2,3].",
+        "The supplied single reading is [5.0,6.0]. Add one leading batch axis while preserving values.",
+        "Random initial weights do not establish prediction accuracy. The challenge image must keep results pending."
+      ]
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Near right shoulder, elbow and wrist lead to the index pressing the green keyboard key; curled remaining fingers and occluded far thumb are coherent. Far left arm follows its own visible elbow to a natural cartridge grip beside the slot. Cartridge, thumb and curled fingers remain continuous.",
+    "identityExpressionAndStory": "Demir retains canonical eye spacing, nose, freckles, stubble, swept hair and young-adult expression. Compared with the rejected source, the inflated shoulder/chest mass and oversized foreground forearm are reduced; head, neck, torso and supported seated lap now balance naturally.",
+    "displayLegibilityAndSource": "Supplied input [[1,2],[3,4]], shape [2,2], dense 3 units, expected shape [2,3], single reading [5,6] and add-one-batch-axis instruction match the exercise. Awaiting code preserves the challenge state. All are legible at 768 x 512.",
+    "perspectiveAndOperator": "All four glass corners form a frontal rectangle. Bezel, rules, boxes and text share the same plane; Demir is seated in front of it with the keyboard and cartridge slot within reach.",
+    "largeDisplayRule": "The full exercise occupies a broad readable monitor without clipped text.",
+    "palette": "Muted charcoal, brass and sage retain the scene palette."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 4,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:07:26.368604+00:00"
+}

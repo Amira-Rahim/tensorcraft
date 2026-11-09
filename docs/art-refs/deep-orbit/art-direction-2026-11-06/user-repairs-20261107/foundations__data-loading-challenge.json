@@ -1,0 +1,210 @@
+{
+  "key": "data-loading-challenge",
+  "auditIndex": 41,
+  "id": "foundations/data-loading",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+    "sha256": "2201993286b5d4dafa9bc4c06ac3c8c1b2b2cecaa6fb39f9f159d4a7d96220ad"
+  },
+  "prompt": "Use case: identity-preserve. Replace a Deep Orbit lesson scene, 1536x1024. First references are strict canonical character portraits; preserve facial morphology, age, complexion, brow, eyes, nose, jaw, mouth, hair, costume. Next reference is ROOM ARCHITECTURE ONLY. Last is the edit target, which may have incorrect staging. Balanced stylized adult proportions, short relaxed necks, ordinary shoulders. Exactly two coherent arm chains and natural five-finger hands per person. Furniture contact physically plausible. Faces visible in natural three-quarter working poses, candid curiosity or warm dry humor, no camera gaze. Every screen must face its actual operator, camera sharing the same readable side. Put the physical monitor at the side of the composition and all characters in FRONT of its screen, not behind it. All text and lines share its perspective and foreshortening. Remove front-facing handheld placards and backwards desk documents. Only specified data on main display; all incidental panels and wrist screens dark charcoal. Restrained charcoal/navy, sage #6BAA8A and aged brass #A89060, natural skin, localized soft practical light. No plants, neon lime, golden wash or random waveforms. Demir's communicator belongs on anatomical RIGHT ear, Farah's AR lens on anatomical LEFT eye. Mirza's uniform has its canonical round brass badge, never a clock. Demir alone sits LEFT in engineering, one hand naturally operates a mouse, other rests on desk beside keyboard. He checks the split membership with focused satisfaction. Physical monitor at far RIGHT faces left toward him and camera. Header \"Practice archive row IDs\". Training panel heading \"Training: 0 through 11\" and the twelve IDs 0,1,2,3,4,5,6,7,8,9,10,11 in clear cells. Validation panel heading \"Validation: 12 through 15\" with four IDs12,13,14,15. Footer \"Shuffle only within training\". This is the supplied 16-row practice archive, not a new fictional full archive. Dark wrist and unused equipment. No pointing through a screen. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-challenge-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+      "sha256": "2201993286b5d4dafa9bc4c06ac3c8c1b2b2cecaa6fb39f9f159d4a7d96220ad",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+    }
+  ],
+  "status": "published",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+      "sha256": "2201993286b5d4dafa9bc4c06ac3c8c1b2b2cecaa6fb39f9f159d4a7d96220ad",
+      "role": "exact edit target"
+    }
+  ],
+  "rootTakeover": true,
+  "jobPath": "/tmp/tensorcraft-combined-repairs/data-loading-challenge/job.json",
+  "candidatePath": "art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-27994f6a-71a4-4292-98ad-b51229f1eae0.png",
+  "ownReview": {
+    "reviewer": "/root",
+    "verdict": "PASS",
+    "nativeFull": true,
+    "notes": "Native full image inspected against current lesson and canonical original portraits. Exact requested data and screen perspective retained, normal adult neck and shoulder proportions, natural coherent hand chains, candid task gaze and readable operator side, unused displays dark."
+  },
+  "candidateSha256": "27400b05fb31cd0b7fbf91b2bbf4abec82eae08cb45a4e1dcb063b329c9776ab",
+  "promptSha256": "d715e470933615da3d5eecc1636b4f8ad0dea4bc54de8dd28f432028c009e9d9",
+  "independentPeerReview": {
+    "key": "data-loading-challenge",
+    "metadataPath": "/tmp/tensorcraft-combined-repairs/data-loading-challenge/job.json",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-27994f6a-71a4-4292-98ad-b51229f1eae0.png",
+    "candidateSha256": "27400b05fb31cd0b7fbf91b2bbf4abec82eae08cb45a4e1dcb063b329c9776ab",
+    "sourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+        "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+      }
+    ],
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "method": "Independent native full-frame inspection, current lesson and exercise verification, canonical face crops compared side by side.",
+    "notes": "Demir checks the practice archive row IDs at a reader-facing console. Training 0 through 11 contains exactly 12 distinct IDs; validation 12 through 15 contains exactly four IDs. Shuffle only within training matches chronological membership and source exercise. Mouse hand and resting desk hand are natural, body and neck proportions balanced, canonical face comparison passes. Muted engineering palette and coherent screen plane, no early exercise success claim.",
+    "faceCropCoordinates": [
+      {
+        "character": "ensign-demir",
+        "left": 325,
+        "top": 160,
+        "width": 310,
+        "height": 390
+      }
+    ],
+    "temporaryFaceCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-27994f6a-71a4-4292-98ad-b51229f1eae0.png",
+  "publishedSource": "art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/data-loading-challenge.webp",
+  "sourceSha256": "27400b05fb31cd0b7fbf91b2bbf4abec82eae08cb45a4e1dcb063b329c9776ab",
+  "webpSha256": "e4bd7bb402b98f32d2fd217ba966d0c1b3959ca4391bcf4dcda2e74edf817cd9",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+    "sourceSha256": "2201993286b5d4dafa9bc4c06ac3c8c1b2b2cecaa6fb39f9f159d4a7d96220ad",
+    "webpSha256": "1d2b8c5abb22d712f5bc6839fed81a0f6e3ba4b2f67173379aa0fb9455aa206b",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7e9d35f1-dd69-44f4-b5d5-b8b9a0b4734f.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "27400b05fb31cd0b7fbf91b2bbf4abec82eae08cb45a4e1dcb063b329c9776ab",
+    "method": "Independent native full-frame inspection, current lesson and exercise verification, canonical face crops compared side by side.",
+    "checks": {
+      "combinedNativeReview": {
+        "key": "data-loading-challenge",
+        "metadataPath": "/tmp/tensorcraft-combined-repairs/data-loading-challenge/job.json",
+        "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-27994f6a-71a4-4292-98ad-b51229f1eae0.png",
+        "candidateSha256": "27400b05fb31cd0b7fbf91b2bbf4abec82eae08cb45a4e1dcb063b329c9776ab",
+        "sourceFiles": [
+          {
+            "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+            "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+          },
+          {
+            "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+            "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+          }
+        ],
+        "verdict": "PASS",
+        "reviewer": "/root/remaining_late",
+        "method": "Independent native full-frame inspection, current lesson and exercise verification, canonical face crops compared side by side.",
+        "notes": "Demir checks the practice archive row IDs at a reader-facing console. Training 0 through 11 contains exactly 12 distinct IDs; validation 12 through 15 contains exactly four IDs. Shuffle only within training matches chronological membership and source exercise. Mouse hand and resting desk hand are natural, body and neck proportions balanced, canonical face comparison passes. Muted engineering palette and coherent screen plane, no early exercise success claim.",
+        "faceCropCoordinates": [
+          {
+            "character": "ensign-demir",
+            "left": 325,
+            "top": 160,
+            "width": 310,
+            "height": 390
+          }
+        ],
+        "temporaryFaceCropsRemoved": true
+      },
+      "authorReview": {
+        "reviewer": "/root",
+        "verdict": "PASS",
+        "nativeFull": true,
+        "notes": "Native full image inspected against current lesson and canonical original portraits. Exact requested data and screen perspective retained, normal adult neck and shoulder proportions, natural coherent hand chains, candid task gaze and readable operator side, unused displays dark."
+      },
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+          "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+          "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+        "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/foundations/data-loading-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/foundations/data-loading-challenge.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

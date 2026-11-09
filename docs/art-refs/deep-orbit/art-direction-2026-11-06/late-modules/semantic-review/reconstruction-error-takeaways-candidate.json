@@ -1,0 +1,200 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portraits first are immutable identity references; room master palette reference; LAST input is target. Correct only the working calculation pad orientation. The people sit across the desk from the camera and Demir is writing on it. Lower the pad into a nearly flat working angle and rotate all content180degrees WITHIN ITS PLANE so the top/title is at the near-camera edge and the letter bottoms are toward the crew. Text should be visibly upside down to the viewer, readable upright to Demir and Farah. Never mirror. Preserve exact content: Constructed mapping; [1000,0] rebuilt[1000,0], MSE0; [0,0.2] rebuilt[0,0], MSE0.02; Low error can miss an anomaly. Keep MSE0 circled. Maintain all body/face/arm poses, adjust just pen/fingertip contact if needed to touch the corrected pad, no detached hands. Leave all room/palette/other objects unchanged. One1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-takeaways-narrative-stage1-openai-20261107.png",
+      "sha256": "ab34933284c3e7aa4dbedceac5ce95645af8cb192808d342ec73160073af8d8e",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "ab34933284c3e7aa4dbedceac5ce95645af8cb192808d342ec73160073af8d8e",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+    "sha256": "0e2d0a1cd0c18c5de8a5a660d93418c99afb56ac215c4977adaf9c527477b1d8"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sha256": "dec34450564614d8f3963d95bf9a3cf627d276b42b576e430c9a5cae535425e6"
+    }
+  ],
+  "panelSpecification": {
+    "state": "worked mission attribution",
+    "concreteGenerationSpecification": "Restage as a candid calculation at the lab workbench. Remove the outward held paper entirely. Farah and Demir sit at two adjacent sides of a small desk, body and chair angles naturally directed toward a sloping calculation pad lying between them. Camera looks diagonally from beside the pad, showing natural three-quarter faces and surface perspective. Demir has just circled MSE0 with his stylus; his brows rise and his mouth parts in surprise as he looks toward Farah. His free hand rests on the desk. Farah watches him with a precise skeptical raised eyebrow, one index finger resting next to the distant input and the other hand on her notebook. Four anatomically continuous arm chains, realistic hands and grips. Pad headed Constructed mapping has two exact rows: [1000,0] rebuilt [1000,0], MSE0; [0,0.2] rebuilt [0,0], MSE0.02. Small note: Low error can miss an anomaly. Keep lettering scaled and aligned to the pad perspective, not front-facing flat text. All wall screens off; no lecture heading behind them. Natural warm lamp light, lab pillar dark muted sage, aged brass, charcoal and no neon.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "A Detector Can Miss and RecallPrompt"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portraits first are immutable identity references; room master palette reference; LAST input is target. Correct only the working calculation pad orientation. The people sit across the desk from the camera and Demir is writing on it. Lower the pad into a nearly flat working angle and rotate all content180degrees WITHIN ITS PLANE so the top/title is at the near-camera edge and the letter bottoms are toward the crew. Text should be visibly upside down to the viewer, readable upright to Demir and Farah. Never mirror. Preserve exact content: Constructed mapping; [1000,0] rebuilt[1000,0], MSE0; [0,0.2] rebuilt[0,0], MSE0.02; Low error can miss an anomaly. Keep MSE0 circled. Maintain all body/face/arm poses, adjust just pen/fingertip contact if needed to touch the corrected pad, no detached hands. Leave all room/palette/other objects unchanged. One1536x1024 scene."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5a95083d-81bf-4097-968b-2dc26cb66be5.png",
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/reconstruction-error-takeaways-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-takeaways-target.png",
+    "sha256": "ef21b1cb2ebba169bc9fddded45372ded554a95593933ab240c4008926d5a857",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "ef21b1cb2ebba169bc9fddded45372ded554a95593933ab240c4008926d5a857",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-takeaways-runtime-before.png",
+    "sha256": "c1e878b5deab565c773b94231b9a8f21465af3cc769ccc318e2b9e79321e1b90",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "c1e878b5deab565c773b94231b9a8f21465af3cc769ccc318e2b9e79321e1b90",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir reacts to the exact zero-error counterexample while Farah questions the assumption that an unusual input must reconstruct badly.",
+    "fullSpecification": "Restage as a candid calculation at the lab workbench. Remove the outward held paper entirely. Farah and Demir sit at two adjacent sides of a small desk, body and chair angles naturally directed toward a sloping calculation pad lying between them. Camera looks diagonally from beside the pad, showing natural three-quarter faces and surface perspective. Demir has just circled MSE0 with his stylus; his brows rise and his mouth parts in surprise as he looks toward Farah. His free hand rests on the desk. Farah watches him with a precise skeptical raised eyebrow, one index finger resting next to the distant input and the other hand on her notebook. Four anatomically continuous arm chains, realistic hands and grips. Pad headed Constructed mapping has two exact rows: [1000,0] rebuilt [1000,0], MSE0; [0,0.2] rebuilt [0,0], MSE0.02. Small note: Low error can miss an anomaly. Keep lettering scaled and aligned to the pad perspective, not front-facing flat text. All wall screens off; no lecture heading behind them. Natural warm lamp light, lab pillar dark muted sage, aged brass, charcoal and no neon."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c",
+  "faceBoxes": {
+    "farah": [
+      230,
+      65,
+      355,
+      415
+    ],
+    "demir": [
+      950,
+      60,
+      350,
+      440
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-takeaways-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage as a candid calculation at the lab workbench. Remove the outward held paper entirely. Farah and Demir sit at two adjacent sides of a small desk, body and chair angles naturally directed toward a sloping calculation pad lying between them. Camera looks diagonally from beside the pad, showing natural three-quarter faces and surface perspective. Demir has just circled MSE0 with his stylus; his brows rise and his mouth parts in surprise as he looks toward Farah. His free hand rests on the desk. Farah watches him with a precise skeptical raised eyebrow, one index finger resting next to the distant input and the other hand on her notebook. Four anatomically continuous arm chains, realistic hands and grips. Pad headed Constructed mapping has two exact rows: [1000,0] rebuilt [1000,0], MSE0; [0,0.2] rebuilt [0,0], MSE0.02. Small note: Low error can miss an anomaly. Keep lettering scaled and aligned to the pad perspective, not front-facing flat text. All wall screens off; no lecture heading behind them. Natural warm lamp light, lab pillar dark muted sage, aged brass, charcoal and no neon. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "ab34933284c3e7aa4dbedceac5ce95645af8cb192808d342ec73160073af8d8e",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-6233485c-f4ef-41c5-8e4e-1814f575298c.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-takeaways-target.png",
+          "sha256": "ef21b1cb2ebba169bc9fddded45372ded554a95593933ab240c4008926d5a857",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "ef21b1cb2ebba169bc9fddded45372ded554a95593933ab240c4008926d5a857",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-takeaways-identity-proof.jpg"
+    }
+  ],
+  "surfacePerspectiveReview": {
+    "status": "approved",
+    "reviewer": "late_final",
+    "candidateSha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c",
+    "reason": "Final work-surface orientation and text baselines match reader and plane."
+  },
+  "previousPanelSpecification": {
+    "state": "worked mission attribution",
+    "concreteGenerationSpecification": "Keep Farah holding paper with both hands and Demir pointing to it with one hand while his other hand rests naturally on table. Preserve all connected arms and paper grips. Both complete heads can be only very slightly smaller, about5 percent, preserve exact faces and natural short necks. Replace paper donut and arbitrary bars with a compact two-row example headed \"Constructed mapping\". Row1 \"[1000, 0] rebuilt [1000, 0]\" then \"MSE 0\". Row2 \"[0, 0.2] rebuilt [0, 0]\" then \"MSE 0.02\". Footer \"Low error can miss an anomaly\". Keep handwriting readable but brief, no graphs. One rear panel says \"High error does not explain the cause\". Everything else off. These are illustrative calculated examples, not trained-model measurements.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "A Detector Can Miss and RecallPrompt"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c",
+    "proofSha256": "d5f2a4100deb23baa62e491425ea260821dd50ad882a9cf37b8b57a16dec80f8",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Demir reacts to the exact zero-error counterexample while Farah questions the assumption that an unusual input must reconstruct badly."
+  },
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5a95083d-81bf-4097-968b-2dc26cb66be5.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-6233485c-f4ef-41c5-8e4e-1814f575298c.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+      "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "publishedReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__reconstruction-error-takeaways.json",
+  "obsoleteWorkingImageRemoved": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-narrative-stage2-openai-20261107.png"
+}

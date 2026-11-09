@@ -1,0 +1,73 @@
+{
+  "id": "neural-networks/activation-functions",
+  "phase": "takeaways",
+  "cast": [
+    "chief-nazari",
+    "dr-farah"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-677a3c10-9475-4723-ace1-ba2c853dacf6.png",
+  "prompt": "Use case: precise-object-edit. First 2 inputs are immutable canonical identities chief-nazari, dr-farah. Last input is TARGET. Make ONLY specified localized correction. Preserve all faces, head sizes, expressions, hair, head-neck-body alignment, complete arms/hands, clothes, furniture, camera, framing, muted palette and1536x1024size exactly. No proportionchanges, noadditionalgadgets, noextra limbs or text. Remove only the invented black rectangular earpiece on Nazari's visible ear on the LEFT side of the image. Nazari has no earpiece in canon: restore natural bare ear matching her canonicalportrait. Do not change her face, headsize, hair, jaw, expression, neck or any other feature. Preserve both screens and every exactnumber, Farah, allfourarms/hands, anatomy andwholecomposition.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-677a3c10-9475-4723-ace1-ba2c853dacf6.png"
+  ],
+  "status": "generated-awaiting-review",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-takeaways-chief-nazari-proof.png",
+      "sha256": "6999d9d22c895e7175e4411eac11656ca292a29f88d032582fd638fe22552ca3",
+      "crop": {
+        "left": 310,
+        "top": 40,
+        "width": 280,
+        "height": 350
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae3a58b3-0b9a-4d0c-b099-cf241aff2f69.png",
+      "priorSha256": "f14b24e47f0c91f5d54e01daaf009b70789a7d24b060b6bea866468d6c337703",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+      "candidateSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e"
+    },
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-takeaways-dr-farah-proof.png",
+      "sha256": "ad26ab14ab1cf8ea84bf7e69d1de29b6e452f36f95c8267a361b72380f746fe8",
+      "crop": {
+        "left": 1020,
+        "top": 40,
+        "width": 300,
+        "height": 380
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae3a58b3-0b9a-4d0c-b099-cf241aff2f69.png",
+      "priorSha256": "f14b24e47f0c91f5d54e01daaf009b70789a7d24b060b6bea866468d6c337703",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+      "candidateSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e"
+    }
+  ],
+  "pathSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+  ],
+  "screenMeaning": {
+    "section": "A Score and an Alert Are Different; LessonRecap",
+    "spec": "Show-.06→sigmoid≈.485 and1.04→≈.739, threshold.5 as separate dashed line. Label Score range, alert threshold, calibration as three different checks; no80%probability claim.",
+    "currentSource": "art-src/scenes/neural-networks__activation-functions-takeaways-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "cast": [
+      "chief-nazari",
+      "dr-farah"
+    ]
+  }
+}

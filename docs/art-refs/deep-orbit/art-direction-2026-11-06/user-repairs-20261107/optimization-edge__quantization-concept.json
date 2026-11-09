@@ -1,0 +1,243 @@
+{
+  "key": "quantization-concept",
+  "auditIndex": 62,
+  "id": "optimization-edge/quantization",
+  "phase": "concept",
+  "cast": [
+    "chief-nazari"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a07ce812-424c-49f1-a5b0-cd0f5976a295.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+    "sha256": "fb6514b169c7a10d0f4fa7e0186524018dfa8c7b68dcce13116ff6de2689aaa5"
+  },
+  "prompt": "Use case: identity-preserve, one local correction. First canonical portrait is Chief Nazari identity authority. Room master architecture only. Last image exact target. REMOVE the invented monocle/eyeglass apparatus from Nazari face entirely. She has NO eyewear, eye implants, monocles, lenses or goggles in her canonical design. Reconstruct her natural left eye, eyebrow, mature facial folds and hairline to match first portrait, preserving the exact pose and current gaze. Keep every other pixel/composition content as closely as possible: faces, hands, clothes, furniture, full screen text/numbers/diagram, palette and perspective. Do not change any text. No additional edits. 1536x1024 landscape.",
+  "meaning": "Uint8storesquarterfloat32bytes,TFJSloaddecodesfloat32,runtimeandaccuracyseparatemeasurements.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a07ce812-424c-49f1-a5b0-cd0f5976a295.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a07ce812-424c-49f1-a5b0-cd0f5976a295.png",
+      "sha256": "5d61862b340a6ced56dc362c231b650396588733b4750b5142d182d72b630766",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+      "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-f6a5ce29-68ac-4548-90d4-e20eba0b61ca.png",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Farah lens stays over anatomical LEFT eye. Nazari seated LEFT at engineering console, leaning inwith skeptical pleased eyebrow, onehand adjusts a knobandotherrests beside closedledger. She looks at monitor RIGHT; removeoutwardtablet/stylus/presenterpose. Screen heading \"Weight storage\". Two rows \"Float32: 4 bytes per weight\" and \"Uint8: 1 byte per weight\". Below arrowflow \"Stored uint8\" -> \"Decode\" -> \"Float32 at runtime\". Footer \"Measure prediction changes separately\". Diagram clean andaligned, no impliedspeedclaim. The workingexpression sayssheischeckingthecatch, not posing.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a07ce812-424c-49f1-a5b0-cd0f5976a295.png",
+          "sha256": "5d61862b340a6ced56dc362c231b650396588733b4750b5142d182d72b630766",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a07ce812-424c-49f1-a5b0-cd0f5976a295.png",
+        "sha256": "5d61862b340a6ced56dc362c231b650396588733b4750b5142d182d72b630766"
+      }
+    },
+    {
+      "prompt": "Use case: identity-preserve, one local correction. First canonical portrait is Chief Nazari identity authority. Room master architecture only. Last image exact target. REMOVE the invented monocle/eyeglass apparatus from Nazari face entirely. She has NO eyewear, eye implants, monocles, lenses or goggles in her canonical design. Reconstruct her natural left eye, eyebrow, mature facial folds and hairline to match first portrait, preserving the exact pose and current gaze. Keep every other pixel/composition content as closely as possible: faces, hands, clothes, furniture, full screen text/numbers/diagram, palette and perspective. Do not change any text. No additional edits. 1536x1024 landscape.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a07ce812-424c-49f1-a5b0-cd0f5976a295.png",
+          "sha256": "5d61862b340a6ced56dc362c231b650396588733b4750b5142d182d72b630766",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-f6a5ce29-68ac-4548-90d4-e20eba0b61ca.png",
+        "sha256": "3b5ba73ab76039ed83563771e2bf98f9785fb74a72e3aa4c683226b3fb7121a2"
+      }
+    }
+  ],
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/quantization-concept/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/quantization-concept/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+  "candidateSha256": "3b5ba73ab76039ed83563771e2bf98f9785fb74a72e3aa4c683226b3fb7121a2",
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Uint8storesquarterfloat32bytes,TFJSloaddecodesfloat32,runtimeandaccuracyseparatemeasurements.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/quantization-concept/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/quantization-concept/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a07ce812-424c-49f1-a5b0-cd0f5976a295.png",
+      "sha256": "5d61862b340a6ced56dc362c231b650396588733b4750b5142d182d72b630766",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+      "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+    }
+  ],
+  "independentReview": {
+    "key": "quantization-concept",
+    "id": "optimization-edge/quantization",
+    "phase": "concept",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-f6a5ce29-68ac-4548-90d4-e20eba0b61ca.png",
+    "candidateSha256": "3b5ba73ab76039ed83563771e2bf98f9785fb74a72e3aa4c683226b3fb7121a2",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+        "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+        "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "4vs1bytes,decoderuntime float32 andseparatepredictionevaluationexact; dialhand andsupportinghandnatural. Native full frame inspected against canonical identity and current source.",
+    "alt": "Nazari checks how stored uint8 weights decode to float32 at runtime.",
+    "location": "Archimedes, Engineering"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-f6a5ce29-68ac-4548-90d4-e20eba0b61ca.png",
+  "publishedSource": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-concept.webp",
+  "sourceSha256": "3b5ba73ab76039ed83563771e2bf98f9785fb74a72e3aa4c683226b3fb7121a2",
+  "webpSha256": "3ee5468a7b71e6b67126e712dfaca94e343394af3b30c4128f865d1a72f5f6df",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+    "sourceSha256": "fb6514b169c7a10d0f4fa7e0186524018dfa8c7b68dcce13116ff6de2689aaa5",
+    "webpSha256": "aa2b5abbe9984c6b447282bf5e875f822e155eb98bb5fabb9b75b7fc0de58e80",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e9513bcd-848e-4965-a249-b2122343c61a.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "3b5ba73ab76039ed83563771e2bf98f9785fb74a72e3aa4c683226b3fb7121a2",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+        "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+        "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-concept.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

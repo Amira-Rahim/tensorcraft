@@ -1,0 +1,148 @@
+{
+  "id": "anomaly-detection__reconstruction-error-concept",
+  "lesson": "anomaly-detection/reconstruction-error",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "room": "lab",
+  "src": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+  "alt": "Farah checks individual squared differences before averaging them into one reconstruction score.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.053862+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah leans at the lab bench using a mouse, one hand on the mouse and one naturally braced on the bench. Her face shows engaged concentration as she follows the wall flow. Remove pen. Use formerly empty huge wall as the primary display, not a little console.\nExact visible display content: Title \"Input vs rebuilt features\". Connected flow \"Subtract\" to \"Square each gap\" to \"Mean over 11 features\" to \"One MSE per reading\". Also draw a branch from \"Square each gap\" to \"11 per-feature squared errors\". Keep distinction between contributions and average clear and large.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "f43d45c77b0d7c02f7bc8effe662761f5c954f4fbb0f0c5aad48dbcd4fa13448",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room master",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+    "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+  },
+  "sourceSha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718",
+  "sourceEvidence": {
+    "task": "Farah leans at the lab bench using a mouse, one hand on the mouse and one naturally braced on the bench. Her face shows engaged concentration as she follows the wall flow. Remove pen. Use formerly empty huge wall as the primary display, not a little console.",
+    "visibleDataOperationAndResult": "Title \"Input vs rebuilt features\". Connected flow \"Subtract\" to \"Square each gap\" to \"Mean over 11 features\" to \"One MSE per reading\". Also draw a branch from \"Square each gap\" to \"11 per-feature squared errors\". Keep distinction between contributions and average clear and large.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Per-feature squared error versus mean MSE distinction is confined to a small angled console despite a blank large wall display.",
+        "repairDirection": "Move subtract, square each gap, 11 per-feature squared errors, mean over 11 features, one MSE per reading to large upright wall diagram."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: dr-farah. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye.\nSpecific action and staging: Farah leans at the lab bench using a mouse, one hand on the mouse and one naturally braced on the bench. Her face shows engaged concentration as she follows the wall flow. Remove pen. Use formerly empty huge wall as the primary display, not a little console.\nExact visible display content: Title \"Input vs rebuilt features\". Connected flow \"Subtract\" to \"Square each gap\" to \"Mean over 11 features\" to \"One MSE per reading\". Also draw a branch from \"Square each gap\" to \"11 per-feature squared errors\". Keep distinction between contributions and average clear and large.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah checks individual squared differences before averaging them into one reconstruction score.",
+    "location": "Archimedes, Lab",
+    "action": "Farah leans over the console using the mouse, with her other hand supporting her on the desk.",
+    "emotion": "Quiet concentration on the error calculation.",
+    "eyeline": "Toward the subtraction, square and mean flow.",
+    "checks": [
+      "Large wall diagram correctly orders subtract, square each gap, mean over 11 features and one MSE per reading, with the per-feature branch leaving the squared gaps.",
+      "Natural mouse grip and bracing hand, complete shoulder-to-hand chains and canonical facial structure pass close review.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ]
+  },
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-b92d50e5-610a-443d-931f-cd40c6cc9737.png",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+  "candidateSha256": "a949d5532d3dc9f3c34fbcec54ea4fb0b97fe9f9673c3943a058f62df30fadd8",
+  "generatedAt": "2026-11-08T19:01:02.341055+00:00",
+  "owner": "/root/quality_sequence",
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 1030,
+      "top": 245,
+      "width": 340,
+      "height": 335
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 735,
+      "top": 810,
+      "width": 505,
+      "height": 190
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T19:18:53.237216+00:00",
+    "candidateSha256": "a949d5532d3dc9f3c34fbcec54ea4fb0b97fe9f9673c3943a058f62df30fadd8",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "dr-farah",
+        "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 1030,
+          "top": 245,
+          "width": 340,
+          "height": 335
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah leans over the console using the mouse, with her other hand supporting her on the desk.",
+    "emotion": "Quiet concentration on the error calculation.",
+    "eyeline": "Toward the subtraction, square and mean flow.",
+    "narrativeReason": "The diagram distinguishes one MSE per reading from eleven per-feature squared errors.",
+    "findings": [
+      "Large wall diagram correctly orders subtract, square each gap, mean over 11 features and one MSE per reading, with the per-feature branch leaving the squared gaps.",
+      "Natural mouse grip and bracing hand, complete shoulder-to-hand chains and canonical facial structure pass close review."
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    }
+  ],
+  "publishedSource": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp"
+}

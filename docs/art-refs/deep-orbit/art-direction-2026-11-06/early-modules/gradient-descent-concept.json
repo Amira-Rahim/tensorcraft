@@ -1,0 +1,29 @@
+{
+  "module": "training-loop",
+  "lesson": "gradient-descent",
+  "phase": "concept",
+  "room": "engineering",
+  "cast": [
+    "chief-nazari"
+  ],
+  "moment": "Nazari stands alongside a wall display showing one clean shallow bowl-shaped loss curve with equally sized dots along its left slope, spacing getting smaller near the bottom. She rests her closed multitool on an open palm and thoughtfully regards the local slope, with a subtle amused eyebrow. Her other hand holds a small plain tablet. No shrinking dot sizes, no changing-rate knob, no promise of global convergence. Calm warm work lights and uncluttered engineering set.",
+  "alt": "Nazari studies smaller steps along a loss curve while keeping the update setting fixed.",
+  "location": "Archimedes, Engineering",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit training-loop/gradient-descent, concept section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the engineering set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Chief Nazari, woman aged 48 with mature facial lines, weathered tan skin, short dark hair streaked with gray, olive engineering coverall. Scene: Nazari stands alongside a wall display showing one clean shallow bowl-shaped loss curve with equally sized dots along its left slope, spacing getting smaller near the bottom. She rests her closed multitool on an open palm and thoughtfully regards the local slope, with a subtle amused eyebrow. Her other hand holds a small plain tablet. No shrinking dot sizes, no changing-rate knob, no promise of global convergence. Calm warm work lights and uncluttered engineering set. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers or correctness stamps. A descent path must use equally sized dots with diminishing spacing, not shrinking dots. A single gradient step is not a completed trained network.\nTargeted correction after QA: Use case: precise-object-edit. Change ONLY the circular markers on the large wall loss curve. Every marker must have exactly the SAME diameter and green fill. Use six identical small circles, each diameter 18 pixels, placed along the left branch with spacing progressively tighter toward the minimum. The first and last dot must be visibly identical in size. No shrinking dots. Preserve the bowl-shaped curve, panel, Nazari's exact face, hair, two hands, tablet, multitool, pose, room, camera and lighting unchanged.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-63981436-7be4-4ed6-b9c8-f0eb7e8856e9.png",
+  "source": "art-src/scenes/training-loop__gradient-descent-concept-openai-20261106.png",
+  "src": "/scenes/deep-orbit/training-loop/gradient-descent-concept.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Nazari's open palm supports the closed multitool and her other hand holds the tablet; two coherent arms.",
+    "furniture": "Characters stand in open floor space, with intact console and rail edges and no body intersection.",
+    "identity": "Demir's hair, warm skin, slate uniform and green devices remain consistent; Nazari has mature lines, gray hair streaks and olive coverall.",
+    "story": "Fixed-size markers now follow the local bowl slope with progressively tighter spacing. The picture does not imply learning-rate decay.",
+    "tone": "Thoughtful expressions and a tiny smile give the task an inviting rhythm.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

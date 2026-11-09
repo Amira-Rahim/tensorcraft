@@ -1,0 +1,78 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/candidate.png",
+  "candidateSha256": "d910f52add8f699fecb260c36411382b0222015e920f4686470b2538dc349d03",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native revision review, 2x face and hand crops, complete shoulder-elbow-wrist and thumb-side check, canonical portrait comparison, and current lesson/exercise verification.",
+  "canonicalFaceReferences": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 2,
+      "name": "runtime-final-2-v2-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/candidate.png",
+      "box": [
+        230,
+        210,
+        485,
+        540
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "runtime-final-2-v2-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/candidate.png",
+      "box": [
+        435,
+        700,
+        805,
+        860
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+      "sha256": "34a53be2548f6acec51bd3d04485fd34d1a452587e4a9d778fa7b5e6c25604dd"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Both hands retain separate continuous shoulder, elbow and wrist chains. The far left hand's thumb is on its medial near side, and the near right thumb is naturally occluded. Bent fingers meet the keyboard with no added digits or broken contact.",
+    "displayLegibilityAndSource": "The revised large heading reads FFT magnitudes by bin, making the row of 13 through 20 bin indices explicit. Synthetic capture, 64 samples at 256 Hz, band 50-82 Hz, peak amplitude then zero crossings, bin order and output pending remain clear and source-correct.",
+    "identityExpressionAndStory": "Focused adult Demir retains canonical freckles, stubble, face proportions, hair and earpiece; gaze stays on the working board.",
+    "palette": "Muted charcoal, olive, sage and brass retain the benchmark balance with localized screen light.",
+    "perspectiveAndOperator": "Flat board text and borders follow the physical plane facing Demir. Both typing hands sit on the physical keyboard.",
+    "largeDisplayRule": "The broad board occupies the available wall and makes lesson content large and readable."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "resolvedFindings": [
+    {
+      "previousCandidateSha256": "5f8bf0921eec482636467fc695590d257389085d5b8f5e615beaca4645e16fb6",
+      "issue": "Heading did not distinguish bin indices from magnitude output.",
+      "resolution": "Heading now explicitly reads FFT magnitudes by bin; output remains pending."
+    }
+  ],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:48:57.681375+00:00"
+}

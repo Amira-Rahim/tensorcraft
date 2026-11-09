@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:11:39.586766+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__activation-functions-epilogue/candidate.png",
+  "candidateSha256": "c0ad0db099d55dca067312dc61aeb518eff2ed7821aac4ca0eaf3e440db2675e",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+      "sha256": "ec6d3323ae4f9c19c707957f53edeb3ce651262655a0faaf8b5302290f4c6294"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-neural-networks__activation-functions-epilogue-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__activation-functions-epilogue/candidate.png",
+      "rect": [
+        1035,
+        140,
+        290,
+        375
+      ]
+    },
+    {
+      "name": "peer-neural-networks__activation-functions-epilogue-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__activation-functions-epilogue/candidate.png",
+      "rect": [
+        430,
+        755,
+        920,
+        190
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The large display clearly preserves the unresolved 03:16 disagreement: Tone A, Tone B and 7741 on the neuron list; ARIA still calls 7741 nominal.",
+    "Demir's concerned candid face matches the canonical reference. Keyboard and tablet hands have correct thumb sides and plausible contact, with two complete natural arm chains."
+  ],
+  "repairDirection": "None."
+}

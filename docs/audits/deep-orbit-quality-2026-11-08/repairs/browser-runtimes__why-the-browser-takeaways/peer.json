@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-takeaways/candidate.png",
+  "candidateSha256": "2b73b3fc0838a8d857a5860e82d2b5923fbe36f309e665a6d2a2320cae852b7e",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x or 3x face/hand/prop crops, full shoulder-elbow-wrist chains traced in original, direct canonical portrait comparison, and current lesson source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 1,
+      "name": "runtime-next-browser-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-takeaways/candidate.png",
+      "box": [
+        730,
+        735,
+        1440,
+        1007
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "runtime-next-browser-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-takeaways/candidate.png",
+      "box": [
+        1005,
+        140,
+        1305,
+        505
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Nazari's connected shoulder-elbow-wrist chains end in a relaxed touchpad hand and a bracing desk-edge hand. The touchpad hand shows a correct separated thumb and four fingers; the bracing hand's thumb curls behind the edge.",
+    "displayLegibilityAndSource": "The wall-sized board shows local Input -> Model -> Output, Cache first: app + runtime + model, and the download/memory/compute budget. These match the current offline-inference recap without claiming unconditional offline availability.",
+    "identityExpressionAndStory": "Nazari's focused side glance and small satisfied smile suit a practical recap. Canonical facial width, mature lines, swept grey hair and olive uniform remain recognizable.",
+    "palette": "Muted sage, charcoal and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Main glyphs and borders follow the physical display plane. The characters can see the same readable face of the display.",
+    "largeDisplayRule": "Essential lesson information uses the available wall area in large, clear type."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T06:47:10.498728+00:00"
+}

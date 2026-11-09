@@ -1,0 +1,108 @@
+{
+  "key": "webgpu-acceleration-briefing",
+  "id": "optimization-edge/webgpu-acceleration",
+  "phase": "briefing",
+  "owner": "late-modules",
+  "location": "Archimedes, Bridge",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. Correct this Deep Orbit story artwork at1536x1024. First reference portraits are exact facial identity authorities: preserve face shape, nose, brow, eyes, jaw, age, complexion, hair and uniform. Next room master is architecture ONLY; its random graphics must not be copied. Last image is edit target. Natural adult stylized proportions, ordinary shoulder width and short relaxed necks. Two coherent arms/hands per human, plausible wrists and five fingers, grounded contact. Keep characters in a candid task moment, visible recognizable three-quarter faces, looking at work or colleague, never camera. Information faces its actual operator, camera shares that same side. Every letter and diagram shares the physical screen plane and vanishing directions. Muted sage, charcoal/navy and aged brass, natural skin, modest practical light; no electric green, cyan or orange flood. Unused auxiliary screens AND wrist display are inactive dark glass, no random waves, grids, rings, microtext. No plants. Restage table conversation into a plausible candid backend startup check. Replace giant floating neon interface with ONE ordinary physical tilted shared console on right half of bridge table, screen front facing crew and camera from same viewing side. Demir center-left sits side-on to console with fingers naturally resting keyboard and other hand on table, looks to Nazari further left with slightly sheepish half-smile while she raises one eyebrow and sets down closed multitool. Both recognizable three-quarter faces, short natural necks and ordinary shoulders. Tablet-free, no hands obscuring screen. Screen exact heading \"Backend startup check\", four ordered rows \"1  webgpu\", \"2  webgl\", \"3  wasm\", \"4  cpu\", footer \"Try next if initialization fails\", \"Completed timing: pending\". Text fully perspective-aligned. No success ticks or claimed faster results. All other bridge monitors dark. Near-black starfield, matte charcoal desk with modest aged-brass edges, no neon hologram. Both crew physically on same front/reader side of console, never viewing through its back. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png"
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+      "sha256": "123b5408425c5e172af863f568ec4080c51ae79b5daf2e55db0c8f3d3f69e4c0",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+    }
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7827a15f-a0a7-471d-bdcf-f8f7f9549b8e.png",
+  "candidateSha256": "e0d0888f879be459c55cda48ced69b2e52e13a45a4847ee5b63ed95d21899332",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "status": "pass-awaiting-peer",
+    "reviewer": "/root",
+    "method": "Native full-frame review against current MDX and canonical portraits",
+    "notes": "Canonical recognizable faces and ordinary proportions; full plausible hand chains, natural candid reaction, current lesson facts exact; all text on coherent screen plane, actual readers on its front side, auxiliary displays dark."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7827a15f-a0a7-471d-bdcf-f8f7f9549b8e.png",
+  "publishedSource": "art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp",
+  "sourceSha256": "e0d0888f879be459c55cda48ced69b2e52e13a45a4847ee5b63ed95d21899332",
+  "webpSha256": "d10f1a5c81f6fa4a0a4ff0cb1c544acbce1f937dda1cf00e4476a3f2abc81a4c",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+    "sourceSha256": "123b5408425c5e172af863f568ec4080c51ae79b5daf2e55db0c8f3d3f69e4c0",
+    "webpSha256": "d9ec02bedae3522b836ba4afcd439198b4c68e60e0eb52e5379dee42ee382b5e",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "e0d0888f879be459c55cda48ced69b2e52e13a45a4847ee5b63ed95d21899332",
+    "method": "Native1536x1024 visual review against canonical portraits and current MDX, with shoulder-to-hand, gaze, screen-plane, reader-direction and display-meaning checks",
+    "checks": {
+      "combinedNativeReview": "Startup order webgpu, webgl, wasm, cpu matches current helper; fallback only after initialization failure and completed timing still pending. No speed claim. Physical console front faces crew and same-side camera; lettering shares screen plane. Demir keyboard hand naturally connected; other forearm/hand partly occluded by console, no extra limb. Nazari rests her hand on closed tool and opposite on desk. Canonical three-quarter faces, short necks, ordinary shoulders, muted room and warm candid exchange.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+          "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+        "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

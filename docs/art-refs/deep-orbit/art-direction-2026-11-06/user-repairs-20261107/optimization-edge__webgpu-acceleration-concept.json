@@ -1,0 +1,237 @@
+{
+  "key": "webgpu-acceleration-concept",
+  "auditIndex": 58,
+  "id": "optimization-edge/webgpu-acceleration",
+  "phase": "concept",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+    "sha256": "db620b1d3a3892621203abde9a3737a75ccbabd518adcb0cf1639646a8656f67"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Bridgeholographicworktable candidtwo-personexchange. Demir LEFT sits withhandontrackball, other flatontable. NazariRIGHT hasjustcaught timingerrorandlooksat him with amused raisedbrow, herhandsrestingnaturallyonrail;Demirlooks atthe correctedtimingwith sheepishsmile. Noheldstopwatchoroutwardnotebook. ShareduprightmonitorRIGHTforegroundfacesbothcrew. Heading \"Fictional bridge timing\". Firstline \"Predict return: 0.4 ms\" tagged \"Queue only\". Secondline \"After output.data(): 5 ms\" tagged \"Completed readback\". Footer \"Keep readback inside the timer\". No genericblankboxes. Removebrightfloatinghologram, keepbridgearchitectureandmodestpracticallighting. Chief Nazari has no eyewear, no monocle, no eye implant. Her canonical mature face and both natural eyes must remain unobscured.",
+  "meaning": "FictionbridgeGPU naivepredictreturn.4ms versusawaitreadback5ms;completetimeboundarylesson.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+      "sha256": "db620b1d3a3892621203abde9a3737a75ccbabd518adcb0cf1639646a8656f67",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+      "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a1929baa-0157-48e5-a1bf-d7990b3b369c.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-concept/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-concept/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+  "candidateSha256": "3a594c0371fac7609102fa8ccdf6ff717085346818c6a3ec89a09610c4859e80",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Bridgeholographicworktable candidtwo-personexchange. Demir LEFT sits withhandontrackball, other flatontable. NazariRIGHT hasjustcaught timingerrorandlooksat him with amused raisedbrow, herhandsrestingnaturallyonrail;Demirlooks atthe correctedtimingwith sheepishsmile. Noheldstopwatchoroutwardnotebook. ShareduprightmonitorRIGHTforegroundfacesbothcrew. Heading \"Fictional bridge timing\". Firstline \"Predict return: 0.4 ms\" tagged \"Queue only\". Secondline \"After output.data(): 5 ms\" tagged \"Completed readback\". Footer \"Keep readback inside the timer\". No genericblankboxes. Removebrightfloatinghologram, keepbridgearchitectureandmodestpracticallighting. Chief Nazari has no eyewear, no monocle, no eye implant. Her canonical mature face and both natural eyes must remain unobscured.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+          "sha256": "db620b1d3a3892621203abde9a3737a75ccbabd518adcb0cf1639646a8656f67",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a1929baa-0157-48e5-a1bf-d7990b3b369c.png",
+        "sha256": "3a594c0371fac7609102fa8ccdf6ff717085346818c6a3ec89a09610c4859e80"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "FictionbridgeGPU naivepredictreturn.4ms versusawaitreadback5ms;completetimeboundarylesson.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-concept/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-concept/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+      "sha256": "db620b1d3a3892621203abde9a3737a75ccbabd518adcb0cf1639646a8656f67",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+      "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+    }
+  ],
+  "independentReview": {
+    "key": "webgpu-acceleration-concept",
+    "id": "optimization-edge/webgpu-acceleration",
+    "phase": "concept",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a1929baa-0157-48e5-a1bf-d7990b3b369c.png",
+    "candidateSha256": "3a594c0371fac7609102fa8ccdf6ff717085346818c6a3ec89a09610c4859e80",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+        "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+        "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Fictional.4msqueuedvs5msreadback exactlysource; actualoperatorfacesmonitorfront atobliqueangle. Native full frame inspected against canonical identity and current source.",
+    "alt": "Nazari catches the difference between queued work and completed prediction timing.",
+    "location": "Archimedes, Bridge"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a1929baa-0157-48e5-a1bf-d7990b3b369c.png",
+  "publishedSource": "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration-concept.webp",
+  "sourceSha256": "3a594c0371fac7609102fa8ccdf6ff717085346818c6a3ec89a09610c4859e80",
+  "webpSha256": "fbd5adde9ec773daa52df3c9905c40d750bc299305192e314d3088251f8fc32f",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+    "sourceSha256": "db620b1d3a3892621203abde9a3737a75ccbabd518adcb0cf1639646a8656f67",
+    "webpSha256": "300c0663cc6fb626b6d3d1cbe4e732f8648aa91b2a6bc80d816bc31634713b02",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-3c95d2b1-c430-4b05-b832-1ae5dcd12cd5.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "3a594c0371fac7609102fa8ccdf6ff717085346818c6a3ec89a09610c4859e80",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+        "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+        "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration-concept.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

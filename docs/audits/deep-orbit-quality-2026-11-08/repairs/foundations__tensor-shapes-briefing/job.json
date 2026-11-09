@@ -1,0 +1,102 @@
+{
+  "id": "foundations/tensor-shapes",
+  "phase": "briefing",
+  "status": "published",
+  "prompt": "Use case: illustration-story. Create a replacement for the LAST target scene. Reference 1 is Dr. Farah's canonical identity: preserve her facial width, jaw, chin, nose, eye spacing, brows, mouth, complexion, age, hairline and green AR lens through a new natural expression. Reference 2 is the signal-analysis lab ROOM only. Reference 3 is quality, muted palette and candid acting only, not cast or content. LAST is the old target to improve, not a pose or proportion authority. Show exactly Farah, an adult woman with ordinary shoulder width, balanced head and torso, a short natural neck and two anatomically continuous arms. Landscape 1536x1024. The main lesson display must occupy the available wall generously with large short crisp labels and no tiny console-text substitute. Camera is beside Farah so her recognizable three-quarter face and the front of the physical display are visible to both her and us. All text, grids and marks share the screen perspective. Soft facial light, charcoal room, gray coat, quiet sage interface and aged brass. Remove excess foreground hardware, keep a few room-canon instruments low and unobtrusive. No neon outlines, orange wash, extra crew, generic decoration or camera-facing presentation. Exactly natural hands with coherent shoulder-elbow-wrist chains, correct thumb sides, separated fingers and plausible contact. Moment: Farah has opened Demir's header and is checking the same twelve selected readings before trusting his chart. Frame her at the LEFT in a close three-quarter waist-up view, softly leaning toward a large wall display on the RIGHT. One hand holds the lower edge of a modest recording-header sheet angled toward her; we see mostly its back and must not read through it. Her other hand rests naturally on the desk's small scroll control as she opens the recorded selection. Her gaze moves from header toward the main grid, with a curious, pleased half-smile about Demir getting the connection working. She is checking actual work, not lecturing or holding a prop toward camera. Use the screen's full useful width for this exact content: heading 'Recording check'; subheading 'Selected: A, B, C, D'; table headers 'Moment' 'A' 'B' 'C' 'D'; exactly three data rows '1 | 2 | 20 | 5 | 8', '2 | 3 | 18 | 7 | 8', '3 | 4 | 16 | 6 | 9'. Bottom short line 'One row per moment'. Keep all twelve numbers large, evenly spaced and unobstructed. Do not show the transpose result yet. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "Lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-openai-20261107.png",
+      "sha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+      "role": "Benchmark quality and palette only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-openai-20261107.png",
+      "sha256": "0efb3be24597880871e8b230e7a7081ee6b3628fa4a953628363ff1eff88a529",
+      "role": "Edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+    }
+  ],
+  "requestedOutput": "Separate candidate; no publishing or ledger mutation",
+  "owner": "/root/quality_early",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-af325d24-2541-4044-b7dc-33942efca71c.png",
+  "candidatePath": "art-src/scenes/foundations__tensor-shapes-openai-20261107.png",
+  "candidateSha256": "967b36cb331401ab677f12510e48436594b0e664195d92423918b018a4ede6f9",
+  "ownReview": {
+    "reviewer": "/root/quality_early",
+    "candidateSha256": "967b36cb331401ab677f12510e48436594b0e664195d92423918b018a4ede6f9",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native original plus 2x face and arms or 3x individual hands, compared to canonical Farah portrait.",
+    "cropCoordinates": {
+      "face": [
+        200,
+        300,
+        456,
+        600
+      ],
+      "paperHand": [
+        165,
+        800,
+        390,
+        985
+      ],
+      "controlHand": [
+        720,
+        800,
+        1008,
+        948
+      ]
+    },
+    "canonicalFaceReference": {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    },
+    "checks": {
+      "action": "Farah compares the recording header with the selected grid while operating the scroll control.",
+      "anatomy": "Two continuous arms. Four fingers hold the sheet front with thumb occluded behind it; the other thumb and fingers curve naturally over the scroll wheel. Header faces Farah.",
+      "display": "Large wall display fills roughly two-thirds of frame; all 12 exact readings are clear with one row per moment. No lesson content is confined to tiny rear monitors.",
+      "expression": "Pleasant intent glance toward the opened grid, recognizable Farah face, compact neck and adult proportions."
+    },
+    "surfacePerspective": "Text and diagram geometry follow the physical wall screen plane.",
+    "operatorDirection": "Farah has a direct view of the front of the display, camera beside her.",
+    "temporaryCropsRemoved": true
+  },
+  "publication": {
+    "alt": "Farah compares the recording header with a large grid showing three moments across four channels.",
+    "action": "Farah holds the recording header and uses the scroll wheel to inspect the selected grid.",
+    "emotion": "Curious concentration with a small pleased smile.",
+    "eyeline": "From the header toward the large grid display.",
+    "location": "Archimedes, Lab",
+    "checks": [
+      "Farah compares the recording header with the selected grid while operating the scroll control. Two continuous arms. Four fingers hold the sheet front with thumb occluded behind it; the other thumb and fingers curve naturally over the scroll wheel. Header faces Farah. Large wall display fills roughly two-thirds of frame; all 12 exact readings are clear with one row per moment. No lesson content is confined to tiny rear monitors. Pleasant intent glance toward the opened grid, recognizable Farah face, compact neck and adult proportions."
+    ]
+  },
+  "publishedSource": "art-src/scenes/foundations__tensor-shapes-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-shapes-briefing/candidate.png",
+      "sha256": "967b36cb331401ab677f12510e48436594b0e664195d92423918b018a4ede6f9",
+      "bytes": 1928550,
+      "retainedEquivalent": "art-src/scenes/foundations__tensor-shapes-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

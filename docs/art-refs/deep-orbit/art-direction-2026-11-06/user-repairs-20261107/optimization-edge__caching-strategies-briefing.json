@@ -1,0 +1,100 @@
+{
+  "key": "caching-strategies-briefing",
+  "id": "optimization-edge/caching-strategies",
+  "phase": "briefing",
+  "owner": "late-modules",
+  "location": "Bridge, Dashboard Station",
+  "cast": [
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. Correct this Deep Orbit story artwork at1536x1024. First reference portraits are exact facial identity authorities: preserve face shape, nose, brow, eyes, jaw, age, complexion, hair and uniform. Next room master is architecture ONLY; its random graphics must not be copied. Last image is edit target. Natural adult stylized proportions, ordinary shoulder width and short relaxed necks. Two coherent arms/hands per human, plausible wrists and five fingers, grounded contact. Keep characters in a candid task moment, visible recognizable three-quarter faces, looking at work or colleague, never camera. Information faces its actual operator, camera shares that same side. Every letter and diagram shares the physical screen plane and vanishing directions. Muted sage, charcoal/navy and aged brass, natural skin, modest practical light; no electric green, cyan or orange flood. Unused auxiliary screens AND wrist display are inactive dark glass, no random waves, grids, rings, microtext. No plants. Preserve natural seated Demir in dashboard alcove enjoying a mug pause, intrigued by the repeat log above him. Normal neck and shoulders; hand naturally through mug handle, other relaxed on lap. Replace busy upper-left screen with exact \"Repeat-pattern check\", \"Same tensor, same verdict\", \"214 classifier runs\", \"213 repeats\". Upper-right screen exact \"Time the classifier call\", \"Include key and lookup costs\". These are task labels, not measured results. His eyes glance toward these screens from their front side. The remaining THREE smaller monitors, wrist terminal and tiny input pad are all fully dark, without shapes or faint marks. Preserve architecture and chair support; subdued brass and sage, no orange glow. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png"
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+      "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+      "sha256": "f0136bc1880a4a06837da5cd62607bc566f87b5044187af85f584166fd94fac0",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+    }
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-effe45de-c85e-4eff-8cfb-c987ee38a5d1.png",
+  "candidateSha256": "ff983c3578e4f2cd37207a2b93e1ec58ccd93b1559bb053b8cfe7be7ef215ca7",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "status": "pass-awaiting-peer",
+    "reviewer": "/root",
+    "method": "Native full-frame review against current MDX and canonical portraits",
+    "notes": "Canonical recognizable faces and ordinary proportions; full plausible hand chains, natural candid reaction, current lesson facts exact; all text on coherent screen plane, actual readers on its front side, auxiliary displays dark."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-effe45de-c85e-4eff-8cfb-c987ee38a5d1.png",
+  "publishedSource": "art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies.webp",
+  "sourceSha256": "ff983c3578e4f2cd37207a2b93e1ec58ccd93b1559bb053b8cfe7be7ef215ca7",
+  "webpSha256": "f4dab418f0bdcf146d86d61c76fccc2695771d357364fde66f83a06c4ab7fb2f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+    "sourceSha256": "f0136bc1880a4a06837da5cd62607bc566f87b5044187af85f584166fd94fac0",
+    "webpSha256": "4b2d6e192b58ed628dd80162c565b9051692a8a774ed25d610b197db16d3ad8d",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "ff983c3578e4f2cd37207a2b93e1ec58ccd93b1559bb053b8cfe7be7ef215ca7",
+    "method": "Native1536x1024 visual review against canonical portraits and current MDX, with shoulder-to-hand, gaze, screen-plane, reader-direction and display-meaning checks",
+    "checks": {
+      "combinedNativeReview": "214 classifier runs and213 repeats match the source log. The second panel correctly asks to time the classifier and include key/lookup overhead, avoiding the wrong45-ms bundle assumption. Demir sits supported in chair, natural mug grip and resting thigh hand. His eyes reach the upper screens from their front side without neck twist. Canonical face and moderate adult proportions, dark unused panels/wrist, coherent screen baselines and restrained brass/sage.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+          "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+        "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

@@ -1,0 +1,129 @@
+{
+  "id": "optimization-edge/pruning",
+  "phase": "briefing",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical ensign-demir identity; image 2: engineering room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Demir alone sits RIGHT reading a pruning directive at an engineering workstation. His near hand works a mouse while his other hand steadies an open notebook; his skeptical frown is specific and restrained. Enlarge the LEFT wall board to occupy the available wall, with laptop only a control surface. Exact title 'Directive 44-C / FOR REVIEW'; two large facts 'Half the weights within 0.001 of zero' and 'Current dense file: 85 MB'. Below three questions in generous rows: 'Predictions unchanged?', 'Dense storage smaller?', 'Per-class recall checked?'. Bottom status 'Verification pending'. No invented answer or approved status.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "75f9cdf3aa75d638db0bbc6583c5779bb1b579c61fc050e39ffd5bdd99a3d934",
+  "source": "art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+  "sourceSha256": "46346565e1499d5315d60a5c8939bc9f62c73232a7c75f707660be793cb0a31a",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "engineering room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+      "sha256": "bf5fcc8ec47c77233b5e17df60c31e38b2449f3ca54ee43e5e65b4057c1d4eb9",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+    "lessonSha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44",
+    "context": "Directive 44-C says half the weights are within 0.001 of zero and file is 85 MB. Learner must challenge unchanged predictions, smaller dense storage and missing per-class recall.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+  "candidateSha256": "46346565e1499d5315d60a5c8939bc9f62c73232a7c75f707660be793cb0a31a",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-0ac17f98-3645-4d22-9ea5-56fa2e86c3b7.png",
+  "generatedSha256": "46346565e1499d5315d60a5c8939bc9f62c73232a7c75f707660be793cb0a31a",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "46346565e1499d5315d60a5c8939bc9f62c73232a7c75f707660be793cb0a31a",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      1050,
+      210,
+      305,
+      350
+    ],
+    "handCropCoordinatesXYWH": [
+      625,
+      750,
+      690,
+      170
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir questions the directive with a specific skeptical frown; mouse and notebook contact are natural and both arms trace correctly. Large verified 0.001/85 MB facts and pending questions replace the tiny laptop checklist without approving its assumptions."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-briefing/candidate.png",
+  "publishedSource": "art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning.webp",
+  "webpSha256": "43953b5160a3c844d5b2ffc200d7567c39e53f718fb4472550b7cd60b8761df3",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+    "sourceSha256": "bf5fcc8ec47c77233b5e17df60c31e38b2449f3ca54ee43e5e65b4057c1d4eb9",
+    "webpSha256": "ac794a2f1fa8bffbd4765299e14bd4cc638cef2b7e5abc694e55e415aba5d149",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-87605b16-f52d-4f36-8016-da76b16eb2fb.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "46346565e1499d5315d60a5c8939bc9f62c73232a7c75f707660be793cb0a31a",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__pruning-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/pruning.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

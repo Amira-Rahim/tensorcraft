@@ -1,0 +1,90 @@
+{
+  "key": "backpropagation-takeaways",
+  "id": "training-loop/backpropagation",
+  "phase": "takeaways",
+  "cast": "chief-nazari",
+  "prompt": "Use case: identity-preserve story scene edit. Image1 canonical character portrait is identity authority; image2 Engineering ROOM GEOMETRY ONLY, do not copy its graphs; image3 is the current scene to replace. Keep the exact canonical face, age, facial structure, complexion, hair and uniform. Natural moderately stylized adult head size, short relaxed neck, ordinary shoulders. Two coherent arms, natural wrist alignment and five fingers per hand with plausible contact. Candid three-quarter work scene, never looking at camera. Text, borders, grids and arrows follow their physical screen's perspective. Muted sage #6BAA8A, aged brass #A89060, charcoal, natural skin, restrained warm practical light. No neon green, random diagrams, fake text, invented results, camera-facing paper, extra people or body-furniture intersections. All unused screens and wrist displays inactive charcoal. Landscape1536x1024. Completely restage Chief Nazari at her Engineering workbench, no front-facing pose. Medium three-quarter side view: she sits on left of image looking right at her angled working monitor. Her expression is focused with a small skeptical raised eyebrow as she verifies the procedure. One hand naturally operates a trackball on clear desk surface; the other rests on a closed maintenance notebook. Preserve the old stopwatch as a small face-down instrument beside the notebook, no readable timing result. Both arms supported and separate, no crossing through desk. Working monitor faces her, camera beside her sees the same front. Exact screen: title 'Gradient workflow'. Three vertically connected rows with modest downward arrows: 'Forward: compute loss' then 'Backward: compute gradients' then 'Optimizer: update weights'. Below: 'Reuse the forward computation'. Small separate footer 'Measure on the target device'. This is a procedural review, no benchmark result or sample loss. Main monitor the only lit information surface; rear screens off. Maintain her mature canonical face and grey-streaked hair, balanced body proportions. Her attention and raised eyebrow tell a practical verification story.",
+  "candidatePath": "art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-078fdf37-5bb5-44d1-99bc-c9a129739246.png",
+  "candidateSha256": "2bab66c9f2212e152d87ab3255dd763f22d08022a6ed038a89eb3c5fb406fb66",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "room geometry only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+      "sha256": "4be2a9d8d2af78add8e324878b853b55804c27dc43087f2f63cface640efd93f",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+      "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+    }
+  ],
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "reviewer": "/root",
+    "status": "pass pending independent peer",
+    "method": "Native 1536x1024 generated full frame and canonical portraits inspected",
+    "gates": "Canonical faces, natural head/neck/shoulders, two plausible arm chains, meaningful exact source-grounded text, surface perspective and reader-side controls; muted room and active expressions."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-078fdf37-5bb5-44d1-99bc-c9a129739246.png",
+  "publishedSource": "art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp",
+  "sourceSha256": "2bab66c9f2212e152d87ab3255dd763f22d08022a6ed038a89eb3c5fb406fb66",
+  "webpSha256": "e73fd4d96d6ecb36305f4cd2799d3e6b0349d421a72a4b6f9b6c496bbb581d1f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+    "sourceSha256": "4be2a9d8d2af78add8e324878b853b55804c27dc43087f2f63cface640efd93f",
+    "webpSha256": "dff04c0466345bfd4d506a425f7537a5349fa5393c25c804b90632880295e405",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7d3c8332-4016-44d7-894e-f75c1894fe2c.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "2bab66c9f2212e152d87ab3255dd763f22d08022a6ed038a89eb3c5fb406fb66",
+    "method": "Independent native1536x1024 inspection of complete candidate, facial and hand details, canonical portraits and full current03-backpropagation.mdx",
+    "checks": {
+      "identity": "Canonical mature Nazari face, grey streaks, brow, wrinkles, olive uniform and age preserved.",
+      "anatomy": "Two clear supported arm chains, natural trackball grip and open resting hand, balanced neck/head/shoulders.",
+      "surface": "Workflow rows, arrows and type follow main physical display plane, operator sees front. Closed notebook and face-down timer introduce no impossible readable surfaces.",
+      "source": "Forward computes loss; backward computes gradients; optimizer updates weights. Reuse-forward and target-device measurement accurately reflect recap. No numeric result invented.",
+      "palette": "Muted sage/brass/charcoal with warm engineering lamps; no distracting neon or unrelated graphs.",
+      "story": "Nazari reviews the workflow with practical skepticism; hands actively operate console rather than holding a camera-facing placard."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

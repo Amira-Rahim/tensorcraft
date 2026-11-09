@@ -1,0 +1,236 @@
+{
+  "key": "quantization-takeaways",
+  "id": "optimization-edge/quantization",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit illustrated narrative scene,1536x1024 landscape. Canonical portrait reference(s) first control actual identity, mature age, face morphology, eyes/nose/jaw, hairstyle and signature costume. Following room master is ENGINEERING ROOM ARCHITECTURE ONLY, not its charts or coloring. Final reference is exact edit target. Clean restrained cel shading, muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, subtle practical light, no lime neon or glossy rendering. Adults with balanced stylized proportions; natural supported neck and shoulder connection; two plausible arms and five-finger hands per person. A candid episode of real work with visible faces, engaged eyes, modest emotion and meaningful actions. No camera gaze, no held-out cards or lecture pose. Screens face operators. Camera beside them on same FRONT side sees display obliquely. Every letter, row, border and diagram projects into actual surface plane with coherent vanishing directions. Unrelated background screens inactive dark glass, no random waveforms. Only exact specified content on active display, no extra metrics, success checkmarks, or decorative graphs. Farah sits LEFT in Engineering, body angled naturally toward monitor RIGHT. She sets a pen down on closed notebook, other hand around plain mug resting on desk. Her eyes follow conversion flow with thoughtful small smile. Remove raised waveform card. Monitor heading \"Stored weights and runtime\". Diagram first box \"uint8 or uint16\" connected by arrow labeled \"Decode\" to box \"float32\". Below first box \"Scale and minimum metadata\". Below diagram heading \"Separate checks\" and lines \"Labeled task quality\", \"Runtime memory and speed\". No scores or accuracy equivalence claims. Diagram and labels in physical screen perspective. Canonical Farah mature face, anatomical left eyeglass lens, tied-back hair, gray coat. Other screens dark. Natural pen-setting grip without finger flourish.",
+  "meaning": "Storage uint8/uint16 with scale/min metadata decodes tofloat32. Labeled quality/runtime memory/speed separate checks.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+      "sha256": "afa90923f2275f3cfce5fbcadfa7942445003ce09b285ce098e61e1be49d16ac",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+      "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2bf2caa7-1daf-48c3-92b4-27ff8ec7be01.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 300,
+      "top": 110,
+      "width": 370,
+      "height": 440
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 230,
+      "top": 710,
+      "width": 700,
+      "height": 250
+    }
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+  "candidateSha256": "77409c4ef39ca130673790444d7a2040ce0e556e6a3382400380106965d665bf",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit illustrated narrative scene,1536x1024 landscape. Canonical portrait reference(s) first control actual identity, mature age, face morphology, eyes/nose/jaw, hairstyle and signature costume. Following room master is ENGINEERING ROOM ARCHITECTURE ONLY, not its charts or coloring. Final reference is exact edit target. Clean restrained cel shading, muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, subtle practical light, no lime neon or glossy rendering. Adults with balanced stylized proportions; natural supported neck and shoulder connection; two plausible arms and five-finger hands per person. A candid episode of real work with visible faces, engaged eyes, modest emotion and meaningful actions. No camera gaze, no held-out cards or lecture pose. Screens face operators. Camera beside them on same FRONT side sees display obliquely. Every letter, row, border and diagram projects into actual surface plane with coherent vanishing directions. Unrelated background screens inactive dark glass, no random waveforms. Only exact specified content on active display, no extra metrics, success checkmarks, or decorative graphs. Farah sits LEFT in Engineering, body angled naturally toward monitor RIGHT. She sets a pen down on closed notebook, other hand around plain mug resting on desk. Her eyes follow conversion flow with thoughtful small smile. Remove raised waveform card. Monitor heading \"Stored weights and runtime\". Diagram first box \"uint8 or uint16\" connected by arrow labeled \"Decode\" to box \"float32\". Below first box \"Scale and minimum metadata\". Below diagram heading \"Separate checks\" and lines \"Labeled task quality\", \"Runtime memory and speed\". No scores or accuracy equivalence claims. Diagram and labels in physical screen perspective. Canonical Farah mature face, anatomical left eyeglass lens, tied-back hair, gray coat. Other screens dark. Natural pen-setting grip without finger flourish.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+          "sha256": "afa90923f2275f3cfce5fbcadfa7942445003ce09b285ce098e61e1be49d16ac",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2bf2caa7-1daf-48c3-92b4-27ff8ec7be01.png",
+        "sha256": "77409c4ef39ca130673790444d7a2040ce0e556e6a3382400380106965d665bf"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Storage uint8/uint16 with scale/min metadata decodes tofloat32. Labeled quality/runtime memory/speed separate checks.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 300,
+        "top": 110,
+        "width": 370,
+        "height": 440
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 230,
+        "top": 710,
+        "width": 700,
+        "height": 250
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+      "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+      "sha256": "afa90923f2275f3cfce5fbcadfa7942445003ce09b285ce098e61e1be49d16ac",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "quantization-takeaways",
+    "id": "optimization-edge/quantization",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2bf2caa7-1daf-48c3-92b4-27ff8ec7be01.png",
+    "candidateSha256": "77409c4ef39ca130673790444d7a2040ce0e556e6a3382400380106965d665bf",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:35:17.610160+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+        "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+        "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "uint8/uint16 stored weights decode to float32 with scale/min metadata. Task quality on labels and runtime memory/speed remain separate checks, matching actual MDX and quantization exercise."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2bf2caa7-1daf-48c3-92b4-27ff8ec7be01.png",
+  "publishedSource": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-takeaways.webp",
+  "sourceSha256": "77409c4ef39ca130673790444d7a2040ce0e556e6a3382400380106965d665bf",
+  "webpSha256": "2f11805723c8eb7f726c38f159f2836434f450181e8a1b3df44b3eccd73e64bb",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+    "sourceSha256": "afa90923f2275f3cfce5fbcadfa7942445003ce09b285ce098e61e1be49d16ac",
+    "webpSha256": "f05af79bea0f021ca0987c65f4d41e5976bebfca26bbe934a7a8b0dd84878ee0",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-2353d1d3-ebf8-4ff3-88eb-986bf1533b49.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "77409c4ef39ca130673790444d7a2040ce0e556e6a3382400380106965d665bf",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "uint8/uint16 stored weights decode to float32 with scale/min metadata. Task quality on labels and runtime memory/speed remain separate checks, matching actual MDX and quantization exercise."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+        "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+        "sha256": "d96b44fadc3c4bc59a3b77bf6eeebebbcddaa6834f3d0c7ca6e4777bcc6546ed"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__quantization-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

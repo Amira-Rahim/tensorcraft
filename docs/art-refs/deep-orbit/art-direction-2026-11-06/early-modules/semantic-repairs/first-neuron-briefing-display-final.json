@@ -1,0 +1,40 @@
+{
+  "id": "neural-networks/first-neuron",
+  "phase": "briefing",
+  "cast": [
+    "dr-farah"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-54ddcfb6-4f06-4518-ac65-b43cdb2f4a7e.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-dfaac95a-2e03-42e0-b920-0e6758cf6665.png",
+  "prompt": "Use case: precise-object-edit. Input1 is immutable canonical Dr.Farah identity. Input2 is TARGET approved new story scene. Preserve Farah's exact face, head size, yaw, neck, hair, expression, body, both arm-hand chains, all furniture, lighting, composition and1536x1024size exactly. DO NOT change proportions or repaint the person. Only clean up specified incidental display elements. No new text, people, hands or data. Remove the two vertical yellow decorative accent bars left of Tone A and Tone B. Turn OFF all incidental screens at far left and far right so they are plain dark standby glass, no charts or random bars. Preserve the main large lesson display and its exact words/numbers/connections, and preserve the bench task tablet Known tones/Unknown signal.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-dfaac95a-2e03-42e0-b920-0e6758cf6665.png"
+  ],
+  "status": "generated-awaiting-review",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/first-neuron-briefing-dr-farah-proof.png",
+      "sha256": "7f4d7dd659c65784d7c443b3c0b1a58d8e8097559f4d767c486bafed233db756",
+      "crop": {
+        "left": 740,
+        "top": 270,
+        "width": 250,
+        "height": 310
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "priorSource": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__first-neuron-openai-20261107.png",
+      "priorSha256": "517d3a01735dee5aae4ebd6863ee61ff18b5dc46e57cf4a213d053cf08e30eec",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-54ddcfb6-4f06-4518-ac65-b43cdb2f4a7e.png",
+      "candidateSha256": "fac5c92392b0d8671942a0260b6cecf9766a36e6d9856854adb7e2aee457a63f"
+    }
+  ],
+  "pathSha256": "fac5c92392b0d8671942a0260b6cecf9766a36e6d9856854adb7e2aee457a63f",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml"
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "id": "recurrent-networks__sliding-windows-concept",
+  "lesson": "recurrent-networks/sliding-windows",
+  "phase": "concept",
+  "owner": "/root/quality_sequence",
+  "status": "published",
+  "tool": "built-in image_gen",
+  "attempt": 1,
+  "preparedAt": "2026-11-09T14:11:27.798262+00:00",
+  "priorApproval": {
+    "status": "reopened by user",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+    "sourceSha256": "950767e373ec12d5f3451ac16f26418da31a0b54c675784930bac3fa6e3b2ee3",
+    "reason": "The user rejected the tilted physical screen. Recompose its full bezel, glass and interior elements on one frontal rectangular plane, preserving crew interaction."
+  },
+  "cast": [
+    "ensign-demir",
+    "dr-farah"
+  ],
+  "room": "Bridge",
+  "prompt": "Use case: precise-object-edit with identity preservation.\nEdit the last reference to correct only the physical working monitor and its content plane. Deliver one 1536x1024 scene.\n\nReference 1: canonical Ensign Demir portrait, identity authority. Reference 2: canonical Dr. Farah portrait, identity authority. Reference 3: Bridge master, room authority. Reference 4: the current sliding-windows concept scene, edit target.\n\nPreserve the target's two characters and candid interaction exactly: Demir at left working the mouse, his other hand resting on the desk; Farah leaning alongside him, both her hands resting naturally on the desk, looking toward him with a thoughtful, warm expression as they discuss the split. Preserve their canonical facial structure, age, complexion, hair, uniforms, Demir's comms earpiece and Farah's AR lens. Preserve their body scale, complete shoulders, elbows, forearms, wrists and all four hands with plausible desk and mouse contact. Preserve Bridge framing, stars, brass rail, clock, warm light and green rim light.\n\nReplace the low sloping right-hand monitor with a large upright swivel-mounted monitor in the same right-hand area. The entire physical FRONT bezel and glass must form a TRUE RECTANGLE parallel to the camera sensor. Top and bottom edges exactly horizontal. Both side edges exactly vertical. All four glass corners are visible. No trapezoid, no sloping edge, no tilted rectangular front. A short sturdy swivel stand behind the lower bezel explains the orientation. Keep the new monitor clear of Farah's face and hands and Demir's mouse hand. Both people remain on the visible FRONT side of this shared display, with a plausible view of its surface.\n\nThe content must use the exact SAME frontal plane: every box edge, divider and text baseline horizontal or vertical, without italic slant caused by perspective. The new upright monitor uses the available right-hand space for large clear text, readable at 768x512. Keep the original information and meaning, with comfortable interior margins and no clipping.\n\nExact content:\nTitle: \"Split before windowing\"\nTwo panels side by side, separated by a vertical boundary:\nLeft label: \"Earlier readings: training\"\nRight label: \"Later readings: validation\"\nWithin each panel, one short green signal trace, separate across the boundary. This illustrates earlier and later portions of a stream, not measured numeric results.\nLarge footer lines:\n\"Build windows within each split\"\n\"Keep time order\"\n\nDo not add accuracy scores, success symbols, code, extra text or numeric ticks. The current lesson teaches splitting the original ordered stream before creating windows, so no window shares readings across the training/evaluation boundary. These labels explain that procedure before the learner's challenge.\n\nThe requested change is the monitor's coherent frontal physical geometry. Keep the crew interaction, four connected arms and natural hands unchanged. No new people, no new props, no pointers, no generic teaching poster, no camera-facing gaze.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "8e8ddd6f6991252fe5b9782fed968d2f88caf1955e928ecf46f8e8fccd157506",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity: Ensign Demir"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity: Dr. Farah"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room master: Bridge"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-14cc18db-6d39-41ec-80ed-f4e7532baed6.png",
+      "sha256": "950767e373ec12d5f3451ac16f26418da31a0b54c675784930bac3fa6e3b2ee3",
+      "role": "edit target: user-rejected concept original",
+      "pathAtGeneration": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f",
+      "facts": [
+        "Split the original stream by time before creating overlapping windows. Earlier readings train the model, later readings evaluate it.",
+        "The concept illustrates why overlapping observations must not leak across the split. No result is needed on this image."
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062",
+      "facts": [
+        "Build windows entirely within either side and drop any window that crosses the split.",
+        "Keep returned windows and labels in order."
+      ]
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nEdit the last reference to correct only the physical working monitor and its content plane. Deliver one 1536x1024 scene.\n\nReference 1: canonical Ensign Demir portrait, identity authority. Reference 2: canonical Dr. Farah portrait, identity authority. Reference 3: Bridge master, room authority. Reference 4: the current sliding-windows concept scene, edit target.\n\nPreserve the target's two characters and candid interaction exactly: Demir at left working the mouse, his other hand resting on the desk; Farah leaning alongside him, both her hands resting naturally on the desk, looking toward him with a thoughtful, warm expression as they discuss the split. Preserve their canonical facial structure, age, complexion, hair, uniforms, Demir's comms earpiece and Farah's AR lens. Preserve their body scale, complete shoulders, elbows, forearms, wrists and all four hands with plausible desk and mouse contact. Preserve Bridge framing, stars, brass rail, clock, warm light and green rim light.\n\nReplace the low sloping right-hand monitor with a large upright swivel-mounted monitor in the same right-hand area. The entire physical FRONT bezel and glass must form a TRUE RECTANGLE parallel to the camera sensor. Top and bottom edges exactly horizontal. Both side edges exactly vertical. All four glass corners are visible. No trapezoid, no sloping edge, no tilted rectangular front. A short sturdy swivel stand behind the lower bezel explains the orientation. Keep the new monitor clear of Farah's face and hands and Demir's mouse hand. Both people remain on the visible FRONT side of this shared display, with a plausible view of its surface.\n\nThe content must use the exact SAME frontal plane: every box edge, divider and text baseline horizontal or vertical, without italic slant caused by perspective. The new upright monitor uses the available right-hand space for large clear text, readable at 768x512. Keep the original information and meaning, with comfortable interior margins and no clipping.\n\nExact content:\nTitle: \"Split before windowing\"\nTwo panels side by side, separated by a vertical boundary:\nLeft label: \"Earlier readings: training\"\nRight label: \"Later readings: validation\"\nWithin each panel, one short green signal trace, separate across the boundary. This illustrates earlier and later portions of a stream, not measured numeric results.\nLarge footer lines:\n\"Build windows within each split\"\n\"Keep time order\"\n\nDo not add accuracy scores, success symbols, code, extra text or numeric ticks. The current lesson teaches splitting the original ordered stream before creating windows, so no window shares readings across the training/evaluation boundary. These labels explain that procedure before the learner's challenge.\n\nThe requested change is the monitor's coherent frontal physical geometry. Keep the crew interaction, four connected arms and natural hands unchanged. No new people, no new props, no pointers, no generic teaching poster, no camera-facing gaze.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-14cc18db-6d39-41ec-80ed-f4e7532baed6.png"
+    ],
+    "transparent_background": false
+  },
+  "candidatePath": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+  "publicationStatus": "not published",
+  "publication": {
+    "date": "2026-11-09",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-concept.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ecb2252a-4964-416b-a925-de65b713e196.png",
+  "generatedAt": "2026-11-09T14:14:10.376214+00:00",
+  "candidateSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+  "candidateDimensions": [
+    1536,
+    1024
+  ],
+  "diagnosticReview": {
+    "crops": [
+      {
+        "name": "demir-face",
+        "kind": "face",
+        "rect": [
+          260,
+          145,
+          195,
+          250
+        ],
+        "scale": 2
+      },
+      {
+        "name": "farah-face",
+        "kind": "face",
+        "rect": [
+          660,
+          220,
+          225,
+          230
+        ],
+        "scale": 2
+      },
+      {
+        "name": "demir-mouse",
+        "kind": "hand",
+        "rect": [
+          150,
+          855,
+          230,
+          140
+        ],
+        "scale": 2
+      },
+      {
+        "name": "demir-resting",
+        "kind": "hand",
+        "rect": [
+          300,
+          790,
+          210,
+          130
+        ],
+        "scale": 2
+      },
+      {
+        "name": "farah-hands",
+        "kind": "hand",
+        "rect": [
+          510,
+          795,
+          225,
+          110
+        ],
+        "scale": 2
+      }
+    ],
+    "fullFramePreview": {
+      "dimensions": [
+        768,
+        512
+      ]
+    },
+    "temporaryFilesRemoved": true
+  },
+  "ownReview": {
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T14:14:57.323126+00:00",
+    "candidateSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "handAndFaceCropsReviewedAt2x": true,
+    "canonicalPortraitCompared": true,
+    "preview768Reviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Native file, two face crops beside canonical portraits, all four hands at 2x, full shoulder-elbow-wrist tracing, explicit monitor corners and internal line families, and 768x512 preview.",
+    "checks": {
+      "identity": "Demir retains canonical facial width, nose, eye spacing, freckles, stubble and earpiece. Farah retains her jaw, nose, eyes, complexion, dark tied hair and AR lens.",
+      "anatomy": "Both complete Demir arm chains reach the mouse and desk independently. Both Farah arm chains reach separate desk contacts. Enlarged views show connected wrists, plausible radial thumbs and curved fingers. No prop was introduced.",
+      "proportions": "The preserved forward-leaning adults retain plausible head, neck, shoulder and arm scale.",
+      "displayGeometry": "The physical bezel and glass are frontal rectangles. Internal rounded boxes, lower rules, text baselines and vertical split boundary share that plane. The stand supports the monitor orientation.",
+      "source": "Earlier training and later validation are separated before windowing. Both footer instructions match the current MDX and exercise. The signal traces are illustrative, without invented numerical data or scores.",
+      "readability": "All five labels are readable at 768x512 with clear margins and no clipped text.",
+      "story": "Demir works the mouse while Farah leans beside him and watches his reaction, preserving the original discussion."
+    },
+    "glassGeometryApproxXY": {
+      "topLeft": [
+        909,
+        409
+      ],
+      "topRight": [
+        1493,
+        409
+      ],
+      "bottomRight": [
+        1493,
+        789
+      ],
+      "bottomLeft": [
+        909,
+        789
+      ],
+      "titleTopY": 423,
+      "titleBottomY": 486,
+      "signalPanelTopY": 503,
+      "signalPanelBottomY": 652,
+      "footerTopY": 669,
+      "footerBottomY": 769,
+      "verticalSplitX": 1199,
+      "operatorPosition": "Both crew stand to the left and forward of the monitor plane, on its visible side. Demir looks toward the work while Farah looks at him."
+    },
+    "findings": [],
+    "limits": [
+      "Independent peer review remains pending.",
+      "This preview uses the candidate PNG; final compressed runtime WebP needs a separate check."
+    ]
+  },
+  "faceCropCoordinates": [
+    {
+      "name": "demir-face",
+      "kind": "face",
+      "rect": [
+        260,
+        145,
+        195,
+        250
+      ],
+      "scale": 2
+    },
+    {
+      "name": "farah-face",
+      "kind": "face",
+      "rect": [
+        660,
+        220,
+        225,
+        230
+      ],
+      "scale": 2
+    }
+  ],
+  "handCropCoordinates": [
+    {
+      "name": "demir-mouse",
+      "kind": "hand",
+      "rect": [
+        150,
+        855,
+        230,
+        140
+      ],
+      "scale": 2
+    },
+    {
+      "name": "demir-resting",
+      "kind": "hand",
+      "rect": [
+        300,
+        790,
+        210,
+        130
+      ],
+      "scale": 2
+    },
+    {
+      "name": "farah-hands",
+      "kind": "hand",
+      "rect": [
+        510,
+        795,
+        225,
+        110
+      ],
+      "scale": 2
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/candidate.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-concept.webp",
+  "sourceSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+  "webpSha256": "4c3d5a4e784f21ecfef1e7b1f567f2a48699c640fd47fcb80e1acd4d48646714",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+    "sourceSha256": "950767e373ec12d5f3451ac16f26418da31a0b54c675784930bac3fa6e3b2ee3",
+    "webpSha256": "7e93e7ea6add0ace188c15d1928f2cb90110bf415118e81278b566530bba7e88",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-14cc18db-6d39-41ec-80ed-f4e7532baed6.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+    "method": "Reopened after user correction. Exact current candidate independently inspected for screen plane and operator direction, canonical faces, full arm chains and magnified hands, plus 768px readability. Adjacent peer.json records the decision.",
+    "checks": [
+      "Canonical identities and original candid interaction retained.",
+      "All four arm chains and desk or mouse contacts remain coherent.",
+      "All four glass corners, bezel, text and rules share a frontal rectangular plane.",
+      "The five source-grounded labels remain legible at 768x512."
+    ],
+    "reviewedSourceFiles": []
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root",
+  "generationArgsAtGeneration": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nEdit the last reference to correct only the physical working monitor and its content plane. Deliver one 1536x1024 scene.\n\nReference 1: canonical Ensign Demir portrait, identity authority. Reference 2: canonical Dr. Farah portrait, identity authority. Reference 3: Bridge master, room authority. Reference 4: the current sliding-windows concept scene, edit target.\n\nPreserve the target's two characters and candid interaction exactly: Demir at left working the mouse, his other hand resting on the desk; Farah leaning alongside him, both her hands resting naturally on the desk, looking toward him with a thoughtful, warm expression as they discuss the split. Preserve their canonical facial structure, age, complexion, hair, uniforms, Demir's comms earpiece and Farah's AR lens. Preserve their body scale, complete shoulders, elbows, forearms, wrists and all four hands with plausible desk and mouse contact. Preserve Bridge framing, stars, brass rail, clock, warm light and green rim light.\n\nReplace the low sloping right-hand monitor with a large upright swivel-mounted monitor in the same right-hand area. The entire physical FRONT bezel and glass must form a TRUE RECTANGLE parallel to the camera sensor. Top and bottom edges exactly horizontal. Both side edges exactly vertical. All four glass corners are visible. No trapezoid, no sloping edge, no tilted rectangular front. A short sturdy swivel stand behind the lower bezel explains the orientation. Keep the new monitor clear of Farah's face and hands and Demir's mouse hand. Both people remain on the visible FRONT side of this shared display, with a plausible view of its surface.\n\nThe content must use the exact SAME frontal plane: every box edge, divider and text baseline horizontal or vertical, without italic slant caused by perspective. The new upright monitor uses the available right-hand space for large clear text, readable at 768x512. Keep the original information and meaning, with comfortable interior margins and no clipping.\n\nExact content:\nTitle: \"Split before windowing\"\nTwo panels side by side, separated by a vertical boundary:\nLeft label: \"Earlier readings: training\"\nRight label: \"Later readings: validation\"\nWithin each panel, one short green signal trace, separate across the boundary. This illustrates earlier and later portions of a stream, not measured numeric results.\nLarge footer lines:\n\"Build windows within each split\"\n\"Keep time order\"\n\nDo not add accuracy scores, success symbols, code, extra text or numeric ticks. The current lesson teaches splitting the original ordered stream before creating windows, so no window shares readings across the training/evaluation boundary. These labels explain that procedure before the learner's challenge.\n\nThe requested change is the monitor's coherent frontal physical geometry. Keep the crew interaction, four connected arms and natural hands unchanged. No new people, no new props, no pointers, no generic teaching poster, no camera-facing gaze.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png"
+    ],
+    "transparent_background": false
+  }
+}

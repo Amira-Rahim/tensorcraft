@@ -1,0 +1,102 @@
+[
+  {
+    "phase": "briefing",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-745f43f2-0034-4dd8-ac38-7e769f3959a5.png",
+    "sha256": "3577cf5c7a158ede51aaa4b8da1f490ebe293e956b75b5760bd91a4301678bdf",
+    "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-briefing-identity-proof.png",
+    "proofSha256": "0bd8435aafcd465e41f1655afaec8ec701c3806928eb2c9b92a3c947d672a414",
+    "verdict": "pass",
+    "reviewer": "/root/art_peer_final",
+    "fullFrame": true,
+    "canonicalFace": true,
+    "screenValues": true,
+    "notes": "Exact19,204/28,800 and about40GB allocation failure. Natural bowed head and two shoulder/arm chains. Canonical broad lower face and compact nose preserved under downward yaw.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-745f43f2-0034-4dd8-ac38-7e769f3959a5.png"
+      ]
+    }
+  },
+  {
+    "phase": "challenge",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7e9d35f1-dd69-44f4-b5d5-b8b9a0b4734f.png",
+    "sha256": "2201993286b5d4dafa9bc4c06ac3c8c1b2b2cecaa6fb39f9f159d4a7d96220ad",
+    "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-challenge-identity-proof.png",
+    "proofSha256": "da006e9437058cd333038a5caa32ab2b0b28bb0c4aaabd3a6d07387d399d505d",
+    "verdict": "pass",
+    "reviewer": "/root/art_peer_final",
+    "fullFrame": true,
+    "canonicalFace": true,
+    "screenValues": true,
+    "notes": "Exact16IDs0..15,Training0..11,Validation12..15. Adult pelvis/thigh/knee/chair spacing and both arms continuous. Canonical face, moderate warm stylized head.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7e9d35f1-dd69-44f4-b5d5-b8b9a0b4734f.png"
+      ]
+    }
+  },
+  {
+    "phase": "takeaways",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1da81e12-4c93-463f-a757-05d237dcca3e.png",
+    "sha256": "031760988741b4890e9b092688f080793cae662fa3f041f49810736b8175f381",
+    "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-takeaways-identity-proof.png",
+    "proofSha256": "acfb5fb54013ddd14d9582c1bb4b3aef2f0c0e127f2cf52487972112cf2702fd",
+    "verdict": "pass",
+    "reviewer": "/root/art_peer_final",
+    "fullFrame": true,
+    "canonicalFace": true,
+    "screenValues": true,
+    "notes": "Example batch xs rows[0,0,0],[300,3,.3],[500,5,.5],[900,9,.9],ys[0,1,1,1] matches readSample formula. Shapes[4,3]/[4,1],shuffle10 beforebatch4. Two clear tablet grips and arms.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1da81e12-4c93-463f-a757-05d237dcca3e.png"
+      ]
+    }
+  },
+  {
+    "phase": "epilogue",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-3f0dcbe6-0bcb-4e3d-9fda-243119789a33.png",
+    "sha256": "0a25871b236b0b51de0d86228eeb80fd62674b2c15b74e683e43b17d0dffb597",
+    "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-epilogue-identity-proof.png",
+    "proofSha256": "71eb33f3410be61e130514ef0e6a133cc779a76743eeecbccf6cad22f921fad3",
+    "verdict": "pass",
+    "reviewer": "/root/art_peer_final",
+    "fullFrame": true,
+    "canonicalFace": true,
+    "screenValues": true,
+    "notes": "28,800 replay complete,4min(story),flat workingmemory over archive rows0..28,800. ARIA quiet ring and line. Both fist arm and console arm trace to distinct shoulders; face and scale pass.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-3f0dcbe6-0bcb-4e3d-9fda-243119789a33.png"
+      ]
+    }
+  }
+]

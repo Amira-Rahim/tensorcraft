@@ -1,0 +1,73 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "takeaways",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next LAB room reference only, LAST exact target. Preserve exact people, adult ages, facial morphology, expressions, hairstyle, signature equipment, natural warm skin, body poses, every connected shoulder-elbow-wrist-hand chain, grips, neck alignment, chairs and contacts. Farah lens anatomical LEFT eye, Demir comms anatomical RIGHT ear, Nazari has NO eyewear. Keep story action dominant. Every unmentioned monitor and wrist display OFF, plain charcoal glass. No arbitrary graph, wave, code, bars or meters. Keep restrained sage, aged brass and charcoal. Remove neon mint rims and broad yellow/gold wash. The tall glass LAB PILLAR must become dark muted sage with thin dim grey internal bands, never glowing lime. Natural warm lamp light. Preserve Farah and Demir full head sizes, seated poses, both grips, distinct arm chains and natural necks. Demir holds the same tablet toward viewer. Replace both traces with two clearly separated compact text panels: \"Low error can miss anomalies\" and \"High error can flag normal inputs\". One rear board has a single short heading \"Test on separate data\" and two distinct outlined labels \"Normal examples\" and \"Known anomalies\". No sample values or invented error scores. All other screens and wrist off. Keep Farah open hand explanatory gesture and Demir thoughtful expression. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/autoencoders-takeaways-before.png",
+      "sha256": "c6df67e9de10789f637bc7ac1f58a8b9729951499c40d15b52c847119054e511",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "c6df67e9de10789f637bc7ac1f58a8b9729951499c40d15b52c847119054e511",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-takeaways.webp",
+    "sha256": "e8e406903f38f4d258ed3e7ace6823fa168bd84f1c3eb6006a9479b20f073274"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "recall",
+    "concreteGenerationSpecification": "Preserve Farah and Demir full head sizes, seated poses, both grips, distinct arm chains and natural necks. Demir holds the same tablet toward viewer. Replace both traces with two clearly separated compact text panels: \"Low error can miss anomalies\" and \"High error can flag normal inputs\". One rear board has a single short heading \"Test on separate data\" and two distinct outlined labels \"Normal examples\" and \"Known anomalies\". No sample values or invented error scores. All other screens and wrist off. Keep Farah open hand explanatory gesture and Demir thoughtful expression.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "RecallPrompt and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses and connected anatomy. Only concept and epilogue Farah receive at most5 percent head adjustment after native review. Other heads unchanged.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-takeaways-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "d575685dac2359baea0d9c064892fd1fed3f36697f55d19dd8bea3767c294c9b",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-aa03830f-6792-4958-9677-64fe16ee71b1.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-takeaways-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "key": "system-architecture-takeaways",
+  "id": "capstone/system-architecture",
+  "phase": "takeaways",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir seated diagonally LEFT at bridge design console, one hand turning a mouse and other palm on a closed notebook, eyes intent on branching part of architecture with slight intrigued smile. Remove handheld tablet and stylus. Large monitor RIGHT heading \"Pipeline handoffs\". Three connected stages labeled \"Validate input\", \"Process\", \"Validate output\". Below, distinct box \"Input contract\" with three lines \"Feature order\", \"Units\", \"Preprocessing\". Final separate line \"Branches need a dependency scheduler\". No claim branchscheduler completed. Show actual work monitor facing him, camera beside front side, all graphics in its plane. Balanced canonical proportions, gentle bridge lighting, no extra people or camera gaze.",
+  "meaning": "Recap validates handoffs,featureorder units preprocessing; singlevaluechain distinct from multidependency scheduler stillpending.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+      "sha256": "fa33f499721be57bac7cfeb47bc4322bedf65b064960e478b2e564e99c9844a5",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-9f530391-25d3-404d-9d85-78f9f292f05e.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 290,
+      "top": 40,
+      "width": 380,
+      "height": 460
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 180,
+      "top": 770,
+      "width": 810,
+      "height": 210
+    }
+  ],
+  "candidatePath": "art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+  "candidateSha256": "234f20d141ba4a0437ea87cc319b1dd94af45b4cc32c36043585df6375d86edc",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded story scene,1536x1024. First portraits fix canonical facial identity, age, hairstyle, costume and equipment. Following approved room master gives ROOM GEOMETRY ONLY. Last reference is exact target to restage. Muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, gentle practical lights; no neon lime or gloss. Anatomically plausible balanced stylized adults with coherent head/neck/shoulders and two arms, hands with five fingers, furniture supporting bodies. Screens and papers face actual readers; camera is beside reader on same front side. Project all letters, rows, diagrams and borders into physical screen plane. Show faces in natural three-quarter views looking at work or fellow crew, no camera gaze. Remove held-out cards and tablets. Clear modest emotional response and concrete work action. Unrelated screens dark, no random waveforms or graphs. Only exact specified content, no invented performance or success marks. Demir seated diagonally LEFT at bridge design console, one hand turning a mouse and other palm on a closed notebook, eyes intent on branching part of architecture with slight intrigued smile. Remove handheld tablet and stylus. Large monitor RIGHT heading \"Pipeline handoffs\". Three connected stages labeled \"Validate input\", \"Process\", \"Validate output\". Below, distinct box \"Input contract\" with three lines \"Feature order\", \"Units\", \"Preprocessing\". Final separate line \"Branches need a dependency scheduler\". No claim branchscheduler completed. Show actual work monitor facing him, camera beside front side, all graphics in its plane. Balanced canonical proportions, gentle bridge lighting, no extra people or camera gaze.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+          "sha256": "fa33f499721be57bac7cfeb47bc4322bedf65b064960e478b2e564e99c9844a5",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-9f530391-25d3-404d-9d85-78f9f292f05e.png",
+        "sha256": "234f20d141ba4a0437ea87cc319b1dd94af45b4cc32c36043585df6375d86edc"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Recap validates handoffs,featureorder units preprocessing; singlevaluechain distinct from multidependency scheduler stillpending.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 290,
+        "top": 40,
+        "width": 380,
+        "height": 460
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 180,
+        "top": 770,
+        "width": 810,
+        "height": 210
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+      "sha256": "fa33f499721be57bac7cfeb47bc4322bedf65b064960e478b2e564e99c9844a5",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "system-architecture-takeaways",
+    "id": "capstone/system-architecture",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-9f530391-25d3-404d-9d85-78f9f292f05e.png",
+    "candidateSha256": "234f20d141ba4a0437ea87cc319b1dd94af45b4cc32c36043585df6375d86edc",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:50:28.364333+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+        "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+        "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Actual recap validates stage handoffs and feature order/units/preprocessing. A single chain needs input/process/output checks; branches need dependency scheduler. Diagram and note align with current source without asserting dependency-name resolution proves full validity."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-9f530391-25d3-404d-9d85-78f9f292f05e.png",
+  "publishedSource": "art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-takeaways.webp",
+  "sourceSha256": "234f20d141ba4a0437ea87cc319b1dd94af45b4cc32c36043585df6375d86edc",
+  "webpSha256": "be940c61f658321f88af8d406f1b2d8cffdd29b6625da370bd2d8867ee11da05",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+    "sourceSha256": "fa33f499721be57bac7cfeb47bc4322bedf65b064960e478b2e564e99c9844a5",
+    "webpSha256": "d13a6d00e1d265cf796b41b6420c631b383e8564bd058d90482ef4de67cfe6e0",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-f53a646d-3f7b-4f94-bae4-ce927b7c63c7.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "234f20d141ba4a0437ea87cc319b1dd94af45b4cc32c36043585df6375d86edc",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Visible hands and full arm chains, head/neck and furniture contacts plausible.",
+      "screenPlane": "Text and boxes follow physical screen perspective.",
+      "readerDirection": "Characters view actual display front from operator side; shared wall displays face the occupied room.",
+      "story": "Purposeful candid review or typing with task-related expression; no audience placard.",
+      "palette": "Muted charcoal, sage and brass; localized warm lights.",
+      "meaning": "Actual recap validates stage handoffs and feature order/units/preprocessing. A single chain needs input/process/output checks; branches need dependency scheduler. Diagram and note align with current source without asserting dependency-name resolution proves full validity."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+        "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+        "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/system-architecture-takeaways.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

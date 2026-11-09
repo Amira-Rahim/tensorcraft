@@ -1,0 +1,191 @@
+{
+  "key": "deep-orbit/anomaly-detection/the-anomaly",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "useCase": "precise-object-edit",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical Demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "bridge master ROOM ONLY",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+      "role": "exact original edit target",
+      "sha256": "f10be46a498a4aab96b36dbdc74b60dc63f2594a62b16bfeff3fae5ed88e1742"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+      "sha256": "94c81b2cb9d5f6208d954ba7d81ba81999dbecbb34345fb5cabc5731343c6de3"
+    }
+  ],
+  "sourceMeaning": {
+    "section": "MDX Challenge; YAML sample7741 fixture",
+    "window": [
+      0.5,
+      0.54,
+      0.51,
+      0.53,
+      0.52,
+      0.52,
+      0.5,
+      0.54
+    ],
+    "actual": 0.5,
+    "reconstructionError": 6.2,
+    "reconThreshold": 1,
+    "predicted": 0.2,
+    "predTolerance": 0.1,
+    "operation": "Compute z-score from recent window; compare AE score and absolute LSTM amplitude miss with supplied cutoffs; count flags, raise alert at least2 votes",
+    "visibleState": "Input review before run. Votes and alert pending. No fabricated waveform or outcome.",
+    "readerDirection": "Console front faces Demir at screenleft, camera on same viewing side."
+  },
+  "prompt": "Use case: precise-object-edit. Edit only image3, a1536x1024 Deep Orbit scene, preserving composition, Demir's exact face/head proportions, hair, age, stubble, expression, gaze, entire seated torso/chair, the watch-wearing anatomical RIGHT hand resting on the desk, bridge architecture, lighting and materials.\nInput roles: image1 is canonical Demir identity authority. Image2 is bridge master for ROOM ONLY, never copy any screen data. Image3 is exact edit target.\n\nPrimary correction: reconstruct Demir's anatomical LEFT pointing hand at viewer-right, with a coherent wrist and forearm. It currently has incorrect anatomy. Keep the arm originating at his own left shoulder and naturally bending at the elbow, raised toward the selected card. Show a clear oblique view of the LEFT palm, one index finger extending naturally upper-right toward the selected card. The other three fingers fold naturally into the palm with distinct knuckles and appropriate decreasing lengths. A clearly separate SHORT thumb grows from the radial/palm side near the wrist and bends naturally across the curled fingers. Exactly five digits, no duplicated finger, no extra lobe or mitten, no mirrored right hand, no disconnected joint. Neutral wrist aligned continuously with forearm, plausible contact and unstrained tendons. Match his other hand's scale. Leave watch-hand and all identity details unchanged.\n\nSecondary required correction: replace the main console's unexplained waveforms/check/colored verdict lights with an actual pre-run detector input view. Keep the existing physical screen's quad, brass bezel, screen position and large simple panel arrangement. Demir's index points at its selected left-middle Autoencoder input card. All data belongs to the actual exercise sample7741 illustrative probe. Render ONLY the following exact concise labels and numbers, spacious and readable:\nTop broad pane, three rows:\n\"Recent amplitudes\"\n\"[0.50, 0.54, 0.51, 0.53]\"\n\"[0.52, 0.52, 0.50, 0.54]\"\nTwo middle cards:\nLeft selected card: \"Autoencoder\", \"Error 6.2\", \"Cutoff 1.0\".\nRight card: \"LSTM\", \"Predicted 0.20\", \"Tolerance 0.10\".\nLower broad pane: \"Sample 7741 probe\", \"Actual 0.50\".\nBottom broad pane: \"Votes pending\", \"Alert pending\".\nNo completed checkmarks, no result lamps, no computed zscore, no verdict, no invented graph. Unused background screens should be dark or very faint inactive glass, without decorative graphs.\nThe physical console is angled in both dimensions. Project all typography and every box through ONE coherent screen-plane homography. Top-row baselines rise to the right following upper panel edge; lower rows gradually change to the shallow down-right slope of lower bezel. Glyph upright strokes follow left/right screen edges. Every numeral, bracket, card and label must visibly inhabit this panel, never flat camera-facing type. The active front surface faces Demir at left and he can read it naturally.\nPalette: restrained charcoal, worn brass, gray-sage ink and very faint sage selected-card border. Desaturate conspicuous mint neon outlines, watch glow and hair rim to a thin muted sage edge. Preserve natural warm skin and lively work lighting. No fluorescent mint, mustard wash or cyan.\nKeep the original story action and attentive face, no camera gaze, no extra people, no head shrink, no body restaging. Finish as cohesive clean cel-shaded illustrated scene, original1536x1024.",
+  "alt": "Demir checks the autoencoder input before combining three detector votes for sample7741.",
+  "generationHistory": [
+    {
+      "prompt": "Use case: precise-object-edit. Edit only image3, a1536x1024 Deep Orbit scene, preserving composition, Demir's exact face/head proportions, hair, age, stubble, expression, gaze, entire seated torso/chair, the watch-wearing anatomical RIGHT hand resting on the desk, bridge architecture, lighting and materials.\nInput roles: image1 is canonical Demir identity authority. Image2 is bridge master for ROOM ONLY, never copy any screen data. Image3 is exact edit target.\n\nPrimary correction: reconstruct Demir's anatomical LEFT pointing hand at viewer-right, with a coherent wrist and forearm. It currently has incorrect anatomy. Keep the arm originating at his own left shoulder and naturally bending at the elbow, raised toward the selected card. Show a clear oblique view of the LEFT palm, one index finger extending naturally upper-right toward the selected card. The other three fingers fold naturally into the palm with distinct knuckles and appropriate decreasing lengths. A clearly separate SHORT thumb grows from the radial/palm side near the wrist and bends naturally across the curled fingers. Exactly five digits, no duplicated finger, no extra lobe or mitten, no mirrored right hand, no disconnected joint. Neutral wrist aligned continuously with forearm, plausible contact and unstrained tendons. Match his other hand's scale. Leave watch-hand and all identity details unchanged.\n\nSecondary required correction: replace the main console's unexplained waveforms/check/colored verdict lights with an actual pre-run detector input view. Keep the existing physical screen's quad, brass bezel, screen position and large simple panel arrangement. Demir's index points at its selected left-middle Autoencoder input card. All data belongs to the actual exercise sample7741 illustrative probe. Render ONLY the following exact concise labels and numbers, spacious and readable:\nTop broad pane, three rows:\n\"Recent amplitudes\"\n\"[0.50, 0.54, 0.51, 0.53]\"\n\"[0.52, 0.52, 0.50, 0.54]\"\nTwo middle cards:\nLeft selected card: \"Autoencoder\", \"Error 6.2\", \"Cutoff 1.0\".\nRight card: \"LSTM\", \"Predicted 0.20\", \"Tolerance 0.10\".\nLower broad pane: \"Sample 7741 probe\", \"Actual 0.50\".\nBottom broad pane: \"Votes pending\", \"Alert pending\".\nNo completed checkmarks, no result lamps, no computed zscore, no verdict, no invented graph. Unused background screens should be dark or very faint inactive glass, without decorative graphs.\nThe physical console is angled in both dimensions. Project all typography and every box through ONE coherent screen-plane homography. Top-row baselines rise to the right following upper panel edge; lower rows gradually change to the shallow down-right slope of lower bezel. Glyph upright strokes follow left/right screen edges. Every numeral, bracket, card and label must visibly inhabit this panel, never flat camera-facing type. The active front surface faces Demir at left and he can read it naturally.\nPalette: restrained charcoal, worn brass, gray-sage ink and very faint sage selected-card border. Desaturate conspicuous mint neon outlines, watch glow and hair rim to a thin muted sage edge. Preserve natural warm skin and lively work lighting. No fluorescent mint, mustard wash or cyan.\nKeep the original story action and attentive face, no camera gaze, no extra people, no head shrink, no body restaging. Finish as cohesive clean cel-shaded illustrated scene, original1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical Demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "role": "bridge master ROOM ONLY",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+          "role": "exact original edit target",
+          "sha256": "f10be46a498a4aab96b36dbdc74b60dc63f2594a62b16bfeff3fae5ed88e1742"
+        }
+      ],
+      "output": {
+        "path": "/tmp/the-anomaly-challenge-hand-candidate.png",
+        "sha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c3eea014-60b5-47c2-b505-574bcdb92a49.png"
+      }
+    }
+  ],
+  "review": {
+    "reviewer": "late_final",
+    "fullFrame": "pass",
+    "identity": "pass canonical/before/final comparison",
+    "anatomy": "Anatomical left palm has extended index, three distinct folded fingers and separate thumb across curled fingers; wrist aligns with continuous forearm and shoulder. Watch-bearing right desk hand unchanged.",
+    "screenMeaning": "All eight input values and five scalar inputs verified against ensemble-detector sample7741 test. Votes and alert pending. No fabricated waveform or completed decision.",
+    "perspective": "All four row groups and their type follow the console plane, progressively rising-right at top to falling-right near bottom. Console faces Demir and camera shares viewing side.",
+    "palette": "Muted gray-sage; no neon watch, hair rim or card flood.",
+    "proofOriginals": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "crop": {
+          "left": 125,
+          "top": 10,
+          "width": 255,
+          "height": 305
+        }
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+        "sha256": "f10be46a498a4aab96b36dbdc74b60dc63f2594a62b16bfeff3fae5ed88e1742",
+        "crop": {
+          "left": 320,
+          "top": 72,
+          "width": 360,
+          "height": 420
+        }
+      },
+      {
+        "path": "/tmp/the-anomaly-challenge-hand-candidate.png",
+        "sha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+        "crop": {
+          "left": 320,
+          "top": 72,
+          "width": 360,
+          "height": 420
+        }
+      }
+    ],
+    "handDetailCrop": {
+      "left": 818,
+      "top": 450,
+      "width": 245,
+      "height": 260
+    },
+    "temporaryProofs": "Viewed then removed; recreate from exact originals and crops."
+  },
+  "candidate": {
+    "path": "/tmp/the-anomaly-challenge-hand-candidate.png",
+    "sha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c3eea014-60b5-47c2-b505-574bcdb92a49.png"
+  },
+  "candidatePath": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+  "candidateSha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c3eea014-60b5-47c2-b505-574bcdb92a49.png",
+  "temporaryCandidatePathAtReview": "/tmp/the-anomaly-challenge-hand-candidate.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+  "sourceSha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+  "webpSha256": "e57b74306c48badc7010e2552bcb2d6bb0ee4ce5bb09c14c6c5884aee7b20249",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+    "sourceSha256": "f10be46a498a4aab96b36dbdc74b60dc63f2594a62b16bfeff3fae5ed88e1742",
+    "webpSha256": "e66f419119ce45525a2f42dba5128f36856f5c2bae5d78a44da383c16c6e093a",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "readerDirection": "Angled console faces Demir and remains visible to audience.",
+      "sourceMeaning": "Exact ensemble-detector sample7741 fixture; eight amplitudes,actual0.50,error6.2,cutoff1.0,prediction0.20,tolerance0.10; votes andalertpending.",
+      "anatomy": "Anatomical left palm, short separate thumb, extended index and3 curledfingers, neutralwrist; oppositehand preserved.",
+      "perspective": "All rows project into console glass.",
+      "identity": "Canonical Demir face compared, unchanged."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+        "sha256": "94c81b2cb9d5f6208d954ba7d81ba81999dbecbb34345fb5cabc5731343c6de3"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

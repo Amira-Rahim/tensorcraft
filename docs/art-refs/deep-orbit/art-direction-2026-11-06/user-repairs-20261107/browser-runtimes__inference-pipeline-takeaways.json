@@ -1,0 +1,231 @@
+{
+  "key": "inference-takeaways",
+  "id": "browser-runtimes/inference-pipeline",
+  "phase": "takeaways",
+  "cast": [
+    "chief-nazari"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d77db888-a15a-446f-aca7-3e33762621c9.png",
+  "mdx": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+  "exercise": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+  "section": "Memory Management with tf.tidy(); classify-async.ts; RecallPrompt and LessonRecap",
+  "meaning": "Explicit tensor ownership after async readback: temporary input released by synchronous tidy, returned output disposed by owner, loaded model weights retained until teardown; inspect counts and bytes after warmup. No invented measured outcome.",
+  "prompt": "Use case: identity-preserve. Deep Orbit illustrated story scene, 1536x1024 landscape. Input1 is the canonical character face and age, highest priority. Input2 is the approved Bridge master for ROOM GEOMETRY ONLY, do not copy its diagrams. Input3 is the exact scene/content edit target. Restore a candid work moment rather than an outward device presentation. Preserve this actual character's face morphology, eye shape/spacing, nose, jaw, age, hairstyle, uniform and signature equipment. Preserve balanced stylized adult proportions, with natural head/neck/shoulders and two complete anatomically coherent arm chains and five fingers per hand. Use the same restrained cel-shaded linework, muted sage #6BAA8A, aged brass #A89060 and charcoal/navy, natural tan skin, subdued practical lights. No neon lime or glossy rendering. Every lit panel must have the exact meaningful content specified below; all other background and wrist screens inactive dark glass. Text/rows/boxes must be drawn in the exact physical screen plane with converging baselines and coherent perspective, never a flat overlay. Do not add people, labels, decorative waveforms, checkmarks, progress bars or numerical results. No eye contact with camera. No tablet/card/notebook held toward the camera.\nRestage Chief Nazari alone at the bridge diagnostic work console. A medium three-quarter side view from beside her workstation shows her seated naturally on the LEFT, concentrating on the lit monitor on the RIGHT. Her head and torso turn together toward that monitor, eyes on its returned-output row, with a small knowing, slightly skeptical smile as she catches the forgotten cleanup. Remove the held tablet entirely. Her left forearm rests comfortably on the desk, her left hand relaxed. Her right hand naturally uses the console mouse, fully supported, no pointing gesture and no pen. Console and screen face HER; camera is beside her on that same front side, not across the screen. Keep sufficient space between her face and monitor. Monitor has a simple actual cleanup policy view with exact readable text:\nHeading: \"After readback\"\nRows: \"Temporary input: tf.tidy()\" / \"Returned output: dispose()\" / \"Model weights: keep until teardown\"\nFooter: \"Check counts and bytes after warmup\"\nDo not show any numerical memory readings, charts, successful test results, or model disposal before teardown. The screen belongs in her practical workstation, not behind her. A flat closed maintenance notebook may sit beside her relaxed hand, with no writing or graphics. Preserve bridge architecture with windows, brass rails, clock and dark peripheral equipment, seen from the new intimate angle.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d77db888-a15a-446f-aca7-3e33762621c9.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d77db888-a15a-446f-aca7-3e33762621c9.png",
+      "sha256": "bb449e91f65580e802e152494e2850f18c0be154889caf519382887806416bb1",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+    }
+  ],
+  "status": "published",
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-takeaways.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5174546f-4925-413e-a50f-cb21aa0273af.png",
+  "reviewCrops": {
+    "face": {
+      "left": 300,
+      "top": 50,
+      "width": 450,
+      "height": 500
+    },
+    "hands": {
+      "left": 480,
+      "top": 750,
+      "width": 380,
+      "height": 250
+    }
+  },
+  "candidatePath": "art-src/scenes/browser-runtimes__inference-pipeline-takeaways-openai-20261107.png",
+  "candidateSha256": "e5fcb80b1959f3ce624204d366b78f82fa2c164310d034873d4300a6078c1cb6",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit illustrated story scene, 1536x1024 landscape. Input1 is the canonical character face and age, highest priority. Input2 is the approved Bridge master for ROOM GEOMETRY ONLY, do not copy its diagrams. Input3 is the exact scene/content edit target. Restore a candid work moment rather than an outward device presentation. Preserve this actual character's face morphology, eye shape/spacing, nose, jaw, age, hairstyle, uniform and signature equipment. Preserve balanced stylized adult proportions, with natural head/neck/shoulders and two complete anatomically coherent arm chains and five fingers per hand. Use the same restrained cel-shaded linework, muted sage #6BAA8A, aged brass #A89060 and charcoal/navy, natural tan skin, subdued practical lights. No neon lime or glossy rendering. Every lit panel must have the exact meaningful content specified below; all other background and wrist screens inactive dark glass. Text/rows/boxes must be drawn in the exact physical screen plane with converging baselines and coherent perspective, never a flat overlay. Do not add people, labels, decorative waveforms, checkmarks, progress bars or numerical results. No eye contact with camera. No tablet/card/notebook held toward the camera.\nRestage Chief Nazari alone at the bridge diagnostic work console. A medium three-quarter side view from beside her workstation shows her seated naturally on the LEFT, concentrating on the lit monitor on the RIGHT. Her head and torso turn together toward that monitor, eyes on its returned-output row, with a small knowing, slightly skeptical smile as she catches the forgotten cleanup. Remove the held tablet entirely. Her left forearm rests comfortably on the desk, her left hand relaxed. Her right hand naturally uses the console mouse, fully supported, no pointing gesture and no pen. Console and screen face HER; camera is beside her on that same front side, not across the screen. Keep sufficient space between her face and monitor. Monitor has a simple actual cleanup policy view with exact readable text:\nHeading: \"After readback\"\nRows: \"Temporary input: tf.tidy()\" / \"Returned output: dispose()\" / \"Model weights: keep until teardown\"\nFooter: \"Check counts and bytes after warmup\"\nDo not show any numerical memory readings, charts, successful test results, or model disposal before teardown. The screen belongs in her practical workstation, not behind her. A flat closed maintenance notebook may sit beside her relaxed hand, with no writing or graphics. Preserve bridge architecture with windows, brass rails, clock and dark peripheral equipment, seen from the new intimate angle.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d77db888-a15a-446f-aca7-3e33762621c9.png",
+          "sha256": "bb449e91f65580e802e152494e2850f18c0be154889caf519382887806416bb1",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5174546f-4925-413e-a50f-cb21aa0273af.png",
+        "sha256": "e5fcb80b1959f3ce624204d366b78f82fa2c164310d034873d4300a6078c1cb6"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native 1536x1024 full frame",
+      "native face crop against canonical portrait",
+      "native hands crop"
+    ],
+    "readerDirection": "Screen front faces seated character and the beside-console camera. Eyes follow the display, without outward tablet.",
+    "anatomy": "Both arm chains supported; relaxed desk hand and mouse hand; head and torso face console together.",
+    "identity": "Canonical mature face, hair and costume retained.",
+    "screenPlane": "Text, rows and border converge with the physical monitor plane.",
+    "palette": "Muted sage, aged brass, charcoal with natural skin.",
+    "meaning": "Explicit tensor ownership after async readback: temporary input released by synchronous tidy, returned output disposed by owner, loaded model weights retained until teardown; inspect counts and bytes after warmup. No invented measured outcome.",
+    "story": "Candid calibration/cleanup check with subtle engaged expression and no camera gaze.",
+    "reviewCrops": {
+      "face": {
+        "left": 300,
+        "top": 50,
+        "width": 450,
+        "height": 500
+      },
+      "hands": {
+        "left": 480,
+        "top": 750,
+        "width": 380,
+        "height": 250
+      }
+    }
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d77db888-a15a-446f-aca7-3e33762621c9.png",
+      "sha256": "bb449e91f65580e802e152494e2850f18c0be154889caf519382887806416bb1",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "inference-takeaways",
+    "id": "browser-runtimes/inference-pipeline",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5174546f-4925-413e-a50f-cb21aa0273af.png",
+    "candidateSha256": "e5fcb80b1959f3ce624204d366b78f82fa2c164310d034873d4300a6078c1cb6",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:35:17.594140+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+        "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+        "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "Cleanup ownership matches async variant: temporary row freed by synchronous tidy, returned output disposed after awaited readback, model retained until teardown; warmup counts and bytes checked. After readback heading is a cleanup review, not an execution-order diagram."
+    }
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5174546f-4925-413e-a50f-cb21aa0273af.png",
+  "publishedSource": "art-src/scenes/browser-runtimes__inference-pipeline-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-takeaways.webp",
+  "sourceSha256": "e5fcb80b1959f3ce624204d366b78f82fa2c164310d034873d4300a6078c1cb6",
+  "webpSha256": "1eb4804fdd8fca1d96c827c70784dc999fcf415f24b187d4e49330507a52134e",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-takeaways-openai-20261107.png",
+    "sourceSha256": "4f28e8d3319cd6e4c9ccd3c994f93ef5a9e55e14a48ec3807d89e7416b25c390",
+    "webpSha256": "9c0ed09f1a40a0c3b3ff48a32eb170e9f5856e61121aefdaec8125c4f57bbb9e",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-31c28e7c-9c20-464b-8d5f-ade34ebdcd76.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "e5fcb80b1959f3ce624204d366b78f82fa2c164310d034873d4300a6078c1cb6",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "Cleanup ownership matches async variant: temporary row freed by synchronous tidy, returned output disposed after awaited readback, model retained until teardown; warmup counts and bytes checked. After readback heading is a cleanup review, not an execution-order diagram."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+        "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+        "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/browser-runtimes__inference-pipeline-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

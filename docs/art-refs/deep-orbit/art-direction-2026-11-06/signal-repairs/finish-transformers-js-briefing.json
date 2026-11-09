@@ -1,0 +1,43 @@
+{
+  "module": "browser-runtimes",
+  "lesson": "transformers-js",
+  "phase": "briefing",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-262b73c3-911e-494a-9a73-3ecb2a00a623.png",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-262b73c3-911e-494a-9a73-3ecb2a00a623.png"
+  ],
+  "prompt": "Use case: identity-preserve. First references are the exact immutable character portraits; last image is the target scene. Correct ONLY requested regions, preserving all other approved faces, bodies, connected hands, natural grips, uniforms, furniture, camera, background and teaching display. Demir must match canonical mid-20s adult face: compact BROAD rounded nose tip and short bridge, broad softly squared lower cheeks, rounded chin, canonical eye spacing/brows, sparse freckles and uneven stubble including below-lip patch. Turn Demir near frontal/slight3quarter to preserve that exact individual. Comms on anatomical RIGHT ear (viewerleft on near-frontal face), never mirror the whole scene. No pointed handsome anime variant. Demir head only: turn slightly towardviewer nearfrontal, restore canonical compact rounded nose and broader rounded lowerface, same warmincredulous expression. Preserve matureNazari's exactface and all crossedarms/anatomy/displays. Same1536x1024 cel-shadedcartoon, no newtext,numerals,props orpeople.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/transformers-js-briefing-final-repair.prompt.txt",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-338d3977-999e-4f53-86c3-0caf8ce085d1.png",
+  "faceProofs": [
+    {
+      "character": "demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "crop": {
+        "left": 340,
+        "top": 470,
+        "width": 220,
+        "height": 270
+      },
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/transformers-js-briefing-demir.png"
+    },
+    {
+      "character": "nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "crop": {
+        "left": 1180,
+        "top": 180,
+        "width": 220,
+        "height": 265
+      },
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-proofs/transformers-js-briefing-nazari.png"
+    }
+  ],
+  "previousPath": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-262b73c3-911e-494a-9a73-3ecb2a00a623.png"
+}

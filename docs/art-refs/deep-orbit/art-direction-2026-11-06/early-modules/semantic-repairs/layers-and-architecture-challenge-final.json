@@ -1,0 +1,58 @@
+{
+  "id": "neural-networks/layers-and-architecture",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-2f154a5b-3ab6-4377-9205-b3e55ba34d63.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-c3531342-db20-4fff-b450-bca84a44a370.png",
+  "prompt": "Precise localized teaching-board edit. First reference exact canonical Demir. LAST target image. Preserve entire fullframe exactly: adult Demir face morphology head size expression hair anatomy right-earcomm, neck/torso orientation, both full arms/hands holding card/tablet, room geometry, muted palette. Change only physical wall board: replace top 'Practice model' title with 'Target practice model'. Add small clear RIGHT-pointing arrow in blankgap between16 ReLU card and8 ReLU card, matching existing8-to1arrow, so4inputs flows16ReLU then8ReLU then1sigmoid. Change bottom '225 parameters' to 'Expected: 225 parameters'. Preserve16/8/1 units,80/136/9 counts and4inputs exactly. Keep all else unchanged, no extra screen decorations.1536x1024.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-c3531342-db20-4fff-b450-bca84a44a370.png"
+  ],
+  "status": "generated-awaiting-review",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-challenge-ensign-demir-proof.png",
+      "sha256": "51bb87ca768b38f1f5c7d62b6173f17c2904d9b60624334dbad4a1bfd3818638",
+      "crop": {
+        "left": 760,
+        "top": 120,
+        "width": 260,
+        "height": 370
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-66d04e34-01d2-445b-a169-c20ae00a099c.png",
+      "priorSha256": "8b75d0c06582921d76a82750e08e804eeef5747f77edafb7ff6d6edc900177dd",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-2f154a5b-3ab6-4377-9205-b3e55ba34d63.png",
+      "candidateSha256": "a633d8f1b56d429c438230b19ad965fa86deff0291922b8c815ac9da14bacdbb"
+    }
+  ],
+  "pathSha256": "a633d8f1b56d429c438230b19ad965fa86deff0291922b8c815ac9da14bacdbb",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+  ],
+  "screenMeaning": {
+    "section": "Challenge; build-layer instructions",
+    "spec": "Practice architecture explicitly4\u219216ReLU\u21928ReLU\u21921sigmoid, counts80,136,9 totaling225. Include predictParams(width) formula; do not accidentally show bridge32/16/1 or673.",
+    "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-challenge-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "cast": [
+      "ensign-demir"
+    ]
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

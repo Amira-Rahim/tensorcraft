@@ -1,0 +1,32 @@
+{
+  "id": "foundations/data-loading",
+  "phase": "briefing",
+  "cast": [
+    "ensign-demir"
+  ],
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-briefing-input.png"
+  ],
+  "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+  "screenMeaning": "Opening story: loading every raw capture into one array stops at19,204 of28,800 records and about40GB, requiring the lazy-loading fix.",
+  "alt": "Demir studies the failed full-archive load, stopped at 19,204 readings with about 40 GB held in memory.",
+  "location": "Archimedes, Engineering",
+  "spec": {
+    "scale": "Preserve current head size and tired leaned pose. The red warning lamp belongs to this failed-load story and stays red.",
+    "screen": "Replace the large main screen with ONE archive-memory chart titled Full archive load. Horizontal axis Archive readings, from0 to28,800. Vertical axis Memory. Draw a rising line that STOPS at an amber X at19,204 readings, around40GB. Label the stop 19,204 /28,800 and about40GB. Short status Allocation failed. Do NOT draw a fall back to zero or claim the full archive loaded. Remove unrelated pie charts, clocks, battery segments and decorative dashboards from this main screen. Other small displays remain dim archive status, no unrelated fake plots. Right ARIA display is one thin ring and a single horizontal waveform.",
+    "alt": "Demir studies the failed full-archive load, stopped at19,204 readings with about40GB held in memory.",
+    "meaning": "Opening story: loading every raw capture into one array stops at19,204 of28,800 records and about40GB, requiring the lazy-loading fix."
+  },
+  "status": "generated-awaiting-review",
+  "prompt": "Use case: identity-preserving story illustration edit. Deep Orbit foundations/data-loading briefing. Input1 is immutable canonical Demir FACE identity; input2 is the target scene. Keep exact facial morphology, age, compact rounded nose, broad softly squared jaw/round chin, sparse freckles, uneven stubble, eye/brow spacing, hair and anatomical RIGHT-ear comms. Keep natural two-arm/two-hand chains, finger grips, coherent head/neck/shoulders, hips and furniture clearance. Existing distinct action and camera framing stay. Warm stylized adult adventure-comic proportions, no bobblehead or tiny realistic head. Preserve current head size and tired leaned pose. The red warning lamp belongs to this failed-load story and stays red.\nLesson-grounded main screen content: Replace the large main screen with ONE archive-memory chart titled Full archive load. Horizontal axis Archive readings, from0 to28,800. Vertical axis Memory. Draw a rising line that STOPS at an amber X at19,204 readings, around40GB. Label the stop 19,204 /28,800 and about40GB. Short status Allocation failed. Do NOT draw a fall back to zero or claim the full archive loaded. Remove unrelated pie charts, clocks, battery segments and decorative dashboards from this main screen. Other small displays remain dim archive status, no unrelated fake plots. Right ARIA display is one thin ring and a single horizontal waveform.\nUse short labels exactly as requested with normal spaces and clean readable typography. Verify every cell, number, axis and arrow. Do not add extra fabricated readings, fake code, charts or decorative UI shapes. Preserve muted sage/aged-brass Engineering palette and natural skin; remove fluorescent bloom and neon outlines, retain justified warm lamps. Story remains approachable and earnest, no forced smiles during failure. One1536x1024 landscape image.",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-5e6d63a1-7166-4150-8c6b-125ce0594355.png",
+  "deletedHistoricalImages": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/data-loading-briefing-input.png",
+      "sha256": "f157ec593390eb8e37876eac8fa852550c3ba0af1370a107c4cdba0b75a4cd87",
+      "availability": "deleted-obsolete-working-copy"
+    }
+  ]
+}

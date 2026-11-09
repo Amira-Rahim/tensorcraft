@@ -1,0 +1,101 @@
+[
+  {
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "briefing",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/sequences-briefing-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 2 inputs immutable canonical people identities; next input approved LAB room reference ONLY; LAST exact edit target. Keep exact faces, age, skin, eye/nose/jaw/mouth proportions, hairstyles and signatureequipment. Farah lens on anatomicalLEFT, Demir comms on anatomicalRIGHT. Preserve current balanced stylized adult head/body proportions, no blanket shrink or neck stretch. Preserve full continuous two-arm chains per person, natural fingers and grips, torso/chair alignment and furniture separation. Keep distinct staging and warm fun adventure mood. Replace the huge main board with ONE readable plot titled \"Five selected readings\" and subtitle \"Normalized amplitude\". Horizontal axis \"Time step\" with exactly five positions 0,1,2,3,4. Vertical axis 0 to 1. Exactly five connected dots at 0.5,0.8,0.3,0.5,0.9 respectively, and place the exact value beside each dot. Lower note \"Current classifier sees one row at a time\". Do not invent more readings or claim learned detection. Preserve Farah explaining with stylus and open palm and Demir thoughtful, seated with tablet. No floating cards. All unassigned monitors, wrist displays and tablet surfaces become inactive charcoal glass. Physical buttons remain. Color correction: dark charcoal/navy, muted sage #6BAA8A readable ink, aged brass #A89060. Subdue the bright lime laboratory pillar to dim desaturated sage. Thin subtle sage rim lighting only, no neon green outline, no luminous cone, no golden skin cast or bright gold hardware. No random code or charts. No colored left accent bars. Exact text, values and number of cells. One1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Farah shows Demir five ordered amplitude readings that their one-row classifier cannot compare across time.",
+    "location": "Archimedes, Lab",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+    "screenMeaning": "Replace the huge main board with ONE readable plot titled \"Five selected readings\" and subtitle \"Normalized amplitude\". Horizontal axis \"Time step\" with exactly five positions 0,1,2,3,4. Vertical axis 0 to 1. Exactly five connected dots at 0.5,0.8,0.3,0.5,0.9 respectively, and place the exact value beside each dot. Lower note \"Current classifier sees one row at a time\". Do not invent more readings or claim learned detection. Preserve Farah explaining with stylus and open palm and Demir thoughtful, seated with tablet. No floating cards.",
+    "status": "prepared"
+  },
+  {
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "concept",
+    "cast": [
+      "dr-farah"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/sequences-concept-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 1 inputs immutable canonical people identities; next input approved LAB room reference ONLY; LAST exact edit target. Keep exact faces, age, skin, eye/nose/jaw/mouth proportions, hairstyles and signatureequipment. Farah lens on anatomicalLEFT, Demir comms on anatomicalRIGHT. Preserve current balanced stylized adult head/body proportions, no blanket shrink or neck stretch. Preserve full continuous two-arm chains per person, natural fingers and grips, torso/chair alignment and furniture separation. Keep distinct staging and warm fun adventure mood. Keep Farah holding two physical strips. Replace colors-only squares with exactly five small numbered cells per strip. Left strip heading \"Ordered\" with values \"0.5  0.8  0.3  0.5  0.9\". Right strip heading \"Reordered\" with values \"0.3  0.5  0.9  0.8  0.5\". Keep cell values entirely readable and her fingers on outer margins. The board behind her is mostly dark, with one short heading \"Same five amplitude readings\" at top and \"Order changes the sequence\" below. No waveforms or invented results. Preserve her lively knowing smile. All unassigned monitors, wrist displays and tablet surfaces become inactive charcoal glass. Physical buttons remain. Color correction: dark charcoal/navy, muted sage #6BAA8A readable ink, aged brass #A89060. Subdue the bright lime laboratory pillar to dim desaturated sage. Thin subtle sage rim lighting only, no neon green outline, no luminous cone, no golden skin cast or bright gold hardware. No random code or charts. No colored left accent bars. Exact text, values and number of cells. One1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Farah rearranges the same five amplitude readings to show how order changes a sequence.",
+    "location": "Archimedes, Lab",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+    "screenMeaning": "Keep Farah holding two physical strips. Replace colors-only squares with exactly five small numbered cells per strip. Left strip heading \"Ordered\" with values \"0.5  0.8  0.3  0.5  0.9\". Right strip heading \"Reordered\" with values \"0.3  0.5  0.9  0.8  0.5\". Keep cell values entirely readable and her fingers on outer margins. The board behind her is mostly dark, with one short heading \"Same five amplitude readings\" at top and \"Order changes the sequence\" below. No waveforms or invented results. Preserve her lively knowing smile.",
+    "status": "prepared"
+  },
+  {
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/sequences-challenge-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 1 inputs immutable canonical people identities; next input approved LAB room reference ONLY; LAST exact edit target. Keep exact faces, age, skin, eye/nose/jaw/mouth proportions, hairstyles and signatureequipment. Farah lens on anatomicalLEFT, Demir comms on anatomicalRIGHT. Preserve current balanced stylized adult head/body proportions, no blanket shrink or neck stretch. Preserve full continuous two-arm chains per person, natural fingers and grips, torso/chair alignment and furniture separation. Keep distinct staging and warm fun adventure mood. Replace main board with title \"Synthetic practice stream\" and five small input cells \"[1] [2] [3] [4] [5]\". Below \"windowSize = 3\" and \"stride = 1\". A concise diagram shows \"Input window\" followed by a separate \"Next reading\" target, with a clearly visible gap between them. Footer \"Returned pairs: pending\". No computed pairs, targets or completion verdict. Preserve Demir seated comfortably using keyboard with both natural hands. All unassigned monitors, wrist displays and tablet surfaces become inactive charcoal glass. Physical buttons remain. Color correction: dark charcoal/navy, muted sage #6BAA8A readable ink, aged brass #A89060. Subdue the bright lime laboratory pillar to dim desaturated sage. Thin subtle sage rim lighting only, no neon green outline, no luminous cone, no golden skin cast or bright gold hardware. No random code or charts. No colored left accent bars. Exact text, values and number of cells. One1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Demir prepares windows from the five-row practice stream, keeping each prediction target outside its input.",
+    "location": "Archimedes, Lab",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+    "screenMeaning": "Replace main board with title \"Synthetic practice stream\" and five small input cells \"[1] [2] [3] [4] [5]\". Below \"windowSize = 3\" and \"stride = 1\". A concise diagram shows \"Input window\" followed by a separate \"Next reading\" target, with a clearly visible gap between them. Footer \"Returned pairs: pending\". No computed pairs, targets or completion verdict. Preserve Demir seated comfortably using keyboard with both natural hands.",
+    "status": "prepared"
+  },
+  {
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "takeaways",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/sequences-takeaways-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 2 inputs immutable canonical people identities; next input approved LAB room reference ONLY; LAST exact edit target. Keep exact faces, age, skin, eye/nose/jaw/mouth proportions, hairstyles and signatureequipment. Farah lens on anatomicalLEFT, Demir comms on anatomicalRIGHT. Preserve current balanced stylized adult head/body proportions, no blanket shrink or neck stretch. Preserve full continuous two-arm chains per person, natural fingers and grips, torso/chair alignment and furniture separation. Keep distinct staging and warm fun adventure mood. Farah tablet title \"Worked practice pairs\" with exactly two rows \"[1,2,3] -> [4]\" and \"[2,3,4] -> [5]\". Footer \"xs [2,3,1]\" then \"windows, steps, features\". Demir small tablet reads \"ys [2,1]\" then \"windows, features\". These are explicitly worked examples. One main wall panel on image-left reads only \"Split before windowing\". Preserve both exact faces and natural tablet grips and Demir open-palm gesture. Remove the abstract floating ARIA/wave circle because she is not speaking here. All unassigned monitors, wrist displays and tablet surfaces become inactive charcoal glass. Physical buttons remain. Color correction: dark charcoal/navy, muted sage #6BAA8A readable ink, aged brass #A89060. Subdue the bright lime laboratory pillar to dim desaturated sage. Thin subtle sage rim lighting only, no neon green outline, no luminous cone, no golden skin cast or bright gold hardware. No random code or charts. No colored left accent bars. Exact text, values and number of cells. One1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Farah and Demir check two worked input-target pairs and the axes of their sequence tensors.",
+    "location": "Archimedes, Lab",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+    "screenMeaning": "Farah tablet title \"Worked practice pairs\" with exactly two rows \"[1,2,3] -> [4]\" and \"[2,3,4] -> [5]\". Footer \"xs [2,3,1]\" then \"windows, steps, features\". Demir small tablet reads \"ys [2,1]\" then \"windows, features\". These are explicitly worked examples. One main wall panel on image-left reads only \"Split before windowing\". Preserve both exact faces and natural tablet grips and Demir open-palm gesture. Remove the abstract floating ARIA/wave circle because she is not speaking here.",
+    "status": "prepared"
+  },
+  {
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "epilogue",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/sequences-epilogue-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 1 inputs immutable canonical people identities; next input approved LAB room reference ONLY; LAST exact edit target. Keep exact faces, age, skin, eye/nose/jaw/mouth proportions, hairstyles and signatureequipment. Farah lens on anatomicalLEFT, Demir comms on anatomicalRIGHT. Preserve current balanced stylized adult head/body proportions, no blanket shrink or neck stretch. Preserve full continuous two-arm chains per person, natural fingers and grips, torso/chair alignment and furniture separation. Keep distinct staging and warm fun adventure mood. Preserve Demir leaving the printouts on Farah desk. Make the two offset paper headings readable: top sheet \"Shuffled archive\", lower exposed edge \"Ordered archive\". Keep his fingers and hand resting naturally on the top sheet margin. Replace wall plots with title \"Stateless classifier\" and two short labeled rows. \"Ordered\" followed by five boxes \"1 2 3 4 5\". \"Shuffled\" followed by five boxes \"3 1 5 2 4\". These box numbers are illustrative reading IDs, label \"Illustrative order\". Bottom explanation \"Each reading keeps its score\". No numeric scores, no identical chronological traces, no claim that order never matters to sequence models. Preserve his wry reflective expression. All unassigned monitors, wrist displays and tablet surfaces become inactive charcoal glass. Physical buttons remain. Color correction: dark charcoal/navy, muted sage #6BAA8A readable ink, aged brass #A89060. Subdue the bright lime laboratory pillar to dim desaturated sage. Thin subtle sage rim lighting only, no neon green outline, no luminous cone, no golden skin cast or bright gold hardware. No random code or charts. No colored left accent bars. Exact text, values and number of cells. One1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Demir leaves the shuffled archive printout on top after confirming that each reading keeps its individual score.",
+    "location": "Archimedes, Lab",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+    "screenMeaning": "Preserve Demir leaving the printouts on Farah desk. Make the two offset paper headings readable: top sheet \"Shuffled archive\", lower exposed edge \"Ordered archive\". Keep his fingers and hand resting naturally on the top sheet margin. Replace wall plots with title \"Stateless classifier\" and two short labeled rows. \"Ordered\" followed by five boxes \"1 2 3 4 5\". \"Shuffled\" followed by five boxes \"3 1 5 2 4\". These box numbers are illustrative reading IDs, label \"Illustrative order\". Bottom explanation \"Each reading keeps its score\". No numeric scores, no identical chronological traces, no claim that order never matters to sequence models. Preserve his wry reflective expression.",
+    "status": "prepared"
+  }
+]

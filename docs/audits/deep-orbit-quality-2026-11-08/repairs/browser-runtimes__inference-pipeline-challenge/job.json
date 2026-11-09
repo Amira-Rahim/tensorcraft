@@ -1,0 +1,108 @@
+{
+  "id": "browser-runtimes/inference-pipeline",
+  "phase": "challenge",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical ensign-demir identity; image 2: bridge room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Demir alone sits LEFT at a bridge workstation, leaning slightly into the keyboard with both hands typing naturally, feet supported and knees clear. Focused closed-mouth expression. Camera at seated eye level beside him, close enough that the upright RIGHT display fills over half the frame. Preserve the original candid working character. Exact short display: 'Classify the probe'; 'Raw input'; 'Amplitude: 512'; 'Frequency: 21'; 'Phase: pi/2'. Below, a large vertical sequence 'Scale using training contract' -> 'Predict [1, 3]' -> 'Read result'. A clear enclosing label 'Synchronous tf.tidy' surrounds the sequence. Footer 'Class: pending'. Use the source probe exactly, no invented output or chart. No tiny text or large empty room/floor.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "b8ed079adf2174fd7ff79252eb23021c55881c71f856b1dd20580898c38028f7",
+  "source": "art-src/scenes/browser-runtimes__inference-pipeline-challenge-openai-20261107.png",
+  "sourceSha256": "3d8db6f8d696a8a27e0982ce70f8336f5ee4e114a49fff814ed643daf597b6a0",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "bridge room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__inference-pipeline-challenge-openai-20261107.png",
+      "sha256": "3d8db6f8d696a8a27e0982ce70f8336f5ee4e114a49fff814ed643daf597b6a0",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "lessonSha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce",
+    "context": "Challenge classifies a probe after training-contract scaling with synchronous tf.tidy. Exercise probe is amplitude 512, frequency 21, phase pi/2; no result is fabricated.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/browser-runtimes__inference-pipeline-challenge-openai-20261107.png",
+  "candidateSha256": "374cdabab52cbdf018a3d7748d7c13a9d613372c4924e039ff87aa0ab640e9ba",
+  "publication": {
+    "alt": "Demir prepares a scaled probe for prediction, with the class result still pending.",
+    "location": "bridge",
+    "action": "Demir prepares a scaled probe for prediction, with the class result still pending.",
+    "emotion": "Focused concentration.",
+    "eyeline": "Characters see and use the same readable display surface.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-a503ae02-d89a-4305-afa4-cac08f6517df.png",
+  "generatedSha256": "374cdabab52cbdf018a3d7748d7c13a9d613372c4924e039ff87aa0ab640e9ba",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "374cdabab52cbdf018a3d7748d7c13a9d613372c4924e039ff87aa0ab640e9ba",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      280,
+      160,
+      290,
+      340
+    ],
+    "handCropCoordinatesXYWH": [
+      440,
+      755,
+      395,
+      145
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir types with two connected wrists and naturally curled keyboard fingers. Canonical young face, stubble and earpiece retained. Large exact probe and synchronous tidy flow are crisp and leave the result pending."
+  },
+  "publishedSource": "art-src/scenes/browser-runtimes__inference-pipeline-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-challenge.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__inference-pipeline-challenge/candidate.png",
+      "sha256": "374cdabab52cbdf018a3d7748d7c13a9d613372c4924e039ff87aa0ab640e9ba",
+      "bytes": 2010630,
+      "retainedEquivalent": "art-src/scenes/browser-runtimes__inference-pipeline-challenge-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

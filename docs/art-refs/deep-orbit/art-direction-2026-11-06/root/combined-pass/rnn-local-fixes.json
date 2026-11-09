@@ -1,0 +1,72 @@
+[
+  {
+    "id": "recurrent-networks/simple-rnns",
+    "phase": "epilogue",
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-202aa1e1-325b-44f7-888d-b09914773cd2.png"
+    ],
+    "prompt": "Use case: precise-object-edit. Canonical portraits first, engineering master room-only next, LAST is target. Remove ONLY the invented monocle from Nazari left eye. Reconstruct her natural bare eye, brow, cheek and temple using canonical portrait. No glasses, lens or earpiece. Preserve all text, face structure, body, hands, room and colors. One1536x1024 image. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Nazari reviews the stalled overnight run while Demir realizes that its distant pattern remains out of reach.",
+    "location": "Archimedes, Engineering",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+    "screenMeaning": "Main monitor is an exact overnight log headed \"0640 review\". Fields \"80-step windows\", \"6 hours\", \"200 epochs\", \"Loss: 0.693\", \"Predictions near 0.5\". Beneath, two discrete callouts \"Gradients fade near step 20\" and \"Pattern at step 74\", labeled \"This run\". No unlabeled graph or false universal limit. Nazari clipboard heading \"Next overnight run\" and \"Cost review\", leave entry fields empty. Turn off unused round desktop hologram. Preserve Demir tired wry smile and muggrip, Nazari handonhip and clipboard grip.",
+    "status": "generated-awaiting-review",
+    "prefix": "rnn",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-202aa1e1-325b-44f7-888d-b09914773cd2.png",
+    "previousCandidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-202aa1e1-325b-44f7-888d-b09914773cd2.png"
+  },
+  {
+    "id": "recurrent-networks/simple-rnns",
+    "phase": "briefing",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png"
+    ],
+    "prompt": "Use case: precise-object-edit. Canonical portraits first, engineering master room-only next, LAST is target. Remove ONLY the two decorative strokes flanking the heading One-unit cell drill. Keep all numerical values, formula, screen layout, people and environment unchanged. One1536x1024 image. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Farah shows Demir how the same input gives a different hidden state after earlier readings.",
+    "location": "Archimedes, Engineering",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+    "screenMeaning": "Main board title \"One-unit cell drill\". Formula \"h = tanh(0.8h + x)\" with \"Start h = 0\". Exactly three rows under headers \"Input x | Updated h\": \"0.5 | 0.4621\", \"0.9 | 0.8537\", \"0.5 | 0.8284\". Below \"Hand-picked weights, bias 0\". Farah points at last updated state. Emphasize that same0.5 input gives differentstate because ofhistory. Remove all arbitrary stairplots. Preserve Farah two connected arms and Demir comfortable chair position, anatomically plausible head-neck-torso alignment, hands naturally on controls.",
+    "status": "generated-awaiting-review",
+    "prefix": "rnn",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png",
+    "previousCandidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png"
+  },
+  {
+    "id": "recurrent-networks/simple-rnns",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf3f94cb-5af0-4428-8d0f-81e1fd90fe29.png"
+    ],
+    "prompt": "Use case: precise-object-edit. Canonical portraits first, engineering master room-only next, LAST is target. Reduce ONLY the thick bright mint highlights on Demir shoulder and arms to thin subdued sage edges. Retain same palette and light levels elsewhere. Keep the exact face, head size, body, fingers and every readable screen word unchanged. One1536x1024 image. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Demir prepares to compare his JavaScript recurrence with the weights and states of a one-unit TFJS layer.",
+    "location": "Archimedes, Engineering",
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+    "screenMeaning": "Replace main screen with clear task checklist. Title \"One-unit RNN\". Three connected rows \"Run JS cell from h=0\", \"Read input kernel, recurrent kernel, bias\", \"Compare all states\". Underneath \"returnSequences: true\" and \"State derivative: running product\". Footer \"Checks: pending\". No invented weights from the newly initialized model, no computed learner result. Preserve exact Demir face and headsize, natural mouse and keyboard grips.",
+    "status": "generated-awaiting-review",
+    "prefix": "rnn",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf3f94cb-5af0-4428-8d0f-81e1fd90fe29.png",
+    "previousCandidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cf3f94cb-5af0-4428-8d0f-81e1fd90fe29.png"
+  }
+]

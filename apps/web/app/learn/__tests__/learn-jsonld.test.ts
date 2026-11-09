@@ -19,13 +19,18 @@ describe("buildLearnVideo", () => {
     const video = buildLearnVideo();
     expect(video["@type"]).toBe("VideoObject");
     expect(video.contentUrl).toBe(
-      "https://tensorcraft.app/media/learn-trailer.mp4",
+      "https://tensorcraft.app/media/tensorcraft-intro.mp4",
     );
     expect(video.thumbnailUrl).toEqual([
-      "https://tensorcraft.app/media/learn-trailer-poster.webp",
+      "https://tensorcraft.app/media/tensorcraft-intro-poster.webp",
     ]);
-    expect(video.duration).toBe("PT1M12S");
+    expect(video.duration).toBe("PT27S");
+    expect(video.uploadDate).toBe("2026-11-09");
     // Query register: schema descriptions say "JavaScript developers".
     expect(video.description).toContain("JavaScript developers");
+    expect(video.description).toContain("different story worlds");
+    expect(video.description).toContain(
+      "Deep Orbit is the first available world",
+    );
   });
 });

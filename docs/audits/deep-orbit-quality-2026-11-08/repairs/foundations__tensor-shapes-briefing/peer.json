@@ -1,0 +1,43 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T17:21:24.924615+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-shapes-briefing/candidate.png",
+  "candidateSha256": "967b36cb331401ab677f12510e48436594b0e664195d92423918b018a4ede6f9",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full 1536x1024 original inspection plus original-pixel face and hand crops, with current lesson source and canonical portraits. Traced shoulder-elbow-wrist-hand chains and checked thumb sides, prop continuity, display values, screen perspective and available display space.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+    "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+  },
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    }
+  ],
+  "cropCoordinates": {
+    "face": [
+      140,
+      200,
+      340,
+      400
+    ],
+    "hands": [
+      165,
+      790,
+      850,
+      220
+    ]
+  },
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "findings": [
+    "PASS: all twelve selected readings match the current lesson, with sensors A-D and one row per moment. No transpose result is prematurely claimed.",
+    "The main wall display uses most of the frame and keeps the grid large, clear and in the screen plane.",
+    "Two complete arm chains are coherent. Four fingers hold the sheet with the thumb legitimately occluded behind it; the printed side faces Farah. Her other hand rests naturally on the scroll control.",
+    "Canonical face crop retains Farah's eye spacing, brows, nose, lips, jaw, complexion, tied hair and AR lens."
+  ],
+  "repairDirection": "None. Candidate is ready for root publication checks."
+}

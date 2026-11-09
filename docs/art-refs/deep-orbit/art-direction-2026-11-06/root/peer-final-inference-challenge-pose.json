@@ -1,0 +1,35 @@
+{
+  "reviewer": "/root/art_peer_final",
+  "reviewedAt": "2026-11-07T08:29:43.918Z",
+  "scene": "browser-runtimes/inference-pipeline",
+  "phase": "challenge",
+  "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-333eb8ff-fa9a-4b33-bed2-d70b08881dba.png",
+  "candidateSha256": "22b785cbbcb783d54220d5074b8c69d80ccc17f920bb7bb25b1a31cfef7b0c0a",
+  "proofPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/inference-challenge-pose-identity-proof.png",
+  "proofSha256": "1b93dc827f8b34ce7bbdf8f15f987a6a563327f3d2b255dae22c9d6c92d90cbe",
+  "status": "pass",
+  "identity": "pass",
+  "anatomy": "pass",
+  "bodyProportions": "pass",
+  "headNeckShoulder": "pass",
+  "furnitureClearance": "pass",
+  "story": "pass",
+  "notes": [
+    "Full native-size frame reviewed. Pelvis rests on seat, thighs extend naturally to bent knees, lower legs have normal adult lengths, and both boots rest on the floor.",
+    "Seat supports hips and backrest sits behind the torso; no body or chair intersection. Console leaves usable knee clearance.",
+    "Both shoulder-arm-hand chains are continuous with relaxed keyboard reach. Head, neck, shoulders, torso, and hips share a natural seated orientation.",
+    "Paired canonical proof preserves Demir's broad adult jaw, rounded nose, facial age, freckles, and stubble. Comms is on anatomical right ear.",
+    "Three input cells, incomplete ring, three lit and two unlit resource blocks, and waveform preserve the challenge-in-progress story."
+  ],
+  "supersedesEarlierReview": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/evidence/pose-sweep/peer-review.json",
+    "entryIndex": 2,
+    "acknowledgement": "The earlier focused head/neck sweep missed the giant torso, short legs, and crushed seat. Its prior pass was insufficient and is superseded by this full-body review of the repaired candidate."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

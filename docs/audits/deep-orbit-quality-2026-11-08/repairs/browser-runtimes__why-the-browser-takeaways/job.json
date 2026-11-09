@@ -1,0 +1,108 @@
+{
+  "id": "browser-runtimes/why-the-browser",
+  "phase": "takeaways",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: bridge room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Nazari alone stands RIGHT leaning slightly over the bridge control desk, one hand actively on the trackpad, the other resting on the workbench edge. Her brow is focused and her mouth has a subtle determined half-smile. Her eyes inspect a LARGE LEFT upright work display that uses nearly all available wall, camera beside her. Exact title 'Offline inference'; three large connected boxes 'Input' -> 'Local model' -> 'Output'; large second block 'Cache first: app + runtime + model'; footer 'Budget: download / memory / compute'. No extra tiny panels, no claimed performance or classification. Keep her mature face and ordinary proportions.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "bf4876ecf716bced878f58c216d80626235b5f981d21de949c87f8271a63f69a",
+  "source": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+  "sourceSha256": "82a2f0af766b8ab0f08955e1d1d107c07f337ca3ea7c2de539bba0ef4adb8d10",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "bridge room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+      "sha256": "82a2f0af766b8ab0f08955e1d1d107c07f337ca3ea7c2de539bba0ef4adb8d10",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+    "lessonSha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0",
+    "context": "Recall requires app/runtime/model assets for offline inference and budgets download, memory and compute.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+  "candidateSha256": "2b73b3fc0838a8d857a5860e82d2b5923fbe36f309e665a6d2a2320cae852b7e",
+  "publication": {
+    "alt": "Nazari checks the cached app, runtime and model needed for local offline inference.",
+    "location": "bridge",
+    "action": "Nazari checks the cached app, runtime and model needed for local offline inference.",
+    "emotion": "Focused scrutiny and source-specific curiosity.",
+    "eyeline": "Characters see and use the same readable display surface.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-fea3a6c0-020c-451c-9132-a21d6576561d.png",
+  "generatedSha256": "2b73b3fc0838a8d857a5860e82d2b5923fbe36f309e665a6d2a2320cae852b7e",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "2b73b3fc0838a8d857a5860e82d2b5923fbe36f309e665a6d2a2320cae852b7e",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      1000,
+      130,
+      325,
+      350
+    ],
+    "handCropCoordinatesXYWH": [
+      750,
+      810,
+      660,
+      190
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Nazari leans into the trackpad with the other hand planted on the bench. Two coherent arms and correctly oriented hands, canonical mature face and focused eyes. Large offline chain, cached assets and resource budget use the available display space."
+  },
+  "publishedSource": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-takeaways.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-takeaways/candidate.png",
+      "sha256": "2b73b3fc0838a8d857a5860e82d2b5923fbe36f309e665a6d2a2320cae852b7e",
+      "bytes": 2006155,
+      "retainedEquivalent": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

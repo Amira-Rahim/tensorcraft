@@ -1,5 +1,9 @@
 # TensorCraft PRD v3.4
 
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. The price decision does not establish learning outcomes or willingness to pay.
+
+Earlier dated pricing records and proposed bundle or subscription prices below remain historical. They do not override this offer.
+
 > **Product Requirements Document - Version 3.4**
 > Last updated: 2026-04-22 (audit fixes: accessibility hardening, user menu, checkout button, admin API + rate limiting + error tracking, new DB tables, CI/CD pipeline additions)
 
@@ -49,14 +53,14 @@ Deliver a gamified, project-based curriculum that meets JS developers where they
 - **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning JavaScript. Wants a portfolio project that proves ML skills to employers.
 - **Job to be done:** "Help me learn ML using the tools and mental models I already have, so I can build ML-powered features and expand my career options."
 - **Pain points:** Existing ML courses assume Python + math background. Academic courses are dry and theoretical. No courses teach browser-based ML. No interactive courses for Transformers.js/WebGPU/ONNX Runtime Web.
-- **Willingness to pay:** $50 one-time for a complete world. $90–$225 for bundles (2, 3, or all 5 worlds).
+- **Earlier persona assumption, unvalidated:** $50 one-time for a complete world. $90–$225 for bundles (2, 3, or all 5 worlds).
 
 ### Secondary: The Career Transitioner
 
 - **Demographics:** 5–15 years software engineering. Wants to add ML skills to expand into ML-enhanced JavaScript roles or ML-integrated product teams. May have some Python but prefers JavaScript.
 - **Job to be done:** "Give me a structured path with a portfolio project that proves I understand ML, so I can build ML-powered features and collaborate with data science teams."
 - **Realistic outcome:** ML-Enhanced JavaScript Engineer / JavaScript Engineer with ML Specialization ($120K-$160K). For full ML engineering roles, Tensorcraft provides the conceptual foundation; graduates will also need Python fluency and deeper mathematics.
-- **Willingness to pay:** $50–$225. Expense-able through employer.
+- **Earlier persona assumption, unvalidated:** $50–$225. Expense-able through employer.
 
 ### Tertiary: The Team Lead
 
@@ -226,7 +230,7 @@ Monetization layer supporting free and paid tiers.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Payment processor | P0 | Integrate Stripe for one-time payments; support credit card and Google Pay / Apple Pay |
-| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 - Module 1 of one world, 5 lessons), **Single World** ($50 - all 11 modules, lifetime access, GitHub integration), **Two Worlds** ($90), **Three Worlds** ($135), **All 5 Worlds** ($225) |
+| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 - Module 1 of one world, 5 lessons), **Single World** ($79 introductory, $99 regular, all 11 modules, lifetime access, GitHub integration), **Two Worlds** ($90), **Three Worlds** ($135), **All 5 Worlds** ($225) |
 | 3 | Purchasing-power parity (PPP) | P1 | Apply automatic regional discounts (up to 60% off) based on IP geolocation using a PPP index table; display original and discounted price |
 | 4 | Upgrade prompts | P1 | When a free-tier user reaches the paywall (end of Module 2), show an in-context upgrade modal with benefit comparison, testimonial, and a 7-day free trial CTA |
 | 5 | Webhook handling | P0 | Listen for Stripe webhooks (`checkout.session.completed`, `charge.refunded`, `charge.failed`) to update user entitlements in real time |
@@ -452,12 +456,12 @@ Tensorcraft uses a **per-world, one-time purchase model**. Each world is a stand
 | Tier | Price | What's Included |
 |---|---|---|
 | Free Preview | $0 | Module 1 of any launched world (5 lessons). Full code editor, bridges, and graded exercises. No GitHub integration. |
-| Single World | $50 | All 11 modules (56 lessons in Deep Orbit) of one world. Lifetime access. GitHub integration. Progress sharing. |
-| Two Worlds | $90 | Any two worlds. Save $10 vs buying separately. |
-| Three Worlds | $135 | Any three worlds. Save $15 vs buying separately. |
-| All 5 Worlds | $225 | All five worlds. Save $25 vs buying separately. |
+| Single World | $79 introductory, $99 regular | All 11 modules (56 lessons in Deep Orbit) of one world. Lifetime access. GitHub integration. Progress sharing. |
+| Two Worlds | $90, earlier proposal | Unavailable. Requires repricing before sale. |
+| Three Worlds | $135, earlier proposal | Unavailable. Requires repricing before sale. |
+| All 5 Worlds | $225, earlier proposal | Unavailable. Requires repricing before sale. |
 
-*All 5 worlds are available simultaneously.*
+Only Deep Orbit is available. The other four worlds remain coming soon.
 
 ### Team Pricing
 

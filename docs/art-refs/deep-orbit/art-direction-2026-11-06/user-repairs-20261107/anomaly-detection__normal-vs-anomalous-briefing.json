@@ -1,0 +1,150 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "briefing",
+  "index": 30,
+  "cast": [
+    "chief-nazari",
+    "dr-farah",
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve. Replace this Deep Orbit lesson scene,1536x1024. The first reference portraits are strict canonical identities, preserve facial morphology, age, complexion, nose, brow, eyes, mouth, hair, signature equipment. Next reference is the room master for ROOM ARCHITECTURE ONLY, not its old screens or bright colors. Last reference is the edit target to restage. Normal balanced stylized adult heads, short relaxed necks and ordinary shoulders. Exactly two coherent arm chains per person, natural five-finger hands and wrists, convincing contact with solid objects. Characters look at their task or each other with candid curiosity, dry amusement or modest delight, never camera posing or holding information out for the viewer. Every legible display faces its actual operator, with camera beside operator seeing that same front. All text, axes, rules and graphs are projected together onto physical screen plane, not independently pasted upright. Restrained sage #6BAA8A and aged brass #A89060 against charcoal/navy, natural skin and soft practical lights. All incidental screens and wrist displays inactive dark charcoal. Hologram table inactive charcoal; dim lab tube olive-sage. No neon outlining, no fake graphs, arbitrary symbols, invented results or furniture intersections. Nazari, Farah and Mirza share the bridge workbench in a warm candid discussion after repeated alerts. Nazari nearest left leans one hand lightly on desk, other hand rests at hip, dry amused impatience. Farah seated center turns toward her with a thoughtful half-smile, hands relaxed one atkeyboard and one restingdesk. Mirza stands right observing, one hand gently on chair back and other by side, alert but not grim. One physical monitor at left angled so all can read its front and same-sidecamera can too. Exact small reviewed log: \"This shift\"; \"Alert 1: loose cable\"; \"Alert 2: cosmic ray\"; \"Alert 3: review pending\"; footer \"Define the normal baseline\". No invented waveform or numerical cutoff, no fourth alert claimed. Inactive center holo table and all other panels. All faces visible in natural three-quarter view with normal necks. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx"
+  ],
+  "location": "Archimedes, Bridge",
+  "alt": "Nazari, Farah and Mirza review two explained alerts and a third that still needs a baseline check.",
+  "tool": "built-in image_gen",
+  "replacesSha256": "cc3e01c7952fe403e321579630860ff27a452b4892aa7ad7987fdde7810a4440",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-bc36535f-4c54-40c9-9699-44466605dd8a.png",
+  "candidateSha256": "4944e6847e0930c3e800e11531e6528ee5f163d812bdc119513cc1d6fd33e5b3",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+      "sha256": "cc3e01c7952fe403e321579630860ff27a452b4892aa7ad7987fdde7810a4440",
+      "role": "edit target"
+    }
+  ],
+  "ownQA": {
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "inspection": "Native1536x1024 plus temporary face crops side by side with canonical original portraits, current MDX and exercise facts verified",
+    "notes": "Nazari leans on desk while Farah turns to answer and Mirza rests a hand on the chair. Three-alert shift log matches briefing: loose cable, cosmic ray, third review pending. No fourth alert invented. All six arm chains trace plausibly, canonical face crops retain individual morphology and age, short necks and balanced proportions. Shared screen front faces crew and same-side camera; text follows plane. Muted bridge palette and inactive auxiliary screens.",
+    "faceCropCoordinates": [
+      [
+        "chief-nazari",
+        [
+          385,
+          220,
+          595,
+          470
+        ]
+      ],
+      [
+        "dr-farah",
+        [
+          835,
+          310,
+          1065,
+          585
+        ]
+      ],
+      [
+        "commander-mirza",
+        [
+          1180,
+          110,
+          1400,
+          360
+        ]
+      ]
+    ],
+    "temporaryCropsRemoved": true
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-bc36535f-4c54-40c9-9699-44466605dd8a.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+  "sourceSha256": "4944e6847e0930c3e800e11531e6528ee5f163d812bdc119513cc1d6fd33e5b3",
+  "webpSha256": "17fc8a45e3b82141c729880d14599a56a5ac4ec04a33520125d22af2c8406092",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+    "sourceSha256": "cc3e01c7952fe403e321579630860ff27a452b4892aa7ad7987fdde7810a4440",
+    "webpSha256": "89e49301f5a593cd9241a6a8d3e99797b63bdd79544973383269111b13b620c5",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_late",
+    "status": "approved",
+    "candidateSha256": "4944e6847e0930c3e800e11531e6528ee5f163d812bdc119513cc1d6fd33e5b3",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Nazari leans on desk while Farah turns to answer and Mirza rests a hand on the chair. Three-alert shift log matches briefing: loose cable, cosmic ray, third review pending. No fourth alert invented. All six arm chains trace plausibly, canonical face crops retain individual morphology and age, short necks and balanced proportions. Shared screen front faces crew and same-side camera; text follows plane. Muted bridge palette and inactive auxiliary screens.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+          "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

@@ -1,5 +1,9 @@
 # Post-Launch Backlog (canonical)
 
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. The price decision does not establish learning outcomes or willingness to pay.
+
+Earlier dated pricing records and proposed bundle or subscription prices below remain historical. They do not override this offer.
+
 **This file is the single source of truth for every task deferred to after V1
 launch.** Created 2026-07-21 by consolidating the former polish and development
 ledgers (retired 2026-11-06, available in Git history), `v2-beat-expansion-plan.md`,
@@ -224,7 +228,7 @@ unique paying customers. This opening project cannot establish that demand.
   separate evidence. Full-course learner evidence remains required before
   claiming beginner effectiveness or scaling an unproven paid funnel.
 
-## Current content priority: the $70 course standard (2026-09-17)
+## Content quality and learner evidence (2026-09-17)
 
 **Owner sequence, 2026-09-18:** first close technical teaching gaps, then
 complete the internal content review, then add persistent story consequences
@@ -233,8 +237,9 @@ content grades reach A (at least 9/10 with complete coverage and no blocking
 defects). Track the current pass in the
 [internal review record](audits/internal-content-review-2026-09-18.md).
 
-Owner request: address the new educational audit, target at least 9/10 in
-each category, keep $50 as the launch price, and prepare for $70 after
+Original owner request, 2026-09-17 (pricing superseded 2026-11-09): address
+the educational audit, target at least 9/10 in each category, keep $50 as
+the launch price, and prepare for $70 after
 learning from customers. Implementation and evidence gates are in the
 [content quality plan](content-quality-plan.md); findings are in the
 [independent audit](audits/education-product-audit-2026-09-17.md).
@@ -300,8 +305,9 @@ data-gated deferrals. The world-2 release gate remains separate.
   Nobody has been contacted or hired. After the internal A gate, recruit independent subject/editorial
   reviewers and 12-20 learners; collect actual scores, delayed checks and
   30-day use evidence. No human results have been collected by this patch.
-- [ ] **After quality and learner gates, Q7:** validate the $70 offer using
-  actual purchase/refund evidence. Keep the live price at $50 during repairs.
+- [ ] **Q7 price validation:** assess the $79 introductory and $99 regular
+  offer using actual purchase, refund, support and learner evidence. The
+  November 9 owner decision supersedes the earlier price hold.
 - [ ] **Start measurement review now, Q8:** verify learning and acquisition
   funnels; use cohort evidence to assess the 200,000 unique paying-customer
   ambition, with buyers distinguished from seats and repeat purchases.

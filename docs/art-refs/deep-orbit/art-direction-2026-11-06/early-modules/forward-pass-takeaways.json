@@ -1,0 +1,29 @@
+{
+  "module": "neural-networks",
+  "lesson": "forward-pass",
+  "phase": "takeaways",
+  "room": "bridge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "moment": "Demir stands away from the console in the open bridge aisle, reviewing a small plain run-log tablet with both hands. He gives a quiet pleased smile at having understood the input shape. Behind him the repaired chain is visible on a dim monitor, while three unnumbered score markers cluster near the midpoint on a separate small panel. Close face-led framing, no other person, no raised victory fist, no resolved anomaly.",
+  "alt": "Demir reviews the repaired input flow and keeps the initial scores provisional.",
+  "location": "Archimedes, Bridge",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit neural-networks/forward-pass, takeaways section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the bridge set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal. Scene: Demir stands away from the console in the open bridge aisle, reviewing a small plain run-log tablet with both hands. He gives a quiet pleased smile at having understood the input shape. Behind him the repaired chain is visible on a dim monitor, while three unnumbered score markers cluster near the midpoint on a separate small panel. Close face-led framing, no other person, no raised victory fist, no resolved anomaly. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers, decorative scientific symbols or node counts. Architectural stages are plain blocks without interior dots. Preserve every displayed input tile when showing a batch-axis regrouping: do not add, remove, transpose or duplicate values.\nTargeted correction after QA: Use case: precise-object-edit. Change ONLY the small tilted screen behind Demir's right shoulder that currently contains three glowing round dots. Replace its contents with three thin horizontal score rails stacked vertically. Place one small neutral pale-green marker close to the midpoint of each rail. No glowing status lights, checkmarks or approval cues. These are provisional untrained scores, not three successful tests. Preserve the entire rest of the image exactly, especially Demir's face, two tablet-gripping hands, hair, clothes, camera, furniture and lighting.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-dd355692-ce61-47a7-8c3f-061af37f8f4c.png",
+  "source": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261106.png",
+  "src": "/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir has two clear tablet-gripping hands and no extra limb.",
+    "furniture": "Clear body separation from consoles, table and rail. Object grips and occlusion are plausible.",
+    "identity": "Canonical faces, complexion, age cues, hair, uniform and signature gear retained.",
+    "story": "Changed status-like lights into three neutral midpoint score rails, keeping provisional scores visibly distinct from correctness.",
+    "tone": "Quiet competence and warm trust without overstating the model's capability.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

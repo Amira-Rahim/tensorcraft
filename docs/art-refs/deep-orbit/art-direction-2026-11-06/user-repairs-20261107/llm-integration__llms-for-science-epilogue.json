@@ -1,0 +1,193 @@
+{
+  "key": "llms-for-science-epilogue",
+  "id": "llm-integration/llms-for-science",
+  "phase": "epilogue",
+  "source": "art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+  "sourceSha256": "1d5f4763f2404720b9919746576b7df4d6a44e16b91214baf43face7f635621a",
+  "auditIndex": 59,
+  "auditHold": "Farah crossing out grey placeholder bars is story-shaped but the information is still meaningless, with random background waves. Preserve natural paper-facing-reader writing and Nazari oversight, replace relevant document with the unsupported Band-3 claim clearly crossed out (correct perspective for Farah), and a shared correction ledger:1unsupportedclaim,600words,11s,5h12remaining. Label ARIA. Blank auxiliary graphs.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Image1: dr-farah canonical identity authority. Image2: chief-nazari canonical identity authority. Image3: bridge ROOM ONLY master, not incidental UI or oversaturated light. Finalimage: exactedit target.\nKeep Farah seated correcting the draft and Nazari standing with her own ledger held facing her, dry amused oversight. Make their eyes focus on actual work and eachother. Farah's paper lies flat facing Farah, blank faint rules as she starts her correction note, no audience-facing paragraph. On a shared upright physical monitor beside them, write Correction ledger, then a clearly crossed-out short quoted claim: anomaly cluster in Band-3. Under it Unsupported claim: 1 / Draft: 600 words / Generated in: 11 s / Window in: 5 h 12 min. Keep the claim visibly rejected, not reported as fact. ARIA present only on a small separate screen labeled ARIA with her abstractsimplewaveform. Bothcrew cansee readablefront of ledgerdisplay. Nootherwaves/charts. Preserve canonical faces and naturalpen/finger anatomy.\n Farah wears translucent sage AR lens on anatomicalLEFT eye. Never omit it. Nazari has NO glasses or AR lens, both eyes bare. Canonical identity and age from portraits, naturally expressive faces in three-quarter view; normal adult head/body proportions and necks. Two arms per person, trace shoulders to elbows to wrists and exactly one natural five-finger hand each. No hand/furniture penetration. Every display has a physical frame; its front must face its actual readers as well as obliquely visible to camera. Every line, arrow and letter lies in its screen plane. Any notebook is blank faintly ruled, never fake handwriting. No mugshot or posed presentation, no one looks at camera. Warm light localized, muted charcoal/neutralgray/olive, sage #6BAA8A interfaces, aged brass #A89060. Avoid electriclime/yellowwash, no plants. Dark unused screens and wrist displays. Clean bold linework, flat celshading, cohesive Deep Orbit series. 1536x1024 landscape.",
+  "promptSha256": "cb5aa294ab5bb1c4f5d43bf7fecd4a3ceaafcc8abff2cd4740cdde064473a583",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+      "sha256": "a7ecf7c48b7f6aa0fb3a87e070ca03cacd6c5d75169a7a5b91867e4fc1133748"
+    }
+  ],
+  "alt": "Farah logs the unsupported Band-3 claim as Nazari and ARIA review the first draft.",
+  "location": "Archimedes, Bridge",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-fdc061f6-f6c2-4a5a-9e62-41f90b673d73.png",
+  "candidatePath": "art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-fdc061f6-f6c2-4a5a-9e62-41f90b673d73.png",
+  "candidateSha256": "1d5f4763f2404720b9919746576b7df4d6a44e16b91214baf43face7f635621a",
+  "ownReview": {
+    "reviewer": "/root/remaining_signal_llm",
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Native full frame compared with canonical faces. Natural task hands, body support and eyelines; muted room, inactive auxiliary screens. Exact current MDX facts, physically framed display with coherent perspective. Candidate depicts planning/review/correction action rather than portrait presentation."
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+      "sha256": "a7ecf7c48b7f6aa0fb3a87e070ca03cacd6c5d75169a7a5b91867e4fc1133748",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-fdc061f6-f6c2-4a5a-9e62-41f90b673d73.png",
+  "publishedSource": "art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-epilogue.webp",
+  "webpSha256": "da57432a5505d10f955922558a51457bbfb1e515dd266aab37f24b71895e0329",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+    "sourceSha256": "a7ecf7c48b7f6aa0fb3a87e070ca03cacd6c5d75169a7a5b91867e4fc1133748",
+    "webpSha256": "d9eebfabd2def48d06417531defc326a3dc5761faace54073c64ef983f8b6582",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_signal_llm",
+    "status": "approved",
+    "candidateSha256": "1d5f4763f2404720b9919746576b7df4d6a44e16b91214baf43face7f635621a",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah writes on reader-facing desk sheet while Nazari watches with closed notebook. Correction ledger crosses unsupportedBand3claim and records1claim,600words,11seconds,5h12min,all MDX exact. Natural pen grip and four total hands, ordinary necks, authentic expressions; side screen ARIA identified, all other panels dark.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+          "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+          "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+        "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+        "sha256": "d4868c977bd6b313260b3e28a4354eb3916b710f1622f64024e97858f3e9b56c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__llms-for-science-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-epilogue.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root",
+  "identityCropReview": [
+    {
+      "key": "llms-for-science-epilogue",
+      "character": "farah",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-fdc061f6-f6c2-4a5a-9e62-41f90b673d73.png",
+      "sourceSha256": "1d5f4763f2404720b9919746576b7df4d6a44e16b91214baf43face7f635621a",
+      "crop": {
+        "left": 280,
+        "top": 130,
+        "width": 380,
+        "height": 440
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "referenceCrop": {
+        "left": 115,
+        "top": 5,
+        "width": 290,
+        "height": 335
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad soft cheek/jaw, rounded chin, arched brows, almond eye spacing, nose shape, mouth proportions and mature complexion. Gaze and three-quarter rotation account for apparent width differences; low ponytail and anatomical left-eye AR lens remain consistent.",
+      "comparisonDeleted": true
+    },
+    {
+      "key": "llms-for-science-epilogue",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-fdc061f6-f6c2-4a5a-9e62-41f90b673d73.png",
+      "sourceSha256": "1d5f4763f2404720b9919746576b7df4d6a44e16b91214baf43face7f635621a",
+      "crop": {
+        "left": 900,
+        "top": 10,
+        "width": 350,
+        "height": 400
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "referenceCrop": {
+        "left": 125,
+        "top": 0,
+        "width": 265,
+        "height": 300
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved angular mature cheek/jaw structure, narrow mouth, deep-set eyes, arched brows, nose tip, freckles and age creases. Gray-streaked bob and age remain consistent through expression and viewpoint.",
+      "comparisonDeleted": true
+    }
+  ]
+}

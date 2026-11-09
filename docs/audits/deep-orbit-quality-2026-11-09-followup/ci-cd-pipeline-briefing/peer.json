@@ -1,0 +1,182 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+  "candidateSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Fresh native revision review, enlarged display plus 2x face and hand crops, full arm-chain and contact check, canonical portraits, current MDX and independent 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "Canonical Nazari identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical Demir identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "followup-ci-v2-display",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        812,
+        64,
+        1510,
+        572
+      ],
+      "scale": 1.5
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-v2-nazari-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        500,
+        210,
+        775,
+        526
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-v2-demir-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        195,
+        180,
+        444,
+        482
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-v2-demir-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        48,
+        708,
+        330,
+        962
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-v2-nazari-desk-hand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        450,
+        776,
+        662,
+        1010
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-ci-v2-nazari-trackball",
+      "source": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+      "box": [
+        838,
+        803,
+        1135,
+        929
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Both Demir arms attach continuously to the rail grips. Nazari's near right arm rests on the desk and far left hand controls the trackball. Fingers, wrist transitions and contacts remain coherent.",
+    "identityExpressionAndStory": "Nazari's skeptical searching face and Demir's sheepish realization retain canonical face structure and task-directed gaze.",
+    "displayLegibilityAndSource": "All source-correct release comparison labels remain crisp and unclipped in native and 768 x 512 views.",
+    "perspectiveAndOperator": "PASS: physical glass, bezel, title underline, table top/middle/bottom and warning band now form one frontal rectangle. Horizontal lines remain horizontal and vertical lines remain vertical. The monitor sits behind the controls on a swivel base, with Nazari, Demir and camera on its readable front side.",
+    "largeDisplayRule": "Main content uses the available monitor space without clipping.",
+    "palette": "Muted sage, brass and charcoal preserve the scene palette."
+  },
+  "measuredGeometry": {
+    "coordinateSystem": "Native 1536 x 1024 image, approximate endpoints",
+    "glassTop": [
+      [
+        848,
+        134
+      ],
+      [
+        1452,
+        134
+      ]
+    ],
+    "glassBottom": [
+      [
+        848,
+        507
+      ],
+      [
+        1452,
+        507
+      ]
+    ],
+    "titleUnderline": [
+      [
+        870,
+        217
+      ],
+      [
+        1432,
+        217
+      ]
+    ],
+    "tableTop": [
+      [
+        870,
+        240
+      ],
+      [
+        1432,
+        240
+      ]
+    ],
+    "tableBottom": [
+      [
+        870,
+        356
+      ],
+      [
+        1432,
+        356
+      ]
+    ],
+    "interpretation": "All perimeter and content horizontal families now agree; no steep glass/flat content mismatch remains."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "repairDirection": null,
+  "temporaryCropsRemoved": true,
+  "preview768Reviewed": true,
+  "resolvedFindings": [
+    {
+      "previousCandidateSha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40",
+      "resolution": "A frontal physical monitor now matches the content plane, correcting the residual perspective mismatch."
+    }
+  ],
+  "reviewedAt": "2026-11-09T13:49:06.383494+00:00"
+}

@@ -1,0 +1,69 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T06:47:54.669089+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-epilogue/candidate.png",
+  "candidateSha256": "d8617b47f5cc10a33b68aa012dc150800e1a2d4e0bd4e38ff3649fdc1595b274",
+  "verdict": "FAIL",
+  "nativeReviewed": true,
+  "method": "Independent native original inspection and enlarged canonical-face plus hand crops; current lesson source facts checked. Traced shoulder-elbow-wrist-hand chains, thumb sides, prop continuity, operator direction and display surface perspective.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+    "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+  },
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 640,
+      "top": 350,
+      "width": 290,
+      "height": 300
+    },
+    "chief-nazari": {
+      "left": 1100,
+      "top": 280,
+      "width": 295,
+      "height": 345
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 330,
+      "top": 810,
+      "width": 580,
+      "height": 125
+    },
+    {
+      "left": 1070,
+      "top": 700,
+      "width": 365,
+      "height": 210
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 3,
+    "expression": 4,
+    "displays": 3,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The large display accurately shows the 1.4x baseline comparison, 412 / 28800 samples near 73.4 Hz and next run at 01:15, preserving uncertainty. Faces and all four hands have plausible anatomy.",
+    "Nazari writes from the far edge of the notebook, but the 90 min note is upright toward the audience and upside down to her."
+  ],
+  "repairDirection": "Remove the secondary notebook text or rotate it to face Nazari while preserving the straight pen, natural grip and correct wall display."
+}

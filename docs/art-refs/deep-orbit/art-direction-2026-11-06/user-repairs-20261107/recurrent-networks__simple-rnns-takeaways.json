@@ -1,0 +1,256 @@
+{
+  "key": "simple-rnns-takeaways",
+  "id": "recurrent-networks/simple-rnns",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-22190824-1444-4d93-b122-3a711dd6f3e1.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+    "sha256": "c3a208578d0b3a3de3a675604ac3b79e8a1270880f23a80997ad183364720c40"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah sits RIGHT at engineering console, studying a shrinking gradient calculation with thoughtful half-smile, one eyebrow lifted in recognition. One hand on mouse on clear desk surface, other lightly touching her chin with natural relaxed fingers and straight wrist. Remove outward tablet and magnifying glass. Screen LEFT faces her and camera on same front side. Heading \"Illustrative scalar path\". Lines \"States near zero\", \"Recurrent weight: 0.8\", and large equation \"0.8^60 ≈ 1.53 × 10^-6\". Beneath \"Inspect actual gradients\". Bottom \"No fixed failure length\". Mathematical power60 must be clearly correct and exponent-6 clear. No invented measured gradient chart. Restrain screen brightness and preserve canonical mature face and leftlens.",
+  "meaning": "Lesson gradient scalar approximation statesnearzero weight.8; .8^60=1.5325e-6; actualgradientsmustinspect; nofixedRNNeffectivehorizon.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-22190824-1444-4d93-b122-3a711dd6f3e1.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-22190824-1444-4d93-b122-3a711dd6f3e1.png",
+      "sha256": "47170d21b1597c067a7d6ad732b427220621b5f87ce533b9948a7d5d5f076ea7",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+      "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-40a050a1-3598-4671-9438-917016b38088.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 920,
+      "top": 240,
+      "width": 330,
+      "height": 410
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 985,
+      "top": 545,
+      "width": 165,
+      "height": 210
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 635,
+      "top": 830,
+      "width": 190,
+      "height": 130
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+  "candidateSha256": "0ab95d1870ea5dbb69a3a752f37aaa104ea6d80846666ce51eb7ce4431e5e5c4",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah sits RIGHT at engineering console, studying a shrinking gradient calculation with thoughtful half-smile, one eyebrow lifted in recognition. One hand on mouse on clear desk surface, other lightly touching her chin with natural relaxed fingers and straight wrist. Remove outward tablet and magnifying glass. Screen LEFT faces her and camera on same front side. Heading \"Illustrative scalar path\". Lines \"States near zero\", \"Recurrent weight: 0.8\", and large equation \"0.8^60 ≈ 1.53 × 10^-6\". Beneath \"Inspect actual gradients\". Bottom \"No fixed failure length\". Mathematical power60 must be clearly correct and exponent-6 clear. No invented measured gradient chart. Restrain screen brightness and preserve canonical mature face and leftlens.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-22190824-1444-4d93-b122-3a711dd6f3e1.png",
+          "sha256": "47170d21b1597c067a7d6ad732b427220621b5f87ce533b9948a7d5d5f076ea7",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-40a050a1-3598-4671-9438-917016b38088.png",
+        "sha256": "0ab95d1870ea5dbb69a3a752f37aaa104ea6d80846666ce51eb7ce4431e5e5c4"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Lesson gradient scalar approximation statesnearzero weight.8; .8^60=1.5325e-6; actualgradientsmustinspect; nofixedRNNeffectivehorizon.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 920,
+        "top": 240,
+        "width": 330,
+        "height": 410
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 985,
+        "top": 545,
+        "width": 165,
+        "height": 210
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 635,
+        "top": 830,
+        "width": 190,
+        "height": 130
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+      "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-22190824-1444-4d93-b122-3a711dd6f3e1.png",
+      "sha256": "47170d21b1597c067a7d6ad732b427220621b5f87ce533b9948a7d5d5f076ea7",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "simple-rnns-takeaways",
+    "id": "recurrent-networks/simple-rnns",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-40a050a1-3598-4671-9438-917016b38088.png",
+    "candidateSha256": "0ab95d1870ea5dbb69a3a752f37aaa104ea6d80846666ce51eb7ce4431e5e5c4",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-08T07:13:07.615339+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+        "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Exact displayed 0.8^60 approximately1.53x10^-6 is arithmetically correct and matches source near-zero-state scalar-path illustration. Inspect actual gradients and no fixed failure length prevent a universal failure claim. Farah chin hand and mouse hand physically plausible."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-40a050a1-3598-4671-9438-917016b38088.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-takeaways.webp",
+  "sourceSha256": "0ab95d1870ea5dbb69a3a752f37aaa104ea6d80846666ce51eb7ce4431e5e5c4",
+  "webpSha256": "e2b29cb1b449115efdfa39a9a171807c8c0dc60c9c3e03d21417e1de18d7f8b2",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+    "sourceSha256": "c3a208578d0b3a3de3a675604ac3b79e8a1270880f23a80997ad183364720c40",
+    "webpSha256": "c62baa70b2049e5fa540ada1d8eb7a9416336f404388dc25cc9819c1dcdcd807",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-f5b09b98-e716-4112-bf0d-ac021c6afd7b.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "0ab95d1870ea5dbb69a3a752f37aaa104ea6d80846666ce51eb7ce4431e5e5c4",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Exact displayed 0.8^60 approximately1.53x10^-6 is arithmetically correct and matches source near-zero-state scalar-path illustration. Inspect actual gradients and no fixed failure length prevent a universal failure claim. Farah chin hand and mouse hand physically plausible."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+        "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

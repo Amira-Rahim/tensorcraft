@@ -13,6 +13,7 @@ import { trackLessonCompleted, track } from "@/lib/analytics";
 import { markLessonCompleted, emitSkillEvent } from "@/lib/progress-client";
 import { recordGuestCompletion } from "@/lib/guest-progress";
 import { enqueueGuestReviews, getGuestReviews } from "@/lib/review-store-guest";
+import { LESSON_SCENE_ART } from "@/lib/lesson-scene-art";
 
 // Stub next/link so render works without the Next router.
 vi.mock("next/link", () => ({
@@ -1623,6 +1624,28 @@ describe("Takeaways: the recap after the recall (spec 2026-09-24, section 2)", (
     // Sticky for the mount: a later non-zero report never hides it again.
     act(() => recallState.report?.(1));
     expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+  });
+
+  it("reveals the approved Takeaways composition with the recap after recall", () => {
+    const key = "deep-orbit/foundations/introduction-to-tensors";
+    const previous = LESSON_SCENE_ART[key];
+    const src = `/scenes/${key}-takeaways.webp`;
+    LESSON_SCENE_ART[key] = {
+      ...previous,
+      takeaways: { src, alt: "Demir reviews his sensor notes." },
+    };
+    try {
+      recallState.pendingOnMount = 1;
+      openTakeaways();
+      expect(screen.queryByTestId("scene-portrait-stub")).toBeNull();
+      act(() => recallState.report?.(0));
+      expect(screen.getByTestId("scene-portrait-stub")).toHaveAttribute(
+        "data-src",
+        src,
+      );
+    } finally {
+      LESSON_SCENE_ART[key] = previous!;
+    }
   });
 
   it("shows everything at once when this browser remembers the recall", () => {

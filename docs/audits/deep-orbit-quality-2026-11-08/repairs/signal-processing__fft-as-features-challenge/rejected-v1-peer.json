@@ -1,0 +1,74 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/rejected-v1.png",
+  "candidateSha256": "5f8bf0921eec482636467fc695590d257389085d5b8f5e615beaca4645e16fb6",
+  "verdict": "FAIL",
+  "nativeReviewed": true,
+  "method": "Independent native image, 2x face and hand inspection, canonical face and current lesson/exercise comparison.",
+  "canonicalFaceReferences": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 2,
+      "name": "runtime-final-2-v1-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/rejected-v1.png",
+      "box": [
+        230,
+        210,
+        485,
+        540
+      ],
+      "scale": 2
+    },
+    {
+      "i": 2,
+      "name": "runtime-final-2-v1-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fft-as-features-challenge/rejected-v1.png",
+      "box": [
+        435,
+        700,
+        805,
+        860
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "sha256": "5526c60013530226bd8865413eb4e4acc4d933a3dcc29ee9b9a5965afb2ab45b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+      "sha256": "34a53be2548f6acec51bd3d04485fd34d1a452587e4a9d778fa7b5e6c25604dd"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Two naturally attached typing hands with coherent wrists, fingers and keyboard contact. No anatomy failure identified.",
+    "identityExpressionAndStory": "Focused adult Demir remains recognizable and looks at the working display.",
+    "displayLegibilityAndSource": "Large, crisp display is readable, but the heading FFT magnitudes directly labels the values 13 through 20, which are bin indices rather than magnitudes.",
+    "palette": "Muted charcoal, sage and brass match the benchmark.",
+    "perspectiveAndOperator": "Display and keyboard planes face the operator.",
+    "largeDisplayRule": "Large display uses the available frame well."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 3,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The group heading FFT magnitudes above cells 13 through 20 makes bin indices read as magnitude output values. Current exercise specifies these indices at 4 Hz/bin; magnitudes are distinct output values."
+  ],
+  "repairDirection": "Make the heading explicit, such as FFT magnitudes by bin, retaining the output-pending footer and all existing scene anatomy.",
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:44:28.111378+00:00"
+}
