@@ -68,9 +68,65 @@ You will apply a Hann window to soften a capture’s edges before measuring its 
 
 <LearningObjectives objectives={["Explain how cutting a finite signal spreads a tone across FFT bins", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Explain how overlapping windows improve coverage of samples near frame edges", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
-## The Spectral Leakage Problem
+## One weight for each original sample
+
+Farah's peak-height comparison uses the periodic library Hann in the optional reference. The Challenge asks for the **symmetric Hann**, with denominator `n - 1`. Follow that required form first. It reaches zero at both endpoints.
+
+For sample index `i`, the weight is `0.5 * (1 - cos(2*pi*i / (n - 1)))`. `applyWindow` multiplies the sample at index `i` by the weight at the same index. It preserves length and order.
+
+| Symmetric length | Selected weights |
+| --- | --- |
+| 9 | `[0, 0.1464, 0.5, 0.8536, 1, 0.8536, 0.5, 0.1464, 0]` approximately |
+| 2 | `[0, 0]` |
+
+For an odd length, the middle sample reaches weight 1. Even lengths have two near-maximum middle weights. The two-sample case has only endpoints, so both weighted samples become zero.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="symmetric-hann-probe.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const count = 128;
+const cycles = 10.5;
+const rawSlice = Array.from({ length: count }, (_, i) =>
+  Math.sin(2 * Math.PI * cycles * i / count));
+const symmetricWeights = Array.from({ length: count }, (_, i) =>
+  0.5 * (1 - Math.cos(2 * Math.PI * i / (count - 1))));
+const taperedSlice = rawSlice.map((value, i) => value * symmetricWeights[i]);
+const magnitudesOf = samples => tf.tidy(() =>
+  Array.from(tf.spectral.rfft(tf.tensor1d(samples)).abs().dataSync()));
+const before = magnitudesOf(rawSlice);
+const after = magnitudesOf(taperedSlice);
+const roundedToneBin = Math.round(cycles);
+const farMagnitudeSum = values => values.reduce((total, value, bin) =>
+  total + (Math.abs(bin - roundedToneBin) > 3 ? value : 0), 0);
+console.log([symmetricWeights[0], symmetricWeights[count - 1]]); // [0, 0]
+console.log({ before: farMagnitudeSum(before), after: farMagnitudeSum(after),
+  reduction: farMagnitudeSum(before) / farMagnitudeSum(after),
+  largestAfter: Math.max(...after) });`}
+</CodeBlock>
+
+## The spectrum and the measured leakage
+
+The activity uses the same two off-bin checks as the grader: 10.5 cycles in 128 samples and 20.5 cycles in 64 samples. Select an original index to inspect its weight and product. Then compare the entire raw and weighted spectra using the same magnitude scale.
+
+The captured leakage measure sums raw magnitudes more than three bins away from `round(cycles)`. For 10.5 cycles, that rounded bin is 11, so the excluded near-peak region is bins 8 through 14. The returned table compares those far-bin sums before and after your taper, their ratio, and the largest weighted magnitude.
+
+The supplied fixtures show a reduction over 20 times by that definition. It is a sum of magnitudes, rather than an energy measurement. A squared-spectrum percentage would be a different metric. Do not compare those numbers as if they measured the same thing, or promise the same reduction on another signal.
+
+Tapering changes the samples, peak heights, and main-lobe width. A lower peak does not prove a weaker recorded source. A broader peak can also make nearby components harder to separate. Choose a window with those tradeoffs in view.
+
+## Overlap keeps the original sample identities
+
+With 64-sample frames and hop 32, the first frame uses indices 0-63 and the second uses 32-95. Samples 32-63 contribute to both. A sample near one frame's edge can lie nearer the next frame's center. This gives the taper another placement without inventing extra measurements.
+
+For an even length, periodic Hann frames shifted by half a frame sum to one in the fully covered interior. The symmetric Hann used here has a slightly varying sum. Reconstruction also depends on the synthesis window and overlap normalization, as the optional derivation explains. A magnitude-only spectrum still lacks the phase needed for full waveform reconstruction.
+
+<ConceptReference summary="The separate periodic-Hann, Hamming, and overlapping-STFT examples">
+
+These examples retain the library's periodic Hann for the even frame lengths shown. Their peak heights differ slightly from the required symmetric form. The first two blocks share the same 128-sample 10.5 Hz illustration. The overlap block then uses 64-sample frames and a 32-sample hop.
+
+## The Spectral Leakage Problem
 
 <CodeBlock language="typescript" title="spectral-leakage.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -206,6 +262,9 @@ const spec = stftWithWindowing(signal, 64, 32, (n) => tf.tidy(() => Array.from(t
 console.log('Windows:', spec.length);          // 3
 console.log('Frequency bins:', spec[0].length); // 33`}
 </CodeBlock>
+
+
+</ConceptReference>
 
 <DerivationDrawer summary="Why window + overlap matters">
 **Windowing:** multiplying the signal segment by a window function (Hann, Hamming, ...) before FFT reduces **spectral leakage**: energy from real frequencies smearing into adjacent FFT bins. Without windowing, a sinusoid that doesn't fit perfectly in the window produces a wide smeared response.

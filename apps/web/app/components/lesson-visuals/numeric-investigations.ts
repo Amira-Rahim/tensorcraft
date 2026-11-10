@@ -1,3 +1,8 @@
+import { RECURRENT_TASK_INVESTIGATIONS } from "./recurrent-task-investigations";
+import { ANOMALY_CLARITY } from "./anomaly-clarity-investigations";
+import { TIME_SERIES_CLARITY } from "./time-series-clarity-investigations";
+import { SIGNAL_TASK_INVESTIGATIONS } from "./signal-task-investigations";
+import { WORKED_PACKET } from "../mdx/channel-layout-data";
 import type {
   InvestigationControl,
   InvestigationGraphic,
@@ -8,14 +13,14 @@ import {
   READING_VALUES,
   NORMALIZATION_ROWS,
   SCREENING_CASES,
-  gradientStep,
-  kalmanUpdate,
-  magnitudeSpectrum,
-  quantize,
-  softmax,
-  teachingSignal,
-  trainingTrace,
 } from "./instrument-math";
+
+import {
+  QUANTIZATION_CASES,
+  quantizedKernel,
+  pruningReference,
+  PRUNING_CLASS_NAMES,
+} from "./optimization-examples";
 
 const sum = (values: number[]) =>
   values.reduce((total, value) => total + value, 0);
@@ -118,8 +123,6 @@ const cases = (
 ];
 const teaching =
   "Small example values. This activity does not train a model or read the ship’s sensor data.";
-const fixed =
-  "This calculation uses fixed weights chosen for the example. This example performs no training.";
 
 export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "introduction-to-tensors": {
@@ -207,54 +210,157 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "tensor-operations": {
-    title: "Average two sensor passes",
+    title: "Trace the repaired feed",
     brief:
-      "Average matching channels from the two passes, then multiply by the gain. Predict the selected output.",
-    boundary: teaching,
+      "Use sensors A and B from Demir's three-moment excerpt. Average the selected rows, apply the gain, then follow one channel-bank sum.",
+    boundary:
+      "These are selections from the fictional recording used in Tensor Shapes. The header supplies sensor order A, B. Moment numbers are local to that excerpt. No physical unit was supplied. Gains and bank weights are dimensionless settings chosen for this calculation. This diagram calculates the shown example, not the full recording.",
     controls: [
+      choice("stage", "Calculation", 0, [
+        "Average and gain",
+        "Channel-bank sums",
+      ]),
       range("gain", "Gain after averaging", 2, 0, 3, 0.25),
-      range("position", "Output index", 2, 0, 5),
+      range("row", "Output row index", 0, 0, 1),
+      {
+        ...range("column", "Output column index", 0, 0, 2),
+        maxFor: ({ stage }) => (stage === 0 ? 1 : 2),
+      },
     ],
     cases: cases(
-      "Steady second pass",
-      "Changed second pass",
-      "Add [4, 8] to each of the three rows before averaging.",
-      "Use [8, 4] for every row of a different first pass.",
-      { gain: 2, position: 2 },
-      { gain: 1, position: 3 },
+      "Adjacent moments",
+      "Fixed first-moment reference",
+      "Pair moments 1 and 2, then moments 2 and 3. Both views keep sensor A before sensor B.",
+      "Blend moments 1 and 2 with the first moment [2, 20] reused as one reference row. This is a chosen reference blend, not a second capture.",
+      { stage: 0, gain: 2, row: 0, column: 0 },
+      { stage: 0, gain: 1, row: 1, column: 1 },
     ),
     prediction: {
-      prompt:
-        "What will the selected output value be after averaging and gain?",
+      prompt: "What value will the selected output row and column contain?",
       tolerance: 0.01,
     },
-    evaluate: ({ gain, position }, caseId) => {
-      const input = changed(caseId)
-        ? [6, 10, 8, 12, 10, 14]
-        : [2, 10, 4, 12, 6, 14];
-      const second = changed(caseId) ? [8, 4] : [4, 8];
-      const output = input.map(
-        (value, index) => ((value + second[index % 2]!) / 2) * gain,
+    evaluate: ({ stage, gain, row, column }, caseId) => {
+      const input = WORKED_PACKET.slice(0, 2).map((values) =>
+        values.slice(0, 2),
       );
+      const reference = changed(caseId);
+      const second = reference
+        ? [WORKED_PACKET[0]!.slice(0, 2)]
+        : WORKED_PACKET.slice(1, 3).map((values) => values.slice(0, 2));
+      const averaged = input.map((values, r) =>
+        values.map((value, c) => (value + second[reference ? 0 : r]![c]!) / 2),
+      );
+      const boosted = averaged.map((values) =>
+        values.map((value) => value * gain),
+      );
+      const weights = [
+        [1, 0],
+        [0, 1],
+        [1, 1],
+      ];
+      const transposed = [
+        weights.map((bank) => bank[0]!),
+        weights.map((bank) => bank[1]!),
+      ];
+      const mixed = boosted.map((values) =>
+        weights.map((bank) => sum(values.map((value, c) => value * bank[c]!))),
+      );
+      const mixing = stage === 1;
+      const selectedColumn = Math.min(column, mixing ? 2 : 1);
+      const selected = row * 2 + selectedColumn;
+      const contributors = [row * 2, row * 2 + 1];
+      const inputHighlights = mixing ? contributors : [selected];
+      const secondHighlights = mixing
+        ? [reference ? 0 : row * 2, reference ? 1 : row * 2 + 1]
+        : [(reference ? 0 : row * 2) + selectedColumn];
+      const graphics = [
+        cells(
+          "First view [2, 2]: rows are moments 1 and 2, columns are A and B",
+          input.flat(),
+          2,
+          inputHighlights,
+        ),
+        cells(
+          reference
+            ? "Reference [2]: moment 1, sensors A and B, reused for both rows"
+            : "Second view [2, 2]: rows are moments 2 and 3, columns are A and B",
+          second.flat(),
+          2,
+          secondHighlights,
+        ),
+        cells(
+          "Average [2, 2]: one row per pair, columns A and B",
+          averaged.flat(),
+          2,
+          inputHighlights,
+        ),
+        cells(
+          "After gain [2, 2]: one row per pair, columns A and B",
+          boosted.flat(),
+          2,
+          inputHighlights,
+        ),
+      ];
+      const dataCode = `const pass1 = tf.tensor2d(${JSON.stringify(input)});\nconst pass2 = tf.${reference ? "tensor1d" : "tensor2d"}(${JSON.stringify(reference ? second[0] : second)});\nconst { merged, boosted } = tf.tidy(() => {\n  const merged = pass1.add(pass2).div(2);\n  return { merged, boosted: merged.mul(${gain}) };\n});`;
+      const pair = reference
+        ? `moment ${row + 1} and the moment 1 reference`
+        : `moments ${row + 1} and ${row + 2}`;
+      if (!mixing) {
+        const sensor = selectedColumn === 0 ? "A" : "B";
+        const answer = boosted[row]![selectedColumn]!;
+        return {
+          graphics,
+          answer,
+          answerLabel: `Row ${row}, sensor ${sensor}`,
+          explanation: `Sensor ${sensor}, ${pair}: (${input[row]![selectedColumn]} + ${second[reference ? 0 : row]![selectedColumn]}) / 2 = ${averaged[row]![selectedColumn]}. Gain ${gain} gives ${rounded(answer)}. ${reference ? "Broadcasting reuses the same reference value for this sensor in each row." : "The two views pair adjacent moments while keeping the sensor columns aligned."}`,
+          code: `${dataCode}\n// selected boosted[${row}, ${selectedColumn}] = ${rounded(answer)}\ntf.dispose([pass1, pass2, merged, boosted]);`,
+        };
+      }
+      const products = boosted[row]!.map(
+        (value, c) => value * weights[selectedColumn]![c]!,
+      );
+      graphics.push(
+        cells(
+          "Weights [3, 2]: rows Bank 0, 1, 2, columns A and B",
+          weights.flat(),
+          2,
+          [selectedColumn * 2, selectedColumn * 2 + 1],
+        ),
+        cells(
+          "Transposed weights [2, 3]: rows A and B, columns Bank 0, 1, 2",
+          transposed.flat(),
+          3,
+          [selectedColumn, 3 + selectedColumn],
+        ),
+        cells(
+          `Row ${row}, Bank ${selectedColumn}: A and B contributions`,
+          products,
+          2,
+          [0, 1],
+        ),
+        cells(
+          "Bank sums [2, 3]: rows are moment pairs, columns Bank 0, 1, 2",
+          mixed.flat(),
+          3,
+          [row * 3 + selectedColumn],
+        ),
+      );
+      const answer = mixed[row]![selectedColumn]!;
       return {
-        graphics: [
-          cells("First pass: three rows, two channels", input, 2, [position]),
-          cells("Second pass, reused for each row", second, 2, [position % 2]),
-          cells("Average, then gain", output, 2, [position]),
-        ],
-        answer: output[position]!,
-        answerLabel: "Selected output",
-        explanation: `(${input[position]} + ${second[position % 2]}) ÷ 2 × ${gain} = ${rounded(output[position]!)}. Each channel stays in its column.`,
-        code: `const output = pass1.add(tf.tensor1d([${show(second)}])).div(2).mul(${gain});`,
+        graphics,
+        answer,
+        answerLabel: `Row ${row}, Bank ${selectedColumn}`,
+        explanation: `First average ${pair} and apply gain ${gain}. Row ${row} then holds A = ${boosted[row]![0]} and B = ${boosted[row]![1]}. Bank ${selectedColumn} uses weights [${show(weights[selectedColumn]!)}]. Its dot product is ${boosted[row]![0]} * ${weights[selectedColumn]![0]} + ${boosted[row]![1]} * ${weights[selectedColumn]![1]} = ${rounded(answer)}. Transpose places each bank's two weights in one column, so [2, 2] times [2, 3] gives [2, 3].`,
+        code: `${dataCode}\nconst mix = tf.tensor2d(${JSON.stringify(weights)});\nconst mixed = tf.tidy(() => boosted.matMul(mix.transpose()));\n// selected mixed[${row}, ${selectedColumn}] = ${rounded(answer)}\ntf.dispose([pass1, pass2, merged, boosted, mix, mixed]);`,
       };
     },
   },
   "data-loading": {
-    title: "The next batch",
+    title: "Trace a row through the loader",
     brief:
-      "Choose the number of rows per batch, then a batch to inspect. Keep each row’s three features together.",
+      "Choose a batch and inspect its row IDs, three feature slots, and paired labels. Follow the same 16 practice rows used in the challenge.",
     boundary:
-      "This example has 16 rows in a fixed order. A real shuffle may arrange them differently.",
+      "This JavaScript illustration uses the exercise's generated values, not ship measurements. Labels equal row ID % 2 and have no anomaly meaning. The fixed shuffled order shows one possible arrangement. Your TensorFlow.js run shuffles randomly.",
     controls: [
       choice(
         "size",
@@ -269,10 +375,10 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       },
     ],
     cases: cases(
-      "Archive order",
-      "Shuffled order",
-      "Rows arrive in order from 0 through 15.",
-      "A fixed shuffled order lets you trace each row.",
+      "Practice row order",
+      "Fixed row shuffle",
+      "Practice IDs run from 0 through 15. IDs 0-11 belong to training and 12-15 to validation.",
+      "This fixed permutation moves whole rows before batching. Split membership stays attached to each ID.",
       { size: 4, batch: 1 },
       { size: 2, batch: 2 },
     ),
@@ -288,64 +394,103 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       return {
         graphics: [
           cells(
-            "Archive row IDs",
+            "Practice row IDs in pipeline order",
             order,
             8,
             selected.map((_, index) => batch * size + index),
           ),
           cells(
-            "Batch: amplitude, crossings, phase",
+            `Selected features: amplitude, crossings, phase slots, shape [${size}, 3]`,
             selected.flatMap((id) => [id * 100, id, id / 10]),
             3,
+          ),
+          cells(
+            `Paired labels in the same row order, shape [${size}, 1]`,
+            selected.map((id) => id % 2),
+            1,
+          ),
+          pipe("Bare generator read trace, before shuffle or batching", [
+            "Create iterator: 0 reads",
+            "First next(): read row 0, yield once, 1 read",
+            "Second next(): read row 1, yield once, 2 reads",
+            "Fresh iterator: starts at row 0 again",
+          ]),
+          cells(
+            "Assigned split by row ID, before any shuffle",
+            Array.from(
+              { length: 16 },
+              (_, id) => `${id}: ${id < 12 ? "Training" : "Validation"}`,
+            ),
+            4,
+            selected,
           ),
         ],
         answer: selected[0]!,
         answerLabel: "First row ID in the batch",
-        explanation: `Batch ${batch} takes positions ${batch * size} through ${(batch + 1) * size - 1} from this order. Its input shape is [${size}, 3].`,
-        code: `const rows = order.slice(${batch * size}, ${(batch + 1) * size});\n// batch shape: [${size}, 3]`,
+        explanation: `Batch ${batch} takes pipeline positions ${batch * size} through ${(batch + 1) * size - 1}: row IDs ${selected.join(", ")}. Features and labels move together. Row ${selected[0]} keeps [${selected[0]! * 100}, ${selected[0]}, ${selected[0]! / 10}] with label ${selected[0]! % 2}. This batching demonstration reads all 16 rows. Training would read IDs 0-11 only, leaving 12-15 for validation. The bare-generator trace shows one read per request. A shuffle buffer reads ahead before a batch arrives.`,
+        code: `// Fixed JavaScript illustration of the challenge's practice reader.\nconst order = [${order.join(", ")}];\nconst selectedIds = order.slice(${batch * size}, ${(batch + 1) * size});\nconst features = selectedIds.map(id => [id * 100, id, id / 10]);\nconst labels = selectedIds.map(id => [id % 2]);\n// Feature shape: [${size}, 3]. Label shape: [${size}, 1].\n// Split membership depends on ID, even after rows move.\nconst selectedSplits = selectedIds.map(id => id < 12 ? 'Training' : 'Validation');`,
       };
     },
   },
   normalization: {
-    title: "Scaling a new sensor row",
+    title: "A reading from scaler to score",
     brief:
-      "Apply saved training statistics to a new reading. Compare its raw and scaled values.",
+      "Follow the challenge's four-row batch. Apply its saved statistics to one row, then inspect the supplied neuron's calculation.",
     boundary:
-      "Statistics come from four fixed training rows. The activity reuses them for the new reading without fitting new statistics.",
+      "This JavaScript reference uses the challenge's two-feature practice fixture and fixed weights. The fixture specifies no physical units or timestamps. Changing a reading reuses the saved training statistics. This activity performs no TensorFlow.js prediction or training.",
     controls: [
       range("temperature", "New temperature reading", 24, 18, 30, 0.5),
+      range("signal", "New signal-strength reading", 0.4, 0, 1.2, 0.1),
       choice("method", "Scaling rule", 1, ["Raw values", "Z-score", "Min-max"]),
     ],
     cases: cases(
-      "Original calibration",
-      "Warmer calibration",
-      "Training temperatures are 20, 22, 24, 26.",
-      "Training temperatures are 24, 26, 28, 30.",
-      { temperature: 24, method: 1 },
-      { temperature: 28, method: 2 },
+      "Challenge row 3",
+      "Later reading",
+      "The row [24, 0.4] appears in the supplied four-row training batch.",
+      "The later row [30, 0.6] exceeds the fitted temperature maximum. The training batch stays unchanged.",
+      { temperature: 24, signal: 0.4, method: 1 },
+      { temperature: 30, signal: 0.6, method: 2 },
     ),
     prediction: {
       prompt:
         "What is the first feature of the new row after the selected scaling rule?",
       tolerance: 0.015,
     },
-    evaluate: ({ temperature, method }, caseId) => {
-      const training = NORMALIZATION_ROWS.map(([a, b]) => [
-        a! + (changed(caseId) ? 4 : 0),
-        b!,
-      ]);
-      const center = changed(caseId) ? 27 : 23,
-        low = center - 3;
-      const raw = [temperature, 0.6];
+    evaluate: ({ temperature, signal, method }) => {
+      const training = NORMALIZATION_ROWS;
+      const columns = [0, 1].map((column) =>
+        training.map((row) => row[column]!),
+      );
+      const means = columns.map(mean);
+      const stds = columns.map((column, index) =>
+        Math.sqrt(mean(column.map((value) => (value - means[index]!) ** 2))),
+      );
+      const minimum = columns.map((column) => Math.min(...column));
+      const maximum = columns.map((column) => Math.max(...column));
+      const raw = [temperature, signal];
+      const offset = method === 1 ? means : minimum;
+      const scale =
+        method === 1 ? stds : maximum.map((value, i) => value - minimum[i]!);
       const output =
-        method === 1
-          ? [
-              (temperature - center) / Math.sqrt(5),
-              (0.6 - 0.5) / Math.sqrt(0.05),
-            ]
-          : method === 2
-            ? [(temperature - low) / 6, (0.6 - 0.2) / 0.6]
-            : raw;
+        method === 0
+          ? raw
+          : raw.map(
+              (value, i) =>
+                (value - offset[i]!) / (scale[i] === 0 ? 1 : scale[i]!),
+            );
+      const weights = [0.9, -1.4];
+      const terms = output.map((value, i) => value * weights[i]!);
+      const weightedSum = sum(terms) - 0.3;
+      const score = 1 / (1 + Math.exp(-weightedSum));
+      const selectedRow = training.findIndex((row) =>
+        row.every((value, i) => value === raw[i]),
+      );
+      const scaling =
+        method === 0
+          ? "Raw features keep their original scales."
+          : method === 1
+            ? `Temperature uses (${temperature} - ${means[0]}) / ${rounded(stds[0]!)}. Signal strength uses (${signal} - ${means[1]}) / ${rounded(stds[1]!)}. These are the saved training statistics.`
+            : `Temperature uses (${temperature} - ${minimum[0]}) / ${maximum[0]! - minimum[0]!}. Signal strength uses (${signal} - ${minimum[1]}) / ${rounded(maximum[1]! - minimum[1]!)}. A later value can fall outside [0, 1].`;
       return {
         graphics: [
           bars(
@@ -354,7 +499,16 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             ["Temperature", "Signal"],
             "raw-features",
           ),
-          cells("Training rows: temperature, signal", training.flat(), 2),
+          cells(
+            "Training rows: temperature, signal strength",
+            training.flat(),
+            2,
+            selectedRow < 0 ? [] : [selectedRow * 2, selectedRow * 2 + 1],
+          ),
+          pipe("Saved training statistics", [
+            `Temperature: mean ${means[0]}, std ${rounded(stds[0]!)}, min ${minimum[0]}, max ${maximum[0]}`,
+            `Signal strength: mean ${means[1]}, std ${rounded(stds[1]!)}, min ${minimum[1]}, max ${maximum[1]}`,
+          ]),
           bars(
             "New row after scaling",
             output,
@@ -365,643 +519,1022 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
                 ? "z-score-features"
                 : "min-max-features",
           ),
+          pipe("Supplied fixed neuron", [
+            `Temperature term: ${rounded(output[0]!)} × 0.9 = ${rounded(terms[0]!)}`,
+            `Signal term: ${rounded(output[1]!)} × -1.4 = ${rounded(terms[1]!)}`,
+            `Add bias -0.3: weighted sum ${rounded(weightedSum)}`,
+            `Sigmoid score: ${rounded(score)}`,
+          ]),
         ],
         answer: output[0]!,
         answerLabel: "Scaled temperature",
-        explanation:
-          method === 0
-            ? "Raw features keep their original scales."
-            : method === 1
-              ? `Subtract the saved mean ${center}, then divide by the saved standard deviation √5. The signal feature uses its own statistics.`
-              : `Subtract the saved minimum ${low}, then divide by the saved range 6. A later reading can fall outside [0, 1].`,
-        code:
-          method === 1
-            ? `const scaled = (temperature - ${center}) / Math.sqrt(5);`
-            : method === 2
-              ? `const scaled = (temperature - ${low}) / 6;`
-              : "const scaled = temperature;",
+        explanation: `${scaling} The fixed weights and bias give score ${rounded(score)}. Switching the scaler changes the model's inputs without training its weights. This score does not measure accuracy or establish an event label.`,
+        code: `const reading = [${raw.join(", ")}];\nconst offset = [${offset.join(", ")}];\nconst scale = [${scale.join(", ")}];\nconst scaled = ${method === 0 ? "reading" : "reading.map((value, i) => (value - offset[i]) / (scale[i] === 0 ? 1 : scale[i]))"};\nconst weightedSum = scaled[0] * 0.9 + scaled[1] * -1.4 - 0.3;\nconst score = 1 / (1 + Math.exp(-weightedSum));`,
       };
     },
   },
   "first-neuron": {
-    title: "A neuron’s weighted sum",
+    title: "Every contribution to one score",
     brief:
-      "Change a weight and bias. Follow each input's contribution into the output.",
-    boundary: fixed,
+      "Select an input, then trace its value and weight into the running sum. Change the second weight or bias and predict the final score.",
+    boundary:
+      "This uses the lesson's supplied arithmetic inputs [0.5, 0.8, 0.2], with dimensionless example values. They are separate from the calibration-tone recordings. The first and third weights stay at 0.4 and 0.6. This calculation performs no training.",
     controls: [
-      range("weight", "Weight on input A", 0.75, -2, 2, 0.25),
-      range("bias", "Bias", 0.2, -1, 1, 0.1),
+      choice("selected", "Input to inspect", 1, [
+        "Input 1",
+        "Input 2",
+        "Input 3",
+      ]),
+      range("weight", "Weight on input 2", -0.2, -1, 1, 0.1),
+      range("bias", "Bias", 0.1, -1, 1, 0.1),
     ],
     cases: cases(
-      "First input row",
-      "Stronger input A",
-      "Inputs [0.4, 0.8], with B's weight fixed at -0.5.",
-      "Inputs [0.9, 0.3], with the same fixed weight on B.",
-      { weight: 0.75, bias: 0.2 },
-      { weight: 1, bias: -0.1 },
+      "Initial weight preset",
+      "Alternate weight preset",
+      "This preset starts with inputs [0.5, 0.8, 0.2], weights [0.4, -0.2, 0.6], and bias 0.1.",
+      "This preset starts with the same inputs, weights [0.4, 0.2, 0.6], and bias 0.1. Change the controls to compare another calculation.",
+      { selected: 1, weight: -0.2, bias: 0.1 },
+      { selected: 1, weight: 0.2, bias: 0.1 },
     ),
     prediction: {
-      prompt:
-        "What is the neuron's weighted sum plus bias for the current inputs?",
+      prompt: "What scalar score does the weighted sum plus bias produce?",
       tolerance: 0.01,
     },
-    evaluate: ({ weight, bias }, caseId) => {
-      const input = changed(caseId) ? [0.9, 0.3] : [0.4, 0.8];
-      const terms = [input[0]! * weight, input[1]! * -0.5, bias];
-      const answer = sum(terms);
+    evaluate: ({ selected, weight, bias }) => {
+      const input = [0.5, 0.8, 0.2];
+      const weights = [0.4, weight, 0.6];
+      const products = input.map((value, i) => value * weights[i]!);
+      const running = products.map((_, i) => sum(products.slice(0, i + 1)));
+      const weightedSum = sum(products);
+      const answer = weightedSum + bias;
       return {
         graphics: [
-          cells("Two inputs", input),
-          bars("Contributions to the sum", terms, [
-            "A × weight",
-            "B × -0.5",
-            "Bias",
+          cells("Arithmetic inputs [3]: input 1, input 2, input 3", input, 3, [
+            selected,
           ]),
-          pipe("Neuron calculation", [
-            `Products [${show(terms.slice(0, 2))}]`,
-            `Add bias ${bias}`,
-            `Output ${rounded(answer)}`,
-          ]),
+          cells("Matching weights [3]", weights, 3, [selected]),
+          {
+            ...bars("One product per input", products, [
+              "Input 1",
+              "Input 2",
+              "Input 3",
+            ]),
+            highlight: [selected],
+          },
+          cells(
+            "Running sum after each input-weight product",
+            running.map(rounded),
+            3,
+            [selected],
+          ),
+          {
+            ...cells(
+              "The final addition",
+              [rounded(weightedSum), bias, rounded(answer)],
+              3,
+            ),
+            labels: ["Sum of products", "Bias", "Scalar score"],
+          },
         ],
         answer,
-        answerLabel: "Neuron output",
-        explanation: `${rounded(terms[0]!)} + ${rounded(terms[1]!)} + ${bias} = ${rounded(answer)}. This neuron has no activation function yet.`,
-        code: `const output = ${input[0]} * ${weight} + ${input[1]} * -0.5 + ${bias};`,
+        answerLabel: "Scalar score",
+        explanation: `Input ${selected + 1} contributes ${input[selected]} * ${weights[selected]} = ${rounded(products[selected]!)}. The running sum through that input is ${rounded(running[selected]!)}. All three products total ${rounded(weightedSum)}. Add bias ${bias} to get ${rounded(answer)}. This is a score before activation or a decision threshold.`,
+        code: `const inputs = [0.5, 0.8, 0.2];\nconst weights = [0.4, ${weight}, 0.6];\nconst products = inputs.map((value, i) => value * weights[i]);\nconst score = products.reduce((total, value) => total + value, ${bias});`,
       };
     },
   },
   "activation-functions": {
-    title: "Transform a neuron's output",
+    title: "Each score before and after activation",
     brief:
-      "Choose an activation and move the weighted sum. Predict the value sent to the next layer.",
+      "Select a diagnostic score. Compare its input and activated value, then check that the other positions keep the same rule.",
     boundary:
-      "This evaluates activation formulas directly. It does not run or train a network.",
+      "These are the supplied activation-check inputs, separate from calibration-tone measurements. This formula illustration does not run or train a network. The challenge applies the same rule with tensor operations.",
     controls: [
-      range("input", "Weighted sum before activation", -1, -4, 4, 0.25),
+      {
+        ...range("position", "Score position", 1, 0, 4),
+        maxFor: ({ sampleCount }) => sampleCount! - 1,
+      },
       choice("function", "Activation", 0, ["ReLU", "Sigmoid", "Tanh"]),
     ],
     cases: cases(
-      "Negative sum",
-      "Positive sum",
-      "Start with a weighted sum below zero.",
-      "Start above zero and compare the three functions.",
-      { input: -1, function: 0 },
-      { input: 2, function: 1 },
+      "Five-score diagnostic",
+      "Large-positive diagnostic",
+      "The challenge checks [-2, -0.5, 0, 1.5, 3]. Positions start at 0.",
+      "The challenge also checks [-2^126, -6.5, 6.5, 2^126]. ReLU keeps both positive values, including the large one.",
+      { position: 1, function: 0, sampleCount: 5 },
+      { position: 2, function: 0, sampleCount: 4 },
     ),
     prediction: {
       prompt:
-        "What value does the selected activation produce at the current weighted sum?",
+        "What value does the selected activation produce at this position?",
       tolerance: 0.015,
     },
-    evaluate: ({ input, function: fn }) => {
+    evaluate: ({ position, function: fn }, caseId) => {
+      const input = changed(caseId)
+        ? [-(2 ** 126), -6.5, 6.5, 2 ** 126]
+        : [-2, -0.5, 0, 1.5, 3];
       const activate = (x: number) =>
         fn === 0
           ? Math.max(0, x)
           : fn === 1
             ? 1 / (1 + Math.exp(-x))
             : Math.tanh(x);
-      const samples = Array.from({ length: 33 }, (_, i) =>
-        activate(-4 + i / 4),
-      );
-      const answer = activate(input),
-        name = ["ReLU", "Sigmoid", "Tanh"][fn]!;
+      const output = input.map(activate);
+      const answer = output[position]!;
+      const name = ["ReLU", "Sigmoid", "Tanh"][fn]!;
+      const formula =
+        fn === 0
+          ? "Math.max(0, value)"
+          : fn === 1
+            ? "1 / (1 + Math.exp(-value))"
+            : "Math.tanh(value)";
       return {
         graphics: [
-          pipe("Input to the activation", [
-            `Weighted sum ${input}`,
-            `Apply ${name}`,
-          ]),
-          line(
-            `${name} curve from -4 to 4`,
-            samples,
-            [Math.round((input + 4) * 4)],
-            samples.map((_, index) => String(-4 + index / 4)),
-            "activation-output",
+          cells(
+            `Diagnostic input, shape [${input.length}]`,
+            input,
+            input.length,
+            [position],
+          ),
+          cells(
+            `${name} output, shape [${input.length}]`,
+            output,
+            input.length,
+            [position],
           ),
           bars(
-            "Before and after activation",
-            [input, answer],
-            ["Weighted sum", "Activated value"],
+            "Selected score before and after",
+            [input[position]!, answer],
+            ["Before activation", "After activation"],
             `activation-comparison-${fn}`,
           ),
         ],
         answer,
-        answerLabel: `${name} output`,
-        explanation:
-          fn === 0
-            ? "ReLU keeps positive values and changes negative values to zero."
-            : fn === 1
-              ? "Sigmoid maps the sum into a value between 0 and 1."
-              : "Tanh maps the sum into a value between -1 and 1.",
-        code:
-          fn === 0
-            ? `const output = Math.max(0, ${input});`
-            : fn === 1
-              ? `const output = 1 / (1 + Math.exp(-(${input})));`
-              : `const output = Math.tanh(${input});`,
+        answerLabel: `${name} output at position ${position}`,
+        explanation: `Position ${position} contains ${input[position]}. ${name} produces ${rounded(answer)}. ${fn === 0 ? "ReLU replaces negative values with zero and keeps zero and every positive value unchanged. It has no upper limit." : fn === 1 ? "Sigmoid gives a bounded score. Floating-point rounding can reach 0 or 1. A score's range does not establish its reliability." : "Tanh gives a bounded signed value. Floating-point rounding can reach -1 or 1."} The output keeps all ${input.length} positions in the same order.`,
+        code: `const inputs = ${JSON.stringify(input)};\nconst output = inputs.map(value => ${formula});\nconst selected = output[${position}];`,
       };
     },
   },
   "layers-and-architecture": {
     title: "Count the trainable parameters",
     brief:
-      "Change the number of hidden units. Count their connections and one bias per unit.",
+      "Choose the bridge or practice stack. Change its input width, then inspect one layer's weights, biases, and share of the total.",
     boundary:
-      "This counts a dense network's parameters. It does not measure its speed or prediction quality.",
-    controls: [range("width", "Hidden units", 3, 1, 8)],
+      "The bridge starts with 3 inputs and 32/16/1 units: 673 parameters. The graded practice stack starts with 4 inputs and 16/8/1 units: 225. Changing input width compares architectures. These counts establish no speed, accuracy, or data provenance.",
+    controls: [
+      range("inputs", "Input features", 3, 1, 12),
+      range("layer", "Layer index to inspect", 0, 0, 2),
+    ],
     cases: cases(
-      "Two input features",
-      "Four input features",
-      "Two inputs feed one hidden layer and one output.",
-      "Four inputs feed the same kind of network.",
-      { width: 3 },
-      { width: 4 },
+      "Bridge classifier: 32/16/1",
+      "Practice stack: 16/8/1",
+      "Three prepared features enter 32 units, then 16, then one sigmoid output. This is the story's bridge architecture.",
+      "Four feature slots enter 16 units, then 8, then one sigmoid output. This is the separate build-layer exercise configuration.",
+      { inputs: 3, layer: 0 },
+      { inputs: 4, layer: 0 },
     ),
     prediction: {
       prompt:
         "How many trainable parameters does the whole selected network have, including biases?",
       tolerance: 0,
     },
-    evaluate: ({ width }, caseId) => {
-      const inputs = changed(caseId) ? 4 : 2;
-      const counts = [inputs * width, width, width, 1];
+    evaluate: ({ inputs, layer }, caseId) => {
+      const units = changed(caseId) ? [16, 8, 1] : [32, 16, 1];
+      const incoming = [inputs, units[0]!, units[1]!];
+      const weights = units.map((outgoing, i) => incoming[i]! * outgoing);
+      const subtotals = weights.map((count, i) => count + units[i]!);
+      const total = sum(subtotals);
       return {
         graphics: [
-          pipe("Layer widths", [
-            `${inputs} inputs`,
-            `${width} hidden units`,
-            "1 output",
-          ]),
-          bars("Parameter counts", counts, [
-            "Input weights",
-            "Hidden biases",
-            "Output weights",
-            "Output bias",
+          cells(
+            "Widths: input features, hidden layer 1, hidden layer 2, output",
+            [inputs, ...units],
+            4,
+            [layer, layer + 1],
+          ),
+          cells("Inputs per layer, in model order", incoming, 3, [layer]),
+          cells("Units and biases per layer", units, 3, [layer]),
+          cells("Weights per layer", weights, 3, [layer]),
+          cells("Parameter subtotal per layer", subtotals, 3, [layer]),
+          pipe("Selected layer's contribution", [
+            `Layer ${layer}: ${incoming[layer]} inputs, ${units[layer]} units`,
+            `${incoming[layer]} * ${units[layer]} = ${weights[layer]} weights`,
+            `${units[layer]} units supply ${units[layer]} biases`,
+            `${weights[layer]} + ${units[layer]} = ${subtotals[layer]} parameters`,
+            `Network total: ${subtotals.join(" + ")} = ${total}`,
           ]),
         ],
-        answer: sum(counts),
+        answer: total,
         answerLabel: "Total trainable parameters",
-        explanation: `The hidden layer has (${inputs} + 1) × ${width} parameters. The output has ${width} weights and one bias. Total: ${sum(counts)}.`,
-        code: `const hiddenParams = (${inputs} + 1) * ${width};\nconst outputParams = ${width} + 1;`,
+        explanation: `Layer ${layer} receives ${incoming[layer]} values and has ${units[layer]} units. Its ${weights[layer]} weights plus ${units[layer]} biases make ${subtotals[layer]} parameters. The network total is ${subtotals.join(" + ")} = ${total}. ${changed(caseId) ? "For this 16/8/1 practice stack, changing only input width gives 16 * width + 161." : "This 32/16/1 bridge stack reaches 673 only at its original input width of 3."} More examples in a batch reuse these parameters.`,
+        code: `const inputWidth = ${inputs};\nconst units = [${units.join(", ")}];\nconst incoming = [inputWidth, units[0], units[1]];\nconst weights = units.map((count, index) => incoming[index] * count);\nconst subtotals = weights.map((count, index) => count + units[index]);\nconst total = subtotals.reduce((count, next) => count + next, 0);`,
       };
     },
   },
   "forward-pass": {
-    title: "A forward pass through two layers",
+    title: "One linear layer, one selected output",
     brief:
-      "Change input A. Apply the hidden layer's weights and ReLU before the output sum.",
-    boundary: fixed,
-    controls: [range("input", "Input A", 1, -2, 3, 0.25)],
+      "Follow the challenge's two-feature practice rows through a supplied reference kernel. Select a row and unit, then change one input contribution.",
+    boundary:
+      "This fixed reference has one linear 2-input, 3-unit layer with 9 parameters. Its hand-chosen kernel and bias are shown below. The graded run keeps default random weights and captures its own values. Neither source is bridge calibration data, and these outputs are not probabilities.",
+    controls: [
+      {
+        ...range("row", "Reading index", 1, 0, 2),
+        maxFor: ({ rows }) => rows! - 1,
+      },
+      range("unit", "Output unit index", 2, 0, 2),
+      range("change", "Change to selected Input 1", 0, -2, 2, 0.25),
+    ],
     cases: cases(
-      "Positive input B",
-      "Negative input B",
-      "Input B is 2. Hidden outputs are H1 = ReLU(A - B) and H2 = ReLU(0.5 × A + 0.5 × B). Output = H1 - H2 + 0.2.",
-      "Input B is -1. Hidden outputs are H1 = ReLU(A - B) and H2 = ReLU(0.5 × A + 0.5 × B). Output = H1 - H2 + 0.2.",
-      { input: 1 },
-      { input: 2 },
+      "Two practice rows",
+      "Three practice rows",
+      "Rows [1, 2] and [3, 4] are the challenge's diagnostic inputs. The reference weights keep every product inspectable.",
+      "Add [5, 6], the lesson's one-reading example, to the same two-row batch. The layer keeps the same kernel and bias.",
+      { rows: 2, row: 1, unit: 2, change: 0 },
+      { rows: 3, row: 2, unit: 2, change: 0 },
     ),
     prediction: {
-      prompt:
-        "What is the final output after the two hidden ReLU units and output sum?",
+      prompt: "What value will the selected row and output unit contain?",
       tolerance: 0.01,
     },
-    evaluate: ({ input }, caseId) => {
-      const b = changed(caseId) ? -1 : 2;
-      const pre = [input - b, 0.5 * input + 0.5 * b];
-      const hidden = pre.map((value) => Math.max(0, value));
-      const answer = hidden[0]! - hidden[1]! + 0.2;
+    evaluate: ({ rows, row, unit, change }) => {
+      const input = [
+        [1, 2],
+        [3, 4],
+        [5, 6],
+      ].slice(0, rows);
+      input[row]![0]! += change;
+      const kernel = [
+        [0.5, -1, 2],
+        [1, 0.25, -0.5],
+      ];
+      const bias = [0.1, 0.2, -0.3];
+      const output = input.map((reading) =>
+        bias.map(
+          (offset, u) =>
+            sum(reading.map((value, feature) => value * kernel[feature]![u]!)) +
+            offset,
+        ),
+      );
+      const products = input[row]!.map(
+        (value, feature) => value * kernel[feature]![unit]!,
+      );
+      const answer = output[row]![unit]!;
       return {
         graphics: [
-          cells("Input row", [input, b]),
-          bars(
-            "Hidden layer before and after ReLU",
-            [...pre, ...hidden],
-            ["Sum H1", "Sum H2", "ReLU H1", "ReLU H2"],
-          ),
-          pipe("Forward calculation", [
-            `Input [${input}, ${b}]`,
-            `Hidden [${show(hidden)}]`,
-            `Output ${rounded(answer)} = H1 - H2 + 0.2`,
+          cells(`Practice inputs, shape [${rows}, 2]`, input.flat(), 2, [
+            row * 2,
+            row * 2 + 1,
           ]),
+          cells(
+            "Reference kernel [2, 3]: feature rows, unit columns",
+            kernel.flat(),
+            3,
+            [unit, 3 + unit],
+          ),
+          cells("Reference bias [3]: one value per unit", bias, 3, [unit]),
+          bars(
+            `Row ${row}, unit ${unit}: products and bias`,
+            [...products, bias[unit]!],
+            ["Input 1 product", "Input 2 product", "Bias"],
+          ),
+          cells(
+            `Reference outputs, shape [${rows}, 3]`,
+            output.flat().map(rounded),
+            3,
+            [row * 3 + unit],
+          ),
         ],
         answer,
-        answerLabel: "Final output",
-        explanation: `Hidden outputs are ${show(hidden)}. The output layer computes ${rounded(hidden[0]!)} - ${rounded(hidden[1]!)} + 0.2 = ${rounded(answer)}. Weights stay fixed.`,
-        code: `const h1 = Math.max(0, ${input} - ${b});\nconst h2 = Math.max(0, 0.5 * ${input} + 0.5 * ${b});\nconst output = h1 - h2 + 0.2;`,
+        answerLabel: `Row ${row}, unit ${unit} output`,
+        explanation: `The selected row is [${show(input[row]!)}]. Unit ${unit} uses kernel column [${kernel[0]![unit]}, ${kernel[1]![unit]}] and bias ${bias[unit]}. Its dot product is ${input[row]![0]} * ${kernel[0]![unit]} + ${input[row]![1]} * ${kernel[1]![unit]} + ${bias[unit]} = ${rounded(answer)}. Linear activation keeps this sum. One batch of ${rows} rows gives shape [${rows}, 3] with the same 9 parameters. These fixed reference outputs differ from the random-weight challenge run.`,
+        code: `const input = ${JSON.stringify(input)};\nconst kernel = ${JSON.stringify(kernel)};\nconst bias = ${JSON.stringify(bias)};\nconst output = input.map(reading => bias.map((offset, unit) => reading.reduce((total, value, feature) => total + value * kernel[feature][unit], offset)));\nconst selected = output[${row}][${unit}];`,
       };
     },
   },
   "building-a-network": {
-    title: "Dense layer shapes and parameters",
+    title: "Two models and one training run",
     brief:
-      "Change the number of hidden and output units. Work out the shape of the output layer’s weights.",
+      "Follow the eight-feature rehearsal from construction to comparison. Predict which stage starts the optimizer updates.",
     boundary:
-      "This checks dense-layer shapes and counts. The diagram does not construct or train a model.",
+      "This is a plan for the challenge's generated 120-row rehearsal and 529-parameter models. It calculates schedule counts assuming the selected fit completes. It constructs no model and invents no predictions or training loss. Your Challenge run supplies those measurements.",
     controls: [
-      range("width", "Hidden units", 4, 1, 8),
+      choice("stage", "Stage to inspect", 2, [
+        "Construction",
+        "Compilation",
+        "Initial snapshots and sweeps",
+        "First model fitted",
+        "Before-and-after comparison",
+      ]),
+      range("epochs", "Planned epochs", 50, 1, 100),
       choice(
-        "outputs",
-        "Output units",
-        1,
-        ["1 output", "2 outputs", "3 outputs"],
-        [1, 2, 3],
+        "batch",
+        "Planned batch size",
+        16,
+        ["8 rows", "16 rows", "32 rows"],
+        [8, 16, 32],
       ),
     ],
     cases: cases(
-      "Batch of four",
-      "Batch of eight",
-      "Four examples each have three input features.",
-      "Eight examples each have five input features.",
-      { width: 4, outputs: 1 },
-      { width: 3, outputs: 2 },
+      "Rehearsal schedule preset",
+      "Alternate schedule preset",
+      "This preset starts with the requested 50 epochs and batch size 16. Change the controls to compare another plan. Both models start independently.",
+      "This preset starts at 100 epochs and batch size 32. Those defaults also give 400 updates, with different settings from the challenge's requested run.",
+      { stage: 2, epochs: 50, batch: 16 },
+      { stage: 4, epochs: 100, batch: 32 },
     ),
     prediction: {
       prompt:
-        "How many weights does the output layer need, excluding its biases?",
+        "If the selected stage completes, how many optimizer updates has the first model made?",
       tolerance: 0,
+      unit: "steps",
     },
-    evaluate: ({ width, outputs }, caseId) => {
-      const batch = changed(caseId) ? 8 : 4,
-        inputs = changed(caseId) ? 5 : 3;
+    evaluate: ({ stage, epochs, batch }) => {
+      const batchesPerEpoch = Math.ceil(120 / batch);
+      const updates = stage >= 3 ? epochs * batchesPerEpoch : 0;
+      const states = [
+        [
+          "Two separate 8, 24, 12, 1 models",
+          "Random kernels and zero biases",
+          "No compile or fit yet",
+        ],
+        [
+          "Both models: Adam, binaryCrossentropy, accuracy",
+          "Compilation keeps the initialized weights",
+          "Both optimizers: 0 updates",
+        ],
+        [
+          "First model: copy 529 initial values into 6 plain arrays",
+          "Save 120 untrained scores from each model",
+          "Both optimizers: 0 updates",
+        ],
+        [
+          `First model: one completed fit, ${epochs} epochs, batch size ${batch}`,
+          `First optimizer: ${updates} updates`,
+          "Second model: no fit, starting weights retained",
+        ],
+        [
+          "Read 120 new scores from the first model",
+          "Compare with both saved untrained sweeps",
+          "Second model stays at its own initial weights",
+          "Observed scores and loss come from your Challenge run",
+        ],
+      ];
       return {
         graphics: [
-          pipe("Shapes across the network", [
-            `Input [${batch}, ${inputs}]`,
-            `Hidden [${batch}, ${width}]`,
-            `Output [${batch}, ${outputs}]`,
+          {
+            ...pipe("Rehearsal stages", [
+              "Construct two independent models",
+              "Compile each for training",
+              "Save initial weights and both untrained sweeps",
+              "Fit the first model once",
+              "Read its new scores and compare",
+            ]),
+            highlight: [stage],
+          },
+          pipe("Parameters in each rehearsal model", [
+            "First layer: 8 inputs, 24 units, 192 weights and 24 biases = 216",
+            "Second layer: 24 inputs, 12 units, 288 weights and 12 biases = 300",
+            "Output: 12 inputs, 1 unit, 12 weights and 1 bias = 13",
+            "Total: 529 parameters, stored in 3 kernels and 3 bias tensors",
           ]),
-          cells(
-            `Output weight matrix [${width}, ${outputs}]`,
-            Array.from(
-              { length: width * outputs },
-              (_, i) => `w${Math.floor(i / outputs)},${i % outputs}`,
-            ),
-            outputs,
+          pipe("State at the selected stage", states[stage]!),
+          bars(
+            "Optimizer updates after the selected stage",
+            [updates, 0],
+            ["First model", "Second model"],
+            "rehearsal-optimizer-updates",
           ),
+          pipe("Planned fit settings", [
+            "120 generated training rows, 8 dimensionless features each",
+            120 % batch === 0
+              ? `${batchesPerEpoch} full batches per epoch, ${batch} rows each`
+              : `${batchesPerEpoch} batches per epoch, with ${120 % batch} rows in the final batch`,
+            `${epochs} epochs times ${batchesPerEpoch} batches = ${epochs * batchesPerEpoch} updates after a completed fit`,
+            "No validation split. Reusing these rows cannot establish performance on new data.",
+          ]),
         ],
-        answer: width * outputs,
-        answerLabel: "Output-layer weight count",
-        explanation: `Each of ${outputs} outputs connects to all ${width} hidden units. Its weights have shape [${width}, ${outputs}]. Batch size changes the number of outputs. The layer keeps the same weights.`,
-        code: `model.add(tf.layers.dense({ units: ${width}, inputShape: [${inputs}], activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: ${outputs} }));`,
+        answer: updates,
+        answerLabel: "First model optimizer updates",
+        explanation: `${stage < 3 ? "Construction, compilation, snapshots, and prediction leave optimizer updates at zero." : `A completed fit makes ${epochs} * ceil(120 / ${batch}) = ${updates} updates on the first model.`} The second model receives no fit. ${epochs === 50 && batch === 16 ? "This is the requested schedule." : "These settings differ from the requested 50 epochs and batch size 16. An equal update count does not make two schedules equivalent."} This plan supplies no stochastic scores or measured loss. Inspect those in your actual run.`,
+        code: `// Schedule calculation only. No model runs here.\nconst rows = 120;\nconst epochs = ${epochs};\nconst batchSize = ${batch};\nconst batchesPerEpoch = Math.ceil(rows / batchSize);\nconst firstModelUpdates = ${stage >= 3 ? "epochs * batchesPerEpoch" : "0"};\nconst secondModelUpdates = 0;`,
       };
     },
   },
   "loss-functions": {
-    title: "Measure prediction error",
+    title: "One row's error and the batch loss",
     brief:
-      "Move one prediction. Square each difference, then average the three errors.",
+      "Inspect a supplied diagnostic row. Trace squared error into MSE, then compare the two declared binary-output formats.",
     boundary:
-      "Three fixed targets and editable predictions. This calculates loss without fitting a model.",
+      "These are the exercise's arithmetic and binary-label diagnostic inputs, separate from ship measurements and calibration-tone records. The formulas calculate a reference loss. They train no model and establish no performance on new data.",
     controls: [
-      range("prediction", "Prediction for the middle example", 4, 0, 8, 0.5),
+      choice("stage", "Loss calculation", 0, [
+        "Mean squared error",
+        "BCE from raw logits",
+        "BCE from sigmoid probabilities",
+      ]),
+      {
+        ...range("row", "Row index to inspect", 0, 0, 4),
+        maxFor: ({ stage, mseRows }) => (stage === 0 ? mseRows! - 1 : 1),
+      },
+      range("change", "Change to first prediction or logit", 0, -2, 2, 0.1),
     ],
     cases: cases(
-      "Targets 2, 4, 6",
-      "Targets 1, 3, 5",
-      "The first and last predictions are 2 and 7.",
-      "The first and last predictions are 0 and 6.",
-      { prediction: 4 },
-      { prediction: 5 },
+      "Initial diagnostic preset",
+      "Alternate diagnostic preset",
+      "MSE starts with labels [3, -0.5, 2, 1] and predictions [2.5, 0, 2.1, 1.3]. BCE starts with labels [1, 0] and logits [3, -3].",
+      "MSE starts with the supplied five-row labels [1, 0, 1, 0, 1] and raw scores [0.4, -0.4, -0.8, 0.8, 1.4]. BCE starts with labels [1, 0] and logits [-3, 3]. Controls can change the first supplied value.",
+      { stage: 0, row: 0, change: 0, mseRows: 4 },
+      { stage: 0, row: 0, change: 0, mseRows: 5 },
     ),
     prediction: {
       prompt:
-        "What is the mean squared error across all three current predictions?",
-      tolerance: 0.015,
+        "What scalar loss does this calculation return for the whole batch?",
+      tolerance: 0.001,
     },
-    evaluate: ({ prediction }, caseId) => {
-      const target = changed(caseId) ? [1, 3, 5] : [2, 4, 6];
-      const predicted = changed(caseId)
-        ? [0, prediction, 6]
-        : [2, prediction, 7];
-      const errors = predicted.map((value, i) => (value - target[i]!) ** 2);
+    evaluate: ({ stage, row, change }, caseId) => {
+      if (stage === 0) {
+        const labels = changed(caseId) ? [1, 0, 1, 0, 1] : [3, -0.5, 2, 1];
+        const predictions = changed(caseId)
+          ? [0.4, -0.4, -0.8, 0.8, 1.4]
+          : [2.5, 0, 2.1, 1.3];
+        predictions[0]! += change;
+        const differences = predictions.map((value, i) => value - labels[i]!);
+        const squares = differences.map((value) => value * value);
+        const total = sum(squares);
+        const answer = total / labels.length;
+        return {
+          graphics: [
+            {
+              ...cells(
+                "Diagnostic rows: label, prediction",
+                labels.flatMap((label, i) => [label, predictions[i]!]),
+                2,
+                [row * 2, row * 2 + 1],
+              ),
+              labels: labels.flatMap((_, i) => [
+                `Row ${i} label`,
+                `Row ${i} prediction`,
+              ]),
+            },
+            cells(
+              "Prediction minus label, one difference per row",
+              differences.map(rounded),
+              labels.length,
+              [row],
+            ),
+            cells(
+              "Squared differences, in the same row order",
+              squares.map(rounded),
+              labels.length,
+              [row],
+            ),
+            pipe("Mean squared error reduction", [
+              `Sum of squared differences: ${rounded(total)}`,
+              `Divide by all ${labels.length} rows`,
+              `Scalar MSE: ${rounded(answer)}`,
+            ]),
+          ],
+          answer,
+          answerLabel: "Mean squared error",
+          explanation: `Row ${row}: prediction ${predictions[row]} minus label ${labels[row]} gives ${rounded(differences[row]!)}. Its square is ${rounded(squares[row]!)}. Add every row's square, then divide ${rounded(total)} by ${labels.length} to get ${rounded(answer)}. Squaring before averaging prevents opposite-signed errors from cancelling.`,
+          code: `const labels = ${JSON.stringify(labels)};\nconst predictions = ${JSON.stringify(predictions)};\nconst differences = predictions.map((value, i) => value - labels[i]);\nconst squares = differences.map(value => value * value);\nconst batchLoss = squares.reduce((total, value) => total + value, 0) / labels.length;`,
+        };
+      }
+      const labels = [1, 0];
+      const logits = changed(caseId) ? [-3, 3] : [3, -3];
+      logits[0]! += change;
+      const probabilities = logits.map((value) => 1 / (1 + Math.exp(-value)));
+      const probabilityInput = stage === 2;
+      const terms = probabilityInput
+        ? probabilities.map(
+            (value, i) =>
+              -(
+                labels[i]! * Math.log(value) +
+                (1 - labels[i]!) * Math.log1p(-value)
+              ),
+          )
+        : logits.map(
+            (value, i) =>
+              Math.max(value, 0) -
+              labels[i]! * value +
+              Math.log1p(Math.exp(-Math.abs(value))),
+          );
+      const answer = mean(terms);
+      const values = probabilityInput ? probabilities : logits;
+      const form = probabilityInput
+        ? "binaryCrossentropy"
+        : "sigmoidCrossEntropy";
       return {
         graphics: [
-          bars(
-            "Targets",
-            target,
-            ["Example A", "Example B", "Example C"],
-            "prediction-values",
+          {
+            ...cells(
+              probabilityInput
+                ? "Diagnostic rows: label, sigmoid probability"
+                : "Diagnostic rows: label, raw logit",
+              labels.flatMap((label, i) => [label, values[i]!]),
+              2,
+              [row * 2, row * 2 + 1],
+            ),
+            labels: labels.flatMap((_, i) => [
+              `Row ${i} label`,
+              `Row ${i} ${probabilityInput ? "probability" : "logit"}`,
+            ]),
+          },
+          cells(
+            probabilityInput
+              ? "Corresponding raw logits before sigmoid"
+              : "Corresponding sigmoid probabilities",
+            probabilityInput ? logits : probabilities,
+            2,
+            [row],
           ),
-          bars(
-            "Predictions",
-            predicted,
-            ["Example A", "Example B", "Example C"],
-            "prediction-values",
-          ),
-          bars("Squared errors", errors, [
-            "Example A",
-            "Example B",
-            "Example C",
+          cells("Binary cross-entropy term for each row", terms, 2, [row]),
+          pipe("Declared output contract", [
+            probabilityInput
+              ? "probabilities: sigmoid already ran"
+              : "logits: raw scores before sigmoid",
+            probabilityInput
+              ? "Compile loss: binaryCrossentropy"
+              : "Tensor loss: tf.losses.sigmoidCrossEntropy",
+            probabilityInput
+              ? "Pass the probabilities directly"
+              : "Pass logits directly. This API applies sigmoid internally.",
+            `Mean of both row terms: ${rounded(answer)}`,
           ]),
         ],
-        answer: mean(errors),
-        answerLabel: "Mean squared error",
-        explanation: `Squared errors are ${show(errors)}. Their sum ${sum(errors)} divided by 3 gives MSE ${rounded(mean(errors))}.`,
-        code: "const mse = predictions.reduce((total, value, i) => total + (value - targets[i]) ** 2, 0) / 3;",
+        answer,
+        answerLabel: "Mean binary cross-entropy",
+        explanation: `Row ${row} has label ${labels[row]}, logit ${logits[row]}, and sigmoid score ${rounded(probabilities[row]!)}. Its BCE term is about ${rounded(terms[row]!)}. Average both terms to get about ${rounded(answer)}. The declared ${probabilityInput ? "probabilities" : "logits"} contract selects ${form}. Using the matching forms gives the same mathematical loss here. Applying sigmoid again changes it.`,
+        code: `const labels = [1, 0];\nconst logits = ${JSON.stringify(logits)};\nconst probabilities = logits.map(value => 1 / (1 + Math.exp(-value)));\nconst declaredOutputKind = '${probabilityInput ? "probabilities" : "logits"}';\nconst selectedForm = '${form}';\nconst terms = ${probabilityInput ? "probabilities.map((value, i) => -(labels[i] * Math.log(value) + (1 - labels[i]) * Math.log1p(-value)))" : "logits.map((value, i) => Math.max(value, 0) - labels[i] * value + Math.log1p(Math.exp(-Math.abs(value))))"};\nconst batchLoss = terms.reduce((total, value) => total + value, 0) / labels.length;`,
       };
     },
   },
   "gradient-descent": {
-    title: "The next weight update",
+    title: "A weight, its gradient, and the next loss",
     brief:
-      "Choose a starting weight and learning rate on the loss curve (w - 3)².",
+      "Follow the supplied squared-loss check through three updates. Inspect the old weight, gradient, rate, amount subtracted, new weight, and recomputed loss.",
     boundary:
-      "This takes one gradient step on a simple curved loss function. Real models usually have many weights that affect each other.",
+      "This formula illustration uses the exercise's scalar loss w squared. Its initial preset is w = 5 and rate = 0.1. These values are optimization probes, separate from the ship's classifier. The Challenge differentiates supplied functions with TensorFlow.js. The optional learning-rate experiment uses a different loss.",
     controls: [
-      range("weight", "Current weight", 0, -1, 7, 0.5),
-      range("rate", "Learning rate", 0.2, 0.05, 1.2, 0.05),
+      range("weight", "Starting weight", 5, -5, 5, 0.25),
+      range("rate", "Learning rate", 0.1, 0, 1.2, 0.05),
+      range("update", "Update to inspect", 1, 1, 3),
     ],
     cases: cases(
-      "Start below the minimum",
-      "Start above the minimum",
-      "The minimum is at w = 3.",
-      "Start on the other side of the same curve with a larger rate.",
-      { weight: 0, rate: 0.2 },
-      { weight: 6, rate: 0.75 },
+      "Initial squared-loss preset",
+      "Alternate squared-loss preset",
+      "This preset starts at weight 5, rate 0.1, on loss w squared. The Challenge's first three updates use those settings.",
+      "This preset starts at weight 5 with rate 0.6 on the same squared loss. Change the controls to inspect other updates.",
+      { weight: 5, rate: 0.1, update: 1 },
+      { weight: 5, rate: 0.6, update: 1 },
     ),
     prediction: {
-      prompt:
-        "What will the weight be after one gradient-descent update with the current learning rate?",
-      tolerance: 0.015,
+      prompt: "What weight does the selected update produce?",
+      tolerance: 0.001,
     },
-    evaluate: ({ weight, rate }) => {
-      const gradient = 2 * (weight - 3),
-        next = gradientStep(weight, rate);
+    evaluate: ({ weight, rate, update }) => {
+      let current = weight;
+      const trace = Array.from({ length: 3 }, () => {
+        const oldWeight = current;
+        const gradient = 2 * oldWeight;
+        const amount = rate * gradient;
+        current = oldWeight - amount;
+        return {
+          oldWeight,
+          gradient,
+          amount,
+          nextWeight: current,
+          oldLoss: oldWeight * oldWeight,
+          nextLoss: current * current,
+        };
+      });
+      const selected = trace[update - 1]!;
       return {
         graphics: [
+          pipe("Selected scalar probe", [
+            "Loss: w squared",
+            `Initial weight: ${weight}`,
+            `Learning rate: ${rate}`,
+            `Inspect update ${update}`,
+          ]),
+          {
+            ...cells(
+              "Values in the selected update",
+              [
+                selected.oldWeight,
+                selected.gradient,
+                rate,
+                selected.amount,
+                selected.nextWeight,
+                selected.oldLoss,
+                selected.nextLoss,
+              ].map(rounded),
+              2,
+            ),
+            labels: [
+              "Old weight",
+              "Gradient at old weight",
+              "Learning rate",
+              "Amount to subtract",
+              "New weight",
+              "Loss before",
+              "Recomputed loss after",
+            ],
+          },
           line(
-            "Loss (w - 3)² for weights -1 to 7",
-            Array.from({ length: 17 }, (_, i) => (-1 + i / 2 - 3) ** 2),
-            [Math.round((weight + 1) * 2)],
-            Array.from({ length: 17 }, (_, i) => String(-1 + i / 2)),
+            "Weight before and after three updates",
+            [weight, ...trace.map((row) => row.nextWeight)],
+            [update],
+            ["Before", "1", "2", "3"],
+            "squared-probe-weight",
           ),
           bars(
-            "Loss before and after the step",
-            [(weight - 3) ** 2, (next - 3) ** 2],
-            ["Before", "After"],
+            "Loss before and after the selected update",
+            [selected.oldLoss, selected.nextLoss],
+            ["Before update", "After update"],
+            "squared-probe-loss",
           ),
-          pipe("Weight update", [
-            `Current ${weight}`,
-            `Subtract ${rounded(rate * gradient)}`,
-            `Next weight ${rounded(next)}`,
-          ]),
+          pipe(
+            "Three calculated updates on this loss",
+            trace.map(
+              (row, i) =>
+                `Update ${i + 1}: weight ${rounded(row.nextWeight)}, loss ${rounded(row.nextLoss)}`,
+            ),
+          ),
         ],
-        answer: next,
-        answerLabel: "Next weight",
-        explanation: `Gradient = 2 × (${weight} - 3) = ${gradient}. Next weight = ${weight} - ${rate} × ${gradient} = ${rounded(next)}. The loss ${(next - 3) ** 2 > (weight - 3) ** 2 ? "increases" : "does not increase"} in this step.`,
-        code: `const nextWeight = ${weight} - ${rate} * (2 * (${weight} - 3));`,
+        answer: selected.nextWeight,
+        answerLabel: `Weight after update ${update}`,
+        explanation: `At old weight ${rounded(selected.oldWeight)}, the gradient of w squared is ${rounded(selected.gradient)}. Multiply by rate ${rate} to get ${rounded(selected.amount)}. Subtract that amount: ${rounded(selected.oldWeight)} - (${rounded(selected.amount)}) = ${rounded(selected.nextWeight)}. Recompute loss at the new weight: ${rounded(selected.nextLoss)}, compared with ${rounded(selected.oldLoss)} before. The loss ${selected.nextLoss > selected.oldLoss ? "increases" : selected.nextLoss < selected.oldLoss ? "decreases" : "stays the same"} for this update. This known derivative illustrates the probe. Your step function must differentiate whichever loss it receives.`,
+        code: `const rate = ${rate};\nlet weight = ${weight};\nconst trace = [];\nfor (let update = 1; update <= 3; update++) {\n  const oldWeight = weight;\n  const gradient = 2 * oldWeight;\n  weight = oldWeight - rate * gradient;\n  trace.push({ oldWeight, gradient, nextWeight: weight, loss: weight * weight });\n}\nconst selected = trace[${update - 1}];`,
       };
     },
   },
   backpropagation: {
-    title: "Gradients through a product",
+    title: "Two ways to check the same slope",
     brief:
-      "Change the weight. Follow y = w × x into squared loss and back to the weight.",
+      "Change Demir's test weight. Compare a small nudge with the chain-rule gradient of loss = w squared.",
     boundary:
-      "This calculates the derivative of one numeric output. A network’s backpropagation combines many such steps.",
-    controls: [range("weight", "Weight w", 0.5, -1, 3, 0.25)],
+      "Plain JavaScript calculates this reference for the supplied scalar test loss. The coding task runs TensorFlow.js and compares your two methods. These values are not sensor readings and train no model.",
+    controls: [range("weight", "Weight w", 3, -5, 5, 0.25)],
     cases: cases(
-      "Input 2, target 3",
-      "Input 3, target 1",
-      "The input and target stay fixed while you change w.",
-      "A different input and target change both the error and local derivative.",
-      { weight: 0.5 },
-      { weight: 1 },
+      "Starting weight 3",
+      "Changed weight 5",
+      "The coding task starts with w = 3 and loss = w squared.",
+      "The same loss at another weight needs a new gradient.",
+      { weight: 3 },
+      { weight: 5 },
     ),
     prediction: {
-      prompt:
-        "What is the derivative of squared loss with respect to the current weight?",
+      prompt: "What is the gradient of w squared at the selected weight?",
       tolerance: 0.01,
     },
-    evaluate: ({ weight }, caseId) => {
-      const x = changed(caseId) ? 3 : 2,
-        target = changed(caseId) ? 1 : 3;
-      const y = weight * x,
-        dLoss = 2 * (y - target),
-        gradient = dLoss * x;
+    evaluate: ({ weight }) => {
+      const nudge = 0.001;
+      const baseLoss = weight * weight;
+      const nudgedWeight = weight + nudge;
+      const nudgedLoss = nudgedWeight * nudgedWeight;
+      const estimate = (nudgedLoss - baseLoss) / nudge;
+      const gradient = weight + weight;
       return {
         graphics: [
-          pipe("Forward calculation", [
-            `x = ${x}`,
-            `w × x = ${rounded(y)}`,
-            `Target = ${target}`,
-          ]),
-          bars(
-            "Local derivatives and final gradient",
-            [dLoss, x, gradient],
-            ["dL/dy", "dy/dw", "dL/dw"],
+          cells(
+            "Two nearby weights and their losses",
+            [
+              `w = ${weight}`,
+              `w + 0.001 = ${rounded(nudgedWeight)}`,
+              `loss = ${baseLoss}`,
+              `nudged loss = ${Number(nudgedLoss.toFixed(6))}`,
+            ],
+            2,
           ),
+          bars(
+            "Two calculations of the same slope",
+            [gradient, estimate],
+            ["Chain-rule gradient", "Numerical estimate"],
+            "scalar-loss-gradient",
+          ),
+          pipe("Weight paths into the loss", [
+            `loss = ${weight} × ${weight}`,
+            `First path contributes ${weight}`,
+            `Second path contributes ${weight}`,
+            `Gradient = ${gradient}`,
+          ]),
         ],
         answer: gradient,
         answerLabel: "Gradient dL/dw",
-        explanation: `The chain rule multiplies dL/dy = ${dLoss} by dy/dw = ${x}. The weight gradient is ${gradient}.`,
-        code: `const prediction = ${weight} * ${x};\nconst gradient = 2 * (prediction - ${target}) * ${x};`,
+        explanation: `The weight appears on both sides of w × w, so its two paths contribute ${weight} + ${weight} = ${gradient}. A nudge of ${nudge} estimates ${rounded(estimate)} from two loss values. Both methods leave the original weight at ${weight}.`,
+        code: `const weight = ${weight};\nconst baseLoss = weight * weight;\nconst nudgedLoss = (weight + 0.001) ** 2;\nconst estimate = (nudgedLoss - baseLoss) / 0.001;\nconst gradient = weight + weight;`,
       };
     },
   },
   "training-loop": {
-    title: "Validation loss and checkpoints",
+    title: "Two recent windows of loss",
     brief:
-      "Choose how many epochs to inspect. Compare the latest validation loss with the lowest one seen so far.",
+      "Choose an observed epoch count. Follow the two ten-epoch means into the trend label.",
     boundary:
-      "We chose these curves to illustrate the stopping rule. TFJS early stopping keeps the final weights. To use the best observed checkpoint, save its weights during training and restore them yourself.",
-    controls: [range("epoch", "Last observed epoch", 16, 1, 24)],
-    cases: cases(
-      "Late overfitting",
-      "Earlier overfitting",
-      "Validation starts worsening later in the run.",
-      "Validation starts worsening sooner.",
-      { epoch: 16 },
-      { epoch: 12 },
-    ),
+      "These chosen diagnostic losses match the lesson's rule probes. They are separate from your measured fit. The validation callback waits for five consecutive non-improvements. Neither rule identifies a cause or restores weights.",
+    controls: [
+      {
+        ...range("observed", "Observed epochs", 50, 1, 50),
+        maxFor: (values) => values.available ?? 50,
+      },
+    ],
+    cases: [
+      {
+        id: "standard",
+        label: "Recent windows",
+        description:
+          "Fifty values per curve. The final twenty are the two diagnostic windows.",
+        values: { observed: 50, available: 50 },
+      },
+      {
+        id: "changed",
+        label: "Boundary values",
+        description:
+          "Twenty values per curve, including the exact 5% boundary.",
+        values: { observed: 20, available: 20 },
+      },
+      {
+        id: "zero-rise",
+        label: "Zero baseline",
+        description:
+          "Both previous means are zero. Recent values are positive.",
+        values: { observed: 20, available: 20 },
+      },
+      {
+        id: "zero-flat",
+        label: "Zero pair",
+        description: "Validation stays at zero in both windows.",
+        values: { observed: 20, available: 20 },
+      },
+      {
+        id: "validation-rise",
+        label: "Level training",
+        description: "The training windows match. Validation values differ.",
+        values: { observed: 20, available: 20 },
+      },
+      {
+        id: "validation-drop",
+        label: "Opposing windows",
+        description: "The two curves move in different directions.",
+        values: { observed: 20, available: 20 },
+      },
+      {
+        id: "boundary-drop",
+        label: "Lower boundary",
+        description: "Validation reaches exactly 95% of its previous mean.",
+        values: { observed: 20, available: 20 },
+      },
+    ],
     prediction: {
-      prompt:
-        "Which epoch index has the lowest validation loss? Use the zero-based index shown on the chart.",
-      tolerance: 0,
+      prompt: "Which label describes these observed loss windows?",
+      choices: [
+        "insufficient-history",
+        "validation-improving",
+        "both-worsening",
+        "train-down-validation-up",
+        "validation-worsening",
+        "plateau",
+      ],
     },
-    evaluate: ({ epoch }, caseId) => {
-      const trace = trainingTrace.slice(0, epoch + 1).map((item) => ({
-        ...item,
-        validation: changed(caseId)
-          ? 0.66 * Math.exp(-item.epoch / 4) +
-            0.13 +
-            Math.max(0, item.epoch - 7) ** 2 * 0.005
-          : item.validation,
-      }));
-      const best = trace.reduce((a, b) =>
-        b.validation < a.validation ? b : a,
-      );
+    evaluate: ({ observed }, caseId) => {
+      const fixture =
+        caseId === "standard"
+          ? { training: [1, 0.8], validation: [1, 1.2], prefix: 30 }
+          : caseId === "changed"
+            ? { training: [1, 0.8], validation: [1, 1.05], prefix: 0 }
+            : caseId === "zero-rise"
+              ? { training: [0, 1], validation: [0, 1], prefix: 0 }
+              : caseId === "zero-flat"
+                ? { training: [1, 1], validation: [0, 0], prefix: 0 }
+                : caseId === "validation-rise"
+                  ? { training: [1, 1], validation: [1, 1.2], prefix: 0 }
+                  : caseId === "validation-drop"
+                    ? { training: [1, 1.2], validation: [1, 0.8], prefix: 0 }
+                    : { training: [1, 1], validation: [1, 0.95], prefix: 0 };
+      const curve = (pair: number[]) =>
+        [
+          ...Array(fixture.prefix).fill(20),
+          ...Array(10).fill(pair[0]),
+          ...Array(10).fill(pair[1]),
+        ].slice(0, observed) as number[];
+      const training = curve(fixture.training);
+      const validation = curve(fixture.validation);
+      const count = training.length;
+      const hasWindows = count >= 20;
+      const windows = (values: number[]) => [
+        mean(values.slice(-20, -10)),
+        mean(values.slice(-10)),
+      ];
+      const direction = ([before, recent]: number[]) => {
+        if (before === 0) return recent === 0 ? "flat" : "up";
+        if (recent! < before! * 0.95 - 1e-12) return "down";
+        if (recent! > before! * 1.05 + 1e-12) return "up";
+        return "flat";
+      };
+      const trainingMeans = hasWindows ? windows(training) : [];
+      const validationMeans = hasWindows ? windows(validation) : [];
+      const trainingTrend = hasWindows
+        ? direction(trainingMeans)
+        : "unavailable";
+      const validationTrend = hasWindows
+        ? direction(validationMeans)
+        : "unavailable";
+      const answer = !hasWindows
+        ? "insufficient-history"
+        : validationTrend === "down"
+          ? "validation-improving"
+          : validationTrend === "up" && trainingTrend === "up"
+            ? "both-worsening"
+            : validationTrend === "up" && trainingTrend === "down"
+              ? "train-down-validation-up"
+              : validationTrend === "up"
+                ? "validation-worsening"
+                : "plateau";
+      const epochLabels = training.map((_, index) => String(index + 1));
+      const highlight = hasWindows
+        ? Array.from({ length: 20 }, (_, index) => count - 20 + index)
+        : [];
       return {
         graphics: [
           line(
             "Observed validation loss by epoch",
-            trace.map((item) => item.validation),
-            [epoch],
-            trace.map((item) => String(item.epoch)),
+            validation,
+            highlight,
+            epochLabels,
             "training-loss",
           ),
           line(
             "Training loss by epoch",
-            trace.map((item) => item.train),
-            [epoch],
-            trace.map((item) => String(item.epoch)),
+            training,
+            highlight,
+            epochLabels,
             "training-loss",
           ),
-          pipe("Checkpoint comparison", [
-            `Latest epoch ${epoch}: validation ${rounded(trace[epoch]!.validation)}`,
-            `Best epoch ${best.epoch}: validation ${rounded(best.validation)}`,
-            `Keep checkpoint ${best.epoch}`,
-          ]),
-        ],
-        answer: best.epoch,
-        answerLabel: "Best validation checkpoint",
-        explanation: `Epoch ${best.epoch} has the lowest observed validation loss, ${rounded(best.validation)}. The latest epoch ${epoch} has ${rounded(trace[epoch]!.validation)}. TFJS early stopping does not restore epoch ${best.epoch}. Save a copy of the best weights during training, then restore it after the run.`,
-        code: "const best = history.reduce((a, b) => b.validation < a.validation ? b : a);",
-      };
-    },
-  },
-  "evaluating-deep-scan": evaluationSpec(false),
-  "threshold-tuning": evaluationSpec(true),
-  "time-vs-frequency": signalSpec("views"),
-  "fourier-transform": signalSpec("fourier"),
-  spectrograms: signalSpec("spectrogram"),
-  "fft-as-features": signalSpec("features"),
-  "windowing-and-overlap": signalSpec("window"),
-  "sequences-matter": {
-    title: "Change across a sequence",
-    brief:
-      "Reverse the readings or keep their order. Compare the first and last values.",
-    boundary:
-      "These are two short example sequences. Comparing the first and last values shows their overall change. Finding its cause requires more evidence.",
-    controls: [
-      choice("reverse", "Sequence order", 0, ["Original", "Reversed"]),
-    ],
-    cases: cases(
-      "Rising capture",
-      "Falling capture",
-      "Eight readings with an overall rise.",
-      "Eight different readings with an overall fall.",
-      { reverse: 0 },
-      { reverse: 1 },
-    ),
-    prediction: {
-      prompt:
-        "What is the last reading minus the first reading in the current order?",
-      tolerance: 0,
-    },
-    evaluate: ({ reverse }, caseId) => {
-      const original = changed(caseId)
-        ? [12, 10, 11, 8, 9, 6, 7, 4]
-        : [2, 4, 3, 6, 5, 8, 7, 9];
-      const values = reverse ? [...original].reverse() : original;
-      const differences = values.slice(1).map((value, i) => value - values[i]!);
-      const answer = values.at(-1)! - values[0]!;
-      return {
-        graphics: [
-          line(
-            "Readings in current time order",
-            values,
-            undefined,
-            values.map((_, i) => `t${i}`),
-          ),
-          bars(
-            "Change from each previous reading",
-            differences,
-            differences.map((_, i) => `t${i} to t${i + 1}`),
-          ),
+          ...(hasWindows
+            ? [
+                cells(
+                  "Original epoch windows",
+                  [
+                    `Previous: ${count - 19}-${count - 10}`,
+                    `Recent: ${count - 9}-${count}`,
+                  ],
+                  2,
+                ),
+                bars(
+                  "Means from the full observed history",
+                  [...trainingMeans, ...validationMeans],
+                  [
+                    "Training previous",
+                    "Training recent",
+                    "Validation previous",
+                    "Validation recent",
+                  ],
+                ),
+                pipe("Observed trend rule", [
+                  `Training: ${trainingTrend}`,
+                  `Validation: ${validationTrend}`,
+                  `Return ${answer}`,
+                ]),
+              ]
+            : [
+                pipe("Not enough entries for two windows", [
+                  `${count} observed epochs`,
+                  "Two windows need 20 entries",
+                  "Return insufficient-history",
+                ]),
+              ]),
         ],
         answer,
-        answerLabel: "Last reading minus first",
-        explanation: `Last ${values.at(-1)} minus first ${values[0]} is ${answer}. Reversing the order keeps the values but reverses the direction of the changes.`,
-        code: `const change = values.at(-1) - values[0];\n// ${values.at(-1)} - ${values[0]}`,
+        answerLabel: "Full-history trend label",
+        explanation: hasWindows
+          ? `Use original epochs ${count - 19}-${count - 10} and ${count - 9}-${count}. Training means are ${show(trainingMeans)}. Validation means are ${show(validationMeans)}. Apply the ordered rule to return ${answer}. Exactly 5% is flat. Zero to positive is worsening. This summary does not control the callback or establish why losses changed.`
+          : `There are ${count} entries in each curve. Return insufficient-history before calculating ten-epoch means. A short actual training run can be valid.`,
+        code: hasWindows
+          ? `const previous = values.slice(-20, -10);
+const recent = values.slice(-10);
+// Original epochs ${count - 19}-${count - 10} and ${count - 9}-${count}. ${answer}`
+          : `// ${count} < 20
+return 'insufficient-history';`,
       };
     },
   },
-  "simple-rnns": {
-    title: "Update a recurrent state",
+  "evaluating-deep-scan": (() => {
+    const example = evaluationSpec(false);
+    return {
+      ...example,
+      title: "Trace a case into an error category",
+      brief:
+        "Select a supplied case. Compare its score with the cutoff, then count the misses and false alarms.",
+      boundary:
+        "These twelve supplied teaching scores are separate from the coding task's 43 evaluation rows. The constant-0 baseline is a declared comparison rule. This activity does not train or evaluate the exercise model.",
+      controls: [
+        ...example.controls,
+        range("selectedCase", "Case number", 3, 1, 12),
+      ],
+      cases: cases(
+        "Original scores preset",
+        "Shifted scores preset",
+        "Start with the original supplied scores and cutoff 0.5.",
+        "Start with shifted supplied scores and cutoff 0.65.",
+        { threshold: 0.5, selectedCase: 3 },
+        { threshold: 0.65, selectedCase: 3 },
+      ),
+      evaluate: (values: Record<string, number>, caseId: string) => {
+        const result = example.evaluate(values, caseId);
+        const index = (values.selectedCase ?? 3) - 1;
+        const item = SCREENING_CASES[index]!;
+        const score = changed(caseId)
+          ? Math.max(
+              0.01,
+              Math.min(
+                0.99,
+                item.score + (item.anomaly ? -0.15 : index % 2 ? 0.1 : 0.03),
+              ),
+            )
+          : item.score;
+        const threshold = values.threshold!;
+        const predicted = score > threshold ? 1 : 0;
+        const label = item.anomaly ? 1 : 0;
+        const category = result.graphics[1]!.values[index]!;
+        const counts = result.graphics[2]!.values as number[];
+        const accuracy = (counts[0]! + counts[3]!) / SCREENING_CASES.length;
+        return {
+          ...result,
+          graphics: [
+            { ...result.graphics[0]!, highlight: [index] },
+            pipe("Selected case decision", [
+              `Case ${index + 1}: supplied label ${label}`,
+              `Score ${score} ${score > threshold ? ">" : "≤"} cutoff ${threshold}`,
+              `Predict ${predicted}`,
+              `${category}: ${category === "FN" ? "missed anomaly" : category === "FP" ? "false alarm" : "matches the label"}`,
+            ]),
+            result.graphics[1]!,
+            result.graphics[2]!,
+            bars(
+              "Accuracy against a declared constant rule",
+              [accuracy, 7 / 12],
+              ["Selected cutoff", "Always predict 0"],
+              "evaluation-accuracy-fraction",
+            ),
+          ],
+          explanation: `Case ${index + 1} has supplied label ${label}. Its score ${score} ${score > threshold ? "exceeds" : "does not exceed"} ${threshold}, so predict ${predicted}: ${category}. ${result.explanation} Always predicting 0 gets 7 of these 12 cases correct but misses all 5 label-1 cases. That fixed rule was declared before comparing scores.`,
+          code: `const selected = { score: ${score}, label: ${label} };
+const predicted = selected.score > ${threshold} ? 1 : 0;
+const category = predicted === 1
+  ? (selected.label === 1 ? 'TP' : 'FP')
+  : (selected.label === 1 ? 'FN' : 'TN');
+// Case ${index + 1}: ${category}. A score equal to the cutoff predicts 0.`,
+        };
+      },
+    };
+  })(),
+  "threshold-tuning": ANOMALY_CLARITY["threshold-tuning"]!,
+  "time-vs-frequency": SIGNAL_TASK_INVESTIGATIONS["time-vs-frequency"]!,
+  "fourier-transform": SIGNAL_TASK_INVESTIGATIONS["fourier-transform"]!,
+  spectrograms: SIGNAL_TASK_INVESTIGATIONS.spectrograms!,
+  "fft-as-features": SIGNAL_TASK_INVESTIGATIONS["fft-as-features"]!,
+  "windowing-and-overlap": SIGNAL_TASK_INVESTIGATIONS["windowing-and-overlap"]!,
+  "sequences-matter": RECURRENT_TASK_INVESTIGATIONS["sequences-matter"]!,
+  "simple-rnns": RECURRENT_TASK_INVESTIGATIONS["simple-rnns"]!,
+  "lstm-gates": {
+    title: "One cell update, two results",
     brief:
-      "Select a time step and change how much previous state contributes. Start the state at zero.",
+      "Keep part of the old cell value, add the gated candidate, then check what the output gate passes onward.",
     boundary:
-      "This recurrent unit carries one number as state. It uses an input weight of 0.5. You choose the state weight. No training happens here.",
+      "The first case uses one dimension from the supplied challenge check: old cell 2, candidate 0, and gates at 0.5. The second changes the candidate to tanh(1). You choose gate fractions directly here. The challenge calculates them from weights. No archive model runs in this activity.",
     controls: [
-      range("step", "Time step index", 3, 0, 5),
-      range("memory", "Weight on previous state", 0.7, 0, 1.2, 0.1),
+      range("forget", "Forget gate", 0.5, 0, 1, 0.05),
+      range("input", "Input gate", 0.5, 0, 1, 0.05),
+      range("output", "Output gate", 0.5, 0, 1, 0.05),
+      choice("quantity", "Result to predict", 1, [
+        "Cell state",
+        "Hidden output",
+      ]),
     ],
     cases: cases(
-      "Gradual readings",
-      "A brief spike",
-      "Inputs rise over six time steps.",
-      "Smaller readings follow a large early value.",
-      { step: 3, memory: 0.7 },
-      { step: 4, memory: 0.9 },
+      "Zero candidate",
+      "Nonzero candidate",
+      "Old cell 2. A zero weighted sum gives tanh(0) = 0 for the candidate.",
+      "The old cell stays 2. A candidate weighted sum of 1 gives tanh(1).",
+      { forget: 0.5, input: 0.5, output: 0.5 },
+      { forget: 0.5, input: 0.5, output: 0.5 },
     ),
     prediction: {
       prompt:
-        "What is the recurrent state after the selected time step? Use tanh(0.5 × input/10 + state weight × previous state).",
-      tolerance: 0.02,
-    },
-    evaluate: ({ step, memory }, caseId) => {
-      const input = changed(caseId) ? [2, 9, 2, 3, 2, 3] : [2, 4, 3, 6, 5, 8];
-      const states: number[] = [];
-      input.forEach((value, i) =>
-        states.push(
-          Math.tanh((0.5 * value) / 10 + memory * (states[i - 1] ?? 0)),
-        ),
-      );
-      return {
-        graphics: [
-          line(
-            "Input readings over time",
-            input,
-            [step],
-            input.map((_, i) => `t${i}`),
-          ),
-          line(
-            "State after each reading",
-            states,
-            [step],
-            states.map((_, i) => `t${i}`),
-          ),
-          pipe("Selected update", [
-            `Input ${input[step]} ÷ 10`,
-            `Previous state ${rounded(states[step - 1] ?? 0)}`,
-            `Next state ${rounded(states[step]!)}`,
-          ]),
-        ],
-        answer: states[step]!,
-        answerLabel: `State at t${step}`,
-        explanation: `At t${step}, the input contribution is ${rounded((0.5 * input[step]!) / 10)} and the previous-state contribution is ${rounded(memory * (states[step - 1] ?? 0))}. Tanh produces ${rounded(states[step]!)}.`,
-        code: `const nextState = Math.tanh(0.5 * ${input[step]} / 10 + ${memory} * ${states[step - 1] ?? 0});`,
-      };
-    },
-  },
-  "lstm-gates": {
-    title: "LSTM cell memory updates",
-    brief:
-      "Adjust the forget and input gates. Use each gate to scale its contribution, then add the old memory and new candidate.",
-    boundary:
-      "This updates one stored LSTM value using gate values you choose. A full LSTM learns gates for many stored values and also has an output gate.",
-    controls: [
-      range("forget", "Forget gate", 0.75, 0, 1, 0.05),
-      range("input", "Input gate", 0.4, 0, 1, 0.05),
-    ],
-    cases: cases(
-      "Small negative candidate",
-      "Positive replacement",
-      "Old cell 0.8, new candidate -0.2.",
-      "Old cell -0.6, new candidate 0.9.",
-      { forget: 0.75, input: 0.4 },
-      { forget: 0.25, input: 0.8 },
-    ),
-    prediction: {
-      prompt: "What is the new cell memory with the current gate values?",
+        "What value does the selected cell result have after this update?",
       tolerance: 0.01,
     },
-    evaluate: ({ forget, input }, caseId) => {
-      const old = changed(caseId) ? -0.6 : 0.8,
-        candidate = changed(caseId) ? 0.9 : -0.2;
+    evaluate: ({ forget, input, output, quantity }, caseId) => {
+      const old = 2,
+        candidate = Math.tanh(changed(caseId) ? 1 : 0);
       const kept = forget * old,
         added = input * candidate;
+      const newCell = kept + added,
+        cellOutput = Math.tanh(newCell),
+        newHidden = output * cellOutput;
       return {
         graphics: [
           bars(
@@ -1017,421 +1550,212 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             "cell-memory",
           ),
           pipe("Cell update", [
-            `Forget gate ${forget}`,
-            `Input gate ${input}`,
-            `New cell ${rounded(kept + added)}`,
+            `Kept ${rounded(kept)}`,
+            `Added ${rounded(added)}`,
+            `New cell ${rounded(newCell)}`,
+          ]),
+          pipe("Hidden output", [
+            `tanh(new cell) ${rounded(cellOutput)}`,
+            `Output gate ${output}`,
+            `New hidden ${rounded(newHidden)}`,
           ]),
         ],
-        answer: kept + added,
-        answerLabel: "New cell memory",
-        explanation: `${forget} × ${old} + ${input} × ${candidate} = ${rounded(kept + added)}. Each gate scales its own contribution before the sum.`,
-        code: `const nextCell = ${forget} * ${old} + ${input} * ${candidate};`,
+        answer: quantity === 0 ? newCell : newHidden,
+        answerLabel: quantity === 0 ? "New cell state" : "New hidden output",
+        explanation: `The forget gate keeps ${rounded(kept)} and the input gate adds ${rounded(added)}, giving cell state ${rounded(newCell)}. The output gate then gives ${output} × tanh(${rounded(newCell)}) = ${rounded(newHidden)}. Changing only the output gate leaves that cell state unchanged.`,
+        code: `const candidate = Math.tanh(${changed(caseId) ? 1 : 0});\nconst newCell = ${forget} * ${old} + ${input} * candidate;\nconst newHidden = ${output} * Math.tanh(newCell);`,
       };
     },
   },
-  "sliding-windows": {
-    title: "Separate an input window from its target",
+  "sliding-windows": RECURRENT_TASK_INVESTIGATIONS["sliding-windows"]!,
+  "sequence-prediction": RECURRENT_TASK_INVESTIGATIONS["sequence-prediction"]!,
+  forecasting: TIME_SERIES_CLARITY["forecasting"]!,
+  "normal-vs-anomalous": ANOMALY_CLARITY["normal-vs-anomalous"]!,
+  autoencoders: ANOMALY_CLARITY["autoencoders"]!,
+  "reconstruction-error": ANOMALY_CLARITY["reconstruction-error"]!,
+  "the-anomaly": ANOMALY_CLARITY["the-anomaly"]!,
+  "beyond-lstm": TIME_SERIES_CLARITY["beyond-lstm"]!,
+  "temporal-attention": TIME_SERIES_CLARITY["temporal-attention"]!,
+  "kalman-filters": TIME_SERIES_CLARITY["kalman-filters"]!,
+  "time-series-ensemble-methods":
+    TIME_SERIES_CLARITY["time-series-ensemble-methods"]!,
+  quantization: {
+    title: "One kernel value becomes a uint8 code",
     brief:
-      "Move the input window and change its length. The following reading is the target.",
+      "Follow a selected weight through this kernel's own min, max, scale, stored code, and decoded float. Then compare the supplied before/after classes.",
     boundary:
-      "This is a short example in time order. For training and validation, split the original stream by time before making windows.",
+      "These are exact small kernels and captures from the quantize-weights checks. Reference class decisions were checked with the shipped solution on TFJS 4.22 CPU. This worksheet runs no model, packs no byte file, and measures no accuracy or runtime.",
     controls: [
-      choice(
-        "length",
-        "Input window length",
-        3,
-        ["2 readings", "3 readings", "4 readings"],
-        [2, 3, 4],
-      ),
+      range("position", "Flat kernel index", 3, 0, 3),
       {
-        ...range("start", "Window start index", 1, 0, 5),
-        maxFor: ({ length }) => 8 - length! - 1,
+        ...range("capture", "Capture index", 1, 0, 4),
+        maxFor: (values) => values.captureCount! - 1,
       },
     ],
-    cases: cases(
-      "First capture",
-      "Second capture",
-      "Readings [2, 4, 3, 6, 5, 8, 7, 9].",
-      "Readings [9, 7, 8, 6, 4, 5, 3, 2].",
-      { start: 1, length: 3 },
-      { start: 2, length: 2 },
-    ),
-    prediction: {
-      prompt:
-        "Which reading is the target immediately after the current input window?",
-      tolerance: 0,
-    },
-    evaluate: ({ start, length }, caseId) => {
-      const values = changed(caseId)
-        ? [9, 7, 8, 6, 4, 5, 3, 2]
-        : [2, 4, 3, 6, 5, 8, 7, 9];
-      const targetIndex = start + length,
-        input = values.slice(start, targetIndex);
-      return {
-        graphics: [
-          line(
-            "Complete time sequence",
-            values,
-            undefined,
-            values.map((_, i) => `t${i}`),
-          ),
-          cells(`Input readings t${start} through t${targetIndex - 1}`, input),
-          pipe("Input and target positions", [
-            `Start t${start}`,
-            `${length} input readings`,
-            `Target at t${targetIndex}: ${values[targetIndex]}`,
-          ]),
-        ],
-        answer: values[targetIndex]!,
-        answerLabel: `Target at t${targetIndex}`,
-        explanation: `Input [${show(input)}] ends at t${targetIndex - 1}. The next reading, ${values[targetIndex]}, is the target and stays outside the input.`,
-        code: `const input = series.slice(${start}, ${targetIndex});\nconst target = series[${targetIndex}];`,
-      };
-    },
-  },
-  "sequence-prediction": forecastSpec(false),
-  forecasting: forecastSpec(true),
-  "normal-vs-anomalous": {
-    title: "A reading and its baseline",
-    brief:
-      "Move a candidate reading. Measure its distance in the baseline's standard deviations.",
-    boundary:
-      "Five example readings form the reference baseline. Being far from them does not by itself prove that a new reading is anomalous.",
-    controls: [range("reading", "Candidate reading", 13, 4, 20, 0.5)],
-    cases: cases(
-      "Baseline near 10",
-      "Baseline near 14",
-      "Reference readings are 8, 9, 10, 11, 12.",
-      "A different operating condition has readings 12, 13, 14, 15, 16.",
-      { reading: 13 },
-      { reading: 13 },
-    ),
-    prediction: {
-      prompt:
-        "How many baseline standard deviations is the current reading from the reference mean?",
-      tolerance: 0.02,
-    },
-    evaluate: ({ reading }, caseId) => {
-      const center = changed(caseId) ? 14 : 10,
-        reference = [-2, -1, 0, 1, 2].map((offset) => center + offset);
-      const distance = Math.abs(reading - center),
-        answer = distance / Math.sqrt(2);
-      return {
-        graphics: [
-          cells("Reference readings", reference),
-          bars(
-            "Mean and candidate",
-            [center, reading],
-            ["Reference mean", "Candidate"],
-          ),
-          bars(
-            "Distance measures",
-            [distance, answer],
-            ["Raw distance", "Standard deviations"],
-          ),
-        ],
-        answer,
-        answerLabel: "Standardized distance",
-        explanation: `The reference mean is ${center}, with population standard deviation √2. The absolute difference between ${reading} and ${center}, divided by √2 = ${rounded(answer)}. Review the operating context before assigning a label.`,
-        code: `const distance = Math.abs(${reading} - ${center}) / Math.sqrt(2);`,
-      };
-    },
-  },
-  autoencoders: reconstructionSpec(false),
-  "reconstruction-error": reconstructionSpec(true),
-  "the-anomaly": {
-    title: "Combine three detector votes",
-    brief:
-      "Change the amplitude, reconstruction error and forecast. Count the votes, then apply the two-out-of-three alert rule.",
-    boundary:
-      "The baseline and supplied detector outputs are synthetic practice inputs. No autoencoder or LSTM runs here. The statistical vote uses amplitude. Reconstruction error has cutoff 1. Forecast error has cutoff 0.1 amplitude units. Votes share data and can fail together. They are not independent proofs or a probability.",
-    controls: [
-      range("actual", "Actual amplitude", 0.5, 0, 1, 0.01),
-      range(
-        "reconstructionError",
-        "Supplied autoencoder reconstruction error",
-        6.2,
-        0,
-        7,
-        0.1,
-      ),
-      range("predicted", "Supplied LSTM amplitude forecast", 0.2, 0, 1, 0.01),
+    cases: [
+      {
+        id: "standard",
+        label: "Stretched kernel",
+        description:
+          "The 2-by-2 kernel spans -10 to 40, with biases [0, -0.02].",
+        values: { captureCount: 5, capture: 1 },
+      },
+      {
+        id: "changed",
+        label: "Even kernel",
+        description:
+          "The 2-by-2 kernel uses only -2 and 2, with biases [0.1, -0.1].",
+        values: { captureCount: 4, capture: 1 },
+      },
+      {
+        id: "constant",
+        label: "Zero kernel",
+        description:
+          "A constant zero kernel has scale 0 and decodes without division by zero.",
+        values: { captureCount: 1, capture: 0 },
+      },
     ],
-    cases: cases(
-      "Story replay",
-      "Ordinary reading",
-      "Amplitude 0.50, reconstruction error 6.2 and forecast 0.20. Compare against the displayed calm baseline.",
-      "Amplitude 0.52, reconstruction error 0.1 and forecast 0.53. The same baseline and cutoffs apply.",
-      { actual: 0.5, reconstructionError: 6.2, predicted: 0.2 },
-      { actual: 0.52, reconstructionError: 0.1, predicted: 0.53 },
-    ),
     prediction: {
-      prompt: "How many detectors vote for an alert with these inputs?",
+      prompt: "What integer code stores the selected kernel value?",
       tolerance: 0,
     },
-    evaluate: ({ actual, reconstructionError, predicted }) => {
-      const baseline = [0.5, 0.54, 0.51, 0.53, 0.52, 0.52, 0.5, 0.54];
-      const center = mean(baseline);
-      const spread = Math.sqrt(
-        mean(baseline.map((value) => (value - center) ** 2)),
-      );
-      const z = Math.abs(actual - center) / spread;
-      const forecastError = Math.abs(predicted - actual);
-      const flags = [z > 3, reconstructionError > 1, forecastError > 0.1];
-      const votes = flags.filter(Boolean).length;
+    evaluate: ({ position, capture }, caseId) => {
+      const source =
+        QUANTIZATION_CASES[caseId as keyof typeof QUANTIZATION_CASES];
+      const kernel = quantizedKernel(source.kernel);
       return {
         graphics: [
+          bars("Original weights", kernel.original, undefined, "weights"),
+          bars("Decoded kernel weights", kernel.applied, undefined, "weights"),
+          pipe("Selected value through storage", [
+            `Flat index ${position}: ${kernel.original[position]}`,
+            `min ${kernel.min}, max ${kernel.max}`,
+            `scale: ${kernel.scale}`,
+            `uint8 code: ${kernel.stored[position]}`,
+            `Decoded: ${kernel.decoded[position]}`,
+          ]),
           cells(
-            "Supplied detector inputs",
+            "Kernel and unchanged biases",
             [
-              `Calm amplitudes: ${show(baseline)}`,
-              `Baseline mean: ${rounded(center)}`,
-              `Population standard deviation: ${rounded(spread)}`,
-              `Actual amplitude: ${actual}`,
-              `Reconstruction error: ${reconstructionError}. Cutoff 1`,
-              `Forecast: ${predicted}. Allowed amplitude error 0.1`,
+              "Kernel shape: [2, 2]",
+              `Biases: [${source.bias.join(", ")}]`,
+              `Largest pre-float32 error: ${Math.max(...kernel.error)}`,
+              "Codes are arrays here. Byte packing is separate.",
             ],
             2,
           ),
-          bars(
-            "Each score divided by its own cutoff (a vote requires > 1)",
-            [z / 3, reconstructionError, forecastError / 0.1],
-            ["Statistical", "Autoencoder", "LSTM"],
-          ),
-          cells(
-            "Detector votes",
-            [
-              `Statistical |z| > 3: ${flags[0] ? "vote" : "no vote"}`,
-              `Autoencoder error > 1: ${flags[1] ? "vote" : "no vote"}`,
-              `LSTM amplitude error > 0.1: ${flags[2] ? "vote" : "no vote"}`,
-            ],
-            1,
-            flags.flatMap((flag, i) => (flag ? [i] : [])),
-          ),
-          pipe("Majority decision", [
-            `${votes} of 3 detector thresholds crossed`,
-            votes >= 2 ? "Alert selected" : "No alert selected",
+          pipe("Reference prediction comparison", [
+            `Capture ${capture}: [${source.captures[capture]!.join(", ")}]`,
+            `Before: class ${source.before[capture]}`,
+            `After: class ${source.after[capture]}`,
+            source.before[capture] === source.after[capture]
+              ? "Same predicted class"
+              : "Predicted class changed. No trusted label supplied.",
           ]),
         ],
-        answer: votes,
-        answerLabel: "Detector votes",
-        explanation: `The amplitude is ${rounded(z)} standard deviations from the calm mean. Reconstruction error is ${reconstructionError}. The forecast misses by ${rounded(forecastError)} amplitude units. ${votes} of three detectors vote, so the majority rule ${votes >= 2 ? "selects an alert" : "does not select an alert"}. The supplied error and forecast stay constant when you change amplitude. This exercise's amplitude-error gate differs from the full model's three-feature forecast MSE.`,
-        code: `const votes = [Math.abs((actual - mean) / std) > 3, reconstructionError > 1, Math.abs(predicted - actual) > 0.1].filter(Boolean).length;\nconst alert = votes >= 2;`,
-      };
-    },
-  },
-  "beyond-lstm": attentionSpec(false),
-  "temporal-attention": attentionSpec(true),
-  "kalman-filters": {
-    title: "Balance prediction and measurement",
-    brief:
-      "Change measurement noise. Calculate how far a new measurement moves the estimate.",
-    boundary:
-      "This updates one estimated value using a fixed prediction and its variance. It calculates one Kalman measurement update. A full system also needs prediction and repeated updates.",
-    controls: [
-      range("noise", "Measurement variance R", 4, 0.5, 16, 0.5),
-      range("measurement", "New measurement", 14, 4, 20, 0.5),
-    ],
-    cases: cases(
-      "Prediction 10",
-      "Prediction 14",
-      "Predicted value 10, predicted variance P = 4.",
-      "Predicted value 14, predicted variance P = 1.",
-      { noise: 4, measurement: 14 },
-      { noise: 8, measurement: 10 },
-    ),
-    prediction: {
-      prompt:
-        "What is the updated estimate after combining the current prediction and measurement?",
-      tolerance: 0.02,
-    },
-    evaluate: ({ noise, measurement }, caseId) => {
-      const prediction = changed(caseId) ? 14 : 10,
-        variance = changed(caseId) ? 1 : 4;
-      const result = kalmanUpdate(prediction, measurement, variance, noise);
-      return {
-        graphics: [
-          bars(
-            "Prediction and new measurement",
-            [prediction, measurement],
-            ["Prediction", "Measurement"],
-            "estimated-reading",
-          ),
-          bars(
-            "Uncertainty and gain",
-            [variance, noise, result.gain],
-            ["Predicted variance P", "Measurement variance R", "Gain K"],
-          ),
-          bars(
-            "Estimate after the measurement update",
-            [prediction, result.estimate, measurement],
-            ["Prior prediction", "Updated estimate", "Measurement"],
-            "estimated-reading",
-          ),
-        ],
-        answer: result.estimate,
-        answerLabel: "Updated estimate",
-        explanation: `Gain K = ${variance} ÷ (${variance} + ${noise}) = ${rounded(result.gain)}. The estimate moves ${rounded(result.gain * (measurement - prediction))} from the prediction toward the measurement.`,
-        code: `const gain = ${variance} / (${variance} + ${noise});\nconst estimate = ${prediction} + gain * (${measurement} - ${prediction});`,
-      };
-    },
-  },
-  "time-series-ensemble-methods": {
-    title: "Blend two forecasts",
-    brief:
-      "Change the weight on forecast A. Compare the combined forecast with later observations.",
-    boundary:
-      "Two fixed forecasts on four teaching observations. A good weight here may not work on future data.",
-    controls: [range("blend", "Weight on forecast A", 0.5, 0, 1, 0.05)],
-    cases: cases(
-      "Different forecast errors",
-      "Shared forecast errors",
-      "A tends high while B tends lower.",
-      "Both forecasts are higher than the observed values.",
-      { blend: 0.5 },
-      { blend: 0.25 },
-    ),
-    prediction: {
-      prompt:
-        "What is the mean absolute error of the current combined forecast across all four observations?",
-      tolerance: 0.015,
-    },
-    evaluate: ({ blend }, caseId) => {
-      const a = changed(caseId) ? [10, 11, 13, 15] : [8, 9, 11, 13];
-      const b = changed(caseId) ? [9, 10, 12, 14] : [9, 10, 10, 11];
-      const actual = [8.4, 9.2, 10.5, 11.8];
-      const combined = a.map((value, i) => blend * value + (1 - blend) * b[i]!);
-      const errors = combined.map((value, i) => Math.abs(value - actual[i]!));
-      return {
-        graphics: [
-          bars(
-            "Forecasts and later observations at each horizon",
-            a.flatMap((value, i) => [value, b[i]!, actual[i]!]),
-            a.flatMap((_, i) => [
-              `A h${i + 1}`,
-              `B h${i + 1}`,
-              `Observed h${i + 1}`,
-            ]),
-          ),
-          line(
-            "Combined forecast",
-            combined,
-            undefined,
-            combined.map((_, i) => `h${i + 1}`),
-          ),
-          bars(
-            "Absolute error against later observations",
-            errors,
-            actual.map((value, i) => `h${i + 1}: observed ${value}`),
-          ),
-        ],
-        answer: mean(errors),
-        answerLabel: "Ensemble mean absolute error",
-        explanation: `A receives weight ${blend}. B receives ${rounded(1 - blend)}. Mean absolute error is ${rounded(mean(errors))}. Shared forecast errors remain after averaging.`,
-        code: `const combined = a.map((value, i) => ${blend} * value + ${rounded(1 - blend)} * b[i]);`,
-      };
-    },
-  },
-  quantization: {
-    title: "Round a weight to fewer levels",
-    brief:
-      "Choose the bits per weight and a weight to inspect. Compare its original and rounded values.",
-    boundary:
-      "Uniform quantization over [-1, 1] with fixed bounds. It demonstrates rounding. Measure runtime and accuracy separately.",
-    controls: [
-      choice(
-        "bits",
-        "Bits per weight",
-        3,
-        ["2 bits", "3 bits", "4 bits", "8 bits"],
-        [2, 3, 4, 8],
-      ),
-      range("position", "Weight index", 4, 0, 5),
-    ],
-    cases: cases(
-      "Mixed weights",
-      "Weights near zero",
-      "Weights span most of the allowed range.",
-      "Smaller weights make coarse rounding easier to see.",
-      { bits: 3, position: 4 },
-      { bits: 2, position: 2 },
-    ),
-    prediction: {
-      prompt:
-        "What is the selected weight after rounding to the current bit depth?",
-      tolerance: 0.015,
-    },
-    evaluate: ({ bits, position }, caseId) => {
-      const original = changed(caseId)
-        ? [-0.4, -0.18, -0.02, 0.05, 0.22, 0.38]
-        : [-0.83, -0.31, -0.07, 0.14, 0.46, 0.91];
-      const output = quantize(original, bits),
-        errors = output.map((value, i) => Math.abs(value - original[i]!));
-      return {
-        graphics: [
-          bars("Original weights", original, undefined, "weights"),
-          bars(
-            `Rounded weights, ${2 ** bits} levels`,
-            output,
-            undefined,
-            "weights",
-          ),
-          bars("Absolute rounding error", errors),
-        ],
-        answer: output[position]!,
-        answerLabel: `Rounded weight at position ${position}`,
-        explanation: `Weight ${original[position]} rounds to ${rounded(output[position]!)} with ${2 ** bits} levels. Its absolute error is ${rounded(errors[position]!)}. Storage for six values is ${6 * bits} bits before metadata.`,
-        code: `const levels = 2 ** ${bits} - 1;\nconst roundedWeight = Math.round((weight + 1) / 2 * levels) / levels * 2 - 1;`,
+        answer: kernel.stored[position]!,
+        answerLabel: "Selected uint8 code",
+        explanation: `Use this kernel's bounds, not fixed [-1, 1] bounds. ${kernel.scale === 0 ? "Its values are constant, so scale and every code are zero. Decoding restores min." : `Its scale is (${kernel.max} - ${kernel.min}) / 255. Round the selected offset divided by that scale to get ${kernel.stored[position]}.`} The 1-D biases remain unchanged. ${source.before.filter((value, index) => value !== source.after[index]).length} of ${source.captures.length} supplied class decisions change. Disagreement is not an accuracy verdict.`,
+        code: `const value = ${kernel.original[position]};
+const min = ${kernel.min};
+const scale = ${kernel.scale};
+const code = scale === 0 ? 0 : Math.round((value - min) / scale);
+const decoded = code * scale + min;`,
       };
     },
   },
   pruning: {
-    title: "Weights below the pruning cutoff",
-    brief: "Raise the magnitude cutoff. Count the weights that remain nonzero.",
+    title: "A pooled cutoff and per-class recall",
+    brief:
+      "Choose a requested sparsity level. Inspect one weight from the first kernel and the reference recall measured for each class.",
     boundary:
-      "This sets small weights to zero in a six-weight example. Test prediction quality afterward. Zeros save processing work only if the runtime can skip them.",
-    controls: [range("cutoff", "Magnitude cutoff", 0.2, 0, 1, 0.05)],
-    cases: cases(
-      "Spread-out weights",
-      "Mostly small weights",
-      "Six weights have varied magnitudes.",
-      "A different set contains more small weights.",
-      { cutoff: 0.2 },
-      { cutoff: 0.3 },
-    ),
+      "This worksheet uses the prune-weights exercise's fixed 11/12/5 classifier and synthetic evaluation slice, 40 cases per class. Its reference recalls were checked with the shipped solution on TFJS 4.22 CPU. It does not rerun a model or reproduce the fictional mission's accuracy table.",
+    controls: [
+      choice("level", "Requested sparsity", 2, [
+        "0%",
+        "30%",
+        "60%",
+        "80%",
+        "100%",
+      ]),
+      range("position", "First-kernel flat index", 4, 0, 11),
+      choice("classIndex", "Class to inspect", 4, PRUNING_CLASS_NAMES),
+    ],
+    cases: [
+      {
+        id: "standard",
+        label: "Sixty-percent preset",
+        description:
+          "Start at 60% requested sparsity and inspect anomaly recall.",
+        values: { level: 2 },
+      },
+      {
+        id: "changed",
+        label: "Eighty-percent preset",
+        description:
+          "Start at 80% requested sparsity, still using the original model weights.",
+        values: { level: 3 },
+      },
+    ],
     prediction: {
       prompt:
-        "How many weights remain nonzero after applying the current cutoff? The rule keeps weights exactly at the cutoff.",
+        "How many of the selected class's 40 reference cases are classified correctly?",
       tolerance: 0,
     },
-    evaluate: ({ cutoff }, caseId) => {
-      const original = changed(caseId)
-        ? [-0.52, -0.18, -0.04, 0.08, 0.21, 0.63]
-        : [-0.83, -0.31, -0.07, 0.14, 0.46, 0.91];
-      const output = original.map((value) =>
-        Math.abs(value) < cutoff ? 0 : value,
-      );
-      const count = output.filter((value) => value !== 0).length;
+    evaluate: ({ level, position, classIndex }) => {
+      const ref = pruningReference(level);
+      const hits = Math.round(ref.recall[classIndex]! * 40);
       return {
         graphics: [
-          bars("Original connections", original, undefined, "weights"),
           bars(
-            "Connections after magnitude pruning",
-            output,
+            "Original connections",
+            ref.original.slice(0, 12),
             undefined,
             "weights",
           ),
-          cells(
-            "Connection status",
-            output.map((value) => (value === 0 ? "Removed" : "Kept")),
-            3,
-            output.flatMap((value, i) => (value === 0 ? [] : [i])),
+          bars(
+            "Connections after magnitude pruning",
+            ref.output.slice(0, 12),
+            undefined,
+            "weights",
           ),
+          pipe("One weight under the pooled cutoff", [
+            `Rank all ${ref.original.length} kernel values together`,
+            `Requested sparsity ${ref.level}`,
+            `Cutoff: ${Number.isFinite(ref.cutoff) ? ref.cutoff : "all kernels at 100%"}`,
+            `Index ${position}: ${ref.original[position]} becomes ${ref.output[position]}`,
+          ]),
+          cells(
+            "Requested level and measured support",
+            [
+              `Zero-valued kernel positions after pruning: ${ref.zeros}/${ref.original.length}`,
+              "Biases unchanged",
+              `${PRUNING_CLASS_NAMES[classIndex]}: ${hits}/40 correct`,
+              "No examples for a class would require null recall.",
+            ],
+            2,
+          ),
+          bars(
+            "Reference recall on the supplied slice",
+            ref.recall,
+            PRUNING_CLASS_NAMES,
+          ),
+          pipe("Model lifetime", [
+            "Clone original weights",
+            "Start every level from originals",
+            "Measure class decisions",
+            "Restore originals, including after failure",
+          ]),
         ],
-        answer: count,
-        answerLabel: "Remaining nonzero weights",
-        explanation: `${6 - count} weights have magnitude below ${cutoff} and become zero. ${count} remain. Check the model's predictions before deciding whether you can remove these connections.`,
-        code: `const pruned = weights.map(weight => Math.abs(weight) < ${cutoff} ? 0 : weight);`,
+        answer: hits,
+        answerLabel: "Correct selected-class predictions",
+        explanation: `The selected class has ${hits} correct decisions out of 40, giving recall ${ref.recall[classIndex]}. Pool both 2-D kernels when choosing the cutoff and keep ties at an interior cutoff. A requested share can differ from the achieved zero fraction. Level zero preserves the original behavior. At full pruning, biases can still select a class. These reference recalls do not identify which weights represent rare patterns.`,
+        code: `// Selected reference level from the supplied classifier.
+const requested = ${ref.level};
+const correct = ${hits};
+const support = 40;
+const recall = correct / support;
+// Each measured level starts from cloned originals. Restore them in finally.`,
       };
     },
   },
@@ -1529,430 +1853,6 @@ function evaluationSpec(costs: boolean): LessonInvestigationSpec {
           ? `${fp} false alarms × 1 + ${fn} misses × ${missCost} = ${fp + missCost * fn}. A different cost rule can favor a different threshold.`
           : `With score > ${threshold}, the rule misses ${fn} anomalies and flags ${fp} normal cases. Accuracy is ${rounded(((tp + tn) / input.length) * 100)}%, but it hides these different mistakes.`,
         code: `const predictedAnomaly = score > ${threshold};\n${costs ? `const cost = falsePositives + ${missCost} * falseNegatives;` : "const misses = cases.filter(c => c.anomaly && c.score <= threshold).length;"}`,
-      };
-    },
-  };
-}
-
-function signalSpec(
-  mode: "views" | "fourier" | "spectrogram" | "features" | "window",
-): LessonInvestigationSpec {
-  const windowed = mode === "window",
-    timed = mode === "spectrogram";
-  const controls = windowed
-    ? [
-        range("frequency", "Tone frequency in Hz", 10.5, 8, 12, 0.25),
-        choice("taper", "Window function", 0, ["Rectangular", "Hann"]),
-      ]
-    : timed
-      ? [
-          range("start", "Window start sample", 0, 0, 96, 16),
-          range("frequency", "New tone frequency in Hz", 12, 6, 20, 2),
-        ]
-      : [
-          range("frequency", "Second tone frequency in Hz", 12, 6, 20),
-          range("amplitude", "Second tone amplitude", 0.6, 0.1, 1.5, 0.1),
-        ];
-  const title = {
-    views: "Connect a waveform to its tones",
-    fourier: "Move a spectral peak",
-    spectrogram: "Locate a tone in time",
-    features: "Extract one frequency feature",
-    window: "Inspect leakage between bins",
-  }[mode];
-  const prompt =
-    mode === "views" || mode === "fourier"
-      ? "Which integer frequency bin should contain the second tone's largest peak? The sample rate is 64 Hz and the window has 64 samples."
-      : timed
-        ? "How many samples in the current 64-sample window include the new tone? It starts at the onset sample shown in the capture."
-        : mode === "features"
-          ? "What magnitude will the fixed 12 Hz feature bin contain after the tone changes?"
-          : "What percentage of total squared spectrum magnitude lies outside the three bins nearest the tone?";
-  return {
-    title,
-    brief: windowed
-      ? "Compare an untapered slice with a Hann taper. Measure squared magnitudes outside the nearest three bins."
-      : timed
-        ? "Move a 64-sample window across a signal. A second tone starts partway through the capture."
-        : mode === "features"
-          ? "Change a tone's frequency and amplitude. Keep the feature columns fixed at 4, 12 and 20 Hz."
-          : "Change the second tone. The waveform and spectrum describe the same 64 samples.",
-    boundary:
-      "We sample this made-up signal at 64 Hz. A direct Fourier calculation produces the spectrum. It does not measure runtime speed or model quality.",
-    controls,
-    cases: cases(
-      windowed
-        ? "Half-bin tone"
-        : timed
-          ? "Onset at sample 64"
-          : "First tone mixture",
-      windowed
-        ? "Quarter-bin tone"
-        : timed
-          ? "Onset at sample 32"
-          : "Different base tone",
-      windowed
-        ? "The tone starts between frequency bins."
-        : timed
-          ? "Only the base 4 Hz tone is present before sample 64."
-          : "A 4 Hz base tone plus your selected second tone.",
-      windowed
-        ? "A different position between bins changes leakage."
-        : timed
-          ? "The second tone starts earlier, at sample 32."
-          : "A 2 Hz base tone plus your selected second tone.",
-      windowed
-        ? { frequency: 10.5, taper: 0 }
-        : timed
-          ? { start: 0, frequency: 12 }
-          : { frequency: 12, amplitude: 0.6 },
-      windowed
-        ? { frequency: 9.25, taper: 1 }
-        : timed
-          ? { start: 16, frequency: 16 }
-          : { frequency: 8, amplitude: 1.2 },
-    ),
-    prediction: {
-      prompt,
-      tolerance: windowed ? 0.15 : mode === "features" ? 0.025 : 0,
-      unit: windowed ? "%" : undefined,
-    },
-    evaluate: (
-      { frequency, amplitude = 0.6, start = 0, taper = 0 },
-      caseId,
-    ) => {
-      const base = changed(caseId) ? 2 : 4,
-        onset = changed(caseId) ? 32 : 64;
-      const signal = windowed
-        ? Array.from({ length: 64 }, (_, i) =>
-            Math.sin((2 * Math.PI * frequency * i) / 64),
-          )
-        : timed
-          ? Array.from(
-              { length: 64 },
-              (_, i) =>
-                Math.sin((2 * Math.PI * 4 * (i + start)) / 64) +
-                (i + start >= onset
-                  ? 0.7 * Math.sin((2 * Math.PI * frequency * (i + start)) / 64)
-                  : 0),
-            )
-          : teachingSignal(frequency, amplitude).map((value, i) =>
-              base === 4
-                ? value
-                : value -
-                  Math.sin((2 * Math.PI * 4 * i) / 64) +
-                  Math.sin((2 * Math.PI * base * i) / 64),
-            );
-      const window = signal.map(
-        (value, i) =>
-          value *
-          (windowed && taper === 1
-            ? 0.5 * (1 - Math.cos((2 * Math.PI * i) / 63))
-            : 1),
-      );
-      const spectrum = magnitudeSpectrum(window);
-      const center = Math.round(frequency),
-        selected = [center - 1, center, center + 1];
-      const energy = spectrum.map((value) => value ** 2);
-      const outside =
-        (sum(energy.filter((_, i) => !selected.includes(i))) / sum(energy)) *
-        100;
-      const count = Math.max(0, Math.min(64, start + 64 - onset));
-      const answer = windowed
-        ? outside
-        : timed
-          ? count
-          : mode === "features"
-            ? spectrum[12]!
-            : frequency;
-      return {
-        graphics: [
-          line(
-            windowed
-              ? `${taper ? "Hann-tapered" : "Rectangular"} time samples`
-              : timed
-                ? `Window samples ${start} through ${start + 63}. Onset at ${onset}`
-                : `Waveform: ${base} Hz + ${frequency} Hz`,
-            window,
-            undefined,
-            window.map((_, i) => String(i + (timed ? start : 0))),
-            "waveform-amplitude",
-          ),
-          {
-            ...bars(
-              "Magnitude spectrum, bins 0 through 32 Hz",
-              spectrum,
-              spectrum.map((_, i) => `${i} Hz`),
-            ),
-            layout: "series",
-          },
-          ...(timed
-            ? [
-                cells(
-                  "Samples before and after new-tone onset",
-                  Array.from({ length: 64 }, (_, i) =>
-                    i + start < onset ? "Base" : "Both",
-                  ),
-                  16,
-                ),
-              ]
-            : windowed
-              ? [
-                  bars(
-                    "Squared magnitude inside and outside nearest bins",
-                    [100 - outside, outside],
-                    ["Nearest three bins %", "Other bins %"],
-                  ),
-                ]
-              : []),
-        ],
-        answer,
-        answerLabel: windowed
-          ? "Squared magnitude outside nearest three bins"
-          : timed
-            ? "Window samples containing the new tone"
-            : mode === "features"
-              ? "Magnitude in the fixed 12 Hz feature"
-              : "Second-tone peak bin in Hz",
-        explanation: windowed
-          ? `${rounded(outside)}% of squared magnitude is outside bins ${selected.join(", ")}. A taper usually reduces distant leakage and broadens the main peak.`
-          : timed
-            ? `The window covers samples ${start} through ${start + 63}. ${count} of those samples are at or after onset ${onset}. Partial windows spread the new tone across nearby bins.`
-            : mode === "features"
-              ? `The fixed 12 Hz feature is ${rounded(answer)}. Keep columns at the same frequencies, sample rate and window size for every example. Moving the tone changes the feature values. Each column still represents the same frequency.`
-              : `With 64 samples at 64 Hz, each bin spans 1 Hz. The second tone appears at bin ${frequency}, with magnitude ${rounded(spectrum[frequency]!)}.`,
-        code: windowed
-          ? `const windowed = samples.map((x, i) => x * ${taper ? "(0.5 * (1 - Math.cos(2 * Math.PI * i / 63)))" : "1"});\nconst magnitudes = spectrum(windowed);`
-          : timed
-            ? `const window = samples.slice(${start}, ${start + 64});\n// second tone starts at sample ${onset}`
-            : mode === "features"
-              ? "const magnitudes = spectrum(samples);\nconst fixedBins = [4, 12, 20];\nconst features = fixedBins.map(bin => magnitudes[bin]);"
-              : `const magnitudes = spectrum(samples);\nconst toneFeature = magnitudes[${frequency}];`,
-      };
-    },
-  };
-}
-
-function forecastSpec(recursive: boolean): LessonInvestigationSpec {
-  return {
-    title: recursive
-      ? "Follow a recursive forecast"
-      : "Predict the next unseen reading",
-    brief: recursive
-      ? "Extend a fixed forecast rule. Each prediction becomes the next input."
-      : "Choose how many steps ahead to predict. Compare the fixed rule’s forecast with the later observations.",
-    boundary:
-      "A fixed rule, next = previous × multiplier + 0.1. This experiment trains no forecasting model.",
-    controls: [
-      range("horizon", "Steps after the last known reading", 2, 1, 4),
-      range("multiplier", "Forecast multiplier", 1.15, 0.85, 1.3, 0.05),
-    ],
-    cases: cases(
-      "Start from reading 8",
-      "Start from reading 12",
-      "Later observations are 8.8, 10.1, 10.7, 11.7.",
-      "Later observations are 11.7, 11.2, 10.8, 10.4.",
-      { horizon: 2, multiplier: 1.15 },
-      { horizon: 3, multiplier: 0.95 },
-    ),
-    prediction: {
-      prompt: recursive
-        ? "How far is the forecast from the actual reading at the selected step?"
-        : "What value does the fixed rule predict at your selected horizon?",
-      tolerance: 0.025,
-    },
-    evaluate: ({ horizon, multiplier }, caseId) => {
-      const actual = changed(caseId)
-        ? [12, 11.7, 11.2, 10.8, 10.4]
-        : [8, 8.8, 10.1, 10.7, 11.7];
-      const forecast = [actual[0]!];
-      for (let i = 1; i <= 4; i++)
-        forecast.push(forecast[i - 1]! * multiplier + 0.1);
-      const errors = forecast.map((value, i) => Math.abs(value - actual[i]!));
-      return {
-        graphics: [
-          line(
-            "Starting reading and later observations by horizon",
-            actual,
-            [horizon],
-            actual.map((_, i) => `h${i}`),
-            "forecast-reading",
-          ),
-          line(
-            "Fixed-rule forecast by horizon",
-            forecast,
-            [horizon],
-            forecast.map((_, i) => `h${i}`),
-            "forecast-reading",
-          ),
-          bars(
-            "Absolute error at each horizon",
-            errors,
-            errors.map((_, i) => `h${i}`),
-          ),
-        ],
-        answer: recursive ? errors[horizon]! : forecast[horizon]!,
-        answerLabel: recursive
-          ? `Absolute error at horizon ${horizon}`
-          : `Forecast at horizon ${horizon}`,
-        explanation: `At horizon ${horizon}, the forecast is ${rounded(forecast[horizon]!)} and the later observation is ${actual[horizon]}. Absolute error is ${rounded(errors[horizon]!)}. Reusing a prediction can carry its error into later steps.`,
-        code: `for (let h = 1; h <= ${horizon}; h++) forecast.push(forecast[h - 1] * ${multiplier} + 0.1);`,
-      };
-    },
-  };
-}
-
-function reconstructionSpec(error: boolean): LessonInvestigationSpec {
-  return {
-    title: error ? "Locate reconstruction error" : "See what compression keeps",
-    brief: error
-      ? "Change feature C and square each reconstruction error. Average those errors to score the whole row."
-      : "Compress four input features into two averages, then reconstruct by repeating each average.",
-    boundary:
-      "This example compresses values by averaging and rebuilds them by repeating the averages. It shows information loss. A real autoencoder learns its weights.",
-    controls: [range("feature", "Input feature C", 6, 0, 10, 0.5)],
-    cases: cases(
-      "First input row",
-      "Changed paired features",
-      "The input is [2, 3, C, 5].",
-      "The input is [4, 4, C, 8].",
-      { feature: 6 },
-      { feature: 3 },
-    ),
-    prediction: {
-      prompt: error
-        ? "What is the mean squared reconstruction error across the four current features?"
-        : "What value will the decoder reconstruct for feature C?",
-      tolerance: 0.015,
-    },
-    evaluate: ({ feature }, caseId) => {
-      const input = changed(caseId) ? [4, 4, feature, 8] : [2, 3, feature, 5];
-      const latent = [mean(input.slice(0, 2)), mean(input.slice(2, 4))];
-      const reconstructed = [latent[0]!, latent[0]!, latent[1]!, latent[1]!];
-      const residuals = input.map(
-        (value, i) => (value - reconstructed[i]!) ** 2,
-      );
-      return {
-        graphics: [
-          cells("Input features A, B, C, D", input, 4, [2]),
-          pipe("Averaging encoder and repeat decoder", [
-            `Pair A+B${rounded(latent[0]!)}`,
-            `Pair C+D${rounded(latent[1]!)}`,
-            "Repeat each average twice",
-          ]),
-          bars(
-            error ? "Squared error per feature" : "Reconstructed features",
-            error ? residuals : reconstructed,
-            ["A", "B", "C", "D"],
-          ),
-        ],
-        answer: error ? mean(residuals) : reconstructed[2]!,
-        answerLabel: error
-          ? "Mean squared reconstruction error"
-          : "Reconstructed feature C",
-        explanation: error
-          ? `Squared differences are [${show(residuals)}]. Their average is ${rounded(mean(residuals))}. Investigate a high score to find out whether it indicates an anomaly.`
-          : `Features C and D become one average, ${rounded(latent[1]!)}. Repeating that value cannot recover their original difference.`,
-        code: "const encoded = [(x[0] + x[1]) / 2, (x[2] + x[3]) / 2];\nconst rebuilt = [encoded[0], encoded[0], encoded[1], encoded[1]];",
-      };
-    },
-  };
-}
-
-function attentionSpec(temporal: boolean): LessonInvestigationSpec {
-  return {
-    title: temporal
-      ? "Choose which time step gets attention"
-      : "Form a weighted summary from a query",
-    brief: temporal
-      ? "Change the query and the weight on time position. Compare which reading receives the most attention."
-      : "Multiply each key by a query, apply softmax to get weights, then combine the values.",
-    boundary: temporal
-      ? "Five fixed keys and values. Each score is query × key + position weight × t/4. Positions run from 0 to 4. Positive position weight favors later readings. Negative favors earlier ones. Combine the original values using those weights. This simple scoring rule includes position. A full self-attention model does more."
-      : "This uses five single-number keys and values and a query you choose. Real attention learns vector representations. A large attention weight does not show what caused a result.",
-    controls: [
-      range("query", "Query", 0.8, -2, 2, 0.2),
-      ...(temporal
-        ? [
-            range(
-              "positionWeight",
-              "Weight on normalized time position",
-              0,
-              -2,
-              2,
-              0.25,
-            ),
-          ]
-        : []),
-    ],
-    cases: cases(
-      "Keys rise with time",
-      "Middle key is strongest",
-      "Keys are [-1, -0.4, 0.2, 0.7, 1.2].",
-      "Keys are [0.2, -0.5, 1.4, 0.1, 0.6].",
-      temporal ? { query: 0.8, positionWeight: 0 } : { query: 0.8 },
-      temporal ? { query: -1, positionWeight: 1 } : { query: -1 },
-    ),
-    prediction: temporal
-      ? {
-          prompt:
-            "Which time index receives the greatest attention weight? If weights tie, choose the earliest index.",
-          tolerance: 0,
-        }
-      : {
-          prompt:
-            "What weighted average of the values does this query produce?",
-          tolerance: 0.025,
-        },
-    evaluate: ({ query, positionWeight = 0 }, caseId) => {
-      const keys = changed(caseId)
-        ? [0.2, -0.5, 1.4, 0.1, 0.6]
-        : [-1, -0.4, 0.2, 0.7, 1.2];
-      const values = changed(caseId) ? [6, 2, 9, 4, 7] : [2, 7, 3, 8, 4];
-      const scores = keys.map(
-          (key, t) =>
-            query * key +
-            (temporal ? (positionWeight * t) / (keys.length - 1) : 0),
-        ),
-        weights = softmax(scores);
-      const contributions = weights.map((weight, i) => weight * values[i]!);
-      const maximum = weights.indexOf(Math.max(...weights));
-      return {
-        graphics: [
-          bars(
-            `Keys for query ${query}`,
-            keys,
-            values.map((value, i) => `t${i}: value ${value}`),
-            "attention-key",
-          ),
-          ...(temporal
-            ? [
-                bars(
-                  "Scores after adding time position",
-                  scores,
-                  scores.map((_, i) => `t${i}`),
-                ),
-              ]
-            : []),
-          bars(
-            "Attention weight at each time position",
-            weights,
-            weights.map((_, i) => `t${i}`),
-          ),
-          bars(
-            "Weighted value contributions",
-            contributions,
-            values.map((value, i) => `t${i}: value ${value}`),
-          ),
-        ],
-        answer: temporal ? maximum : sum(contributions),
-        answerLabel: temporal
-          ? "Position with greatest weight"
-          : "Weighted average of the values",
-        explanation: `The weights sum to 1. Position t${maximum} receives the greatest weight, ${rounded(weights[maximum]!)}. The original weighted values sum to ${rounded(sum(contributions))}. ${temporal ? `The position coefficient ${positionWeight} adds ${positionWeight} × t/4 to each match before softmax. It changes the scores without adding a feature to the pooled result. A large weight does not establish what caused a prediction.` : query === 0 ? "A zero query gives every position equal weight." : "Changing the query can move attention to a different key."}`,
-        code: temporal
-          ? `const scores = keys.map((key, t) => ${query} * key + ${positionWeight} * t / (keys.length - 1));\nconst weights = softmax(scores);\nconst summary = weights.reduce((total, weight, i) => total + weight * values[i], 0);`
-          : `const weights = softmax(keys.map(key => ${query} * key));\nconst summary = weights.reduce((total, weight, i) => total + weight * values[i], 0);`,
       };
     },
   };

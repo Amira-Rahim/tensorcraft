@@ -55,15 +55,139 @@ Commander Mirza leaves four minutes into the demo. Demir needs eleven more to fi
 The architecture is fine. The demo wasn't. Run it again, properly this time. Even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
 </Dialogue>
 
-You will fix the input shape so the model can process one reading or a batch of readings.
+Fix the missing batch axis, then check one output against the weights that
+produced it. The coding task uses a separate, smaller diagnostic model so
+you can inspect every connection before returning to the bridge classifier.
 
 <LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Add the missing batch axis that caused the demo to fail"]} />
 
-## Data Flows Forward
+## The diagnostic input contract
+
+The challenge supplies two practice rows, `[1, 2]` and `[3, 4]`. Each has two
+feature slots with no physical units or capture provenance. They are
+diagnostic inputs, separate from the bridge classifier's three features.
+
+Build one dense layer with three units. Keep its default **linear activation**,
+which leaves each weighted sum unchanged. Its kernel, the weight matrix, has
+shape `[2, 3]`: one row per input feature and one column per output unit.
+The bias has shape `[3]`, one value per unit. That is `2 * 3 + 3 = 9` parameters.
+
+| Value | Shape | Meaning |
+| --- | --- | --- |
+| Two input rows | `[2, 2]` | Two examples, two features each |
+| Kernel | `[2, 3]` | Two input weights for each of three units |
+| Bias | `[3]` | One bias per unit, reused for each example |
+| Output | `[2, 3]` | Three unit outputs for each input row |
+
+<CodeBlock language="javascript" title="diagnostic-forward.js">
+{`const diagnostic = tf.sequential();
+diagnostic.add(tf.layers.dense({ units: 3, inputShape: [2] }));
+const twoRows = tf.tensor2d([[1, 2], [3, 4]]);
+const outputs = diagnostic.predict(twoRows);
+console.log(outputs.shape); // [2, 3]
+console.log(outputs.arraySync()); // values depend on the initial weights`}
+</CodeBlock>
+
+One `predict()` call returns outputs for the whole batch. Return that tensor
+from your `forward(batch)` function. Repeated calls for individual rows add
+work and fail the challenge's batch contract. A copied or cloned output also
+fails its returned-tensor identity check.
+
+The default kernel starts with random weights, and the default biases start
+at zero. Do not replace those initializers in the challenge. A linear output
+can be negative or greater than one. These three outputs are weighted sums,
+with no established class or probability meaning.
+
+## One captured unit's calculation
+
+Read the weights from this same model. For the second input row, unit 3 uses
+the third kernel column. Its calculation is `3 * weight1 + 4 * weight2 + bias`.
+The indexes below start at zero:
+
+<CodeBlock language="javascript" title="inspect-diagnostic-unit.js">
+{`// Continue with diagnostic, twoRows, and outputs from above.
+const [kernel, bias] = diagnostic.getWeights();
+const weights = kernel.arraySync();
+const biases = bias.arraySync();
+const selectedRow = twoRows.arraySync()[1];
+const unit = 2;
+const products = selectedRow.map((value, feature) => value * weights[feature][unit]);
+const manual = products.reduce((total, value) => total + value, biases[unit]);
+const captured = outputs.arraySync()[1][unit];
+console.log(products, biases[unit], manual, captured);`}
+</CodeBlock>
+
+The captured value comes from `predict()`. The manual value comes from the
+same input, kernel column, and bias. Compare them with a small numerical
+tolerance because TensorFlow.js and JavaScript can round differently.
+Reading these weights does not train the model. Keep the model alive while
+using its weight tensors.
+
+After your challenge run, inspect **Your first forward pass** and **Weights
+used for this forward pass**. They contain your actual outputs and the weights
+used to calculate them. Choose a row and unit, then check that dot product. Random starting
+weights change the numbers across runs, so a supplied reference value cannot
+stand in for your result.
+
+## One reading and larger batches
+
+A single `[2]` reading needs a leading batch axis. `expandDims(0)` makes its
+shape `[1, 2]` without changing either feature value. The same operation works
+for any flat width. The resulting width must still match the chosen model.
+
+<CodeBlock language="javascript" title="diagnostic-batches.js">
+{`const flatReading = tf.tensor1d([5, 6]);
+const oneRow = flatReading.expandDims(0);
+const oneOutput = diagnostic.predict(oneRow);
+console.log(oneRow.shape, oneOutput.shape); // [1, 2], [1, 3]
+
+// The same model accepts three rows without changing its weights.
+const threeRows = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);
+const threeOutputs = diagnostic.predict(threeRows);
+console.log(threeOutputs.shape); // [3, 3]
+
+tf.dispose([twoRows, outputs, flatReading, oneRow, oneOutput, threeRows, threeOutputs]);
+diagnostic.dispose();`}
+</CodeBlock>
+
+The first axis counts examples. The second counts features at the input and
+units at the output. The model keeps its nine parameters when the batch grows.
+The challenge checks other batch lengths and verifies that adding an axis
+preserves all values.
+
+<Dialogue speaker="Ensign Demir">
+Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
+</Dialogue>
+
+## The activity's fixed reference
+
+The Concept activity uses a fixed reference copy of this two-input,
+three-unit linear layer. Its supplied values make each product easy to trace:
+
+| Parameter | Unit 1 | Unit 2 | Unit 3 |
+| --- | --- | --- | --- |
+| Input 1 weight | 0.5 | -1 | 2 |
+| Input 2 weight | 1 | 0.25 | -0.5 |
+| Bias | 0.1 | 0.2 | -0.3 |
+
+For `[3, 4]`, unit 3 gives `3 * 2 + 4 * (-0.5) - 0.3 = 3.7`. These
+hand-chosen reference weights are separate from the challenge's random
+initialization. No training or ship measurement produced them. Choose a row
+and unit in the activity, then change one input to see its contribution move.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="Optional: the same pass through the bridge classifier">
+
+### Data through the three-layer bridge model
+
+The bridge classifier uses the earlier three-input 32/16/1 architecture.
+This supplied demonstration row `[0.5, 0.8, 0.2]` is an illustrative input,
+with no capture record or known event label. It does not continue the
+two-feature diagnostic batch.
 
 The forward pass applies each layer in order. Demir's model needs a batch axis at the start, even when he sends it one reading.
 
-<BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="forward-pass.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -93,10 +217,6 @@ This model expects a batch axis even for one reading, giving shape `[1, 3]`. A `
 
 Use `expandDims(0)` to add a leading axis to the flat reading. `reshape([1, 3])` also works when you know its width. Before changing a shape, compare what the error expected with what the model received. Here, the missing batch axis caused the failure.
 
-<Dialogue speaker="Ensign Demir">
-Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
-</Dialogue>
-
 ## Calculating a forward pass
 
 `predict()` runs the same calculations you have learned. `getWeights()` returns six tensors for these three layers: a weight matrix and a bias for each layer. Multiply by the weights, add the bias, apply the activation, then pass the result to the next layer.
@@ -119,12 +239,16 @@ model.dispose();`}
 
 These operations express the same computation for this dense network. Compare results using a suitable floating-point tolerance. Backends can round the same calculation differently. `predict()` manages its internal temporaries and returns output tensors that the caller owns. A hand-written chain also needs temporary-tensor cleanup, which the `tf.tidy()` block supplies.
 
+</ConceptReference>
+
 ## Challenge
 
-Get Demir’s demo running again. Run the supplied batch through your model,
-then make one flat reading fit the same input contract. Inspect the actual
-inputs and unit outputs from your forward pass. Random starting weights
-let you check the connections. Useful predictions require training and evaluation.
+Check the same input-shape repair on the two-feature diagnostic model. Run
+the whole supplied batch through its single linear layer in one call, then
+give a flat reading the batch axis it needs. Inspect the actual input rows,
+weights, biases, and unit outputs. This nine-parameter exercise model is
+separate from the bridge classifier. Useful mission predictions still require
+training and evaluation.
 
 <Exercise slug="forward-pass" />
 
@@ -177,6 +301,6 @@ let you check the connections. Useful predictions require training and evaluatio
 
 <Epilogue>
 
-After shift change, Demir runs the demo alone. This time, the reading has a batch axis. Scores appear: 0.49, 0.53, 0.51. The weights are still random, so the scores do not tell him which readings to trust. He saves the run to compare with the model after training.
+After shift change, Demir returns to the three-feature bridge classifier and runs the demo alone. This time, the reading has a batch axis. Scores appear: 0.49, 0.53, 0.51. The weights are still random, so the scores do not tell him which readings to trust. He saves the run to compare with the model after training.
 
 </Epilogue>

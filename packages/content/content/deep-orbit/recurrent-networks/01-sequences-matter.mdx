@@ -59,9 +59,56 @@ You will arrange consecutive readings into input windows and pair each window wi
 
 <LearningObjectives objectives={["Understand why order matters in sequential data: shuffling can remove temporal information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from a stream of readings"]} />
 
-## Why One Reading At A Time Fails
+## An input window and its following target
+
+A stateless classifier scores each row on its own. Reversing those rows changes the output order, while each row keeps its score. A model that receives an ordered window can use relationships between readings. Flattening that window for a dense model keeps its order and provides a useful baseline. An RNN instead reuses the same state-update weights at each time step.
+
+<Dialogue speaker="Dr. Farah">
+The individual rows have not changed. Now we can compare them in order. Rising, falling, rising is a different pattern from falling, rising, rising. Our current model scores each row alone, so it cannot use that difference.
+</Dialogue>
+
+The Challenge first checks how you build next-reading training pairs. Its supplied stream is `[[1], [2], [3], [4], [5]]`: five synthetic rows with one feature each. These small numbers are diagnostic values, separate from the deployed classifier's normalized three-feature rows in the optional comparison.
+
+| Window index | Original input indices | Input values | Following target index | Target value |
+| --- | --- | --- | --- | --- |
+| 0 | 0, 1, 2 | `[[1], [2], [3]]` | 3 | `[4]` |
+| 1 | 1, 2, 3 | `[[2], [3], [4]]` | 4 | `[5]` |
+
+The last possible three-row slice, indices 2, 3, and 4, has no following reading. Omit it. Keeping that input without a target would give different numbers of inputs and answers.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="window-target-probe.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const diagnosticRows = [[1], [2], [3], [4], [5]];
+const keptStarts = [0, 1]; // The supplied three-reading, stride-one case.
+const inputWindows = keptStarts.map(start => diagnosticRows.slice(start, start + 3));
+const nextRows = keptStarts.map(start => diagnosticRows[start + 3]);
+const windowTensor = tf.tensor3d(inputWindows);
+const targetTensor = tf.tensor2d(nextRows);
+console.log(inputWindows, nextRows);
+console.log(windowTensor.shape, targetTensor.shape); // [2, 3, 1], [2, 1]
+tf.dispose([windowTensor, targetTensor]);`}
+</CodeBlock>
+
+## Stride, features, and empty pairs
+
+Stride is how many source rows the start advances. With seven rows `[[1], ... , [7]]`, window size 2 and stride 2, the starts are `0, 2, 4`. Their targets are at indices `2, 4, 6`, holding `[3], [5], [7]`. The target stays outside its own input window.
+
+Each row can contain several features. The supplied two-feature case `[[1,10], [2,20], [3,30]]` with window size 2 makes one pair. Its input shape is `[1, 2, 2]`, ordered as windows, time steps, features. Its target shape is `[1, 2]`, ordered as windows and features. Shape alone does not identify what a feature means.
+
+If no target follows any complete window, return empty `xs` and `ys` arrays and `null` for both tensors. Do not ask the runtime to infer a three-axis shape from an empty array. The caller owns any returned tensors and disposes them after use.
+
+The activity links the selected input and target to their original row indices. Change stride or length and inspect which starts remain. Its reversal control deliberately changes the ordering for comparison. A real forecaster preserves chronological order.
+
+Building pairs does not train a model. For training and evaluation, split the original stream by time before building overlapping windows. The Sliding Windows lesson examines shared-row leakage and uses a different classification target.
+
+<ConceptReference summary="The separate three-feature order comparison and tensor-shape examples">
+
+The following example collects input-only windows from five illustrative normalized three-feature rows. It can keep a final input-only window because it does not ask for a following target. The Challenge above adds that target rule and a stride. The random shape examples allocate tensors only and train no model.
+
+## Why One Reading At A Time Fails
 
 <CodeBlock language="typescript" title="feedforward-limitation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -117,9 +164,7 @@ You can also flatten a window into one long array and give it to a dense model. 
 
 An RNN reuses the same update at every step. More steps do not add recurrent parameters, although they still add work. This can help it recognize patterns at different positions. A time shift can still change the output because the earlier state and surrounding readings matter too.
 
-<Dialogue speaker="Dr. Farah">
-The individual rows have not changed. Now we can compare them in order. Rising, falling, rising is a different pattern from falling, rising, rising. Our current model scores each row alone, so it cannot use that difference.
-</Dialogue>
+
 
 A byte-forwarding stream preserves chunk order without learning from it. A sequence model uses ordered readings in a learned computation. This comparison covers forwarding only. Other JavaScript streams can inspect or transform their contents too.
 
@@ -152,9 +197,12 @@ feedforwardInput.dispose();
 sequentialInput.dispose();`}
 </CodeBlock>
 
+
+</ConceptReference>
+
 ## Challenge
 
-The example above collects windows only. For training, add a stride, the number of readings to advance between windows. Pair each window with the next reading as its prediction target. Skip a window if no reading follows it.
+Implement the pair-building contract above for the arguments you receive. Advance each start by stride, pair its input window with the next reading, and skip a window without that target. The optional input-only comparison uses a different final-window rule.
 
 Return the arrays and their tensors. Input windows have shape [batch, timeSteps, features]. Targets have shape [batch, features] because each target is one reading. The extra input axis keeps the readings in time order within each window.
 

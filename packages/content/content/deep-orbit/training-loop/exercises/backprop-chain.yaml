@@ -143,7 +143,7 @@ testCode: |
       const recorded = gradOf(lossFn).grads[w.name].dataSync()[0];
       const estimate = numericGradOf(lossFn, w);
       expect(typeof estimate, 'numericGradOf hands back a plain number: a change in loss divided by the nudge that caused it. A tensor or an object is the shape the other function returns.').toBe('number');
-      expect(estimate, 'The numerical estimate should be within 0.001 of the automatic gradient in this case. Check the loss difference and use the requested step size.').toBeCloseTo(recorded, 1);
+      expect(estimate, 'The numerical estimate should be within 0.05 of the automatic gradient in this case. Check the loss difference and use the requested step size.').toBeCloseTo(recorded, 1);
       expect(w.dataSync()[0], 'Restore the original weight after estimating the gradient. The estimate should not change the model.').toBeCloseTo(3.0, 4);
       const a = tf.variable(tf.scalar(1.5));
       const b = tf.variable(tf.scalar(-0.5));
@@ -159,7 +159,14 @@ testCode: |
       const recordedPasses = passes;
       passes = 0;
       const before = autoCalls();
-      const est = [numericGradOf(composed, a), numericGradOf(composed, b), numericGradOf(composed, c)];
+      const watched = [a, b, c, w];
+      const originalValues = watched.map(variable => variable.dataSync()[0]);
+      const valuesAfterEstimates = [];
+      const est = [a, b, c].map(variable => {
+        const estimate = numericGradOf(composed, variable);
+        valuesAfterEstimates.push(watched.map(item => item.dataSync()[0]));
+        return estimate;
+      });
       const estimatePasses = passes;
       expect(autoCalls() - before, 'Implement numericGradOf by comparing loss before and after a small weight change. Do not call automatic differentiation in this function. The task compares the two methods.').toBe(0);
       expect(est[0], 'The estimate for the first variable misses the slope the backward pass reports for it. That variable reaches the loss along two routes, and a nudge moves both at once, so the estimate carries the sum the same way the chain rule does.').toBeCloseTo(Math.cos(1.5) + 0.25, 1);
@@ -179,23 +186,35 @@ testCode: |
         columns: ['Method', 'Forward calculations'],
         rows: [['Automatic differentiation', recordedPasses], ['Numerical estimates', estimatePasses]],
       });
+      for (let estimateIndex = 0; estimateIndex < valuesAfterEstimates.length; estimateIndex++) {
+        valuesAfterEstimates[estimateIndex].forEach((value, variableIndex) => {
+          expect(
+            value,
+            'After numerical estimate ' + (estimateIndex + 1) + ', restore the variable passed to numericGradOf and leave every other variable unchanged. Variable ' + watched[variableIndex].name + ' changed.',
+          ).toBeCloseTo(originalValues[variableIndex], 6);
+        });
+      }
     });
     it('restores a nudged variable when the second loss calculation fails', () => {
-      w.assign(tf.scalar(2));
+      const probe = tf.tidy(() => tf.variable(tf.scalar(2)));
       let passes = 0;
       const failingLoss = () => {
         passes += 1;
         if (passes === 2) throw new Error('Capture unavailable');
-        return w.square();
+        return probe.square();
       };
-      expect(
-        () => numericGradOf(failingLoss, w),
-        'Let the loss error reach the caller after restoring the variable.',
-      ).toThrow('Capture unavailable');
-      expect(
-        w.dataSync()[0],
-        'Restore the original weight in a finally block, including when the nudged loss fails.',
-      ).toBe(2);
+      try {
+        expect(
+          () => numericGradOf(failingLoss, probe),
+          'Let the loss error reach the caller after restoring the variable.',
+        ).toThrow('Capture unavailable');
+        expect(
+          probe.dataSync()[0],
+          'Restore the variable passed to numericGradOf in a finally block, including when the nudged loss fails. Restoring global w does not restore this separate variable.',
+        ).toBe(2);
+      } finally {
+        probe.dispose();
+      }
     });
   });
 estimatedMinutes: 15

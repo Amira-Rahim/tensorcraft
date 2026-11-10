@@ -58,6 +58,27 @@ You will measure reconstruction error and inspect which features contributed to 
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Compare raw and baseline-relative per-feature errors without treating either as a diagnosis"]} />
 
+## One supplied row through its error
+
+The coding probe's offset model returns each of eight input features plus
+0.1. Each gap has squared size 0.01, so their mean is also 0.01. A different
+input has the same score under this model. The score measures the gap to the
+reconstruction, rather than the input's size. The activity follows the same
+inputs through offset, zero-output, and identity mappings.
+
+<CodeBlock language="javascript" title="offset-reconstruction.js">
+{`const original = [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4];
+const rebuilt = original.map(value => value + 0.1);
+const squaredGaps = original.map((value, i) => (value - rebuilt[i]) ** 2);
+const rowMse = squaredGaps.reduce((total, gap) => total + gap, 0) / original.length;
+console.log({ squaredGaps, rowMse });`}
+</CodeBlock>
+
+Your function wraps one input as `[1, numberOfFeatures]`, reads the model's
+reconstruction, and returns one numeric MSE. Use synchronous tidy or explicit
+disposal for its input, output, and loss tensors. Keep the supplied model
+alive. The eleven-feature application below is a separate integration sketch.
+
 ## Measuring reconstruction error
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -194,13 +215,36 @@ Give Farah a reconstruction MSE she can use to rank readings for review, while r
 
 <Exercise slug="reconstruction-error" />
 
+`Your reconstruction scores` contains the numbers your function returned for both eight-feature probes. The offset mapping should make both near 0.01, within float32 rounding. These are separate from the fictional 6.2 score in the mission.
+
 <StoryPassage>
 
 PAGER, 14:47: the crew confirms the 14:33 signal as anomalous, and DEEP SCAN said nothing. Compare per-feature errors with their normal baselines. Rank the discrepancies and identify unusually low errors. These measurements guide the investigation. They cannot establish its cause.
 
 </StoryPassage>
 
+### The missed-event incident changes the measure
+
+This editor uses absolute gaps, with positive absolute-error baselines.
+The first editor uses squared gaps and their mean. Keep those units separate.
+For the supplied four-feature investigation:
+
+| Feature index | Absolute gap | Normal absolute-error baseline | Ratio | Below half baseline? |
+| --- | --- | --- | --- | --- |
+| 0 | about 0.001 | 0.1 | about 0.01 | Yes |
+| 1 | about 0.3 | 0.5 | about 0.6 | No |
+| 2 | 0.5 | 2 | 0.25 | Yes |
+| 3 | about 0.6 | 0.8 | about 0.75 | No |
+
+Ratios rank the indices as `[3, 1, 2, 0]`. Raw gaps would rank them differently.
+Break equal ratios by lower index. Build the low-error list separately in
+original index order: `[0, 2]` here. The comparison is strictly below half,
+so an exact half does not enter that list. These measurements locate unusual
+errors and guide investigation. They establish no physical cause.
+
 <Exercise slug="incident-missed-anomaly" />
+
+In `Your feature-by-feature investigation`, follow each returned absolute gap into its baseline ratio, low-error flag, and ratio rank. A low reconstruction error can still belong to an anomalous input.
 
 <RecallPrompt
   question="What can the total reconstruction error tell you, and what needs a separate feature-by-feature check?"

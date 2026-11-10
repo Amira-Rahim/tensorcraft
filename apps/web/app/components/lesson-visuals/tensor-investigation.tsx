@@ -34,10 +34,12 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
   > | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+  const [selectedSensor, setSelectedSensor] = useState<number | null>(null);
   const values = WORKED_PACKET.flat();
   async function run() {
     if (pending) return;
     setCompleted(null);
+    setSelectedSensor(null);
     setPending(true);
     setError("");
     try {
@@ -144,10 +146,45 @@ const shape = reading.shape;`}
               those readings into {WORKED_EXCERPT.sensorIds.length} lines, one
               for each sensor.
             </p>
+            <div aria-label="Positions in the example's flat list">
+              <h3>Each sensor’s positions in the list</h3>
+              <p>
+                Select a sensor on the chart below to highlight its values here.
+                JavaScript indices start at 0. The recording’s header gives the
+                repeating order A, B, C, D.
+              </p>
+              <ol className="flex flex-wrap gap-3 my-5 list-none p-0">
+                {completed.values.map((value, index) => (
+                  <li
+                    key={index}
+                    data-reading-index={index}
+                    data-source-sensor={WORKED_EXCERPT.sensorIds[index % 4]}
+                    data-selected={
+                      selectedSensor === null || index % 4 === selectedSensor
+                    }
+                    className="flex flex-col items-center px-3 py-2 border border-border rounded data-[selected=true]:bg-surface-hover data-[selected=true]:font-bold"
+                  >
+                    <span className="text-sm">Index {index}</span>
+                    <code>{value}</code>
+                  </li>
+                ))}
+              </ol>
+              <p aria-live="polite">
+                {selectedSensor === null
+                  ? "All sensors are visible. Each group of four values records one selected moment."
+                  : `Sensor ${WORKED_EXCERPT.sensorIds[selectedSensor]} uses indices ${completed.values.flatMap((_, index) => (index % 4 === selectedSensor ? [index] : [])).join(", ")}. Its readings are ${completed.chartRows[selectedSensor]!.join(", ")}, in moment order.`}
+              </p>
+            </div>
             <ExerciseOutput
               outputLabel="Chart from this example"
+              statusMessage="From this supplied example run"
               stale={false}
               complete
+              seriesSelection={{
+                artifactIndex: 0,
+                seriesIndex: selectedSensor,
+              }}
+              onSeriesSelect={(_, sensor) => setSelectedSensor(sensor)}
               artifacts={[
                 {
                   kind: "series",

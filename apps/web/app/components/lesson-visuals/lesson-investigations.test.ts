@@ -87,13 +87,14 @@ describe("Deep Orbit experiments", () => {
     },
   );
 
-  it("broadcasts each channel before applying the gain", () => {
-    expect(evaluate("tensor-operations", { position: 2, gain: 2 }).answer).toBe(
-      8,
-    );
+  it("keeps the recording sensor aligned through pairing and broadcast", () => {
     expect(
-      evaluate("tensor-operations", { position: 3, gain: 1 }, "changed").answer,
-    ).toBe(8);
+      evaluate("tensor-operations", { row: 1, column: 0, gain: 2 }).answer,
+    ).toBe(7);
+    expect(
+      evaluate("tensor-operations", { row: 1, column: 1, gain: 1 }, "changed")
+        .answer,
+    ).toBe(19);
   });
 
   it("uses saved training statistics for a later reading", () => {
@@ -105,23 +106,23 @@ describe("Deep Orbit experiments", () => {
     ).toBeCloseTo(10 / 6);
   });
 
-  it("keeps bias separate from weighted input contributions", () => {
+  it("keeps bias separate from the three weighted input contributions", () => {
     expect(
-      evaluate("first-neuron", { weight: 0.75, bias: 0.2 }).answer,
-    ).toBeCloseTo(0.1);
+      evaluate("first-neuron", { weight: -0.2, bias: 0.1 }).answer,
+    ).toBeCloseTo(0.26);
     expect(
-      evaluate("first-neuron", { weight: 1, bias: -0.1 }, "changed").answer,
-    ).toBeCloseTo(0.65);
+      evaluate("first-neuron", { weight: 0.2, bias: 0.1 }, "changed").answer,
+    ).toBeCloseTo(0.58);
   });
 
   it("detects missing shards even when model.json is available", () => {
     expect(
-      evaluate("model-loading", { graph: 1, shards: 1, paths: 0 }).answer,
-    ).toBe(1);
+      evaluate("model-loading", { graph: 1, shards: 0, paths: 0 }).answer,
+    ).toBe("files unavailable");
     expect(
-      evaluate("model-loading", { graph: 1, shards: 4, paths: 1 }, "large")
+      evaluate("model-loading", { graph: 1, shards: 1, paths: 1 }, "large")
         .answer,
-    ).toBe(4);
+    ).toBe("files unavailable");
   });
 
   it("distinguishes a cached hit from a valid cached hit after a scaler change", () => {
@@ -148,42 +149,30 @@ describe("Deep Orbit experiments", () => {
   });
 
   it("stops the pipeline when required input metadata is missing", () => {
-    expect(evaluate("system-architecture", {}, "malformed").answer).toBe(5);
-    expect(evaluate("system-architecture", { model: 0 }, "valid").answer).toBe(
-      60,
+    expect(evaluate("system-architecture", {}, "malformed").answer).toBe(0);
+    expect(evaluate("system-architecture", { stage: 0 }, "valid").answer).toBe(
+      8,
     );
   });
 
-  it("keeps a plausible origin claim unverified", () => {
-    const complete = evaluate(
-      "llms-for-science",
-      { measurements: 1, source: 1, draft: 1 },
-      "full",
+  it("accepts valid structure while leaving the reply's claims for evidence review", () => {
+    const complete = evaluate("llms-for-science", { reply: 0 }, "wrapped");
+    expect(complete.answer).toBe("Accepted fields");
+    expect(complete.graphics.at(-1)?.values.at(-1)).toContain(
+      "evidence review",
     );
-    expect(complete.answer).toBe(2);
-    expect(complete.graphics.at(-1)?.values.at(-1)).toContain("unverified");
-    expect(
-      evaluate(
-        "llms-for-science",
-        { measurements: 1, source: 1, draft: 1 },
-        "partial",
-      ).answer,
-    ).toBe(1);
+    expect(evaluate("llms-for-science", { reply: 1 }, "plain").answer).toBe(
+      "Accepted fields",
+    );
+    expect(evaluate("llms-for-science", { reply: 2 }, "plain").answer).toBe(
+      "Rejected reply",
+    );
   });
 
-  it("requires retrieved evidence and its identity to support a claim", () => {
-    expect(
-      evaluate("rag-for-signals", { query: 1, top: 1, ids: 1 }, "calibration")
-        .answer,
-    ).toBe(0);
-    expect(
-      evaluate("rag-for-signals", { query: 2, top: 1, ids: 1 }, "calibration")
-        .answer,
-    ).toBe(1);
-    expect(
-      evaluate("rag-for-signals", { query: 2, top: 1, ids: 0 }, "calibration")
-        .answer,
-    ).toBe(0);
+  it("counts omitted matches after field filtering and preserves the record cap", () => {
+    expect(evaluate("rag-for-signals", { query: 1 }, "filters").answer).toBe(0);
+    expect(evaluate("rag-for-signals", { query: 1 }, "capped").answer).toBe(10);
+    expect(evaluate("rag-for-signals", { query: 0 }, "capped").answer).toBe(20);
   });
 
   it("rejects blank or nonfinite predictions and accepts rounded measurements", () => {

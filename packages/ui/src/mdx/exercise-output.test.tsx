@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -209,6 +209,49 @@ describe("ExerciseOutput", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       "Your code has changed. Run it again to update these results.",
     );
+  });
+
+  it("links an externally selected series by artifact position and keeps other charts independent", () => {
+    const onSeriesSelect = vi.fn();
+    const artifacts = [comparison, { ...comparison }];
+    const { container, rerender } = render(
+      <ExerciseOutput
+        artifacts={artifacts}
+        stale={false}
+        complete
+        seriesSelection={{ artifactIndex: 1, seriesIndex: 1 }}
+        onSeriesSelect={onSeriesSelect}
+      />,
+    );
+    const charts = () => container.querySelectorAll("svg");
+    expect(charts()[0]!.querySelectorAll("polyline")).toHaveLength(2);
+    expect(charts()[1]!.querySelectorAll("polyline")).toHaveLength(1);
+    expect(
+      charts()[1]!.querySelector("[data-exercise-series]"),
+    ).toHaveAttribute("data-exercise-series", "1");
+
+    // Identical titles do not merge the two artifacts' selection.
+    fireEvent.click(screen.getAllByRole("button", { name: "Forecast" })[0]!);
+    expect(onSeriesSelect).toHaveBeenLastCalledWith(0, 0);
+    expect(charts()[0]!.querySelectorAll("polyline")).toHaveLength(1);
+    fireEvent.click(screen.getAllByRole("button", { name: "All series" })[1]!);
+    expect(onSeriesSelect).toHaveBeenLastCalledWith(1, null);
+    // The controlled chart waits for the owner to update its selection.
+    expect(charts()[1]!.querySelectorAll("polyline")).toHaveLength(1);
+    rerender(
+      <ExerciseOutput
+        artifacts={artifacts}
+        stale={false}
+        complete
+        seriesSelection={{ artifactIndex: 1, seriesIndex: null }}
+        onSeriesSelect={onSeriesSelect}
+      />,
+    );
+    expect(charts()[0]!.querySelectorAll("polyline")).toHaveLength(1);
+    expect(charts()[1]!.querySelectorAll("polyline")).toHaveLength(2);
+    expect(
+      screen.getAllByRole("button", { name: "All series" })[1],
+    ).toHaveAttribute("aria-pressed", "true");
   });
 
   it("keeps the returned numeric precision in the data table", () => {

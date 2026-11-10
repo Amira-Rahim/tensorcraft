@@ -92,10 +92,31 @@ their labels, and leaves later readings out of training.
 
 ## Reading samples on demand
 
-Use the exercise's 16-row archive stand-in. Each row has three **features**
-(numbers the model reads): amplitude, zero-crossing count, and phase. Its
-**label** is the target 0 or 1. These small values stand in for the ship's
-28,800 archived readings and their much larger raw captures.
+Use the same **16-row practice archive** in the activity and challenge. Each
+row has three **features**, the numbers a model would read, and one **label**,
+the target it would learn. This task tests the loader without training a model.
+
+The supplied reader generates each row from its ID. The three feature slots
+stand in for amplitude, zero-crossing count, and phase. Their generated values
+have no physical units. The label alternates between 0 and 1 so you can check
+that each label stays with its row. It says nothing about an anomaly.
+
+| Practice row ID | Feature values, in order | Label | Assigned split |
+| --- | --- | --- | --- |
+| 0 | `[0, 0, 0]` | 0 | Training |
+| 1 | `[100, 1, 0.1]` | 1 | Training |
+| 12 | `[1200, 12, 1.2]` | 0 | Validation |
+
+These are loader test values. They do not come from Demir's sensor recording.
+The ship's 28,800-reading archive and its raw captures remain a separate source.
+
+<CodeBlock language="typescript" title="practice-reader.ts">
+{`let readCount = 0;
+function readSample(id) {
+  readCount++;
+  return { features: [id * 100, id, id / 10], label: id % 2 };
+}`}
+</CodeBlock>
 
 Keep the archive read inside the generator loop. Each request then reads one row without loading the full archive into an array.
 
@@ -114,15 +135,44 @@ Keep the archive read inside the generator loop. Each request then reads one row
 Wrap each label in an array, `[row.label]`. Four samples then make feature
 shape `[4, 3]` and label shape `[4, 1]`: four rows, one label per row.
 
+### The first read and the next pass
+
+Creating a generator does no reading. Calling `.next()` runs its loop until
+the next `yield`. Here, use practice IDs 0 and 1 to inspect the first request.
+
+<CodeBlock language="typescript" title="first-read.ts">
+{`const probe = rowsById([0, 1]);
+console.log(readCount); // 0
+const first = probe.next();
+console.log(readCount); // 1
+if (!first.done) tf.dispose(first.value);
+probe.return(undefined);
+
+const restarted = rowsById([0, 1]);
+const firstAgain = restarted.next(); // starts at row 0 again
+console.log(readCount); // 2 total, one read in each iterator
+if (!firstAgain.done) tf.dispose(firstAgain.value);
+restarted.return(undefined);`}
+</CodeBlock>
+
+Give `tf.data.generator` a function that creates a fresh iterator for each
+pass. Reusing an exhausted iterator leaves the next pass with no rows.
+The challenge checks both on-demand reading and repeated passes.
+
 ## Shuffling before batching
 
 <CodeBlock language="typescript" title="batch-and-read.ts">
-{`const ids = Array.from({ length: 16 }, (_, i) => i);
+{`readCount = 0; // count the batching pass separately from the probe
+const ids = Array.from({ length: 16 }, (_, i) => i);
 const source = tf.data.generator(() => rowsById(ids));
 const batches = source.shuffle(10).batch(4);
+const batchShapes = [];
 await batches.forEachAsync((group) => {
-  console.log(group.xs.shape); // [4, 3]
-});`}
+  batchShapes.push(group.xs.shape);
+  console.log(group.xs.arraySync(), group.ys.arraySync());
+});
+console.log(batchShapes); // four [4, 3] shapes
+console.log(readCount);   // 16`}
 </CodeBlock>
 
 Shuffle before batching so individual rows can move between groups. A buffer
@@ -131,6 +181,11 @@ of 10 holds ten rows to choose from. This mixes the ten rows currently in the bu
 In the challenge, save each shape in `batchShapes`. Wait for `forEachAsync()`
 to finish before reading that array. This example reads all 16 practice rows
 to show batching. It does not train a model.
+
+The shuffle buffer reads ahead, so the first batch can require more than four
+archive reads. Check the generator alone to see one read for one request.
+`forEachAsync()` disposes each batch's tensors after its callback. Save shapes
+or copied values there if you need to inspect them afterward.
 
 ## Training and validation periods
 
@@ -155,7 +210,10 @@ windows overlap. Fit preprocessing on training rows only.
 
 A paginated fetch reads the next page when your code requests it. A `tf.data` generator also produces values on request. The request may come from the model, a shuffle buffer, or prefetching that prepares records before the model needs them.
 
-A **feature** is one measurement the model reads about an example. A **label** is the answer you want it to learn, here 0 or 1 for whether to flag the reading. **Supervised learning** uses these labeled examples to train the model.
+**Supervised learning** trains a model on features paired with known targets,
+called labels. The practice reader's alternating labels test data handling.
+A real training archive needs labels with a known source before those numbers
+can mean whether to flag a reading.
 
 The `fitDataset` training API reads `xs` as features and `ys` as labels. Other `tf.data` pipelines can hold different structures. In module 7, the model will learn to reproduce its own input. That task uses the input itself as the target.
 
@@ -165,7 +223,7 @@ These features come from 64 consecutive samples of one channel. At 256 samples p
 
 For now, `row.features` and `xs` hold three numbers per reading. Fetching the record still reads its large raw capture, so fetch one at a time.
 
-This integration sketch assumes an async `readArchivedSample(id)` function supplied by your application. It returns one record with `features` and `label`. It must not load the entire archive internally. The exercise uses a synchronous in-memory stand-in.
+This integration sketch assumes an async `readArchivedSample(id)` function supplied by your application. It returns one record with `features` and `label`. It must not load the entire archive internally. You must establish the feature definitions and label source before using it for training. The exercise supplies only the separate synchronous practice reader.
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -257,6 +315,28 @@ batch shapes, and saved split to check what will reach training. No model is
 trained in this task.
 
 <Exercise slug="batch-data" />
+
+### The loader's results
+
+After a run, inspect the tables from your code:
+
+- **Batches read by your loader** should contain four rows, each with four
+  readings and three features. A correct shape alone cannot confirm the values.
+- **Readings yielded by your generator** shows the verifier's separate,
+  unshuffled pass. For row 1, check `[100, 1, 0.1]` and label 1. Check all 16
+  IDs for missing rows, duplicates, changed feature order, or mismatched labels.
+- **The saved time split** should contain training IDs 0 through 11 and
+  validation IDs 12 through 15. Training order can vary. Membership stays fixed.
+
+The verifier reads the dataset again to test restart behavior. These checks
+produce actual results from your generator. The Concept activity uses a fixed
+illustration of the same practice rows, so its shuffled order can differ.
+If a check fails, use its message and the available tables to locate the issue.
+
+### Separate transfer practice: build-service data
+
+The next activity applies the split decision to build-service records. It uses
+a different source so you can test when the same rule makes sense elsewhere.
 
 <DecisionTask id="future-builds" />
 

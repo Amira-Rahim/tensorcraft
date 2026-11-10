@@ -120,7 +120,14 @@ describe("saved exercise runs", () => {
     const view = render(
       tree({ draftOwner: "one", onRunSnapshot, getHintLevels: () => [1, 2] }),
     );
-    fireEvent.click(await screen.findByRole("button", { name: "Run Tests" }));
+    // The first lazy editor chunk can resolve after the default 1s query budget in a full suite.
+    fireEvent.click(
+      await screen.findByRole(
+        "button",
+        { name: "Run Tests" },
+        { timeout: 5000 },
+      ),
+    );
     await waitFor(() => expect(onRunSnapshot).toHaveBeenCalledOnce());
     expect(onRunSnapshot.mock.calls[0][0].assistance).toEqual({
       solutionViewed: true,
@@ -380,6 +387,28 @@ describe("exercise result lifecycle", () => {
       "id",
       inspect.getAttribute("href")!.slice(1),
     );
+  });
+
+  it("offers result inspection only when the fallback has captured output", async () => {
+    vi.mocked(parseAndRunTests).mockResolvedValueOnce({
+      ...passed,
+      results: [{ name: "scaled", passed: false }],
+      artifacts: [],
+    });
+    render(tree({ renderResult: () => undefined }));
+    const run = await screen.findByRole("button", { name: "Run Tests" });
+    fireEvent.click(run);
+    await waitFor(() => expect(run).toBeEnabled());
+    expect(screen.queryByRole("link", { name: "Inspect result" })).toBeNull();
+    expect(screen.getByTestId("exercise-result-verdict")).toHaveTextContent(
+      "0 of 1 checks passed",
+    );
+
+    fireEvent.click(run);
+    expect(
+      await screen.findByRole("link", { name: "Inspect result" }),
+    ).toBeVisible();
+    expect(screen.getByText("Reading", { selector: "h3" })).toBeVisible();
   });
 
   it("keeps submitted code and current editor code distinct after an edit during execution", async () => {

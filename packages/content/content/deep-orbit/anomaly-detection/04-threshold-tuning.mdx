@@ -81,6 +81,33 @@ You will compare alert thresholds on labeled readings and investigate an inciden
 
 <LearningObjectives objectives={["Estimate a false-alarm fraction from reviewed normal data and project alert volume under stated assumptions", "Understand the precision-recall tradeoff and how threshold affects each", "Compare F1 maximization with an explicit false-alarm and miss cost", "Choose an investigation priority from an alert-storm runbook without treating it as a confirmed cause"]} />
 
+## A candidate through the supplied validation cases
+
+The coding comparison supplies errors `[0.2, 0.4, 0.5, 0.7, 0.9, 0.3]` and
+labels `[false, true, false, true, true, false]`. These diagnostic labels
+belong to these six cases, with no ground-truth claim about sample 7741.
+
+At cutoff 0.3, strict flags are `[false, true, true, true, true, false]`.
+They give TP=3, FP=1, FN=0, TN=2. Precision is 3/4, recall is 1, and F1 is
+6/7, about 0.857. At 0.6, TP=2, FP=0, FN=1, TN=3, giving F1=0.8.
+The activity links a selected case to those counts and both candidate scores.
+
+<CodeBlock language="javascript" title="validation-candidate.js">
+{`const validationScores = [0.2, 0.4, 0.5, 0.7, 0.9, 0.3];
+const truth = [false, true, false, true, true, false];
+const hits = validationScores.map(score => score > 0.3);
+const caught = hits.filter((hit, i) => hit && truth[i]).length;
+const falseAlarms = hits.filter((hit, i) => hit && !truth[i]).length;
+const missed = hits.filter((hit, i) => !hit && truth[i]).length;
+const candidateF1 = 2 * caught / (2 * caught + falseAlarms + missed);
+console.log({ caught, falseAlarms, missed, candidateF1 });`}
+</CodeBlock>
+
+Try every supplied candidate. Return `{ threshold, f1 }` for any tied
+maximizer. If every F1 is zero, return any supplied candidate with `f1: 0`. A score equal to the cutoff
+stays unflagged. Select on validation data, then evaluate the selected policy
+on untouched data. The later mission report uses a separate labeled slice.
+
 ## Setting the Threshold
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -230,6 +257,8 @@ Compare the candidate cutoffs on labeled validation data. Return the one with th
 
 <Exercise slug="find-threshold" />
 
+`Your selected validation cutoff` pairs your returned cutoff with its measured validation F1. It selects the best supplied F1 candidate, while the crew’s cost decision remains separate. Six cases establish no future pager volume.
+
 <DecisionTask id="rule-or-model" />
 
 <StoryPassage>
@@ -238,7 +267,28 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 
 </StoryPassage>
 
+### The storm runbook has an ordered objective
+
+The storm editor selects the first investigation, rather than a new cutoff.
+Its supplied capture case has 100 alerts/hour, baseline 10/hour, a 200-day-old
+model, and a logged sensor change. Its ratio is 10, but the sensor-change rule
+wins before the age and ratio rules.
+
+| First matching condition | Next check and action |
+| --- | --- |
+| Any logged sensor change | sensor-change, inspect-sensor |
+| Otherwise model age above 90 days | model-age, evaluate-model |
+| Otherwise unrounded ratio in [5, 20] | threshold, review-threshold |
+| Otherwise | unexplained, escalate |
+
+At a zero baseline, report a null ratio. Round displayed rate and ratio to
+one decimal only after using the unrounded ratio for the rule. A ratio of
+4.99 must not enter the band because it displays as 5.0. Keep reviewing alerts:
+none of these branches establishes their cause or orders automatic retraining.
+
 <Exercise slug="incident-false-alarm-storm" />
+
+Read `Your alert-storm triage` as measured rate and ratio beside the returned next check and action. The first matching rule is an investigation priority, with no confirmed cause.
 
 <RecallPrompt
   question="What does F1 measure, and when might you choose a different cutoff?"

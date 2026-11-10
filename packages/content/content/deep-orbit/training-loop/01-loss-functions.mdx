@@ -62,21 +62,115 @@ You will calculate prediction errors and choose a loss function that matches the
 
 <LearningObjectives objectives={["Explain what a loss function measures during training", "Implement MSE for regression (predicting a continuous value) and binary crossentropy for classification", "Interpret loss on a fixed dataset and distinguish fitting from generalization"]} />
 
-## Prediction error
+## From one row's error to one batch loss
 
-A prediction of 0.52 against a label of 1.0 has an error of 0.48. Square it and you get about 0.23. Average those squared errors across the batch to get **mean squared error**, or MSE.
+Farah's spoken example uses a prediction of `0.52` against label `1`. Its difference is `-0.48`, and its squared error is `0.2304`. To check the loss code before connecting it to the classifier, the Challenge supplies the four numerical pairs below. These are diagnostic inputs, separate from the ship recordings and the earlier calibration-tone scores. Their continuous labels let us check MSE arithmetic.
+
+| Row index | Label | Prediction | Prediction minus label | Squared difference |
+| --- | --- | --- | --- | --- |
+| 0 | 3 | 2.5 | -0.5 | 0.25 |
+| 1 | -0.5 | 0 | 0.5 | 0.25 |
+| 2 | 2 | 2.1 | 0.1 | 0.01 |
+| 3 | 1 | 1.3 | 0.3 | 0.09 |
+
+**Mean squared error**, or MSE, averages the last column: `(0.25 + 0.25 + 0.01 + 0.09) / 4 = 0.15`. The first two differences have opposite signs. Squaring each difference before averaging keeps those errors from cancelling.
 
 A test assertion such as `expect(actual).toBe(expected)` tells you pass or fail. A loss gives training a number to reduce. Some losses are not mathematical distances. Compare losses on the same examples using the same rule. A lower training loss alone does not prove the model works on new data.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
+The first required function returns the tensor from `tf.losses.meanSquaredError`. Its default reduction averages this entire batch. The result has scalar shape `[]`, with one value rather than one value per row.
+
+<CodeBlock language="typescript" title="mse-probe.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const labels = tf.tensor1d([3, -0.5, 2, 1]);
+const predictions = tf.tensor1d([2.5, 0, 2.1, 1.3]);
+const differences = predictions.sub(labels);
+const squares = differences.square();
+const loss = tf.losses.meanSquaredError(labels, predictions);
+
+console.log(Array.from(differences.dataSync())); // about [-0.5, 0.5, 0.1, 0.3]
+console.log(Array.from(squares.dataSync())); // about [0.25, 0.25, 0.01, 0.09]
+console.log(loss.shape, loss.dataSync()[0]); // [], about 0.15
+
+tf.dispose([labels, predictions, differences, squares, loss]);`}
+</CodeBlock>
+
+In the activity, select a row to follow its label, prediction, difference, and square. Change the first prediction, then predict the loss of the whole batch. Row selection changes the highlight. Every row still contributes to the mean. The alternate diagnostic preset uses another supplied check: labels `[1, 0, 1, 0, 1]` and raw scores `[0.4, -0.4, -0.8, 0.8, 1.4]`. MSE reads those scores directly and returns `0.912`. BCE interprets those same scores as logits and returns about `0.7177`. Changing the loss rule changes the score, so this comparison does not measure a model improving.
+
+## Binary labels and the output contract
+
+For the binary checks, the Challenge changes to labels `[1, 0]`. A **logit** is a raw score before sigmoid. It can be negative or positive, with no fixed upper or lower bound. Sigmoid turns it into a probability between `0` and `1`. Both columns below describe the same supplied binary predictions in different formats.
+
+| Supplied case | Raw logits | Corresponding sigmoid probabilities | Mean binary cross-entropy |
+| --- | --- | --- | --- |
+| Confident and correct | `[3, -3]` | about `[0.9526, 0.0474]` | about `0.0486` |
+| Confident and wrong | `[-3, 3]` | about `[0.0474, 0.9526]` | about `3.0486` |
+| Fifty-fifty | `[0, 0]` | `[0.5, 0.5]` | about `0.6931` |
+
+**Binary cross-entropy**, or BCE, penalizes a confident wrong prediction more heavily than an uncertain one. For label `1`, the term is `-log(probability)`. For label `0`, it is `-log(1 - probability)`. Average those terms across the batch. The logits API computes the same objective in a numerically stable form.
+
+The second required function receives logits. Pass them directly to `tf.losses.sigmoidCrossEntropy`, which applies sigmoid internally and returns one scalar by default.
+
+<CodeBlock language="typescript" title="bce-probes.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const labels = tf.tensor1d([1, 0]);
+for (const values of [[3, -3], [-3, 3], [0, 0]]) {
+  tf.tidy(() => {
+    const logits = tf.tensor1d(values);
+    const probabilities = logits.sigmoid();
+    const loss = tf.losses.sigmoidCrossEntropy(labels, logits);
+    console.log(values, Array.from(probabilities.dataSync()), loss.dataSync()[0]);
+  });
+}
+// Losses: about 0.048587, 3.048587, 0.693147
+labels.dispose();`}
+</CodeBlock>
+
+If the model already supplies sigmoid probabilities, use the compile loss `'binaryCrossentropy'`. Passing those probabilities to the logits API would apply sigmoid again and change the loss. In the activity, switch between the raw-logit and sigmoid-probability calculations. With matching forms, they represent the same mathematical loss on these moderate diagnostic scores.
+
+The third required function, `pickBceForm`, chooses the form from a declared output contract. It returns a name for the caller to use. It does not calculate a loss or convert any scores.
+
+| Declared output kind | Name returned by `pickBceForm` |
+| --- | --- |
+| `'probabilities'` | `'binaryCrossentropy'` |
+| `'logits'` | `'sigmoidCrossEntropy'` |
+
+The validation below accepts the two declared kinds and rejects the other inputs. Your function also returns the matching name from the table.
+
+<CodeBlock language="javascript" title="bce-form-contract.js">
+{`const inputs = ['probabilities', 'logits', 'sigmoid', 'softmax',
+  'relu', 'unknown', undefined, null];
+
+for (const outputKind of inputs) {
+  try {
+    if (outputKind !== 'probabilities' && outputKind !== 'logits') {
+      throw new Error('Declare probabilities or logits');
+    }
+    console.log('Declared:', outputKind);
+  } catch (error) {
+    console.log('Rejected:', outputKind);
+  }
+}`}
+</CodeBlock>
+
+Require `'probabilities'` or `'logits'` explicitly. Reject other values, including missing values. An activation name alone does not declare what the caller intends its output to represent. The training-loop lesson uses the probability form when compiling the classifier.
+
+The next lesson uses gradients to choose weight changes from these loss calculations. Backpropagation computes those gradients, and a training loop repeats the updates.
+
+<ConceptReference summary="Additional diagnostic values for comparing the two losses">
+
+This separate five-row diagnostic example preserves another comparison used by the checks. The first MSE call scores probability-like values and returns `0.268`. The BCE call scores the supplied raw logits and returns about `0.7177`. If MSE scores those same raw logits directly, it returns `0.912`. A loss function's input interpretation changes the number. None of these rows comes from a measured classifier run.
+
 <CodeBlock language="typescript" title="loss-functions.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Actual labels (ground truth)
+// Additional supplied binary diagnostic labels
 const labels = tf.tensor([1, 0, 1, 0, 1]);
 
-// Network predictions (untrained, pretty bad)
+// Supplied probability-like values, separate from a trained model
 const predictions = tf.tensor([0.6, 0.4, 0.3, 0.7, 0.8]);
 
 // Mean Squared Error: average of (prediction - label)^2
@@ -96,14 +190,7 @@ console.log('Perfect MSE:', perfectLoss.dataSync()); // 0
 tf.dispose([labels, predictions, mse, logits, bce, perfect, perfectLoss]);`}
 </CodeBlock>
 
-A **logit** is the raw score before sigmoid. It can be negative or positive, with no fixed upper or lower bound. Binary cross-entropy has two API forms:
-
-- `tf.losses.sigmoidCrossEntropy` takes logits and applies sigmoid itself.
-- `loss: 'binaryCrossentropy'` takes probabilities already produced by a sigmoid output layer. You will use it in lesson 4.
-
-Choose the form that matches what the output represents. Do not pass probabilities to the logits API, because it would apply sigmoid again. An unfamiliar activation name is not enough information to choose.
-
-Next, you’ll use gradients to choose how to change the weights. Backpropagation calculates those gradients, and a training loop repeats the updates.
+</ConceptReference>
 
 <DerivationDrawer summary="MSE and cross-entropy from first principles">
 Here, Σ sums one term per row in the batch, ŷ is the prediction against the true label y, and a prime mark denotes a derivative. `σ'` is the sigmoid's slope.
@@ -133,9 +220,11 @@ At the decision boundary (`ŷ = 0.5`), the two gradients are `-0.25` and `-0.5`,
 ## Challenge
 
 Give Farah a numerical error signal for training. Write both loss functions
-and choose the cross-entropy form that matches the model output. Compare
-your returned losses for the supplied confident-correct and confident-wrong
-cases before using that loss to guide weight updates.
+and choose the cross-entropy form that matches the declared output. Inspect
+your four-row MSE and the two binary diagnostic cases in the result view.
+The displayed operands identify what your functions received. The returned
+losses come from your current run. The form-selection checks separately
+verify both valid names and rejection of unknown or missing values.
 
 <Exercise slug="mse-loss" />
 

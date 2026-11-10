@@ -95,9 +95,63 @@ You will turn each capture into a consistent set of measurements that a model ca
 
 <LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Convert a hertz band into fixed FFT bins and use their magnitudes as model features", "Combine raw and frequency-domain features, and explain why their scales can affect training", "Explain why changing evaluation rows or labels can change a score even when the model stays the same"]} />
 
-## Mapping Captures into Features
+## The returned row and its ten positions
+
+The mission compares an eleven-input research model with the deployed three-input model. The Challenge separately checks a smaller transform: peak absolute amplitude, strict zero-crossing count, then the requested raw FFT bins. It omits the mission model's phase feature. The generated samples use synthetic amplitude units, separate from the ship's ADC counts.
+
+Its supplied quarter-second capture has 64 samples at 256 Hz. It combines a 52 Hz tone at amplitude 1 and a 72 Hz tone at amplitude 0.5, each starting with a 0.45-radian offset. A 4 Hz bin spacing puts those tones in bins 13 and 18.
+
+| Returned position | Measurement | Supplied check |
+| --- | --- | --- |
+| 0 | Largest absolute sample | about 1.467 |
+| 1 | Adjacent samples with strictly opposite signs | 25 pairs |
+| 2 through 9 | Raw magnitudes at bins 13 through 20 | Centers 52, 56, 60, 64, 68, 72, 76, 80 Hz |
+
+The requested band is `[50, 82] Hz`, including its endpoints. Use `ceil(50 / 4) = 13` for the first bin and `floor(82 / 4) = 20` for the last. The rule includes bin centers inside the band. It does not interpolate a new 50 Hz or 82 Hz bin. Eight magnitudes after two time measurements give ten returned values.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="feature-row-probe.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const featureSamples = Array.from({ length: 64 }, (_, i) =>
+  Math.sin(2 * Math.PI * 52 * i / 256 + 0.45) +
+  0.5 * Math.sin(2 * Math.PI * 72 * i / 256 + 0.45));
+const rawMagnitudes = tf.tidy(() =>
+  Array.from(tf.spectral.rfft(tf.tensor1d(featureSamples)).abs().dataSync()));
+const absolutePeak = Math.max(...featureSamples.map(value => Math.abs(value)));
+let strictCrossings = 0;
+for (let i = 1; i < featureSamples.length; i++) {
+  if (featureSamples[i - 1] * featureSamples[i] < 0) strictCrossings++;
+}
+console.log({ absolutePeak, strictCrossings }); // about 1.467, 25
+console.log(rawMagnitudes.slice(13, 21)); // about [32, 0, 0, 0, 0, 16, 0, 0]
+// The 72 Hz magnitude occupies flat feature position 7: two fields, then bin offset 5.`}
+</CodeBlock>
+
+## One feature's calculation
+
+Select a returned position in the activity. Position 0 takes the maximum of absolute sample values, so a large negative sample can win. Position 1 counts a pair only when its product is strictly negative. A pair containing an exact zero adds nothing. Spectral positions keep their bin identity and raw height.
+
+For example, flat position 7 maps to bin `13 + (7 - 2) = 18`, centered at 72 Hz. It holds magnitude about 16 for this capture. Sorting the magnitudes would move that frequency to a different column. Scaling them inside `extractFeatures` would also change the required raw row.
+
+The alternate supplied capture changes to 64 samples at 128 Hz and a 22 Hz tone. Its 2 Hz spacing changes the mapping. The requested 20-24 Hz band selects bins 10, 11, and 12. Always read the current sample rate, capture length, and band instead of fixing the first example's indices.
+
+## Scaling and model identity
+
+Fit per-column scaling on training rows only, then reuse those statistics for validation, test, and inference. Peak amplitude, crossing count, and raw FFT magnitudes have different scales. A larger number does not establish feature importance. Scaling can change optimization without guaranteeing useful features.
+
+The optional eleven-input model retains the deployed feature names amplitude, `frequency`, and `phase`. In that contract, `frequency` is a zero-crossing count over 64 samples and `phase` is the sample-pair angle `atan2(sample1, sample0)`. They are separate summaries from FFT bin centers. The Challenge's ten-value row omits that phase term.
+
+The mission's 78%-to-87% comparison remains fictional. Both feature width and model capacity changed: 673 parameters at three inputs, 929 at eleven inputs. The extra 256 weights belong to eight new inputs times 32 first-layer units. A controlled comparison needs the same held-out rows and labels, a fixed training budget, repeated runs, and a simpler baseline.
+
+Your result table names the values from your current feature transform. It verifies extraction on supplied captures. It does not reproduce the mission accuracy gain or deploy the research model on the bridge.
+
+<ConceptReference summary="The separate eleven-input research model and its training integration">
+
+These references retain the mission model's three summaries plus eight FFT bins. Supply reviewed training, validation, and test data before using the training sketch. The bridge keeps its three-feature model during this research stage.
+
+## Mapping Captures into Features
 
 <CodeBlock language="typescript" title="feature-engineering.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -262,6 +316,9 @@ Nazari is right about the size. `countParams()` reports 673 parameters for three
 Both the features and parameter count changed, so this comparison cannot tell you which caused the gain. Keep the held-out rows and training budget the same, repeat runs and include a simpler baseline. Validation can score above or below test because the samples or distributions differ. Neither ordering alone proves that data leaked between the sets.
 
 DEEP SCAN 2.0 is not running on the bridge yet. The dashboard keeps using module 4’s three min-max normalized features for another five modules. The crew tests the eleven-feature vector separately first. Module 7’s autoencoder uses it. Module 10 retrains the deployed classifier with these inputs and five output classes.
+
+
+</ConceptReference>
 
 ## Challenge
 

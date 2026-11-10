@@ -13,21 +13,21 @@ scene:
 context:
   narrative: "Demir can update one weight, but the network has 673. He tries changing them one at a time to measure their gradients."
 concept:
-  explanation: "Backpropagation computes gradients for every weight in one backward sweep, applying the chain rule from the loss back to the input."
+  explanation: "Compare two ways to find how a weight affects the loss. Backpropagation reuses the forward calculation to find gradients for several weights together."
   bridge:
     jsTitle: "Error up the call stack"
     jsCode: "// A throw in parseRow() travels parseRow to readFile to main"
     mlTitle: "Backpropagation"
     mlCode: "// Gradient flows from loss to output to hidden to input"
     tier: intuition
-    breaks: "Exception propagation transfers control through handlers. Backpropagation applies the chain rule through differentiable operations to compute requested gradients. The optimizer can leave frozen or disconnected parameters unchanged. A connected parameter can still have zero gradient."
+    breaks: "An exception transfers control through handlers. Backpropagation follows the calculation backward to find gradients. Computing a gradient leaves the weight unchanged. An optimizer applies a separate update."
 consequence:
   narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
 hints:
   - level: nudge
     content: "tf.variableGrads records the forward computation and applies the chain rule backwards."
   - level: guidance
-    content: "One call returns both the loss and the gradients. gradOf should return that result directly. The forward pass calculates the loss. The backward pass calculates how each variable affects it. Read the loss from value and the gradients from grads. Calculate them again on every call, since the weights and loss function can change."
+    content: "Read the loss from value and each gradient from grads using its variable name. Calculate them again on every call. For the numerical estimate, compare the loss before and after moving just one weight. Restore that weight in finally so a failed measurement cannot leave it changed."
   - level: solution
     content: |
       const w = tf.tidy(() => tf.variable(tf.scalar(3.0)));
@@ -67,53 +67,127 @@ Twenty seconds into one training step, the rig has reached parameter 500 of 673.
 
 </StoryPassage>
 
-You will compare automatic differentiation with estimating a gradient by changing a weight and measuring the effect.
+Help Demir check a replacement for his repeated runs. You will estimate a
+slope by moving a weight, compare it with an automatic gradient, then inspect
+how many forward calculations each method needs.
 
-<LearningObjectives objectives={["Estimate a gradient numerically and count what that costs at network scale", "Understand how backpropagation works at a high level", "See the connection to an error travelling back up the call stack", "Use tf.variableGrads() for automatic gradient computation"]} />
+<LearningObjectives objectives={["Estimate a gradient from a small weight change", "Read the loss and named gradients returned by tf.variableGrads()", "Restore a temporarily changed weight, including after an error", "Compare forward-calculation counts for several variables"]} />
 
-## Estimating a gradient
+## One weight and two loss values
 
-One weight, one question: if I move this a little, does the loss go down? Nothing stops you from asking it 673 times.
+Demir first checks the methods on the supplied scalar test loss, `loss = w²`.
+The diagram above uses that same calculation. This test checks the gradient
+methods before he applies them to the network. It contains no sensor readings
+and trains no model.
 
-<CodeBlock language="typescript" title="gradient-by-nudging.ts (sketch)">
-{`// Numeric gradient: nudge one weight, rerun, compare. No calculus.
-// This sketch omits implementation details: computeLoss() stands in for
-// your own forward pass over the batch and returns a plain number, and
-// w1 is the layer-1 weight variable it reads.
-const EPS = 1e-3;
+At `w = 2`, the loss is `4`. At `w = 2.001`, it is about `4.004001`.
+The change in loss divided by the change in weight is about `4.001`.
+That number estimates the local slope, also called the **gradient**. A
+positive slope means a small increase in this weight raises the loss.
 
-function nudgedLoss(w: tf.Variable, index: number): number {
-  const original = w.dataSync().slice();
-  const nudged = original.slice();
-  nudged[index] += EPS;
-  try {
-    tf.tidy(() => w.assign(tf.tensor(nudged, w.shape)));
-    return computeLoss();
-  } finally {
-    tf.tidy(() => w.assign(tf.tensor(original, w.shape)));
-  }
-}
+<CodeBlock language="typescript" title="scalar-slope.ts">
+{`// Compare two nearby weights without changing a model.
+const sampleWeights = tf.tensor1d([2, 2.001]);
+const sampleLosses = sampleWeights.square();
+const values = sampleLosses.dataSync();
+const estimate = (values[1] - values[0]) / 0.001;
+console.log(estimate); // approximately 4.001, with float32 rounding
 
-const base = computeLoss();             // forward pass 0
-// gradient ≈ how much the loss moved, per unit of nudge
-const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
+tf.dispose([sampleWeights, sampleLosses]);`}
 </CodeBlock>
 
-This method uses a **forward finite difference**. It estimates a derivative from two nearby values. A large nudge gives a rough estimate. A very small one can lose accuracy when you subtract nearly equal floating-point numbers.
+This **forward finite difference** needs two loss values. A large nudge gives
+a rough estimate. A very small one can lose accuracy when you subtract nearly
+equal floating-point numbers.
 
-Checking all 673 weights this way needs 673 extra forward passes. It can help check a small calculation, but becomes costly as the model grows. The scene timings are fictional. Measure your own code to compare speed.
+The challenge measures a loss function that reads a variable. To nudge that
+variable safely, save its original value and use `assign()` to change it.
+Restore it in a `finally` block, which runs even if the measurement throws.
+`tf.tidy()` can release temporary tensors, but it cannot undo an assignment.
 
-<Dialogue speaker="ARIA" expression="deadpan">
-Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 gradients in one backward sweep, reusing the forward computation. It has a name.
-</Dialogue>
+<CodeBlock language="typescript" title="temporary-weight.ts">
+{`const probe = tf.tidy(() => tf.variable(tf.scalar(2)));
+const savedWeight = probe.dataSync()[0];
 
-## Working Backwards
+try {
+  tf.tidy(() => probe.assign(tf.scalar(savedWeight + 0.001)));
+  console.log(probe.dataSync()[0]); // the temporary weight
+} finally {
+  tf.tidy(() => probe.assign(tf.scalar(savedWeight)));
+  console.log(probe.dataSync()[0]); // 2 again
+  probe.dispose();
+}`}
+</CodeBlock>
 
-**Backpropagation** calculates gradients by working backward through the operations used in the forward pass. The forward pass produces the loss. The backward pass uses the chain rule to calculate how each earlier variable affected it.
+In your numerical function, measure the original loss before the `try`, then
+measure the changed loss inside it. Move only the selected variable. Keep the
+other variables fixed so the loss change belongs to that one nudge.
 
-The direction may remind you of an error traveling from `parseRow` through `readFile` to `main`. The mechanism is different: backpropagation multiplies derivatives along the calculation. Exception handling transfers program control.
+## The same slope from the calculation
+
+For `loss = w × w`, the weight appears twice. Each path contributes `w` to
+the slope, giving `w + w`. At `w = 2`, the gradient is `4`. The
+**chain rule** combines local slopes along a calculation. Backpropagation
+multiplies them along each path, then adds contributions where paths meet.
+The diagram compares that gradient with the nearby-value estimate.
+
+**Backpropagation** applies the chain rule backward through the operations
+recorded during the forward calculation. TensorFlow.js can do this for you:
+
+<CodeBlock language="typescript" title="automatic-slope.ts">
+{`const testWeight = tf.tidy(() => tf.variable(tf.scalar(2)));
+const result = tf.variableGrads(() => testWeight.square());
+
+console.log(result.value.dataSync()[0]); // loss: 4
+console.log(result.grads[testWeight.name].dataSync()[0]); // gradient: 4
+console.log(testWeight.dataSync()[0]); // weight: still 2
+
+tf.dispose([result.value, ...Object.values(result.grads), testWeight]);`}
+</CodeBlock>
+
+`value` holds the scalar loss tensor. `grads` maps variable names to gradient
+tensors. Use `grads[variable.name]` to find the matching gradient. Call
+`tf.variableGrads()` again when the weight or loss function changes so the
+result describes the new calculation.
+
+Computing these gradients leaves the weights unchanged. An optimizer, or
+your own update code, uses them in a separate step.
+
+The backward direction may remind you of an error traveling from `parseRow`
+through `readFile` to `main`. An exception transfers program control.
+Backpropagation combines derivatives through a recorded calculation.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+## Several weights from one recorded calculation
+
+The challenge also supplies `sin(a) + b² + c × a`, with three variables.
+Here, `a` affects both the sine and the product. Its gradient must include
+both paths. Your automatic function must handle this changed loss without
+assuming that every variable is squared.
+
+One call records that loss calculation and returns all three gradients.
+Your numerical function measures the base and nudged loss separately for
+each variable, so three estimates need at least six forward calculations.
+The two result tables show the gradients and counts from your actual code.
+The numerical estimates may differ slightly because of the nudge and float32
+rounding.
+
+Demir's network has 673 parameters. If he shares one base loss, nudging each
+parameter still needs 673 additional forward passes. Backpropagation reuses
+one forward calculation and computes the gradients in a backward sweep.
+Those counts explain the repeated work. Elapsed time also depends on the
+calculation and backend.
+
+<Dialogue speaker="ARIA" expression="deadpan">
+Estimating each of 673 parameter gradients requires 673 additional forward calculations after the shared base loss. I have watched you pay that cost once. Backpropagation reuses the recorded calculation for all of them.
+</Dialogue>
+
+<ConceptReference summary="The same gradient call in a two-layer network">
+
+This supporting example builds a separate small network with random weights.
+It uses the same `value` and `grads` return structure. The scalar and
+three-variable comparisons above cover the coding task's required behavior.
 
 <CodeBlock language="typescript" title="backpropagation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -145,17 +219,19 @@ console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
 tf.dispose([input, label, loss, ...Object.values(grads), w1, b1, w2, b2]);`}
 </CodeBlock>
 
-`tf.variableGrads()` records every operation during the forward pass, then computes gradients for all variables by applying the chain rule backwards. The drawer below traces that calculation through a two-layer network.
+</ConceptReference>
+
+The derivation below expands the chain rule for a two-layer scalar network. It also explains why some long products of derivatives become very small.
 
 <DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand">
 **The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a two-layer scalar example (one unit per layer):
 
 ```
-z₁ = w₁·x + b₁          ← layer 1 pre-activation
-a₁ = ReLU(z₁)            ← layer 1 activation
-z₂ = w₂·a₁ + b₂          ← layer 2 pre-activation
-ŷ  = σ(z₂)               ← layer 2 output (sigmoid)
-L  = ½(ŷ - y)²           ← loss
+z₁ = w₁·x + b₁          (layer 1 pre-activation)
+a₁ = ReLU(z₁)            (layer 1 activation)
+z₂ = w₂·a₁ + b₂          (layer 2 pre-activation)
+ŷ  = σ(z₂)               (layer 2 output, sigmoid)
+L  = ½(ŷ - y)²           (loss)
 ```
 
 **Goal:** compute `∂L/∂w₁` (gradient of loss w.r.t. layer-1 weights). Apply chain rule from L back to w₁:
@@ -230,19 +306,19 @@ The counts show how much repeated work each method needs. They do not measure it
 />
 
 <RecallPrompt
-  question="Explain why estimating each parameter gradient with a separate forward pass becomes expensive as a model grows."
-  answer="It costs one full forward pass per parameter per training step: 673 parameters means 673 extra forward passes for a single update. Backpropagation applies the chain rule in one backward sweep, subject to floating-point arithmetic and the derivative rules of the operations. Its runtime depends on the graph and backend."
+  question="Your comparison produces three numerical gradients. Why can it need six forward calculations while the automatic call needs one?"
+  answer="The numerical function measures a base and a nudged loss for each variable, giving two calculations per estimate. The automatic call records one loss calculation and combines its local derivatives to obtain all three gradients. A method sharing the base loss could reuse it, but still needs another forward pass for each nudged variable."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Forward finite differences estimate gradients by changing a weight and rerunning the loss. Checking every parameter needs one additional forward pass per parameter.",
-    "Backpropagation reuses the forward computation to calculate parameter gradients in a backward sweep. It avoids a separate forward evaluation per parameter. Wall-clock speed depends on the graph and runtime.",
-    "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass. It handles the backward pass.",
-    "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which can help gradient flow without guaranteeing stable gradients."
+    "A numerical estimate divides the loss change by a small weight change. Restore the weight after the measurement, including when it fails.",
+    "Backpropagation reuses a recorded forward calculation to compute gradients for several variables. It combines local derivatives along every connected path.",
+    "tf.variableGrads() returns the scalar loss in value and gradients keyed by variable name in grads. Recompute them when the calculation changes.",
+    "Computing gradients leaves weights unchanged. An optimizer applies the updates. Forward-calculation counts describe repeated work, while elapsed speed depends on the calculation and runtime."
   ]}
   bridge="Exceptions transfer control through handlers. Backpropagation instead applies the chain rule through a computation graph to calculate requested parameter gradients."
-  youCanNow="Use `tf.variableGrads()` to compute gradients for a multi-layer network in a single backward pass and read the gradient shapes for each variable."
+  youCanNow="Compare automatic gradients with numerical estimates and explain the forward calculations each method needs."
 />
 
 <Epilogue>

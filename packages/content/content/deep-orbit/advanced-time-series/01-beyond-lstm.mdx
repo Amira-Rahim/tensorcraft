@@ -76,6 +76,37 @@ You will calculate attention weights to combine earlier readings according to th
 
 <LearningObjectives objectives={["Understand how attention scores inputs and combines their values", "Learn the Query-Key-Value framework for computing attention weights", "Compare direct access to earlier states with the sequential updates of an LSTM", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
+## A key score becomes a value contribution
+
+The coding probe uses query `[1, 0]`, keys `[[1, 0], [0, 1]]`, and values
+`[[2, 0], [0, 2]]`. The unscaled scores are 1 and 0. Their softmax weights
+are about 0.7311 and 0.2689, and the value blend is about `[1.4621, 0.5379]`.
+The second row contributes even though it has the smaller weight.
+
+<CodeBlock language="javascript" title="query-value-trace.js">
+{`const queryVector = [1, 0];
+const keyRows = [[1, 0], [0, 1]];
+const valueRows = [[2, 0], [0, 2]];
+const dotScores = keyRows.map(row => row.reduce((sum, value, i) => sum + value * queryVector[i], 0));
+const shifted = dotScores.map(score => Math.exp(score - Math.max(...dotScores)));
+const shares = shifted.map(value => value / shifted.reduce((sum, x) => sum + x, 0));
+const valueBlend = valueRows[0].map((_, column) => valueRows.reduce((sum, row, t) => sum + shares[t] * row[column], 0));
+console.log({ dotScores, shares, valueBlend });`}
+</CodeBlock>
+
+| Stage | Exercise shape | Batched worked-example shape |
+| --- | --- | --- |
+| Query | [d] | [1, d] |
+| Keys and values | [T, d] and [T, dv] | Same |
+| Scores and weights | One row across T steps internally | [1, T] |
+| Returned value blend | [dv] | [1, dv] before removing axis 0 |
+
+Key width and value width can differ. Apply weights to values. The exercise
+uses unscaled scores and returns only the blend. Removing only axis 0 keeps
+`dv=1` as `[1]`. A one-step sequence returns that step's value row. Tidy frees
+temporary tensors, while caller-owned query/keys/values and the returned
+blend remain alive. The caller disposes its returned tensor when finished.
+
 ## The Query-Key-Value Framework
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -148,6 +179,8 @@ For example, query [1, 2, 3] and keys [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1
 
 ## LSTM vs Attention
 
+<ConceptReference summary="Reference: an untrained LSTM encoder with an attention read">
+
 <CodeBlock language="typescript" title="comparison.ts">
 {`// Attention reads earlier representations directly, but this example
 // still runs its LSTM encoder sequentially. A shorter path does not
@@ -187,6 +220,8 @@ encoder.dispose(); head.dispose();
 // or a serializable custom Layer. It is not a compiled forecasting model.`}
 </CodeBlock>
 
+</ConceptReference>
+
 This example uses only the last step as its query, so an 80-step window produces one row of 80 scores. Full self-attention uses every step as a query. That produces 80 rows of 80 scores.
 
 For T steps, the full score matrix has T × T entries. Its cost grows faster with window length than an LSTM's. Models for very long windows may use cheaper attention methods instead.
@@ -210,6 +245,8 @@ Our example uses the last LSTM hidden state as its query. Those states already c
 Implement attention with separate keys and values so the prediction can combine earlier representations. Inspect the returned blend to check that both value rows contribute. The exercise uses different shapes from the worked example: its query is a rank-1 tensor with shape [d], and values may have a different width from keys. Return only the blended values. The worked example above also returns weights, but this exercise expects just the values.
 
 <Exercise slug="simple-attention" />
+
+`Your weighted attention blend` uses values twice the identity. Each returned component divided by two reveals that row’s weight for this probe. Check both shares and the output axis. These weights describe this arithmetic and establish no forecast quality or causal role for an earlier ripple.
 
 <RecallPrompt
   question="What do the query, keys, and values each do?"

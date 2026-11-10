@@ -93,6 +93,27 @@ You will define a baseline for normal readings and use z-scores to flag readings
   ]}
 />
 
+## One reading through the strict boundary
+
+The coding probe supplies reading 100, mean 50, and standard deviation 10.
+These unitless arithmetic values are separate from the fictional archive's
+0-to-1 amplitude scale. The distance is 50, or five standard deviations, so
+it flags the reading. A reading of 80 is exactly three spreads away and stays
+unflagged. The activity uses these same diagnostic cases.
+
+<CodeBlock language="javascript" title="baseline-distance.js">
+{`const reading = 100, center = 50, spread = 10;
+const distance = Math.abs(reading - center);
+const sigmaDistance = distance / spread;
+console.log({ distance, sigmaDistance, flag: sigmaDistance > 3 });`}
+</CodeBlock>
+
+The supplied mean and spread can change between calls. Reject non-finite
+values and negative spread. At zero spread, no z-score exists. This exercise
+uses exact equality: the baseline value stays unflagged and any different
+reading flags. Measurement precision would need a separate policy on a real
+sensor. The three-sigma rule alone supplies no false-alarm probability.
+
 ## A baseline for normal readings
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -192,13 +213,40 @@ Use the supplied mean and standard deviation to decide which readings need revie
 
 <Exercise slug="detect-anomaly" />
 
+`Your baseline decision` shows the actual returned flag beside its supplied reading, mean, and spread. Recalculate that row before treating the flag as a request for review.
+
 <StoryPassage>
 
 PAGER, two weeks after go-live: alerts have increased on readings a human reviewed as normal. Compare the current baseline with a recomputed candidate and choose the next check. Evaluate that candidate on separate data before deploying it.
 
 </StoryPassage>
 
+### The candidate baseline is another investigation
+
+The incident supplies `[11, 12, 13, 14, 15]`, reviewed as normal, against an
+old baseline with mean 3 and spread 2. Every value crosses its old gate.
+The candidate mean is 13 and population variance is 2, so its spread is
+sqrt(2). It flags none of these same five rows. That is a fit-and-check on
+the same data, which still needs independent evaluation.
+
+<CodeBlock language="javascript" title="candidate-baseline.js">
+{`const reviewed = [11, 12, 13, 14, 15];
+const candidateMean = reviewed.reduce((sum, x) => sum + x, 0) / reviewed.length;
+const populationVariance = reviewed.reduce((sum, x) => sum + (x - candidateMean) ** 2, 0) / reviewed.length;
+const candidateSpread = Math.sqrt(populationVariance);
+console.log({ candidateMean, candidateSpread, spreadRatio: candidateSpread / 2 });`}
+</CodeBlock>
+
+At 1,000 readings per day the observed old fraction projects to 1,000 flags,
+while the candidate projects to zero. The separate Gaussian reference rounds
+to three. Choose the action using the unrounded old fraction: at most 0.0027
+means hold, otherwise a spread ratio above 1.5 means investigate-spread,
+otherwise evaluate-candidate. Rounding the daily report must not change that
+ordering. No branch approves deployment or establishes the cause.
+
 <Exercise slug="incident-baseline-drift" />
+
+In `Your baseline investigation report`, compare observed projections, the Gaussian reference, candidate statistics, and next action separately. Zero candidate flags on its own fit rows do not certify future behavior.
 
 <RecallPrompt
   question="At a 0.27% false-alarm rate and 100,000 normal readings per hour, about how many flags occur per hour?"

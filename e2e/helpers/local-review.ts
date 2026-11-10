@@ -302,9 +302,32 @@ async function localAlexClient() {
 
 /** Complete only Alex's local prerequisite rows. No assessment score is fabricated. */
 export async function completeAlexModule(
-  moduleId: "foundations" | "neural-networks",
+  moduleId:
+    | "foundations"
+    | "neural-networks"
+    | "training-loop"
+    | "browser-runtimes"
+    | "signal-processing"
+    | "recurrent-networks"
+    | "anomaly-detection"
+    | "advanced-time-series"
+    | "llm-integration"
+    | "optimization-edge",
 ) {
-  if (!["foundations", "neural-networks"].includes(moduleId))
+  if (
+    ![
+      "foundations",
+      "neural-networks",
+      "training-loop",
+      "browser-runtimes",
+      "signal-processing",
+      "recurrent-networks",
+      "anomaly-detection",
+      "advanced-time-series",
+      "llm-integration",
+      "optimization-edge",
+    ].includes(moduleId)
+  )
     throw new Error("Unsupported review prerequisite module.");
   const client = await localAlexClient();
   const directory = resolve("packages/content/content/deep-orbit", moduleId);
@@ -348,6 +371,7 @@ export async function completeAlexModule(
 }
 
 const PILOTS = {
+  launch: "capstone",
   normalization: "foundations",
   "building-a-network": "neural-networks",
   "evaluating-deep-scan": "training-loop",

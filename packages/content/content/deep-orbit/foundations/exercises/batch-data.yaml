@@ -20,8 +20,9 @@ instructions: |
 
   This first pipeline uses all 16 rows to demonstrate batching. A training run
   would read only `trainIdx`. The three features are amplitude, zero-crossing
-  count, and phase, in that order. The practice values depend on each row's ID
-  so the tests can check which readings reach the pipeline.
+  count, and phase slots, in that order. These generated values have no physical
+  units. The label is `i % 2` so the tests can check pairing. It has no anomaly
+  meaning. These rows do not come from Demir's sensor recording.
 starterCode: |
   // Provided: lazy archive access (do NOT modify)
   let readCount = 0;

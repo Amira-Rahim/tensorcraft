@@ -5,7 +5,7 @@ export const LESSON_HANDOFFS: Record<string, string> = {
   "tensor-shapes":
     "Farah wants to make sure each line on Demir’s chart follows the right sensor. Help her arrange the same readings by moment, then by sensor. She’ll use those steps to plot the full recording.",
   "tensor-operations":
-    "Help Nazari combine the feeds while keeping each channel in place. Average the two passes and adjust the gain. Then combine channels using a weighted sum.",
+    "Check neighboring moments from Demir’s recording, apply gain, and inspect a weighted channel sum. Write reusable functions and verify them on the supplied diagnostic cases.",
   "data-loading":
     "Demir cannot keep the whole archive in one growing array. Help him load samples as needed, shuffle them before grouping them into batches, and save later readings for evaluation.",
   normalization:

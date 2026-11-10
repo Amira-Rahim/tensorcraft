@@ -2559,11 +2559,7 @@ export function LessonDesignPreview({
       <StepConsequence {...shared} />
     );
   return (
-    <div
-      className="lesson-page deep-orbit-lesson"
-      data-step={phase}
-      data-world="deep-orbit"
-    >
+    <div className="lesson-page deep-orbit-lesson" data-step={phase}>
       <LessonShell
         orbit
         workspace={workspace}

@@ -115,9 +115,91 @@ You will train a forecaster and feed its predictions back into the input to esti
 
 <LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric", "Generate multi-step forecasts by feeding predictions back as input", "Convert the sensors' physical limits into the units the model works in, and clamp every fed-back reading against them"]} />
 
-## Next-Value Prediction
+## Training and returning the actual history
+
+The Challenge supplies three-feature model-space rows, separate from the bridge's long forecast. `trainForecaster(xs, ys, epochs, providedModel)` receives windows shaped `[samples, windowSize, 3]` and next-reading targets shaped `[samples, 3]`.
+
+Without a provided model, build an eight-unit LSTM using `xs.shape[1]` and `xs.shape[2]` for its input dimensions. A linear Dense layer returns three values. Compile with Adam at `0.01`, MSE loss, and the `mae` metric. The checks use 64 windows of length 5 and 12 epochs, but the function must read the current arguments.
+
+When the caller supplies a compiled model, use it as supplied. Await one `fit(xs, ys, { epochs, batchSize: 32 })` and return `{ model, history }` with that exact returned history. An increasing loss is still a measured history. Do not replace it with a better-looking array. Keep the caller's training tensors alive.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="small-forecaster.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The exercise's generated training series, already in model-space units.
+const sourceRows = Array.from({ length: 70 }, (_, t) => [
+  Math.sin(t / 5), Math.sin(t / 5 + 1.1) * 0.6, Math.cos(t / 7) * 0.8,
+]);
+const trainingWindows = Array.from({ length: 64 }, (_, start) => sourceRows.slice(start, start + 5));
+const trainingTargets = Array.from({ length: 64 }, (_, start) => sourceRows[start + 5]);
+const xs = tf.tensor3d(trainingWindows);
+const ys = tf.tensor2d(trainingTargets);
+const smallModel = tf.sequential();
+smallModel.add(tf.layers.lstm({ units: 8, inputShape: [xs.shape[1], xs.shape[2]] }));
+smallModel.add(tf.layers.dense({ units: 3 }));
+smallModel.compile({ optimizer: tf.train.adam(0.01), loss: 'meanSquaredError', metrics: ['mae'] });
+try {
+  const measuredHistory = await smallModel.fit(xs, ys, { epochs: 12, batchSize: 32 });
+  console.log({ inputShape: xs.shape, epochs: measuredHistory.epoch.length,
+    updates: smallModel.optimizer.iterations, loss: measuredHistory.history.loss,
+    mae: measuredHistory.history.mae }); // [64,5,3], 12 epochs, 24 updates
+} finally {
+  tf.dispose([xs, ys]);
+  smallModel.optimizer.dispose();
+  smallModel.dispose();
+}`}
+</CodeBlock>
+
+The standalone example owns and releases its model. Your function returns its model for the caller to use. If building or training a new owned model fails, release its model and optimizer before rethrowing. A provided model remains the caller's property.
+
+## Feature units and saved scaling
+
+The three positions are amplitude in counts, the legacy `frequency` field as a zero-crossing count, and phase in radians. Model-space values use per-feature z-scores. The archive's 64 sensor channels are a different axis from these three features.
+
+Fit scaling on the original training rows before overlapping windows when possible. If computing statistics from `[windows, timeSteps, features]` tensors, `tf.moments(trainX, [0, 1])` reduces the first two axes and returns three means and variances. Reducing only axis 0 gives one mean per time position and feature, which can silently broadcast. Record when overlapping windows count readings repeatedly. Take square roots of the variances and use scale 1 for constant columns.
+
+Save and reuse those three means and scales. MSE squares model-space errors, while MAE averages their absolute values. The training MAE here uses z-score units. Also report per-feature errors in original units and compare a last-value or seasonal baseline on the same later periods. Phase wraps at minus and plus pi, so a redesigned model may need sine/cosine targets and matching error metrics.
+
+## A clamped row becomes the next input
+
+The activity uses the grader's deterministic stand-in to expose feedback. It is separate from the trained LSTM. Its supplied seed has five three-feature z-score rows, and the initial case uses means `[1024, 32, 0]` and scales `[512, 16, 1]`.
+
+Physical limits are amplitude `[0, 2048]` counts, crossing count `[0, 63]`, and phase `[-pi, pi]` radians. Convert each endpoint using `(physicalLimit - savedMean) / savedStd`. The initial model-space bounds are amplitude `[-2, 2]`, crossing count `[-2, 1.9375]`, and phase `[-pi, pi]`.
+
+For each step, keep the last `windowSize` history rows and pass them as `[1, windowSize, 3]`. Read exactly three finite output values. Clamp that predicted row to the converted bounds, append the clamped row to the forecast and history, then form the next input window. Returning a clamped copy while feeding back the raw row would follow a different path.
+
+<CodeBlock language="javascript" title="forecast-feedback-probe.js">
+{`// Fixed model stand-in from the checks. This is not a trained forecaster.
+const suppliedSeed = [[0.2,0.4,0.1],[0.6,0.8,-0.2],[1,1.2,0],[0.4,0.6,0.3],[0.8,1,0.25]];
+const savedMean = [1024,32,0];
+const savedStd = [512,16,1];
+const physical = [[0,2048],[0,63],[-Math.PI,Math.PI]];
+const converted = physical.map(([min,max],j) => [(min-savedMean[j])/savedStd[j], (max-savedMean[j])/savedStd[j]]);
+const workingHistory = suppliedSeed.map(row => row.slice());
+for (let step = 1; step <= 2; step++) {
+  const inputWindow = workingHistory.slice(-3);
+  const last = inputWindow.at(-1);
+  const raw = [last[2] * 4 + 0.7, last[0] * 1.6 - 2.4, last[1] * 0.6];
+  const clamped = raw.map((value,j) => Math.min(Math.max(value,converted[j][0]),converted[j][1]));
+  workingHistory.push(clamped);
+  console.log({ step, inputWindow, raw, clamped, nextWindow: workingHistory.slice(-3) });
+}
+// Step1: [1.7,-1.12,0.6]. Step2 raw [3.1,0.32,-0.672] becomes [2,0.32,-0.672].`}
+</CodeBlock>
+
+The activity's alternate case supplies a different valid scaler, so physical bounds land at different z-scores. Its numeric seed stays a diagnostic input under that declared contract. It does not claim to rescale one physical recording without changing its seed values.
+
+Reject a scaler unless it has three finite means and three finite positive standard deviations. Reject non-finite or wrong-width model output. With zero steps, return `[]` without calling prediction. During real forecasting, use a synchronous `tf.tidy` or explicit cleanup to release temporary input and output tensors, including if prediction throws. Preserve the supplied seed and return only new forecast rows.
+
+Your result table contains the trained model's next six rows in z-score units, after clamping. It supplies no later observations, so it establishes neither error by horizon nor a 47-minute prediction. Clamping enforces ranges. Accuracy still needs observations and a baseline. The ending returns to the crew's separate fictional long forecast.
+
+<ConceptReference summary="The separate wider forecaster and reusable rollout reference">
+
+The 80-step, 64-unit model below is a larger integration example. It needs supplied training and validation tensors in the declared units. The reusable rollout illustrates the same clamp-before-feedback rule. The Challenge's required architecture and argument handling appear in the main flow above.
+
+## Next-Value Prediction
 
 <CodeBlock language="typescript" title="prediction-model.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -244,6 +326,9 @@ model.dispose();
 Check what one step means. The demo predicts 47 one-second steps, less than a minute ahead. The bridge’s 47-minute countdown uses a separate series with one value per pulse, about 38 steps at the current spacing. A successful short forecast does not establish that a longer forecast will work.
 
 Clamping keeps outputs inside the declared limits. It does not make a forecast accurate. Log how often it activates, reject non-finite outputs and compare errors by horizon. Check the saved standard deviations before forecasting. Handle zeros and reject invalid values.
+
+
+</ConceptReference>
 
 ## Challenge
 

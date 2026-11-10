@@ -73,6 +73,66 @@ A custom task does not automatically require training from scratch. Check whethe
 
 ## Classification of the crew’s reports
 
+The Challenge asks for `classifyReports(reports, pipelineFactory)`. Its
+factory stands in for the real `pipeline()` loader. It returns a classifier
+when you name the task. `sentiment-analysis` fits the required text-to-label
+and score contract. `text-classification` is its accepted alias. A supported
+task such as summarization returns a different kind of output.
+
+There are two separate awaited calls. First, load one classifier from the
+factory. Then pass the whole `reports` array to that classifier once. The
+batch result preserves report order: prediction at index `i` belongs to
+report at index `i`. For an empty array, return `[]` before calling the
+factory. Loading has a cost even when model assets are cached.
+
+After handling the empty case, these calls produce the positional predictions:
+
+<CodeBlock language="typescript" title="batch-report-call.ts">
+{`const task = 'sentiment-analysis';
+const classifier = await pipelineFactory(task);
+const predictions = await classifier(reports);`}
+</CodeBlock>
+
+The activity reuses this three-report probe from the coding task:
+
+| Original index | Supplied report | Supplied prediction |
+| --- | --- | --- |
+| 0 | coupling nominal | POS, 0.50 |
+| 1 | coolant loop warning | NEG, 0.99 |
+| 2 | watch handover clean | POS, 0.70 |
+
+Follow report 1. Its prediction is `NEG` with score `0.99`, so its complete
+row goes first when sorting by descending score. This is the highest score
+regardless of its label. Sorting predictions first and then attaching report
+0 to prediction 0 would put that `NEG, 0.99` beside “coupling nominal”. The
+numbers would be sorted while the report pairing was wrong.
+
+This runnable reference starts after classification, with supplied results:
+
+<CodeBlock language="javascript" title="report-pairing.js">
+{`const reports = ['coupling nominal', 'coolant loop warning', 'watch handover clean'];
+const predictions = [
+  { label: 'POS', score: 0.5 },
+  { label: 'NEG', score: 0.99 },
+  { label: 'POS', score: 0.7 },
+];
+const queue = reports.map((text, index) => ({ text, ...predictions[index] }));
+queue.sort((left, right) => right.score - left.score);
+console.table(queue);`}
+</CodeBlock>
+
+The returned order is coolant warning, clean handover, then coupling nominal.
+Each report keeps its original label and score. The supplied numbers teach
+pairing and sorting. They are not measured model accuracy or report urgency.
+Change the activity's loading strategy to compare one batch call with loading
+once per report, then try the empty batch.
+
+## The separate real-model call
+
+The following block uses the real library and downloads a pinned model when
+its assets are missing. Its four reports are a separate demonstration. Keep
+its measured predictions distinct from the three supplied fixture scores.
+
 <CodeBlock language="typescript" title="sentiment-pipeline.ts">
 {`// The package moved from '@xenova/transformers' to the official
 // '@huggingface/transformers' at v3. Old tutorials cite the former.
@@ -96,7 +156,9 @@ try {
     'Signal classification: anomalous.',
   ];
   const predictions = await classifier(reports);
-  console.table(reports.map((text, i) => ({ text, ...predictions[i] })));
+  const queue = reports.map((text, index) => ({ text, ...predictions[index] }));
+  queue.sort((left, right) => right.score - left.score);
+  console.table(queue);
 } finally {
   await classifier.dispose();
 }`}
@@ -106,7 +168,7 @@ The first load may download model weights, tokenizer assets and the runtime. Bro
 
 The real lab runs this revision with both `q8` and `fp32`, records exact asset sizes and scores, and reloads the q8 pipeline with the network disabled after initialization. Run `node scripts/check-runtime-lab.mjs --pretrained`. Setup and measurement limits are in the [browser runtime lab README](/assignments/browser-runtime-lab-v1.zip). Do not expect scores from different dtypes or runtimes to match exactly.
 
-## Tasks the Pipeline Handles Out of the Box
+<ConceptReference summary="Other pipeline tasks and their output contracts">
 
 ```
 sentiment-analysis          NER (named entities)        question-answering
@@ -116,6 +178,8 @@ zero-shot-classification    feature-extraction          automatic-speech-recogni
 ```
 
 The pipeline supplies task-specific preprocessing, inference and output handling. Not every model supports every pipeline. Inspect the model's supported task and required assets before using it.
+
+</ConceptReference>
 
 This model uses ONNX, so TensorFlow.js tools such as `model.layers` and `tensorflowjs_converter` do not apply. Use tools that support the ONNX model. A transformer needs a compatible architecture and conversion path to run as a TFJS LayersModel. The crew trained DEEP SCAN in TensorFlow.js and keeps it there.
 
@@ -139,11 +203,18 @@ Assemble Mirza's report queue from the supplied sentiment results. Choose
 the task, load once, classify the batch, and keep each report paired with its
 label and score while sorting. Inspect the returned queue to catch a score
 attached to the wrong report. The simulation checks that integration.
-evaluating the real model on crew reports remains separate work.
+Evaluating the real model on crew reports remains separate work.
 
 The loader accepts these task names: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, and `automatic-speech-recognition`. Choose the text task that returns a label and score. Image and audio tasks need different inputs. Other text tasks return generated text, named entities, numeric features, or scores for labels you supply.
 
 <Exercise slug="load-pretrained-pipeline" />
+
+Select an original report in the result and find its returned row. Its text,
+label, and score should move together. A descending score column alone cannot
+show that pairing is correct. The checks separately verify the factory and
+classifier call counts. The supplied simulation can establish
+integration behavior on its cases. It cannot establish the real model's
+download cost, quality on crew reports, or usefulness to Mirza.
 
 <RecallPrompt
   question="When is a supported pretrained Transformers.js model a reasonable starting point?"

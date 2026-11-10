@@ -108,38 +108,165 @@ Calculate an LSTM update and inspect both results: the information retained in c
 
 <LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell and find the weights for each gate and the candidate update", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
 
-## LSTM gates and cell state
+## One stored value, two results
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
+The **cell state** holds the running value. The **hidden state** is the gated
+output passed to the next step or layer. Closing the output gate can hide a
+value while the cell keeps it.
+
+Demir first checks the arithmetic with a supplied example from the challenge.
+One cell-state value starts at `2`. Each gate's weighted sum is zero, so
+sigmoid gives each gate `0.5`. The candidate uses tanh: `tanh(0)` is `0`.
+This is a check of the cell calculation, separate from the archive model.
+
+Follow that one value through the update:
+
+1. The forget gate keeps `0.5 * 2 = 1` from the old cell.
+2. The input gate adds `0.5 * 0 = 0` from the candidate.
+3. Adding those contributions gives a new cell value of `1`.
+4. The output gate passes `0.5 * tanh(1)`, about `0.381`, as the hidden output.
+
 <CodeBlock language="typescript" title="lstm-gates.ts">
-{`// LSTM Cell: three gates controlling information flow
+{`const previousCell = 2;
+const forgetGate = 0.5;
+const inputGate = 0.5;
+const outputGate = 0.5;
+const candidate = Math.tanh(0);
 
-// 1. FORGET GATE: what to discard from memory
-//    forgetGate = sigmoid(W_f · [prevHidden, input] + b_f)
-//    Output: values between 0 (forget completely) and 1 (keep fully)
+const kept = forgetGate * previousCell;
+const added = inputGate * candidate;
+const newCell = kept + added;
+const newHidden = outputGate * Math.tanh(newCell);
 
-// 2. INPUT GATE: what new information to store
-//    inputGate = sigmoid(W_i · [prevHidden, input] + b_i)
-//    candidate = tanh(W_c · [prevHidden, input] + b_c)
-//    newCell = forgetGate * prevCell + inputGate * candidate
-
-// 3. OUTPUT GATE: what to expose as hidden state
-//    outputGate = sigmoid(W_o · [prevHidden, input] + b_o)
-//    newHidden = outputGate * tanh(newCell)
-
-// The cell state is only scaled and added to at each step, never pushed
-// through a weight matrix and a tanh the way the simple RNN's hidden
-// state is. Walking backward along that path, the gradient picks up
-// the forget gate factor per step on the direct cell-state path.
-// The full gradient also has paths through the gates. A gate that learns to sit
-// at 0.99 still leaves 0.37 of the signal 100 steps later. At 0.9 only
-// 0.000027 survives, and a gate that learns to close cuts that
-// dimension off on purpose. The decay is learned per dimension here,
-// not forced by the wiring`}
+console.log({ newCell, newHidden }); // 1 and approximately 0.381`}
 </CodeBlock>
 
-## Building an LSTM in TF.js
+In the activity, try a nonzero candidate, then close the input gate. The
+candidate stops contributing. Close the output gate instead and compare the
+cell value with the hidden output. Choose **Cell state** or **Hidden output** as the quantity to predict.
+Changing only the output gate changes the hidden output while keeping the
+new cell state fixed. These controls choose gate fractions directly. Your
+challenge function will calculate them from weights.
+
+## From weights to gate fractions
+
+Each gate reads the previous hidden value and the current input. Its row of
+weights is `[wHidden, wInput, bias]`. Multiply the two inputs by their weights,
+add the bias, then apply sigmoid. The candidate uses the same weighted-sum
+pattern with tanh.
+
+Here is the forget row from another supplied challenge check:
+
+<CodeBlock language="typescript" title="lstm-weighted-gate.ts">
+{`const previousHidden = 0.6;
+const currentInput = 0.75;
+const forgetWeights = [-0.9, 0.4, -1.2];
+
+const forgetSum = forgetWeights[0] * previousHidden
+  + forgetWeights[1] * currentInput
+  + forgetWeights[2];
+const forgetGate = 1 / (1 + Math.exp(-forgetSum));
+
+console.log(forgetSum); // -1.44
+console.log(forgetGate); // approximately 0.192`}
+</CodeBlock>
+
+Use each gate's own row. After calculating the fractions, apply the same
+keep, add, and expose steps shown above. A wider LSTM mixes inputs through
+full matrices. This challenge uses one unit and one input feature so you can
+check the library's calculation directly.
+
+## Matching the library cell
+
+Build the one-unit layer with `recurrentActivation: 'sigmoid'`. TensorFlow.js
+4.22 otherwise defaults its gates to `hardSigmoid`, which computes
+`max(0, min(1, 0.2 * z + 0.5))`. Matching the gate activations matters when you
+compare your handwritten step with the library. The candidate and cell output
+use tanh.
+
+The layer stores its weights in three tensors:
+
+| Tensor           | Shape for this one-unit cell | What each value multiplies   |
+| ---------------- | ---------------------------- | ---------------------------- |
+| Input kernel     | `[1, 4]`                     | Current input                |
+| Recurrent kernel | `[1, 4]`                     | Previous hidden state        |
+| Bias             | `[4]`                        | Added after the two products |
+
+Their four columns use the same order:
+
+| Column | 0          | 1           | 2         | 3           |
+| ------ | ---------- | ----------- | --------- | ----------- |
+| Role   | Input gate | Forget gate | Candidate | Output gate |
+
+Read the matching column from each tensor. The forget gate, for example,
+uses column `1`. Put the recurrent value first to match the challenge's
+`[wHidden, wInput, bias]` row format.
+
+<CodeBlock language="typescript" title="lstm-cell-weights.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const model = tf.sequential();
+model.add(tf.layers.lstm({
+  units: 1,
+  inputShape: [3, 1],
+  recurrentActivation: 'sigmoid',
+  returnSequences: true,
+}));
+
+const [kernel, recurrentKernel, bias] = model.getWeights();
+const forgetRow = [
+  recurrentKernel.dataSync()[1],
+  kernel.dataSync()[1],
+  bias.dataSync()[1],
+];
+console.log(forgetRow);
+
+model.dispose();`}
+</CodeBlock>
+
+Repeat that column mapping for the input gate, candidate, and output gate.
+The challenge needs one row inside each named weights array, such as
+`weights.forget[0]`. Read the actual bias too. With `unitForgetBias: true`,
+the forget bias starts at one while the other bias groups start at zero.
+
+Start both hidden and cell state at `[0]` when comparing a fresh window.
+Feed each returned state into your next step. With `returnSequences: true`,
+the library returns a hidden output at every time step, so you can locate
+the first disagreement. Matching shape alone cannot check the gate arithmetic
+or column order.
+
+## What repeated forgetting does
+
+If the input gate stays closed, the candidate adds nothing. Each update
+multiplies the existing cell value by the forget fraction. A fraction of
+`0.99` repeated 100 times retains about `0.366` of the starting value.
+A fraction of `0.9` retains about `0.000027`.
+
+The direct cell-state gradient path picks up those forget factors too.
+Fractions near one reduce decay on that path. Other gradient paths also run
+through the gates, so an LSTM can still fail to learn a useful pattern.
+The challenge checks the closed-input case with a nonzero candidate. Leaving
+out the input gate would incorrectly add that candidate at every step.
+
+## GRU comparison
+
+A GRU uses update and reset gates with one hidden state. It has no separate
+cell state or output gate. An LSTM has four parameter blocks for its three
+gates and candidate. A GRU has three blocks, so the same input and hidden
+widths use fewer parameters. Compare their quality on the same data and
+evaluation procedure.
+
+<ConceptReference summary="Optional: larger networks and a training execution drill">
+
+### The larger model is a separate example
+
+This 64-unit model shows the API for an 80-step, three-feature window.
+Its independent random labels make it an execution drill. That fit cannot
+show that a model learns the pulse, remembers a distant event, or works on
+later archive data. The required challenge compares a one-unit cell with its
+own handwritten update and does not need this training run.
 
 <CodeBlock language="typescript" title="lstm-model.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -179,15 +306,11 @@ y.dispose();
 model.dispose();`}
 </CodeBlock>
 
-`model.layers[0].getWeights()` returns three tensors: an input kernel [features, 4 * units], a recurrent kernel [units, 4 * units], and a bias [4 * units]. Each holds four groups of weights, in this order: input, forget, candidate, output.
+### The GRU uses fewer parameter blocks
 
-Read matching columns from the two kernels and the bias to build each gate’s weights. With `unitForgetBias: true`, the forget group, the second quarter of the bias, starts at one. The other groups start at zero.
-
-Check the gates’ activation too. TensorFlow.js 4.22 defaults `recurrentActivation` to `hardSigmoid`: `max(0, min(1, 0.2 * z + 0.5))`. The candidate and cell output still use `tanh`.
-
-Our handwritten step uses sigmoid, so set `recurrentActivation: 'sigmoid'` on the layer too. Otherwise, the calculations differ. With matching activations, this small test agrees to about seven decimal places.
-
-## GRU: The Lighter Alternative
+This example uses the same input and hidden widths as the larger LSTM.
+The parameter comparison concerns these configurations. It supplies no
+comparison of model quality.
 
 <CodeBlock language="typescript" title="gru-comparison.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -226,6 +349,8 @@ gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 // so compare both on the same data and evaluation procedure.
 gruModel.dispose();`}
 </CodeBlock>
+
+</ConceptReference>
 
 ## Challenge
 
@@ -287,6 +412,27 @@ Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matchi
   answer="The trained weights remain, while recurrent state starts fresh for each window. Those weights let the model recognize patterns within new 80-step windows. Success three days later would show that the learned weights work on later data. The model still starts fresh state for each window. The mission result is fictional. A real model needs evaluation on later data."
 />
 
+<RecallPrompt
+  question="A cell starts at 4. Its forget gate is 1, its input gate is 0, and its output gate is 0. The candidate is nonzero."
+  answer="The new cell stays at 4: it keeps the old value and adds none of the candidate. The hidden output is 0 because the output gate is closed."
+  checks={[
+    {
+      "kind": "number",
+      "question": "What is the new cell value?",
+      "expected": 4,
+      "hint": "Multiply the old cell by the forget gate. The input gate blocks the candidate.",
+      "explanation": "1 * 4 + 0 * candidate = 4. Closing the output gate does not change the stored cell value."
+    },
+    {
+      "kind": "number",
+      "question": "What is the new hidden output?",
+      "expected": 0,
+      "hint": "The hidden output is outputGate * tanh(newCell).",
+      "explanation": "The output gate is 0, so the hidden output is 0 even though the cell keeps 4."
+    }
+  ]}
+/>
+
 <LessonRecap
   whatYouLearned={["An LSTM has three gates and a candidate update. Gates control how much information the cell keeps, adds and exposes.", "On the direct cell-state gradient path, forget-gate factors near one reduce decay. Other gradient paths also run through the gates, and training can still fail to learn a useful pattern.", "A GRU uses fewer parameter blocks than an LSTM. Compare parameter counts for the actual configurations and measure quality on the same evaluation data.", "A stateless recurrent model resets state between windows while retaining its trained weights."]}
   bridge="Application code can add a TTL to localStorage. An LSTM gate instead learns a per-dimension keep ratio from the current input and hidden state."
@@ -305,6 +451,6 @@ I filed this without a directive. My rule tables log every reading since launch 
 
 Farah closes the channel and adds the replay to the morning briefing.
 
-*Mission scene: the archive result above belongs to the fictional story. The random-label training drill cannot measure it.*
+*Mission scene: the archive result above belongs to the fictional story. The optional random-label training drill cannot measure it.*
 
 </Epilogue>

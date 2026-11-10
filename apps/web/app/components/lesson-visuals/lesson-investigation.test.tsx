@@ -105,14 +105,14 @@ describe("the lesson investigation", () => {
       />,
     );
     const slider = screen.getByRole("slider", {
-      name: "Prediction for the middle example",
+      name: "Change to first prediction or logit",
     });
     const answer = screen.getByRole("textbox", {
-      name: "What is the mean squared error across all three current predictions?",
+      name: "What scalar loss does this calculation return for the whole batch?",
     });
     expect(slider.id).not.toBe(answer.id);
     fireEvent.change(answer, { target: { value: "0.333" } });
-    expect(slider).toHaveValue("4");
+    expect(slider).toHaveValue("0");
     expect(answer).toHaveValue("0.333");
   });
   it("updates dependent range limits and clamps a previously selected batch", () => {
@@ -147,6 +147,60 @@ describe("the lesson investigation", () => {
     expect(batch).toHaveAttribute("max", "7");
     expect(batch).toHaveValue("2");
   });
+  it("keeps a native range edit and its calculation aligned after the range shrinks and expands", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS["tensor-operations"]!}
+        lessonSlug="tensor-operations"
+      />,
+    );
+    const stage = screen.getByLabelText("Calculation");
+    const column = screen.getByRole("slider", { name: "Output column index" });
+    const row = screen.getByRole("slider", { name: "Output row index" });
+    const setNativeValue = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )!.set!;
+    const input = (slider: HTMLElement, value: string) => {
+      // Keyboard and pointer edits change the browser value before input fires.
+      setNativeValue.call(slider, value);
+      fireEvent.input(slider);
+    };
+    fireEvent.change(stage, { target: { value: "1" } });
+    input(row, "1");
+    input(column, "2");
+    // Chromium can silently clamp the native value as max decreases. JSDOM
+    // does not reproduce that update order, so emulate its native-only edit
+    // before React applies the new limit and the matching controlled value.
+    setNativeValue.call(column, "1");
+    fireEvent.change(screen.getByLabelText("Choose an example"), {
+      target: { value: "changed" },
+    });
+    expect(column).toHaveAttribute("max", "1");
+    expect(column).toHaveValue("1");
+    fireEvent.change(stage, { target: { value: "1" } });
+    expect(column).toHaveAttribute("max", "2");
+    column.focus();
+    input(column, "2");
+    expect(column).toHaveFocus();
+    expect(column).toHaveValue("2");
+    const control = column.closest(".orbit-investigation-control")!;
+    expect(control.querySelector("output")).toHaveTextContent("2");
+    fireEvent.change(
+      screen.getByRole("textbox", {
+        name: "What value will the selected output row and column contain?",
+      }),
+      { target: { value: "21.5" } },
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Correct prediction.");
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Row 1, Bank 2: 21.5");
+  });
+
   it("shows inputs before running and checks a prediction against the observed result", () => {
     render(<LessonInvestigation spec={spec} lessonSlug="test-lesson" />);
     expect(
@@ -231,7 +285,7 @@ describe("the lesson investigation", () => {
     expect(latestText).toContain("11");
   });
 
-  it("keeps evaluation scores and counts on separate briefing axes", () => {
+  it("keeps supplied evaluation scores separate from cutoff and baseline accuracy", () => {
     render(
       <BriefingInvestigationVisual
         spec={NUMERIC_INVESTIGATIONS["evaluating-deep-scan"]!}
@@ -240,22 +294,17 @@ describe("the lesson investigation", () => {
     const scores = screen.getByRole("img", {
       name: "Scores with reviewed labels",
     });
-    const counts = screen.getByRole("img", {
-      name: "Correct predictions, false alarms and misses",
+    const accuracy = screen.getByRole("img", {
+      name: "Accuracy against a declared constant rule",
     });
     expect(scores).toHaveAttribute("data-domain-high", "0.91");
-    expect(counts).toHaveAttribute("data-domain-high", "5");
+    expect(accuracy).toHaveAttribute("data-domain-high", "0.75");
     expect(
       Array.from(
-        counts.querySelectorAll(".orbit-investigation-bar-label"),
+        accuracy.querySelectorAll(".orbit-investigation-bar-label"),
         (label) => label.textContent,
       ),
-    ).toEqual([
-      "True positive",
-      "False positive",
-      "False negative",
-      "True negative",
-    ]);
+    ).toEqual(["Selected cutoff", "Always predict 0"]);
     expect(
       scores.querySelectorAll(".orbit-investigation-bar-label"),
     ).toHaveLength(12);
@@ -299,13 +348,13 @@ describe("the lesson investigation", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
     expect(
       screen.getByRole("img", { name: "Observed validation loss by epoch" }),
-    ).toHaveAttribute("data-domain-high", "0.83");
+    ).toHaveAttribute("data-domain-high", "20");
     expect(
       screen.getByRole("img", { name: "Training loss by epoch" }),
-    ).toHaveAttribute("data-domain-high", "0.83");
+    ).toHaveAttribute("data-domain-high", "20");
   });
 
-  it("keeps forecast and observations comparable while separating absolute error", () => {
+  it("compares the controlled rollout and replay with arrived observations", () => {
     render(
       <LessonInvestigation
         spec={NUMERIC_INVESTIGATIONS.forecasting!}
@@ -314,20 +363,23 @@ describe("the lesson investigation", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
     const observed = screen.getByRole("img", {
-      name: "Starting reading and later observations by horizon",
+      name: "Arrived observations",
     });
     const forecast = screen.getByRole("img", {
-      name: "Fixed-rule forecast by horizon",
+      name: "Rollout predictions",
     });
-    const error = screen.getByRole("img", {
-      name: "Absolute error at each horizon",
+    const replay = screen.getByRole("img", {
+      name: "One-step replay predictions",
     });
     expect(observed.getAttribute("data-domain-high")).toBe(
       forecast.getAttribute("data-domain-high"),
     );
-    expect(Number(error.getAttribute("data-domain-high"))).toBeLessThan(
-      Number(forecast.getAttribute("data-domain-high")),
+    expect(replay.getAttribute("data-domain-high")).toBe(
+      forecast.getAttribute("data-domain-high"),
     );
+    expect(
+      screen.getByText("Windows before the selected prediction"),
+    ).toBeInTheDocument();
   });
 
   it("compares equivalent evaluation graphs across runs without mixing scores and counts", () => {
@@ -362,32 +414,61 @@ describe("the lesson investigation", () => {
     }
   });
 
-  it("shares declared prediction units while keeping squared error independent", () => {
+  it("links the selected diagnostic row and clamps it when the binary contract changes", () => {
     render(
       <LessonInvestigation
         spec={NUMERIC_INVESTIGATIONS["loss-functions"]!}
         lessonSlug="loss-functions"
       />,
     );
-    fireEvent.change(
-      screen.getByRole("slider", { name: "Prediction for the middle example" }),
-      {
-        target: { value: "8" },
-      },
-    );
+    const row = screen.getByRole("slider", { name: "Row index to inspect" });
+    fireEvent.change(row, { target: { value: "3" } });
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
-    expect(screen.getByRole("img", { name: "Targets" })).toHaveAttribute(
-      "data-domain-high",
-      "8",
+    const pairs = screen.getByRole("list", {
+      name: "Diagnostic rows: label, prediction",
+    });
+    expect(pairs.querySelectorAll('[data-highlight="true"]')).toHaveLength(2);
+    expect(
+      pairs.querySelectorAll('[data-highlight="true"]')[0],
+    ).toHaveTextContent("1");
+    expect(
+      pairs.querySelectorAll('[data-highlight="true"]')[1],
+    ).toHaveTextContent("1.3");
+    const squares = screen.getByRole("list", {
+      name: "Squared differences, in the same row order",
+    });
+    expect(squares.querySelector('[data-highlight="true"]')).toHaveTextContent(
+      "0.09",
     );
-    expect(screen.getByRole("img", { name: "Predictions" })).toHaveAttribute(
-      "data-domain-high",
-      "8",
-    );
-    expect(screen.getByRole("img", { name: "Squared errors" })).toHaveAttribute(
-      "data-domain-high",
-      "16",
-    );
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Mean squared error: 0.15");
+
+    fireEvent.change(screen.getByLabelText("Loss calculation"), {
+      target: { value: "1" },
+    });
+    expect(row).toHaveAttribute("max", "1");
+    expect(row).toHaveValue("1");
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Inputs changed. Run again");
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(
+      screen.getByRole("list", { name: "Diagnostic rows: label, raw logit" }),
+    ).toHaveTextContent("-3");
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Mean binary cross-entropy: 0.049");
+    fireEvent.change(screen.getByLabelText("Loss calculation"), {
+      target: { value: "2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(
+      screen.getByRole("list", { name: "Declared output contract" }),
+    ).toHaveTextContent("binaryCrossentropy");
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Mean binary cross-entropy: 0.049");
   });
 
   it("retains a shared weight axis when pruning removes every connection", () => {
@@ -397,17 +478,20 @@ describe("the lesson investigation", () => {
         lessonSlug="pruning"
       />,
     );
-    fireEvent.change(screen.getByRole("slider", { name: "Magnitude cutoff" }), {
-      target: { value: "1" },
-    });
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Requested sparsity" }),
+      {
+        target: { value: "4" },
+      },
+    );
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
     const original = screen.getByRole("img", { name: "Original connections" });
     const pruned = screen.getByRole("img", {
       name: "Connections after magnitude pruning",
     });
     for (const chart of [original, pruned]) {
-      expect(chart).toHaveAttribute("data-domain-low", "-0.83");
-      expect(chart).toHaveAttribute("data-domain-high", "0.91");
+      expect(chart).toHaveAttribute("data-domain-low", "-0.461");
+      expect(chart).toHaveAttribute("data-domain-high", "0.362");
     }
   });
 

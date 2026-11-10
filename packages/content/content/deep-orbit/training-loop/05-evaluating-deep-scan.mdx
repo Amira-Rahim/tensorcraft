@@ -134,15 +134,41 @@ You will test a classifier on readings it has not trained on and compare trainin
 
 ## The mistakes behind the score
 
-The twelve-case alert review shows why one accuracy number is not enough. A
-missed anomaly and a false alarm have different costs. **Precision** is the
-share of alerts that were true anomalies; **recall** is the share of actual
-anomalies caught. Inspect these alongside accuracy and individual errors.
+Start with case 3 in the activity's twelve supplied teaching cases. Its score
+is 0.41 and its supplied label is 1, meaning anomaly. At cutoff 0.5, the rule
+`score > cutoff` predicts 0. That is a **false negative**, a missed anomaly.
+Lower the cutoff below 0.41 and this case becomes a true positive. At exactly
+0.41 it still predicts 0 because the comparison is strict.
 
-Mirza's next request is a separate evaluation. The challenge supplies 100
-synthetic training rows and 43 evaluation rows: 40 generated examples and
-three hand-written story cases. Keep those evaluation rows and labels out of
-training. Their scores describe this fixture. Evaluating a live spacecraft system would require representative measurements.
+Each case contributes to one cell in a **confusion matrix**:
+
+| Supplied label | Predict 1: alert | Predict 0: no alert |
+|---|---|---|
+| 1: anomaly | True positive (TP), caught anomaly | False negative (FN), missed anomaly |
+| 0: normal | False positive (FP), false alarm | True negative (TN), correct quiet case |
+
+Now count the cells. **Accuracy** is `(TP + TN) / all cases`. **Precision** is
+`TP / (TP + FP)`, the share of alerts whose supplied label is anomaly.
+**Recall** is `TP / (TP + FN)`, the share of labeled anomalies caught. If a
+denominator is zero, report that metric as undefined or state your tool's
+convention. A missed anomaly and a false alarm have different costs even when
+both reduce accuracy by the same amount.
+
+The activity also compares a declared constant rule: always predict 0. It
+gets seven of the twelve cases correct and misses all five anomalies. A
+useful comparison needs both the score and the errors behind it.
+
+Mirza's coding task uses a separate synthetic fixture. Its 100 generated
+training rows have 50 labels of each class. Its 43 evaluation rows contain
+20 generated label-0 cases, 20 generated label-1 cases, and three authored
+label-1 cases. The three inputs are dimensionless practice features. These
+labels come from the fixture's construction. They do not establish the
+origin or correct classification of a ship reading. In particular, cases
+40-42 are not sample 7741.
+
+Keep all 43 evaluation rows and labels out of training. Their measured
+scores describe this fixture. Evaluating a live spacecraft system would
+require representative measurements.
 
 ## Training and held-out evaluation
 
@@ -160,15 +186,51 @@ const gap = trainAcc - testAcc;`}
 </CodeBlock>
 
 `evaluate()` returns loss followed by the metrics configured at compile time.
-Read accuracy from the second tensor here. The exercise retains `evalResult`
-for inspection. Release result tensors after their final use in an application.
-Report your measured scores. The story's 0.518 and 94% belong to the crew's
-fictional run and are not targets for this exercise.
+This model was compiled with one metric, accuracy, so read it from the second
+tensor. Loss measures how the scores disagree with labels. Accuracy counts
+correct decisions at the model's strict 0.5 cutoff. They answer different
+questions, so keep both.
+
+The final `history.history.acc` entry is the accuracy logged across the last
+training epoch. `evalResult[1]` measures the final model on the separate
+evaluation rows. The training log is not a fresh evaluation of the final
+model on `trainX`. Keep these roles visible when reading the gap.
+
+The exercise retains `evalResult` for inspection. Release result tensors
+after their final use in an application. Report your measured scores. The
+story's 0.518 and 94% belong to the crew's fictional run and are not targets
+for this exercise.
 
 For `diagnose`, check the gap first: greater than 0.15 returns `large-gap`.
 Otherwise, if both scores are below 0.7, return `low-scores`. All other cases
 return `no-gap-warning`. Set `verdict` from the measured values. These labels
 describe results without identifying a cause or approving deployment.
+
+The order matters. Scores 0.68 and 0.40 satisfy both warnings, but the gap
+rule wins and returns `large-gap`. A gap equal to 0.15 does not pass `> 0.15`.
+A score equal to 0.7 is not below 0.7. Check these boundaries separately
+from the numbers your training run happens to produce.
+
+## Compare with a declared baseline
+
+The training labels tie at 50 of each class, so there is no unique majority
+label. Before looking at evaluation results, choose this simple baseline:
+always predict 0, including when the training counts tie. Then score it
+against the same 43 labels as the model:
+
+<CodeBlock language="typescript" title="constant-baseline.ts">
+{`const baselineClass = 0; // Declared before inspecting evaluation results.
+const heldOutLabels = Array.from(testY.dataSync());
+const baselineCorrect = heldOutLabels.filter(label => label === baselineClass).length;
+const baselineAccuracy = baselineCorrect / heldOutLabels.length;
+console.log('Constant-0 baseline accuracy:', baselineAccuracy);
+console.log('Measured model accuracy:', testAcc);`}
+</CodeBlock>
+
+This rule gets the 20 label-0 cases right: `20 / 43`, about 46.5%. It misses
+all 23 label-1 cases. Compare your measured model accuracy and its missed
+anomalies with those results. Choosing class 1 after seeing the held-out
+labels would change the comparison policy using the test set.
 
 ## What the evaluation supports
 
@@ -178,10 +240,11 @@ Repeatedly tuning on test results turns that set into another validation set.
 For a real time-ordered archive, assign earlier and later groups before
 shuffling. Separately shuffled `take()` and `skip()` calls can overlap.
 
-Compare the network with a simple baseline on the same held-out rows. For
-example, predict the training set's most common class. A large gap can come
-from overfitting, changed data, incorrect labels or mismatched preprocessing.
-Investigate those before choosing a remedy.
+A large gap can come from overfitting, changed data, incorrect labels or
+mismatched preprocessing. Low scores on both sets can reflect weak inputs,
+underfitting, label noise or a training problem. Inspect cases and compare a
+baseline before choosing a remedy. A small gap can also occur when both
+scores are poor.
 
 How often anomalies occur also matters. When they are rare, most alerts can
 be false even if the detector catches a high share of anomalies. You can
@@ -209,33 +272,36 @@ Choose a **baseline**, a simple method to compare with the network. For classifi
 
 If 90% of test builds succeed, always predicting success scores 90% accuracy but catches no failures. The confusion matrix below shows that problem. Check whether the network improves the results that matter before accepting its extra complexity.
 
+The next block has its own 50-row synthetic reference fixture and uses the
+earlier lesson's first model. It is separate from the 43-row coding task and
+the twelve-case activity. Its model predictions must be measured when it
+runs. The fictional crew's 94% is a story result, not an expected output.
+
 <CodeBlock language="typescript" title="evaluation.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Assume model, the 50-epoch network from lesson 4's first block, is
-// trained. Not rerun: that one was fit on deliberately corrupted labels
-// to give early stopping something to fire on, so its numbers answer a
-// different question.
+// Continue the optional training-loop.ts example from lesson 4.
+// Its first model was trained for 50 epochs on clean generated labels.
+// The separate noisy-label early-stopping rerun was disposed.
 
 // Synthetic evaluation fixture, built separately from the training rows.
 // The story supplies these fictional rows.
 // Fresh generator seeds avoid reusing the seeded training draws. They do
 // not establish realism or independence in a real time-series archive.
 const testX = tf.tidy(() => tf.concat([
-  // Eight rows of the slice, annotated, for a feel of the data:
+  // Eight authored fixture rows with supplied labels:
   tf.tensor2d([
-    [0.82, 0.14, 0.77],  // flagged window, confirmed anomalous
-    [0.11, 0.86, 0.19],  // calm-period reading
-    [0.74, 0.22, 0.68],  // flagged window
-    [0.15, 0.79, 0.24],  // calm-period reading
-    [0.68, 0.31, 0.66],  // flagged window
-    [0.09, 0.91, 0.13],  // calm-period reading
-    [0.71, 0.18, 0.72],  // flagged window
-    [0.21, 0.74, 0.28],  // calm-period reading
+    [0.82, 0.14, 0.77],  // label 1
+    [0.11, 0.86, 0.19],  // label 0
+    [0.74, 0.22, 0.68],  // label 1
+    [0.15, 0.79, 0.24],  // label 0
+    [0.68, 0.31, 0.66],  // label 1
+    [0.09, 0.91, 0.13],  // label 0
+    [0.71, 0.18, 0.72],  // label 1
+    [0.21, 0.74, 0.28],  // label 0
   ]),
-  // The next 39 rows, drawn from the same archive distributions under
-  // FRESH seeds (the model has never seen any of them). Same clip as
-  // lesson 4: clipping enforces this synthetic fixture's chosen range.
+  // Another 39 rows from the synthetic generators, using fresh seeds.
+  // Clipping enforces this fixture's chosen range.
   tf.clipByValue(tf.concat([
     tf.randomNormal([19, 1], 0.84, 0.10, 'float32', 201),  // flagged
     tf.randomNormal([19, 1], 0.18, 0.10, 'float32', 202),
@@ -246,9 +312,8 @@ const testX = tf.tidy(() => tf.concat([
     tf.randomNormal([20, 1], 0.81, 0.10, 'float32', 205),
     tf.randomNormal([20, 1], 0.23, 0.10, 'float32', 206),
   ], 1), 0, 1),
-  // ...plus three flagged rows the crew confirmed only after the fact,
-  // by eye, from the raw capture blocks. In these three features they
-  // read almost calm. Watch what they do to the score.
+  // Three authored cases have label 1 despite inputs near the label-0 group.
+  // These supplied labels are part of the fixture, not verified ship labels.
   tf.tensor2d([
     [0.30, 0.68, 0.34],
     [0.26, 0.75, 0.29],
@@ -371,6 +436,19 @@ The fictional crew's 94% is not a target for your run.
 Report the scores this run produced. The grader checks the evaluation procedure without demanding a particular accuracy. The transfer assignment below asks whether the model earns its complexity.
 
 <Exercise slug="deep-scan-eval" />
+
+Start reading the captured output with one case. Select case 40 and inspect
+its three inputs, supplied label, and actual score. Apply `score > 0.5` to
+find its predicted label, then name the category using the table above.
+The authored label is 1, but the model's score and category depend on your
+run. Use the missed-anomaly and false-alarm filters to inspect other errors.
+
+Open **Captured values and run details** to compare **The scores from your
+evaluation run**. Its **Final training log** row supplies `trainAcc`. Its
+**Final model evaluation** row supplies `testAcc`. Subtract them and apply
+the ordered gap rules. A wrong `diagnose` answer can still leave useful
+captured scores and cases to inspect. Use that evidence to correct the rule
+without replacing the run's measured values with the story's percentages.
 
 <DecisionTask id="review-costs" />
 

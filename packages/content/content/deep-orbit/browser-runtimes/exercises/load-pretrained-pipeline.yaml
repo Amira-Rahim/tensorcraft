@@ -116,12 +116,26 @@ testCode: |
       // and mislabels every row. So each row is checked as a whole: the text
       // and the label have to travel with the score they were paired to.
       const reports = ['coupling nominal', 'coolant loop warning', 'watch handover clean'];
-      const stub = makeStubPipeline([
+      const predictions = [
         { label: 'POS', score: 0.5 },
         { label: 'NEG', score: 0.99 },
         { label: 'POS', score: 0.7 },
-      ]);
+      ];
+      const supplied = reports.map((text, i) => [i + 1, text, predictions[i].label, predictions[i].score]);
+      const stub = makeStubPipeline(predictions);
       const out = await ranked(reports, stub);
+      recordResult({
+        kind: 'table', title: 'Original report and prediction pairs',
+        summary: 'Original report positions and the supplied positional sentiment predictions from this simulation, copied before your code ran. These are fixed integration probes, not real model judgments or urgency scores.',
+        columns: ['Original position', 'Report', 'Supplied label', 'Supplied score'],
+        rows: supplied,
+      });
+      recordResult({
+        kind: 'table', title: 'The report queue your code assembled',
+        summary: 'Your sorted output from the supplied sentiment simulation. These fixture scores are not real model measurements or report urgency.',
+        columns: ['Report', 'Returned label', 'Returned score'],
+        rows: out.map((row) => [row.text, row.label, row.score]),
+      });
       const order = 'Most confident first: the rows come back sorted by score, descending. A row out of place means your code did not sort the pairs by their scores.';
       expect(out[0].score, order).toBe(0.99);
       expect(out[1].score, order).toBe(0.7);
@@ -133,12 +147,6 @@ testCode: |
       expect(out[1].label, why).toBe('POS');
       expect(out[2].text, why).toBe('coupling nominal');
       expect(out[2].label, why).toBe('POS');
-      recordResult({
-        kind: 'table', title: 'The report queue your code assembled',
-        summary: 'Your sorted output from the supplied sentiment simulation. These fixture scores are not real model measurements or report urgency.',
-        columns: ['Report', 'Returned label', 'Returned score'],
-        rows: out.map((row) => [row.text, row.label, row.score]),
-      });
     });
 
     it('preserves original report text alongside prediction', async () => {

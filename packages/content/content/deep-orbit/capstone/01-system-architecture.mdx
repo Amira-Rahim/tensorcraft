@@ -92,6 +92,44 @@ Help Demir pass a recording through the stages without losing a result between t
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
+## The eight-sample handoffs
+
+The Challenge supplies a small composition diagnostic, separate from the production classifier. Its eight samples are `[1, 1.4, 0.6, 1, 1, 1.4, 0.6, 1]`. The first stage centers and scales that window. The FFT stage returns five magnitudes, then an asynchronous stage wraps them in a `[1, 5]` tensor.
+
+<CodeBlock language="typescript" title="composition-handoffs.ts">
+{`// These are the supplied diagnostic values and stage operations.
+const raw = [1, 1.4, 0.6, 1, 1, 1.4, 0.6, 1];
+const normalized = tf.tidy(() => {
+  const input = tf.tensor1d(raw);
+  const { mean, variance } = tf.moments(input);
+  return Array.from(input.sub(mean).div(variance.sqrt().add(1e-8)).dataSync());
+});
+const magnitudes = tf.tidy(() =>
+  Array.from(tf.spectral.rfft(tf.tensor1d(normalized)).abs().dataSync())
+);
+const toTensor = async (values: number[]) => tf.tensor2d([values]);
+const input = await toTensor(magnitudes);
+try {
+  console.log('Normalized window:', normalized); // eight values
+  console.log('FFT magnitudes:', magnitudes); // five values, bins 0 through 4
+  console.log('Final shape:', input.shape); // [1, 5]
+} finally {
+  input.dispose(); // the caller owns the returned tensor
+}`}
+</CodeBlock>
+
+The mean is 1 and the population variance is 0.08. The two low samples become about -1.414, the two high samples about 1.414, and the other values become zero. The FFT keeps DC through Nyquist. No sample rate accompanies this diagnostic, so label its positions as bins.
+
+Awaiting a stage resolves its result before the next validator reads it. With six samples, the first validator rejects the input and the later stages never start. Checking a stage's name and data at each handoff tells Demir where the chain stopped.
+
+The runner stores `any` internally. Its TypeScript interfaces describe individual stages, but they do not prove adjacent stages fit together. Runtime validation still matters. This diagnostic also scales each window separately. A production model needs its own saved preprocessing contract.
+
+The runner carries one value through a linear chain. The full mission branches after feature extraction. Classification and anomaly detection both need those features, and reporting needs both results. A branch scheduler must keep each result and start a stage only after its dependencies finish. The Challenge builds the chain.
+
+The diagnostic's five-value tensor also has its own contract. The mission's three-feature binary model and eleven-feature classifier require their matching preprocessing. A completed diagnostic chain does not connect either classifier automatically.
+
+<ConceptReference summary="Optional: full-system interface and dependency reference">
+
 <CodeBlock language="typescript" title="pipeline.ts">
 {`// DEEP SCAN Pipeline Architecture
 // Declare the data each stage accepts and returns.
@@ -224,11 +262,13 @@ The exercise builds the chain runner. You do not need to build the scheduler for
 
 The feature interfaces here are a design sketch. The three-feature binary classifier cannot consume the FFT array directly. Supply the preprocessing and model that match each other, including a separately trained eleven-feature classifier where that is the chosen architecture.
 
+</ConceptReference>
+
 ## Challenge
 
 Build a runner that passes one value through the stages in order. Validate each stage's input before processing it, await its result, and let `addStage` calls chain together.
 
-Your result is the feature row delivered by an eight-sample diagnostic run through the supplied stages. It shows that the asynchronous handoffs complete in order. Demir can use this runner for a linear path. The full architecture still needs the branch scheduler and matching model contracts described above.
+Your captured table comes from the async-middle check. That check supplies `[0.4, 1.2, 0.4, 1.2, 0.4, 1.2, 0.4, 1.2]`, a separate eight-sample diagnostic from the worked example. It uses the same normalization, FFT and tensor stages. Its alternating normalized values concentrate magnitude in bin 4. Your result is the actual feature row delivered through those stages. The checks test whether asynchronous handoffs complete in order. Inspect this final row alongside any failing check. Demir can use this runner for a linear path. The full architecture still needs the branch scheduler and matching model contracts described above.
 
 <Exercise slug="pipeline-architecture" />
 

@@ -93,9 +93,52 @@ You will compare a forecast that reuses its predictions with one that receives e
 
 <LearningObjectives objectives={["Train a one-step model and roll it forward into a multi-step forecast", "Understand non-stationarity, when past patterns stop predicting the future", "Compare two runs: one uses its own predictions as inputs, and the other uses the readings that actually arrived"]} />
 
+## One fit and two histories
+
+The coding exercise trains a scalar model: eight LSTM units followed by one
+linear output, with shape `[batch, windowSize, 1]`. Its generated sine-wave
+practice series is separate from the three-feature mission forecaster below.
+Read the width from trainX. Fit once with the requested epochs and batch 8,
+then use that same model for both runs. A supplied model keeps its existing
+compilation. The exact fit history and both numeric arrays are returned.
+
+First follow the grader's controlled supplied-model probe. Past is `[1,2]`,
+arrived observations are `[10,20,30]`, and the predictor returns its latest
+input plus one. This probe isolates history construction without training:
+
+| Horizon | Rollout input | Replay input | Rollout | Replay | Observation, available after prediction |
+| --- | --- | --- | --- | --- | --- |
+| 1 | [1,2] | [1,2] | 3 | 3 | 10 |
+| 2 | [2,3] | [2,10] | 4 | 11 | 20 |
+| 3 | [3,4] | [10,20] | 5 | 21 | 30 |
+
+<CodeBlock language="javascript" title="feedback-window-trace.js">
+{`const observedPast = [1, 2], arrivedValues = [10, 20, 30];
+const priorRollout = [3]; // the first controlled prediction
+const nextRolloutWindow = [...observedPast, ...priorRollout].slice(-2);
+const nextReplayWindow = [...observedPast, ...arrivedValues.slice(0, 1)].slice(-2);
+console.log(nextRolloutWindow, nextReplayWindow); // [2,3], [2,10]`}
+</CodeBlock>
+
+At each horizon, wrap the latest scalar window as `[1, windowSize, 1]`, read
+one finite prediction inside a synchronous tidy, and return its plain number.
+Rollout appends predictions. Replay appends only earlier arrived observations.
+Copy both arrays before extending them. Neither run may read the current
+observation before predicting it. A constant predictor can produce identical
+paths, and a correctly implemented trained model can still forecast poorly.
+
+Your function releases prediction tensors even when a call fails. It keeps
+caller-owned trainX/trainY and any supplied model alive. If it created the
+model and fitting or prediction fails, dispose that owned model. On success,
+the caller owns the returned model. Compare errors at matching horizons.
+Increasing errors across one rollout do not establish changing data. Compare
+the same horizon across different periods when investigating non-stationarity.
+
 ## Multi-Step Forecasting
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="Reference: the separate three-feature clamped mission forecaster">
 
 <CodeBlock language="typescript" title="forecasting.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -163,11 +206,15 @@ async function forecast(
 const predictions = await forecast(model, recentWindow, 100, 80);`}
 </CodeBlock>
 
+</ConceptReference>
+
 ## When the pattern changes
 
 Non-stationarity means a series' statistical properties change over time. Some forecasting methods explicitly model trend or seasonality, so forecasting does not require a constant mean. The practical question is whether the relationships learned by this model remain useful.
 
 Rolling forecasts and changes in the data can both affect error. Compare errors at the same horizon across earlier and later periods. One-step replay is a useful starting point because each prediction uses observed history. Rising error is a reason to investigate data quality, preprocessing, operating conditions and the model. It does not establish a cause by itself.
+
+<ConceptReference summary="Reference: compare one-step errors across time periods">
 
 <CodeBlock language="typescript" title="non-stationary.ts">
 {`// The forecast says the anomaly repeats at step 50
@@ -244,9 +291,13 @@ const oneStep = predictOneStepAhead(model, observedReadings, 80);
 const drift = detectDrift(oneStep, observedReadings.slice(80), 200);`}
 </CodeBlock>
 
+</ConceptReference>
+
 ## A Reproducible Feedback Example
 
 Use a fixed mathematical rule to see the effect of feeding predictions back without any variation from training. The example process uses 3.9. The forecaster uses 3.899. The rollout reuses each prediction. The replay uses the previous observed value instead.
+
+<ConceptReference summary="Reference: a fixed logistic-rule feedback comparison">
 
 <CodeBlock language="javascript" title="error-by-horizon.ts">
 {`const processStep = x => 3.9 * x * (1 - x);
@@ -266,6 +317,8 @@ for (let horizon = 1; horizon <= 16; horizon++) {
 console.table(errorsByHorizon);`}
 </CodeBlock>
 
+</ConceptReference>
+
 We chose this numerical example to make error accumulation visible. It does not measure an LSTM or a spacecraft signal. The replay error is at most 0.00025 here: the coefficient difference is 0.001 and x(1-x) is at most 0.25 on [0, 1]. The rollout can depart much farther as it feeds its errors back. Inspect the table: individual errors need not rise at every horizon.
 
 To evaluate a learned model, repeat forecasts from many held-out starting points, compare a simple baseline, and report each horizon separately. Mean absolute error is not a prediction interval. An interval needs an explicit construction and a coverage check on later data.
@@ -275,6 +328,8 @@ To evaluate a learned model, repeat forecasts from many held-out starting points
 Train a model to predict one step ahead. Run the same stretch twice: once feeding predictions back, and once using the readings that arrived. Compare both prediction series with the observed readings. This helps you see what changes when predictions become inputs, before you investigate the shrinking pulse interval. The checks verify training and input construction. They set no minimum forecast quality. The runs can agree, especially when the model predicts nearly the same value each time.
 
 <Exercise slug="forecast-signal" />
+
+The actual series `Predictions using forecast history or observed history` shows both returned paths against the observations from this run’s generated data. Select the same horizon when comparing errors. The companion reference-window table reconstructs the first three expected input windows from the original past, earlier returned predictions, and earlier observations. Those windows are references, without an assertion that they were observed inside predict. They require no extra fit or prediction. The curves need not differ, improve monotonically, or achieve a fixed quality score.
 
 <RecallPrompt
   question="Why can errors build up when a forecast reuses its own predictions, even if the data pattern stays the same?"

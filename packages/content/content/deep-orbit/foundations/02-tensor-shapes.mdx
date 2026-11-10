@@ -98,6 +98,15 @@ Rows and columns are the grid’s two **axes**. We also call an axis a
 **dimension**. The number of axes is the **rank**: this grid has rank 2.
 The original list has just one axis, so it has rank 1.
 
+After predicting the second row in the activity, select one reading in the
+list or table. Follow its sensor, moment, and position through both views.
+For example, the recording contains two readings of `8` from sensor D.
+They belong to different moments. Their positions let you tell them apart.
+
+The activity shows zero-based indexes beside the selected reading. A value
+at row index `1` and column index `3` belongs to the second moment and sensor D.
+The recording notes supply those meanings.
+
 <StoryPassage>
 
 Farah brings the 12 selected readings over to JavaScript. The full recording
@@ -138,6 +147,8 @@ order and starts a new row after every four values. The operation keeps all 12 r
 
 `arraySync()` copies the tensor's values into nested JavaScript arrays.
 `grid.arraySync()[1]` reads the second row. `grid[1]` does not index a tensor.
+To read one value from that row, use a second array index:
+`grid.arraySync()[1][3]` gives sensor D's reading at the second moment.
 
 After the reshape, Farah can see all four sensors at each time. Her chart
 needs a different view: one sensor per row. `transpose()` turns the columns

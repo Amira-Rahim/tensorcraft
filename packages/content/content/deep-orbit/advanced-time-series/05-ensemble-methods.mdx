@@ -89,9 +89,50 @@ You will combine forecasts using weights based on earlier errors, then compare t
 
 <LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's validation score", "Explain which errors averaging can cancel and which errors all members share", "Train a stacking model on predictions from rows the base models did not fit, then evaluate on another period", "Compare the ensemble’s error with its best single member’s error"]} />
 
+## Earlier errors set weights, current targets test the blend
+
+The exercise supplies four synthetic targets `[10,20,30,40]`, in arbitrary
+units, and aligned predictions from three named members. Its prior errors
+come from a separate period and are range-normalized MAEs. They set weights.
+The current MAEs use the current targets' units and compare performance.
+
+| Member | Earlier normalized MAE | Current predictions | Current MAE |
+| --- | --- | --- | --- |
+| LSTM | 0.045 | [12,18,30,40] | 1 |
+| Attention | 0.038 | [8,22,30,40] | 1 |
+| Kalman | 0.058 | [10,20,33,37] | 1.5 |
+
+<CodeBlock language="javascript" title="weights-from-prior.js">
+{`const priorErrors = [0.045, 0.038, 0.058];
+const smallestPriorError = Math.min(...priorErrors);
+const scaledParts = priorErrors.map(error => (smallestPriorError / error) ** 2);
+const partSum = scaledParts.reduce((total, value) => total + value, 0);
+const priorShares = scaledParts.map(value => value / partSum);
+const target = 10, memberPredictions = [12, 8, 10];
+const equalPrediction = memberPredictions.reduce((sum, value) => sum + value, 0) / 3;
+const priorWeightedPrediction = memberPredictions.reduce((sum, value, i) => sum + value * priorShares[i], 0);
+console.log({ priorShares, equalPrediction, priorWeightedPrediction, target });`}
+</CodeBlock>
+
+The stable scale cancels during normalization. It avoids overflowing inverse
+squares for tiny positive errors. Treat names as ordinary keys, including
+`__proto__` and `constructor`, by using an appropriate map or own-key object.
+At the first target the equal blend is 10, while the weighted blend is near
+9.7321. Compare all four positions: equal-blend MAE is 0.5, weighted MAE near
+0.4345, and the best member MAE is 1. `beatsBest` refers only to the equal blend
+and uses a strict comparison. A tie is not a win. The activity also follows
+the supplied shared-error case where no averaging helps.
+
+Stacking learns another model from base predictions. Its training rows must
+be outside the base models' fit data, and a later evaluation period must stay
+outside both fits. The following three-feature application and stacking code
+are separate from the four scalar evaluation targets above.
+
 ## Combining Models
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="Reference: a three-feature application blend and stacking setup">
 
 <CodeBlock language="typescript" title="ensemble.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -193,6 +234,8 @@ try {
 // members used for training.`}
 </CodeBlock>
 
+</ConceptReference>
+
 We choose each model's `weight` from validation results. It determines that model’s share of the blend. It carries no probability interpretation. Here e_i is MAE on an earlier held-out week, with each channel's error divided by its range.
 
 The rule is `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. Squared MAE is not error variance, so this rule does not guarantee the lowest-variance blend. Errors 0.045, 0.038, and 0.058 give weights near 0.333, 0.467, and 0.200.
@@ -247,6 +290,8 @@ The formula only describes variance. A shared bias, such as all models learning 
 Measure each model's error, then inspect both blends: equal weights and weights based on earlier validation errors. Compare their returned MAEs with the best member on the same targets. Farah needs that comparison before adding the extra models to the forecasting pipeline.
 
 <Exercise slug="weighted-ensemble" />
+
+`Your blend compared with its members` reports the actual returned MAEs on the same four targets. Compare both blends with every member, while remembering that `beatsBest` describes only equal weighting. A weighted blend can lose to the best member, and prior-period weights guarantee no future improvement. The fictional 0.036 weekly result belongs to the story’s separate evaluation.
 
 <RecallPrompt
   question="When does combining models help, and how should you check?"

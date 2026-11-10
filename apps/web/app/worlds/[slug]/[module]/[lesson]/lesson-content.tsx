@@ -1,4 +1,6 @@
 "use client";
+
+import { orderedLessonExercises } from "@/lib/lesson-exercise-order";
 import { DeepOrbitRecap } from "./deep-orbit-recap";
 import { ProseText } from "@tensorcraft/ui/prose-text";
 import { createElement } from "react";
@@ -37,6 +39,7 @@ import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useActivityUser } from "@/app/components/learning-activity-scope";
 import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
 import { MissionLearningGoals } from "@/app/components/lesson-visuals/mission-learning-goals";
+import { supportsLessonResultExplanation } from "@/lib/lesson-result-explanations";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
 // runtime + editor (~300 KB gzipped). Loading it dynamically with
@@ -57,6 +60,13 @@ const LearningEvidenceExercise = dynamic(
   () =>
     import("@/app/components/learning-evidence-exercise").then(
       (m) => m.LearningEvidenceExercise,
+    ),
+  { ssr: false },
+);
+const LessonResultExercise = dynamic(
+  () =>
+    import("@/app/components/lesson-result-exercise").then(
+      (module) => module.LessonResultExercise,
     ),
   { ssr: false },
 );
@@ -225,6 +235,7 @@ const mdxComponents = {
 };
 
 const ChallengeSceneContext = createContext<ReactNode>(null);
+const EMPTY_EXERCISES: ExerciseData[] = [];
 
 /**
  * Renders compiled MDX content from Velite.
@@ -233,7 +244,7 @@ const ChallengeSceneContext = createContext<ReactNode>(null);
  */
 export function LessonContent({
   lesson,
-  exercises = [],
+  exercises = EMPTY_EXERCISES,
   worldId,
   moduleId,
   lessonId,
@@ -407,6 +418,11 @@ export function LessonContent({
     (visibleComponents?.has("challenge") ?? false);
 
   const exerciseCount = exercises.length;
+  const orderedTasks = useMemo(
+    () => orderedLessonExercises(lesson.body, exercises),
+    [lesson.body, exercises],
+  );
+  const taskPrefix = lessonId === "launch" ? "launch" : `lesson-${lessonId}`;
 
   // Build MDX components with the onSubmit handler and framework wired in
   const components = useMemo(() => {
@@ -676,13 +692,38 @@ export function LessonContent({
           }
         : undefined;
     base.Exercise = (props: { slug: string }) => {
+      const linkedTask =
+        worldId === "deep-orbit" && scoped && exerciseCount > 1;
+      const taskAnchor = linkedTask
+        ? `${taskPrefix}-editor-${props.slug}`
+        : undefined;
+      const taskReturnAnchor = linkedTask
+        ? `${taskPrefix}-brief-${props.slug}`
+        : undefined;
       if (scoped && shouldShow("ExerciseBrief")) {
         return (
-          <ExerciseBrief
-            slug={props.slug}
-            onHintRevealed={handleHintRevealed}
-            compactHints={worldId === "deep-orbit" && scoped}
-          />
+          <>
+            {linkedTask && props.slug === orderedTasks[0]?.slug && (
+              <nav aria-label="Lesson tasks">
+                <ul>
+                  {orderedTasks.map((task) => (
+                    <li key={task.slug}>
+                      <a href={`#${taskPrefix}-editor-${task.slug}`}>
+                        {task.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+            <ExerciseBrief
+              slug={props.slug}
+              anchorId={taskReturnAnchor}
+              editorAnchor={taskAnchor}
+              onHintRevealed={handleHintRevealed}
+              compactHints={worldId === "deep-orbit" && scoped}
+            />
+          </>
         );
       }
       if (!shouldShow("Exercise")) return null;
@@ -697,6 +738,8 @@ export function LessonContent({
         onSubmit: submit,
         brief: scoped ? ("external" as const) : ("inline" as const),
         titled: scoped && exerciseCount > 1,
+        taskAnchor,
+        taskReturnAnchor,
         editorHeading:
           worldId === "deep-orbit" && scoped ? "Your JavaScript" : undefined,
       };
@@ -711,6 +754,9 @@ export function LessonContent({
           key={key}
           content={exerciseMapRef.current.get(props.slug)}
         />
+      ) : worldId === "deep-orbit" &&
+        supportsLessonResultExplanation(props.slug) ? (
+        <LessonResultExercise {...paneProps} key={key} />
       ) : (
         <Exercise {...paneProps} key={key} />
       );
@@ -769,6 +815,8 @@ export function LessonContent({
     lesson.concept.bridge,
     glossaryByTerm,
     exerciseCount,
+    orderedTasks,
+    taskPrefix,
     getHintLevels,
     visibleComponents,
     scoped,

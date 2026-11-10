@@ -78,39 +78,50 @@ You will load a saved model and inspect the input and output shapes it expects.
 
 <LearningObjectives objectives={["Implement and inspect a TensorFlow.js model-loading call", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Explain how an IndexedDB cache changes the model-loading path", "Show loading progress and report model-loading errors in the UI"]} />
 
-## The manifest and weights
+## From files to a usable model
+
+The deployed example at `/models/deep-scan/model.json` lists one weight shard,
+`weights.bin`. Its three dense layers have 673 float32 parameters, occupying
+2,692 weight bytes. The manifest and runtime add their own bytes. Other
+exports can list more shards or use supported weight encodings.
+
+| Stage | What the loader or your code does |
+| --- | --- |
+| Manifest | Read the topology and the `weightsManifest` groups. |
+| Shards | Resolve each group's paths relative to the manifest URL and fetch every required weight file. |
+| Await | Wait for the loader to construct the model. A Promise is not its input metadata. |
+| Inspect | Copy the returned model's input/output shapes and count its layers. |
+| Release | Dispose the inspected model after copying the plain metadata, including if inspection throws. |
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+This inspection-only example loads once. The copied arrays survive disposal.
+Its `[null, 3]` input means a variable number of rows with three features per
+row. `[null, 1]` means one output per row. Neither shape tells you the feature
+names, scaling, or what a score means. Those come from the model's contract.
+Read the returned shapes instead of typing these example dimensions into your
+Challenge function, because its simulated models can have different shapes.
 
 <CodeBlock language="typescript" title="model-loading.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Loading a model is a fetch with extra steps
-// model.json contains the architecture (layers, shapes, activations)
-// weights.bin contains the learned weights (Float32Array)
-const model = await tf.loadLayersModel('/models/deep-scan/model.json');
-
-// Inspect what we loaded, like checking an API response shape
-console.log('Input shape:', model.inputs[0].shape);   // [null, 3]
-console.log('Output shape:', model.outputs[0].shape);  // [null, 1]
-model.summary();
-// __________________________________________________________________________________________
-// Layer (type)                Input Shape               Output shape              Param #
-// ==========================================================================================
-// dense_Dense1 (Dense)        [[null,3]]                [null,32]                 128
-// __________________________________________________________________________________________
-// dense_Dense2 (Dense)        [[null,32]]               [null,16]                 528
-// __________________________________________________________________________________________
-// dense_Dense3 (Dense)        [[null,16]]               [null,1]                  17
-// ==========================================================================================
-// Total params: 673
-// Trainable params: 673
-// Non-trainable params: 0
-// __________________________________________________________________________________________
-// The architecture taped to the engineering board in module 2, carrying
-// the weights module 3 trained: the same network, now an asset the
-// dashboard can fetch directly.`}
+const inspected = await tf.loadLayersModel('/models/deep-scan/model.json');
+try {
+  const inputShape = [...inspected.inputs[0].shape];
+  const outputShape = [...inspected.outputs[0].shape];
+  const layerCount = inspected.layers.length;
+  console.log({ inputShape, outputShape, layerCount });
+  // This deployed example: [null, 3], [null, 1], 3 layers.
+  inspected.summary(); // 128 + 528 + 17 = 673 parameters
+} finally {
+  inspected.dispose();
+}
+// The model is released. The copied shape arrays describe what was loaded.`}
 </CodeBlock>
+
+The inspection helper owns this short-lived model. A dashboard that will call
+`predict()` repeatedly keeps its loaded model alive until teardown. Disposing
+that model after every reading would force the app to load another one.
 
 This simplified float32 example shows the manifest and weight requests. The real loader also handles multiple shards and supported weight encodings:
 
@@ -125,7 +136,7 @@ const manifest = await fetch('/models/deep-scan/model.json').then(r => r.json())
 // 2. Fetch the weight binaries
 const weightData = await fetch('/models/deep-scan/weights.bin')
   .then(r => r.arrayBuffer());
-// Raw Float32 values: the numbers the network learned during training
+// Raw float32 model parameters in this simplified, unencoded example
 
 // 3. Reconstruct the model from architecture + weights
 // tf.loadLayersModel() handles all of this in one call`}
@@ -135,9 +146,9 @@ const weightData = await fetch('/models/deep-scan/weights.bin')
 The loader fetches an asset and creates a LayersModel with predict and evaluate methods. Its tensors occupy memory on the selected backend. Dispose the model when you are finished with it.
 </Dialogue>
 
-## Where the Two Files Come From
+## Exported files and their paths
 
-The training module kept this network in memory. `model.save()` exports its architecture and learned weights so another app can load them. These examples write one JSON manifest and one weight file.
+The training module kept a model in memory. `model.save()` exports its architecture and learned weights so another app can load them. The following export examples assume a separate live trained `model` is in scope. The inspected model above has already been released. These exports write one JSON manifest and one weight file.
 
 <CodeBlock language="typescript" title="export.ts">
 {`// Node, with @tensorflow/tfjs-node installed: writes model.json and
@@ -156,7 +167,9 @@ await model.save('downloads://deep-scan');
 
 A model trained in Python arrives by a different route. `tensorflowjs_converter` can produce a LayersModel from a supported Keras export or a GraphModel from a supported SavedModel. Both use JSON and weight shards. Use `tf.loadGraphModel()` for a GraphModel and `tf.loadLayersModel()` for a LayersModel. Converters such as `tf2onnx` serve a different route to ONNX. Lesson 5 uses a small exporter for this course's exact dense network.
 
-## Caching with IndexedDB
+## A separate application cache
+
+The following application example returns a live model for repeated predictions. Its caller owns that model and disposes it during teardown.
 
 A URL load requests the manifest and weight files. HTTP or service-worker caching may serve those files without another full download. IndexedDB gives the app a model copy it can load explicitly.
 
@@ -188,7 +201,7 @@ async function loadModelWithCache(): Promise<tf.LayersModel> {
   }
 }
 
-// Usage: first load fetches from network, subsequent loads hit cache
+// On a cache miss this fetches from the server. A cache hit loads the saved copy.
 const model = await loadModelWithCache();
 
 // Check what's cached
@@ -200,7 +213,8 @@ console.log(savedModels);
 // 'indexeddb://deep-scan-v2', and nothing reads the v1 entry after that.
 // After v2 is loaded and verified, removeModel frees the old bytes.
 // Do not delete your current offline copy immediately after saving it.
-// await tf.io.removeModel('indexeddb://deep-scan-v1').`}
+// await tf.io.removeModel('indexeddb://deep-scan-v1').
+// When this application no longer needs its model: model.dispose();`}
 </CodeBlock>
 
 Try the cache first. If it is missing, download the model and try to save a copy. A failed download prevents loading. A failed cache write does not: the downloaded model is already usable in memory. Users can clear browser storage, and the browser can evict it. Test both cache hits and misses.

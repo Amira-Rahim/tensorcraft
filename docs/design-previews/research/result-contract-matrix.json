@@ -7372,5 +7372,650 @@
         ]
       }
     }
+  ],
+  "followupReconciliations": [
+    {
+      "date": "2026-11-10",
+      "baselineCommit": "db4225a7e9d809b894251cd4df127e2ef22a2311",
+      "status": "bounded current-source reconciliation, implementation verification pending",
+      "implementationRecord": "docs/audits/course-clarity-implementation-2026-11-09.md",
+      "scope": {
+        "lessons": 56,
+        "uniqueReferencedExercises": 65,
+        "unreferencedDeepOrbitExerciseFiles": 0,
+        "initialChangedLessonHashes": 21,
+        "initialChangedExerciseHashes": 1
+      },
+      "liveConceptPaths": {
+        "introduction-to-tensors": "TensorInvestigation through LessonInstrument",
+        "tensor-shapes": "ChannelLayoutExperiment",
+        "remainingLessons": "LessonInvestigation using merged numeric/flow registry"
+      },
+      "supersededDescriptions": [
+        {
+          "lessonId": "evaluating-deep-scan",
+          "fields": [
+            "lessons[].limitsFromLessonMap",
+            "exercises[].currentArtifacts"
+          ],
+          "earlierLimitation": "Aggregate training/test scores and a gap label only.",
+          "currentSource": "deep-scan-eval delegates to shared captureEvaluation and records its artifacts. Up to four tables contain measured scores, run context, generated cases 0-39, and authored cases 40-42. The decoder/viewer validates and interprets supported full or partial reports.",
+          "sourceFiles": [
+            "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
+            "packages/shared/src/evaluation-capture-source.mjs",
+            "packages/shared/src/evaluation-result.mjs",
+            "apps/web/app/components/evaluation-run-explanation.tsx",
+            "apps/web/app/components/result-explanation.tsx",
+            "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx"
+          ],
+          "preservation": "Retain the current capture/decoder contract, source/model identity, partial/unavailable states, historical readers, and disabled-by-default evaluation writes."
+        }
+      ],
+      "limitations": [
+        "Earlier lesson/exercise objects and hashes remain a research snapshot. This addition does not refresh their review status.",
+        "No new product execution, complete browser pass, independent reviewer score, or learner outcome is established.",
+        "A declared capture is not proof that every failure path reaches it."
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "status": "three current-run explanations implemented and verified within stated scope",
+      "implementationRecord": "docs/audits/course-clarity-implementation-2026-11-09.md",
+      "exerciseIds": [
+        "create-a-tensor",
+        "reshape-tensor",
+        "backprop-chain"
+      ],
+      "sourceFiles": [
+        "apps/web/lib/lesson-result-explanations.ts",
+        "apps/web/app/components/lesson-result-explanation.tsx",
+        "apps/web/app/components/lesson-result-exercise.tsx",
+        "packages/ui/src/mdx/exercise-output.tsx",
+        "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx",
+        "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml",
+        "packages/content/__tests__/backprop-restoration.test.ts",
+        "e2e/signed-in-lesson-results.spec.ts"
+      ],
+      "implementedBehavior": [
+        "Validate bounded artifact shape and known capture titles, axes, labels and sensor order before adapting.",
+        "Link source index, sensor and selected moment to actual captured values, retaining differences from the supplied recording.",
+        "Link variable selection to captured automatic and numerical estimates and counted forward calculations.",
+        "Keep ordinary output for unsupported or malformed captures, failed checks, and explicit stale state after edits.",
+        "Reuse tokened Exercise lifecycle without additional persistence or account ownership state.",
+        "Check every watched variable after each numerical estimate, with restoration assertions after both actual tables are captured. The exception probe uses a separate scalar variable."
+      ],
+      "verification": [
+        "Real Node Worker captures from the three shipped solutions decode successfully.",
+        "Decoder, viewer and host component tests cover schema rejection, partial output, distinct equal readings, reset, ownership and stale state.",
+        "Six isolated Chromium cases cover 1440, 390 and 320px in dark and light schemes, with 18 scoped axe scans.",
+        "Actual L01 editor workflow and L02/L13 real-route browser Workers pass, including starter rejection, saved completion, rerun reset, useful partial output, stale edits and scoped accessibility checks.",
+        "A one-line wrong-target restoration variant now fails two of the eight existing checks while retaining both gradient/count tables. The canonical solution passes unchanged."
+      ],
+      "limitations": [
+        "The presentation fixture uses predetermined artifacts and does not execute learner code.",
+        "Saved history and versioned result definitions remain outside these adapters.",
+        "The original research objects and hashes remain historical. These checks do not close full lesson cards or establish learner understanding."
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "status": "bounded neural module and dense-forward current-run explanation implemented",
+      "implementationRecord": "docs/audits/course-clarity-implementation-2026-11-09.md",
+      "lessonIds": [
+        "first-neuron",
+        "activation-functions",
+        "layers-and-architecture",
+        "forward-pass",
+        "building-a-network"
+      ],
+      "exerciseIds": [
+        "forward-pass"
+      ],
+      "sourceFiles": [
+        "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+        "apps/web/lib/lesson-result-explanations.ts",
+        "apps/web/app/components/lesson-result-explanation.tsx",
+        "apps/web/app/components/lesson-visuals/numeric-investigations.ts",
+        "apps/web/app/components/lesson-visuals/deep-orbit-visuals.ts",
+        "e2e/signed-in-forward-result.spec.ts"
+      ],
+      "implementedBehavior": [
+        "Preserve the original input/output table and add one actual kernel/bias table from the same comparison weights. Two artifacts remain within the existing limit.",
+        "Require exactly one dense layer under the existing six check names. Preserve starter, solution, default initialization requirements, batch semantics and returned prediction identity.",
+        "Decode exact table titles, columns, row roles and finite operands. Select a captured row and unit to show contributions, bias, captured output and separate JavaScript arithmetic.",
+        "Keep current/partial/stale states, rounding limits and ordinary-output fallback. Capture summaries describe the actual weights without certifying that they remain untrained."
+      ],
+      "verification": [
+        "Actual Node Worker captures decode and all five Neural Networks strict solution/starter/registered-misconception checks pass.",
+        "Six isolated Chromium settings cover desktop and phone widths in both schemes, with 30 scoped axe scans across the four supported exercise contracts.",
+        "Two actual paid forward-pass cases compare selected outputs with operands from their own captured tables, verify rerun reset, saved completion, useful partial output and stale edits, with six scoped axe scans."
+      ],
+      "limitations": [
+        "Concept references, diagnostic graders and the eight-feature rehearsal remain distinct from the calibration-tone story and bridge model.",
+        "The original research hashes remain historical. Full mission-data continuity and learner evidence remain open.",
+        "Paid-route checks use a fictional local account with seeded prerequisites and direct Challenge access."
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "status": "bounded Training Loop implementation internally verified within stated scope",
+      "implementationRecord": "docs/audits/course-clarity-implementation-2026-11-09.md",
+      "lessonIds": [
+        "loss-functions",
+        "gradient-descent",
+        "backpropagation",
+        "training-loop",
+        "evaluating-deep-scan"
+      ],
+      "newUniqueLessonIds": [
+        "loss-functions",
+        "gradient-descent",
+        "training-loop",
+        "evaluating-deep-scan"
+      ],
+      "currentInventory": {
+        "uniqueBoundedLessons": 19,
+        "boundedLessonNumbers": [
+          "L01-L15",
+          "L23",
+          "L29",
+          "L44",
+          "L47"
+        ],
+        "unstartedLessons": 37,
+        "openFullLessonCards": 56
+      },
+      "currentResultCoverage": {
+        "exerciseContracts": 7,
+        "families": 6,
+        "contracts": [
+          {
+            "exerciseId": "create-a-tensor",
+            "family": "sensor-layout"
+          },
+          {
+            "exerciseId": "reshape-tensor",
+            "family": "sensor-layout"
+          },
+          {
+            "exerciseId": "backprop-chain",
+            "family": "gradient-comparison"
+          },
+          {
+            "exerciseId": "forward-pass",
+            "family": "dense-forward"
+          },
+          {
+            "exerciseId": "mse-loss",
+            "family": "loss-comparison"
+          },
+          {
+            "exerciseId": "gradient-step",
+            "family": "scalar-updates"
+          },
+          {
+            "exerciseId": "training-loop-exercise",
+            "family": "training-history"
+          }
+        ]
+      },
+      "sourceFiles": [
+        "apps/web/lib/training-result-explanations.ts",
+        "apps/web/app/components/training-result-explanation.tsx",
+        "apps/web/lib/lesson-result-explanations.ts",
+        "apps/web/app/components/lesson-result-explanation.tsx",
+        "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+        "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+        "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
+        "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
+        "scripts/check-reviewed-examples.mjs",
+        "e2e/signed-in-training-results.spec.ts"
+      ],
+      "newCurrentResultContracts": [
+        {
+          "exerciseId": "mse-loss",
+          "family": "loss-comparison",
+          "artifactRoles": [
+            "Inputs and your returned MSE",
+            "Farah's loss comparison",
+            "Logits used for your loss comparison"
+          ],
+          "behavior": "Select a batch position and BCE case. Inspect captured supplied operands and the learner-returned scalar beside a separately labeled JavaScript reference.",
+          "boundary": "Supplied arithmetic probes are not ship measurements or trained predictions. Numeric captures do not establish correctness of pickBceForm. Preserve wrong finite outputs and ordinary fallback for unsupported groups."
+        },
+        {
+          "exerciseId": "gradient-step",
+          "family": "scalar-updates",
+          "artifactRoles": [
+            "Your first weight update",
+            "The weight after three of your steps",
+            "Operands from your next two updates"
+          ],
+          "behavior": "Retain the first after-state and link updates two and three to their captured before-state, gradient, learning rate, after-state, and recomputed loss.",
+          "boundary": "No first-call before-state is invented. The lesson requests weight squared, while the view describes submitted lossFn calls. Gradients do not certify an exact loss formula. Separate JavaScript subtraction from captured values."
+        },
+        {
+          "exerciseId": "training-loop-exercise",
+          "family": "training-history",
+          "artifactRoles": [
+            "Your training and validation losses",
+            "Your full-history diagnosis"
+          ],
+          "behavior": "Select among at most 64 evenly spaced samples with original epoch labels. Inspect the final two ten-epoch windows and their full submitted-history means, captured before diagnosis receives copies. Preserve wrong, invalid, or throwing diagnosis output.",
+          "boundary": "The exercise supplies a separate 100-row, three-feature synthetic fixture and fresh model. The report does not certify unchanged source/model identity. Sampled chart values do not replace full-window means. Display rounding does not control the full-precision trend rule."
+        }
+      ],
+      "specializedEvaluation": {
+        "exerciseId": "deep-scan-eval",
+        "capture": "existing shared captureEvaluation",
+        "artifactRoles": 4,
+        "versionedReaders": "unchanged",
+        "writes": "disabled by default, unchanged",
+        "clarification": "Keep 12 supplied Concept cases, 100 generated training rows, 43 evaluation rows (40 generated plus three authored label-1 cases), and the separate 50-row reference distinct. Declare constant class 0 before evaluation because training labels tie 50/50. Its 20/43 baseline misses all 23 label-1 cases.",
+        "graderChange": "Add exact-gap equality to the existing gap check. An inclusive >= 0.15 rule is rejected while all four measured tables remain available. Ten existing check names, numerical fixture, solution, capture roles, and persisted schema are retained.",
+        "storyBoundary": "The fictional crew 94% and sample 7741 score 0.518 are separate story records. The correct label of 7741 remains unknown. Preserve independent review-cost and transfer tasks."
+      },
+      "preservation": [
+        "Use existing tokened current-run lifecycle, stale-code warning, rerun reset, and ordinary-output fallback. Add no saved-result definition, storage schema, or persistence flag.",
+        "Require disposal of the prior gradient when replaced while keeping the latest gradient readable.",
+        "Permit valid 1-500 epoch budgets and insufficient-history for fewer than 20 epochs. Keep callback stopping separate from the ordered trend diagnosis.",
+        "Treat exact 5% changes as flat within the declared absolute tolerance and handle zero previous means explicitly.",
+        "Keep historical research objects, earlier follow-ups, and source hashes unchanged."
+      ],
+      "verification": [
+        "The complete reviewed-example runtime harness passes 71 groups, including 15 Training Loop groups, with no retained tensors.",
+        "The final Training Loop preview passes 75 phase checks, 15 expanded interactions, 15 scoped axe scans, and no overflow or browser errors. All 22 selected raw sources and five compiled lesson objects match.",
+        "Six isolated result-viewer width/theme settings pass with 66 scoped axe scans, separately from actual learner execution.",
+        "Three actual paid-route browser Worker workflows pass passing runs, saved completion, control reset, useful failures, stale edits, and five scoped axe scans.",
+        "The retained evaluation route passes at 390px light, including real solution output, downloaded 43-case evidence, reader-mode no-write assertions, three scoped axe scans, and independent decision/transfer flows.",
+        "Final focused decoder/viewer/host/Worker/boundary checks pass 115 tests. The writing/answer-leak/starter/hint command passes 478 tests. Counts overlap other commands.",
+        "Isolated content and production builds pass. Thirty-five of 36 selected raw built sources match. The decoder differs only by formatting with identical normalized emitted JavaScript; evidence records both source versions.",
+        "The unchanged all56 renderer/story gate passes 112 lesson/width checks, 24 current story branches, eight historical branches, and four combined handovers, with no page errors or overflow. All canonical compiled lesson objects match the isolated build."
+      ],
+      "pendingVerification": [],
+      "limitations": [
+        "This follow-up does not refresh any historical lesson/exercise hash or close a full lesson card.",
+        "Full mission data/model lineage remains open. Synthetic fixture labels do not identify unknown ship readings.",
+        "Software execution and preview checks do not establish independent learner understanding, reviewer outcomes, or a course-wide clarity percentage."
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "status": "bounded Browser Runtimes implementation internally verified within stated scope",
+      "implementationRecord": "docs/audits/course-clarity-implementation-2026-11-09.md",
+      "lessonIds": [
+        "why-the-browser",
+        "tensorflow-js-setup",
+        "model-loading",
+        "inference-pipeline",
+        "onnx-runtime-web",
+        "transformers-js"
+      ],
+      "currentInventory": {
+        "uniqueBoundedLessons": 25,
+        "unstartedLessons": 31,
+        "openFullLessonCards": 56
+      },
+      "currentResultCoverage": {
+        "exerciseContracts": 12,
+        "families": 11
+      },
+      "newCurrentResultContracts": [
+        {
+          "exerciseId": "browser-ml-tradeoffs",
+          "family": "deployment-policy",
+          "artifacts": 3,
+          "behavior": "Trace copied local requirements, size and latency against actual returned decisions and the first decisive authored rule."
+        },
+        {
+          "exerciseId": "inference-pipeline",
+          "family": "inference-trace",
+          "artifacts": 4,
+          "behavior": "Inspect raw supplied fields, requested reference ranges, observed model inputs/output, returned class/score, and a separate cleanup probe. Reference ranges do not prove which calculation learner code used."
+        },
+        {
+          "exerciseId": "incident-tensor-leak",
+          "family": "capacity-estimate",
+          "artifacts": 2,
+          "behavior": "Trace supplied endpoints and budget to reference arithmetic and the actual returned projection, assuming continuation without identifying a cause."
+        },
+        {
+          "exerciseId": "onnx-comparison",
+          "family": "runtime-parity",
+          "artifacts": 2,
+          "behavior": "Inspect same-call observed inputs/outputs, actual returned parity and simulated intervals. Timings establish no device speed or runtime ranking."
+        },
+        {
+          "exerciseId": "load-pretrained-pipeline",
+          "family": "report-pairing",
+          "artifacts": 2,
+          "behavior": "Trace copied original positional report/prediction pairs through actual returned queue rows, retaining wrong pairings and sentiment-score limits."
+        }
+      ],
+      "ordinaryMetadataRetained": [
+        "tfjs-setup",
+        "load-model"
+      ],
+      "graderRepairs": [
+        "Failing inspection metadata getter now checks finally-based model disposal inside the same third check.",
+        "Phase-aware clock pairs check completed TFJS readback and ONNX run, with loading outside the interval.",
+        "Observed temporary TFJS input/prediction disposal is required in the same first ONNX check.",
+        "ONNX wrapper probes serialize to avoid shared-factory restoration races; array readback remains valid."
+      ],
+      "preservation": [
+        "Starters, canonical solutions, original numerical fixtures, check names, exercise IDs and required passes remain.",
+        "No model asset, dependency, persisted schema, saved-result registration or write flag changes.",
+        "Titled multi-exercise result/output landmarks gain distinct accessible names without remounting editors.",
+        "Historical research objects and hashes remain unchanged."
+      ],
+      "verification": [
+        "All seven strict validators pass 31 checks and starter/registered-misconception checks.",
+        "The authored-example harness passes 92 groups, including 22 Browser Runtimes groups, with no retained tensors.",
+        "The final six-lesson preview passes 90 phase checks, 18 activity interactions and 18 scoped axe scans. All 31 selected raw served files and six compiled lessons match canonical source.",
+        "Six isolated result-viewer settings pass with 126 scoped axe scans; these use predetermined captures.",
+        "Five real paid-route browser Worker workflows pass with ten scoped axe scans, saved completion, rerun reset, useful failures and stale edits.",
+        "The new decoder/Worker, UI and ONNX-regression suites pass 35 cases. The broader activity/shared-flow/recall/writing command passes 464 tests without unhandled errors. Counts overlap other commands.",
+        "Isolated content/web production builds and the unchanged all56 renderer/story gate pass. All 75 selected built product/package/model/harness sources match canonical and all compiled lesson objects match by moduleId/slug."
+      ],
+      "limitations": [
+        "All 56 full cards, full mission-data/model continuity, and independent learner/reviewer evidence remain open.",
+        "Installed dependencies are verified; no fresh-install equivalence is claimed. Installed HF4.3.0 differs from declared4.3.1, and the separate runtime lab has its own pins.",
+        "No real pretrained download, device benchmark, runtime ranking, learning-improvement percentage or deployment is claimed."
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "status": "Source implementation complete across Deep Orbit. Final integration verification pending",
+      "implementationRecord": "docs/audits/course-clarity-implementation-2026-11-09.md",
+      "implementationPlan": "docs/superpowers/plans/2026-11-09-course-clarity-implementation.md",
+      "historicalSnapshots": "All earlier objects, source hashes, inventories and verification claims remain unchanged and retain their original snapshot scope.",
+      "implementationScope": {
+        "lessons": 56,
+        "uniqueExerciseReferences": 65,
+        "exerciseRoles": [
+          "primary",
+          "incident",
+          "rehearsal"
+        ],
+        "sharedSourceContexts": 54,
+        "customOpeningPaths": [
+          "introduction-to-tensors",
+          "tensor-shapes"
+        ],
+        "sourceImplementation": "complete",
+        "finalIntegrationVerification": "pending"
+      },
+      "sourceContext": {
+        "fields": [
+          "stable source ID",
+          "source kind",
+          "readable label",
+          "selected scope",
+          "ordering",
+          "known units"
+        ],
+        "behavior": "Optional presentation metadata appears beside current activity data. Shared registry enrichment preserves case values, controls and calculations. Selected scopes reuse their authored case descriptions.",
+        "boundaries": [
+          "The two custom opening recording paths retain their existing source contracts.",
+          "Unknown physical units remain unknown. dimensionless reference values are identified.",
+          "Supplied diagnostics, controlled callbacks, computed references, fictional records and actual learner captures remain separate.",
+          "Presentation metadata is not serialized into saved evidence and creates no mission-data or model lineage."
+        ]
+      },
+      "currentResultCoverage": {
+        "transientContracts": 16,
+        "families": 15,
+        "contracts": [
+          {
+            "exerciseId": "create-a-tensor",
+            "family": "sensor-layout"
+          },
+          {
+            "exerciseId": "reshape-tensor",
+            "family": "sensor-layout"
+          },
+          {
+            "exerciseId": "backprop-chain",
+            "family": "gradient-comparison"
+          },
+          {
+            "exerciseId": "forward-pass",
+            "family": "dense-forward"
+          },
+          {
+            "exerciseId": "mse-loss",
+            "family": "loss-comparison"
+          },
+          {
+            "exerciseId": "gradient-step",
+            "family": "scalar-updates"
+          },
+          {
+            "exerciseId": "training-loop-exercise",
+            "family": "training-history"
+          },
+          {
+            "exerciseId": "browser-ml-tradeoffs",
+            "family": "deployment-policy"
+          },
+          {
+            "exerciseId": "inference-pipeline",
+            "family": "inference-trace"
+          },
+          {
+            "exerciseId": "incident-tensor-leak",
+            "family": "capacity-estimate"
+          },
+          {
+            "exerciseId": "onnx-comparison",
+            "family": "runtime-parity"
+          },
+          {
+            "exerciseId": "load-pretrained-pipeline",
+            "family": "report-pairing"
+          },
+          {
+            "exerciseId": "compute-fft",
+            "family": "spectrum-peak"
+          },
+          {
+            "exerciseId": "build-spectrogram",
+            "family": "spectrogram-frames"
+          },
+          {
+            "exerciseId": "pipeline-architecture",
+            "family": "composition-output"
+          },
+          {
+            "exerciseId": "write-model-card",
+            "family": "model-card-output"
+          }
+        ],
+        "remainingExercisePresentation": "Ordinary captured output remains where no custom inspector is needed.",
+        "specializedSavedEvidence": [
+          "normalize-data",
+          "simple-network",
+          "deep-scan-eval"
+        ]
+      },
+      "newCurrentResultContracts": [
+        {
+          "exerciseId": "compute-fft",
+          "family": "spectrum-peak",
+          "artifactRoles": [
+            "Your strongest eligible frequency"
+          ],
+          "behavior": "Inspect the actual captured sample count, sample rate, bin spacing and returned frequency. relate the returned frequency to its bin position.",
+          "sourceIdentity": "128 supplied samples at 128 Hz from the 5 Hz diagnostic, with 1 Hz bin spacing.",
+          "boundary": "The capture contains no full spectrum and does not estimate an off-bin physical frequency or identify the mission source."
+        },
+        {
+          "exerciseId": "build-spectrogram",
+          "family": "spectrogram-frames",
+          "artifactRoles": [
+            "When the test tone appears"
+          ],
+          "behavior": "Select an actual returned 40 Hz magnitude and inspect its declared frame interval and source sample positions.",
+          "sourceIdentity": "256 synthetic samples at 256 Hz. a 40 Hz burst occupies positions 64 through 127. Four untapered 64-sample frames advance by 64, with 4 Hz bin spacing.",
+          "boundary": "Only one bin per frame is captured. Full source samples and other spectrum bins remain absent, so no full heatmap is inferred."
+        },
+        {
+          "exerciseId": "pipeline-architecture",
+          "family": "composition-output",
+          "artifactRoles": [
+            "The feature row your pipeline delivered"
+          ],
+          "behavior": "Select one actual final-tensor magnitude and compare it with a separately labeled JavaScript normalization/FFT reference.",
+          "sourceIdentity": {
+            "capturedAsyncMiddleWindow": [
+              0.4,
+              1.2,
+              0.4,
+              1.2,
+              0.4,
+              1.2,
+              0.4,
+              1.2
+            ],
+            "separateMainWorkedWindow": [
+              1,
+              1.4,
+              0.6,
+              1,
+              1,
+              1.4,
+              0.6,
+              1
+            ]
+          },
+          "boundary": "The reference observes no intermediate learner stages. Values remain bins because the diagnostic supplies no sample rate. Float32 rounding can differ. This bounded linear composition does not implement the branch scheduler or production model contract."
+        },
+        {
+          "exerciseId": "write-model-card",
+          "family": "model-card-output",
+          "artifactRoles": [
+            "The handover card your code produced"
+          ],
+          "behavior": "Select an actual captured card line beside a separate supplied-metadata and formatting reference.",
+          "sourceIdentity": {
+            "fictional": true,
+            "accuracy": 0.918,
+            "benchmarkedOn": "the pruning review",
+            "minimumRecall": {
+              "class": "anomaly",
+              "value": 0.84
+            },
+            "weightBytes": 3988,
+            "inferenceMs": 0.035,
+            "inputFormat": "Float32Array(64)",
+            "inputMeaning": "64 signal samples, not 64 sensor channels"
+          },
+          "boundary": "Formatting verifies neither the fictional figures nor a new artifact, sensor or whole-pipeline timing. The captured text remains the learner result even when other checks fail."
+        }
+      ],
+      "approvedBoundedOrdinaryCaptureExtensions": [
+        {
+          "exerciseId": "forecast-signal",
+          "retainedArtifact": "Predictions using forecast history or observed history",
+          "addedArtifact": "Reference windows beside your returned forecasts",
+          "kind": "table",
+          "scope": "First three horizons of the same trained-model synthetic run.",
+          "capturedFields": [
+            "actual returned rollout prediction",
+            "actual returned one-step replay prediction",
+            "supplied synthetic arrived observation"
+          ],
+          "referenceFields": [
+            "rollout window reconstructed from supplied past and earlier returned predictions",
+            "replay window reconstructed from supplied past and earlier arrived observations"
+          ],
+          "boundary": "Reference windows do not observe actual predict inputs. Neither forecast path must win and error need not grow monotonically."
+        },
+        {
+          "exerciseId": "kalman-filter",
+          "retainedArtifact": "Your estimate follows the changing pulse interval",
+          "addedArtifact": "Uncertainty beside your filter updates",
+          "kind": "table",
+          "scope": "Days 2 through 8 of the same actual filter run on the fictional eight-day first-cycle log. Day 1 initializes.",
+          "actualFields": [
+            "prior estimate",
+            "prior variance",
+            "returned estimate",
+            "stored variance"
+          ],
+          "referenceFields": [
+            "predicted variance using Q=0.1",
+            "gain using R=1"
+          ],
+          "units": {
+            "intervals": "seconds",
+            "variances": "squared seconds",
+            "gain": "dimensionless"
+          },
+          "boundary": "Reference arithmetic does not observe local update operations. Smoothness establishes no accuracy gain."
+        }
+      ],
+      "multiExerciseNavigation": {
+        "ordering": "Task titles and order follow authored MDX Exercise references, not collection file order.",
+        "links": "Each named brief links to its own editor anchor, with a return link.",
+        "identity": "Editor/result landmarks keep exercise identity. run tokens delimit transient inspection state.",
+        "completion": "Every required exercise still needs its own pass. No new persistence or completion-write behavior."
+      },
+      "preservation": [
+        "No new persisted result schema, saved-result registration, write flag or storage scope.",
+        "Existing normalization/network/evaluation saved-evidence paths remain separate. versioned evaluation readers and disabled writes are unchanged.",
+        "Transient readers preserve compatible wrong outputs and ordinary fallback for missing, unsupported or ambiguous groups. Edited code remains stale. new runs reset inspection. Useful failures remain where execution reached capture.",
+        "The missed capture, optional saved decisions, release-review gate, fixed 0157 canary, counterfactual records and final operator_note: none remain. Unknown sample 7741 receives no ground-truth label."
+      ],
+      "verification": {
+        "status": "Final integration verification running. no final pass claimed by this entry.",
+        "ownedElsewhere": [
+          "final browser and actual-route evidence",
+          "final renderer and isolated build counts",
+          "final source snapshot and hashes"
+        ],
+        "record": "Root-owned implementation record and plan will contain the final results and exact source scope."
+      },
+      "limitations": [
+        "Source implementation does not establish full mission-data/model continuity or independent learner understanding.",
+        "No course-wide clarity percentage, real scientific finding, deployment, device-speed ranking or new label authority is claimed.",
+        "Historical counts and source hashes are not regenerated by this append-only reconciliation."
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "status": "all 56 Deep Orbit clarity revisions internally verified",
+      "implementationRecord": "docs/audits/course-clarity-implementation-2026-11-09.md#all-56-lesson-revisions-and-final-integration",
+      "verification": {
+        "lessons": 56,
+        "exercises": 65,
+        "exerciseChecks": 576,
+        "visibleOutputs": 106,
+        "runtimeExampleGroups": 128,
+        "runtimeExampleLessons": 56,
+        "sharedSourceContexts": 54,
+        "customOpeningPaths": 2,
+        "transientContracts": 16,
+        "transientFamilies": 15,
+        "phaseChecks": 840,
+        "activityChecks": 162,
+        "activityAxeScans": 162,
+        "presentationSettings": 6,
+        "presentationAxeScans": 150,
+        "newActualResultRoutes": 4,
+        "finaleActualSettings": 2,
+        "buildEvidence": "test-results/course-clarity-build/all-lessons-final/20261110T160713797",
+        "builtSourceMatches": 115,
+        "compiledLessons": 56,
+        "storyRendererChecks": 112
+      },
+      "testScope": "2,187 assertions passed in the bounded broad command. The repository scan timed out, then both assertions passed in isolation. Together the commands cover 2,188 active selected assertions. The 65 intentionally skipped heavy/corpus cases have separate exercise/Worker evidence. Original failure logs remain.",
+      "preservation": "All canonical solutions, starter executable bodies and original literal named checks remain. Evaluation starter comment corrected. No model assets, lockfile or persisted result schema changed.",
+      "limits": [
+        "No independent learner-understanding or learning-gain claim.",
+        "Unified mission-data/model continuity and 219 coming-soon lessons remain separate workstreams.",
+        "Current-tab captures retain their existing lifetime. Reload restores drafts/completion and existing eligible saved evidence."
+      ]
+    }
   ]
 }

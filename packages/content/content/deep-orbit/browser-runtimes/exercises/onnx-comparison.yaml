@@ -53,6 +53,14 @@ testCode: |
   describe('compareRuntimes', () => {
     // Not the triple the lesson's code block feeds, so a memorised input fails.
     const SIGNAL = [0.42, 0.66, 0.31];
+    // Both probes temporarily wrap the shared session factory. Take turns
+    // so one probe cannot restore another probe's instrumentation early.
+    let comparisonTurn = Promise.resolve();
+    const inOrder = (work) => {
+      const pending = comparisonTurn.then(work);
+      comparisonTurn = pending.catch(() => {});
+      return pending;
+    };
 
     // DEEP SCAN as it ships: 3 -> 32 relu -> 16 relu -> 1 sigmoid, 673 weights.
     // The weights are planted rather than random for one reason: this network
@@ -92,8 +100,50 @@ testCode: |
       return out;
     }
 
-    it('runs one signal through both runtimes and finds that they agree', async () => {
+    it('runs one signal through both runtimes and finds that they agree', () => inOrder(async () => {
       const model = deepScanModel();
+      let tfjsProbe = null;
+      let onnxProbe = null;
+      let observedInput = null;
+      let observedPrediction = null;
+      const events = [];
+      const clockReadings = [];
+      const predict = model.predict.bind(model);
+      model.predict = (input) => {
+        events.push('tfjs-predict');
+        observedInput = input;
+        const values = Array.from(input.dataSync());
+        const output = predict(input);
+        observedPrediction = output;
+        tfjsProbe = { values, output: output.dataSync()[0] };
+        const data = output.data.bind(output);
+        Object.defineProperty(output, 'data', { configurable: true, value: async () => {
+          events.push('tfjs-data-start');
+          const values = await data();
+          events.push('tfjs-data-ready');
+          return values;
+        }});
+        return output;
+      };
+      const originalCreate = ort.InferenceSession.create;
+      ort.InferenceSession.create = async function (...args) {
+        const watched = args[0] === '/models/deep-scan.onnx';
+        if (watched) events.push('onnx-load-start');
+        const session = await originalCreate.apply(this, args);
+        if (!watched) return session;
+        events.push('onnx-load-ready');
+        const run = session.run.bind(session);
+        session.run = async (feeds) => {
+          events.push('onnx-run-start');
+          const input = feeds[Object.keys(feeds)[0]];
+          const values = Array.from(input.data);
+          const result = await run(feeds);
+          onnxProbe = { values, output: result.output.data[0] };
+          events.push('onnx-run-ready');
+          return result;
+        };
+        return session;
+      };
       // The harness clock is too coarse to say how long either call took, so
       // for this one test it is replaced by something that is not a clock at
       // all: every reading is the one before it plus a fixed amount drawn
@@ -102,27 +152,53 @@ testCode: |
       const realNow = performance.now;
       const step = 7 + Math.floor(Math.random() * 90);
       let reading = step * 1000 + 1;
-      performance.now = function () { reading += step; return reading; };
+      performance.now = function () {
+        reading += step;
+        clockReadings.push({ value: reading, event: events.length });
+        events.push('clock');
+        return reading;
+      };
       let out;
       try {
         out = await report(model, '/models/deep-scan.onnx', SIGNAL);
       } finally {
         performance.now = realNow;
+        ort.InferenceSession.create = originalCreate;
         model.dispose();
       }
-      const rule = ' has to be the gap between two readings of performance.now() taken around that call. The starter reports a placeholder instead, and a placeholder is not a measurement.';
-      expect(Number.isFinite(out.tfjsMs) && out.tfjsMs > 0 && out.tfjsMs % step === 0, 'tfjsMs' + rule).toBe(true);
-      expect(Number.isFinite(out.onnxMs) && out.onnxMs > 0 && out.onnxMs % step === 0, 'onnxMs' + rule).toBe(true);
-      expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or your code sent different inputs to the two sides.').toBe(true);
+      if (tfjsProbe && onnxProbe && [tfjsProbe, onnxProbe].every(row => row.values.length === 3 && row.values.every(Number.isFinite) && Number.isFinite(row.output))) {
+        recordResult({
+          kind: 'table', title: 'Inputs and outputs from your runtime comparison',
+          summary: 'The float32 input values and outputs observed inside both calls made by your comparison in the first probe. The TensorFlow.js model has planted test weights. ONNX and the clock are simulated. These outputs establish no accuracy or device speed.',
+          columns: ['Runtime', 'Input 1', 'Input 2', 'Input 3', 'Observed output'],
+          rows: [['TFJS', ...tfjsProbe.values, tfjsProbe.output], ['ONNX', ...onnxProbe.values, onnxProbe.output]],
+        });
+      }
       recordResult({
         kind: 'table', title: 'Your runtime comparison',
         summary: 'The test simulates the ONNX session and clock. These times describe that simulation. They measure no real runtime. Use the real lab for performance comparisons.',
         columns: ['Outputs agree', 'TFJS simulated interval', 'ONNX simulated interval'],
         rows: [[out.outputsAgree, out.tfjsMs, out.onnxMs]],
       });
-    });
+      const rule = ' has to be the gap between two readings of performance.now() taken around that call. The starter reports a placeholder instead, and a placeholder is not a measurement.';
+      expect(Number.isFinite(out.tfjsMs) && out.tfjsMs > 0 && out.tfjsMs % step === 0, 'tfjsMs' + rule).toBe(true);
+      expect(Number.isFinite(out.onnxMs) && out.onnxMs > 0 && out.onnxMs % step === 0, 'onnxMs' + rule).toBe(true);
+      const measuredAround = (value, start, done, after = null) => {
+        const startIndex = events.indexOf(start);
+        const doneIndex = events.indexOf(done);
+        const afterIndex = after ? events.indexOf(after) : -1;
+        return startIndex >= 0 && doneIndex > startIndex && clockReadings.some(before =>
+          before.event > afterIndex && before.event < startIndex && clockReadings.some(end =>
+            end.event > doneIndex && end.value - before.value === value));
+      };
+      expect(measuredAround(out.tfjsMs, 'tfjs-predict', 'tfjs-data-ready'), 'End the TFJS timer after awaiting the prediction data, not after dispatching predict.').toBe(true);
+      expect(measuredAround(out.onnxMs, 'onnx-run-start', 'onnx-run-ready', 'onnx-load-ready'), 'Start the ONNX timer after loading, and end it after awaiting run.').toBe(true);
+      expect(observedInput && observedInput.isDisposed, 'Dispose the temporary TFJS input after the comparison.').toBe(true);
+      expect(observedPrediction && observedPrediction.isDisposed, 'Dispose the temporary TFJS prediction after reading it.').toBe(true);
+      expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or your code sent different inputs to the two sides.').toBe(true);
+    }));
 
-    it('compares the two numbers the runtimes returned, and feeds both the same input', async () => {
+    it('compares the two numbers the runtimes returned, and feeds both the same input', () => inOrder(async () => {
       // Three things are graded here, and all three are about provenance.
       //
       // The feed: this wrapper records what run() received, which rejects a
@@ -200,7 +276,7 @@ testCode: |
       expect(fed.data[1], sameInput).toBeCloseTo(SIGNAL[1], 5);
       expect(fed.data[2], sameInput).toBeCloseTo(SIGNAL[2], 5);
       expect(out.outputsAgree, 'This test changed the ONNX output so it differs from TensorFlow.js. Compare the value returned by run(). This test deliberately changes that value.').toBe(false);
-    });
+    }));
   });
 estimatedMinutes: 15
 difficulty: advanced

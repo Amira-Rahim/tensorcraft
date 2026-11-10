@@ -42,18 +42,28 @@ skillAxes: [model_arch]
 One neuron cleared two calibration tones. Sector 7-G is sixty-four channels and neither tone. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
 </Dialogue>
 
-Build Nazari’s network and calculate how many weights and biases it needs.
-Your calculation must also work when the number of input features changes.
+Give Nazari a count she can check layer by layer. Start with the bridge
+classifier's three-feature architecture, then build the challenge's smaller
+practice stack. Keep their counts separate. Your calculation must also work
+when the practice stack receives a different number of input features.
 
 <LearningObjectives objectives={["Build multi-layer neural networks using tf.sequential()", "Understand how layers compose like a middleware chain", "Configure layer sizes (units) and activations", "Count a network's parameters before you build it"]} />
 
 ## The three-layer network
 
-Nazari's network has three dense layers and 673 trainable parameters, the weights and biases training will change. The first layer has 32 units. The second has 16. The last has one sigmoid unit that returns a score.
+The **bridge classifier** has three dense layers. The first has 32 units.
+The second has 16. The last has one sigmoid unit that returns a score.
+It has 673 **trainable parameters**, the weights and biases training can change.
 
-The model reads amplitude, frequency, and phase. Each uses a 0-1 scale based on its sensor's physical range, given in module 4. These three values summarize a raw capture. Sensor channel counts and model input counts describe different parts of the pipeline.
+This model expects three prepared features per example. A feature is one
+number the model reads about that example. Those three input slots summarize
+a capture. They are separate from the ship's 64 sensor channels and from the
+number of examples in a batch. This lesson checks the architecture and its
+parameter count. It does not establish feature extraction or event labels.
 
-Each summary comes from 64 consecutive samples of one channel. At 256 samples per second, that covers a quarter of a second. The 64 samples are separate from the ship's 64 sensor channels.
+For the extraction discussed later, 64 consecutive samples from one channel
+cover a quarter of a second at 256 samples per second. Those 64 samples
+describe a time window, while 64 channels describe the sensor array.
 
 Like a middleware chain, each layer reads the previous layer's result, changes it, and passes it on.
 
@@ -67,9 +77,9 @@ The next layer has 16 neurons, each reading those 32 outputs. Its ReLU outputs g
 {`import * as tf from '@tensorflow/tfjs';
 
 // Node: compose middleware
-// app.use(parseBody);      ← takes the raw request
-// app.use(extractFields);  ← transforms it
-// app.use(sendResponse);   ← produces the result
+// app.use(parseBody);      // reads the raw request
+// app.use(extractFields);  // transforms it
+// app.use(sendResponse);   // produces the result
 
 // ML: compose layers
 const model = tf.sequential();
@@ -97,9 +107,27 @@ model.summary(); // prints layer shapes and parameter counts
 model.dispose();`}
 </CodeBlock>
 
-To count a dense layer's parameters, use `(inputs * units) + units`. Every unit has one weight per input and one bias. Add the three layer counts to get 673.
+## Each layer's share of the count
+
+Every dense unit has one weight per input and one bias. A layer with `inputs`
+incoming values and `units` outputs therefore has `(inputs * units) + units`
+parameters. Count the bridge classifier's layers separately:
+
+| Bridge layer | Inputs per example | Units | Weights | Biases | Subtotal |
+| --- | --- | --- | --- | --- | --- |
+| First hidden layer | 3 | 32 | 96 | 32 | 128 |
+| Second hidden layer | 32 | 16 | 512 | 16 | 528 |
+| Output layer | 16 | 1 | 16 | 1 | 17 |
+
+The total is `128 + 528 + 17 = 673`. The second layer reads the first layer's
+32 outputs, so its weight count is `32 * 16`. The number of original features
+does not carry through unchanged to every layer.
 
 Only the first layer needs `inputShape`. Later layers get their input count from the previous layer's output. Change the first input shape to `[8]` while keeping 32/16/1 units, and the count becomes 833.
+
+Sending more examples through the same model does not create more weights.
+A batch with 20 examples and a batch with one example use the same parameters.
+Batch size affects how much data moves through each layer at once.
 
 <StoryPassage>
 
@@ -107,7 +135,53 @@ Demir's first stack ran 96, then 32, then 1: 3,521 parameters, on a 96-unit firs
 
 </StoryPassage>
 
-## What the network can represent
+## The challenge's separate practice stack
+
+The challenge uses a **four-feature practice model** with 16, 8, and 1 units.
+The first two layers use ReLU, and the last uses sigmoid.
+It is a separate configuration from the bridge classifier. No capture values,
+physical units, or labels accompany its four input slots.
+
+| Practice layer | Inputs per example | Units | Weights | Biases | Subtotal |
+| --- | --- | --- | --- | --- | --- |
+| First hidden layer | 4 | 16 | 64 | 16 | 80 |
+| Second hidden layer | 16 | 8 | 128 | 8 | 136 |
+| Output layer | 8 | 1 | 8 | 1 | 9 |
+
+This total is `80 + 136 + 9 = 225`. If only the input width changes, the
+first layer gains 16 weights for each extra feature. Its biases and both
+later layers stay the same. For any positive width, the total is
+`16 * width + 161`.
+
+Here is the same calculation for six input features. It creates no model
+or tensor:
+
+<CodeBlock language="javascript" title="parameter-quote.js">
+{`const featureWidth = 6;
+const units = [16, 8, 1];
+let incoming = featureWidth;
+const layerCounts = units.map((outgoing) => {
+  const count = incoming * outgoing + outgoing;
+  incoming = outgoing;
+  return count;
+});
+const quotedParams = layerCounts.reduce((total, count) => total + count, 0);
+console.log(layerCounts);  // [112, 136, 9]
+console.log(quotedParams); // 257`}
+</CodeBlock>
+
+In the activity, choose the bridge or practice configuration. Change its input
+width, then select a layer to inspect the weights and biases that contribute
+to the total. In the challenge, compare your arithmetic with the count of the
+model you actually build.
+
+Nonlinear activations let these stacks represent patterns that a single
+affine calculation cannot. Parameter count describes the model's size.
+Training and evaluation must establish whether its predictions are useful.
+
+<ConceptReference summary="Optional: why nonlinear layers can represent XOR">
+
+### What the network can represent
 
 The stack has 673 parameters. The first lesson's neuron has four: three weights and one bias. More layers can represent patterns that one neuron cannot.
 
@@ -130,12 +204,15 @@ Representing a function and learning its weights are different questions. This c
 
 This example shows what the layers can represent. It does not test the spacecraft data. In module 5, you’ll give the network eleven features per reading so it can learn from more aspects of the signal.
 
+</ConceptReference>
+
 ## Challenge
 
 Build the exercise's 16/8/1 stack, then calculate its parameter count for any
 supplied input width. Your result lists the layers you built and compares
 your calculation with their actual count. This is a separate configuration from
-the bridge model's 32/16/1 stack.
+the bridge model's three-input 32/16/1 stack and its 673 parameters. The default
+four-input practice stack has 225 parameters.
 
 <Exercise slug="build-layer" />
 

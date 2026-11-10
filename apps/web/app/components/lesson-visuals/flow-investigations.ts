@@ -1,8 +1,16 @@
+import { CAPSTONE_INVESTIGATIONS } from "./capstone-investigations";
 import type {
   InvestigationControl,
   InvestigationGraphic,
   LessonInvestigationSpec,
 } from "./investigation-types";
+import {
+  RETRIEVAL_EXAMPLE_NOW,
+  RETRIEVAL_EXAMPLE_QUERIES,
+  ragRetrievalExample,
+} from "./rag-retrieval-example";
+
+import { inspectReply, replyExample } from "./llm-report-examples";
 
 const choice = (
   id: string,
@@ -64,460 +72,786 @@ const round = (value: number) => Math.round(value * 100) / 100;
 /** Small, inspectable calculations. None of these activities run a model or service. */
 export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "why-the-browser": {
-    title: "Can this reading stay on the device?",
+    title: "The requirement that decides the recommendation",
     brief:
-      "Track the readings and model files separately. Change the connection and choose where predictions run.",
+      "Follow the supplied policy in order. Keep local requirements, the download budget, and the latency preference separate.",
     boundary:
-      "This simulates where readings and model files go. It makes no network requests and runs no model.",
+      "These inputs exercise the Challenge's authored decision policy. The 50 MB and 50 ms cutoffs are policy values, separate from the ship's one-reading-per-second deadline. This activity measures no download, network, or device speed.",
     controls: [
-      choice("online", "Connection", ["Offline", "Online"], 1),
-      choice(
-        "assets",
-        "Model and runtime files",
-        ["Not stored locally", "Stored locally"],
-        1,
-      ),
-      choice("location", "Prediction location", [
-        "On this device",
-        "On a server",
+      choice("dataSensitive", "Input privacy requirement", [
+        "Inputs may leave the device",
+        "All inputs must stay local",
       ]),
+      choice("needsOffline", "Connection requirement", [
+        "A connection is allowed",
+        "Predictions must work offline",
+      ]),
+      range("modelSizeMB", "Model download size (MB)", 50, 0, 100),
+      range("latencyBudgetMs", "Latency preference (ms)", 49, 0, 1000),
     ],
     cases: [
       {
         id: "one",
-        label: "One reading",
-        description: "One sensor record contains 12 values.",
+        label: "Initial policy preset",
+        description:
+          "Starts at 50 MB and 49 ms, with neither hard local requirement. These are supplied boundary-check values.",
+        values: {
+          dataSensitive: 0,
+          needsOffline: 0,
+          modelSizeMB: 50,
+          latencyBudgetMs: 49,
+        },
       },
       {
         id: "batch",
-        label: "A batch",
+        label: "Alternate policy preset",
         description:
-          "The next capture contains 8 records, each with 12 values.",
+          "Starts at 51 MB with sensitive inputs and a 500 ms preference. The download budget conflicts with the local requirement.",
+        values: {
+          dataSensitive: 1,
+          needsOffline: 0,
+          modelSizeMB: 51,
+          latencyBudgetMs: 500,
+        },
       },
     ],
     prediction: {
-      prompt: "How many sensor values leave the device?",
-      unit: "values",
+      prompt: "Which recommendation follows from these requirements?",
+      choices: ["client", "server", "reconsider"],
     },
-    evaluate: (v, caseId) => {
-      const count = caseId === "batch" ? 96 : 12;
-      const server = v.location === 1;
-      const ready = server ? v.online === 1 : v.assets === 1 || v.online === 1;
-      const sent = server && ready ? count : 0;
+    evaluate: ({
+      dataSensitive,
+      needsOffline,
+      modelSizeMB,
+      latencyBudgetMs,
+    }) => {
+      const local = dataSensitive === 1 || needsOffline === 1;
+      const overBudget = modelSizeMB > 50;
+      const prefersClient = latencyBudgetMs < 50;
+      const recommendation = overBudget
+        ? local
+          ? "reconsider"
+          : "server"
+        : local || prefersClient
+          ? "client"
+          : "server";
+      const decisive = overBudget ? 1 : local ? 0 : 2;
+      const reason = overBudget
+        ? local
+          ? "The model exceeds the download budget while predictions must stay local. A server would violate that requirement. Reconsider the model or download plan."
+          : "The model exceeds the download budget and no requirement forces local predictions. The size rule chooses server before the latency preference."
+        : local
+          ? "The model fits the inclusive download budget and a hard requirement calls for local predictions. The latency preference cannot override that requirement."
+          : prefersClient
+            ? "The model fits the download budget, and the latency preference is strictly below 50 ms. The policy prefers client."
+            : "The model fits the download budget, but there is no local requirement or latency preference below 50 ms. The policy chooses server.";
       return {
         graphics: [
-          cells(
-            "Current setup",
-            [
-              `Input: ${count} sensor values`,
-              server ? "Prediction: server" : "Prediction: device",
-              v.online === 1 ? "Connection: online" : "Connection: offline",
-              v.assets === 1 ? "Local files: stored" : "Local files: missing",
+          {
+            ...cells(
+              "Supplied policy inputs",
+              [
+                dataSensitive === 1
+                  ? "All inputs stay local"
+                  : "Inputs may leave",
+                needsOffline === 1 ? "Must work offline" : "Connection allowed",
+                modelSizeMB,
+                latencyBudgetMs,
+              ],
+              2,
+            ),
+            labels: [
+              "Privacy",
+              "Connection",
+              "Model size (MB)",
+              "Latency preference (ms)",
             ],
-            2,
-          ),
-          bars(
-            "Sensor values by location",
-            ["On device", "Sent to server"],
-            [count, sent],
-          ),
+          },
           pipeline(
-            "Reading path",
+            "Authored policy, checked in order",
             [
-              "Sensor",
-              `${count} values on device`,
-              server ? "Server" : "Local runtime",
-              ready ? "Result available" : "Blocked",
+              `Local requirement: ${local ? "yes" : "no"}. Privacy and offline needs are hard requirements.`,
+              `Download budget: ${modelSizeMB} MB ${overBudget ? ">" : "≤"} 50 MB. ${overBudget ? (local ? "Conflict: reconsider" : "Choose server") : "Model fits"}.`,
+              overBudget || local
+                ? "Latency preference does not decide this case."
+                : `${latencyBudgetMs} ms ${prefersClient ? "<" : "≥"} 50 ms: choose ${recommendation}.`,
             ],
-            ready ? [3] : [],
+            [decisive],
           ),
+          {
+            ...cells(
+              "Recommendation and decisive rule",
+              [
+                recommendation,
+                [
+                  "Local requirement, with a model inside budget",
+                  "Download budget",
+                  "Strict latency preference",
+                ][decisive]!,
+              ],
+              2,
+            ),
+            labels: ["Recommendation", "Decisive rule"],
+          },
+          pipeline("Work that remains after this policy choice", [
+            recommendation === "reconsider"
+              ? "Change the conflicting model or download plan before choosing a location."
+              : `Test the ${recommendation} design on supported devices and connections.`,
+            "Offline use needs the app, runtime, model, and other required assets available locally.",
+            "Measure completed predictions, startup, and memory use. This policy guarantees no response time.",
+          ]),
         ],
-        answer: sent,
-        answerLabel: "Sensor values sent",
-        explanation: !ready
-          ? server
-            ? "Server prediction needs a connection. This offline request stops before sending any values."
-            : "Local prediction needs the model and runtime files. It cannot start if the device lacks those files and has no connection to download them."
-          : server
-            ? "The server receives the whole input record. Moving prediction off the device changes the data path."
-            : "This input stays on the device. Downloading model files does not require uploading these readings. Check whether other parts of the app send data.",
-        code: `const canPredict = ${ready};\nconst sensorValuesSent = ${sent};`,
+        answer: recommendation,
+        answerLabel: "Policy recommendation",
+        explanation: `${reason} Exactly 50 MB fits. Exactly 50 ms does not satisfy the strict latency preference. These are supplied policy rules, not device measurements.`,
+        code: `const supplied = ${JSON.stringify({ dataSensitive: dataSensitive === 1, needsOffline: needsOffline === 1, modelSizeMB, latencyBudgetMs })};\nconst checked = {\n  localRequired: supplied.dataSensitive || supplied.needsOffline,\n  exceedsDownloadBudget: supplied.modelSizeMB > 50,\n  belowLatencyPreference: supplied.latencyBudgetMs < 50,\n};\n// Decisive rule for this case: ${["local requirement with size inside budget", "download budget", "latency preference"][decisive]}.\n// Recommendation for these inputs: ${recommendation}.`,
       };
     },
   },
   "tensorflow-js-setup": {
-    title: "Wait for the backend",
+    title: "A request, readiness, and the reported runtime",
     brief:
-      "Compare when initialization finishes with when the first operation starts.",
+      "Move through one controlled startup. A preferred name can start, refuse, or be unknown. Read the actual selected test backend and version after readiness.",
     boundary:
-      "The times are example values. This checks event ordering without importing TensorFlow.js or measuring a device.",
+      "This is a fixed illustration of the Challenge's simulated cold runtime. Its test names and probe versions are supplied examples, not results from your browser. The grader generates fresh names and a fresh test version. This activity imports no backend and measures no startup time.",
     controls: [
-      range("delay", "Backend initialization time (ms)", 80, 20, 200, 20),
-      range("start", "Requested operation time (ms)", 40, 0, 240, 20),
       choice(
-        "await",
-        "When to start",
-        ["Start immediately", "Wait until ready"],
+        "scenario",
+        "Startup scenario",
+        [
+          "No preferred name",
+          "Preferred backend starts",
+          "Registered preference refuses",
+          "Preferred name is unregistered",
+          "No backend can start",
+        ],
         1,
       ),
+      range("stage", "Startup point", 3, 0, 3),
     ],
     cases: [
       {
         id: "available",
-        label: "Backend initializes",
+        label: "Initial controlled preset",
         description:
-          "The chosen backend becomes ready after its initialization time.",
+          "Starts with an accepted preference. Fixed example names are probe-101 and good-202. The supplied test version is 4.22.0-probe.",
+        values: { scenario: 1, stage: 3 },
       },
       {
         id: "failed",
-        label: "Backend fails",
+        label: "Alternate controlled preset",
         description:
-          "The selected backend fails to start. The fallback needs another 40 ms to become ready.",
+          "Starts with a registered preference that refuses. The ready runtime selects probe-707. Its supplied test version is 4.317.0-probe.",
+        values: { scenario: 2, stage: 3 },
       },
     ],
     prediction: {
-      prompt: "What is the earliest safe start time for this operation?",
-      unit: "ms",
+      prompt: "What backend can this controlled startup report at this point?",
+      choices: [
+        "not ready",
+        "probe-101",
+        "good-202",
+        "probe-707",
+        "good-808",
+        "initialization error",
+      ],
     },
-    evaluate: (v, caseId) => {
-      const readyAt = v.delay! + (caseId === "failed" ? 40 : 0);
-      const safeAt = Math.max(v.start!, readyAt);
-      const actual = v.await === 1 ? safeAt : v.start!;
-      const safe = actual >= readyAt;
+    evaluate: ({ scenario, stage }, caseId) => {
+      const fixture =
+        caseId === "failed"
+          ? {
+              fallback: "probe-707",
+              good: "good-808",
+              bad: "bad-909",
+              unknown: "never-606",
+              version: "4.317.0-probe",
+            }
+          : {
+              fallback: "probe-101",
+              good: "good-202",
+              bad: "bad-303",
+              unknown: "never-404",
+              version: "4.22.0-probe",
+            };
+      const preferred =
+        scenario === 0
+          ? undefined
+          : scenario === 1
+            ? fixture.good
+            : scenario === 3
+              ? fixture.unknown
+              : fixture.bad;
+      const request =
+        scenario === 0
+          ? "No preferred name. Skip setBackend()."
+          : scenario === 1
+            ? `setBackend('${preferred}') resolves true.`
+            : scenario === 3
+              ? `setBackend('${preferred}') rejects: name unregistered. Catch this request error.`
+              : `setBackend('${preferred}') resolves false. The request did not start a backend.`;
+      const failed = scenario === 4;
+      const settled = scenario === 1 ? fixture.good : fixture.fallback;
+      const readyReached = stage >= 2;
+      const answer = !readyReached
+        ? "not ready"
+        : failed
+          ? "initialization error"
+          : settled;
+      const backendRead = !readyReached
+        ? "Not read before readiness"
+        : failed
+          ? "No result: ready() rejects"
+          : settled;
+      const versionRead =
+        !readyReached || failed ? "Not read" : fixture.version;
       return {
         graphics: [
-          cells(
-            "Initialization inputs",
-            [
-              `Selected backend: ${v.delay} ms`,
-              caseId === "failed"
-                ? "Selected backend: fails"
-                : "Selected backend: succeeds",
-              caseId === "failed" ? "Fallback: 40 ms" : "Fallback: not needed",
-              `Requested start: ${v.start} ms`,
-            ],
-            2,
-          ),
-          bars(
-            "Event times (ms)",
-            ["Backend ready", "Requested start", "Actual start"],
-            [readyAt, v.start!, actual],
-          ),
+          {
+            ...cells(
+              "Controlled startup inputs",
+              [preferred ?? "Omitted", fixture.version],
+              2,
+            ),
+            labels: ["Supplied preference", "Supplied test version"],
+          },
           pipeline(
-            "Runtime sequence",
+            "Startup sequence",
             [
-              "Import API",
-              caseId === "failed"
-                ? "Selected backend fails"
-                : "Initialize backend",
-              caseId === "failed" ? "Initialize fallback" : "Backend ready",
-              safe ? "Operation can start" : "Operation starts too early",
+              "0. Import the supplied runtime. Its cold metadata is not ready to read.",
+              `1. ${stage >= 1 ? request : "Preference request has not run."}`,
+              `2. ${readyReached ? (failed ? "Await ready(): no backend starts, so the promise rejects." : "Await ready(): initialization resolves.") : "Readiness has not resolved."}`,
+              `3. ${stage >= 3 ? (failed ? "Reject to the caller. Return no invented backend." : `Report backend ${settled} and version ${fixture.version}.`) : "The function has not returned a report."}`,
             ],
-            safe ? [3] : [],
+            [stage],
           ),
+          {
+            ...cells(
+              "Metadata available after awaited readiness",
+              [backendRead, versionRead],
+              2,
+            ),
+            labels: ["Backend", "Version"],
+          },
+          pipeline("Readiness and return status", [
+            !readyReached
+              ? "Keep waiting. This controlled cold runtime exposes no backend name before ready() resolves."
+              : failed
+                ? "The initialization error reaches the caller."
+                : stage >= 3
+                  ? `The caller receives backend ${settled}, even when another name was requested.`
+                  : `Ready metadata can now be read: backend ${settled}. The function has not returned yet.`,
+            !readyReached || failed
+              ? "No successful result object yet."
+              : stage >= 3
+                ? `Return the test version read from runtime.version.tfjs: ${fixture.version}.`
+                : `Version ${fixture.version} is available to read. There is no returned report yet.`,
+          ]),
         ],
-        answer: safeAt,
-        answerLabel: "Earliest safe start",
-        explanation: `${caseId === "failed" ? "After initialization fails, the fallback must become ready too. " : ""}The backend becomes ready at ${readyAt} ms. ${safe ? "This operation starts after that point." : `Starting at ${actual} ms is too early.`} Waiting for readiness puts these steps in order. A real app must also handle startup failures.`,
-        code: "try {\n  const initialized = await tf.setBackend(preferredBackend);\n  if (!initialized) throw new Error('Preferred backend failed');\n  await tf.ready();\n} catch {\n  const initialized = await tf.setBackend(fallbackBackend);\n  if (!initialized) throw new Error('Fallback backend failed');\n  await tf.ready();\n}",
+        answer,
+        answerLabel: "Controlled startup outcome",
+        explanation: !readyReached
+          ? `At startup point ${stage}, this cold check has not resolved ready(). Its getBackend() still returns null. Request acceptance and a completed metadata report are separate steps in this simulated check.`
+          : failed
+            ? "The preference returns false, then ready() rejects because no backend can start. Catching a preference request is allowed. Swallowing this initialization failure would invent a successful startup."
+            : `${request} After awaited readiness, read ${settled} and ${fixture.version} from the simulated runtime. ${scenario === 1 ? "The accepted preference is the selected test backend." : scenario === 0 ? "With no preference, make no setBackend call." : "The refused or unknown name is not the selected backend."} These fixed example names are not your device report.`,
+        code: `// Controlled illustration only. No real runtime starts here.\nconst point = ${stage};\nconst preference = ${JSON.stringify(preferred) ?? "undefined"};\nconst requestOutcome = ${JSON.stringify(scenario === 0 ? "not requested" : scenario === 1 ? "true" : scenario === 3 ? "unregistered error" : "false")};\nconst readiness = ${JSON.stringify(!readyReached ? "pending" : failed ? "rejected" : "resolved")};\nconst report = ${stage < 3 || failed ? "null" : JSON.stringify({ backend: settled, version: fixture.version })};`,
       };
     },
   },
   "model-loading": {
-    title: "Missing model files",
+    title: "One model load, one owner",
     brief:
-      "Count the files a model needs. A successful model.json request is only one part of the load.",
+      "Follow the bridge asset from manifest and shard to copied shapes and cleanup.",
     boundary:
-      "These example asset checks simulate loading. They download no files and load no model.",
+      "This models the deployed example's one-shard manifest and 3-input/1-output architecture. It makes no requests and creates no model. The coding exercise supplies a simulated loader whose returned shapes can differ.",
     controls: [
-      choice("graph", "model.json request", ["Fails", "Succeeds"], 1),
-      range("shards", "Weight files available", 2, 0, 4),
-      choice("paths", "Paths to weight files", [
-        "Resolve correctly",
-        "Resolve to the wrong folder",
+      choice("graph", "Manifest request", ["Fails", "Succeeds"], 1),
+      range("shards", "Available weight shards", 1, 0, 1),
+      choice("paths", "Shard path", [
+        "Resolves beside the manifest",
+        "Resolves to a missing file",
       ]),
+      choice(
+        "awaited",
+        "Loader Promise",
+        ["Still pending", "Resolved and awaited"],
+        1,
+      ),
+      choice(
+        "released",
+        "Inspection model",
+        ["Still retained", "Released after copying metadata"],
+        1,
+      ),
     ],
     cases: [
       {
         id: "small",
-        label: "Two-shard model",
+        label: "Bridge asset",
         description:
-          "This model needs model.json and two binary weight files, called shards.",
+          "The deployed manifest names weights.bin: 673 float32 values, 2,692 bytes.",
+        values: { graph: 1, shards: 1, paths: 0, awaited: 1, released: 1 },
       },
       {
         id: "large",
-        label: "Four-shard model",
+        label: "Interrupted hosting",
         description:
-          "This model needs model.json and four binary weight files, called shards.",
-        values: { shards: 3 },
+          "The same manifest is served while its weight file is unavailable.",
+        values: { graph: 1, shards: 0, paths: 0, awaited: 1, released: 1 },
       },
     ],
     prediction: {
-      prompt: "How many required files are still unavailable?",
-      unit: "files",
+      prompt: "Which state has the inspection helper reached?",
+      choices: [
+        "files unavailable",
+        "waiting for model",
+        "cleanup pending",
+        "inspection complete",
+      ],
     },
-    evaluate: (v, caseId) => {
-      const required = caseId === "large" ? 4 : 2;
-      const loaded = v.paths === 0 ? Math.min(v.shards!, required) : 0;
-      const missing = 1 - v.graph! + required - loaded;
+    evaluate: (v) => {
+      const availableShard = v.paths === 0 && v.shards === 1;
+      const missing = (v.graph === 1 ? 0 : 1) + (availableShard ? 0 : 1);
+      const ready = missing === 0 && v.awaited === 1;
+      const answer =
+        missing > 0
+          ? "files unavailable"
+          : !ready
+            ? "waiting for model"
+            : v.released === 1
+              ? "inspection complete"
+              : "cleanup pending";
       return {
         graphics: [
+          pipeline("Manifest and its relative shard path", [
+            "/models/deep-scan/model.json",
+            "weightsManifest.paths: weights.bin",
+            "/models/deep-scan/weights.bin",
+          ]),
           cells(
-            "Model file setup",
+            "Required files",
             [
-              `Manifest: ${required} shards`,
-              v.graph === 1 ? "JSON request: succeeds" : "JSON request: fails",
-              `Hosted shards: ${v.shards}`,
-              v.paths === 0 ? "Paths: correct folder" : "Paths: wrong folder",
-            ],
-            2,
-          ),
-          bars(
-            "Required and available files",
-            ["Required", "Available", "Missing"],
-            [required + 1, loaded + v.graph!, missing],
-          ),
-          cells(
-            "Required model files",
-            [
-              v.graph === 1 ? "JSON ready" : "JSON missing",
-              ...Array.from({ length: required }, (_, i) =>
-                i < loaded ? `Shard ${i + 1} ready` : `Shard ${i + 1} missing`,
-              ),
+              v.graph === 1 ? "Manifest available" : "Manifest unavailable",
+              availableShard
+                ? "Weight shard available"
+                : "Weight shard unavailable",
+              `Unavailable: ${missing} of 2 files`,
             ],
             3,
           ),
+          pipeline("Promise, copied metadata, and owner", [
+            ready
+              ? "Await completed: one LayersModel"
+              : "No completed model to inspect",
+            ready
+              ? "Copied input [null, 3], output [null, 1], layers 3"
+              : "Shapes are not available yet",
+            !ready
+              ? "No inspected model to release"
+              : v.released === 1
+                ? "Model disposed. Plain metadata remains"
+                : "Inspector still owns the model",
+          ]),
         ],
-        answer: missing,
-        answerLabel: "Required files unavailable",
-        explanation: `${loaded} of ${required} shards are available at the resolved URLs. ${v.paths === 1 ? "The wrong folder prevents every shard request from finding its file. " : ""}${missing === 0 ? "All required files are available. You still need to load the model and check its required input format." : "The model cannot complete loading until model.json and every referenced shard are available."}`,
-        code: `const requiredShards = ${required};\nconst availableShards = ${loaded};\nconst assetsComplete = ${missing === 0};`,
+        answer,
+        answerLabel: "Inspection state",
+        explanation: `${missing} required files are unavailable. ${ready ? "All three fields come from the same awaited model. null is the variable batch dimension. Copying metadata does not release model weights." : "The Promise must finish successfully before the helper reads model properties."} ${ready && v.released === 1 ? "The inspection helper has released its model. A prediction handler separately retains its own model until teardown." : ready ? "Release the inspection model in finally, including when reading a field fails." : "File availability alone does not establish a constructed model."}`,
+        code: "const inspected = await tf.loadLayersModel(url);\ntry { console.log([...inspected.inputs[0].shape]); }\nfinally { inspected.dispose(); }",
       };
     },
   },
   "inference-pipeline": {
-    title: "The model’s input contract",
+    title: "One reading from raw fields to a verdict",
     brief:
-      "Check the values, feature order and batch axis before sending the input to the model.",
+      "Inspect a feature's range, then change scaling, order, batch shape, or temporary ownership.",
     boundary:
-      "This scales example readings using fixed training values. It checks the required input format without running a model.",
+      "This is JavaScript arithmetic for the exercise's linear feature-reading probes. It runs no TensorFlow model. These probes check preparation and cleanup, and establish no DEEP SCAN accuracy or score calibration. Displayed values are rounded.",
     controls: [
+      choice("feature", "Inspect stored field", [
+        "amplitude",
+        "frequency: zero crossings",
+        "phase: sample-pair angle",
+      ]),
       choice(
         "scale",
         "Preprocessing",
-        ["Raw readings", "Divide by training scales"],
+        ["Raw values", "Declared min-max ranges"],
         1,
       ),
       choice("order", "Feature order", [
-        "Temperature, pressure, vibration",
-        "Vibration, pressure, temperature",
+        "amplitude, frequency, phase",
+        "phase, frequency, amplitude",
       ]),
       choice(
         "batch",
-        "Batch dimension",
-        ["Missing: [3]", "Present: [1, 3]"],
+        "Input shape",
+        ["Missing batch axis: [3]", "One row: [1, 3]"],
+        1,
+      ),
+      choice(
+        "cleanup",
+        "Temporary ownership",
+        ["Caller keeps the tensors", "Synchronous tidy releases them"],
         1,
       ),
     ],
     cases: [
       {
         id: "normal",
-        label: "Routine reading",
+        label: "Three-field reading",
         description:
-          "Temperature 20, pressure 100, vibration 4. The saved training scales are 40, 200 and 8.",
+          "Amplitude probe with raw fields 512, 21, pi/2, in their declared order.",
       },
       {
         id: "changed",
-        label: "Uneven reading",
+        label: "Second reading",
+        description: "The amplitude probe receives 1536, 0, -pi.",
+      },
+      {
+        id: "boundary",
+        label: "Threshold reading",
         description:
-          "Temperature 30, pressure 80, vibration 2. The same saved training scales must apply.",
+          "A phase-reading probe receives 0, 0, 0. Its normalized phase is 0.5.",
+        values: { feature: 2 },
       },
     ],
     prediction: {
-      prompt: "How many input requirements does this setup meet?",
-      unit: "of 3 checks",
+      prompt:
+        "Which class does this probe return, or does the input shape fail?",
+      choices: ["noise", "anomaly", "shape error"],
     },
     evaluate: (v, caseId) => {
-      const raw = caseId === "changed" ? [30, 80, 2] : [20, 100, 4];
-      const scaled =
-        v.scale === 1 ? raw.map((x, i) => x / [40, 200, 8][i]!) : raw;
+      const raw =
+        caseId === "changed"
+          ? [1536, 0, -Math.PI]
+          : caseId === "boundary"
+            ? [0, 0, 0]
+            : [512, 21, Math.PI / 2];
+      const minima = [0, 0, -Math.PI];
+      const maxima = [2048, 63, Math.PI];
+      const normalized = raw.map(
+        (value, index) =>
+          (value - minima[index]!) / (maxima[index]! - minima[index]!),
+      );
+      const scaled = v.scale === 1 ? normalized : raw;
       const prepared = v.order === 0 ? scaled : [...scaled].reverse();
-      const passed = v.scale! + (v.order === 0 ? 1 : 0) + v.batch!;
+      const readIndex = caseId === "boundary" ? 2 : 0;
+      const p = prepared[readIndex]!;
+      const validShape = v.batch === 1;
+      const verdict = p > 0.5 ? "anomaly" : "noise";
+      const confidence = p > 0.5 ? p : 1 - p;
+      const feature = v.feature!;
+      const fieldNames = [
+        "amplitude (counts)",
+        "frequency (zero crossings)",
+        "phase (radians)",
+      ];
       return {
         graphics: [
-          cells("Raw input: temperature, pressure, vibration", raw),
           cells(
-            `Prepared input, shape ${v.batch === 1 ? "[1, 3]" : "[3]"}`,
+            "Selected raw field and saved range",
+            [
+              fieldNames[feature]!,
+              `Raw: ${round(raw[feature]!)}`,
+              `Range: ${round(minima[feature]!)} to ${round(maxima[feature]!)}`,
+              `Scaled: ${round(normalized[feature]!)}`,
+            ],
+            2,
+          ),
+          cells(
+            `Prepared input, shape ${validShape ? "[1, 3]" : "[3]"}`,
             prepared.map(round),
+            3,
           ),
           pipeline(
-            "Input contract",
+            "Probe output and class rule",
+            validShape
+              ? [
+                  `Probe reads input column ${readIndex + 1}`,
+                  `Reference p = ${round(p)}`,
+                  `p > 0.5: ${verdict}. Selected score ${round(confidence)}`,
+                ]
+              : [
+                  "The probe expects one row of three features",
+                  "Prediction fails for this flat input",
+                  "There is no class score to read",
+                ],
+          ),
+          cells(
+            "Temporary tensor ownership",
             [
-              v.scale === 1 ? "Scaling matches" : "Scaling differs",
-              v.order === 0 ? "Order matches" : "Order differs",
-              v.batch === 1 ? "Shape matches" : "Shape differs",
+              v.cleanup === 1
+                ? "No temporary tensor remains after tidy"
+                : validShape
+                  ? "Caller still owns input and output"
+                  : "Caller must release input on failure",
+              "The model keeps its own weights until teardown",
             ],
-            [
-              v.scale === 1 ? 0 : -1,
-              v.order === 0 ? 1 : -1,
-              v.batch === 1 ? 2 : -1,
-            ].filter((x) => x >= 0),
+            2,
           ),
         ],
-        answer: passed,
-        answerLabel: "Input checks passed",
-        explanation: `The model expects scaled temperature, pressure and vibration in that order, with shape [1, 3]. ${passed === 3 ? "This input matches all three requirements." : "Valid numbers can still use the wrong scale, feature order or shape."} The scales stay fixed because they come from training.`,
-        code: `const input = tf.tensor${v.batch === 1 ? "2d([" : "1d("}[${prepared.map(round).join(", ")}]${v.batch === 1 ? "]" : ""});`,
+        answer: validShape ? verdict : "shape error",
+        answerLabel: "Diagnostic result",
+        explanation: `The stored frequency field is a zero-crossing count, and phase is a sample-pair angle in radians. ${validShape ? `The ${readIndex === 0 ? "amplitude" : "phase"} probe reads column ${readIndex + 1}, giving p=${p} and ${verdict} with selected score ${confidence}.` : "The missing batch axis prevents a usable prediction."} ${v.scale === 1 && v.order === 0 ? "The prepared values match the declared feature contract." : "A numerically readable output can still come from the wrong scale or order."} ${v.cleanup === 1 ? "A synchronous tidy releases temporary tensors even if prediction throws." : "Returning a JavaScript number does not dispose tensors."}`,
+        code:
+          v.cleanup === 1
+            ? `const score = tf.tidy(() => {\n  const input = tf.tensor${validShape ? "2d([" : "1d("}[${prepared.join(", ")}]${validShape ? "]" : ""});\n  return (model.predict(input) as tf.Tensor).dataSync()[0];\n});`
+            : `const input = tf.tensor${validShape ? "2d([" : "1d("}[${prepared.join(", ")}]${validShape ? "]" : ""});\nconst output = model.predict(input) as tf.Tensor;\nconst score = output.dataSync()[0];\n// The caller still owns input and output.`,
       };
     },
   },
   "onnx-runtime-web": {
-    title: "Graph and input compatibility",
+    title: "Inputs, outputs, and timer boundaries",
     brief:
-      "Check whether the example provider supports the model’s operations. Then check the input name and shape.",
+      "Follow one input into both paths. Compare supplied output scores, then inspect what each timer includes.",
     boundary:
-      "We invented these operator support lists for the exercise. They do not describe current ONNX Runtime providers.",
+      "This worksheet supplies scores and event costs. It runs no model and measures no device. The coding task uses a separate real TFJS model with a simulated ONNX session and clock. The downloadable lab runs real runtimes.",
     controls: [
-      choice("provider", "Example provider", [
-        "Provider A: Add, MatMul",
-        "Provider B: Add, MatMul, Conv",
+      choice("input", "ONNX input values", [
+        "Same three values",
+        "Changed last value",
       ]),
-      choice("name", "Input name", ["readings", "input"]),
-      choice("width", "Input shape", ["[1, 3]", "[1, 1, 4]"]),
+      choice("load", "ONNX timer starts", [
+        "After session loading",
+        "Before session loading",
+      ]),
+      choice(
+        "read",
+        "Timers stop",
+        ["After dispatch", "After output readback"],
+        1,
+      ),
+      choice("output", "Supplied ONNX score", ["0.50005", "0.5001", "0.5002"]),
     ],
     cases: [
       {
-        id: "dense",
-        label: "Dense graph",
+        id: "nearby",
+        label: "Nearby scores preset",
         description:
-          "Uses Add and MatMul. Expects float32 readings with shape [1, 3].",
+          "Start with supplied scores 0.5 and 0.50005, matching inputs, and completed-call timers.",
+        values: { input: 0, load: 0, read: 1, output: 0 },
       },
       {
-        id: "conv",
-        label: "Convolution graph",
+        id: "changed",
+        label: "Changed score preset",
         description:
-          "Uses Add and 1D Conv. Expects float32 readings with shape [1, 1, 4]: batch, channel, spatial axis.",
-        values: { width: 1 },
+          "Start with supplied scores 0.5 and 0.5002. The input and timing rules stay the same.",
+        values: { input: 0, load: 0, read: 1, output: 2 },
       },
     ],
     prediction: {
-      prompt: "How many compatibility checks fail?",
-      unit: "checks",
+      prompt: "Do the supplied scores satisfy an absolute tolerance of 0.0001?",
+      choices: ["true", "false"],
     },
-    evaluate: (v, caseId) => {
-      const conv = caseId === "conv";
-      const supported = !conv || v.provider === 1;
-      const nameMatches = v.name === 0;
-      const shapeMatches = v.width === (conv ? 1 : 0);
-      const failures =
-        Number(!supported) + Number(!nameMatches) + Number(!shapeMatches);
+    evaluate: (v) => {
+      const tfjsScore = 0.5;
+      const onnxScore = [0.50005, 0.5001, 0.5002][v.output!]!;
+      const difference = Math.abs(tfjsScore - onnxScore);
+      const outputsAgree = difference <= 0.0001;
+      const tfjsMs = v.read === 1 ? 10 : 2;
+      const onnxMs = (v.read === 1 ? 15 : 3) + (v.load === 1 ? 40 : 0);
       return {
         graphics: [
           cells(
-            "Model requirements",
+            "Inputs sent to the two paths",
             [
-              conv ? "Add + 1D Conv" : "Add + MatMul",
-              "readings",
-              conv ? "[1, 1, 4]" : "[1, 3]",
-              "float32",
+              "TFJS: float32 [1, 3]",
+              "[0.5, 0.3, 0.7]",
+              "ONNX: float32 [1, 3]",
+              v.input === 0 ? "[0.5, 0.3, 0.7]" : "[0.5, 0.3, 0.6]",
             ],
             2,
           ),
-          pipeline(
-            "Compatibility checks",
-            [
-              supported ? "Operators supported" : "Conv unsupported",
-              nameMatches ? "Name matches" : "Name mismatch",
-              shapeMatches ? "Shape matches" : "Shape mismatch",
-            ],
-            [
-              supported ? 0 : -1,
-              nameMatches ? 1 : -1,
-              shapeMatches ? 2 : -1,
-            ].filter((x) => x >= 0),
+          pipeline("What each timer includes", [
+            "TFJS model already loaded",
+            v.load === 0
+              ? "ONNX loading outside timer"
+              : "ONNX loading adds 40 illustrative ms",
+            v.read === 1
+              ? "Stop after completed output readback"
+              : "Stop after dispatch, before readback",
+          ]),
+          bars(
+            "Illustrative timer intervals (ms)",
+            ["TFJS path", "ONNX path"],
+            [tfjsMs, onnxMs],
+            "illustrative-comparison-ms",
           ),
+          cells(
+            "Supplied output comparison",
+            [
+              `TFJS score: ${tfjsScore}`,
+              `ONNX score: ${onnxScore}`,
+              `Absolute difference: ${Number(difference.toPrecision(7))}`,
+              `outputsAgree: ${outputsAgree}`,
+            ],
+            2,
+          ),
+          pipeline("Interpretation checks", [
+            v.input === 0
+              ? "Both inputs match"
+              : "Different inputs prevent a parity conclusion",
+            v.load === 0
+              ? "Session loading excluded"
+              : "Loading included in the inference interval",
+            v.read === 1
+              ? "Both output reads completed"
+              : "Timer ends before the result is ready",
+            "Illustrative intervals cannot rank real runtimes",
+          ]),
         ],
-        answer: failures,
-        answerLabel: "Compatibility checks failed",
-        explanation: `Graph operators, input names and shapes are independent requirements. ${failures === 0 ? "This example passes all three. A real exported model still needs a known-input comparison against its source model." : "A compatible file format cannot fix an unsupported operator or a mismatched input."}`,
+        answer: String(outputsAgree),
+        answerLabel: "Score agreement",
+        explanation: `The supplied scores differ by ${Number(difference.toPrecision(7))}, so outputsAgree is ${outputsAgree} at tolerance 0.0001. ${v.input === 0 ? "The two input arrays match." : "The input arrays differ, so agreement between these numbers would not establish conversion parity."} ${v.read === 1 ? "The timers include output readback." : "The timers omit unfinished work after dispatch."} ${v.load === 1 ? "Move session loading outside the ONNX inference timer." : "Session loading stays outside inference timing."} The chosen event costs illustrate timer boundaries. They measure neither speed nor accuracy.`,
+        code: `// These are supplied worksheet outputs, not model predictions.
+const tfjsScore = ${tfjsScore};
+const onnxScore = ${onnxScore};
+const difference = Math.abs(tfjsScore - onnxScore);
+const outputsAgree = difference <= 0.0001;`,
       };
     },
   },
   "transformers-js": {
-    title: "Pipeline requirements",
+    title: "A report keeps its prediction when sorted",
     brief:
-      "Check whether the model fits the task, its license allows this use, and its files fit the download budget.",
+      "Select an original report. Follow its label and score into the returned queue, then inspect loading and batch calls.",
     boundary:
-      "We invented these model profiles for the activity. It downloads and runs no pretrained model.",
+      "This worksheet reuses three supplied sentiment probes from the coding task. It simulates queue assembly and call counts. It downloads and runs no pretrained model. Scores describe supplied label preferences, not report urgency or verified accuracy.",
     controls: [
-      choice("model", "Example model", [
-        "Text classifier: 30 MB",
-        "Text generator: 150 MB",
-        "Sensor forecaster: 20 MB",
+      range("report", "Original report index", 1, 0, 2),
+      choice("pair", "Queue assembly", [
+        "Pair reports before sorting",
+        "Sort predictions before pairing",
       ]),
-      range("budget", "Download budget (MB)", 60, 20, 200, 10),
-      choice(
-        "permission",
-        "License review",
-        ["No approval for this use", "Approval for this use"],
-        1,
-      ),
+      choice("load", "Loading strategy", [
+        "Load once for the batch",
+        "Load once per report",
+        "Load before checking for empty input",
+      ]),
     ],
     cases: [
       {
-        id: "classify",
-        label: "Classify a crew note",
-        description: "The requested output is a text category.",
+        id: "reports",
+        label: "Three reports",
+        description: "Three supplied texts and positional predictions.",
+        values: { report: 1 },
       },
       {
-        id: "generate",
-        label: "Draft a crew note",
-        description: "The requested output is new text.",
-        values: { model: 1 },
+        id: "empty",
+        label: "Empty batch",
+        description:
+          "No reports need classification. Check whether the factory is still called.",
+        values: { report: 0 },
       },
     ],
     prediction: {
-      prompt: "How many selection checks pass?",
-      unit: "of 3 checks",
+      prompt: "How many factory calls does this flow make?",
+      unit: "calls",
+      tolerance: 0,
     },
     evaluate: (v, caseId) => {
-      const size = [30, 150, 20][v.model!]!;
-      const taskMatch = v.model === (caseId === "generate" ? 1 : 0);
-      const withinBudget = size <= v.budget!;
-      const pass = Number(taskMatch) + Number(withinBudget) + v.permission!;
+      const reports =
+        caseId === "empty"
+          ? []
+          : [
+              "coupling nominal",
+              "coolant loop warning",
+              "watch handover clean",
+            ];
+      const predictions = reports.length
+        ? [
+            { label: "POS", score: 0.5 },
+            { label: "NEG", score: 0.99 },
+            { label: "POS", score: 0.7 },
+          ]
+        : [];
+      const sorted = [...predictions].sort(
+        (left, right) => right.score - left.score,
+      );
+      const paired = reports.map((text, i) => ({
+        text,
+        ...(v.pair === 0 ? predictions[i] : sorted[i])!,
+      }));
+      const queue = paired.sort((left, right) => right.score - left.score);
+      const factoryCalls =
+        v.load === 2
+          ? 1
+          : v.load === 1
+            ? reports.length
+            : Number(reports.length > 0);
+      const batchCalls = reports.length
+        ? v.load === 1
+          ? reports.length
+          : 1
+        : 0;
+      const index = v.report!;
+      const selected = reports[index];
+      const prediction = predictions[index];
+      const returned = selected
+        ? queue.findIndex((row) => row.text === selected)
+        : -1;
+      const row = queue[returned];
+      const matches =
+        prediction &&
+        row?.label === prediction.label &&
+        row.score === prediction.score;
       return {
         graphics: [
-          bars(
-            "Asset size and budget (MB)",
-            ["Model assets", "Budget"],
-            [size, v.budget!],
+          cells(
+            "Supplied report and prediction pairs",
+            reports.length
+              ? reports.flatMap((text, i) => [
+                  `${i}: ${text}`,
+                  `${predictions[i]!.label}, score ${predictions[i]!.score}`,
+                ])
+              : ["No reports", "No predictions"],
+            2,
           ),
           pipeline(
-            "Selection checks",
-            [
-              taskMatch ? "Task matches" : "Wrong task",
-              withinBudget ? "Fits download budget" : "Exceeds budget",
-              v.permission === 1 ? "Use approved" : "License unresolved",
-            ],
-            [
-              taskMatch ? 0 : -1,
-              withinBudget ? 1 : -1,
-              v.permission === 1 ? 2 : -1,
-            ].filter((x) => x >= 0),
+            "Selected report through the queue",
+            selected && prediction && row
+              ? [
+                  `Original index ${index}: ${selected}`,
+                  `Supplied: ${prediction.label}, ${prediction.score}`,
+                  `Queue position ${returned + 1}: ${row.label}, ${row.score}`,
+                  matches
+                    ? "Original pairing preserved"
+                    : "Prediction attached to the wrong report",
+                ]
+              : ["Empty input", "Return []", "No classifier call needed"],
+          ),
+          cells(
+            "Returned queue: text, label, score",
+            queue.length
+              ? queue.flatMap((item) => [item.text, item.label, item.score])
+              : ["[]"],
+            queue.length ? 3 : 1,
+          ),
+          bars(
+            "Simulated integration calls",
+            ["Factory calls", "Classifier calls"],
+            [factoryCalls, batchCalls],
           ),
         ],
-        answer: pass,
-        answerLabel: "Selection checks passed",
-        explanation: `${pass === 3 ? "This model meets the example’s selection requirements." : "Resolve every failed requirement before loading the pipeline."} Passing these checks does not establish output quality. Test the model and its preprocessing on inputs like the ones your app will receive.`,
+        answer: factoryCalls,
+        answerLabel: "Factory calls",
+        explanation: reports.length
+          ? `${factoryCalls} factory call${factoryCalls === 1 ? "" : "s"} and ${batchCalls} classifier call${batchCalls === 1 ? "" : "s"}. ${matches ? "The selected report retains its supplied label and score." : "The selected report has another report's label or score. Pair by original index before sorting."} Descending score puts the supplied NEG 0.99 prediction first when pairing is correct. The score does not measure urgency. The task requires one factory call and one full-batch classifier call.`
+          : `There are no reports. Return [] with no classifier call. ${factoryCalls ? "This flow still calls the factory once. Move the empty-input return before loading." : "This flow avoids factory loading too."}`,
+        code: `// Supplied positional predictions, without loading a real model.
+const reports = ${JSON.stringify(reports)};
+const predictions = ${JSON.stringify(predictions)};
+${v.pair === 1 ? "predictions.sort((left, right) => right.score - left.score);\n" : ""}const queue = reports.map((text, index) => ({ text, ...predictions[index] }));
+queue.sort((left, right) => right.score - left.score);`,
       };
     },
   },
   "model-profiling": {
     title: "Measure the complete prediction",
     brief:
-      "Choose whether to include startup and waiting for prediction results, then compare repeated calls.",
+      "Follow one input through the timer. Change when it starts and stops, then inspect which costs enter the average.",
     boundary:
-      "These example times and tensor counts show what your timer includes. They are not measurements from your device.",
+      "This simulation uses chosen event costs and tensor counts. The Challenge uses a separate supplied clock and real model inventories. Neither timing table measures your device.",
     controls: [
       choice("cold", "Include cold initialization", [
         "Exclude it",
@@ -556,6 +890,18 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       const retained = caseId === "leak" ? v.runs! : 0;
       return {
         graphics: [
+          pipeline("One prediction through the timer", [
+            "Create input before timing",
+            "Start timer",
+            "Queue prediction: 4 ms",
+            v.read === 1
+              ? "Finish and read result: 16 ms"
+              : "Stop timer: 4 ms counted",
+            v.read === 1
+              ? "Stop timer: 20 ms counted"
+              : "Finish and read outside timer: 16 ms",
+            "Dispose input and output",
+          ]),
           bars(
             "Example cost per event (ms)",
             ["Dispatch", "Completion/read", "Cold initialization"],
@@ -584,7 +930,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           },
         ],
         answer: average,
-        answerLabel: "Average measured time",
+        answerLabel: "Average counted time in this simulation",
         explanation: `${total} counted milliseconds divided by ${v.runs} calls gives ${average} ms per call. ${v.read === 0 ? "Stopping after queuing work leaves out the time to finish and read the result. " : ""}${v.cold === 1 ? "Report cold start separately when comparing steady-state calls. " : ""}${retained} extra tensors remain. Rising retained counts need investigation even when timing looks stable.`,
       };
     },
@@ -596,6 +942,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     boundary:
       "This simulates a cache that removes the least recently used entry when full. It makes no predictions and saves nothing between visits.",
     controls: [
+      range("request", "Request to inspect", 3, 1, 5),
       choice("key", "Cache key", ["Input only", "Input + model + scaler"], 1),
       range("capacity", "Maximum cached entries", 2, 1, 4),
       choice("version", "Third request uses", ["Same scaler", "New scaler"], 1),
@@ -627,6 +974,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       let hits = 0;
       let stale = 0;
       let misses = 0;
+      const details: string[][] = [];
       const trace = inputs.map((input, i) => {
         const scaler = i === 2 && v.version === 1 ? "s2" : "s1";
         const identity = `${input}/m1/${scaler}`;
@@ -635,6 +983,13 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         if (found !== undefined) {
           cache.delete(key);
           cache.set(key, found);
+          details.push([
+            `Key: ${key}`,
+            `Stored identity: ${found}`,
+            `Required identity: ${identity}`,
+            "No model call",
+            `LRU oldest to newest: ${[...cache.keys()].join(", ")}`,
+          ]);
           if (found === identity) {
             hits++;
             return `${input}: valid hit`;
@@ -644,7 +999,16 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         }
         misses++;
         cache.set(key, identity);
-        if (cache.size > v.capacity!) cache.delete(cache.keys().next().value!);
+        const evicted =
+          cache.size > v.capacity! ? cache.keys().next().value! : null;
+        if (evicted !== null) cache.delete(evicted);
+        details.push([
+          `Key: ${key}`,
+          `Computed identity: ${identity}`,
+          `Model calls so far: ${misses}`,
+          evicted === null ? "No eviction" : `Evicted key: ${evicted}`,
+          `LRU oldest to newest: ${[...cache.keys()].join(", ")}`,
+        ]);
         return `${input}: compute miss`;
       });
       return {
@@ -657,7 +1021,8 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             ),
             1,
           ),
-          pipeline("Request trace", trace),
+          pipeline("Request trace", trace, [v.request! - 1]),
+          cells("Selected request decision", details[(v.request ?? 3) - 1]!, 1),
           bars(
             "Outcomes",
             ["Valid hits", "Stale hits", "Cache misses"],
@@ -675,159 +1040,193 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "webgpu-acceleration": {
-    title: "When is the GPU worth the overhead?",
+    title: "The backend that actually starts",
     brief:
-      "Compare faster GPU calculations with the extra time needed to start the GPU and transfer data.",
+      "Follow the preference order through false results, thrown errors, readiness, and the returned backend name.",
     boundary:
-      "We chose these cost rates for the example. This activity uses no GPU or browser backend. Measure WebGPU performance on a real device separately.",
+      "These are controlled runtime outcomes, like the gpu-backend exercise. No backend starts here, and this activity measures no GPU support or performance.",
     controls: [
-      range("units", "Workload units", 20, 1, 100),
       choice(
-        "warm",
-        "GPU initialization",
-        ["Cold: add 40 ms", "Already initialized"],
-        1,
+        "success",
+        "First successful attempt",
+        ["First", "Second", "Third", "Fourth", "None"],
+        2,
       ),
-      choice("supported", "Operation support", [
-        "Supported by example GPU",
-        "Unsupported: use fallback",
-      ]),
+      choice(
+        "failures",
+        "Earlier attempts",
+        ["Resolve false", "Throw errors", "Alternate false and error"],
+        2,
+      ),
+      choice("ready", "Readiness outcome", ["Resolves", "Rejects"]),
     ],
     cases: [
       {
-        id: "near",
-        label: "Small transfer",
+        id: "standard",
+        label: "GPU-first order",
         description:
-          "CPU costs 2 ms per unit. GPU costs 0.5 ms per unit plus 6 ms transfer.",
+          "Try webgpu, webgl, wasm, then cpu. Start with success on the third attempt.",
+        values: { success: 2 },
       },
       {
-        id: "large",
-        label: "Large transfer",
+        id: "changed",
+        label: "Reordered preferences",
         description:
-          "Calculation speeds stay the same. Moving the data and reading the result take 30 ms.",
+          "Try wasm, cpu, webgl, then webgpu. Follow this supplied order rather than a hardcoded list.",
+        values: { success: 1 },
       },
     ],
     prediction: {
-      prompt: "How much time does the selected path take?",
-      unit: "ms",
-      tolerance: 0.05,
+      prompt: "What will this selector return after readiness?",
+      choices: [
+        "webgpu",
+        "webgl",
+        "wasm",
+        "cpu",
+        "prior-backend",
+        "Startup rejects",
+      ],
     },
     evaluate: (v, caseId) => {
-      const cpu = 2 * v.units!;
-      const transfer = caseId === "large" ? 30 : 6;
-      const initialization = v.warm === 0 ? 40 : 0;
-      const gpu = v.units! * 0.5 + transfer + initialization;
-      const selected = v.supported === 1 ? cpu : gpu;
+      const names =
+        caseId === "changed"
+          ? ["wasm", "cpu", "webgl", "webgpu"]
+          : ["webgpu", "webgl", "wasm", "cpu"];
+      const attempts = names.slice(0, Math.min(4, v.success! + 1));
+      const success = v.success! < names.length ? names[v.success!]! : null;
+      const outcomes = attempts.map((name, index) => ({
+        name,
+        outcome:
+          index === v.success
+            ? "true"
+            : v.failures === 1 || (v.failures === 2 && index % 2 === 1)
+              ? "throws"
+              : "false",
+      }));
+      const answer =
+        v.ready === 1 ? "Startup rejects" : (success ?? "prior-backend");
       return {
         graphics: [
-          cells(
-            "Example workload costs",
-            [
-              `Units: ${v.units}`,
-              "CPU: 2 ms/unit",
-              "GPU: 0.5 ms/unit",
-              `Transfer: ${transfer} ms`,
-              `Initialization: ${initialization} ms`,
-              v.supported === 0
-                ? "Operation: GPU-supported"
-                : "Operation: fallback required",
-            ],
-            3,
+          cells("Supplied preference order", names, 1),
+          pipeline(
+            "Initialization attempts",
+            outcomes.map(
+              (item) =>
+                `${item.name}: ${item.outcome}${item.outcome === "true" ? ", stop trying names" : ", try next name"}`,
+            ),
           ),
+          pipeline("Readiness and result", [
+            "Await ready() once after attempts",
+            v.ready === 1
+              ? "Readiness rejects. Propagate the error."
+              : "Readiness resolves",
+            v.ready === 1
+              ? "No backend value returned"
+              : success
+                ? `Return successful name: ${success}`
+                : "All attempts failed. Read active name: prior-backend",
+          ]),
           bars(
-            "End-to-end time (ms)",
-            ["CPU fallback", "Example GPU"],
-            [cpu, gpu],
-            "workload-time",
-          ),
-          bars(
-            "GPU time components (ms)",
-            ["Compute", "Transfer/readback", "Initialization"],
-            [v.units! * 0.5, transfer, initialization],
-            "workload-time",
+            "Controlled call counts",
+            ["setBackend", "ready", "getBackend"],
+            [attempts.length, 1, !success && v.ready === 0 ? 1 : 0],
           ),
         ],
-        answer: selected,
-        answerLabel: "Selected path time",
-        explanation: `The example GPU cost is 0.5 × ${v.units} + ${transfer} + ${initialization} = ${gpu} ms. The CPU cost is ${cpu} ms. ${v.supported === 1 ? "This operation uses the fallback because GPU support is missing." : gpu < cpu ? "Parallel work saves more time than the fixed overhead costs here." : "The fixed GPU costs outweigh its faster computation here."} Measure the real end-to-end workload on the target device.`,
+        answer,
+        answerLabel: "Selector result",
+        explanation: `${attempts.length} initialization attempts run in the supplied order. A false result and a thrown error both allow the next attempt. ${success ? `Stop attempts after ${success} returns true.` : "No preference started. After readiness, ask the runtime for its active backend."} ${v.ready === 1 ? "A ready() rejection reaches the caller rather than becoming a success label." : `Readiness resolves, so return ${answer}.`} None of these controlled outcomes establishes device speed.`,
+        code: `// Supplied outcomes for inspecting the selector contract.
+const preference = ${JSON.stringify(names)};
+const observedAttempts = ${JSON.stringify(outcomes)};
+const returned = ${v.ready === 1 ? "null" : JSON.stringify(answer)};
+// Await readiness once. Propagate rejection.`,
       };
     },
   },
   "llms-for-science": {
-    title: "Scientific claims and their evidence",
+    title: "A reply crosses the JSON boundary",
     brief:
-      "Compare a fixed draft with the supplied observations. Count which claims the evidence actually supports.",
+      "Locate the supplied reply's JSON, inspect one required field, then decide whether the client can return it.",
     boundary:
-      "This activity uses a fixed draft and records. This checks explicit facts without calling a language model.",
+      "These are supplied callback replies. The activity parses and validates locally, with no model or API request. An accepted structure establishes no scientific claim or calibrated confidence.",
     controls: [
-      choice("measurements", "Measurement record", ["Missing", "Attached"], 1),
-      choice("source", "Source identity", ["Missing", "Attached"], 1),
+      choice("reply", "Supplied reply", [
+        "Numeric score",
+        "Zero score",
+        "String score",
+        "Missing reasoning",
+        "Unsupported class",
+        "Blank reasoning",
+        "Broken JSON",
+      ]),
       choice(
-        "draft",
-        "Draft claims",
-        ["Frequency + amplitude", "Frequency + amplitude + alien origin"],
+        "field",
+        "Field to inspect",
+        ["classification", "confidence", "reasoning"],
         1,
       ),
     ],
     cases: [
       {
-        id: "full",
-        label: "Complete capture",
-        description:
-          "Record S7 reports frequency 8 Hz and amplitude 0.4. It contains no evidence about origin.",
+        id: "plain",
+        label: "JSON reply",
+        description: "A supplied reply contains one JSON object.",
       },
       {
-        id: "partial",
-        label: "Partial capture",
+        id: "wrapped",
+        label: "Reply with surrounding text",
         description:
-          "Record S8 reports frequency 8 Hz. The amplitude measurement is missing. Origin remains unknown.",
+          "The same object appears inside text with no other braces.",
       },
     ],
     prediction: {
-      prompt:
-        "How many draft claims have supporting measurements and a source ID?",
-      unit: "claims",
+      prompt: "Can the client return these checked fields?",
+      choices: ["Accepted fields", "Rejected reply"],
     },
     evaluate: (v, caseId) => {
-      const claims =
-        v.draft === 1
-          ? ["Frequency is 8 Hz", "Amplitude is 0.4", "Signal has alien origin"]
-          : ["Frequency is 8 Hz", "Amplitude is 0.4"];
-      const supported =
-        v.measurements === 1 && v.source === 1
-          ? caseId === "partial"
-            ? 1
-            : 2
-          : 0;
+      const raw = replyExample(v.reply!, caseId === "wrapped");
+      const inspected = inspectReply(raw);
+      const selected = inspected.checks[v.field!]!;
+      const value = inspected.parsed?.[selected.field];
       return {
         graphics: [
+          { ...cells("Supplied raw reply", [raw], 1), layout: "prose" },
+          pipeline("Reply parsing", [
+            inspected.json ?? "No complete JSON block",
+            inspected.parseError || "JSON parsed into fields",
+          ]),
           cells(
-            "Supplied evidence",
+            "Selected required field",
             [
-              v.measurements === 1 ? "Frequency: 8 Hz" : "No measurements",
-              v.measurements === 1 && caseId === "full"
-                ? "Amplitude: 0.4"
-                : "Amplitude: unknown",
-              v.source === 1
-                ? caseId === "full"
-                  ? "Source: S7"
-                  : "Source: S8"
-                : "Source: missing",
+              selected.field,
+              value === undefined ? "missing" : JSON.stringify(value),
+              `Type: ${typeof value}`,
+              selected.rule,
             ],
-            3,
+            2,
           ),
           pipeline(
-            "Draft claim checks",
-            claims.map(
-              (claim, i) =>
-                `${claim}: ${i < supported ? "supported" : "unverified"}`,
+            "Required field checks",
+            inspected.checks.map(
+              (check) => `${check.field}: ${check.valid ? "valid" : "invalid"}`,
             ),
-            Array.from({ length: supported }, (_, i) => i),
+            inspected.checks.flatMap((check, i) => (check.valid ? [i] : [])),
           ),
+          pipeline("Client result", [
+            inspected.accepted
+              ? "Return checked fields"
+              : "Throw before using the reply",
+            "Claims still need evidence review",
+          ]),
         ],
-        answer: supported,
-        answerLabel: "Supported traceable claims",
-        explanation: `${claims.length - supported} claims need revision. Remove them, explain their limits, or provide evidence that supports them. ${v.source === 0 ? "Without a source identity, the crew cannot trace the measurement. " : ""}A plausible explanation is not a new measurement. Neither record establishes the signal's origin.`,
+        answer: inspected.accepted ? "Accepted fields" : "Rejected reply",
+        answerLabel: "Reply boundary result",
+        explanation:
+          inspected.parseError ||
+          `${selected.field} must be ${selected.rule}. ${selected.valid ? "This field passes." : "This field fails."} ${inspected.accepted ? "Every required field passes, including a numeric zero when supplied. Extra fields are allowed. The reasoning still needs a source check." : "Reject the reply if any required field fails. Do not coerce a numeric string or use truthiness to reject zero."}`,
+        code: `const response = ${JSON.stringify(raw)};
+const located = response.match(/\\{[\\s\\S]*\\}/)?.[0];
+// Check JSON parsing and each required field before returning it.`,
       };
     },
   },
@@ -964,123 +1363,229 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "rag-for-signals": {
-    title: "Evidence for a specific claim",
+    title: "Matching records and omitted evidence",
     brief:
-      "Search three archive records, then check whether the returned passage supports the claim.",
+      "Apply the query's field filters, count all matches, then keep the first twenty in database order.",
     boundary:
-      "Retrieval uses a small, fixed keyword score. It does not use embeddings, call a language model or prove a source is true.",
+      "These supplied diagnostic records come from the retrieve-signals exercise checks. This local reference calculation makes no model request and does not read the mission archive. Its frequency values are supplied, not measured here.",
     controls: [
+      choice("claim", "Claim to inspect", [
+        "Frequency from keeper",
+        "Wrong unit",
+        "Wrong source",
+        "Swapped field",
+        "Repeated sum citation",
+        "Unsupported interpretation",
+      ]),
       choice(
         "query",
-        "Search terms",
-        ["signal", "signal frequency", "sensor calibration"],
+        "Query",
+        ["No recognized filters", "Band-7 anomalies, last 72 hours", "Band-3"],
         1,
       ),
-      range("top", "Records to retrieve", 1, 1, 3),
-      choice("ids", "Keep source IDs", ["Discard them", "Keep them"], 1),
     ],
     cases: [
       {
-        id: "frequency",
-        label: "Check the frequency",
+        id: "filters",
+        label: "Four supplied records",
         description:
-          "Claim: capture S7 has a measured frequency of 8 Hz. Only record A contains this measurement.",
+          "The exercise's four-row check has a wrong band, a noise record, an old record, and one keeper. Follow which rows pass every active filter.",
       },
       {
-        id: "calibration",
-        label: "Check calibration",
+        id: "capped",
+        label: "Forty supplied records",
         description:
-          "Claim: sensor S7 passed calibration. Only record C records that result.",
+          "The exercise's larger check has forty rows. Every fourth row belongs to Band-3. All rows are one hour old and classified as anomalies.",
       },
     ],
     prediction: {
-      prompt: "How many retrieved records support the claim with a source ID?",
+      prompt: "How many matching records will the twenty-row limit leave out?",
       unit: "records",
     },
     evaluate: (v, caseId) => {
-      const queries = [
-        ["signal"],
-        ["signal", "frequency"],
-        ["sensor", "calibration"],
+      const records = ragRetrievalExample(caseId);
+      const query = RETRIEVAL_EXAMPLE_QUERIES[v.query!]!;
+      const band = query.match(/band[- ]?(\w+)/i)?.[1]?.toLowerCase();
+      const hours = query.match(/(\d+)\s*hours/i)?.[1];
+      const anomaly = /anomal/i.test(query);
+      const inspected = records.map((record) => {
+        const timestamp = Date.parse(record.timestamp);
+        const reasons = [
+          band && record.band.toLowerCase() !== band ? "different band" : null,
+          hours &&
+          !(
+            timestamp > RETRIEVAL_EXAMPLE_NOW - Number(hours) * 3600000 &&
+            timestamp <= RETRIEVAL_EXAMPLE_NOW
+          )
+            ? "outside time window"
+            : null,
+          anomaly && record.classification !== "anomaly"
+            ? "different classification"
+            : null,
+        ].filter(Boolean);
+        return { record, reasons };
+      });
+      const matches = inspected
+        .filter(({ reasons }) => reasons.length === 0)
+        .map(({ record }) => record);
+      const returned = matches.slice(0, 20);
+      const omitted = matches.length - returned.length;
+      const claimIndex = v.claim ?? 0;
+      const claims = [
+        [
+          "keeper",
+          "frequencyHz",
+          "73.4",
+          "Hz",
+          "Supported: one cited frequency field",
+        ],
+        [
+          "keeper",
+          "frequencyHz",
+          "73.4",
+          "events",
+          "Rejected: frequencyHz requires Hz",
+        ],
+        [
+          "missing-id",
+          "frequencyHz",
+          "73.4",
+          "Hz",
+          "Rejected: the cited row does not exist",
+        ],
+        [
+          "keeper",
+          "eventCount",
+          "73.4",
+          "events",
+          "Rejected: keeper contributes one event",
+        ],
+        [
+          "keeper, keeper",
+          "eventCount",
+          "2",
+          "events",
+          "Rejected: a sum cannot repeat a cited row",
+        ],
+        [
+          "keeper",
+          "text",
+          "The signal is safe",
+          "none",
+          "Unverified: the checker has no rule for this interpretation",
+        ],
       ];
-      const records = [
-        { id: "A", terms: ["signal", "frequency"], text: "S7 frequency: 8 Hz" },
-        { id: "B", terms: ["signal"], text: "Signal origin: unknown" },
-        {
-          id: "C",
-          terms: ["sensor", "calibration"],
-          text: "S7 calibration: passed",
-        },
-      ];
-      const ranked = records
-        .map((record) => ({
-          ...record,
-          score: queries[v.query!]!.filter((term) =>
-            record.terms.includes(term),
-          ).length,
-        }))
-        .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
-      const retrieved = ranked.slice(0, v.top!);
-      const required = caseId === "calibration" ? "C" : "A";
-      const supports =
-        v.ids === 1 && retrieved.some((record) => record.id === required)
-          ? 1
-          : 0;
+      const claim = claims[claimIndex]!;
       return {
         graphics: [
           cells(
-            "Archive records",
-            records.map((r) => `${r.id}: ${r.text} [${r.terms.join(", ")}]`),
+            "Query and fixed clock",
+            [query, new Date(RETRIEVAL_EXAMPLE_NOW).toISOString()],
+            1,
+          ),
+          cells(
+            caseId === "capped"
+              ? "First eight supplied records, of forty"
+              : "Supplied records in database order",
+            inspected
+              .slice(0, 8)
+              .map(
+                ({ record, reasons }) =>
+                  `${record.id}: Band-${record.band}, ${record.classification}, ${Math.round((RETRIEVAL_EXAMPLE_NOW - Date.parse(record.timestamp)) / 3600000)} hours old. ${reasons.length ? reasons.join(", ") : "Matches every active filter"}.`,
+              ),
+            1,
+          ),
+          cells(
+            "Returned record IDs",
+            [
+              returned.length
+                ? returned.map((record) => record.id).join(", ")
+                : "No matching records",
+            ],
+            1,
+          ),
+          cells(
+            "Omitted matching record IDs",
+            [
+              omitted
+                ? matches
+                    .slice(20)
+                    .map((record) => record.id)
+                    .join(", ")
+                : "No matching records omitted",
+            ],
             1,
           ),
           bars(
-            "Keyword matches per record",
-            ranked.map((r) => `Record ${r.id}`),
-            ranked.map((r) => r.score),
+            "Retrieval counts",
+            ["All matches", "Returned", "Omitted matches"],
+            [matches.length, returned.length, omitted],
+            "retrieval-counts",
           ),
           cells(
-            "Retrieved passages",
-            retrieved.map((r) => `${v.ids === 1 ? r.id : "No ID"}: ${r.text}`),
+            "Selected structured claim",
+            [
+              `Sources: ${claim[0]}`,
+              `Field: ${claim[1]}`,
+              `Value: ${claim[2]}`,
+              `Unit: ${claim[3]}`,
+              claim[4]!,
+            ],
+            1,
+          ),
+          cells(
+            "Cited evidence mapping",
+            [
+              "Separate supplied keeper evidence: eventCount 1 events",
+              "Raw frequency 73.4 becomes frequencyHz 73.4 Hz",
+              "This fixed claim example is separate from the selected retrieval query. A source omitted from a result cannot support its report.",
+            ],
+            1,
+          ),
+          cells(
+            "Result metadata",
+            [`matched: ${matches.length}`, `truncated: ${omitted > 0}`],
             1,
           ),
         ],
-        answer: supports,
-        answerLabel: "Supporting records with source IDs",
-        explanation: `Record ${required} is the supporting passage for this claim. ${supports === 1 ? "The retrieved set contains it and keeps its ID." : v.ids === 0 ? "Discarding IDs prevents this activity from tracing the claim to a source." : "The retrieved set does not include the supporting passage."} A high retrieval score only counts matched terms. It does not establish that a passage supports a claim.`,
+        answer: omitted,
+        answerLabel: "Matching records omitted",
+        explanation: `${matches.length} records pass every active filter. The result keeps ${returned.length} in database order and leaves out ${omitted} matching records. Count before applying the cap. These omissions come from the row limit, with no ranking by relevance or anomaly score. A later claim checker must still check the cited row, field, unit, and calculation.`,
+        code: `const rows = matches.slice(0, 20);\nconst matched = matches.length;\nconst truncated = matched > rows.length;`,
       };
     },
   },
   "report-generation": {
-    title: "Reviewed sections and missing evidence",
+    title: "A reviewed section reaches the report",
     brief:
-      "Farah has reviewed the draft. Change the review conditions, then see which section text reaches the relay report and which headings stay under Withheld.",
+      "Select an authored section, inspect its supplied review flag, and trace its body or omission into the assembled report.",
     boundary:
-      "These fixed drafts have supplied review rules. The activity assembles their text locally. It does not generate prose, verify new claims or send a report.",
+      "The mixed case uses the exact section texts from the generate-report exercise check. The review variants are controlled comparisons. No prose is generated, no new claim is verified, and no report is sent.",
     controls: [
-      choice("sources", "Observation source links", ["Missing", "Present"], 1),
-      choice("claim", "Analysis claim", [
-        "States only measured facts",
-        "Adds an unsupported origin",
-      ]),
       choice(
-        "limits",
-        "Limits section",
-        ["Missing", "Names unknown origin"],
+        "section",
+        "Section to inspect",
+        ["Executive Summary", "Hypotheses", "Results"],
         1,
       ),
+      choice("review", "Review flags", [
+        "Supplied mixed flags",
+        "Approve every section",
+        "Withhold every section",
+      ]),
     ],
     cases: [
       {
-        id: "full",
-        label: "Complete observation",
+        id: "mixed",
+        label: "Supplied mixed review",
         description:
-          "In this draft, the source records an 8 Hz frequency and 0.4 amplitude. Farah approves Observations only when both measurements and their source link are present.",
+          "Executive Summary and Results passed earlier review. Hypotheses did not. These flags are supplied inputs to the formatter.",
       },
       {
-        id: "partial",
-        label: "Incomplete observation",
+        id: "empty",
+        label: "No supplied sections",
         description:
-          "The source lacks the amplitude measurement claimed by Observations. Farah withholds that section. The other sections keep their own review decisions.",
+          "An empty section list leaves only the title and its following blank line.",
       },
     ],
     prediction: {
@@ -1088,30 +1593,35 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       unit: "sections",
     },
     evaluate: (v, caseId) => {
-      const sections = [
-        {
-          heading: "Observations",
-          content:
-            "The capture has frequency 8 Hz and amplitude 0.4. Source: S7.",
-          validated: v.sources === 1 && caseId === "full",
-        },
-        {
-          heading: "Analysis",
-          content:
-            v.claim === 0
-              ? "The recorded frequency is 8 Hz. Its origin is unknown."
-              : "The signal is a reply from an artificial source.",
-          validated: v.claim === 0,
-        },
-        {
-          heading: "Limits",
-          content:
-            v.limits === 1
-              ? "These measurements do not establish the signal's origin."
-              : "",
-          validated: v.limits === 1,
-        },
-      ];
+      const sections =
+        caseId === "empty"
+          ? []
+          : [
+              {
+                heading: "Executive Summary",
+                content: "12,001 events catalogued.",
+                validated: true,
+              },
+              {
+                heading: "Hypotheses",
+                content: "The pulse train is a reply.",
+                validated: false,
+              },
+              {
+                heading: "Results",
+                content: "153 anomalous, 1 unclassified.",
+                validated: true,
+              },
+            ].map((section) => ({
+              ...section,
+              validated:
+                v.review === 1
+                  ? true
+                  : v.review === 2
+                    ? false
+                    : section.validated,
+            }));
+      const selected = sections[v.section!];
       const approved = sections.filter((section) => section.validated);
       const withheld = sections.filter((section) => !section.validated);
       const blocks = approved.map(
@@ -1124,27 +1634,31 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       return {
         graphics: [
           cells(
-            "Draft and supplied review conditions",
-            [
-              caseId === "full"
-                ? "Source S7: 8 Hz, amplitude 0.4"
-                : "Source S7: 8 Hz, amplitude missing",
-              v.sources === 1
-                ? "Observation source link: present"
-                : "Observation source link: missing",
-              ...sections.map(
-                (section) =>
-                  `${section.heading}: ${section.content || "No draft text"}`,
-              ),
-            ],
+            "Selected section handoff",
+            selected
+              ? [
+                  selected.heading,
+                  selected.content,
+                  `validated: ${selected.validated}`,
+                  selected.validated
+                    ? "Include this body at its original position"
+                    : "Include this heading in Withheld. Omit its body.",
+                ]
+              : [
+                  "No supplied sections",
+                  "No body or omission list",
+                  "Return the title and blank line",
+                ],
             1,
           ),
           pipeline(
             "Recorded review decisions",
-            sections.map(
-              (section) =>
-                `${section.heading}: ${section.validated ? "approved" : "withheld"}`,
-            ),
+            sections.length
+              ? sections.map(
+                  (section) =>
+                    `${section.heading}: ${section.validated ? "approved" : "withheld"}`,
+                )
+              : ["No review flags supplied"],
             sections.flatMap((section, i) => (section.validated ? [i] : [])),
           ),
           {
@@ -1161,7 +1675,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: approved.length,
         answerLabel: "Section bodies included",
-        explanation: `${withheld.length ? `Withheld: ${withheld.map((section) => section.heading).join(", ")}. The report omits their text and keeps their headings visible.` : "Every section passed review, so the report needs no Withheld block."} ${approved.length ? "The approved sections remain in their original order." : "The assembled report contains no approved section text."} These flags record the supplied review decisions. The assembler does not check claims, and Farah still reviews the assembled report for consistency before sending it.`,
+        explanation: `${withheld.length ? `Withheld: ${withheld.map((section) => section.heading).join(", ")}. Their headings remain visible and their bodies are absent.` : "No section is withheld, so omit the Withheld block."} ${approved.length} approved bodies retain their input order. The flags record earlier supplied decisions. The assembler cannot approve a changed claim. Farah reviews the assembled report before release.`,
         code: `const sections = ${JSON.stringify(sections, null, 2)};\nconst approved = sections.filter(s => s.validated);\nconst withheld = sections.filter(s => !s.validated);\nconst blocks = approved.map(s => '## ' + s.heading + '\\n\\n' + s.content);\nif (withheld.length) blocks.push('## Withheld\\n\\n' + withheld.map(s => '- ' + s.heading).join('\\n'));\nconst report = '# Relay Report\\n\\n' + blocks.join('\\n\\n---\\n\\n');\n// Review this assembled report before sending.`,
       };
     },
@@ -1329,416 +1843,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       };
     },
   },
-  "system-architecture": {
-    title: "Fit the pipeline into its budget",
-    brief:
-      "Add the time spent in each stage. Find what prevents the crew from completing a report or tracing it to its input and model.",
-    boundary:
-      "The stage costs are fixed planning examples. This is not a performance measurement or production pipeline.",
-    controls: [
-      choice("model", "Model path", ["Small: 20 ms", "Large: 65 ms"]),
-      range("budget", "End-to-end time budget (ms)", 100, 50, 150, 10),
-      choice("metadata", "Carry input and model IDs", ["No", "Yes"], 1),
-    ],
-    cases: [
-      {
-        id: "valid",
-        label: "Valid sensor record",
-        description:
-          "Ingest takes 5 ms, preprocessing 10 ms and reporting 25 ms. The sensor schema is valid.",
-      },
-      {
-        id: "malformed",
-        label: "Malformed sensor record",
-        description:
-          "The record is missing a required timestamp. Ingest rejects it after 5 ms.",
-      },
-    ],
-    prediction: {
-      prompt: "How much pipeline time is spent before completion or rejection?",
-      unit: "ms",
-    },
-    evaluate: (v, caseId) => {
-      const invalid = caseId === "malformed";
-      const costs = invalid
-        ? [5, 0, 0, 0]
-        : [5, 10, v.model === 0 ? 20 : 65, 25];
-      const total = costs.reduce((a, b) => a + b, 0);
-      const ready = !invalid && total <= v.budget! && v.metadata === 1;
-      return {
-        graphics: [
-          cells(
-            "Pipeline inputs",
-            [
-              invalid ? "Timestamp: missing" : "Timestamp: present",
-              "Ingest: 5 ms",
-              "Preprocess: 10 ms",
-              `Infer: ${v.model === 0 ? 20 : 65} ms`,
-              "Report: 25 ms",
-              `Budget: ${v.budget} ms`,
-            ],
-            3,
-          ),
-          bars(
-            "Executed stage time (ms)",
-            ["Ingest", "Preprocess", "Infer", "Report"],
-            costs,
-          ),
-          pipeline(
-            "Report path",
-            [
-              invalid ? "Ingest rejects timestamp" : "Input validated",
-              invalid ? "Preprocessing skipped" : "Feature contract matched",
-              invalid
-                ? "Inference skipped"
-                : total <= v.budget!
-                  ? "Within time budget"
-                  : "Time budget exceeded",
-              ready ? "Traceable report" : "Report blocked",
-            ],
-            ready ? [3] : [],
-          ),
-        ],
-        answer: total,
-        answerLabel: "Pipeline time spent",
-        explanation: invalid
-          ? "Rejecting a malformed record stops later stages. A missing reading is not an ordinary low model score."
-          : `The stage costs add to ${total} ms against a ${v.budget} ms budget. ${v.metadata === 0 ? "Without input and model IDs, the crew cannot trace the report to its source and model version." : "Source and version IDs travel with the result."} Check input validity, resource limits and source IDs separately.`,
-      };
-    },
-  },
-  "ci-cd-pipeline": {
-    title: "Release the model bundle you tested",
-    brief:
-      "Check that the proposed release matches the tested model bundle. Then check whether it finds enough held-out anomalies.",
-    boundary:
-      "These version IDs and evaluation results are examples. This activity does not build, test or deploy a model.",
-    controls: [
-      choice("identity", "Candidate bundle", [
-        "Same graph, weights and scaler",
-        "Weights rebuilt",
-        "Scaler replaced",
-      ]),
-      range("minimum", "Minimum anomaly recall (%)", 90, 70, 100, 5),
-      choice("contract", "Input/output contract test", ["Fails", "Passes"], 1),
-    ],
-    cases: [
-      {
-        id: "high",
-        label: "Evaluation report A",
-        description:
-          "The tested bundle finds 19 of 20 held-out anomalies: 95% recall.",
-      },
-      {
-        id: "lower",
-        label: "Evaluation report B",
-        description:
-          "The tested bundle finds 17 of 20 held-out anomalies: 85% recall.",
-      },
-    ],
-    prediction: { prompt: "How many release checks pass?", unit: "of 3 gates" },
-    evaluate: (v, caseId) => {
-      const recall = caseId === "lower" ? 85 : 95;
-      const checks = [v.identity === 0, v.contract === 1, recall >= v.minimum!];
-      const passed = checks.filter(Boolean).length;
-      return {
-        graphics: [
-          cells(
-            "Tested and candidate bundle",
-            [
-              "Tested: graph G1",
-              "Tested: weights W1",
-              "Tested: scaler S1",
-              "Candidate: graph G1",
-              v.identity === 1
-                ? "Candidate: weights W2"
-                : "Candidate: weights W1",
-              v.identity === 2
-                ? "Candidate: scaler S2"
-                : "Candidate: scaler S1",
-            ],
-            3,
-          ),
-          bars(
-            "Held-out anomaly recall (%)",
-            ["Measured recall", "Required recall"],
-            [recall, v.minimum!],
-          ),
-          pipeline(
-            "Release gates",
-            [
-              checks[0] ? "Artifact matches" : "Artifact changed",
-              checks[1] ? "Contract passes" : "Contract fails",
-              checks[2] ? "Recall passes" : "Recall fails",
-            ],
-            checks.flatMap((ok, i) => (ok ? [i] : [])),
-          ),
-        ],
-        answer: passed,
-        answerLabel: "Release checks passed",
-        explanation: `${v.identity !== 0 ? "The evaluation belongs to a different bundle. Test the replacement weights or scaler before releasing it. " : "The candidate is the same bundle that produced this evaluation. "}Recall is ${recall}% against a ${v.minimum}% requirement. A passing application build alone does not check these model requirements.`,
-        code: `const release = ${checks[0]} && ${checks[1]} && ${checks[2]};`,
-      };
-    },
-  },
-  monitoring: {
-    title: "Monitoring alerts and prediction accuracy",
-    brief:
-      "Set limits for latency, missing inputs and a changed mean score. See which recorded metrics trigger review.",
-    boundary:
-      "These are fixed monitoring examples. A score change needs investigation. It does not prove a data shift, an anomaly or lower accuracy.",
-    controls: [
-      range("latency", "Latency limit (ms)", 100, 50, 250, 10),
-      range("missing", "Missing-input limit (%)", 5, 0, 20),
-      range("shift", "Mean-score change limit", 0.2, 0.05, 0.5, 0.05),
-    ],
-    cases: [
-      {
-        id: "routine",
-        label: "Routine window",
-        description:
-          "95th-percentile latency: 80 ms. Missing inputs: 2%. Mean score changed from 0.3 to 0.35.",
-      },
-      {
-        id: "changed",
-        label: "Changed window",
-        description:
-          "95th-percentile latency: 180 ms. Missing inputs: 12%. Mean score changed from 0.3 to 0.65.",
-      },
-    ],
-    prediction: {
-      prompt: "How many recorded metrics exceed their limits?",
-      unit: "alerts",
-    },
-    evaluate: (v, caseId) => {
-      const changed = caseId === "changed";
-      const latency = changed ? 180 : 80;
-      const missing = changed ? 12 : 2;
-      const delta = changed ? 0.35 : 0.05;
-      const checks = [
-        latency > v.latency!,
-        missing > v.missing!,
-        delta > v.shift! + 1e-9,
-      ];
-      const count = checks.filter(Boolean).length;
-      return {
-        graphics: [
-          cells(
-            "Recorded monitoring window",
-            [
-              `95th-percentile latency: ${latency} ms`,
-              `Missing inputs: ${missing}%`,
-              "Previous mean score: 0.3",
-              `Current mean score: ${changed ? 0.65 : 0.35}`,
-            ],
-            2,
-          ),
-          bars(
-            "Latency and score change as percentages of their limits",
-            ["Latency", "Mean-score change"],
-            [
-              round((latency / v.latency!) * 100),
-              round((delta / v.shift!) * 100),
-            ],
-          ),
-          bars(
-            "Missing inputs (%)",
-            ["Observed", "Alert limit"],
-            [missing, v.missing!],
-          ),
-          pipeline(
-            "Review signals",
-            [
-              checks[0] ? "Latency exceeds limit" : "Latency within limit",
-              checks[1]
-                ? "Missing inputs exceed limit"
-                : "Missing inputs within limit",
-              checks[2]
-                ? "Score change exceeds limit"
-                : "Score change within limit",
-            ],
-            checks.flatMap((alert, i) => (alert ? [i] : [])),
-          ),
-        ],
-        answer: count,
-        answerLabel: "Metrics requiring review",
-        explanation: `${latency} ms latency, ${missing}% missing inputs and a ${delta} mean-score change each have their own check. ${v.missing === 0 ? "The missing-input limit is zero, so any missing input triggers review. A percentage of that zero limit would be undefined, so the missing-input chart shows the observed percentage and the limit directly. " : ""}Changing limits changes which alerts fire. The underlying measurements stay the same. Check prediction accuracy against reviewed labels.`,
-      };
-    },
-  },
-  documentation: {
-    title: "Give the next watch enough context",
-    brief:
-      "Complete the model card for the next watch. Include the evaluation results and when and how to roll back the model.",
-    boundary:
-      "Check the required fields in two example handovers. A complete card still needs evidence for its claims.",
-    controls: [
-      choice(
-        "scope",
-        "Scope and training data",
-        ["Not recorded", "Task, exclusions and data recorded"],
-        1,
-      ),
-      choice(
-        "evaluation",
-        "Evaluation record",
-        ["Only a score", "Score + dataset + conditions"],
-        1,
-      ),
-      choice(
-        "operations",
-        "Operations record",
-        ["Owner only", "Owner + monitoring + rollback"],
-        1,
-      ),
-    ],
-    cases: [
-      {
-        id: "normal",
-        label: "Routine handover",
-        description:
-          "The next watch needs scope, training data, evaluation conditions, an owner, monitoring and rollback steps.",
-      },
-      {
-        id: "new",
-        label: "New sensor handover",
-        description:
-          "The card reports evaluation on sensor A. The next watch plans to use sensor B, which has no recorded evaluation.",
-      },
-    ],
-    prediction: {
-      prompt: "How many handover requirements are still missing?",
-      unit: "requirements",
-    },
-    evaluate: (v, caseId) => {
-      const missingScope = v.scope === 0;
-      const missingEvaluation = v.evaluation === 0;
-      const missingOperations = v.operations === 0;
-      const unevaluated = caseId === "new";
-      const count =
-        Number(missingScope) +
-        Number(missingEvaluation) +
-        Number(missingOperations) +
-        Number(unevaluated);
-      return {
-        graphics: [
-          cells(
-            "Model card fields",
-            [
-              missingScope ? "Scope/data: missing" : "Scope/data: recorded",
-              missingEvaluation
-                ? "Evaluation: score only"
-                : "Evaluation: conditions recorded",
-              missingOperations
-                ? "Operations: owner only"
-                : "Operations: recovery recorded",
-              unevaluated
-                ? "Sensor B evaluation: missing"
-                : "Intended sensor: evaluated",
-            ],
-            2,
-          ),
-          bars(
-            "Handover checks",
-            ["Required", "Complete", "Missing"],
-            [unevaluated ? 4 : 3, (unevaluated ? 4 : 3) - count, count],
-          ),
-        ],
-        answer: count,
-        answerLabel: "Handover requirements missing",
-        explanation: `${missingEvaluation ? "A score without its dataset and conditions is hard to interpret. " : ""}${missingOperations ? "An owner name does not explain monitoring or rollback. " : ""}${unevaluated ? "Documenting sensor A's results does not validate sensor B. Record that gap and evaluate the new use before approval." : "Keep task, data, evaluation conditions and recovery steps with the model version."}`,
-      };
-    },
-  },
-  launch: {
-    title: "Rehearse the complete launch path",
-    brief:
-      "Check app files, model files, required services and a known reading at the target location.",
-    boundary:
-      "These are example checks for a release rehearsal. The activity does not contact a real URL, service, device or deployment.",
-    controls: [
-      choice("assets", "Deployed assets", [
-        "App and model complete",
-        "App script missing",
-        "Weight shard missing",
-      ]),
-      choice("services", "Required service check", ["Fails", "Passes"], 1),
-      choice(
-        "fixture",
-        "Known reading result",
-        ["Differs from expected", "Matches expected"],
-        1,
-      ),
-    ],
-    cases: [
-      {
-        id: "local",
-        label: "Local-only console",
-        description:
-          "Prediction and reporting stay on the device. This example needs no server service.",
-      },
-      {
-        id: "connected",
-        label: "Authenticated console",
-        description:
-          "The console needs an authentication service before opening the report.",
-      },
-    ],
-    prediction: {
-      prompt: "How many release checks pass at the target?",
-      unit: "of 4 checks",
-    },
-    evaluate: (v, caseId) => {
-      const app = v.assets !== 1;
-      const model = v.assets !== 2;
-      const service = caseId === "local" || v.services === 1;
-      const canRun = app && model && service;
-      const fixture = canRun && v.fixture === 1;
-      const checks = [app, model, service, fixture];
-      const passed = checks.filter(Boolean).length;
-      return {
-        graphics: [
-          cells(
-            "Example release setup",
-            [
-              v.assets === 1 ? "App script: absent" : "App scripts: present",
-              v.assets === 2 ? "Weight shard: absent" : "Model files: present",
-              caseId === "local"
-                ? "Server service: not required"
-                : v.services === 1
-                  ? "Authentication: available"
-                  : "Authentication: unavailable",
-              v.fixture === 1
-                ? "Recorded result: matches expected"
-                : "Recorded result: differs",
-            ],
-            2,
-          ),
-          pipeline(
-            "Target release checks",
-            [
-              app ? "App assets pass" : "App assets fail",
-              model ? "Model assets pass" : "Model assets fail",
-              caseId === "local"
-                ? "No required server service"
-                : service
-                  ? "Authentication passes"
-                  : "Authentication fails",
-              !canRun
-                ? "Known reading blocked"
-                : fixture
-                  ? "Known reading matches"
-                  : "Known reading differs",
-            ],
-            checks.flatMap((ok, i) => (ok ? [i] : [])),
-          ),
-          bars("Checks passed", ["Passed", "Required"], [passed, 4]),
-        ],
-        answer: passed,
-        answerLabel: "Target checks passed",
-        explanation: `${!canRun ? "A missing dependency prevents the known reading from completing the deployed path. " : !fixture ? "The complete path runs, but its known result differs from the expected result. " : "The known reading completes the full path and matches its expected result. "}Local success is separate from checks at the deployed asset paths and target console.`,
-        code: `const targetChecks = [${checks.join(", ")}];\nconst canLaunch = targetChecks.every(Boolean);`,
-      };
-    },
-  },
+  "system-architecture": CAPSTONE_INVESTIGATIONS["system-architecture"]!,
+  "ci-cd-pipeline": CAPSTONE_INVESTIGATIONS["ci-cd-pipeline"]!,
+  monitoring: CAPSTONE_INVESTIGATIONS["monitoring"]!,
+  documentation: CAPSTONE_INVESTIGATIONS["documentation"]!,
+  launch: CAPSTONE_INVESTIGATIONS["launch"]!,
 };

@@ -87,11 +87,70 @@ release resources correctly. The downloadable lab runs the model in real browser
 
 <LearningObjectives objectives={["Explain ONNX model interchange and runtime compatibility limits", "Implement the input and awaited-output contract for an ONNX session", "Compare timing and output agreement in a controlled runtime exercise", "Explain why backend selection requires measurements on the target device"]} />
 
+## One input and two completed outputs
+
+The coding task gives `compareRuntimes(model, modelPath, signal)` an already
+loaded TFJS model and three input values. Build both inputs from that same
+`signal`, keeping their order. For example, `[0.5, 0.3, 0.7]` becomes one
+float32 row with shape `[1, 3]` in either runtime. The values are a practice
+input, with no supplied ground-truth label.
+
+| Part of the call | TensorFlow.js | ONNX Runtime |
+| --- | --- | --- |
+| Input | One `[1, 3]` float32 tensor | One `[1, 3]` float32 tensor with the same values |
+| Inference | `model.predict(batch)` | `await session.run({ input: feed })` for this export |
+| Completed value | `await prediction.data()`, then read its first score | Read the first score from `results.output.data` after `run()` resolves |
+| Owned cleanup | Dispose input and prediction, keep the caller's model | Release the session, including when inference fails |
+
+Use the actual returned scores for `outputsAgree`. The rule is
+`Math.abs(tfjsScore - onnxScore) <= 0.0001`. A difference exactly equal to
+0.0001 passes. The activity supplies scores separately from its input arrays
+so you can inspect that rule without running a model. For supplied scores
+0.5 and 0.50005, the difference is about 0.00005 and the rule returns `true`.
+Changing the second score to 0.5002 makes it `false`.
+
+Agreement is evidence about this computation on this input. Different inputs
+cannot test conversion parity, even if their scores happen to match.
+Accuracy asks a separate question: whether predictions agree with trusted
+labels. This comparison has no such labels.
+
+The TFJS path waits for readback inside its timer:
+
+<CodeBlock language="typescript" title="completed-tfjs-call.ts">
+{`// model is already loaded and belongs to the caller.
+const reading = [0.5, 0.3, 0.7];
+const batch = tf.tensor2d([reading], [1, 3], 'float32');
+let output: tf.Tensor | undefined;
+let tfjsScore: number;
+let tfjsMs: number;
+try {
+  const began = performance.now();
+  output = model.predict(batch) as tf.Tensor;
+  tfjsScore = (await output.data())[0];
+  tfjsMs = performance.now() - began;
+} finally {
+  output?.dispose();
+  batch.dispose();
+}
+console.log({ tfjsScore, tfjsMs });`}
+</CodeBlock>
+
+The input is ready before timing starts. `predict()` can return a tensor
+while device work is still queued. Awaiting `data()` keeps that work and
+readback inside the measured interval. The `finally` block releases owned
+tensors on success or failure. The caller keeps its model for later inputs.
+
 ## The same weights in both runtimes
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-The lab exports the shipped 3 to 32 to 16 to 1 classifier to ONNX with the same 673 weights. Its exporter supports this specific dense architecture. Other TFJS models need an exporter that supports their operations. It preserves the two ReLU activations and final sigmoid. Check predictions after conversion. A file that loads can still encode the wrong computation.
+The real lab exports its frozen 3 to 32 to 16 to 1 classifier to ONNX with
+the same 673 parameters. That separate artifact was trained on synthetic
+data. It is not the model object from your earlier exercise run. The lab's
+exporter supports this specific dense architecture and preserves its two
+ReLU activations and final sigmoid. Other TFJS models need an exporter that
+supports their operations. Check predictions after conversion. A file that
+loads can still encode the wrong computation.
 
 <CodeBlock language="typescript" title="onnx-basics.ts">
 {`import * as ort from 'onnxruntime-web/wasm';
@@ -121,9 +180,20 @@ try {
 
 The paths above are available when serving the runtime lab. For your own application, export and host the model and copy the WASM assets from the same installed runtime version. Session resources need explicit release. GPU tensors may also hold device resources after JavaScript loses its reference.
 
+This export names its input `input` and its output `output`. A different
+graph can use different names, shapes, types, or operations. Inspect that
+contract before creating the feed. The coding task fixes the ONNX provider
+to WASM. It supplies a simulated session, so no ONNX file downloads there.
+
 ## Workload and timing
 
 A useful comparison states what it includes. For inference latency, load the model first, warm up the exact input shape, then time each call through output readback. Reading only the time for a GPU dispatch can miss the work still queued on the device.
+
+The activity uses chosen costs: TFJS dispatch takes 2 illustrative ms and
+readback adds 8. The ONNX path uses 3 plus 12, with a separate 40 for loading.
+Stopping after dispatch hides unfinished work. Starting before session
+loading adds startup work to the inference interval. Those changes explain
+the timer's number. The invented costs cannot identify a faster runtime.
 
 <CodeBlock language="typescript" title="measure-inference.ts">
 {`async function measure(run: () => Promise<unknown>) {
@@ -184,6 +254,12 @@ choose a faster runtime. Use the downloadable lab for repeated measurements
 before changing what runs on the bridge.
 
 <Exercise slug="onnx-comparison" />
+
+Inspect what this call sent to each runtime, what each returned, and the
+boolean your function reported. Compare the two actual scores before reading
+the intervals. The controlled clock gives simulated intervals, even when
+the TFJS calculation itself runs. A correct agreement flag does not establish
+classification accuracy or device speed.
 
 <RecallPrompt
   question="WASM runs a small classifier faster on your laptop. What can you conclude?"

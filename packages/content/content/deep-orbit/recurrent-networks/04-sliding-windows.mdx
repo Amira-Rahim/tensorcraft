@@ -66,6 +66,61 @@ You will split the stream before creating windows so training and evaluation can
 
 <LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces", "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying", "Choose a window size longer than the dependency you need to detect, and read the overlap a stride-1 window produces", "Recognize the fixed-length buffer that turns a live feed into one model-ready window per reading"]} />
 
+## A classification label inside each split
+
+The Challenge classifies windows. Its target is the supplied external label of the window's last reading. That differs from the earlier `makeWindows` task, which predicts the reading after its input. A label can describe the current window without exposing a future reading to the model.
+
+The supplied diagnostic stream has twelve rows, whose values equal their source indices: `[[0], [1], ... , [11]]`. External labels are 1 at indices 4 through 8 and 0 elsewhere. These are authored test labels, separate from the unknown true classification of sample 7741.
+
+Split before row 8 and use four-reading windows:
+
+| Candidate start | Included indices | Last-reading label | Set |
+| --- | --- | --- | --- |
+| 0 | 0, 1, 2, 3 | 0 | Training |
+| 1 through 4 | Each consecutive four-row slice ending at 4 through 7 | 1 | Training |
+| 5, 6, 7 | Each slice crosses the split before 8 | No retained target | Dropped |
+| 8 | 8, 9, 10, 11 | 0 | Evaluation |
+
+The result has five training windows and one evaluation window. Three crossing windows belong to neither set. No original reading appears in both retained sets, even though windows inside one side may overlap.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="javascript" title="classification-window-probe.js">
+{`const originalRows = Array.from({ length: 12 }, (_, index) => [index]);
+const suppliedLabels = originalRows.map(([index]) => Number(index >= 4 && index < 9));
+const splitAt = 8;
+const windowSize = 4;
+const selectedStarts = [4, 5, 8];
+for (const start of selectedStarts) {
+  const end = start + windowSize;
+  const membership = end <= splitAt ? 'training' : start >= splitAt ? 'evaluation' : 'dropped';
+  console.log({ input: originalRows.slice(start, end), lastIndex: end - 1,
+    externalLabel: suppliedLabels[end - 1], membership });
+}
+// [4,5,6,7] label1 training. [5,6,7,8] crosses and is dropped.
+// [8,9,10,11] label0 evaluation.`}
+</CodeBlock>
+
+For start `i`, the exclusive end is `i + windowSize`. A training window requires `end <= splitAt`. An evaluation window requires `i >= splitAt`. Otherwise, omit it. Keep the arrays and matching labels in their original order. At split 0, training is empty. At split equal to the stream length, evaluation is empty.
+
+The activity selects a candidate and links its indices, last-reading label, and membership. Its window-length control does not change the label rule. Your captured table lists all retained windows from the four-reading check, so inspect their membership as well as their counts.
+
+## Why the overlap matters for evaluation
+
+A separate reproducible 200-reading illustration compares two split policies using a one-nearest-neighbor classifier. Holding out every fifth already-created eight-reading window gives 38 of 39 correct, or 97.4%. Adjacent windows share seven readings, so many held-out windows sit beside near-copies in training.
+
+Splitting before reading 160 and building each side separately gives 60.6% on the later period. Always predicting contact would give 66.7% there. The evaluations also cover different periods, so their 36.8-point gap does not isolate overlap alone. The comparison shows why the first score does not answer the later-period question. Its external contact-log labels and scores belong to that separate illustration.
+
+<Dialogue speaker="Ensign Demir">
+Every window I held out had a near-copy of itself sitting in the training set. I checked the split. I never checked what was inside it.
+</Dialogue>
+
+A live 80-reading buffer can carry enough input context for events 74 steps apart. Including both endpoints needs 75 readings. A 30-reading stateless window cannot contain both, although a model might use other shorter cues. Extra training cannot restore readings that were absent from its input.
+
+<ConceptReference summary="The reproducible split comparison and separate forecasting buffer patterns">
+
+The first code block reproduces the 200-reading illustration above. The following `makeWindows` code keeps the next-reading forecasting target from the earlier lesson. The classification Challenge uses the different last-reading external-label rule. The live buffer sketch requires an application-supplied model and feed.
+
 ## Overlapping windows and misleading accuracy
 
 A random split can be suitable for independent rows. These windows share readings, so they are not independent. This small example uses 200 readings and 8-step windows to show what goes wrong:
@@ -117,9 +172,7 @@ The nearest-neighbor classifier gets 38 of 39 evaluation windows right: 97.4%. B
 
 Splitting by time first removes shared readings. The later-period score is 60.6%. That set contains 22 contact windows out of 33, so always predicting contact would score 66.7%. The 36.8-point difference shows that the first evaluation answers the wrong question. It does not measure the effect of overlap alone, because the two evaluations also cover different periods.
 
-<Dialogue speaker="Ensign Demir">
-Every window I held out had a near-copy of itself sitting in the training set. I checked the split. I never checked what was inside it.
-</Dialogue>
+
 
 ## The Sliding Window Pattern
 
@@ -201,6 +254,9 @@ signalFeed.addEventListener('reading', (event: CustomEvent) => {
   }
 });`}
 </CodeBlock>
+
+
+</ConceptReference>
 
 ## Challenge
 

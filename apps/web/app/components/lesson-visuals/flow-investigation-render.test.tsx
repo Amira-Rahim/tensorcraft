@@ -11,8 +11,8 @@ import { LessonInvestigation } from "./lesson-investigation";
 
 afterEach(cleanup);
 
-describe("the GPU workload activity", () => {
-  it("keeps workload totals and their components on one time axis across runs", () => {
+describe("the ordered backend startup activity", () => {
+  it("keeps call counts comparable across ordered success and all-failed traces", () => {
     render(
       <LessonInvestigation
         spec={FLOW_INVESTIGATIONS["webgpu-acceleration"]!}
@@ -20,34 +20,46 @@ describe("the GPU workload activity", () => {
       />,
     );
     const run = screen.getByRole("button", { name: "Run experiment" });
-    fireEvent.change(screen.getByLabelText("GPU initialization"), {
-      target: { value: "0" },
-    });
     fireEvent.click(run);
-    for (const name of ["End-to-end time (ms)", "GPU time components (ms)"]) {
-      expect(screen.getByRole("img", { name })).toHaveAttribute(
-        "data-domain-high",
-        "56",
-      );
-    }
-
-    fireEvent.change(screen.getByRole("slider", { name: "Workload units" }), {
-      target: { value: "50" },
+    expect(
+      screen.getByRole("img", { name: "Controlled call counts" }),
+    ).toHaveAttribute("data-domain-high", "3");
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Selector result: wasm");
+    const attempts = screen.getByRole("list", {
+      name: "Initialization attempts",
+    });
+    expect(attempts).toHaveTextContent("webgpu: false");
+    expect(attempts).toHaveTextContent("webgl: throws");
+    expect(attempts).toHaveTextContent("wasm: true");
+    expect(attempts).not.toHaveTextContent("cpu:");
+    fireEvent.change(screen.getByLabelText("First successful attempt"), {
+      target: { value: "4" },
     });
     fireEvent.click(run);
     fireEvent.click(
       screen.getByRole("button", { name: "Compare with previous run" }),
     );
     for (const region of ["Previous run", "Latest run"]) {
-      for (const name of ["End-to-end time (ms)", "GPU time components (ms)"]) {
-        expect(
-          within(screen.getByRole("region", { name: region })).getByRole(
-            "img",
-            { name },
-          ),
-        ).toHaveAttribute("data-domain-high", "100");
-      }
+      expect(
+        within(screen.getByRole("region", { name: region })).getByRole("img", {
+          name: "Controlled call counts",
+        }),
+      ).toHaveAttribute("data-domain-high", "4");
     }
+    const latest = screen.getByRole("region", { name: "Latest run" });
+    expect(latest).toHaveTextContent("prior-backend");
+    expect(
+      within(latest).getByRole("list", { name: "Initialization attempts" }),
+    ).toHaveTextContent("cpu:");
+    fireEvent.change(screen.getByLabelText("Readiness outcome"), {
+      target: { value: "1" },
+    });
+    fireEvent.click(run);
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Startup rejects");
   });
 });
 
@@ -59,7 +71,7 @@ describe("the assembled report activity", () => {
         lessonSlug="report-generation"
       />,
     );
-    fireEvent.change(screen.getByLabelText("Analysis claim"), {
+    fireEvent.change(screen.getByLabelText("Section to inspect"), {
       target: { value: "1" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
@@ -73,15 +85,15 @@ describe("the assembled report activity", () => {
     const blocks = within(report).getAllByRole("listitem");
     expect(blocks).toHaveLength(4);
     expect(blocks[1]!.textContent).toContain(
-      "## Observations\n\nThe capture has frequency 8 Hz and amplitude 0.4. Source: S7.",
+      "## Executive Summary\n\n12,001 events catalogued.",
     );
-    expect(blocks[2]!.textContent).toContain("## Limits\n\n");
+    expect(blocks[2]!.textContent).toContain("## Results\n\n");
     expect(blocks[3]!.textContent).toContain("Omission notice");
-    expect(blocks[3]!.textContent).toContain("## Withheld\n\n- Analysis");
-    expect(report).not.toHaveTextContent("reply from an artificial source");
+    expect(blocks[3]!.textContent).toContain("## Withheld\n\n- Hypotheses");
+    expect(report).not.toHaveTextContent("The pulse train is a reply.");
     expect(
       screen.getByRole("list", {
-        name: "Draft and supplied review conditions",
+        name: "Selected section handoff",
       }),
     ).not.toHaveClass("orbit-investigation-prose");
   });
@@ -93,24 +105,18 @@ describe("the assembled report activity", () => {
         lessonSlug="report-generation"
       />,
     );
-    fireEvent.change(screen.getByLabelText("Choose an example"), {
-      target: { value: "partial" },
-    });
-    fireEvent.change(screen.getByLabelText("Analysis claim"), {
-      target: { value: "1" },
-    });
-    fireEvent.change(screen.getByLabelText("Limits section"), {
-      target: { value: "0" },
+    fireEvent.change(screen.getByLabelText("Review flags"), {
+      target: { value: "2" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
 
     const report = screen.getByRole("list", { name: "Assembled relay report" });
     expect(within(report).getAllByRole("listitem")).toHaveLength(2);
     expect(report.textContent).toContain(
-      "## Withheld\n\n- Observations\n- Analysis\n- Limits",
+      "## Withheld\n\n- Executive Summary\n- Hypotheses\n- Results",
     );
     expect(report).not.toHaveTextContent("Approved section");
-    expect(report).not.toHaveTextContent("amplitude 0.4");
-    expect(report).not.toHaveTextContent("reply from an artificial source");
+    expect(report).not.toHaveTextContent("12,001 events catalogued.");
+    expect(report).not.toHaveTextContent("The pulse train is a reply.");
   });
 });

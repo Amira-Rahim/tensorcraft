@@ -2,7 +2,9 @@ slug: add-tensors
 lessonSlug: tensor-operations
 title: "The combined sensor passes"
 instructions: |
-  Help Demir average two sets of sensor readings, then combine their channels.
+  Help Demir write reusable functions to average readings and combine channels.
+  The supplied values are separate diagnostic test inputs. They check your
+  functions on several shapes and gains, rather than process the ship recording.
 
   1. Write `mergePasses(pass1, pass2, gain)`. Return `{ merged, boosted }`.
      `merged` adds matching readings and divides by 2. `boosted` multiplies
@@ -110,8 +112,8 @@ testCode: |
       expect(v[2], why).toBeCloseTo(0.5, 5);
       expect(v[3], why).toBeCloseTo(0.7, 5);
       recordResult({
-        kind: 'table', title: 'Demir\'s averaged pass',
-        summary: 'Output from your merge function on the supplied four-reading test passes. This does not process the full 64-channel recording.',
+        kind: 'table', title: 'Your averaged diagnostic pass',
+        summary: 'Output from your merge function on two supplied diagnostic passes: [0.2, 0.6, 0.4, 0.8] and [0.4, 0.2, 0.6, 0.6]. These values are separate from the recording excerpt.',
         columns: ['Position', 'Averaged reading'],
         rows: v.map((value, i) => [i + 1, value]),
       });
@@ -128,7 +130,7 @@ testCode: |
       expect(v[3], why).toBeCloseTo(1.75, 5);
       recordResult({
         kind: 'table', title: 'The amplified pass',
-        summary: 'Your averaged pass after the supplied gain of 2.5.',
+        summary: 'Your averaged diagnostic pass after gain 2.5. The inputs are the same four-position passes used in the average table.',
         columns: ['Position', 'Amplified reading'],
         rows: v.map((value, i) => [i + 1, value]),
       });
@@ -215,7 +217,7 @@ testCode: |
       ]);
       recordResult({
         kind: 'table', title: 'Channel-bank scores',
-        summary: 'Your matrix multiplication on the supplied three-reading, three-bank test case.',
+        summary: 'Your matrix multiplication on diagnostic rows [1, 2], [3, 4], [5, 6] and banks [1, 0], [0, 1], [1, 1]. Rows hold readings. Columns hold banks.',
         columns: ['Reading', 'Bank 0', 'Bank 1', 'Bank 2'],
         rows: out.arraySync().map((row, i) => [i + 1, ...row]),
       });

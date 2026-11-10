@@ -55,11 +55,11 @@ keywords:
 skillAxes: [training]
 ---
 
-An easing loop such as `pos += (target - pos) * 0.1` moves a value toward a known target. It is also gradient descent on the loss `(target - pos)² / 2`.
+<StoryPassage>
 
-Start at `pos = 2` with `target = 10`. The loss slope is -8. Subtract a tenth of that slope and the next position is 2.8, the same result as the easing line.
+Demir points to the easing line on his console. Nazari leaves the parameter count on the display.
 
-For a network, we know the labels and need to find suitable weights. Calculating the loss slope tells us which direction to try.
+</StoryPassage>
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 An easing loop knows where it is going. This has 673 parameters and no target to ease toward. Tell me which of the 673 go up, which go down, and by how much.
@@ -69,9 +69,111 @@ You will calculate the slope of a loss function and use it to update a weight.
 
 <LearningObjectives objectives={["Understand gradients as the direction of steepest ascent", "Implement a single gradient descent step", "Predict what a learning rate that is too high does to the loss", "Read a descent trace and say why the step shrinks near the minimum"]} />
 
-## Gradient descent updates
+## The old weight and its slope
+
+Nazari needs an update rule that can work across the network's weights. First, Demir checks that rule on the Challenge's supplied scalar probe: loss `w²`, starting weight `5`, learning rate `0.1`. These are diagnostic optimization values, separate from the classifier's weights and loss. This check trains no spacecraft model. The scene board shows the separate `(x - 3)²` reference in the optional material below.
+
+A **gradient** tells us how the loss changes as each weight changes. With several weights, the gradient collects their slopes into a vector that points toward the steepest local increase. With one weight, it is the slope of the loss at that weight. At `w = 5`, the slope of `w²` is `10`. A small increase in the weight would increase the loss. Gradient descent subtracts a learning-rate-sized amount of that slope.
+
+| Part of the first supplied update | Value |
+| --- | --- |
+| Old weight | 5 |
+| Loss at the old weight | 25 |
+| Gradient at the old weight | 10 |
+| Learning rate | 0.1 |
+| Amount to subtract | `0.1 * 10 = 1` |
+| New weight | `5 - 1 = 4` |
+| Loss recomputed at the new weight | `4² = 16` |
+
+The **learning rate** scales each update. It is a **hyperparameter**, a setting you choose before calculating updates. The gradient and learning rate have different roles: the slope describes this loss at the old weight, and the rate controls how far to move against it.
+
+The activity follows this exact supplied squared-loss probe. Choose an update to inspect its old weight, slope, step amount, new weight, and recomputed loss. Predict the new weight before running it. Its reference calculation uses the known derivative `2 * w` to explain the arithmetic. Your Challenge code must ask TensorFlow.js to differentiate whatever loss function it receives.
+
+## A fresh gradient from the supplied function
+
+`tf.variableGrads` runs the loss function and records its operations. It then works backward to calculate a gradient for each requested variable. We call this **automatic differentiation**, or autograd. The next lesson explains the backward calculation.
+
+Pass a function, such as `() => weight.square()`, so TensorFlow.js can run it at the current weight. The returned `grads` object uses each variable's name as its key. Read `grads[weight.name]`, multiply that tensor by the learning rate, and subtract the result. `weight.assign()` updates the existing variable.
+
+<CodeBlock language="typescript" title="scalar-step.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const weight = tf.tidy(() => tf.variable(tf.scalar(5)));
+const learningRate = 0.1;
+const oldWeight = weight.dataSync()[0];
+const oldLoss = tf.tidy(() => weight.square().dataSync()[0]);
+
+const gradient = tf.tidy(() => {
+  const { grads } = tf.variableGrads(() => weight.square(), [weight]);
+  const current = grads[weight.name];
+  weight.assign(weight.sub(current.mul(learningRate)));
+  return current;
+});
+
+const slope = gradient.dataSync()[0];
+const newWeight = weight.dataSync()[0];
+const newLoss = tf.tidy(() => weight.square().dataSync()[0]);
+console.log({ oldWeight, oldLoss, slope, learningRate,
+  amount: learningRate * slope, newWeight, newLoss });
+// { oldWeight: 5, oldLoss: 25, slope: 10, learningRate: 0.1,
+//   amount: 1, newWeight: 4, newLoss: 16 }
+
+tf.dispose([weight, gradient]);`}
+</CodeBlock>
+
+The gradient belongs to the old weight. The final loss comes from running the loss calculation again at the new weight. The `value` returned by `tf.variableGrads` describes the calculation before the update. It would still be `25` in this example.
+
+`tf.tidy` disposes of temporary tensors, including that old loss and the intermediate multiplication and subtraction. Returning `current` keeps the gradient available for inspection. In a reusable `step(fn)`, dispose of the previously stored gradient before replacing it. Keep the latest gradient tensor alive for the caller.
+
+## Three updates and changing losses
+
+For `w²`, the slope shrinks as the weight approaches zero. The rate stays at `0.1`, while the amount subtracted gets smaller. The Challenge repeats the update three times on this loss.
+
+| Update | Weight before | Fresh gradient | Rate times gradient | Weight after | Recomputed loss after |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 5 | 10 | 1 | 4 | 16 |
+| 2 | 4 | 8 | 0.8 | 3.2 | 10.24 |
+| 3 | 3.2 | 6.4 | 0.64 | 2.56 | 6.5536 |
+
+These are reference values for the supplied case. In the Challenge result, the first starting weight `5` comes from the supplied setup. Your first after-state, the three saved weights, and the captured operands for updates 2 and 3 come from your run. Inspect the stored gradient beside each captured old weight. Reusing the first gradient `10` would give the wrong second update.
+
+The later checks hand `step(fn)` different functions. At weight `2.56`, the slope of `3 * w²` is `15.36`, giving a new weight of `1.024`. After resetting the weight to `0.5`, the slope of `sin(w)` is about `0.877583`, giving about `0.412242`. The last check builds another sine-based function when it runs. A derivative written for `w²` cannot handle those functions.
+
+<CodeBlock language="typescript" title="different-loss-gradients.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const weight = tf.tidy(() => tf.variable(tf.scalar(2.56)));
+function inspect(fn) {
+  return tf.tidy(() => {
+    const { grads } = tf.variableGrads(fn, [weight]);
+    return grads[weight.name].dataSync()[0];
+  });
+}
+
+console.log(inspect(() => weight.square().mul(3))); // about 15.36
+// This assignment resets a diagnostic input. It is not a descent step.
+tf.tidy(() => weight.assign(tf.scalar(0.5)));
+console.log(inspect(() => weight.sin())); // about 0.877583
+weight.dispose();`}
+</CodeBlock>
+
+## Step size and a loss that rises
+
+A sufficiently small step opposite a nonzero gradient lowers a smooth loss locally. A larger step can pass the minimum or increase the loss. For this `w²` probe, rate `0.6` crosses zero but still converges: `5`, `-1`, `0.2`, `-0.04`. Rate `1` bounces between `5` and `-5`, keeping the loss at `25`. Rate `1.2` produces `-7` after one update, with loss `49`, then `9.8`, with loss `96.04`.
+
+Use the activity's rate control to inspect those outcomes. A general network has no single threshold shared with this quadratic. An exploding loss is a reason to inspect the rate, input scales, non-finite values, and gradients.
+
+<ConceptReference summary="The easing analogy and a separate twenty-step example">
+
+An easing loop such as `pos += (target - pos) * 0.1` moves a value toward a known target. It is also gradient descent on the loss `(target - pos)² / 2`.
+
+Start at `pos = 2` with `target = 10`. The loss slope is -8. Subtract a tenth of that slope and the next position is 2.8, the same result as the easing line.
+
+For a network, we know the labels and need to find suitable weights. Calculating the loss slope tells us which direction to try.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+This separate executable example minimizes `(x - 3)²` from `x = 0`. It uses another minimum and another starting point from the Challenge's `w²` probe. Its printed `x` comes after each update, while its printed loss comes before it.
 
 <CodeBlock language="typescript" title="gradient-descent.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -104,19 +206,15 @@ for (let step = 0; step < 20; step++) {
 x.dispose();`}
 </CodeBlock>
 
-`tf.variableGrads` calculates the slope without you writing the derivative. It records the loss calculation, then works backward through its operations. We call this **automatic differentiation**, or autograd. The next lesson explains it.
+Each printed row is five updates after the previous one. The distance covered gets smaller: `1.614`, then `0.528`, then `0.174`. The loop keeps rate `0.1`. The slope of `(x - 3)²` shrinks as `x` approaches `3`, so the updates shrink too.
 
-Each row in the trace is five steps after the previous row. The distance covered gets smaller: 1.614, then 0.528, then 0.174.
+In the easing example, rate `r` leaves `|1 - r|` of the remaining distance after each frame. A rate of `0.001` moves slowly: starting at `pos = 2` toward `target = 10` takes 6,682 frames to get within `0.01`.
 
-The loop does not change the learning rate. The slope of `(x - 3)²` gets smaller as x approaches 3. Each update is a tenth of that slope, so the steps also get smaller.
+At `1.5`, the element jumps past the target to `14`, then halves its error each frame and comes within `0.01` in ten frames. At `2`, it bounces between `18` and `2`. At `2.5`, the error grows: the positions are `22`, `-8`, and `37`.
 
-The **learning rate** scales each update. It is a **hyperparameter**, a setting you choose before the optimizer calculates its updates.
+The executable example minimizes `(x - 3)²`, without the easing loss's division by two. Its slopes are twice as steep, so positive learning rates must stay below `1` to converge. Rate `1.5` sends its `x` to `9`, then `-9`, then `27`.
 
-In the easing example, rate `r` leaves `|1 - r|` of the remaining distance after each frame. A rate of 0.001 moves very slowly: starting at `pos = 2` toward `target = 10` takes 6,682 frames to get within 0.01.
-
-Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error each frame and comes within 0.01 of the target in ten frames. At 2.0 it stops converging and bounces between 18 and 2. Above 2.0 the error grows: at 2.5 the positions are 22, -8 and 37.
-
-The largest stable learning rate depends on the loss. The example above minimizes `(x - 3)²`, without dividing by two. Its slopes are twice as steep, so its learning rate must stay below 1.0 to converge. The 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
+</ConceptReference>
 
 <DerivationDrawer summary="Why the gradient is the steepest-ascent direction">
 **The gradient is a vector of partial derivatives.** For loss `L(w₁, w₂, ..., wₙ)`:
@@ -132,12 +230,14 @@ For a differentiable loss, the gradient points toward the steepest local increas
 `L(w + Δw) ≈ L(w) + ∇L · Δw`
 
 To minimize the linear approximation, pick Δw opposite to ∇L. The learning rate η scales the step:
-- η too large to the local approximation may be poor at the proposed point, and the step can raise the loss
-- η too small to many steps to converge
+- A large η can move beyond the useful local approximation and raise the loss.
+- A small η can require many steps to converge.
 - Adaptive optimizers such as Adam scale updates using gradient history. Their base learning rate remains a setting.
 </DerivationDrawer>
 
-<ConceptReference summary="Practice: predict the next loss">
+<ConceptReference summary="A separate learning-rate experiment">
+
+This experiment uses `0.5 * (w - target)²`, with gradient `w - target`. Its initial case starts at `w = 4` with target `0`. Its changed case starts at `w = -3` with target `1`. Its curve comes from that separate formula. The Challenge uses `w²`, whose gradient is `2 * w`, so the same rate produces a different update.
 
 <LearningExperiment id="learning-rate" />
 
@@ -148,7 +248,9 @@ To minimize the linear approximation, pick Δw opposite to ∇L. The learning ra
 Help Demir move a weight using the loss you give it. Write `step()` so it
 calculates a fresh gradient on every call. The result shows the stored
 gradient, updated weight, and the weight's path through three existing
-checks. It is the update rule the full network will need for every parameter.
+checks. The result also links the captured operands and recomputed losses for
+updates 2 and 3. Later checks change the supplied function, so calculate its
+gradient again each time. The full network will need updates for every parameter.
 
 <Exercise slug="gradient-step" />
 

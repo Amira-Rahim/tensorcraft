@@ -358,6 +358,7 @@
   margin-bottom: 8px;
 }
 .orbit-investigation-feedback {
+  overflow-wrap: anywhere;
   margin: 20px 0;
 }
 .orbit-investigation-run-values {
@@ -402,6 +403,7 @@
   margin-top: 28px;
   padding-top: 20px;
   border-top: 1px solid var(--tc-border);
+  overflow-wrap: anywhere;
 }
 .orbit-investigation-explanation summary,
 .orbit-investigation-method > summary,
@@ -593,4 +595,44 @@
   .tensor-investigation-practice legend {
     font-size: 24px;
   }
+}
+
+.orbit-investigation-source {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 16px;
+  border: 1px solid var(--tc-border);
+  border-radius: 4px;
+  background: var(--tc-bg);
+  overflow-wrap: anywhere;
+}
+.orbit-investigation-source > p {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.orbit-investigation-source > p > span {
+  color: var(--tc-muted);
+}
+.orbit-investigation-source dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.orbit-investigation-source dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  min-width: 0;
+}
+.orbit-investigation-source dt {
+  font-weight: 600;
+}
+.orbit-investigation-source dd {
+  min-width: 0;
+  margin: 0;
 }

@@ -34,13 +34,18 @@ async function signOut(page: Page) {
   await expect(page).toHaveURL("http://localhost:3100/");
 }
 
-async function readableCategories(chart: Locator) {
-  await expect(chart.locator(".orbit-investigation-bar-label")).toHaveText([
+async function readableCategories(
+  chart: Locator,
+  labels = [
     "True positive",
     "False positive",
     "False negative",
     "True negative",
-  ]);
+  ],
+) {
+  await expect(chart.locator(".orbit-investigation-bar-label")).toHaveText(
+    labels,
+  );
   expect(
     await chart.evaluate((element) => {
       const bounds = element.getBoundingClientRect();
@@ -169,7 +174,10 @@ for (const { width, scheme } of reviewCases) {
       "Briefing",
     );
     await expect(
-      page.getByRole("img", { name: /Mirza stands alone at the command tier/ }),
+      page.getByRole("img", {
+        name: "Mirza starts an evaluation of 43 held-out rows at the bridge console.",
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(page.locator("[data-dialogue]")).toBeVisible();
     await expect(
@@ -181,15 +189,19 @@ for (const { width, scheme } of reviewCases) {
         exact: true,
       }),
     ).toHaveAttribute("data-domain-high", "0.91");
-    const briefingCounts = page.getByRole("img", {
-      name: "Correct predictions, false alarms and misses",
+    const briefingAccuracy = page.getByRole("img", {
+      name: "Accuracy against a declared constant rule",
       exact: true,
     });
-    await expect(briefingCounts).toHaveAttribute("data-domain-high", "5");
-    await readableCategories(briefingCounts);
+    await expect(briefingAccuracy).toHaveAttribute("data-domain-high", "0.75");
+    await readableCategories(briefingAccuracy, [
+      "Selected cutoff",
+      "Always predict 0",
+    ]);
     await page.screenshot({
       path: testInfo.outputPath(`evaluation-briefing-${width}.png`),
       fullPage: true,
+      caret: "initial",
     });
     await page
       .getByTestId("lesson-nav")
@@ -198,12 +210,15 @@ for (const { width, scheme } of reviewCases) {
 
     const investigation = page.getByTestId("lesson-investigation");
     await expect(investigation).toContainText(
-      "Twelve labeled teaching cases, separate from the graded exercise",
+      "These twelve supplied teaching scores are separate from the coding task's 43 evaluation rows.",
     );
     const threshold = investigation.getByRole("slider", {
       name: "Anomaly score threshold",
     });
     await expect(threshold).toHaveValue("0.5");
+    await expect(
+      investigation.getByRole("slider", { name: "Case number", exact: true }),
+    ).toHaveValue("3");
     await threshold.focus();
     await threshold.press("ArrowRight");
     await expect(threshold).toHaveValue("0.55");
@@ -245,10 +260,10 @@ for (const { width, scheme } of reviewCases) {
       .click();
     await expect(
       investigation.getByRole("region", { name: "Previous run", exact: true }),
-    ).toContainText("Original labeled scores");
+    ).toContainText("Original scores preset");
     await expect(
       investigation.getByRole("region", { name: "Latest run", exact: true }),
-    ).toContainText("Harder labeled scores");
+    ).toContainText("Shifted scores preset");
     await expect(
       investigation.getByRole("img", {
         name: "Scores with reviewed labels",
@@ -280,6 +295,7 @@ for (const { width, scheme } of reviewCases) {
     await page.screenshot({
       path: testInfo.outputPath(`evaluation-concept-${width}.png`),
       fullPage: true,
+      caret: "initial",
     });
     await page
       .getByTestId("lesson-nav")
@@ -390,6 +406,7 @@ for (const { width, scheme } of reviewCases) {
     ).toEqual([]);
     await current.screenshot({
       path: testInfo.outputPath(`evaluation-current-${width}.png`),
+      caret: "initial",
     });
 
     if (writing) {
@@ -434,6 +451,7 @@ for (const { width, scheme } of reviewCases) {
       expect(await savedEvaluation(page)).toEqual(capture);
       await history.screenshot({
         path: testInfo.outputPath(`evaluation-saved-${width}.png`),
+        caret: "initial",
       });
       await page
         .getByRole("button", { name: "Restore My Code", exact: true })
@@ -592,6 +610,7 @@ for (const { width, scheme } of reviewCases) {
     await page.screenshot({
       path: testInfo.outputPath(`evaluation-takeaways-${width}.png`),
       fullPage: true,
+      caret: "initial",
     });
     await page
       .getByTestId("lesson-nav")
@@ -608,6 +627,7 @@ for (const { width, scheme } of reviewCases) {
     await page.screenshot({
       path: testInfo.outputPath(`evaluation-epilogue-${width}.png`),
       fullPage: true,
+      caret: "initial",
     });
 
     if (writing) {
@@ -636,6 +656,7 @@ for (const { width, scheme } of reviewCases) {
       ).toEqual(capture);
       await project.screenshot({
         path: testInfo.outputPath(`evaluation-project-${width}.png`),
+        caret: "initial",
       });
       await signOut(page);
       await expect(

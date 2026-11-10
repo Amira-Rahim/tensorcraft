@@ -64,9 +64,50 @@ You will add position information to an attention scorer and use its weights to 
 
 <LearningObjectives objectives={["Apply attention across the time steps in a sequence", "Read one weight per step and identify the largest weights", "Explain what an attention plot shows and why it does not prove what caused a prediction", "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window"]} />
 
+## Position-aware scoring before pooling
+
+The exercise starts with a rank-2 `[T, d]` sequence and a supplied `[d+1, 1]`
+scorer. Its moderate probe uses rows `[[0, 4], [0.25, 2], [0.5, 0]]` and scorer
+coefficients `[1, 0, 0.5]`. Positions `[0, 0.5, 1]` produce scores `[0, 0.5, 1]`.
+The table connects each reading to its contribution:
+
+| Step | Position | Score | Softmax weight | First-feature contribution |
+| --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | about 0.1863 | 0 |
+| 1 | 0.5 | 0.5 | about 0.3072 | about 0.0768 |
+| 2 | 1 | 1 | about 0.5065 | about 0.2532 |
+
+<CodeBlock language="typescript" title="position-score-trace.ts">
+{`const positionalExample = tf.tidy(() => {
+  const rows = tf.tensor2d([[0, 4], [0.25, 2], [0.5, 0]]);
+  const positions = tf.linspace(0, 1, 3).reshape([3, 1]);
+  const extended = tf.concat([rows, positions], 1);
+  const coefficients = tf.tensor2d([[1], [0], [0.5]]);
+  const stepScores = extended.matMul(coefficients).reshape([3]);
+  const shares = tf.softmax(stepScores);
+  const pooled = shares.reshape([1, 3]).matMul(rows).squeeze([0]);
+  return { scores: Array.from(stepScores.dataSync()), weights: Array.from(shares.dataSync()), summary: Array.from(pooled.dataSync()) };
+});
+console.log(positionalExample);`}
+</CodeBlock>
+
+The summary is about `[0.3300, 1.3597]`. Position affects scores but never
+becomes a summary feature. For one step, position is zero. Flatten the scores
+across time, and remove only the summary's batch axis. Keep d=1 as shape `[1]`.
+The caller owns the original input tensors and both returned tensors. Tidy
+should dispose only your intermediate allocations.
+
+The separate batched examples below use retained Dense scorer layers. They
+show integration and capture limits, with no promise that untrained weights
+match the exercise's supplied coefficients. Actual tensors support these
+operations. A SymbolicTensor in a layer-construction graph requires an
+appropriate custom layer or differentiable training composition.
+
 ## Temporal Attention Layer
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="Reference: a separate batched feature-only scorer">
 
 <CodeBlock language="typescript" title="temporal-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -112,6 +153,8 @@ function temporalAttention(
 // The model focuses on the initial spike and the frequency shift,
 // 74 steps apart inside the 80-step window`}
 </CodeBlock>
+
+</ConceptReference>
 
 Keep three counts separate. A dashboard time step is one reading, arriving once per second. The first and last timestamps in an 80-reading window are 79 seconds apart.
 
@@ -162,6 +205,8 @@ The heatmaps above assume the model receives the whole window. The bridge only h
 
 Here is what happens when part of the window is missing:
 
+<ConceptReference summary="Reference: apply that batched scorer to a truncated buffer">
+
 <CodeBlock language="typescript" title="ring-buffer-attention.ts">
 {`// One full capture cycle from the ring buffer: 80 steps, 3 features.
 // Integration sketch: bufferWindow supplies one recorded window.
@@ -185,6 +230,8 @@ tf.dispose([full, attended, weights, kept, clipped.attended, clipped.weights]);
 // Dispose scorer at the end of the workflow.`}
 </CodeBlock>
 
+</ConceptReference>
+
 Both weight sums are 1. That normalization says nothing about confidence or missing observations. The pooled outputs also have the same shape, [1, 3], although their values can differ. An output-shape check alone will not detect a truncated input. Validate window length, timestamps and capture metadata before inference, and preserve the missing-data status for the operator.
 
 ## Putting the Position Back
@@ -192,6 +239,8 @@ Both weight sums are 1. That normalization says nothing about confidence or miss
 The scorer above only sees feature values. If you reorder the same readings, each weight follows its reading and the weighted sum stays the same. It cannot tell whether a spike came before or after a frequency shift.
 
 Give it position information too. This example adds one feature: each step's position scaled to [0, 1]. Transformers can use learned position vectors, relative scores, or rotations. Our extra column is a simpler version.
+
+<ConceptReference summary="Reference: a separate batched position-aware scorer">
 
 <CodeBlock language="typescript" title="positional-feature.ts">
 {`// [batch, T, 3] -> [batch, T, 4]: the fourth feature is position / (T - 1)
@@ -222,6 +271,8 @@ function positionalAttention(sequence: tf.Tensor3D): { attended: tf.Tensor2D; we
 // because lateness is now a number it multiplies by a weight.`}
 </CodeBlock>
 
+</ConceptReference>
+
 Sinusoidal encodings are one approach used in the original Transformer. Learned positions and relative or rotary schemes are other choices. Our linear position column only lets the scorer favor earlier or later steps. It is not a full transformer position mechanism.
 
 ## Challenge
@@ -229,6 +280,8 @@ Sinusoidal encodings are one approach used in the original Transformer. Learned 
 Build the temporal attention path with position as a scored feature. Inspect its weights beside the pooled readings: the position column should affect which steps contribute, while the summary still contains only the original reading features. This gives Farah a summary for the next prediction and weights she can investigate separately.
 
 <Exercise slug="temporal-attention" />
+
+The actual result pairs `Where your positional scorer puts its weight` with `Your pooled readings`. That captured probe uses rows `[[2,4],[9,1],[3,5]]` and position-only coefficient 20, so the last row dominates. The summary still has two features. The activity includes that same case as well as the moderate one. A weight sum of one and correct shape do not show that a capture kept its missing beginning.
 
 <RecallPrompt
   question="What can an attention plot tell you, and what does it leave uncertain?"

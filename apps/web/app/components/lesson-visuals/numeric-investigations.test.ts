@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import * as tf from "@tensorflow/tfjs";
 import { NUMERIC_INVESTIGATIONS } from "./numeric-investigations";
-import { magnitudeSpectrum, teachingSignal } from "./instrument-math";
+import { FFT_TASK_CASES } from "./signal-task-investigations";
 import { comparisonDomain, investigationDomain } from "./investigation-graphic";
 import {
   clampInvestigationValues,
@@ -29,11 +29,9 @@ const run = (
 describe("audited numeric investigations", () => {
   it("preserves common axes for the catalog's same-quantity comparisons", () => {
     const pairs = [
-      ["loss-functions", 0, 1],
       ["training-loop", 0, 1],
       ["lstm-gates", 0, 1],
-      ["sequence-prediction", 0, 1],
-      ["forecasting", 0, 1],
+      ["forecasting", 0, 2],
       ["kalman-filters", 0, 2],
       ["quantization", 0, 1],
       ["pruning", 0, 1],
@@ -55,14 +53,13 @@ describe("audited numeric investigations", () => {
 
   it("preserves the quantity when chart captions change across runs", () => {
     const comparisons = [
-      ["activation-functions", 1, { function: 0 }, { function: 1 }],
-      ["time-vs-frequency", 0, { frequency: 12 }, { frequency: 20 }],
-      ["fourier-transform", 0, { frequency: 12 }, { frequency: 20 }],
-      ["spectrograms", 0, { start: 0 }, { start: 40 }],
-      ["fft-as-features", 0, { frequency: 12 }, { frequency: 20 }],
+      ["time-vs-frequency", 0, { bin: 147 }, { bin: 94 }],
+      ["fourier-transform", 0, { bin: 5 }, { bin: 7 }],
+      ["spectrograms", 2, { frame: 0 }, { frame: 1 }],
+      ["fft-as-features", 0, { feature: 2 }, { feature: 3 }],
       ["windowing-and-overlap", 0, { taper: 0 }, { taper: 1 }],
-      ["beyond-lstm", 0, { query: 0.8 }, { query: -1 }],
-      ["temporal-attention", 0, { query: 0.8 }, { query: -1 }],
+      ["beyond-lstm", 2, { query: 0.8 }, { query: -1 }],
+      ["temporal-attention", 2, { positionWeight: 0.5 }, { positionWeight: 2 }],
     ] as const;
     for (const [slug, index, before, after] of comparisons) {
       const prior = run(slug, before).graphics[index]!;
@@ -73,34 +70,94 @@ describe("audited numeric investigations", () => {
     }
   });
 
-  it("moves the signal between fixed FFT feature columns", () => {
-    for (const frequency of [12, 20]) {
-      const result = run("fft-as-features", { frequency, amplitude: 0.6 });
-      const features = new Function(
-        "samples",
-        "spectrum",
-        `${result.code}\nreturn features;`,
-      )(teachingSignal(frequency, 0.6), magnitudeSpectrum);
-      expect(features).toHaveLength(3);
-      expect(features[0]).toBeCloseTo(1, 10);
-      expect(features[1]).toBeCloseTo(frequency === 12 ? 0.6 : 0, 10);
-      expect(features[2]).toBeCloseTo(frequency === 20 ? 0.6 : 0, 10);
-      expect(result.answer).toBeCloseTo(features[1], 10);
+  it("matches the scalar challenge gradient and its finite-difference comparison", () => {
+    const before = tf.memory().numTensors;
+    for (let weight = -5; weight <= 5; weight += 0.25) {
+      const result = run("backpropagation", { weight });
+      const variable = tf.tidy(() => tf.variable(tf.scalar(weight)));
+      try {
+        const actual = tf.tidy(() => {
+          const { grads } = tf.variableGrads(() => variable.square());
+          return grads[variable.name]!.dataSync()[0];
+        });
+        const calculation = new Function(
+          `${result.code}\nreturn { gradient, estimate };`,
+        )();
+        expect(result.answer).toBeCloseTo(actual!, 6);
+        expect(calculation.gradient).toBeCloseTo(actual!, 6);
+        expect(calculation.estimate).toBeCloseTo(actual!, 2);
+        expect(result.graphics[1]!.values).toEqual([
+          calculation.gradient,
+          Number(calculation.estimate.toFixed(3)),
+        ]);
+        expect(variable.dataSync()[0]).toBe(weight);
+      } finally {
+        variable.dispose();
+      }
+    }
+    expect(tf.memory().numTensors).toBe(before);
+    expect(run("backpropagation", {}, "changed").answer).toBe(10);
+  });
+
+  it("reads raw Fourier bins and returns the eligible winner on each supplied grid", () => {
+    for (const [caseId, item] of Object.entries(FFT_TASK_CASES)) {
+      const raw = tf.tidy(() =>
+        Array.from(
+          tf.spectral.rfft(tf.tensor1d(item.samples)).abs().dataSync(),
+        ),
+      );
+      let winner = 1;
+      for (let bin = 2; bin < raw.length; bin++)
+        if (raw[bin]! > raw[winner]!) winner = bin;
+      for (const bin of [0, 1, item.samples.length / 2]) {
+        const result = run("fourier-transform", { bin }, caseId);
+        const generated = new Function(
+          `${result.code}\nreturn { frequency, selectedFrequency };`,
+        )();
+        expect(result.answer).toBe((winner * item.rate) / item.samples.length);
+        expect(generated.frequency).toBe(result.answer);
+        expect(generated.selectedFrequency).toBe(
+          (bin * item.rate) / item.samples.length,
+        );
+        expect(result.graphics[1]!.highlight).toEqual([bin, winner]);
+        expect(result.graphics[1]!.values[bin]).toBeCloseTo(raw[bin]!, 2);
+      }
     }
   });
-  it("executes generated activation code for every input and matches TFJS", () => {
+
+  it("keeps the supplied FFT feature positions attached to their bin centers", () => {
+    const first = run("fft-as-features", { feature: 2 });
+    const second = run("fft-as-features", { feature: 7 });
+    expect(first.answer).toBeCloseTo(32, 3);
+    expect(second.answer).toBeCloseTo(16, 3);
+    expect(first.graphics[2]!.values).toHaveLength(10);
+    expect(first.graphics[2]!.labels?.[2]).toContain("52 Hz");
+    expect(second.graphics[2]!.labels?.[7]).toContain("72 Hz");
+    for (const result of [first, second])
+      expect(new Function(`${result.code}\nreturn selectedValue;`)()).toBe(
+        result.answer,
+      );
+  });
+
+  it("executes generated activation code for each diagnostic case and matches TFJS", () => {
+    const spec = NUMERIC_INVESTIGATIONS["activation-functions"]!;
     for (const fn of [0, 1, 2]) {
-      for (let input = -4; input <= 4; input += 0.25) {
-        const result = run("activation-functions", { function: fn, input });
-        const generated = new Function(`${result.code}\nreturn output;`)();
+      for (const example of spec.cases) {
+        const values = initialInvestigationValues(spec, example.id);
+        const result = run(
+          "activation-functions",
+          { function: fn },
+          example.id,
+        );
+        const generated = new Function(`${result.code}\nreturn selected;`)();
         const actual = tf.tidy(() => {
-          const value = tf.scalar(input);
-          return (
-            fn === 0 ? value.relu() : fn === 1 ? value.sigmoid() : value.tanh()
-          ).dataSync()[0];
+          const input = tf.tensor1d(result.graphics[0]!.values as number[]);
+          const output =
+            fn === 0 ? input.relu() : fn === 1 ? input.sigmoid() : input.tanh();
+          return output.dataSync()[values.position!]!;
         });
-        expect(generated).toBeCloseTo(actual!, 6);
-        expect(result.answer).toBeCloseTo(actual!, 6);
+        expect(generated).toBeCloseTo(actual, 6);
+        expect(result.answer).toBeCloseTo(actual, 6);
       }
     }
   });
@@ -143,58 +200,52 @@ describe("audited numeric investigations", () => {
     });
   });
 
-  it("reaches the last complete input/target window for each length", () => {
+  it("reaches the last complete classification window and labels its last reading", () => {
     const spec = NUMERIC_INVESTIGATIONS["sliding-windows"]!;
     const control = spec.controls.find((c) => c.id === "start")!;
-    for (const length of [2, 3, 4]) {
-      const start = investigationControlMax(control, { length })!;
-      expect(start).toBe(8 - length - 1);
-      const result = run("sliding-windows", { start, length });
-      expect(result.answer).toBe(9);
-      expect(result.graphics[1]!.values).toHaveLength(length);
-      expect(
-        clampInvestigationValues(spec, { start: 5, length: 4 }).start,
-      ).toBe(3);
+    for (const window of [2, 3, 4]) {
+      const start = investigationControlMax(control, { window })!;
+      expect(start).toBe(12 - window);
+      const result = run("sliding-windows", { start, window });
+      expect(result.answer).toBe("evaluation");
+      expect(result.graphics[2]!.values).toEqual([
+        start,
+        11,
+        8,
+        0,
+        "evaluation",
+      ]);
+      expect(clampInvestigationValues(spec, { start: 11, window }).start).toBe(
+        12 - window,
+      );
     }
   });
 
-  it("adds normalized time position before softmax while pooling original values", () => {
-    const keys = [-1, -0.4, 0.2, 0.7, 1.2];
-    const values = [2, 7, 3, 8, 4];
+  it("adds normalized time position while preserving the original feature width", () => {
     for (const positionWeight of [-2, 0, 2]) {
-      const result = run("temporal-attention", { query: 0, positionWeight });
-      expect(result.answer).toBe(positionWeight > 0 ? 4 : 0);
-      const observed = new Function(
-        "keys",
-        "values",
-        "softmax",
-        `${result.code}\nreturn { weights, summary };`,
-      )(keys, values, (scores: number[]) =>
-        tf.tidy(() => Array.from(tf.softmax(tf.tensor1d(scores)).dataSync())),
-      );
-      expect(
-        observed.weights.reduce((a: number, b: number) => a + b, 0),
-      ).toBeCloseTo(1, 6);
+      const result = run("temporal-attention", {
+        featureWeight: 0,
+        positionWeight,
+      });
       const expected = tf.tidy(
         () =>
           tf
-            .softmax(tf.tensor1d(keys.map((_, t) => (positionWeight * t) / 4)))
-            .mul(tf.tensor1d(values))
+            .softmax(tf.tensor1d([0, positionWeight / 2, positionWeight]))
+            .mul(tf.tensor1d([0, 0.25, 0.5]))
             .sum()
             .dataSync()[0],
       );
-      expect(observed.summary).toBeCloseTo(expected!, 5);
-      const shownContributions = result.graphics.at(-1)!.values as number[];
-      shownContributions.forEach((value, t) =>
-        expect(value).toBeCloseTo(observed.weights[t] * values[t]!, 2),
-      );
+      expect(result.answer).toBeCloseTo(expected!, 6);
+      const weights = result.graphics[2]!.values as number[];
+      expect(weights.reduce((a, b) => a + b, 0)).toBeCloseTo(1, 12);
+      expect(result.graphics[0]!.values).toHaveLength(6);
     }
-    expect(NUMERIC_INVESTIGATIONS["beyond-lstm"]!.controls).toHaveLength(1);
+    expect(NUMERIC_INVESTIGATIONS["beyond-lstm"]!.controls).toHaveLength(4);
   });
 
   it("generated recurrent-state code retains the actual prior state", () => {
     for (const memory of [0.3, 0.7, 1.2]) {
-      for (const step of [0, 3, 5]) {
+      for (const step of [0, 1, 2]) {
         const result = run("simple-rnns", { memory, step });
         const generated = new Function(`${result.code}\nreturn nextState;`)();
         expect(generated).toBeCloseTo(result.answer as number, 12);
@@ -202,57 +253,58 @@ describe("audited numeric investigations", () => {
     }
   });
 
-  it("counts the statistical, reconstruction and forecast votes independently", () => {
+  it("counts the supplied statistical, reconstruction and amplitude-forecast votes independently", () => {
     expect(run("the-anomaly", {}).answer).toBe(2);
-    expect(run("the-anomaly", {}, "changed").answer).toBe(0);
+    expect(run("the-anomaly", {}, "changed").answer).toBe(1);
     expect(
-      run("the-anomaly", {
-        actual: 0.9,
-        reconstructionError: 0.1,
-        predicted: 0.9,
-      }).answer,
+      run("the-anomaly", { actual: 0.9, reconstruction: 0.1, forecast: 0.9 })
+        .answer,
     ).toBe(1);
     expect(
-      run("the-anomaly", {
-        actual: 0.52,
-        reconstructionError: 2,
-        predicted: 0.52,
-      }).answer,
+      run("the-anomaly", { actual: 0.52, reconstruction: 2, forecast: 0.52 })
+        .answer,
     ).toBe(1);
     expect(
-      run("the-anomaly", {
-        actual: 0.52,
-        reconstructionError: 0.1,
-        predicted: 0.2,
-      }).answer,
+      run("the-anomaly", { actual: 0.52, reconstruction: 0.1, forecast: 0.2 })
+        .answer,
     ).toBe(1);
     const boundary = run("the-anomaly", {
       actual: 0.5,
-      reconstructionError: 1,
-      predicted: 0.4,
+      reconstruction: 1,
+      forecast: 0.4,
     });
     expect(boundary.answer).toBe(0);
-    expect(boundary.graphics.at(-1)!.values.at(-1)).toBe("No alert selected");
+    expect(boundary.graphics.at(-1)!.values.at(-1)).toBe(
+      "0 votes. No alert under majority rule",
+    );
     const alert = run("the-anomaly", {
       actual: 0.5,
-      reconstructionError: 1.1,
-      predicted: 0.39,
+      reconstruction: 1.1,
+      forecast: 0.39,
     });
     expect(alert.answer).toBe(2);
-    expect(alert.graphics.at(-1)!.values.at(-1)).toBe("Alert selected");
+    expect(alert.graphics.at(-1)!.values.at(-1)).toBe("2 votes. Raise alert");
   });
 
   it("keeps an exact threshold value below the strict alert boundary", () => {
     const equal = run("evaluating-deep-scan", { threshold: 0.41 });
     const below = run("evaluating-deep-scan", { threshold: 0.4 });
-    expect(equal.graphics[1]!.values[2]).toBe("FN");
-    expect(below.graphics[1]!.values[2]).toBe("TP");
+    expect(
+      equal.graphics.find(
+        (graphic) => graphic.label === "Categories at this threshold",
+      )!.values[2],
+    ).toBe("FN");
+    expect(
+      below.graphics.find(
+        (graphic) => graphic.label === "Categories at this threshold",
+      )!.values[2],
+    ).toBe("TP");
     expect(equal.answer).toBe((below.answer as number) + 1);
-    const costEqual = run("threshold-tuning", { threshold: 0.67, missCost: 3 });
-    const costBelow = run("threshold-tuning", { threshold: 0.66, missCost: 3 });
-    expect(costEqual.graphics[1]!.values[4]).toBe("TN");
-    expect(costBelow.graphics[1]!.values[4]).toBe("FP");
-    expect(costBelow.answer).toBe((costEqual.answer as number) + 1);
+    const first = run("threshold-tuning", { candidate: 0, row: 5 });
+    expect(first.graphics[0]!.values[5]).toContain("flag false");
+    expect(first.answer).toBeCloseTo(6 / 7, 12);
+    const second = run("threshold-tuning", { candidate: 1 });
+    expect(second.answer).toBe(0.8);
   });
 
   it("parses generated JavaScript at every case and control extreme", () => {

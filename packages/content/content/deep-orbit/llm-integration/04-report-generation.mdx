@@ -87,9 +87,43 @@ Help Farah put the approved sections in order and list any sections still waitin
 ]}
 />
 
-## Section-by-Section Generation
+## One section passes from review to assembly
+
+The exercise supplies this mixed review probe. These are authored section texts and approval flags, rather than new model output or new mission measurements.
+
+| Section | Supplied body | Earlier review |
+| --- | --- | --- |
+| Executive Summary | 12,001 events catalogued. | Approved |
+| Hypotheses | The pulse train is a reply. | Withheld |
+| Results | 153 anomalous, 1 unclassified. | Approved |
+
+Select a section in the activity and follow its body and review flag into the report. The assembler keeps the approved bodies in their original order. It lists Hypotheses under one final `Withheld` heading without including its claim.
+
+The separate drafting example calls its body `generated`. The exercise calls the same handoff field `content`:
+
+<CodeBlock language="javascript" title="section-review-handoff.js">
+{`const draft = {
+  heading: 'Hypotheses',
+  generated: 'The pulse train is a reply.',
+  validated: false,
+};
+const section = {
+  heading: draft.heading,
+  content: draft.generated,
+  validated: draft.validated,
+};
+console.log(section);`}
+</CodeBlock>
+
+Preserve that explicit review decision when adapting the fields. Changing the body requires a fresh review. The formatter cannot approve the change.
+
+The required document starts with `# title` and a blank line. Each approved block uses `## heading`, a blank line, and its body. Put `\n\n---\n\n` between blocks only. If any sections fail review, add one final `## Withheld` block and list their headings in order. All-withheld input contains that list but no bodies. Empty input returns only the title and its blank line.
+
+## Separate drafting and review calls
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="Separate drafting calls and explicit reviewer decisions">
 
 <CodeBlock language="typescript" title="report-pipeline.ts">
 {`// reviewSection is supplied by the application: it shows the draft and
@@ -162,6 +196,8 @@ const marked = await generateReport(reportSections, llm, reviewSection);
 // Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
+</ConceptReference>
+
 Each section request uses `temperature: 0.2`. At a positive temperature, the sampler divides the model’s vocabulary logits by that value before softmax. A low temperature puts more probability on higher-scoring tokens, and the decoding rule chooses the next token.
 
 That choice does not check facts or guarantee identical replies. Even greedy selection can invent an instrument. Farah's fictional Band-3 cluster arrived at temperature 0.3 in lesson 1. Review must check claims against their sources. Matching numbers alone would miss a made-up instrument or an unsupported explanation of its cause.
@@ -175,6 +211,8 @@ Assemble the approved sections in order and list the headings you leave out. Eac
 Read the report your function returns. Earth must be able to distinguish an omitted section from a report with no findings. The supplied review flags determine which sections your assembler includes. A reviewer must approve the claims first.
 
 <Exercise slug="generate-report" />
+
+Inspect your returned Markdown as well as the verdict. Find the approved bodies, the single omission list, and the separators. Search for the withheld sentence itself. It must be absent. A formatting failure can still leave a useful draft to inspect. Farah reviews the assembled report for consistency before any release.
 
 <RecallPrompt
   question="Why check each section and then check the whole report?"

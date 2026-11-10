@@ -135,9 +135,42 @@ You will calculate three detector verdicts and combine them into one alert decis
 
 <LearningObjectives objectives={["Combine detectors with a majority rule and explain how shared blind spots can still cause a miss", "Calculate the statistical check, then combine it with the autoencoder and LSTM scores", "Read the vote as a count of failed checks and explain why it cannot establish a probability"]} />
 
+## The exercise combines supplied evidence
+
+The exercise computes one detector and receives the other two outputs.
+Its eight-reading window is `[0.5, 0.54, 0.51, 0.53, 0.52, 0.52, 0.5, 0.54]`.
+The mean is near 0.52 and population spread near 0.015. At actual amplitude
+0.5, the signed z-score is near -1.333, so the statistical check stays quiet.
+The eleven-day baseline has a different spread and a different z-score.
+
+<CodeBlock language="typescript" title="window-vote-trace.ts">
+{`const recentAmplitudes = [0.5, 0.54, 0.51, 0.53, 0.52, 0.52, 0.5, 0.54];
+const windowBaseline = tf.tidy(() => {
+  const statistics = tf.moments(tf.tensor1d(recentAmplitudes));
+  return { center: statistics.mean.dataSync()[0], spread: Math.sqrt(statistics.variance.dataSync()[0]) };
+});
+const signedDistance = (0.5 - windowBaseline.center) / windowBaseline.spread;
+console.log({ ...windowBaseline, signedDistance });`}
+</CodeBlock>
+
+| Check | Evidence and its own cutoff | Vote in this probe |
+| --- | --- | --- |
+| Statistical | Absolute z-score about 1.333, cutoff 3 | False |
+| Reconstruction | Supplied error 6.2, cutoff 1 | True |
+| Forecast | Supplied amplitude forecast 0.2 versus actual 0.5, absolute miss 0.3, tolerance 0.1 | True |
+
+Two votes raise an alert. The forecast gate here uses absolute amplitude
+error. The separate mission pipeline below measures three-feature forecast
+MSE with its own scaler and cutoff. Neither vote count supplies a label or a
+probability for sample 7741. Constant windows have no z-score: use the stated
+null/equality convention. Validate inputs, preserve signed z, and reject
+non-finite statistics or variation lost during float32 conversion.
+
 ## Ensemble Detection
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="Reference: the separate full mission pipeline and its scalers">
 
 <CodeBlock language="typescript" title="ensemble-detector.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -234,6 +267,8 @@ function detectAnomaly(
 // This reading's 0.041 is about four times that cutoff.`}
 </CodeBlock>
 
+</ConceptReference>
+
 The three detectors run separate calculations, but they can still make related errors. They all read the same capture. The statistical check uses its min-max-scaled amplitude. The autoencoder sees that amplitude again, z-scored, among its eleven features. If the sensor drifts, both receive the changed reading.
 
 The models also use training rows from the same archive, although the LSTM used only its first day. A problem in shared data can affect several votes. You cannot treat those votes as independent probabilities.
@@ -296,6 +331,8 @@ This exercise uses a different baseline from lesson 1. The same maximum reading 
 When every value in the window is identical, its standard deviation is zero. Return a null z-score. For this exercise, an equal new value gives no statistical vote and a different value gives one vote. Real sensors need a tolerance based on measurement precision and noise. If different window values become identical after float32 conversion, reject the calculation. Rounding away a difference does not make the original readings constant.
 
 <Exercise slug="ensemble-detector" />
+
+`Your detector votes and alert` shows the statistical score your function calculated, each returned flag, vote count, and alert. Read that count as threshold crossings. It runs no autoencoder or LSTM and resolves neither the capture’s true label nor its origin.
 
 <RecallPrompt
   question="The amplitude check stays quiet, but the autoencoder and LSTM both flag a reading. What should the 2-of-3 ensemble report, and what does that result mean?"

@@ -94,6 +94,32 @@ Give the next operator a card they can use without Demir beside them. Put the ev
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
+## From metadata to a handover line
+
+The Challenge supplies a smaller metadata record than the full mission card below. Its accuracy is `0.918`, its evaluation context is `the pruning review`, and its recall values are shown in the activity. Your function must render those supplied fields as one string. It does not measure them.
+
+<CodeBlock language="typescript" title="card-field-trace.ts">
+{`const accuracy = 0.918;
+const benchmarkedOn = 'the pruning review';
+const recallByClass = { pulsar: 0.96, noise: 0.95, quasar: 0.94, interference: 0.9, anomaly: 0.84 };
+const percentage = (value: number) => (value * 100).toFixed(1) + '%';
+const lowest = Object.entries(recallByClass).reduce((a, b) => b[1] < a[1] ? b : a);
+console.log('- Accuracy: ' + percentage(accuracy) + ' (measured at ' + benchmarkedOn + ')');
+console.log('- Lowest recall: ' + lowest[0] + ' at ' + percentage(lowest[1]));
+// Accuracy: 91.8%, measured at the pruning review
+// Lowest recall: anomaly at 84.0%`}
+</CodeBlock>
+
+Scan every class to find the minimum. A different metadata record can put another class last, or make another class the minimum. Key order does not tell you which class has the lowest recall. Recall describes the share of labeled examples of that class the model found.
+
+Keep each line under the requested Performance, Limitations or Usage heading. Preserve the source units: 3,988 weight bytes and 0.035 ms inference duration. Those figures cover the weight file and the supplied classifier timing. They do not describe all downloads or the whole pipeline. The actual string your code generates appears in the Challenge result for Farah to inspect.
+
+The input `Float32Array(64)` means 64 samples from one channel. At 256 Hz, that is a quarter-second window. The archive's 64 sensor channels describe a different axis.
+
+This formatter builds part of a handover. A release card also needs intended use, model and data identities, preprocessing, evaluation splits and sample counts, and measurement conditions. The next watch needs monitoring and recovery instructions too. Keep that operator judgment separate from string formatting.
+
+<ConceptReference summary="Optional: full mission card and pipeline API reference">
+
 <CodeBlock language="typescript" title="model-card.ts">
 {`// Fictional mission card. These scores, timings and bundle sizes are
 // fictional story values. Measure the downloadable model separately.
@@ -258,6 +284,8 @@ const runbook = {
   'Accuracy drop': 'Check label quality and class mix; evaluate recent labeled cases with the release baseline',
 };`}
 </CodeBlock>
+
+</ConceptReference>
 
 ## Challenge
 

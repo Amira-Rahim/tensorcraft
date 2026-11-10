@@ -16,6 +16,11 @@ import {
   comparisonDomain,
 } from "./investigation-graphic";
 
+import {
+  INVESTIGATION_SOURCE_KIND_LABELS,
+  selectedInvestigationSource,
+} from "./investigation-source-context";
+
 interface ExperimentRun {
   number: number;
   caseId: string;
@@ -211,6 +216,9 @@ export function LessonInvestigation({
     : predictionChanged
       ? "Last run (prediction changed)"
       : "What happened";
+  const source = spec.source
+    ? selectedInvestigationSource(spec.source, caseId)
+    : undefined;
   const inputGraphic = preview.graphics[0];
   const inputDomain =
     latest &&
@@ -334,6 +342,15 @@ export function LessonInvestigation({
                       max={investigationControlMax(control, values)}
                       step={control.step ?? 1}
                       value={values[control.id]}
+                      // Changing a range limit can silently clamp its DOM value.
+                      // Input still reports a later edit when React's change
+                      // tracker retains the value from before that clamp.
+                      onInput={(event) =>
+                        updateValue(
+                          control.id,
+                          Number(event.currentTarget.value),
+                        )
+                      }
                       onChange={(event) =>
                         updateValue(control.id, Number(event.target.value))
                       }
@@ -344,6 +361,33 @@ export function LessonInvestigation({
             </div>
             <div className="orbit-investigation-input">
               <h4>Current inputs</h4>
+              {source && (
+                <section
+                  className="orbit-investigation-source"
+                  aria-label="Source context"
+                  data-source-id={source.id}
+                  data-source-kind={source.kind}
+                >
+                  <p>
+                    <strong>{source.label}</strong>
+                    <span>{INVESTIGATION_SOURCE_KIND_LABELS[source.kind]}</span>
+                  </p>
+                  <dl>
+                    <div>
+                      <dt>Selection</dt>
+                      <dd>{source.scope}</dd>
+                    </div>
+                    <div>
+                      <dt>Order</dt>
+                      <dd>{source.ordering}</dd>
+                    </div>
+                    <div>
+                      <dt>Units</dt>
+                      <dd>{source.units}</dd>
+                    </div>
+                  </dl>
+                </section>
+              )}
               {inputGraphic && (
                 <InvestigationGraphic
                   graphic={inputGraphic}

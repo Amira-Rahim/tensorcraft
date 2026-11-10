@@ -187,6 +187,30 @@ Before the hour ended, ARIA simulated the other three policies. She filed their 
 
 </StoryPassage>
 
+## The ordered check record
+
+The first task runs a small local TFJS scorer through supplied checks. A later check can depend on a model that an earlier check loaded. Await each check in order, keep its message, and report the whole verification as failed when any check fails.
+
+<CodeBlock language="typescript" title="launch-check-trace.ts">
+{`let modelLoaded = false;
+const checks = [
+  async () => {
+    await Promise.resolve();
+    modelLoaded = true;
+    return { name: 'load', passed: true, message: 'weights in memory' };
+  },
+  async () => ({ name: 'probe', passed: modelLoaded, message: modelLoaded ? 'ready' : 'model unavailable' }),
+];
+const ordered = [];
+for (const check of checks) ordered.push(await check());
+console.log(ordered); // load passes before probe starts
+console.log('All passed:', ordered.length > 0 && ordered.every(row => row.passed));`}
+</CodeBlock>
+
+The Challenge adds a deadline and failure handling. Record a thrown check as a failure. After a timeout, request cancellation and skip dependent checks. An abort signal cannot force a check to stop. Empty verification also fails because it establishes no working path.
+
+The second task trains a separate synthetic candidate and reports its actual history, canary scores and release decision. The third combines the supplied fictional detector votes with an interval-template check. These tasks produce separate records. None deploys the full mission system.
+
 ## Production Build
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -246,7 +270,7 @@ const config: BuildConfig = {
 //     └── validation-sample.json  (~50 KB)`}
 </CodeBlock>
 
-The inventory separates the small classifier from the fictional language component. It documents the intended architecture. It does not produce a build. Use the independent project below for a runnable app with its own supplied model and build command. Use the runtime lab for actual model-file identity and hosted-fixture verification.
+The inventory separates the small classifier from the fictional language component. It documents the intended architecture. It does not produce a build. The independent project below supplies a training starter and the commands to train, check, evaluate and start the app. Implement training and export your own model before loading it. It includes no pretrained model or build command. Use the runtime lab for actual model-file identity and hosted-fixture verification.
 
 ## Deployment checks
 
@@ -408,6 +432,10 @@ Successive Fibonacci ratios approach the golden ratio, about 1.618. This exercis
 Measurements and floating-point arithmetic introduce small differences. In JavaScript, 11.7 / 7.2 gives 1.6249999999999998, and a live capture can differ by more. Allow a band around each expected ratio to accommodate those differences. A narrow band can reject real patterns. A wide one can accept unrelated patterns. Choose it with the same care as the alert thresholds in module 7.
 
 ## Challenge
+
+The three exercises below have separate editors and results. The author estimates are about 25 minutes for reading and 50 minutes for the exercises, about 75 minutes in total. They are planning estimates, not observed completion times. The optional independent project is a separate, longer piece of work.
+
+
 
 Write the verification runner. Run the checks in order and await each one before starting the next. The deployment passes only if every check passes.
 

@@ -100,9 +100,27 @@ Farah needs to see which records support an answer and which claims still need r
 
 <LearningObjectives objectives={["Retrieve signal records and supply them as evidence for a generated answer", "Limit how many records reach the model, and report any matches left out", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Compare field filters, keyword search, and embedding search, and explain what the record limit leaves out"]} />
 
-## The RAG Pipeline
+## Records that reach the prompt
+
+The activity uses the supplied records from the retriever's exercise checks.
+In the four-row case, the query asks for Band-7 anomalies from the last 72 hours.
+One row has the wrong band, one is noise, and one is too old. Only `keeper`
+passes all three filters. Filtering happens before the twenty-row cap.
+
+The forty-row case makes the cap matter. Thirty records match the same query.
+The prompt receives the first twenty in database order, leaving ten matching
+records out. `matched` stays `30`, and `truncated` becomes `true`.
+Those ten rows still match. The row limit leaves them out without ranking them.
+
+Your code must return these three pieces together: the rows it selected,
+the total match count, and whether it left any matches out. A later report
+needs that context to explain the scope of its answer.
+
+## Evidence in the generated answer
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="A separate generation pipeline around retrieval">
 
 <CodeBlock language="typescript" title="rag-pipeline.ts">
 {`interface Signal {
@@ -190,6 +208,8 @@ console.log('Matching signals:', result.matched, 'Context truncated:', result.tr
 // An empty verified list supplies no checked numerical answer.`}
 </CodeBlock>
 
+</ConceptReference>
+
 Metadata filters work here because signals have named fields. For prose, keyword search can still retrieve relevant passages. Embedding search is another option: a model maps documents and queries to vectors, and retrieval compares those vectors, often with cosine similarity. Some systems combine both. Relevant-looking passages can still omit the evidence needed to answer a question.
 
 The exercise recognizes only a small set of query patterns. It does not understand negation, "overnight" or arbitrary date ranges. A production interface can expose explicit filters. A query parser needs its own validation. A retrieval system can rank metadata and keyword matches. This exercise keeps database order.
@@ -198,11 +218,44 @@ Twenty rows are not a token budget: long fields and a long question can still ov
 
 ## Claims and their cited evidence
 
-Suppose a record says 14 events at 73.4 Hz. A number scan accepts “73.4 events at 14 Hz” because both values exist. It also finds nothing to object to in “the signal is safe,” which contains no numbers. The number scan has verified neither answer.
+The supplied `keeper` row contributes one event with a frequency of 73.4 Hz.
+`evidenceRows()` keeps its ID, maps the raw `frequency` field to `frequencyHz`,
+and adds `eventCount: 1`. The claim checker reads that evidence row.
+A number scan accepts “73.4 events at 1 Hz” because both values exist.
+It also finds nothing to object to in “the signal is safe,” which contains
+no numbers. The number scan has verified neither answer.
+
+A structured reading gives the checker a precise question:
+
+<CodeBlock language="json" title="Claim about the supplied keeper record">
+{`{
+  "id": "frequency-reading",
+  "kind": "reading",
+  "rowIds": ["keeper"],
+  "field": "frequencyHz",
+  "value": 73.4,
+  "unit": "Hz"
+}`}
+</CodeBlock>
+
+This asks whether that field in the `keeper` evidence row supports the value and unit.
+Changing the unit to `events` fails even though the number stays the same.
+This example uses the supplied test record. It reports no new measurement.
 
 The second challenge uses structured claims instead. Each names its source rows, field, value, and unit. A reading must match one cited field. An event-count sum must equal the sum of its distinct cited rows. Unsupported operations and qualitative interpretations stay unverified. The checker permits only the operations described in its contract.
 
 This still has limits. Retrieved records may be wrong, a cap may omit important records, and a model may leave a relevant claim out. A checked structured value cannot approve a separate paragraph. Render the verified fields with their labels and citations, or have a reviewer check the complete prose against the evidence.
+The claim checker uses these rules in the required second exercise:
+
+| Claim | Cited field and unit | Allowed comparison |
+| --- | --- | --- |
+| One event count | `eventCount`, `events` | Exact nonnegative safe integer |
+| One frequency | `frequencyHz`, `Hz` | Within 0.05, with a tiny floating-point allowance |
+| One interval | `intervalSeconds`, `s` | Within 0.05, with the same allowance |
+| Event-count sum | `eventCount`, `events` | Exact sum of distinct cited rows |
+
+A reading cites exactly one row. A sum cannot repeat a row to increase its total. Reject numeric strings, nonfinite values, unsupported fields, wrong units, and missing sources. Free text remains unverified even when it contains a matching number.
+
 ## Challenge
 
 First, choose which records reach the model. Return the matching records up to the limit, the total match count, and whether the limit excludes any matches.
@@ -216,6 +269,8 @@ Now check the structured claims against their cited records, including the field
 The result shows the claims your checker verifies and those it leaves for review. The reporting code can display accepted fields with their sources. A reviewer still handles unsupported interpretations and free text.
 
 <Exercise slug="rag-pipeline" />
+
+Read both ID lists in the returned result. Each retains the input claim order. For a rejected claim, follow its cited ID to the exact field and unit before checking the calculation. The lists describe your checker's decisions. They do not approve a separate generated paragraph or establish that omitted archive records contain no contrary evidence.
 
 <RecallPrompt
   question="Every number in a generated answer appears somewhere in retrieved records. Is the answer verified?"

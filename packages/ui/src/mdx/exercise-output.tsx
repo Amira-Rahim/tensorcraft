@@ -76,8 +76,12 @@ function DataTable({
 
 function SeriesOutput({
   artifact,
+  selection,
+  onSelect,
 }: {
   artifact: Extract<ExerciseArtifact, { kind: "series" }>;
+  selection?: number | null;
+  onSelect?: (seriesIndex: number | null) => void;
 }) {
   const id = useId();
   const frame = useRef<HTMLDivElement>(null);
@@ -91,7 +95,12 @@ function SeriesOutput({
     observer.observe(frame.current);
     return () => observer.disconnect();
   }, []);
-  const [selected, setSelected] = useState<number | null>(null);
+  const [localSelection, setLocalSelection] = useState<number | null>(null);
+  const selected = selection === undefined ? localSelection : selection;
+  function select(seriesIndex: number | null) {
+    if (selection === undefined) setLocalSelection(seriesIndex);
+    onSelect?.(seriesIndex);
+  }
   const shown = artifact.series.filter(
     (_, i) => selected === null || selected === i,
   );
@@ -134,7 +143,7 @@ function SeriesOutput({
           type="button"
           data-selected={selected === null}
           aria-pressed={selected === null}
-          onClick={() => setSelected(null)}
+          onClick={() => select(null)}
           className="px-4 py-2 border border-border rounded data-[selected=true]:bg-surface-hover data-[selected=true]:font-bold focus-visible:outline focus-visible:outline-2"
         >
           All series
@@ -145,7 +154,7 @@ function SeriesOutput({
             type="button"
             data-selected={selected === i}
             aria-pressed={selected === i}
-            onClick={() => setSelected(i)}
+            onClick={() => select(i)}
             className="px-4 py-2 border border-border rounded data-[selected=true]:bg-surface-hover data-[selected=true]:font-bold focus-visible:outline focus-visible:outline-2"
           >
             <span aria-hidden="true" style={{ color: COLORS[i] }}>
@@ -278,6 +287,8 @@ export function ExerciseOutput({
   staleMessage = "Your code has changed. Run it again to update these results.",
   outputLabel = "Output from your code",
   statusMessage,
+  seriesSelection,
+  onSeriesSelect,
 }: {
   artifacts: ExerciseArtifact[];
   stale: boolean;
@@ -285,6 +296,8 @@ export function ExerciseOutput({
   staleMessage?: string;
   outputLabel?: string;
   statusMessage?: string;
+  seriesSelection?: { artifactIndex: number; seriesIndex: number | null };
+  onSeriesSelect?: (artifactIndex: number, seriesIndex: number | null) => void;
 }) {
   if (!artifacts.length) return null;
   return (
@@ -303,7 +316,7 @@ export function ExerciseOutput({
               ? "From your latest run"
               : "From your latest run. Some checks still need attention."))}
       </p>
-      <div className={stale ? "opacity-60" : ""}>
+      <div>
         {artifacts.map((artifact, i) => (
           <div key={i} className={i ? "mt-8 pt-8 border-t border-border" : ""}>
             <h3
@@ -327,6 +340,12 @@ export function ExerciseOutput({
               <SeriesOutput
                 key={JSON.stringify(artifact)}
                 artifact={artifact}
+                selection={
+                  seriesSelection?.artifactIndex === i
+                    ? seriesSelection.seriesIndex
+                    : undefined
+                }
+                onSelect={(seriesIndex) => onSeriesSelect?.(i, seriesIndex)}
               />
             ) : (
               <pre className="whitespace-pre-wrap break-words text-base leading-relaxed font-sans">

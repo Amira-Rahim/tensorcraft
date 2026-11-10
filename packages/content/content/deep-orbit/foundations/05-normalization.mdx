@@ -24,7 +24,7 @@ concept:
     tier: structural
     breaks: "Scroll progress uses page dimensions. Sensor scaling uses chosen physical bounds or statistics fitted on training data. New observations can exceed fitted min/max values. Z-score uses a mean and standard deviation instead, but it is not automatically better or immune to drift and outliers."
 consequence:
-  narrative: "The four sensor feeds now use a comparable scale. One archived reading still stands out."
+  narrative: "Farah's scaling routine is ready for later readings. One archived reading still stands out."
 hints:
   - level: nudge
     content: "Start with each column's mean and standard deviation. Use them to scale the readings before the supplied neuron reads them. For min-max scaling, find each column's lowest and highest values."
@@ -90,9 +90,13 @@ units as the training rows.
 
 ## Scaling each feature
 
-Farah's four readings are `[20, 0.2]`, `[22, 0.8]`,
+Farah supplies a four-row practice batch: `[20, 0.2]`, `[22, 0.8]`,
 `[24, 0.4]`, and `[26, 0.6]`. Columns are temperature and signal strength.
-Their units differ, so fit one set of statistics per column.
+The fixture gives no physical units or timestamps. It checks the scaling
+routine separately from Demir's 64-channel recording.
+
+Treat these as training rows when fitting the scaler. Their numerical scales
+differ, so calculate one set of statistics per column.
 
 A **z-score** subtracts the column mean and divides by its standard deviation,
 its spread around that mean. `tf.moments(batch, 0)` reduces down the rows,
@@ -116,6 +120,12 @@ first function. Use the supplied offset and scale in the second.
 
 For this batch, mean is `[23, 0.5]` and std is approximately `[2.236, 0.224]`.
 Broadcasting applies each column's statistics to every row.
+Row 3, `[24, 0.4]`, becomes approximately `[0.447, -0.447]`. Temperature
+sits above its column mean while signal strength sits below its own.
+
+`tf.tidy()` runs a synchronous callback and releases its temporary tensors.
+It keeps any tensors you return, including tensors inside an object such as
+`{ mean, std }`. Keep those saved statistics available for later readings.
 
 If a column is constant, its scale is zero. `tf.where` chooses divisor 1, so
 the scaled training values become zero. Keep the saved scale unchanged. If a
@@ -132,49 +142,70 @@ and sigmoid, a function that maps the weighted sum into 0 to 1. You are
 preparing its inputs and running it. Building and training models comes next.
 The score is not a calibrated probability.
 
+For the scaled row `[0.447, -0.447]`, the neuron calculates
+`0.447 * 0.9 + (-0.447) * (-1.4) - 0.3`, about `0.729`.
+Sigmoid turns that into a score of about `0.6745`. The Concept activity
+shows each term. Changing the scaler changes these inputs while the weights
+stay fixed.
+
 <CodeBlock language="typescript" title="score-the-scaled-input.ts">
 {`const scores = previewModel.predict(normalized); // [4, 1]
 
 // Inspect one of those readings as a one-row batch.
-const reading = tf.tensor1d([22, 0.8]);
+const reading = tf.tensor1d([24, 0.4]);
 const oneScore = tf.tidy(() => {
   const divisor = tf.where(std.equal(0), tf.onesLike(std), std);
   const scaled = reading.sub(mean).div(divisor);
   return previewModel.predict(scaled.expandDims(0));
 });
+const oneValue = oneScore.dataSync()[0]; // About 0.6745 for this row.
 reading.dispose();
 oneScore.dispose();`}
 </CodeBlock>
 
 `predict()` expects a batch. `expandDims(0)` makes one `[2]` reading into a
-`[1, 2]` batch. TensorFlow.js keeps the returned prediction for its caller and releases the temporary tensors. This path reuses the saved statistics even after you dispose of the original training batch.
+`[1, 2]` batch. The returned prediction belongs to the caller. Here,
+`dataSync()` reads its value before cleanup. Your `scoreReading(reading)`
+function can return that prediction tensor or its numerical value.
+
+The saved mean and std remain separate from `batch`. Reuse them even after
+the caller disposes of the original training rows. Fitting statistics on the
+new reading would give that reading a different meaning.
 
 ## Min-max scaling
 
 Min-max uses `(value - min) / (max - min)`. Fit each column's bounds with
-`batch.min(0)` and `batch.max(0)`, then reuse `scaleFeatures` with the minimum
-and range. The same zero-scale rule applies.
+`batch.min(0)` and `batch.max(0)`. The calculation below uses the same
+zero-scale rule. Your `scaleFeatures` function will accept this minimum and
+range in place of the mean and standard deviation.
 
 <CodeBlock language="typescript" title="min-max-columns.ts">
 {`const min = batch.min(0);
 const max = batch.max(0);
 const range = max.sub(min);
-// Pass the minimum and range to your scaleFeatures function.
-// Keep min and max. Release range after scaling.`}
+const unitRange = tf.tidy(() => {
+  const divisor = tf.where(range.equal(0), tf.onesLike(range), range);
+  return batch.sub(min).div(divisor);
+});
+range.dispose();
+// Keep min and max if you will scale later readings.`}
 </CodeBlock>
 
 Nonconstant training columns span 0 to 1. A later value outside the fitted
 bounds can fall outside that range. Scaling changes numerical units. It does
 not decide which feature contains useful information.
 
-<ConceptReference summary="Reference: choosing a scaler and the supplied neuron">
+Z-score expresses distance from the training mean in standard-deviation units.
+Min-max expresses position within the fitted bounds. Choose the input format
+that the model expects and preserve it for later readings. Outliers affect
+both methods by changing the mean and spread, or stretching the range.
+
+<ConceptReference summary="Reference: population variance and the supplied neuron">
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Z-score centers a nonconstant training column at mean 0 and standard deviation
-1. Min-max maps its fitted bounds to 0 and 1. Outliers affect both methods:
-they change the mean and spread, or stretch the range. Known physical bounds
-can also supply min-max limits.
+Known physical bounds can also supply min-max limits. Here, the exercise fits
+its bounds on the supplied training rows.
 
 The population variance used here divides by n. The usual unbiased sample
 variance divides by n minus 1. Its square root is not an unbiased estimator
@@ -309,7 +340,7 @@ readings.
 
 <Epilogue>
 
-Demir brings the four scaled feeds onto the bridge displays. He scrolls through the archive to check them and reaches sample 7741, recorded eight days ago during the calm period. The pipeline scaled its numbers correctly. It still looks different from the nearby readings.
+Demir brings the scaling routine onto the bridge displays. He scrolls through the archive and reaches sample 7741, recorded eight days ago during the calm period. The pipeline scaled its numbers correctly. It still looks different from the nearby readings.
 
 Farah brings up a preview classifier, a small demonstration of what the next modules will build and test. She runs it on the archive:
 

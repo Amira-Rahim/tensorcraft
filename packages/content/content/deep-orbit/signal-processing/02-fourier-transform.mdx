@@ -75,17 +75,28 @@ So the signal is the chord, and the FFT breaks it into individual frequencies? T
 Your keyframes are steps you chose for one animation. The FFT uses the same fixed set of waves for every signal of that length. It calculates how each wave contributes to the samples, including its strength and timing. The Fourier transform fixes those waves mathematically. This gives us a consistent way to compare captures, but it does not tell us what physically caused a peak.
 </Dialogue>
 
-Each FFT coefficient is a complex number, stored as real and imaginary parts. From that pair we can calculate magnitude, which measures strength, and phase, which describes alignment in time. `tf.abs()` keeps the magnitude. The frequency plots in this course use those magnitudes.
+Farah needs two pieces of recording metadata: the sample rate and the number
+of samples in the window. Together they tell her which frequency each bin
+represents. Its magnitude tells her how strong that component appears.
 
-DEEP SCAN also has an input named phase. That is a separate feature calculated from the first two samples of a window. Lesson 4 explains it.
+You will compute those magnitudes, select the strongest eligible bin, and
+return its frequency. A peak gives the crew a band to inspect. It does not
+identify the source.
 
-A full transform of N samples produces N coefficients. For real-valued input, the two halves mirror each other. `tf.spectral.rfft` keeps only the floor(N/2)+1 unique bins.
+<LearningObjectives objectives={["Compute FFT magnitudes with TensorFlow.js", "Convert a bin index to hertz using the recording metadata", "Select the largest eligible magnitude, including ties and silence", "Explain how window length and sampling limit the result"]} />
 
-You will use a Fourier transform to find the strongest eligible frequency in a capture.
+## A bin's position and frequency
 
-<LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
+The activity uses the Challenge's diagnostic captures and raw FFT magnitudes.
+Its initial case has 128 samples at 128 Hz with a single 5 Hz tone. Select a
+bin to inspect its center and magnitude beside the winning eligible bin.
+The worked example below adds a weaker 20 Hz component to illustrate two
+peaks. Both examples have one-hertz bin spacing.
 
-## Decomposing Signals
+Other activity cases show a strong constant offset, an off-bin tone, silence,
+and tied magnitudes. The two-second case has 256 samples at 128 Hz, giving
+half-hertz spacing. Keep each capture's sample rate and length beside it.
+The ship's overnight discovery uses 256 Hz hull sampling and a longer window.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -129,9 +140,17 @@ fftResult.dispose();
 magnitudes.dispose();`}
 </CodeBlock>
 
-## Understanding the Output
+## The selected bin in hertz
 
-For a real-valued signal, `rfft` transforms an array of N time-domain samples into floor(N/2)+1 frequency bins. Each bin tells you how much of that frequency is present in the signal.
+`tf.spectral.rfft()` returns a pair of numbers for each bin, stored as a
+complex coefficient. `tf.abs()` turns each pair into a magnitude, the value
+plotted as a peak. A real input with N samples returns
+`floor(N / 2) + 1` bins. For 128 samples, that is 65 bins, numbered 0 through 64.
+
+Convert an index with `binIndex * sampleRate / sampleCount`. For the example,
+bin 20 means `20 * 128 / 128 = 20 Hz`. If the sample rate stays at 128 Hz but
+the capture contains 256 samples, the same index means `10 Hz`. The extra
+samples make the grid finer, with 0.5 Hz between bins.
 
 <CodeBlock language="typescript" title="fft-interpretation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -175,15 +194,40 @@ console.table(bins.filter((b) => b.magnitude > 1));
 // and finding it is the challenge below.`}
 </CodeBlock>
 
-## Another spectrum
+## The strongest eligible bin
 
-<LearningExperiment id="fft" />
+The coding task excludes bin 0, which measures the constant offset. A large
+offset can make that bin much taller than every repeating component.
 
-## The FFT for DEEP SCAN
+Compare the remaining computed magnitudes. Keep the lowest eligible index
+when values tie. For a silent input, every magnitude is zero, so this rule
+returns the first non-DC bin. That returned number is a convention. Silence
+contains no tone.
 
-The demo records 128 samples per second, so its Nyquist frequency is 64 Hz, half the sample rate. The hull sensors record at 256 Hz, giving DEEP SCAN a Nyquist frequency of 128 Hz.
+A tone can fall between bin centers and spread across neighboring bins. Pick
+the largest computed magnitude, then convert its index. Rounding a guessed
+tone frequency can choose a different bin.
+
+## Sampling and the ship's finer grid
+
+The 128 Hz worked example and initial activity case have a **Nyquist frequency**
+of 64 Hz, half the sample rate. The hull sensors sample at 256 Hz, giving
+the ship a 128 Hz boundary. The separate optional 64 Hz two-tone experiment
+has a 32 Hz boundary.
 
 A tone above the Nyquist frequency can appear at a lower, incorrect frequency. This is aliasing. At a sample rate of 128 Hz, a 73.4 Hz tone appears near 54.6 Hz: 128 minus 73.4. The spectrum cannot distinguish it from a real tone there. Filter out frequencies above the intended range before sampling, then sample at more than twice the highest frequency you keep.
+
+The following supplied story fixture continues the previous lesson's
+512-sample capture at 256 Hz. Its bins are `256 / 512 = 0.5 Hz` apart.
+That grid can report a bin at 73.5 Hz. It cannot resolve the true 73.4 Hz
+tone exactly. The longer recording window in the Epilogue gives Farah a
+finer grid.
+
+This reference also marks peaks above an illustrative threshold. Your
+challenge only selects the largest eligible magnitude. Its result table
+reports the actual input length, sample rate, spacing, and returned frequency.
+
+<ConceptReference summary="The previous capture and its half-hertz bins">
 
 <CodeBlock language="typescript" title="deep-scan-fft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -238,7 +282,24 @@ analyzeSignal(anomalousSignal, 256);
 // name: spectral leakage.`}
 </CodeBlock>
 
+</ConceptReference>
+
+<ConceptReference summary="Optional comparison: two tones and changed sampling">
+
+This separate two-tone experiment helps compare frequency views and see how
+sampling changes interpretation. It is supplied practice data and does not
+recreate the ship's overnight discovery.
+
+<LearningExperiment id="fft" />
+
+</ConceptReference>
+
 <DerivationDrawer summary="Discrete Fourier Transform (DFT)">
+Each coefficient has real and imaginary parts. Its magnitude measures strength,
+and its phase describes alignment in time. The magnitude plots discard phase.
+DEEP SCAN's earlier input named phase is a separate feature calculated from the
+first two samples of a window. Lesson 4 explains that source-specific name.
+
 The DFT decomposes a length-N signal into N complex coefficients, one per frequency:
 
 `X[k] = Σ_{n=0..N-1} x[n] · e^(-2π·i·k·n/N)`
@@ -288,13 +349,13 @@ Skip bin 0, the constant offset. Find the largest magnitude among the remaining 
 
 <LessonRecap
   whatYouLearned={[
-    "The FFT decomposes a signal into a fixed mathematical basis of sinusoids and returns a complex coefficient for each frequency bin, giving both a magnitude (how much of that frequency is present) and a phase (its offset).",
-    "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz.",
-    "Nyquist is half the sample rate. Band-limit the input below it before sampling. Otherwise higher frequencies can alias into the retained band.",
-    "A median can reduce the influence of a few large bins, but is not automatically a noise estimate. Validate a detector's threshold and false-alarm rate on representative captures."
+    "rfft returns complex frequency coefficients. tf.abs converts them to magnitudes that you can compare.",
+    "A bin's frequency is its index times sample rate divided by sample count. More samples at the same rate give finer bin spacing.",
+    "Skip DC and select the largest computed magnitude. Keep the first eligible bin on ties. A silent-input convention does not establish a tone.",
+    "Band-limit input below half the sample rate before sampling. Higher frequencies can alias into the retained band. A peak identifies a frequency to investigate, not its cause."
   ]}
   bridge="With `@keyframes`, you choose animation steps. With `tf.spectral.rfft(signal)`, you measure how a fixed set of waves contributes to the signal. You do not choose those waves for each recording."
-  youCanNow="Compute the FFT of a real-valued signal with `tf.spectral.rfft`, read the frequency and magnitude from a bin index, and explain why a threshold needs validation on representative captures."
+  youCanNow="Compute FFT magnitudes, select the strongest eligible bin, and explain the frequency and precision your function returns."
 />
 
 <Epilogue>

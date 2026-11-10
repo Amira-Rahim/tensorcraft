@@ -5,6 +5,11 @@ import { describe, expect, it } from "vitest";
 import { FLOW_INVESTIGATIONS } from "./flow-investigations";
 import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
 import {
+  RETRIEVAL_EXAMPLE_NOW,
+  RETRIEVAL_EXAMPLE_QUERIES,
+  ragRetrievalExample,
+} from "./rag-retrieval-example";
+import {
   initialInvestigationValues,
   type InvestigationResult,
 } from "./investigation-types";
@@ -69,6 +74,30 @@ function reportAssembler() {
 }
 
 describe("flow activity teaching contracts", () => {
+  it.each(["filters", "capped"])(
+    "matches the authored retriever for every query on the %s supplied check",
+    (caseId) => {
+      const retrieve = exerciseFunction("retrieve-signals", "retrieveSignals");
+      for (const [query, text] of RETRIEVAL_EXAMPLE_QUERIES.entries()) {
+        const db = ragRetrievalExample(caseId);
+        const original = structuredClone(db);
+        const expected = retrieve(text, db, RETRIEVAL_EXAMPLE_NOW);
+        const result = evaluate("rag-for-signals", { query }, caseId);
+        expect(result.answer).toBe(expected.matched - expected.rows.length);
+        expect(graphic(result, "Returned record IDs").values).toEqual([
+          expected.rows.length
+            ? expected.rows.map((row: { id: string }) => row.id).join(", ")
+            : "No matching records",
+        ]);
+        expect(graphic(result, "Result metadata").values).toEqual([
+          `matched: ${expected.matched}`,
+          `truncated: ${expected.truncated}`,
+        ]);
+        expect(db).toEqual(original);
+      }
+    },
+  );
+
   it("adds the missing catalogue as separate reference context in the visible prompt", () => {
     const incomplete = evaluate("prompt-engineering");
     const complete = evaluate("prompt-engineering", { catalogue: 1 });
@@ -162,38 +191,17 @@ describe("flow activity teaching contracts", () => {
     expect(new Function(`${result.code}\nreturn prompt;`)()).toBe("");
   });
 
-  it.each([
-    ["routine", 2],
-    ["changed", 12],
-  ] as const)(
-    "shows the actual %s missing-input percentage against a zero limit",
-    (caseId, observed) => {
-      const result = evaluate("monitoring", { missing: 0 }, caseId);
-      const missing = graphic(result, "Missing inputs (%)");
-      expect(missing.values).toEqual([observed, 0]);
-      expect(missing.labels).toEqual(["Observed", "Alert limit"]);
-      expect(graphic(result, "Review signals").values).toContain(
-        "Missing inputs exceed limit",
-      );
-      expect(result.answer).toBe(caseId === "routine" ? 1 : 3);
-      expect(result.explanation).toContain("undefined");
-      const relative = graphic(
-        result,
-        "Latency and score change as percentages of their limits",
-      );
-      expect(relative.labels).not.toContain("Missing inputs");
-      for (const value of relative.values)
-        expect(Number.isFinite(value)).toBe(true);
-    },
-  );
-
-  it("changing the missing-input limit changes the alert without changing the observation", () => {
-    const equal = evaluate("monitoring", { missing: 2 }, "routine");
-    const below = evaluate("monitoring", { missing: 1 }, "routine");
-    expect(graphic(equal, "Missing inputs (%)").values).toEqual([2, 2]);
-    expect(graphic(below, "Missing inputs (%)").values).toEqual([2, 1]);
-    expect(equal.answer).toBe(0);
-    expect(below.answer).toBe(1);
+  it("keeps supplied monitoring logs separate from empty observations", () => {
+    const supplied = evaluate(
+      "monitoring",
+      { view: 1, percentile: 95 },
+      "routine",
+    );
+    expect(supplied.answer).toBe(134);
+    expect(graphic(supplied, "Nearest-rank selection").values).toContain(100);
+    const empty = evaluate("monitoring", { view: 1 }, "changed");
+    expect(empty.answer).toBe("No data");
+    expect(empty.explanation).toContain("null");
   });
 
   it("keeps the reference diagrams on the exercise's fields and stages", () => {
@@ -353,32 +361,32 @@ describe("flow activity teaching contracts", () => {
 
   it.each([
     {
-      name: "three approved sections",
-      caseId: "full",
+      name: "the supplied mixed review",
+      caseId: "mixed",
       changes: {},
+      expected: [true, false, true],
+      withheld: ["Hypotheses"],
+    },
+    {
+      name: "all approved sections",
+      caseId: "mixed",
+      changes: { review: 1 },
       expected: [true, true, true],
       withheld: [],
     },
     {
-      name: "an incomplete observation",
-      caseId: "partial",
-      changes: {},
-      expected: [false, true, true],
-      withheld: ["Observations"],
-    },
-    {
-      name: "an unsupported analysis",
-      caseId: "full",
-      changes: { claim: 1 },
-      expected: [true, false, true],
-      withheld: ["Analysis"],
-    },
-    {
-      name: "three failed sections",
-      caseId: "partial",
-      changes: { sources: 0, claim: 1, limits: 0 },
+      name: "all withheld sections",
+      caseId: "mixed",
+      changes: { review: 2 },
       expected: [false, false, false],
-      withheld: ["Observations", "Analysis", "Limits"],
+      withheld: ["Executive Summary", "Hypotheses", "Results"],
+    },
+    {
+      name: "empty input",
+      caseId: "empty",
+      changes: {},
+      expected: [],
+      withheld: [],
     },
   ])(
     "assembles approved sections and names omissions after $name",
@@ -417,7 +425,9 @@ describe("flow activity teaching contracts", () => {
           );
         }
       }
-      expect(result.explanation).toContain("assembler does not check claims");
+      expect(result.explanation).toContain(
+        "assembler cannot approve a changed claim",
+      );
     },
   );
 

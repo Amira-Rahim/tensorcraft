@@ -15,7 +15,7 @@ context:
   narrative: "The crew lost the capture and missed the relay slot. Before trying to make DEEP SCAN smaller, they need to measure what it uses."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Profiling measures how much memory a model uses, how long predictions take, and how many parameters each layer has. Use those measurements to decide what to change."
+  explanation: "Count the model's weights, time completed predictions, and check tensor cleanup. Peak application memory needs a separate measurement."
   bridge:
     jsTitle: "DevTools Performance"
     jsCode: "performance.mark('start'); doWork(); performance.measure('task', 'start')"
@@ -147,13 +147,85 @@ Demir opens the bundle audit he had saved for later. The crew's trained models t
 
 </StoryPassage>
 
-Start by measuring weight size, prediction time, and parameters per layer. The running app also needs memory for activations, temporary tensors, and backend buffers. Measure the highest memory use during loading before deciding whether the model fits.
-
 Give Nazari a baseline she can compare with the next build: weight storage, completed prediction time, and any tensors left behind.
 
 <LearningObjectives objectives={["Calculate weight bytes from the parameter count and clean up tensors after profiling", "Measure prediction time, including the average and slower calls", "Count parameters per layer without assuming that the largest layer is the slowest", "Establish baseline metrics before optimization"]} />
 
-## Model memory and runtime
+## One completed prediction
+
+Demir needs to time a result he can use. `model.predict(input)` returns a tensor,
+but the backend may still be calculating its values. `await output.data()`
+waits for those values and reads them back. Keep that wait inside the timer.
+
+Follow one call through the same six steps:
+
+1. Create an input that matches the model, before starting the timer.
+2. Read the start time from the clock.
+3. Call `model.predict(input)`.
+4. Await `output.data()`.
+5. Read the clock again and subtract the start time.
+6. Dispose of this call's input and output in `finally`, including when prediction or readback fails.
+
+The caller keeps the model. Each call releases the tensors it created.
+The timing covers prediction and readback. Input creation stays outside it.
+
+## Warmup and repeated calls
+
+Run and read one prediction before measuring the others. That warmup gives
+the backend a chance to compile its work. Complete it and release its tensors
+even though its duration stays outside the average. Real workloads may need
+more warmup before their timings settle.
+
+The Challenge supplies a clock to check your timing code. Its slow-call case
+uses these durations:
+
+| Call | Supplied duration | Included in the average? |
+| --- | --- | --- |
+| Warmup | 120 ms | No |
+| Measured calls 1 through 4 | 4 ms each | Yes |
+| Measured call 5 | 104 ms | Yes |
+
+The five measured calls take `4 + 4 + 4 + 4 + 104 = 120` ms in total.
+Their mean is `120 / 5 = 24` ms. Most calls took 4 ms, but the slow call
+still belongs in the average. Excluding it would describe a different run.
+
+These are supplied test durations. The Concept activity above uses a separate
+simulation to expose the timer's boundaries. Neither measures your device.
+After your code runs, inspect its **Warmup and measured calls** table to see
+which durations contributed to your returned average.
+
+<CodeBlock language="javascript" title="profile-duration-mean.js">
+{`const durationsMs = [120, 4, 4, 4, 4, 104];
+const measured = durationsMs.slice(1); // The first completed call is warmup.
+const meanMs = measured.reduce((sum, value) => sum + value, 0) / measured.length;
+console.log({ measuredCalls: measured.length, meanMs });`}
+</CodeBlock>
+
+This calculation describes the supplied clock probe. Read the separate parameter inventory for its own model identity. Combining its mean with another model's size would describe a run that never happened.
+
+## Weight storage and tensor cleanup
+
+`model.countParams()` counts the values stored in the weights. For float32
+weights, multiply that count by 4 bytes. Divide by one million to report MB.
+Count each layer too, including layers with no weights.
+
+The Challenge also profiles a real, supplied TensorFlow.js model with 209
+parameters. Its float32 weights need `209 * 4 = 836` bytes, or `0.000836` MB.
+That inventory comes from the model. The controlled timing case above uses
+a different supplied model and clock.
+
+Check `tf.memory().numTensors` before warmup and after the final call. A zero
+change means this check ended with the same live tensor count. It does not
+measure the highest memory use or prove that every part of an app avoids leaks.
+The dashboard also needs memory for activations, temporary tensors, and backend
+buffers. Measure its peak during loading separately.
+
+## The full profiling procedure
+
+The following example follows the same call sequence and also reports P95,
+the duration at the nearest-rank 95th percentile. The Challenge asks you for
+the mean. Its smaller supplied models remain separate from the size-accounting
+proxy and fictional timing table at the end of this example.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

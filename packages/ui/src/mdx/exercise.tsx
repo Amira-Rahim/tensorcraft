@@ -277,6 +277,8 @@ export interface ExerciseProps {
    * page sets it when the lesson has more than one exercise.
    */
   titled?: boolean;
+  taskAnchor?: string;
+  taskReturnAnchor?: string;
   /** Optional visible editor heading for a lesson's external brief. */
   editorHeading?: string;
   workspace?: boolean;
@@ -1203,6 +1205,8 @@ export function Exercise({
   hints,
   brief = "inline",
   titled = false,
+  taskAnchor,
+  taskReturnAnchor,
   editorHeading,
   workspace = false,
 }: ExerciseProps) {
@@ -1469,8 +1473,12 @@ export function Exercise({
   const resultOutput =
     renderedResult === undefined
       ? attemptState.scope === scope &&
-        output && (
+        output &&
+        output.artifacts.length > 0 && (
           <ExerciseOutput
+            outputLabel={
+              titled ? `${exercise.title}: output from your code` : undefined
+            }
             artifacts={output.artifacts}
             stale={output.code !== editorCode}
             complete={output.complete}
@@ -1481,6 +1489,8 @@ export function Exercise({
   return (
     <div
       data-testid="exercise-pane"
+      id={taskAnchor}
+      tabIndex={taskAnchor ? -1 : undefined}
       data-exercise-workspace={workspace || undefined}
       className={`[&_.cm-lineNumbers]:text-xs! p-6 my-6 brutalist-shadow bg-surface-raised border rounded-none ${
         allPassed ? "border-success/30" : "border-border"
@@ -1555,6 +1565,11 @@ export function Exercise({
         </>
       )}
 
+      {taskReturnAnchor && (
+        <p className="mb-3 text-sm">
+          <a href={`#${taskReturnAnchor}`}>Back to {exercise.title} brief</a>
+        </p>
+      )}
       {brief === "inline" && (
         <>
           <h3 className="text-lg font-semibold mb-2 text-text-primary">
@@ -1643,14 +1658,18 @@ export function Exercise({
 
       {/* One mounted verdict announcement serves ordinary and adapted results. */}
       <TestResultsLiveRegion results={results} />
-      {renderResult && attempt.status !== "idle" && (
-        <a
-          href={`#${resultId}`}
-          className="mt-3 inline-block min-h-11 py-2 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
-        >
-          Inspect result
-        </a>
-      )}
+      {renderResult &&
+        resultOutput !== null &&
+        resultOutput !== undefined &&
+        resultOutput !== false &&
+        attempt.status !== "idle" && (
+          <a
+            href={`#${resultId}`}
+            className="mt-3 inline-block min-h-11 py-2 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            Inspect result
+          </a>
+        )}
       {renderResult && attempt.status === "settled" && (
         <div
           className="mt-3 space-y-2 text-sm text-text-primary"

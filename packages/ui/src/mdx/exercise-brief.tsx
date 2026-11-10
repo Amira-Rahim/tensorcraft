@@ -14,6 +14,8 @@ import {
 interface ExerciseBriefProps {
   slug: string;
   compactHints?: boolean;
+  anchorId?: string;
+  editorAnchor?: string;
   /** The exercise's own ladder reports here, like the lesson-level one. */
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
 }
@@ -28,6 +30,8 @@ export function ExerciseBrief({
   slug,
   onHintRevealed,
   compactHints = false,
+  anchorId,
+  editorAnchor,
 }: ExerciseBriefProps) {
   const exercise = useContext(ExerciseDataContext).get(slug);
   const scheme = useScheme();
@@ -37,7 +41,12 @@ export function ExerciseBrief({
   const ml = exercise.mlContent ? mlContentConfig[exercise.mlContent] : null;
   const mlTone = ml ? (scheme === "light" ? ml.light : ml.tone) : null;
   return (
-    <div data-testid="exercise-brief" className="my-6">
+    <div
+      data-testid="exercise-brief"
+      className="my-6"
+      id={anchorId}
+      tabIndex={anchorId ? -1 : undefined}
+    >
       {/* Wraps between whole items only (the phone fix, section 3). */}
       <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="whitespace-nowrap text-xs font-mono font-semibold uppercase tracking-widest text-primary">
@@ -79,6 +88,11 @@ export function ExerciseBrief({
       >
         {exercise.title}
       </h3>
+      {editorAnchor && (
+        <p className="mb-3 text-sm">
+          <a href={`#${editorAnchor}`}>Open {exercise.title} editor</a>
+        </p>
+      )}
       <InstructionText
         text={exercise.instructions}
         className="text-sm leading-relaxed mb-4 text-text-primary/65"

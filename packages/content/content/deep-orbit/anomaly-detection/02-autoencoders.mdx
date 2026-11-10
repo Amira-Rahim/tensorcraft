@@ -84,6 +84,59 @@ You will train an autoencoder to reconstruct unflagged readings while keeping fl
 
 <LearningObjectives objectives={["Follow data through an autoencoder’s encoder, bottleneck, and decoder", "Build an autoencoder in TensorFlow.js and fit it on screened training data", "Check which rows reach training and measure reconstruction errors on separate data without assuming a fixed error ratio", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
 
+## Screening the rows that fit will see
+
+The exercise's real fit uses 72 generated eight-feature rows: 48 unflagged
+and 24 flagged. It builds dense widths 8, 4, 2, 4, and 8. The existing mission
+example has eleven features and a different architecture. Keep those models
+separate. The activity uses the grader's small row-selection probe:
+
+<CodeBlock language="javascript" title="screened-row-selection.js">
+{`const archiveRows = [
+  [1, 2, 3, 4, 5, 6, 7, 8],
+  [2, 3, 4, 5, 6, 7, 8, 9],
+  [3, 4, 5, 6, 7, 8, 9, 10],
+];
+const excluded = [false, true, false];
+const keptIndices = archiveRows.flatMap((_, i) => excluded[i] ? [] : [i]);
+const keptRows = keptIndices.map(i => archiveRows[i]);
+console.log(keptIndices, keptRows); // source rows 0 and 2`}
+</CodeBlock>
+
+Check flag count and nonempty selection before constructing a model.
+Turn the selected rows into one tensor and pass that same tensor as both
+input and reconstruction target. Excluded rows must never reach fit.
+
+<CodeBlock language="typescript" title="screened-autoencoder.ts">
+{`function makeScreenedAutoencoder() {
+  const network = tf.sequential({ layers: [
+    tf.layers.dense({ inputShape: [8], units: 4, activation: 'relu' }),
+    tf.layers.dense({ units: 2, activation: 'relu' }),
+    tf.layers.dense({ units: 4, activation: 'relu' }),
+    tf.layers.dense({ units: 8 }),
+  ] });
+  network.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+  return network;
+}`}
+</CodeBlock>
+
+The bottleneck has two values per row. The output returns to eight features.
+Use the provided `FIT_OPTIONS`: 400 epochs and batch size 16. Await fit and
+return its exact history with the model. A supplied model keeps its existing
+compilation. Nested encoder/decoder models are also valid.
+
+| Resource | Owner and lifetime |
+| --- | --- |
+| Temporary selected-row tensor | Your function disposes it in finally, even when fit fails. |
+| Supplied model | The caller owns it on success and failure. |
+| Model your function creates | Dispose it if fitting fails. After success, the caller owns the returned model. |
+| Returned history | Preserve the object produced by that fit. |
+
+The full eleven-feature application below is a separate example. Its source
+and scalers must be supplied by that application.
+
+<ConceptReference summary="Reference: the separate eleven-feature mission architecture and fit">
+
 ## Encoder to Bottleneck to Decoder
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -146,6 +199,9 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 `}
 </CodeBlock>
 
+
+</ConceptReference>
+
 ## Challenge
 
 Before the crew's next archive fit, check the screening and training workflow on a small synthetic archive. It uses eight features per reading. The mission model uses eleven. Remove flagged rows, then train on the remaining rows.
@@ -153,6 +209,8 @@ Before the crew's next archive fit, check the screening and training workflow on
 Inspect your model's measured errors on separate synthetic inputs. These checks verify row selection and reconstruction. Passing them does not validate a real detector or reproduce the mission's error ratio. A model trained on anomalies may learn to rebuild them well, but an error ratio alone cannot prove that happened. To compare training sets, start both runs with identical weights and use the same training settings.
 
 <Exercise slug="build-autoencoder" />
+
+`Your screened model’s reconstruction errors` reports mean MSE on two separate five-row synthetic evaluation sets. Read each measured value and its row count. A smaller calm error or a larger suspect error on this run guarantees no fixed ratio or real detector quality. To compare screening policies, keep initialization and training settings identical.
 
 <RecallPrompt
   question="Can an autoencoder trained on normal data also reconstruct an anomaly well?"

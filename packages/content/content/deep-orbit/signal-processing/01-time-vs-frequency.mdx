@@ -66,9 +66,62 @@ You will compare two captures in time and frequency views to find a difference h
 
 <LearningObjectives objectives={["Compare the same capture in time and frequency views", "Use the time plot to inspect changes and the frequency plot to inspect repetition", "Explain why a weak repeating component may be easier to see in a magnitude spectrum"]} />
 
-## Time and frequency views
+## Two captures and two separate limits
+
+Farah's archive playback belongs to the mission story. The Challenge checks her comparison method on a supplied synthetic pair: 512 samples at 256 samples per second. Both contain tones at 5, 12, 23, and 47 Hz. The suspect adds a weak 73.4 Hz tone with amplitude 0.05. These generated samples are separate from the eleven-day recording.
+
+The activity uses this same pair and the other supplied checks. Select a sample to compare the same position in both time traces. Select a bin to compare the same position in both raw magnitude spectra. A bin is one position in the transform. Here its center is `bin * 256 / 512`, so adjacent bins are 0.5 Hz apart.
+
+| Comparison | Calculation | Rule |
+| --- | --- | --- |
+| Matching samples | Absolute difference at every sample position | Every difference must be `<= tolerance` for `timeTwin: true` |
+| Matching magnitude bins | Absolute difference at each bin position | Return the first index with a difference `> threshold` |
+| No differing magnitude bin | No index passes the strict test | Return `divergentBin: -1` |
+
+The limits have different units. A sample tolerance of `0.05` compares sample amplitudes. A raw-magnitude cutoff of `5` compares unscaled FFT heights. Reusing one number for both comparisons changes the question.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="capture-pair.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const sampleRate = 256;
+const sampleCount = 512;
+const backgroundTones = [[5, 0.8], [12, 0.6], [23, 0.4], [47, 0.2]];
+const makeCapture = tones => Array.from({ length: sampleCount }, (_, i) =>
+  tones.reduce((value, [hz, amplitude]) =>
+    value + amplitude * Math.sin(2 * Math.PI * hz * i / sampleRate), 0));
+const baselineCapture = makeCapture(backgroundTones);
+const suspectCapture = makeCapture([...backgroundTones, [73.4, 0.05]]);
+const pairSpectra = [baselineCapture, suspectCapture].map(samples =>
+  tf.tidy(() => Array.from(tf.spectral.rfft(tf.tensor1d(samples)).abs().dataSync())));
+
+const selectedBin = 147;
+const gap = Math.abs(pairSpectra[0][selectedBin] - pairSpectra[1][selectedBin]);
+console.log({ samples: sampleCount, binWidthHz: sampleRate / sampleCount,
+  bin: selectedBin, centerHz: selectedBin * sampleRate / sampleCount,
+  rawMagnitudeGap: gap }); // 512, 0.5, 147, 73.5, about 11.96
+console.log(Math.max(...baselineCapture.map((value, i) =>
+  Math.abs(value - suspectCapture[i])))); // about 0.05`}
+</CodeBlock>
+
+## The first difference and the strongest peak
+
+The weak added tone spreads across neighboring bins. At bin 146, the magnitude gap is about 3.01. At bin 147, it is about 11.96. A cutoff of `5` returns `147`. A cutoff of `2` returns `146`, even though the later gap is larger. Scan every bin in order, including bin 0, and stop at the first passing difference.
+
+A missing component also counts. Removing the 47 Hz component makes bin 94 differ by about 51.2. A constant offset affects bin 0. Identical captures return `-1`. These checks compare two captures, rather than searching for a peak in only one.
+
+The time and magnitude verdicts can disagree. Rotating the background capture by 137 samples changes its individual samples, but preserves its magnitudes within floating-point error. The full complex Fourier transform retains phase as well as magnitude and can reconstruct the samples within rounding limits. A magnitude-only plot discards phase, so it cannot reconstruct the original order on its own.
+
+The activity's reference DFT rounds inputs to float32 and accumulates using JavaScript's float64 numbers. The Challenge uses TFJS's float32 FFT. Their tiny rounding residues can differ, so the activity cutoff starts at `0.5`. A cutoff of zero can flag rounding residue even for a circular shift. The comparison rule remains strict `> threshold`.
+
+Your result table reports both verdicts and converts the returned bin into a center frequency. A differing bin gives Farah a band to investigate. Interference and instrument faults can produce differences too. The supplied synthetic tone establishes no physical explanation for Sector 7-G.
+
+<ConceptReference summary="Additional time traces and a smaller Fourier illustration">
+
+The twelve-sample and three-tone examples below illustrate the two representations. The final two-second pair matches the Challenge's supplied generated inputs. Keep these examples separate from the archive playback.
+
+## Time and frequency views
 
 <CodeBlock language="typescript" title="dual-representation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -150,6 +203,9 @@ console.log(mags[94].toFixed(1), mags[146].toFixed(1), mags[147].toFixed(1));
 // "51.2 3.0 12.0": the 47 Hz we authored, then energy at 73-73.5 Hz
 // (bins 146-147 at this run's 0.5 Hz resolution) that no catalog explains.`}
 </CodeBlock>
+
+
+</ConceptReference>
 
 <DerivationDrawer summary="Try a tone between FFT bins">
 At 64 samples per second, a 64-sample frame has bins one hertz apart. Compare a 5 Hz tone with a 5.5 Hz tone. The latter spreads beyond just its two nearest bins.

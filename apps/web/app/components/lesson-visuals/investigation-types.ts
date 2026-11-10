@@ -38,10 +38,29 @@ export interface InvestigationResult {
   code?: string;
 }
 
+export type InvestigationSourceKind =
+  | "fictional-recording"
+  | "supplied-example"
+  | "controlled-simulation"
+  | "reference-calculation";
+
+/** Authored reading context only. This is not persisted learner evidence. */
+export interface InvestigationSourceContext {
+  id: string;
+  kind: InvestigationSourceKind;
+  label: string;
+  scope: string;
+  ordering: string;
+  units: string;
+  /** Case scopes reuse the authored case definition beside its actual values. */
+  caseScopes?: Readonly<Record<string, string>>;
+}
+
 export interface LessonInvestigationSpec {
   title: string;
   brief: string;
   boundary: string;
+  source?: InvestigationSourceContext;
   controls: InvestigationControl[];
   cases: InvestigationCase[];
   prediction: {

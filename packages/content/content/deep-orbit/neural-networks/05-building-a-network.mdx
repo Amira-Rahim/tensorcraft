@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Creating a server wires up a handler. Compiling a model configures its training objective, optimizer, and metrics. Compilation does not train or reset its weights. A newly initialized model still needs fitting. An already trained model may already make useful predictions."
 consequence:
-  narrative: "Demir has assembled and compiled DEEP SCAN. He saves its starting scores for comparison after training."
+  narrative: "Demir saves the rehearsal's starting states and training comparison. Farah returns to the separate bridge classifier."
 hints:
   - level: nudge
     content: |
@@ -74,17 +74,134 @@ skillAxes: [model_arch]
 Assemble it. I want the classifier compiled and ready for training by end of watch.
 </Dialogue>
 
-You will build a classifier and compare its predictions before and after training.
+Build two copies of the rehearsal classifier. Save their starting predictions,
+train only the first copy, then compare its new scores with both starting runs.
 
-<LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network by its parameter count, and read its predictions before and after training", "Explain why a new layer starts with random weights and zero biases"]} />
+<LearningObjectives objectives={["Build two independent copies of the 529-parameter rehearsal classifier.", "Explain what compile() configures and which step starts training.", "Copy initial weights and read both untrained models' predictions.", "Train the first model once while the second remains untrained.", "Compare the actual scores and loss without claiming performance on new data."]} />
 
-## Network setup
+## The rehearsal's inputs and layers
 
-Assemble the network and call `model.predict()`. Prediction does not require compilation. `compile()` configures the optimizer, loss and metrics used by training. It does not fit or reset the weights. A newly initialized model can emit confident scores without having learned anything useful.
+The challenge supplies 120 generated rows, each with eight dimensionless
+features. The first three are amplitude, zero-crossing, and phase proxies.
+Their distributions differ between the two generated groups. Five extra
+practice features use the same noise distribution for both groups.
+
+The generator assigns label 0 to rows 0-59 and label 1 to rows 60-119.
+These are practice targets, separate from the ship's measurements and sample
+7741. This batch also differs from the two-feature normalization task.
+
+Define `buildClassifier()` to create a new Sequential model and add these
+dense layers in order. Compile it before returning it. Each call must create
+its own model and weights. Assigning `second = model` gives two names to the
+same object and cannot provide an untrained comparison.
+
+| Layer | Input features | Units | Activation | Weights and biases |
+| --- | --- | --- | --- | --- |
+| First hidden | 8 | 24 | ReLU | `8 * 24 + 24 = 216` |
+| Second hidden | 24 | 12 | ReLU | `24 * 12 + 12 = 300` |
+| Output | 12 | 1 | Sigmoid | `12 * 1 + 1 = 13` |
+
+Each model has `216 + 300 + 13 = 529` parameters. Each layer keeps one kernel
+tensor, its weights, and one bias tensor. The three layers therefore have six
+weight tensors in total. The complete bridge example below shows the same
+construction calls with its separate three-feature configuration.
 
 Hidden units need different starting points so they can learn different features. If all their weights start the same, they can keep receiving the same updates. Random starting weights help avoid this. These TensorFlow.js dense layers use Glorot-normal weights and zero biases by default. Change those settings with `kernelInitializer` and `biasInitializer`.
 
-Glorot sets the size of the random weights using the layer's input and output counts. This helps keep values from growing or shrinking too much as they pass through layers. Training can still become unstable, so check the values as the run progresses. Watch what happens during training.
+Glorot sets the size of the random weights using the layer's input and output
+counts. This helps keep values from growing or shrinking too much as they
+pass through layers. Check the actual values and loss during training.
+
+## Compilation configures the next training call
+
+Call `compile()` on each model inside `buildClassifier()`. For a model named
+`network`, the configuration is:
+
+<CodeBlock language="typescript" title="compile-rehearsal.ts">
+{`network.compile({
+  optimizer: 'adam',
+  loss: 'binaryCrossentropy',
+  metrics: ['accuracy'],
+});`}
+</CodeBlock>
+
+These options have different jobs:
+
+- `optimizer: 'adam'` chooses how to adjust the weights. Adam uses recent gradients and their squares to scale the updates. It also has a base learning rate.
+- `loss: 'binaryCrossentropy'` measures the error for this binary target and sigmoid output. A different task or output format can need another loss.
+- `metrics: ['accuracy']` logs the share of predictions that are correct. It does not choose the training updates.
+
+Compilation does not fit or reset the weights. `predict()` already works once
+the layers are built, including before compilation. A confident initial score
+does not establish that the model has learned anything useful.
+
+## Initial weights and both untrained sweeps
+
+A **sweep** runs every row through one model and collects one score per row.
+Build both copies before training. Copy the first model's starting values into
+plain arrays so you can keep that state after its weights change.
+
+<CodeBlock language="typescript" title="initial-rehearsal.ts">
+{`// buildClassifier creates and compiles a fresh model on each call.
+const model = buildClassifier();
+const second = buildClassifier();
+
+const initialWeights = model.getWeights().map(
+  weight => Array.from(weight.dataSync())
+);
+
+function scoresOf(network) {
+  return tf.tidy(() => {
+    const predictions = network.predict(readings) as tf.Tensor;
+    return Array.from(predictions.dataSync());
+  });
+}
+
+const sweepOne = scoresOf(model);
+const sweepTwo = scoresOf(second);`}
+</CodeBlock>
+
+`initialWeights` holds six number arrays in kernel/bias order, with 529 values
+altogether. Keep it before `fit()`. Each sweep holds 120 numbers because the
+output layer returns one score for each of the 120 rows.
+
+`tf.tidy()` releases the prediction tensor after the callback copies its
+values. It returns the plain array. Both models remain untrained here, with
+zero optimizer updates. Independent random weights can give different starting
+scores. Those scores can also coincide, so a difference is not a requirement.
+
+## One fit on the first model
+
+<CodeBlock language="typescript" title="train-first-rehearsal.ts">
+{`const history = await model.fit(readings, labels, {
+  epochs: 50,
+  batchSize: 16,
+});
+const trainedSweep = scoresOf(model);
+const secondAgain = scoresOf(second);`}
+</CodeBlock>
+
+An **epoch** is one pass through the training rows. Here, each epoch uses
+eight batches: seven groups of 16 and a final group of 8. Completing all
+50 epochs applies 400 optimizer updates to the first model. The second model
+receives no `fit()` call and stays at its own starting weights.
+
+`await` keeps the final sweep after training finishes. Compare `trainedSweep`
+with `sweepOne` row by row. `secondAgain` should still match `sweepTwo`, since
+its model has not changed. The `history` object contains this fit's measured
+loss and metrics. Module 3 explains how those updates work.
+
+In the Concept activity, inspect each stage and its settings. The schedule
+calculation predicts update counts. It supplies no prediction values or loss.
+Even an equal update count can describe a different run: 100 epochs at batch
+size 32 also gives 400 updates, but the challenge requests 50 epochs at 16.
+
+## The separate bridge configuration
+
+The bridge architecture has three inputs, 32 and 16 hidden units, and one
+sigmoid output: 673 parameters. The complete example below builds a fresh,
+untrained copy. Its `[0.5, 0.8, 0.2]` test row is an illustrative input with
+no capture ID or label. It is separate from the eight-feature rehearsal.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -98,7 +215,7 @@ const model = tf.sequential();
 model.add(tf.layers.dense({
   units: 32,
   activation: 'relu',
-  inputShape: [3],     // 3 sensor inputs
+  inputShape: [3],     // 3 input features in this bridge configuration
 }));
 model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
@@ -135,12 +252,6 @@ tf.dispose([testInput, prediction]);
 model.dispose();`}
 </CodeBlock>
 
-The compile options have different jobs:
-
-- `optimizer: 'adam'` chooses how to adjust the weights. Adam uses recent gradients and their squares to scale the updates. You still choose a base learning rate.
-- `loss: 'binaryCrossentropy'` chooses how to measure errors. Two-class probability models often use this loss. Models that predict numerical values often use mean squared error, or MSE. Choose the loss for the task and output format.
-- `metrics: ['accuracy']` logs the share of predictions that are correct. It does not choose the training updates.
-
 ## Challenge
 
 Build two copies of the rehearsal classifier. Run both on the same 120
@@ -148,9 +259,14 @@ generated readings, then train one copy and run it again. Inspect a selected
 set of your before-and-after scores while the second model stays untrained.
 The instructions supply the `fit()` call. Module 3 explains its updates.
 
-This practice model reads 8 features through layers of 24, 12, and 1 units. Its parameter count is `(8 × 24 + 24) + (24 × 12 + 12) + (12 + 1) = 529`. The generated inputs have three features that differ by class and five extra noise features.
+Use the eight-feature, 529-parameter rehearsal configuration. The result view
+links selected rows 0-7 and 60-67 to their labels and three scores: first model
+before training, second model untrained, and first model after training. It
+also shows the captured training settings and measured loss.
 
-Compare this model's own scores before and after training. It differs from the bridge model in both input width and layer sizes. Module 3 returns to the bridge model: 3 inputs, 32/16/1 units, and 673 parameters.
+These are training-row observations. A score change or lower loss does not
+establish performance on new data. Module 3 returns to the separate bridge
+model. Keep its three inputs and 673 parameters distinct from this rehearsal.
 
 <Exercise slug="simple-network" />
 
@@ -198,25 +314,25 @@ Compare this model's own scores before and after training. It differs from the b
 />
 
 <RecallPrompt
-  question="A dense layer maps three input features to 32 units."
-  answer="Inner dimensions must match: [m, n] x [n, p] produces [m, p]. A batch arrives as [rows, 3], so the kernel has to be [3, 32] for the multiply to run. That is 96 weights, plus one bias per unit: 128."
+  question="The rehearsal's first dense layer maps eight input features to 24 units."
+  answer="A batch has shape [rows, 8], so the kernel has shape [8, 24]. Its 192 weights and 24 biases give 216 parameters."
   checks={[
     {
       "kind": "shape",
-      "question": "A batch has shape [rows, 3] and the dense layer has 32 units. What is the kernel shape?",
+      "question": "A batch has shape [rows, 8] and the dense layer has 24 units. What is the kernel shape?",
       "expected": [
-        3,
-        32
+        8,
+        24
       ],
-      "hint": "The kernel must match 3 input features and produce 32 output features.",
-      "explanation": "The product [rows, 3] × [3, 32] produces [rows, 32]."
+      "hint": "The kernel must match 8 input features and produce 24 output features.",
+      "explanation": "The product [rows, 8] × [8, 24] produces [rows, 24]."
     },
     {
       "kind": "number",
       "question": "Including one bias per unit, how many parameters does that layer have?",
-      "expected": 128,
-      "hint": "Add the 3 × 32 kernel weights and the 32 biases.",
-      "explanation": "96 weights plus 32 biases gives 128 parameters."
+      "expected": 216,
+      "hint": "Add the 8 × 24 kernel weights and the 24 biases.",
+      "explanation": "192 weights plus 24 biases gives 216 parameters."
     }
   ]}
 />
@@ -226,6 +342,7 @@ Compare this model's own scores before and after training. It differs from the b
     "Create and connect layers to run predict(). Compile before using fit() to train them.",
     "model.compile() configures the optimizer, loss function, and metrics. A later fit() call uses those settings to train the model.",
     "Adam scales updates using gradient statistics. Its base learning rate is still a setting. Choose a loss that matches the task and output format.",
+    "Save the first model's initial weights and both untrained sweeps before fitting the first model once. Leave the second model untrained. Compare actual training-row scores without claiming performance on new data.",
     "Dense layers here default to Glorot-normal kernel weights and zero biases. Random initialization helps break symmetry. It does not guarantee good predictions or stable training."
   ]}
   bridge="createServer wires a request handler. model.compile configures training without changing existing weights. Fitting performs the parameter updates."
@@ -234,7 +351,7 @@ Compare this model's own scores before and after training. It differs from the b
 
 <Epilogue>
 
-End of watch, as ordered. Farah runs the untrained network over the archive, then initializes a second copy. Sample 7741 changes position in the sorted results. She removes the alert colors from both displays and saves the starting weights beside each run.
+End of watch, as ordered. Demir saves the rehearsal comparison. Farah returns to the separate three-feature bridge classifier, still untrained, and runs it over the archive. She initializes a second copy, and sample 7741 changes position in the sorted results. She removes the alert colors from both displays and saves the starting weights beside each run.
 
 <Dialogue speaker="Dr. Farah">
 Keep the reading flagged. We can’t trust these scores until we’ve trained and tested the model.

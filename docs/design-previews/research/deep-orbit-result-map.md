@@ -2,6 +2,35 @@
 
 Research snapshot: November 6, 2026, repository HEAD `8550adf7`. This document proposes product design. It changes no lesson, exercise, runtime, or assessment.
 
+Follow-up source reconciliation, November 10, 2026: the [clarity implementation
+record](../../audits/course-clarity-implementation-2026-11-09.md) confirms all
+56 lessons and 65 current exercise references. Introduction and Tensor Shapes
+use their custom live activities. The evaluation row below now reflects the
+implemented shared capture and specialized viewer, superseding its earlier
+aggregate-only description. Other proposed viewers remain proposals. This
+follow-up does not renew source hashes, execute examples, or establish browser
+or learner outcomes. Totals of result declarations below describe the original
+research snapshot.
+
+Later implementation on November 10 adds current-run explanations for
+`create-a-tensor`, `reshape-tensor`, and `backprop-chain`. Sensor and moment
+selection connects supplied source positions to actual captured chart values.
+The gradient view links each captured estimate to the forward-call counts.
+Unknown or malformed captures retain ordinary output. Edited code keeps its
+previous result with a stale warning. These adapters add no saved history or
+versioned result schema. The implementation record documents their executed
+checks and bounded browser evidence. Restoration checks now run after the gradient tables are captured, so an
+incorrect restoration can leave useful output available for inspection.
+Other proposed viewers below retain their design status.
+
+Neural Networks follow-up, November 10: the five Concept activities and
+worked explanations now distinguish their supplied arithmetic, architecture,
+and rehearsal contracts. The forward-pass exercise additionally captures the
+actual kernel and bias used in its output comparison. A fourth current-run
+contract traces one captured output through those operands. The implementation
+record gives source, runtime, browser, and remaining continuity evidence.
+Other proposed inspectors retain their design status.
+
 ## Findings that shape the design
 
 Every launched lesson already has at least one exercise result declaration. Across 56 current lesson sources, all 65 unique exercise references resolve to YAML with `recordResult()` calls. The 90 declarations comprise 73 tables, 13 series, and four text results. These are source declarations, not proof that a failed run always reaches capture or that production shows every result.
@@ -37,7 +66,7 @@ Current source review covered the 56 lesson frontmatter task/consequence records
 | [Your First Neuron](../../../packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx)<br>`first-neuron` | Help Farah replace a handwritten rule with a weighted calculation. The artifact uses a fixed three-input arithmetic case. | [`implement-neuron`](../../../packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml#L79): table | Inspect the weighted terms, their sum, and the bias behind the returned scalar. Selecting an input highlights its weight and product. Explain which code the learner wrote. | No training occurs in this exercise. A scalar result proves this calculation on these inputs, not classification ability or the source of the signal. |
 | [Activation Functions](../../../packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx)<br>`activation-functions` | Check hidden-layer activation before Nazari chooses an alert rule. Current probes supply negative, positive, and large pre-activation values. | [`relu-activation`](../../../packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml#L48): table | Plot each input/output pair against the ReLU function, with a full readable table. Selecting a negative value explains why it becomes zero. Keep the alert threshold outside this control. | Activation and alert policy have different roles. Changing ReLU examples must not invent model evaluation or a deployment decision. |
 | [Layers and Architecture](../../../packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx)<br>`layers-and-architecture` | Count the network’s weights and biases for Nazari. The exercise uses 16/8/1 layers with four input features, distinct from the story’s 32/16/1 model. | [`build-layer`](../../../packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml#L88): table × 2 | Use a selectable layer diagram. Each layer opens its input width, units, weight count, bias count, and the learner’s arithmetic compared with model.countParams(). | The 16/8/1 practice stack is untrained. Do not display the story’s 673 count as this learner model’s count. Keep both model identities explicit. |
-| [The Forward Pass](../../../packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx)<br>`forward-pass` | Repair the batch-axis error in front of the commander. The exercise has two input features and a three-unit linear layer with random initial weights. | [`forward-pass`](../../../packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml#L107): table | Select an input row and output unit to trace actual weights, bias, and result. Link the one-reading batch conversion to preserved values and dimensions. | A returned score verifies the forward calculation. Random initialization supplies no accuracy claim. Do not show a sigmoid probability scale for this linear output. |
+| [The Forward Pass](../../../packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx)<br>`forward-pass` | Repair the batch-axis error in front of the commander. The exercise has two input features and a three-unit linear layer with random initial weights. | [`forward-pass`](../../../packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml#L107): table x 2 | Implemented November 10: select a captured row and unit to inspect both input contributions, the actual kernel column, bias, captured output, and a separate JavaScript sum. Preserve ordinary output when the operand table is unavailable. | The supplied comparison checks linear arithmetic. Captured weights alone do not prove whether training occurred. Prediction accuracy needs labeled evaluation data. The Concept reference uses identified hand-chosen weights, separate from each graded run. |
 | [Building a Complete Network](../../../packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx)<br>`building-a-network` | Assemble classifiers and compare their starting scores with a trained copy. The current exercise generates 120 eight-feature rehearsal rows and two independent models. | [`simple-network`](../../../packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml#L118): table × 3, series | Extend the current saved network-stage view. Link selected training rows, before/after scores, second untrained model, observed fit settings, and loss history. Keep source and assistance labels in view. | The displayed 16-row excerpt comes from training. This is not held-out evaluation. The first three features are proxies and five are noise features. It does not continue the normalization model or its dataset. |
 
 ## 3. Training: Loss, Gradients & Optimization
@@ -48,7 +77,7 @@ Current source review covered the 56 lesson frontmatter task/consequence records
 | [Gradient Descent](../../../packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx)<br>`gradient-descent` | Give Demir one inspectable weight update. The exercise uses scalar squared loss with weight 5 and learning rate 0.1. | [`gradient-step`](../../../packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml#L60): table, series<br>experiment `learning-rate` | Show old weight, calculated gradient, step size, new weight, and actual loss at each recorded step. Reuse the separate learning-rate prediction experiment with its own source label. | This scalar exercise trains no spacecraft classifier. The learning-rate experiment and exercise have distinct loss functions. Keep that distinction until an explicitly reviewed integration replaces both fixtures. |
 | [Backpropagation](../../../packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx)<br>`backpropagation` | Replace Demir’s repeated forward calculations with automatic gradients. Probes compare numerical and automatic derivatives on supplied scalar-variable losses. | [`backprop-chain`](../../../packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml#L170): table × 2 | Link each variable’s automatic gradient, numerical estimate, difference, and counted forward evaluations. Reveal the local calculation for the selected variable. | Counts do not measure elapsed speed. Numerical approximation depends on epsilon. The small test is not a measured 673-weight training run. |
 | [The Training Loop](../../../packages/content/content/deep-orbit/training-loop/04-training-loop.mdx)<br>`training-loop` | Stop a run when validation loss stops improving. The exercise generates 100 synthetic rows, uses validationSplit, and records real fit history. | [`training-loop-exercise`](../../../packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml#L191): series | Make the epoch trace the main result. Select an epoch to inspect training loss, validation loss, improvement against the best monitored value, and stop context. Preserve sampled-epoch labels. | A valid run can reach the epoch limit. Current output samples up to 64 epochs and must not fabricate intermediate values. Validation loss is neither a final held-out score nor proof of the story outcome. |
-| [Evaluating DEEP SCAN](../../../packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx)<br>`evaluating-deep-scan` | Give Mirza evidence before a supervised prototype test. The exercise trains on 100 generated rows and evaluates 43 separate rows: 40 generated examples and three authored story cases. | [`deep-scan-eval`](../../../packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml#L398): table, text<br>decision task `review-costs`<br>project stage `evaluation`<br>external transfer assignment | Lead with all-case score review: stable row identity, class lanes, strict decision boundary, source markers, error-category counts, and selected input/label/score. Preserve useful run output even after an incorrect gap verdict. Add the existing evaluation project-stage entry. | The current artifacts contain only aggregate training/test scores and a gap label. New capture must retain all 43 cases and bind training/evaluation to the same model and immutable fixtures. The story’s 94% and sample 7741’s 51.8% remain separate fictional records. Keep review-cost and external transfer activities separate. |
+| [Evaluating DEEP SCAN](../../../packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx)<br>`evaluating-deep-scan` | Give Mirza evidence before a supervised prototype test. The exercise trains on 100 generated rows and evaluates 43 separate rows: 40 generated examples and three authored story cases. | [`deep-scan-eval`](../../../packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml#L201): up to four shared-capture tables for measured scores, run context, generated cases, and authored cases<br>decision task `review-costs`<br>project stage `evaluation`<br>external transfer assignment | Reuse the implemented evaluation capture, decoder, and viewer for stable case identity, label lanes, decision boundary, source markers, error categories, and selected input/label/score. Preserve useful measured output after an incorrect diagnosis. Keep the existing evaluation project-stage entry. | November 10 source reconciliation supersedes the aggregate-only limitation. The shared capture can retain all 43 cases and records source/model/measurement status. Partial or unavailable reports remain explicit. This source inspection establishes no new execution or browser result. The story’s 94% and sample 7741’s 51.8% remain separate fictional records. Keep review-cost and external transfer activities separate. |
 
 ## 4. Browser ML Runtimes
 
@@ -173,3 +202,174 @@ The four authored later worlds are outside the launched-course rollout. Reuse th
 - [Earlier learning inventory, treated as a historical source](../../audits/deep-orbit-learning-map.json).
 
 Coverage check: 56 lesson rows, 65 unique exercise links, 65/65 exercises with existing result declarations. No product code or authored lesson changed.
+
+## Training Loop follow-up: November 10, 2026
+
+This addition updates the implemented behavior for Loss Functions, Gradient
+Descent, and The Training Loop. Their earlier rows remain part of the research
+snapshot. It also records the bounded L15 clarification, which reuses the
+existing specialized evaluation path. No historical object or source hash is
+renewed by this follow-up.
+
+Nineteen unique lessons now have bounded implementation slices: L01-L15,
+L23, L29, L44, and L47. Thirty-seven remain unstarted, and all 56 full cards
+remain open. The new Training Loop work adds L11, L12, L14, and L15 to the
+previous fifteen, with L13 counted once. Full mission data/model continuity,
+independent reviewer evidence, and learner understanding remain open.
+
+The transient current-result path now covers seven exercise contracts across
+six families. `create-a-tensor` and `reshape-tensor` share sensor-layout.
+`backprop-chain` uses gradient-comparison, `forward-pass` uses dense-forward,
+and the three additions below use their own families. These adapters reuse
+the existing tokened run lifecycle and ordinary output fallback. They add no
+saved-result definition or persistence flag. The normalization, network, and
+evaluation saved-evidence path stays separate.
+
+| Exercise and current family | Captured output and interaction | Source and interpretation limits |
+| --- | --- | --- |
+| `mse-loss`: loss-comparison | Three tables retain the four-row MSE operands and returned scalar, two returned BCE comparisons, and their supplied labels/raw logits. Select a batch position and BCE case to compare the captured output with a separately labeled JavaScript calculation. | The arithmetic inputs are supplied probes, not ship measurements or a trained model's scores. Returned scalars remain the learner's output when incorrect. The numeric tables do not establish whether `pickBceForm` is correct. Unknown, malformed, or incomplete groups retain ordinary output. |
+| `gradient-step`: scalar-updates | The first table retains a gradient/rate/weight after-state. The existing three-point series is paired with a new table of captured operands and recomputed losses for updates two and three. Select an update to compare its captured result with subtraction using those operands. | There is no captured before-state for the learner's first call. The exercise requests weight squared, while the view describes calls to the submitted `lossFn`. Gradient traces alone cannot establish the exact loss formula. JavaScript reference arithmetic is separate from the captured TensorFlow.js result. Replaced gradients must be disposed while the latest remains readable. |
+| `training-loop-exercise`: training-history | The curve retains at most 64 evenly spaced samples labeled with original 1-based epochs. A twelve-row table records completed epochs, both final ten-epoch windows, means from the full submitted histories, and the diagnosis status/value/detail. Select a sampled epoch without changing the full-window reference. | The exercise supplies an independent synthetic 100-row, three-feature fixture and a fresh 673-parameter model. The result does not certify unchanged source/model identity. Means are captured before learner diagnosis receives copies. Wrong, invalid, or throwing diagnosis leaves useful curves. Displayed means are rounded, while the trend reference uses full captured precision. |
+
+The L14 callback and diagnosis remain separate operations. The callback watches
+strict improvements in validation loss with patience five. The diagnosis uses
+ordered rules on the final two ten-epoch windows, treating exact 5% changes
+as flat within the declared absolute tolerance. A valid shorter training
+budget can end before 20 epochs and return `insufficient-history`. Neither a
+trend label nor a stopping event establishes its cause or a release decision.
+
+L15 keeps the twelve supplied Concept cases distinct from the 43-row coding
+evaluation. The latter has 40 generated cases and three authored label-1
+cases, separate from the 100 generated training rows. Its declared constant-0
+baseline is a policy selected before evaluation because training labels tie
+50/50. It scores 20/43 and misses all 23 label-1 cases. The shared
+`captureEvaluation`, four artifact roles, versioned readers, and
+disabled-by-default evaluation writes are unchanged. The only grader boundary
+addition rejects `>= 0.15` at an exact 0.15 gap, retaining all four measured
+tables when that diagnosis is wrong. The story's 94% and 7741's 0.518 remain
+fictional records, and 7741's correct label remains unknown. Review-cost and
+external transfer tasks remain independent.
+
+Current verification includes the 71-group reviewed-example runtime harness,
+with 15 Training Loop groups and no retained tensors. The final module
+preview passes 75 phase checks, 15 expanded interactions, and 15 scoped axe
+scans. The three inspectors pass six isolated width/theme settings with 66
+scoped axe scans and three actual paid-route Worker workflows. The retained
+evaluation route passes at 390px light. The isolated production build passes.
+The all56 renderer/story gate passes at two widths with no page errors or overflow. The [implementation record](../../audits/course-clarity-implementation-2026-11-09.md)
+will retain their final scope and evidence separately. These software checks
+do not close lesson cards or establish a course-wide clarity percentage.
+
+
+## Browser Runtimes implementation follow-up, November 10
+
+The six L16-L21 lessons now expose the required policy, startup, loading,
+inference, comparison, and positional report-pairing mechanics in their main
+flows. This brings the course to 25 bounded lesson slices, with 31 unstarted
+and all 56 full cards still open. Five additional transient result contracts
+bring the current host to twelve contracts across eleven families.
+
+- Deployment policy links copied local/size/latency inputs to the actual
+  returned recommendation and the first decisive authored rule.
+- Inference links a supplied raw diagnostic row and requested reference ranges
+  to observed predict inputs/output and actual class/score. A separate memory
+  probe remains explicitly separate. Legacy fields retain their stored keys.
+- Capacity inspection links supplied endpoints/budget to returned growth and
+  deadline values, with the continuation assumption and unknown cause visible.
+- Runtime parity links same-call observed inputs/outputs to returned agreement
+  and simulated intervals. It establishes neither accuracy nor device speed.
+- Report pairing links copied original text/predictions to the returned sorted
+  rows. Sentiment scores establish neither urgency nor model suitability.
+
+Startup and model loading retain their ordinary captured metadata. New
+readers require bounded compatible groups, keep actual wrong outputs, and
+fall back to ordinary output when operands are unavailable. Edits stay stale
+and fresh run tokens reset controls. Multi-editor results have distinct
+accessible landmark names. No saved schema, write flag, model asset, or
+prerequisite rule changed.
+
+The final six-lesson preview passes 90 phases, 18 interactions, and 18 scoped
+axe scans. Five actual paid-route Worker workflows pass, including both L19
+editors, with ten scoped axe scans. Six isolated inspector settings pass with
+126 scoped scans. All 56 lesson renders and story checks, the 92-group example
+harness, and isolated production build pass. The [implementation record](../../audits/course-clarity-implementation-2026-11-09.md)
+retains source versions, first failures, fixes, scope, and remaining work.
+Historical research objects/hashes remain unchanged. Full continuity and
+independent learner evidence remain open.
+
+## Full Deep Orbit source rollout follow-up, November 10, 2026
+
+Source implementation now covers all 56 Deep Orbit lessons and all 65 unique
+primary, incident, and rehearsal exercise references. Each lesson has its
+required explanation, task activity, result-reading guidance, recall, and
+story handoff in the source. This statement supersedes the earlier bounded
+implementation inventory for current work. The historical rows, counts,
+objects, and hashes above still describe their recorded snapshots.
+
+The shared investigation path now supplies authored source context for 54
+lessons. Introduction and Tensor Shapes retain their two custom recording
+inspectors. The new context identifies a stable source ID, source kind,
+readable label, selected scope, ordering, and known units beside current data.
+Selected scopes reuse the existing case descriptions that select the values.
+Unknown physical units remain unknown, and dimensionless arithmetic stays
+explicit. This presentation metadata adds no saved evidence or inferred
+mission lineage.
+
+The transient current-result host now supports sixteen exercise contracts
+across fifteen families. The prior twelve contracts remain, and the four
+additions below use existing captured artifact roles. These are bounded
+inspectors. The remaining exercises continue to expose ordinary captured
+output where a custom inspector would add no required task information. The
+normalization, network, and evaluation saved-evidence paths remain separate.
+
+| Added contract and family | Actual capture and interaction | Reference and source limits |
+| --- | --- | --- |
+| `compute-fft`: spectrum-peak | Read the captured sample count, rate, spacing, and returned frequency from **Your strongest eligible frequency**. Show the returned frequency divided by the captured spacing beside the eligible centers. | This capture comes from the 128-sample, 128 Hz, supplied 5 Hz diagnostic. It contains no full spectrum. The bin-center rule does not estimate an off-bin physical tone or identify the mission's 73.4 Hz source. |
+| `build-spectrogram`: spectrogram-frames | Select one of the four actual returned 40 Hz magnitudes in **When the test tone appears**. Link it to the declared frame start, interval, and sample positions. | The synthetic 256-sample, 256 Hz fixture puts its burst at positions 64 through 127. Untapered 64-sample frames advance by 64. One captured bin cannot supply a full spectrogram or the missing source samples. |
+| `pipeline-architecture`: composition-output | Select one of the five actual final-tensor magnitudes in **The feature row your pipeline delivered** and compare it with a separately labeled JavaScript reference. | The capture comes from the async-middle probe `[0.4, 1.2, 0.4, 1.2, 0.4, 1.2, 0.4, 1.2]`, separate from the main worked window `[1, 1.4, 0.6, 1, 1, 1.4, 0.6, 1]`. Reference normalization and FFT calculations do not observe intermediate learner stages. Positions remain bins because no sample rate accompanies this diagnostic. Float32 rounding can differ from the reference. |
+| `write-model-card`: model-card-output | Select a captured line from **The handover card your code produced**. Keep its actual text beside a separate explanation of the supplied metadata and formatting calculation. | The fictional record supplies accuracy 0.918 at the pruning review, minimum recall anomaly 0.84, 3,988 weight bytes, 0.035 ms classifier duration, and a 64-sample input. These fields do not identify a new measured artifact, whole-pipeline latency, sensor-channel count, or evaluated new sensor. Formatting cannot verify them. |
+
+Compatible finite wrong outputs remain inspectable. Unsupported, missing, or
+ambiguous artifact groups retain ordinary output. Stale warnings continue to
+identify submitted code after edits, and new run tokens reset inspection
+selection. Useful failures remain available where execution reached capture.
+No new saved-result schema, persisted registration, write flag, or storage
+scope accompanies these transient inspectors. Existing versioned evaluation
+readers and disabled writes remain unchanged.
+
+Two approved extensions add bounded ordinary tables without adding another
+transient result family:
+
+- `forecast-signal` keeps its actual trained-model forecast series and adds
+  **Reference windows beside your returned forecasts** for the first three
+  horizons. Returned predictions remain actual outputs. The displayed rollout
+  and replay windows are reconstructed references from supplied past values,
+  earlier returned rollout values, and arrived observations. They do not
+  observe the tensors learner code passed to `predict`, establish that replay
+  wins, or guarantee increasing error.
+- `kalman-filter` keeps its actual estimate series and adds **Uncertainty
+  beside your filter updates** for days 2 through 8 of the same fictional log.
+  Prior state, returned estimate, and stored variance come from that run.
+  Predicted variance and gain are separately labeled references using Q=0.1
+  and R=1. Intervals use seconds, variances use squared seconds, and gain is
+  dimensionless. Day 1 initializes the filter. Smoothness proves no accuracy
+  gain, and the capture does not observe internal update operations.
+
+Multi-exercise lessons now derive their task titles and order from authored
+MDX exercise references. The Challenge links each named brief to its own
+editor and provides a return link. Editor and result landmarks retain their
+exercise identity. Completion still requires every required exercise, and
+ordinary output, stale status, and useful failures remain attached to their
+own task. The navigation adds no new persistence or completion write.
+
+Final integration verification is running. Current source implementation is
+complete, but this follow-up claims no final browser, actual-route, build,
+renderer, or source-hash pass. The root-owned [implementation record](../../audits/course-clarity-implementation-2026-11-09.md)
+and [implementation plan](../../superpowers/plans/2026-11-09-course-clarity-implementation.md)
+will record those final results and their exact source snapshot. Full
+mission-data/model continuity and independent learner understanding remain
+separate evidence. Nothing here establishes a course-wide clarity percentage,
+a real scientific finding, a deployment, or sample 7741's correct label.
+
+
+Final integration on November 10 supersedes the pending-verification status above: all 56 lesson revisions and 65 exercise contracts are internally verified. The final audit records 128 example groups across all 56 lessons, 840 browser phases, 162 shared activity checks, six result-presentation settings, actual signed-in capture/finale workflows, and the isolated production/story build. The final source snapshot attributes current curriculum changes while preserving all prior research history. The evidence still makes no independent learning-gain or unified mission-model claim.

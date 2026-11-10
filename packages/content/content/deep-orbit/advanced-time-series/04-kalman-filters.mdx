@@ -96,6 +96,35 @@ You will update an estimate and its uncertainty as each noisy measurement arrive
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter that smooths a noisy timing signal", "Connect Kalman filtering to the exponential moving average pattern", "Smooth a drifting interval and read the lag that motivates a velocity state"]} />
 
+## Day 2, from uncertainty to correction
+
+Day 1 initializes at `73.1 s` with chosen variance 1 squared second.
+It has no correction. Day 2 measures `72.9 s`. With process variance 0.1
+and measurement variance 1, the update is:
+
+<CodeBlock language="javascript" title="selected-day-update.js">
+{`const priorInterval = 73.1, priorVariance = 1;
+const processVariance = 0.1, measurementVariance = 1, measuredInterval = 72.9;
+const predictedVariance = priorVariance + processVariance;
+const kalmanGain = predictedVariance / (predictedVariance + measurementVariance);
+const correction = kalmanGain * (measuredInterval - priorInterval);
+const nextInterval = priorInterval + correction;
+const nextVariance = (1 - kalmanGain) * predictedVariance;
+console.log({ predictedVariance, kalmanGain, correction, nextInterval, nextVariance });`}
+</CodeBlock>
+
+The gain is about 0.5238, the correction about -0.1048 seconds, and the stored
+estimate about 72.9952 seconds. Carry the updated variance, about 0.5238
+squared seconds, into Day 3. The activity selects any day in this same log
+and compares both EMA baselines. It also lets you vary the uncertainty
+assumptions without changing the recorded measurements.
+
+The worked class below returns a state object. The Challenge's SimpleKalman
+stores estimate and variance directly and returns only the corrected number.
+The predict/correct arithmetic is the same. A gain has no units, intervals
+use seconds, and every variance uses squared seconds. A standard deviation
+must be squared before it can serve as a variance.
+
 ## Prediction and correction
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -199,6 +228,8 @@ Once settled, the filter behaves like an EMA with a chosen alpha. It still falls
 Track the changing pulse interval with a Kalman filter. Compare your returned estimates with the recorded daily measurements. Farah needs to see the lag as well as the smoother curve before using the estimate in another forecast.
 
 <Exercise slug="kalman-filter" />
+
+The actual interval series starts with Day 2 updates, because Day 1 initializes the state. The companion trace table keeps your prior and stored states separate from the reference predicted variance and gain. Recalculate a selected day, then follow its stored variance into the next one. The final estimate near 72.43168 seconds lags the last 72.0-second reading. A smoother line supplies no independent true interval.
 
 <RecallPrompt
   question="Consider the scalar update: estimate = prediction + gain × (measurement − prediction)."

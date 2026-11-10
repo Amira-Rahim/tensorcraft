@@ -3,6 +3,92 @@ import AxeBuilder from "@axe-core/playwright";
 
 for (const [width, scheme] of [
   [1440, "dark"],
+  [390, "light"],
+  [320, "dark"],
+] as const) {
+  test(`keeps equal readings distinct across layouts at ${width}px ${scheme}`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
+    await page.addInitScript(() => {
+      localStorage.setItem("tc-cookie-consent", "declined");
+      localStorage.setItem("tc-script-skip", "1");
+      localStorage.setItem("tc_step_v2_deep-orbit_tensor-shapes", "1");
+      localStorage.setItem("tc_step_max_v2_deep-orbit_tensor-shapes", "1");
+    });
+    await page.goto("/worlds/deep-orbit/foundations/tensor-shapes");
+    const activity = page.getByTestId("channel-layout-experiment");
+    await expect(activity).toBeVisible();
+    await expect(activity.getByTestId("time-grid")).toHaveCount(0);
+    await activity
+      .getByLabel("Which four readings go in the second row?")
+      .fill("3, 18, 7, 8");
+    await activity
+      .getByRole("button", { name: "Check prediction", exact: true })
+      .click();
+    await activity
+      .getByRole("button", { name: "Run reshape", exact: true })
+      .click();
+    const result = activity.getByTestId("channel-result");
+    const secondEight = result.getByRole("button", {
+      name: /Time 2, flat index 7/,
+    });
+    await secondEight.focus();
+    await page.keyboard.press("Enter");
+    await expect(activity.getByTestId("reading-position")).toContainText(
+      "Sensor D recorded 8 at Time 2",
+    );
+    await expect(
+      activity.getByTestId("transformed-reading-position"),
+    ).toContainText("row 2, column 1");
+    await expect(activity.getByRole("img")).toHaveAccessibleName(
+      /Selected reading: 8 at Time 2/,
+    );
+    await activity
+      .getByRole("button", { name: "Run transpose", exact: true })
+      .click();
+    await expect(
+      activity.getByTestId("transformed-reading-position"),
+    ).toContainText("row 3, column 1");
+    const firstEight = result.getByRole("button", {
+      name: /Time 1, flat index 3/,
+    });
+    await firstEight.focus();
+    await page.keyboard.press("Enter");
+    await expect(activity.getByTestId("reading-position")).toContainText(
+      "Sensor D recorded 8 at Time 1",
+    );
+    await expect(
+      activity.getByTestId("transformed-reading-position"),
+    ).toContainText("row 3, column 0");
+    await expect(
+      activity.locator('td[data-selected-reading="true"]'),
+    ).toHaveCount(2);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(width);
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .include('[data-testid="channel-layout-experiment"]')
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+    await result.scrollIntoViewIfNeeded();
+    await page.screenshot({
+      path: testInfo.outputPath(`linked-reading-${width}-${scheme}.png`),
+    });
+    await page.reload();
+    await expect(activity.getByLabel("Follow a sensor")).toHaveValue("3");
+    await expect(
+      activity.getByRole("button", { name: "Run transpose", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
+}
+
+for (const [width, scheme] of [
+  [1440, "dark"],
   [390, "dark"],
   [320, "light"],
 ] as const) {

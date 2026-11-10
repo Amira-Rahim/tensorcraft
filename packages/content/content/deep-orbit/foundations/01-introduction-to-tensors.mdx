@@ -90,6 +90,8 @@ not train a model or discover a pattern.
 
 The shape is `[12]`: one axis holding 12 values. It does not tell us which
 sensor produced a value. That information comes from the recording’s header.
+Pass `streamValues` directly to `tf.tensor()`. Wrapping it in another array
+adds an axis, giving shape `[1, 12]` instead.
 
 The supplied chart code groups the readings by sensor and draws a line for
 each one. In the challenge, you’ll write the tensor creation and shape lines

@@ -89,6 +89,33 @@ Give Nazari two parts of the release record: a verdict on the candidate's suppli
 
 <LearningObjectives objectives={["Check that the release tests the right model and that its predictions meet the requirements", "Implement a conservative evaluation score and an acceptance threshold", "Explain what a device-specific inference benchmark must record", "Trace publication, verification and rollback conditions", "Export a model with model.save() and inspect its architecture, weight specifications, and byte count"]} />
 
+
+## The five cases behind the score
+
+The first exercise receives predictions and reviewed labels. It does not train or export a model. In its supplied five-row probe, four predictions match:
+
+<CodeBlock language="typescript" title="release-score-trace.ts">
+{`const cases = [
+  { predicted: 'pulsar', actual: 'pulsar' },
+  { predicted: 'noise', actual: 'noise' },
+  { predicted: 'quasar', actual: 'pulsar' },
+  { predicted: 'noise', actual: 'noise' },
+  { predicted: 'anomaly', actual: 'anomaly' },
+];
+const correct = cases.filter(row => row.actual != null && row.predicted === row.actual).length;
+const total = cases.length;
+const score = total === 0 ? 0 : correct / total;
+const minimum = 0.8;
+console.log({ correct, total, score, passed: total > 0 && score >= minimum });
+// { correct: 4, total: 5, score: 0.8, passed: true }`}
+</CodeBlock>
+
+Equality passes at 0.8. A floor of 0.9 rejects this same candidate. A missing label stays in the denominator and cannot count as correct. An empty batch returns a score of zero and fails even with a zero floor. Those rules keep a missing evaluation from approving a release.
+
+The second exercise exports a separate, initially untrained model with widths 3, 16, 8 and 1. Its six tensors contain 48, 16, 128, 8, 8 and 1 values: 209 parameters. All-float32 weights occupy 836 bytes. Read the serialized buffer's `byteLength` because another encoding changes that count.
+
+Saving and reloading those bytes should preserve the supplied prediction probes. That checks the export path. It does not connect the unrelated five-row behavior probe to this model. A real release must join each report to the exact artifact it evaluated.
+
 ## The release artifact
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />

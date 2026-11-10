@@ -61,11 +61,94 @@ You will choose where a model should run using the console’s privacy, offline,
 
 <LearningObjectives objectives={["Check when local predictions help with privacy, network delays or offline use", "Account for model downloads, startup, memory and device speed", "Choose browser or server inference from the application's requirements"]} />
 
-## Where Inference Runs: Server or Client
+## Where the prediction runs
+
+Inference means using a trained model to make a prediction. Server inference sends the input to another machine. Browser inference runs the model on the device after the app, runtime, and model assets are available there.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Inference means using a trained model to make a prediction. Here is how that work differs on a server and in a browser:
+| Factor | Server | Browser |
+| --- | --- | --- |
+| Latency | Network plus server queue and compute | Local preparation, compute, and output readback |
+| Privacy | Inputs reach the service | Inference can stay local. Audit other uploads and telemetry too. |
+| Offline use | Usually needs a connection | Needs the cached app, runtime, model, and any other required assets |
+| Model size | Server resources and cost limit the model | Download, memory, and device compatibility limit the model |
+| Compute | The service chooses its hardware | Device hardware varies |
+| Startup | May need process and model initialization | May need downloads, backend initialization, and kernel compilation |
+
+The ship's 180-millisecond compute-bay hop fits inside the one-second interval between live readings. Nazari needs predictions to continue when that link fails. A cached local runtime removes the per-verdict dependency on that link. The device still needs enough memory and compute to run the model.
+
+## Requirements before preferences
+
+The Challenge gives you an authored policy to implement as `recommendDeployment(useCase)`. Its inputs describe a proposed use case. They are supplied policy checks, separate from measured ship hardware. The `50 MB` download budget and `50 ms` latency preference are exercise rules. Neither cutoff predicts how fast a model will run.
+
+| Input | Meaning in this policy |
+| --- | --- |
+| `dataSensitive` | All input must stay on the device. |
+| `needsOffline` | Predictions must work without a connection. |
+| `modelSizeMB` | Model download size in decimal megabytes. Exactly `50` fits the budget. |
+| `latencyBudgetMs` | A preference below `50` favors the client when the model fits. Exactly `50` does not. |
+
+Check the requirements in this order:
+
+1. Either `dataSensitive` or `needsOffline` requires local predictions.
+2. If the model exceeds `50 MB`, check that local requirement. Return `'reconsider'` when both constraints cannot hold together. A server would break the local requirement. Consider a smaller model or a different download plan.
+3. If the model exceeds `50 MB` without a local requirement, return `'server'`. This size rule decides before the latency preference.
+4. If the model fits, return `'client'` for a local requirement or a latency preference strictly below `50 ms`. Otherwise, return `'server'`.
+
+`'client'` chooses local inference for this policy. `'server'` chooses remote inference. `'reconsider'` identifies conflicting requirements that the two locations cannot satisfy under the stated download plan. It keeps the privacy or offline requirement visible while you revise that plan.
+
+The following supplied cases show why order and equality matter:
+
+| Local requirement | Model MB | Latency preference ms | Recommendation | Decisive rule |
+| --- | --- | --- | --- | --- |
+| None | 50 | 49 | `client` | Fits, with a preference below 50 ms |
+| None | 50 | 50 | `server` | Fits, with no local requirement or strict latency preference |
+| Sensitive inputs | 51 | 500 | `reconsider` | Download budget conflicts with local predictions |
+| Offline predictions | 51 | 500 | `reconsider` | Download budget conflicts with local predictions |
+| None | 100 | 20 | `server` | Size rule decides before the latency preference |
+
+In the activity, change one requirement and inspect the highlighted decisive rule. Start at `50 MB` and `49 ms`, then raise the preference to `50 ms`. Next, try the alternate preset with sensitive inputs and `51 MB`. Predict the recommendation before running the trace.
+
+<CodeBlock language="javascript" title="deployment-policy-probes.js">
+{`const suppliedCases = [
+  { modelSizeMB: 50, latencyBudgetMs: 49, dataSensitive: false, needsOffline: false },
+  { modelSizeMB: 50, latencyBudgetMs: 50, dataSensitive: false, needsOffline: false },
+  { modelSizeMB: 51, latencyBudgetMs: 500, dataSensitive: true, needsOffline: false },
+];
+
+// Inspect the conditions. Your function must combine them in policy order.
+for (const useCase of suppliedCases) {
+  console.log({
+    localRequired: useCase.dataSensitive || useCase.needsOffline,
+    exceedsDownloadBudget: useCase.modelSizeMB > 50,
+    belowLatencyPreference: useCase.latencyBudgetMs < 50,
+  });
+}
+// Conditions: [false, false, true], [false, false, false], [true, true, false]`}
+</CodeBlock>
+
+## Downloads and completed work
+
+A download budget covers model files. Runtime memory also holds inputs, intermediate tensors, backend allocations, and application state. Float32 weights alone take four bytes per parameter. A separate arithmetic example makes the units explicit:
+
+<CodeBlock language="javascript" title="model-download-budget.js">
+{`const exampleParameterCount = 10_000_000;
+const weightBytes = exampleParameterCount * 4;
+console.log(weightBytes / 1e6); // 40 MB in decimal units
+console.log(weightBytes / (1024 * 1024)); // about 38.1 MiB
+// This estimates float32 weight bytes, not total files or peak browser memory.`}
+</CodeBlock>
+
+Cold startup can include downloading files, initializing a backend, and compiling its first kernels. Warm inference can cost less. For GPU work, await output readback when measuring a completed prediction. Timing only `model.predict()` can measure the queueing call while the computation continues.
+
+DEEP SCAN classifies one live reading per second, leaving roughly `1000 ms` between predictions. Test the full handler on supported devices while the dashboard is busy. Available time and observed execution time are different quantities.
+
+<ConceptReference summary="Integration references for the input path and device measurements">
+
+### Server and browser input paths
+
+This integration sketch needs an application-supplied endpoint and model. It illustrates the input path. It supplies no measured score from DEEP SCAN.
 
 <CodeBlock language="typescript" title="inference-comparison.ts">
 {`// Integration sketch: an application supplies /api/classify and model.
@@ -95,22 +178,9 @@ async function clientInference(signalData: number[]) {
 }`}
 </CodeBlock>
 
-**When to choose client-side inference:**
+### A separate loading and timing sketch
 
-| Factor | Server | Browser |
-|--------|-------------|---------------|
-| **Latency** | Network plus server queue/compute | Local preparation, compute and readback |
-| **Privacy** | Inputs reach the service | Inference can stay local; audit uploads and telemetry too |
-| **Offline** | Usually needs a connection | Needs cached app, runtime and model assets |
-| **Model size** | Limited by server resources and cost | Limited by download, memory and device compatibility |
-| **Compute** | Hardware chosen by the service | Hardware varies by learner/device |
-| **Cold start** | May need process/model startup | May need downloads, initialization and kernel compilation |
-
-Nazari is right, though not because one round-trip misses the budget: a 180-millisecond hop to the ship's compute bay fits inside a second easily. Her objection is that the dashboard would then depend on that link staying up, reading after reading, for every hour of every watch.
-
-## The Cost of Client-Side ML
-
-Running the model on the user’s device uses that device’s memory and processing power. It also adds files to download:
+The application supplies `parameterCount` and `input`, and hosts the model files. Cache state affects load time. A 60 fps interface has about 16.7 ms per frame. Audio processing uses blocks, so the deadline depends on block size, buffering, and model cadence.
 
 <CodeBlock language="typescript" title="browser-constraints.ts">
 {`// Budget sketch: parameterCount and input are supplied by your app.
@@ -121,15 +191,15 @@ Running the model on the user’s device uses that device’s memory and process
 const modelSizeMB = (parameterCount * 4) / 1e6;
 console.log(\`Model size: \${modelSizeMB}MB\`);
 
-// Cold start: model must be downloaded and initialized
-// This is like the "time to interactive" metric in the browser
+// Measure this model load separately from full application startup.
+// Cache state and initialization affect the measured load.
 const t0 = performance.now();
 const model = await tf.loadLayersModel('/models/deep-scan/model.json');
 const coldStartMs = performance.now() - t0;
 console.log(\`Cold start: \${coldStartMs}ms\`);  // measured load time. Cache state matters
 
-// Inference budget: 60fps = 16ms per frame
-// Signal processing at 1Hz = 1000ms budget (comfortable)
+// A 60fps interface has about 16.7ms per frame.
+// One prediction per second gives a nominal 1000ms interval.
 // 44.1kHz audio has 0.023ms between samples, but processing uses blocks.
 // A 128-sample block spans about 2.9ms. Model cadence and buffering
 // determine the actual inference deadline.
@@ -141,14 +211,14 @@ output.dispose();
 console.log(\`Inference: \${inferenceMs}ms\`);  // record the device, backend, warmup and sample distribution`}
 </CodeBlock>
 
-DEEP SCAN classifies one reading per second, leaving roughly 1000ms between predictions. Test the complete handler on supported devices while the dashboard is busy. Having that much time available does not tell you how long the work actually takes.
+</ConceptReference>
 
 ## Challenge
 
 Write a rule that checks where Nazari’s model can run. Check privacy
 and offline needs before size and latency preferences. Inspect your
 recommendations on the boundary cases. This policy can rule out an option.
-the runtime still needs measurements on the chosen device.
+The runtime still needs measurements on the chosen device.
 
 <Exercise slug="browser-ml-tradeoffs" />
 

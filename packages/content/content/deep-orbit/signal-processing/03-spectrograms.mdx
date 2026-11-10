@@ -63,9 +63,59 @@ You will build a spectrogram by measuring frequencies in successive windows of a
 
 <LearningObjectives objectives={["Use a spectrogram to track frequency changes over time", "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)", "Read spectrogram output: what the axes and values mean", "Explain how window length trades timing detail against frequency detail"]} />
 
-## From Single FFT to Spectrogram
+## A frame keeps its original sample positions
+
+Farah needs timing as well as frequency. A short-time Fourier transform, or STFT, transforms one short frame at a time. The Challenge returns an array with one magnitude row per complete frame. Row order preserves time, and column order preserves frequency.
+
+Its captured result uses a supplied synthetic burst: 256 samples at 256 Hz, one second in total. A 40 Hz tone exists only in samples 64 through 127. This diagnostic checks when a component appears. It cannot measure the mission's roughly 73.4-second pulse interval.
+
+| Frame | Original sample indices | Covered time interval | Raw magnitude at bin 10 (40 Hz) |
+| --- | --- | --- | --- |
+| 0 | 0-63 | `[0, 0.25)` seconds | 0 |
+| 1 | 64-127 | `[0.25, 0.5)` seconds | about 32 |
+| 2 | 128-191 | `[0.5, 0.75)` seconds | 0 |
+| 3 | 192-255 | `[0.75, 1)` seconds | 0 |
+
+Each frame contains 64 samples, so the bin spacing is `256 / 64 = 4 Hz`. Bin 10 represents `40 Hz`. Each returned row contains `floor(64 / 2) + 1 = 33` magnitudes, including every bin rather than only its maximum.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="one-frame-spectrum.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const burstSamples = Array.from({ length: 256 }, (_, i) =>
+  i >= 64 && i < 128 ? Math.sin(2 * Math.PI * 40 * i / 256) : 0);
+const frameStart = 64;
+const frameLength = 64;
+const selectedFrame = burstSamples.slice(frameStart, frameStart + frameLength);
+const selectedSpectrum = tf.tidy(() =>
+  Array.from(tf.spectral.rfft(tf.tensor1d(selectedFrame)).abs().dataSync()));
+console.log({ startSample: frameStart, endExclusive: frameStart + frameLength,
+  startSeconds: frameStart / 256, bins: selectedSpectrum.length,
+  magnitudeAt40Hz: selectedSpectrum[10] }); // 64, 128, 0.25, 33, about 32`}
+</CodeBlock>
+
+## Frame length and hop have different jobs
+
+Frame `i` starts at `i * hopSize`. Keep it only when `start + windowSize <= signal.length`. The count is `max(0, 1 + floor((length - windowSize) / hopSize))`. A shorter-than-frame capture returns `[]`. Drop an incomplete final frame, without padding it.
+
+A hop of 64 gives the four rows above. A hop of 32 gives seven rows, starting at samples `0, 32, 64, 96, 128, 160, 192`. The burst then fills frame 2, and frames 1 and 3 overlap half of it. The corresponding 40 Hz magnitudes are about `[0, 16, 32, 16, 0, 0, 0]`.
+
+The activity links a frame index to its original samples, raw spectrum, and the same selected bin across all rows. Try the changed-tone case to see rows move from 20 Hz to 60 Hz. A complete silent frame has zero magnitudes. An absent frame has no row.
+
+Longer frames give closer frequency bins while averaging over a longer stretch of time. At this sample rate, 128-sample frames span half a second and have 2 Hz spacing. A smaller hop samples the timeline more often, with more shared samples. It does not change a frame's bin spacing.
+
+## Raw frames before tapering
+
+This Challenge transforms unweighted slices, a rectangular window. `tf.signal.stft()` applies a Hann taper by default, so its default output does not match the required raw magnitudes. The raw on-bin tone above has magnitude about 32. A periodic Hann version gives about 16. The windowing lesson explains that change.
+
+Inspect your returned 40 Hz series against the original intervals. It shows only the captured bin across four frames, rather than a full spectrogram heatmap. A full display would also need every plotted row and bin with its recording metadata.
+
+<ConceptReference summary="A separate four-second library example and window-length comparison">
+
+The following example uses a separate four-second generated capture and the library's default Hann taper. Its 73.4 Hz tone switches on during two seconds of that illustration. These timings do not reproduce the mission pulse interval or the one-second raw-frame exercise.
+
+## From Single FFT to Spectrogram
 
 One FFT measures the frequencies in one short recording. Move that window forward and take another FFT. Stack the results in time order to see when each frequency appears.
 
@@ -189,6 +239,9 @@ const fineFreq = stftMagnitudes(signal, 512, 256);
 const balanced = stftMagnitudes(signal, 256, 128);
 // Window span 1s (time blur), 1 Hz per bin`}
 </CodeBlock>
+
+
+</ConceptReference>
 
 <DerivationDrawer summary="Short-time Fourier transform (STFT) math">
 A spectrogram is a sequence of FFTs computed on overlapping windows of the signal:

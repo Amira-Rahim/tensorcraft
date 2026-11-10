@@ -54,8 +54,8 @@ starterCode: |
     const trainX = tf.concat([calm, flagged]).gather(order);
     const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
 
-    // Held-out slice: fresh seeds, never trained on. 20 calm, 20 flagged, then
-    // the three late-confirmed windows from the lesson, flagged on review.
+    // Separate synthetic evaluation rows: 20 generated label-0 cases,
+    // 20 generated label-1 cases, then three authored label-1 cases.
     const testX = tf.concat([
       tf.clipByValue(
         tf.concat(
@@ -254,6 +254,7 @@ testCode: |
     });
     it('diagnose reports a large gap above the stated boundary', () => {
       expect(diagnose(0.95, 0.6), 'A gap above 0.15 returns large-gap.').toBe('large-gap');
+      expect(diagnose(0.15, 0), 'A gap equal to 0.15 is not above the boundary. Both scores are low.').toBe('low-scores');
       expect(diagnose(0.99, 0.83)).toBe('large-gap');
       expect(diagnose(0.9, 0.74)).toBe('large-gap');
       expect(diagnose(0.9, 0.76), 'A smaller gap raises no gap warning.').toBe('no-gap-warning');

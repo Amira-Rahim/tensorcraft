@@ -12,7 +12,7 @@ scene:
   time: "Second watch"
   portraitAlt: "Nazari leans over Demir's bridge console, where sixty-four channel traces have snarled into a frozen knot."
 context:
-  narrative: "Demir's first attempt at combining the feeds just crashed the console. Nazari needs it fixed before more readings arrive."
+  narrative: "Demir's amplifier has stopped on a shape error. Nazari wants the feed restored before more readings arrive."
   speaker: "Chief Nazari"
 concept:
   explanation: "Add or multiply values at matching positions, or use matrix multiplication to combine them into weighted sums."
@@ -27,7 +27,7 @@ consequence:
   narrative: "Nazari spots the same ripple repeating in an hour of combined sensor readings."
 hints:
   - level: nudge
-    content: "Average and amplify the readings at matching positions. Combining channels needs the other kind of multiplication, the one in the broken line above."
+    content: "Keep matching channels together when you average and amplify. A channel-bank score needs a weighted sum across channels."
   - level: guidance
     content: "Add matching values, then divide to get the average. Each operation returns a tensor, so you can chain the next call. Broadcasting handles a pass supplied as one row. For the channel mix, check which axes need to swap before matrix multiplication. Return both the average and the amplified result."
   - level: solution
@@ -58,30 +58,52 @@ At the start of the shift, Demir's amplifier has stopped with this error: `Error
 </StoryPassage>
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings. Call it a million if you must round. I won't. Whatever that red text is, it is not keeping up with 983 thousand.
+The hull array takes 983 thousand raw samples a minute before integration boils them down to readings. Whatever that red text is, it is not keeping up. Show me which readings go into each result before you send another hour to this console.
 </Dialogue>
 
-Restore the feed to Nazari's console: average the passes, apply the gain,
-and combine channels without changing which readings belong together.
+Restore the feed to Nazari's console. First check the calculation on the
+recording Farah just arranged: average neighboring moments for each sensor,
+apply the gain, then combine channels into a few weighted sums. The full
+64-channel recording stays in the archive while you trace this excerpt.
 
 <LearningObjectives objectives={["Read a shape-mismatch error and find the operation that failed", "Perform element-wise tensor operations (add, multiply, subtract)", "Combine tensors of different shapes using broadcasting", "Understand the matmul shape rule: [m,n] × [n,p] produces [m,p]", "Use transpose when the matrix stores its axes in the opposite order"]} />
 
-## Averaging and amplifying the readings
+## Matching sensors across neighboring moments
 
 Demir wanted to multiply each reading by its matching gain, the number that
 controls how much to amplify it. That is **element-wise multiplication**,
 written `mul`. He used `matMul` instead. Matrix multiplication has a different
-shape rule, and `[1, 64] × [1, 64]` does not meet it.
+shape rule, and `[1, 64]` times `[1, 64]` does not meet it.
 
-Use the same two-channel passes as the visual. Add matching values, divide by
-2 to average them, then multiply the average by the gain. Each operation
-creates a tensor. `tf.tidy()` releases the temporary tensors when its
-synchronous callback finishes. That callback must finish without `await`.
-TensorFlow.js keeps the tensors you return for later use:
+<StoryPassage>
+
+Demir reopens the three moments Farah checked. He keeps sensors A and B in
+the order listed in the recording header, leaving C and D aside for now.
+Nazari points to the first two rows and waits for the calculation.
+
+</StoryPassage>
+
+The earlier excerpt contains these values:
+
+| Local moment | Sensor A | Sensor B |
+| --- | --- | --- |
+| 1 | 2 | 20 |
+| 2 | 3 | 18 |
+| 3 | 4 | 16 |
+
+These are fictional recorded readings from the same selection used in Tensor
+Shapes. The header gives their order. It supplies no physical unit here, so
+we keep them as readings without adding one.
+
+Demir makes two overlapping views. The first holds moments 1 and 2. The
+second holds moments 2 and 3. Matching positions now pair the same sensor at
+neighboring moments. Averaging each pair smooths this short sequence. It also
+changes the readings, so the raw recording stays available.
 
 <CodeBlock language="typescript" title="merge-two-passes.ts">
-{`const pass1 = tf.tensor2d([[2, 10], [4, 12], [6, 14]]);
-const pass2 = tf.tensor1d([4, 8]);
+{`// Columns stay in header order: sensor A, then sensor B.
+const pass1 = tf.tensor2d([[2, 20], [3, 18]]); // moments 1 and 2
+const pass2 = tf.tensor2d([[3, 18], [4, 16]]); // moments 2 and 3
 const gain = 2;
 
 const { merged, boosted } = tf.tidy(() => {
@@ -89,40 +111,91 @@ const { merged, boosted } = tf.tidy(() => {
   const boosted = merged.mul(gain);
   return { merged, boosted };
 });
-// merged:  [[3, 9], [4, 10], [5, 11]]
-// boosted: [[6, 18], [8, 20], [10, 22]]
-tf.dispose([pass1, pass2, merged, boosted]);`}
+console.log(merged.arraySync());  // [[2.5, 19], [3.5, 17]]
+console.log(boosted.arraySync()); // [[5, 38], [7, 34]]
+// Keep these tensors for the bank calculation below.`}
 </CodeBlock>
 
-**Broadcasting** lets one row apply to several rows. TensorFlow.js compares
-the shapes from right to left. Each pair of sizes must match, or one must be 1.
-Here, the `[2]` row applies to every row in `[3, 2]`. A scalar is a single
-number, so a scalar gain applies to every reading.
+Follow sensor A through the first pair: `(2 + 3) / 2 = 2.5`.
+Gain `2` gives `5`. Sensor B uses `(20 + 18) / 2`, then the same gain.
+The gain is a dimensionless setting chosen for this example. Doubling a value
+also doubles any error in it. This example establishes no noise reduction
+from independent repeated measurements.
 
-Return both results from `tf.tidy()` and dispose of them after use. Averaging
-can reduce noise when the errors are independent and average to zero. It
-does not fix every kind of error.
+Each operation creates a tensor. `tf.tidy()` releases temporary tensors when
+its synchronous callback finishes. That callback must finish without `await`.
+TensorFlow.js keeps the tensors in the returned object, so you can use
+`boosted` in the next calculation and dispose of both results afterward.
 
-## Weighted channel sums
+## One channel-bank sum
 
-Matrix multiplication multiplies pairs of values and adds the products.
-Its shape rule is `[m, n] × [n, p] → [m, p]`: the middle sizes must match.
-In the exercise, each row of `block` holds a set of readings. Each row of
-`mix` holds weights for combining those channels. Transpose `mix` so those
-weights become columns:
+Nazari also wants to inspect channels together. A **bank** is one supplied
+set of channel weights. Bank 0 keeps A, Bank 1 keeps B, and Bank 2 adds A
+and B. These fixed settings help you check the calculation. They make no
+claim about which sensors detect an anomaly.
+
+Matrix multiplication computes a **dot product** for each output: multiply
+each channel by its weight, then add the products. The first boosted row is
+`[5, 38]`. Bank 2 uses `[1, 1]`, so its score is `5 * 1 + 38 * 1 = 43`.
+Element-wise `mul` produces the separate products. `matMul` also sums them.
+
+| Tensor | Row meaning | Column meaning | Shape |
+| --- | --- | --- | --- |
+| `boosted` | Neighboring-moment pair | Sensor A, B | `[2, 2]` |
+| `mix` | Bank 0, 1, 2 | Sensor A, B | `[3, 2]` |
+| `mix.transpose()` | Sensor A, B | Bank 0, 1, 2 | `[2, 3]` |
+| `mixed` | Neighboring-moment pair | Bank 0, 1, 2 | `[2, 3]` |
+
+Transpose puts each bank's weights in a column. The multiplication then has
+matching sensor axes: `[2, 2]` times `[2, 3]` produces `[2, 3]`.
 
 <CodeBlock language="typescript" title="weighted-channel-mix.ts">
-{`// block: [readings, channels], mix: [banks, channels]
-const mixed = tf.tidy(() => block.matMul(mix.transpose()));
-// result: [readings, banks]; its caller disposes it after use`}
+{`// Continue with boosted from merge-two-passes.ts.
+const mix = tf.tensor2d([[1, 0], [0, 1], [1, 1]]);
+const mixed = tf.tidy(() => boosted.matMul(mix.transpose()));
+console.log(mixed.arraySync()); // [[5, 38, 43], [7, 34, 41]]
+
+tf.dispose([pass1, pass2, merged, boosted, mix, mixed]);`}
 </CodeBlock>
 
-Check axis meanings before transposing. Matching dimensions alone cannot tell
-you whether a multiplication combines the intended channels. Speed
-depends on the workload and backend. These checks show whether your calculations
-and shapes are correct.
+In the activity, select **Channel-bank sums**, then choose an output row and
+column. The highlighted sensor values and weights show every contributor to
+that score. Check their meanings as well as their counts. The general matrix
+rule is `[m, n]` times `[n, p]` produces `[m, p]`, where the shared `n` counts
+the values in each dot product.
 
-<ConceptReference summary="Reference: the original amplifier and matrix products">
+## Broadcasting one reference row
+
+<StoryPassage>
+
+Demir keeps the first moment beside the chart as a fixed reference. He checks
+what the same merge function does when he reuses that row for both outputs.
+
+</StoryPassage>
+
+This case blends each row with the first moment. It is a chosen comparison,
+not another capture of those moments. The reference has shape `[2]`: A's
+reading `2`, then B's reading `20`.
+
+<CodeBlock language="typescript" title="broadcast-recording-reference.ts">
+{`const earlier = tf.tensor2d([[2, 20], [3, 18]]); // moments 1 and 2
+const reference = tf.tensor1d([2, 20]); // moment 1, reused
+const blended = tf.tidy(() => earlier.add(reference).div(2));
+console.log(blended.arraySync()); // [[2, 20], [2.5, 19]]
+tf.dispose([earlier, reference, blended]);`}
+</CodeBlock>
+
+**Broadcasting** lets that one row apply to both rows. TensorFlow.js compares
+shapes from right to left. Each pair of sizes must match, or one must be `1`.
+A missing leading axis acts like size `1`. Here, `[2]` matches the last axis
+of `[2, 2]`. The result keeps shape `[2, 2]`.
+
+Select **Fixed first-moment reference** in the activity. Trace sensor B in
+the second output row: `(18 + 20) / 2 = 19` at gain `1`. The same reference
+value reaches each row, while A and B keep their own columns. A scalar gain
+has one value and applies to every result.
+
+<ConceptReference summary="Optional: the full amplifier and extra matrix examples">
 
 ### The shape error
 
@@ -135,7 +208,7 @@ Here is the code that produced the error. Demir wanted to multiply each of the 6
 const gains = tf.tensor2d([channelGains]);      // shape [1, 64]
 const readings = tf.tensor2d([latestReadings]); // shape [1, 64]
 
-// BROKEN: this is not the multiplication you want.
+// BROKEN: this operation requires matching inner dimensions.
 const amplified = gains.matMul(readings);
 // Error in matMul: inner shapes (64) and (1) of Tensors with
 // shapes 1,64 and 1,64 and transposeA=false and transposeB=false
@@ -144,7 +217,10 @@ const amplified = gains.matMul(readings);
 
 `matMul` needs the left tensor's column count to match the right tensor's row count. Here those counts are 64 and 1. Demir only wanted to multiply matching positions, so he needs `mul` instead.
 
-### The element-wise calculation
+### Extra element-wise operations
+
+The short arrays below are separate toy inputs for comparing addition,
+subtraction, and multiplication. They do not come from the recording.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -178,11 +254,14 @@ For example, `.mul(tf.scalar(2))` doubles every value. Subtracting two column me
 
 Tensor operations are not automatically faster than JavaScript loops. Call overhead and readback can dominate a small array. Acceleration depends on the workload and backend. Measure the version you intend to run. This lesson checks shape rules. You would need runtime measurements to compare speed.
 
-### When to use matMul
+### A matrix example with three inputs
+
+This separate toy example uses three inputs and two outputs to make the
+inner-dimension rule visible with different sizes.
 
 Dense layers compute weighted sums. `matMul` computes them for every row of its left input against every column of its right input. Element-wise multiplication alone leaves the products unsummed. The matrix operation has a shape rule:
 
-**`[m, n] × [n, p] → [m, p]`: the inner dimensions must match.**
+**`[m, n]` times `[n, p]` produces `[m, p]`: the inner dimensions must match.**
 
 The left tensor's column count must equal the right tensor's row count. If a matrix stores the intended axes in the opposite order, transpose it. A shape error can also mean missing features or an incorrect layout. Transposing until code runs can silently change the computation. Here, rows and columns need to swap:
 
@@ -224,18 +303,29 @@ When two matrix operations run back to back, the first output must fit the next 
 
 ## Challenge
 
-Help Demir fix the amplifier. Average the two sets of readings, then apply
-the gain. Use matrix multiplication to combine channels with the supplied
-weights. The result shows your averaged pass, amplified pass, and bank
-scores from the test cases. Check the values as well as their shapes before
-feeding another capture to the console.
+Help Demir write the reusable functions behind those calculations. The
+challenge supplies separate diagnostic inputs with varied values and shapes,
+including a `[3, 2]` block paired with one `[2]` row. These are test cases for
+your code, rather than excerpts of the 64-channel recording.
+
+Return both the average and the amplified result from `mergePasses`. Return
+one weighted sum per reading and bank from `mixChannels`. The result tables
+show your function's outputs for the supplied cases. Check the numbers as
+well as the shapes before Demir uses the functions on the full recording.
 
 <Exercise slug="add-tensors" />
 
 <RecallPrompt
-  question="Check both the dimensions and the meaning of a matrix multiplication."
-  answer="The rule is [m, n] x [n, p] produces [m, p]. Check what each axis represents. Transpose only when the input has those axes in the opposite order. Otherwise fix the input layout or feature count. Matching dimensions alone does not prove the multiplication means what you intended."
+  question="Trace a calculation on sensors C and D from the same excerpt. Their first two moments are [5, 8] and [7, 8]. Average matching sensors and apply gain 2, then combine them with bank weights [1, 0], [0, 1], and [1, 1]."
+  answer="The average is [6, 8], and gain 2 gives [12, 16]. The three bank scores are [12, 16, 28]. For one input row and three banks, transpose the [3, 2] weights to [2, 3]. Then [1, 2] times [2, 3] gives [1, 3]. Each dot product pairs C with its weight and D with its weight."
   checks={[
+    {
+      "kind": "number",
+      "question": "What score does Bank 2, with weights [1, 1], produce after the average and gain?",
+      "expected": 28,
+      "hint": "Average C with C and D with D, multiply both averages by 2, then add the two weighted contributions.",
+      "explanation": "C gives ((5 + 7) / 2) * 2 = 12. D gives ((8 + 8) / 2) * 2 = 16. Bank 2 adds 12 * 1 + 16 * 1 = 28."
+    },
     {
       "kind": "shape",
       "question": "What shape results from multiplying a [2, 3] matrix by a [3, 4] matrix?",
@@ -271,7 +361,7 @@ feeding another capture to the console.
 
 <LessonRecap
   whatYouLearned={[
-    "mul multiplies matching positions. matMul multiplies rows into columns. A shape error identifies the operation and the dimensions that did not match.",
+    "mul multiplies matching positions. matMul multiplies matching values in each row and column, then adds their products. A shape error names dimensions that did not match.",
     "Element-wise operations calculate with values at matching positions. For broadcasting, compare shapes from right to left: each pair of sizes must match, or one must be 1.",
     "Matrix multiplication follows [m,n] x [n,p] = [m,p]. Transpose reverses axes. Use it only when that preserves the intended computation.",
     "A dense layer starts with a weighted sum, commonly input.matMul(weights).add(bias), then applies its activation."
@@ -282,7 +372,7 @@ feeding another capture to the console.
 
 <Epilogue>
 
-Demir averages the two passes, applies the gain, and sends an hour of combined readings to Nazari's console. She watches it scroll for a long moment.
+Demir checks the selected sensor values, then applies the repaired functions to the full recording. He averages neighboring moments within each sensor, applies the gain, and sends an hour of combined readings to Nazari's console. She watches it scroll for a long moment.
 
 <Dialogue speaker="Chief Nazari">
 There. Every minute or two, the same ripple across all sixty-four channels at once. Coordinated. Run it again. And Ensign, if this is a math error, I'm taking it out of your coffee ration.

@@ -54,14 +54,43 @@ You will turn readings into predictions, release temporary tensors, and check ho
 
 <LearningObjectives objectives={["Build a real-time pipeline that prepares inputs, predicts, and displays results", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements", "Investigate tensor growth and estimate headroom when that growth continues"]} />
 
-## The Real-Time Inference Loop
+## One reading through the handler
+
+The existing model's feature order is amplitude, `frequency`, `phase`. Here
+`frequency` is the legacy field name for a zero-crossing count over a
+64-sample extraction window. `phase` stores a sample-pair angle in radians.
+Later Fourier lessons introduce their own frequency and phase meanings.
+Keep these object keys and the saved model's values unchanged.
+
+The coding exercise uses a diagnostic model that echoes one normalized
+feature. It checks the handler's data preparation and tensor ownership.
+Its output does not measure DEEP SCAN's accuracy. For the supplied
+amplitude-reading probe, this input gives a score of 0.25:
+
+| Stored raw field | Raw value | Declared range | Normalized value |
+| --- | --- | --- | --- |
+| `amplitude` | 512 counts | 0 to 2048 | 512 / 2048 = 0.25 |
+| `frequency` | 21 zero crossings | 0 to 63 | 21 / 63 = 1/3 |
+| `phase` | pi/2 radians | -pi to pi | (pi/2 + pi) / (2*pi) = 0.75 |
+
+The row `[0.25, 1/3, 0.75]` becomes a `[1, 3]` tensor. The test model returns
+`p = 0.25`. Since only `p > 0.5` is anomalous, the returned class is `noise`
+and its selected class score is `1 - p = 0.75`. At exactly 0.5, return noise
+with score 0.5. The property is named `confidence` for compatibility. Its
+value needs calibration evidence before you interpret it as reliability.
+
+A swapped row can keep shape `[1, 3]` while changing feature meanings. A flat
+`[3]` tensor lacks the required batch axis. Check values, order, and shape
+before drawing conclusions from a returned number. The activity follows
+these same diagnostic cases using JavaScript arithmetic. It runs no model.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="inference-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// The model expects normalized 3-feature input: [amplitude, frequency, phase]
+// Existing input order: amplitude, zero-crossing count, sample-pair angle.
+// The stored keys remain amplitude, frequency, phase.
 // This training contract uses fixed physical min-max bounds. Z-score
 // is another option. Other open-ended streams can need a different policy.
 // Here amplitude and frequency are bounded by the declared hardware: the hull sensors saturate at 2048 counts, and
@@ -241,6 +270,35 @@ supplied snapshots to project the remaining time, assuming their growth
 rate continues. The estimate cannot tell the crew what caused the growth.
 
 </StoryPassage>
+
+### A separate capacity estimate for the watch
+
+This second editor asks for arithmetic on supplied snapshots. It does not call
+`classify()` or train a model. Snapshot times are elapsed hours in the case,
+and tensor counts include whatever the runtime owned at those moments.
+
+For the supplied 400-to-520 case, one hour passed. The count rose by 120,
+leaving 9,480 tensors before the operational budget of 10,000. Assuming that
+endpoint rate continues, the projected headroom is 79 hours:
+
+<CodeBlock language="javascript" title="tensor-headroom.js">
+{`const earlier = { t: 0, numTensors: 400 };
+const later = { t: 1, numTensors: 520 };
+const budget = 10000;
+const elapsedHours = later.t - earlier.t;
+const increase = later.numTensors - earlier.numTensors;
+const hourlyGrowth = increase / elapsedHours;
+const remaining = budget - later.numTensors;
+console.log({ hourlyGrowth, remaining, headroomHours: remaining / hourlyGrowth });
+// { hourlyGrowth: 120, remaining: 9480, headroomHours: 79 }`}
+</CodeBlock>
+
+Your function must also handle the other supplied cases. Use the first and
+last snapshots even when a middle reading spikes. A positive rate means the
+count grew. For a flat or falling count, return `growing: false` and
+`hoursToBudget: Infinity`. That projection sets no growth deadline. It does
+not promise the count will remain flat or identify a cause. Keep the snapshot
+inputs and this continuation assumption beside the returned estimate.
 
 <Exercise slug="incident-tensor-leak" />
 
