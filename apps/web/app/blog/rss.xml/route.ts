@@ -1,4 +1,5 @@
 import { getPosts } from "@tensorcraft/content";
+import { BLOG_DESCRIPTION } from "../blog-details";
 
 const SITE = "https://tensorcraft.app";
 
@@ -29,9 +30,9 @@ export function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>The Bridge | Tensorcraft</title>
+    <title>The Bridge, Tensorcraft</title>
     <link>${SITE}/blog</link>
-    <description>Weekly browser-ML news, mapped to the lessons that teach the underlying concepts.</description>
+    <description>${escape(BLOG_DESCRIPTION)}</description>
     <language>en-us</language>
     <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="${SITE}/blog/rss.xml" rel="self" type="application/rss+xml" />
 ${items}

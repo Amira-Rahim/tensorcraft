@@ -32,17 +32,23 @@ export async function generateMetadata({
   if (post.sourceLabel) ogParams.set("sourceLabel", post.sourceLabel);
   const og = `/api/og?${ogParams.toString()}`;
   return {
-    title: `${post.title} | Tensorcraft Blog`,
+    title: `${post.title}, Tensorcraft Blog`,
     description: post.summary,
     openGraph: {
       title: post.title,
       description: post.summary,
       url: `https://tensorcraft.app/blog/${post.slug}`,
       type: "article",
+      siteName: "Tensorcraft",
       publishedTime: post.publishedAt,
       images: [{ url: og }],
     },
-    twitter: { card: "summary_large_image", title: post.title, images: [og] },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.summary,
+      images: [og],
+    },
     alternates: { canonical: `https://tensorcraft.app/blog/${post.slug}` },
   };
 }
@@ -59,15 +65,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           href="/blog"
           className="font-mono text-xs text-text-muted tracking-wider uppercase hover:text-primary"
         >
-          ← The Bridge
+          The Bridge
         </Link>
 
         <header className="mt-8 mb-12">
-          <p className="font-mono text-xs text-text-muted tracking-wider uppercase mb-4">
-            {new Date(post.publishedAt).toISOString().slice(0, 10)}
-            {post.weekIso ? ` · ${post.weekIso}` : ""}
-            {post.worldSlug ? ` · ${post.worldSlug}` : ""}
-            {post.sourceLabel ? ` · via ${post.sourceLabel}` : ""}
+          <p className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-text-muted tracking-wider uppercase mb-4">
+            <time dateTime={post.publishedAt}>
+              {new Date(post.publishedAt).toISOString().slice(0, 10)}
+            </time>
+            {post.weekIso && <span>{post.weekIso}</span>}
+            {post.worldSlug && <span>{post.worldSlug}</span>}
+            {post.sourceLabel && <span>Source: {post.sourceLabel}</span>}
           </p>
           <h1 className="text-3xl md:text-5xl font-mono font-black leading-[1.05] tracking-[-0.03em] mb-4">
             {post.title}
@@ -82,7 +90,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               rel="noopener noreferrer"
               className="mt-4 inline-block font-mono text-xs text-primary tracking-wider uppercase hover:underline"
             >
-              ↗ Original source
+              Original source
             </a>
           )}
         </header>

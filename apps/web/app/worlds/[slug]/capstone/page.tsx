@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!isLaunched(slug) || !world) notFound();
   return {
     title: `${world.terminology.lesson} Complete: ${world.displayName}, Tensorcraft`,
+    robots: { index: false },
     description: `You've completed every module of ${world.displayName}. View your certificate and stats.`,
     alternates: {
       canonical: `https://tensorcraft.app/worlds/${slug}/capstone`,

@@ -46,8 +46,8 @@ import {
   mlContentConfig,
 } from "./exercise-data";
 
-// The provider moved to exercise-data.tsx (spec 2026-09-24, section 3);
-// lesson-content.tsx and the package index import it from here.
+// Preserve direct imports. The public UI entry exports this provider from
+// the light context module so reading a lesson does not load the editor.
 export { ExerciseDataProvider };
 
 const SandpackProvider = lazy(() =>

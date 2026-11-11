@@ -1,10 +1,11 @@
 import { PRICING } from "@tensorcraft/shared";
 import type { WorldManifest } from "@tensorcraft/worlds";
+import { ORGANIZATION_ID } from "@/lib/site-identity";
 
 /**
- * Course structured data for a LAUNCHED world's detail page. The coming-soon
- * stub builds its own Course object without hasCourseInstance on purpose: an
- * instance would assert a schedule for content that has not shipped.
+ * Course structured data for a launched world's detail page, including
+ * online delivery, estimated workload, and the current paid offer.
+ * The coming-soon stub omits delivery information for unreleased content.
  *
  * Extracted from page.tsx (2026-08-17) for the same reason as
  * pricing/pricing-jsonld.ts: the object needs regression tests, and the
@@ -21,12 +22,14 @@ export function buildCourseJsonLd(
   return {
     "@context": "https://schema.org",
     "@type": "Course",
+    "@id": `https://tensorcraft.app/worlds/${world.slug}#course`,
     name: `${world.displayName}: ${world.specialization}`,
     // Plain-language description: search snippets reach strangers with no
     // story context, so the manifest's story hook stays off structured data.
     description: `${world.displayName} is a story-driven machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Module 1 is free.`,
     provider: {
       "@type": "Organization",
+      "@id": ORGANIZATION_ID,
       name: "Tensorcraft",
       url: "https://tensorcraft.app",
     },
@@ -45,12 +48,8 @@ export function buildCourseJsonLd(
     teaches: world.specialization,
     offers: {
       "@type": "Offer",
-      // Google's Course-info rich result requires offers.category; every
-      // other field here can be valid and the page is still ineligible
-      // without it (confirmed against the live page, 2026-08-17). "Paid",
-      // not "Partially Free": the paid purchase IS the course, and module 1
-      // is framed product-wide as a free preview with its own $0 offer in
-      // the /pricing OfferCatalog.
+      // This offer describes the paid course. The pricing page describes
+      // the free first module separately in its OfferCatalog.
       category: "Paid",
       price: String(PRICING.single.price),
       priceCurrency: "USD",

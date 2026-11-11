@@ -26,6 +26,7 @@ import { NoscriptReveal } from "./noscript-reveal";
 import { LessonPrefsProvider } from "@tensorcraft/ui";
 import type { Metadata } from "next";
 import { getLearningRoutePreference } from "@/lib/learning-route-server";
+import { FreeModuleNavigation } from "./free-module-navigation";
 
 interface Props {
   params: Promise<{ slug: string; module: string; lesson: string }>;
@@ -274,11 +275,8 @@ export default async function LessonPage({ params, searchParams }: Props) {
 
   return (
     <main className="min-h-screen" style={{ background: "var(--tc-bg)" }}>
-      {/* Undoes the scene-playback hiding for clients that never run JS.
-          Without it the lesson body ships at opacity:0 / display:none and
-          stays that way, which is cloaking-adjacent on the primary organic
-          surface. Must be server-rendered: React drops noscript children on
-          a client render. */}
+      {/* Keep the story and core teaching prose readable without JavaScript.
+          The fallback must remain server-rendered. */}
       <NoscriptReveal />
       <script
         type="application/ld+json"
@@ -321,10 +319,9 @@ export default async function LessonPage({ params, searchParams }: Props) {
                 {
                   "@type": "ListItem",
                   position: 3,
-                  name: mod?.title || moduleSlug,
-                  item: `https://tensorcraft.app/worlds/${slug}/${moduleSlug}`,
+                  name: lesson.title,
+                  item: `https://tensorcraft.app/worlds/${slug}/${moduleSlug}/${lessonSlug}`,
                 },
-                { "@type": "ListItem", position: 4, name: lesson.title },
               ],
             },
           ]),
@@ -382,6 +379,11 @@ export default async function LessonPage({ params, searchParams }: Props) {
           }))}
         />
       </LessonPrefsProvider>
+      <FreeModuleNavigation
+        worldSlug={slug}
+        moduleSlug={moduleSlug}
+        lessonSlug={lessonSlug}
+      />
     </main>
   );
 }

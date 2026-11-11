@@ -1,10 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { EXERCISE_CONTENT } from "@tensorcraft/shared";
 import {
-  WORLD_CONTENT,
-  WORLD_SLUGS,
-  EXERCISE_CONTENT,
-} from "@tensorcraft/shared";
+  ORGANIZATION_ID,
+  SITE_URL,
+  WEBSITE_ID,
+  serializeJsonLd,
+} from "@/lib/site-identity";
 
 export const metadata: Metadata = {
   title: "About Tensorcraft, Why this course exists",
@@ -40,18 +42,17 @@ export default function AboutPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: serializeJsonLd({
             "@context": "https://schema.org",
             "@type": "AboutPage",
+            "@id": `${SITE_URL}/about#page`,
             name: "About Tensorcraft",
             description:
               "Why we built Tensorcraft, how it maps ML onto JavaScript, and what we deliberately left out.",
-            url: "https://tensorcraft.app/about",
+            url: `${SITE_URL}/about`,
+            isPartOf: { "@id": WEBSITE_ID },
             mainEntity: {
-              "@type": "EducationalOrganization",
-              name: "Tensorcraft",
-              url: "https://tensorcraft.app",
-              description: `Browser-based machine learning course for JavaScript developers. TensorFlow.js. ${WORLD_CONTENT.totalLessonsPerWorld} lessons live in the first of ${WORLD_SLUGS.length} planned courses.`,
+              "@id": ORGANIZATION_ID,
             },
           }),
         }}
@@ -156,19 +157,35 @@ export default function AboutPage() {
           </ul>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">
-            The audit trail
+            How we review the course
           </h2>
           <p>
-            We publish our own audits.{" "}
+            We review the lessons, their examples, and the checks that grade
+            exercises. Automated checks compare course counts with the content
+            files and run reference solutions. Our{" "}
             <Link
-              href="/blog"
+              href="/guides/browser-machine-learning-project"
               className="text-primary underline underline-offset-4"
             >
-              The blog
+              browser ML project case
             </Link>{" "}
-            includes the bridge-tier audit (every lesson, classified), the
-            fast.ai comparison, and a review of what each exercise actually
-            teaches. CI checks the counts on this page against the course files.
+            explains a{" "}
+            <a
+              href="/assignments/room-project-preview.json"
+              className="text-primary underline underline-offset-4"
+            >
+              recorded demonstration mistake
+            </a>{" "}
+            with artifact hashes and reproduction commands. The{" "}
+            <Link
+              href="/guides/tensorflow-js-reshape-vs-transpose"
+              className="text-primary underline underline-offset-4"
+            >
+              reshape and transpose guide
+            </Link>{" "}
+            shows exact input and output values checked with TensorFlow.js.
+          </p>
+          <p>
             If you find something we got wrong, email{" "}
             <a
               href="mailto:support@tensorcraft.app"
@@ -176,7 +193,7 @@ export default function AboutPage() {
             >
               support@tensorcraft.app
             </a>{" "}
-            and we&apos;ll publish the correction.
+            so we can review and correct it.
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">

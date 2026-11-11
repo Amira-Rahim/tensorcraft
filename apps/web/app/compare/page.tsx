@@ -1,201 +1,234 @@
 import Link from "next/link";
+import { FreeLessonCtaTracker } from "@/app/components/free-lesson-cta-tracker";
 import type { Metadata } from "next";
-import { PRICING } from "@tensorcraft/shared";
+import { PRICING, WORLD_SHAPE } from "@tensorcraft/shared";
+import {
+  ORGANIZATION_ID,
+  SITE_URL,
+  WEBSITE_ID,
+  serializeJsonLd,
+} from "@/lib/site-identity";
+
+const REVIEWED_AT = "2026-11-10";
+const title = "JavaScript ML courses compared, Tensorcraft";
+const description =
+  "Compare machine learning options for JavaScript developers by goal, prerequisites, runtime, and project work, with links to the providers' published curricula.";
+const url = `${SITE_URL}/compare`;
+const image =
+  "/api/og?title=JavaScript%20ML%20courses%20compared&world=deep-orbit&subtitle=Goals%2C%20prerequisites%20and%20projects";
 
 export const metadata: Metadata = {
-  title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera, Course comparison",
-  description:
-    "Compare ML courses by language, starting knowledge, math depth, browser support, projects, and credentials.",
-  alternates: { canonical: "https://tensorcraft.app/compare" },
-  // Per-route openGraph/twitter. Without these the route inherited the root
-  // layout's block, so og:url pointed at the homepage and every share of
-  // this page presented as the site root - wrong title, wrong image, wrong
-  // destination preview. Matters most during a distribution push.
+  title,
+  description,
+  alternates: { canonical: url },
   openGraph: {
-    type: "website",
-    url: "https://tensorcraft.app/compare",
-    title: "Tensorcraft vs fast.ai vs Karpathy, Tensorcraft",
-    images: [
-      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&world=deep-orbit&subtitle=An%20honest%20course%20comparison",
-    ],
+    type: "article",
+    url,
+    siteName: "Tensorcraft",
+    title,
+    description,
+    modifiedTime: REVIEWED_AT,
+    images: [image],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Tensorcraft vs fast.ai vs Karpathy, Tensorcraft",
-    images: [
-      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&world=deep-orbit&subtitle=An%20honest%20course%20comparison",
-    ],
-  },
+  twitter: { card: "summary_large_image", title, description, images: [image] },
 };
 
 export const revalidate = 86400;
 
-type Row = {
-  feature: string;
-  tensorcraft: string;
-  fastai: string;
-  karpathy: string;
-  coursera: string;
-};
+const OPTIONS = [
+  {
+    id: "tensorcraft",
+    name: "Deep Orbit",
+    publisher: "Tensorcraft",
+    href: "/worlds/deep-orbit",
+  },
+  {
+    id: "tensorflow",
+    name: "TensorFlow.js learning resources",
+    publisher: "TensorFlow",
+    href: "https://www.tensorflow.org/resources/learn-ml/basics-of-tensorflow-for-js-development",
+  },
+  {
+    id: "charlie",
+    name: "Machine Learning in JavaScript with TensorFlow.js",
+    publisher: "Charlie Gerard, Master.dev",
+    href: "https://master.dev/courses/tensorflow-js/",
+  },
+  {
+    id: "fastai",
+    name: "Practical Deep Learning",
+    publisher: "fast.ai",
+    href: "https://course.fast.ai/",
+  },
+  {
+    id: "scrimba",
+    name: "The AI Engineer Path",
+    publisher: "Scrimba",
+    href: "https://docs.scrimba.com/ai-engineer-path/",
+  },
+] as const;
+
+type OptionId = (typeof OPTIONS)[number]["id"];
+type Row = { feature: string } & Record<OptionId, string>;
 
 const ROWS: Row[] = [
   {
-    feature: "Primary language / runtime",
-    tensorcraft: "JavaScript / TensorFlow.js (browser)",
-    fastai: "Python / PyTorch (Colab/local)",
-    karpathy: "Python / PyTorch (notebooks)",
-    coursera: "Python / TensorFlow + Keras",
-  },
-  {
-    feature: "Audience starting point",
-    tensorcraft: "JS devs: Array.reduce, async/await, useState",
-    fastai: "Developers comfortable with Python",
-    karpathy: "Anyone willing to read math",
-    coursera: "Anyone with college calculus",
-  },
-  {
-    feature: "Analogies labeled where they break",
-    tensorcraft: "Yes, every analogy carries a label and a break note",
-    fastai: "Top-down practice. No formal tier system",
-    karpathy: "Bottom-up math; no analogy framing",
-    coursera: "Formal definitions, less analogy",
-  },
-  {
-    feature: "Math depth",
+    feature: "Learning goal",
     tensorcraft:
-      "Optional derivations for the chain rule, Fourier transforms, and cross-entropy",
-    fastai: "Math introduced through practical work",
-    karpathy: "Paper-grade: autograd from scratch, attention from scratch",
-    coursera: "Theory + math, exam-grade",
+      "Learn ML through JavaScript exercises and a continuing story. Build, evaluate, and run small browser models.",
+    tensorflow:
+      "Build models in JavaScript, run existing models, and deploy them to browsers.",
+    charlie:
+      "Use pretrained models and train custom models for image, gesture, and audio applications.",
+    fastai:
+      "Apply deep learning to vision, text, tabular data, and recommendations, then deploy models.",
+    scrimba:
+      "Build applications with existing generative models, retrieval, agents, and tools.",
   },
   {
-    feature: "Browser-runtime + deployment",
+    feature: "Language and runtime",
     tensorcraft:
-      "Code checks run in a browser worker with TensorFlow.js available",
-    fastai: "Notebook-first. Deploys free via Hugging Face Spaces / Gradio",
-    karpathy: "Notebook only, no deployment story",
-    coursera: "Theory. Deployment in separate specialization",
+      "JavaScript and TensorFlow.js in browser lessons. The independent project uses a local browser app.",
+    tensorflow: "JavaScript, TensorFlow.js, browsers, and Node.js.",
+    charlie:
+      "JavaScript and TensorFlow.js, including webcam input in the browser.",
+    fastai: "Python notebooks with PyTorch, fastai, and other libraries.",
+    scrimba:
+      "JavaScript and TypeScript. Projects use browser and server code, hosted model APIs, or local models.",
   },
   {
-    feature: "Capstone artifact you ship",
+    feature: "Starting knowledge",
     tensorcraft:
-      "Browser ML exercises saved to GitHub, plus an independent browser-app project (one world available)",
-    fastai: "fast.ai notebooks shareable as Hugging Face Spaces",
-    karpathy: "Final notebook trained from scratch",
-    coursera: "Certificates",
+      "JavaScript functions, arrays, objects, modules, and async code. Lessons explain the math as it comes up.",
+    tensorflow:
+      "HTML, CSS, JavaScript browser programming, and command-line use for Node.js scripts.",
+    charlie: "Introductory web development or equivalent knowledge.",
+    fastai: "Coding experience, preferably Python, and high-school math.",
+    scrimba:
+      "Check the individual module's setup guide for its language, package, and provider requirements.",
   },
   {
-    feature: "Cost (full curriculum)",
-    tensorcraft: `$0 preview / $${PRICING.single.price}${PRICING.single.price < PRICING.single.regularPrice ? ` introductory price per world ($${PRICING.single.regularPrice} regular price)` : " per world"}, one payment, lifetime access`,
-    fastai: "Free",
-    karpathy: "Free",
-    coursera: "$49-79/mo (specialization $200-500)",
-  },
-  {
-    feature: "Credential",
+    feature: "Practice format",
     tensorcraft:
-      "Completion certificate and a GitHub repo of your solved exercises. No academic accreditation",
-    fastai: "None",
-    karpathy: "None",
-    coursera: "Coursera certificate",
+      "Browser code editor, exercise checks, illustrated scenes, and solved code you can save to GitHub.",
+    tensorflow:
+      "Tutorials, videos, codelabs, and example source code. Official guides and tutorials are free to read.",
+    charlie:
+      "Video lessons, transcripts, and follow-along recognition projects.",
+    fastai:
+      "Free video course, notebooks, book, forums, and independent projects.",
+    scrimba:
+      "Interactive lessons, coding challenges, and projects. Companion docs explain how to run projects locally.",
+  },
+  {
+    feature: "Example output",
+    tensorcraft:
+      "An evaluated signal classifier in the lessons and an independent room-occupancy browser project.",
+    tensorflow:
+      "A minimal trained model that makes a browser prediction, with source code you can run.",
+    charlie:
+      "Custom webcam models and image, gesture, or audio recognition applications.",
+    fastai:
+      "Trained models for practical tasks, with a path to a deployed web application.",
+    scrimba:
+      "A retrieval chatbot and a support agent that answers from documents and calls tools.",
   },
 ];
+
+const linkClass = "text-primary underline underline-offset-4";
 
 export default function ComparePage() {
   const compareJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Tensorcraft vs fast.ai vs Karpathy vs Coursera",
-    author: { "@type": "Organization", name: "Tensorcraft" },
-    publisher: {
-      "@type": "Organization",
-      name: "Tensorcraft",
-      url: "https://tensorcraft.app",
-    },
-    datePublished: "2026-04-25",
-    // Bump whenever competitor claims/prices are re-verified; the visible
-    // "Prices checked" line below renders this same date.
-    dateModified: "2026-07-14",
-    description:
-      "Compare Tensorcraft, fast.ai, Karpathy Zero-to-Hero, and Coursera as options for learning ML.",
-    url: "https://tensorcraft.app/compare",
+    "@id": `${url}#article`,
+    headline: "ML learning options for JavaScript engineers",
+    author: { "@id": ORGANIZATION_ID },
+    publisher: { "@id": ORGANIZATION_ID },
+    isPartOf: { "@id": WEBSITE_ID },
+    mainEntityOfPage: url,
+    dateModified: REVIEWED_AT,
+    description,
+    url,
+    citation: [
+      ...OPTIONS.filter((option) => option.id !== "tensorcraft").map(
+        (option) => option.href,
+      ),
+      "https://www.tensorflow.org/js/tutorials",
+    ],
   };
 
   return (
     <main className="min-h-screen bg-page px-6 md:px-10 py-20">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(compareJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(compareJsonLd) }}
       />
       <article className="max-w-5xl mx-auto">
         <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
-          COMPARE
+          Compare
         </p>
-        <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-8">
-          Course comparison
+        <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-6">
+          ML learning options for JavaScript engineers
         </h1>
+        <p className="text-sm text-text-muted mb-8">
+          By{" "}
+          <Link href="/about" rel="author" className={linkClass}>
+            Tensorcraft
+          </Link>
+          . Sources reviewed{" "}
+          <time dateTime={REVIEWED_AT}>November 10, 2026</time>.
+        </p>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mb-12">
           <p>
-            Tensorcraft is not the right course for everyone. If you want to
-            build a training system from the math up, including automatic
-            differentiation, Karpathy&apos;s Zero-to-Hero is free and excellent.
-            If you want practical work with PyTorch and pretrained models,
-            fast.ai is free and excellent. If you want a graded credential for
-            your CV, Coursera does that and we don&apos;t.
+            Choose a course around the work you want to do. Training a small
+            model, running a pretrained model, and building an application
+            around a model API involve different skills. The options below cover
+            those goals in different ways.
           </p>
           <p>
-            Tensorcraft is the right course if you already ship JavaScript, in
-            the browser or on Node, and want to learn ML through familiar code.
-            Each lesson explains both the connection to JavaScript and where
-            that comparison stops working.
+            We reviewed the providers&apos; public course pages and project
+            documentation. This comparison describes their published scope.
+            Tensorcraft publishes it and sells Deep Orbit. Each column links to
+            its source so you can inspect the curriculum yourself.
           </p>
         </section>
 
         <div
           tabIndex={0}
           role="region"
-          aria-label="Course comparison"
-          className="overflow-x-auto border border-border"
+          aria-label="Learning options comparison"
+          className="overflow-x-auto border border-border focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
         >
-          <table className="w-full font-mono text-sm">
+          <table className="w-full min-w-[68rem] font-mono text-sm">
             <caption className="sr-only">
-              Course comparison: Tensorcraft vs fast.ai vs Karpathy zero-to-hero
-              vs Coursera, scored across language, audience, math depth,
-              deployment, capstone, cost, and credential.
+              Named learning options compared by goal, language, starting
+              knowledge, practice format, and example output. Column links open
+              each provider&apos;s published curriculum.
             </caption>
             <thead className="bg-surface-raised">
               <tr>
                 <th
                   scope="col"
-                  className="text-left p-3 text-text-primary font-bold"
+                  className="text-left p-3 text-text-primary font-bold align-top"
                 >
                   Feature
                 </th>
-                <th
-                  scope="col"
-                  className="text-left p-3 text-primary font-bold"
-                >
-                  Tensorcraft
-                </th>
-                <th
-                  scope="col"
-                  className="text-left p-3 text-text-primary font-bold"
-                >
-                  fast.ai
-                </th>
-                <th
-                  scope="col"
-                  className="text-left p-3 text-text-primary font-bold"
-                >
-                  Karpathy
-                </th>
-                <th
-                  scope="col"
-                  className="text-left p-3 text-text-primary font-bold"
-                >
-                  Coursera
-                </th>
+                {OPTIONS.map((option) => (
+                  <th
+                    key={option.id}
+                    scope="col"
+                    className="text-left p-3 text-text-primary font-bold align-top"
+                  >
+                    <Link href={option.href} className={linkClass}>
+                      {option.name}
+                    </Link>
+                    <span className="mt-2 block text-xs font-normal text-text-muted">
+                      {option.publisher}
+                    </span>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -210,65 +243,99 @@ export default function ComparePage() {
                   >
                     {row.feature}
                   </th>
-                  <td className="p-3 text-text-muted">{row.tensorcraft}</td>
-                  <td className="p-3 text-text-muted">{row.fastai}</td>
-                  <td className="p-3 text-text-muted">{row.karpathy}</td>
-                  <td className="p-3 text-text-muted">{row.coursera}</td>
+                  {OPTIONS.map((option) => (
+                    <td key={option.id} className="p-3 text-text-muted">
+                      {row[option.id]}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        <p className="mt-4 text-sm leading-relaxed text-text-muted">
+          The table scrolls horizontally on smaller screens. TensorFlow&apos;s{" "}
+          <a
+            href="https://www.tensorflow.org/js/tutorials"
+            className={linkClass}
+          >
+            getting-started tutorial
+          </a>{" "}
+          supplies the minimal-model example. Scrimba&apos;s linked
+          documentation describes its projects and local setup. Check each
+          provider&apos;s course page for current access terms.
+        </p>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mt-12">
           <h2 className="text-2xl font-mono font-bold text-text-primary">
-            Topics outside this course
+            Where Deep Orbit fits
           </h2>
-          <ul className="list-disc pl-6 space-y-3">
-            <li>
-              <span className="text-text-primary font-mono text-sm">
-                A Python ecosystem replacement.
-              </span>{" "}
-              You will not learn pandas, PyTorch internals, or transformer
-              fine-tuning here. fast.ai or Hugging Face NLP Course are better.
-            </li>
-            <li>
-              <span className="text-text-primary font-mono text-sm">
-                A research methodology course.
-              </span>{" "}
-              We teach engineering practice. Designing novel experiments falls
-              outside this course. Karpathy’s courses and d2l.ai offer more
-              mathematical detail.
-            </li>
-            <li>
-              <span className="text-text-primary font-mono text-sm">
-                An accredited credential.
-              </span>{" "}
-              Your certificate records course completion. It carries no academic
-              accreditation. The course includes a deployable browser-ML app you
-              can show in an interview, plus the GitHub repo of every exercise
-              you solved.
-            </li>
-          </ul>
+          <p>
+            Deep Orbit is for JavaScript engineers who want to understand the
+            model work behind an ML feature. Across{" "}
+            {WORLD_SHAPE["deep-orbit"].totalLessons} lessons, you prepare
+            readings, build models, inspect errors, and run inference in the
+            browser. The crew&apos;s investigation connects the exercises. The
+            independent project asks you to compare a simple rule with a model
+            on recorded room measurements.
+          </p>
+          <p>
+            Its first five lessons are free without an account. The full course
+            costs ${PRICING.single.price}
+            {PRICING.single.price < PRICING.single.regularPrice
+              ? ` at the introductory price. The regular price is $${PRICING.single.regularPrice}.`
+              : "."}{" "}
+            One payment gives lifetime access to Deep Orbit. See{" "}
+            <Link href="/pricing" className={linkClass}>
+              pricing and the curriculum
+            </Link>{" "}
+            for the current offer.
+          </p>
+          <p>
+            Browser lessons require no local installation. The independent
+            project requires Node.js 22+ and an initial dependency download. The
+            completion certificate records your work and carries no academic
+            accreditation. Deep Orbit covers browser ML engineering. Python
+            research workflows and distributed training fall outside its scope.
+          </p>
+          <p>
+            Our{" "}
+            <Link
+              href="/guides/javascript-machine-learning-learning-path"
+              className={linkClass}
+            >
+              JavaScript ML learning path
+            </Link>{" "}
+            explains the stages from data preparation to deployment. The{" "}
+            <Link
+              href="/guides/browser-machine-learning-project"
+              className={linkClass}
+            >
+              browser ML project case
+            </Link>{" "}
+            shows the data, supplied starter, and evaluation evidence you can
+            inspect before choosing the course.
+          </p>
         </section>
 
-        <p className="mt-10 font-mono text-xs text-text-muted">
-          Competitor prices and claims last checked 2026-07-14. If something
-          here is stale, tell us and we&apos;ll fix it.
-        </p>
-
         <div className="mt-16 flex flex-wrap items-center gap-4">
-          <Link
-            href="/worlds"
-            className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+          <FreeLessonCtaTracker
+            source="compare"
+            targetLesson={`${SITE_URL}/worlds/deep-orbit/foundations/introduction-to-tensors`}
+            placement="activity"
           >
-            Start the course
-          </Link>
+            <Link
+              href="/worlds/deep-orbit/foundations/introduction-to-tensors"
+              className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+            >
+              Start the free first lesson
+            </Link>
+          </FreeLessonCtaTracker>
           <Link
-            href="/about"
+            href="/worlds/deep-orbit"
             className="rounded-none inline-flex items-center px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all"
           >
-            Why this exists
+            Deep Orbit curriculum
           </Link>
         </div>
       </article>

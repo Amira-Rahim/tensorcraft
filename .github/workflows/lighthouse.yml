@@ -61,6 +61,8 @@ jobs:
             http://localhost:3000/pricing
             http://localhost:3000/worlds
             http://localhost:3000/learn
+            http://localhost:3000/guides/tensorflow-js-reshape-vs-transpose
+            http://localhost:3000/worlds/deep-orbit/foundations/introduction-to-tensors
           budgetPath: .github/lighthouse-budget.json
           uploadArtifacts: true
           configPath: .github/lighthouserc.json

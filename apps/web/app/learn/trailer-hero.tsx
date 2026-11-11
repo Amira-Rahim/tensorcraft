@@ -9,10 +9,9 @@ import { INTRO_VIDEO } from "@/lib/intro-video";
  * The video hero (owner ruling 2026-08-27: nothing over the film but an
  * overlay and one button). One island owning the whole surface:
  *
- * - Poster at first paint (LCP-stable, CLS 0), the silent loop crossfades
- *   in only after first interaction or an idle delay, so the loop never
- *   enters the Lighthouse-audited load. Reduced-motion and Save-Data
- *   visitors keep the poster.
+ * - The video displays its poster at first paint without preloading media.
+ *   Its silent loop starts after interaction or a delay. Reduced-motion
+ *   and Save-Data visitors keep the poster.
  * - The entire video surface is a button: clicking it opens the full cut
  *   with sound in a FocusTrap lightbox.
  * - The page's single CTA overlays via its own layer above this island.
@@ -40,8 +39,8 @@ function prefersStillness(): boolean {
 
 export function TrailerHero() {
   const [armed, setArmed] = useState(false);
-  const [playing, setPlaying] = useState(false);
   const [open, setOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const trackedRef = useRef(false);
   const close = useCallback(() => setOpen(false), []);
 
@@ -68,48 +67,53 @@ export function TrailerHero() {
     for (const e of events) {
       window.addEventListener(e, arm, { passive: true, once: false });
     }
-    // Idle fallback: a motionless visitor still gets the film, well after
-    // any load trace has ended.
+    // Allow the poster to load before starting ambient playback.
     const idleId = window.setTimeout(arm, 6000);
     return cleanup;
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !armed) return;
+    if (open) {
+      video.pause();
+      return;
+    }
+    // Autoplay can still fail under browser policy. The poster and the
+    // explicit lightbox play control remain usable when that happens.
+    void video.play()?.catch(() => {});
+  }, [armed, open]);
+
   return (
     <>
-      <div aria-hidden="true" className="absolute inset-0 z-0">
-        {/* Raw <img> rather than next/image on purpose: full-bleed poster,
-            sized by the container rather than the layout. The eslint-disable
-            that used to sit here named `@next/next/no-img-element`, a rule
-            this config does not load, so ESLint errored on the unknown rule
-            reference itself and turned main red. Keep the rationale, drop the
-            directive: there is nothing to suppress. */}
-        <img
-          src={INTRO_VIDEO.poster}
-          alt=""
+      <div className="absolute inset-0 z-0">
+        <video
+          ref={videoRef}
+          aria-label="Tensorcraft introduction preview"
+          muted
+          loop
+          playsInline
+          preload="none"
+          poster={INTRO_VIDEO.poster}
+          src={INTRO_VIDEO.src}
+          onPlaying={() => {
+            if (!trackedRef.current) {
+              trackedRef.current = true;
+              track(EVENTS.TRAILER_PLAYED, { mode: "loop" });
+            }
+          }}
           className="absolute inset-0 w-full h-full object-cover select-none"
-        />
-        {armed && (
-          <video
-            muted
-            loop
-            autoPlay
-            playsInline
-            preload="auto"
-            src={INTRO_VIDEO.src}
-            onPlaying={() => {
-              setPlaying(true);
-              if (!trackedRef.current) {
-                trackedRef.current = true;
-                track(EVENTS.TRAILER_PLAYED, { mode: "loop" });
-              }
-            }}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-              playing ? "opacity-100" : "opacity-0"
-            }`}
+        >
+          <track
+            kind="captions"
+            src={INTRO_VIDEO.captions}
+            srcLang="en"
+            label="English"
           />
-        )}
+        </video>
         {/* Bottom scrim so the overlay CTA reads on any frame. */}
         <div
+          aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-48"
           style={{
             background:

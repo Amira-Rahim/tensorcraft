@@ -103,7 +103,7 @@ export function Nav() {
         {!learningNavigation && (
           <>
             <NavLink href="/pricing">Pricing</NavLink>
-            <NavLink href="/blog">Blog</NavLink>
+            <NavLink href="/guides">Guides</NavLink>
           </>
         )}
       </div>

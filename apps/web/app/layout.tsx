@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { buildSiteIdentity, serializeJsonLd } from "@/lib/site-identity";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import {
   DEFAULT_WORLD,
@@ -138,40 +139,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              {
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                name: "Tensorcraft",
-                url: "https://tensorcraft.app",
-                // `logo` omitted deliberately. It previously asserted
-                // https://tensorcraft.app/logo.png, which 404s - there is no
-                // logo.png in public/, nor any PNG at all. A logo URL that
-                // does not resolve fails the Organization rich result and is
-                // a false claim in structured data. Restore this only when a
-                // real asset exists at the path.
-                description:
-                  "Interactive, story-driven ML education for JavaScript developers.",
-                sameAs: [],
-              },
-              // The five per-world Course objects that used to live here were
-              // removed 2026-07-25 (R3-7): they rendered on EVERY route and
-              // duplicated the richer page-level Course JSON-LD on
-              // /worlds/[slug] (different name + offer for the same URL),
-              // risking rich-result confusion. Course markup now lives only
-              // on the page that describes the course.
-              // FAQPage moved OUT of this sitewide block 2026-07-25
-              // (Tier 1-OPS FAQPage item): claiming FAQPage on routes that
-              // render no FAQ is the same wrong-page markup class as the
-              // Course dedup above. It now lives on the two pages that
-              // visibly render FAQ_ITEMS: / (page.tsx) and /pricing.
-              {
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                name: "Tensorcraft",
-                url: "https://tensorcraft.app",
-              },
-            ]),
+            __html: serializeJsonLd(buildSiteIdentity()),
           }}
         />
       </head>

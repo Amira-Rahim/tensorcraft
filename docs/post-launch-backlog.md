@@ -15,6 +15,33 @@ a link to the detail spec if one exists). Detail specs stay in their own files;
 this doc is the index of record. Deferred mentions in dated audit ledgers
 are historical and non-authoritative.
 
+## SEO and GEO release verification (2026-11-10)
+
+Local implementation and item status live in the [execution checklist](seo-geo-plan.md).
+
+- [ ] **Account baseline.** The owner selected integrations. PostHog and OpenSEO
+  were available but not installed at the last check. Gate: integration setup
+  and verified Search Console, Bing and PostHog property access.
+- [ ] **Visual and real-browser capture QA.** HTTP/SSR and local event tests pass.
+  Browser and native computer-use hosts failed. Gate: a working browser review
+  environment for desktop/mobile, keyboard, video, Challenge editing/grading
+  and consent/event ingestion.
+- [ ] **Normal release and production search checks.** Prepare the reviewed
+  revision without committing or pushing on the owner's behalf. After release,
+  inspect canonicals/rendered content/indexing, video discovery, crawler access
+  and the campaign canonical on the actual hosts.
+- [ ] **Field performance and outcome review.** Public PSI returned 429. Fresh
+  compiled payload observations are not Core Web Vitals. Gate: current lab/field
+  data and live cohort/citation records before tightening budgets or reporting
+  an acquisition improvement. The optional checkout-source question stays off
+  by the owner's November 10 choice.
+- [x] **Initial lesson editor payload, local fix November 11.** A lazy public
+  Exercise adapter removes the eager editor export. Both sampled free lessons
+  changed from 931,675 to 670,486 summed initial gzip bytes (28.03% less).
+  All six public control routes stayed unchanged. The runtime boundary and
+  exercise/lesson suites pass. Browser Challenge verification remains in the
+  visual QA item above. Details: the linked audit.
+
 ## First-1,000 funnel follow-ups (2026-11-02)
 
 Repo work from §9 of the [first-1,000 plan](marketing-first-1000-paid.md). A
@@ -58,10 +85,12 @@ access it grants. A local purchase also needs the Docker-based Supabase stack.
   `apps/web/app/page.test.tsx`. The landing visual baselines mask the hero
   canvas, so a baseline diff will not show the note. The 320px capture still
   changes height and needs a re-mint.
-- [ ] **(OWNER, before the first sale) The checkout source question stays
+- [ ] **(OWNER) The checkout source question stays
   off while `ACQUISITION_SOURCES` is empty.** Filling the list in
   `apps/api/src/lib/acquisition-source.ts` switches on the optional "How did
-  you find Tensorcraft?" question. Labels and values
+  you find Tensorcraft?" question. The owner confirmed on November 10 that it
+  should stay disabled. The following dependencies apply only if that decision
+  changes. Labels and values
   must each be unique, and the unit test enforces every rule Stripe test mode
   enforced on 2026-11-02. Put these privacy changes in a web deploy that is
   live before the API deploy that carries the list:
@@ -84,10 +113,10 @@ access it grants. A local purchase also needs the Docker-based Supabase stack.
   global rate limiter (`apps/api/src/index.ts`) runs before auth, so a traffic
   spike spends Upstash quota on requests that can only fail. Skip both calls
   when there is no session.
-- [ ] **(B2) The nav's "Blog" link opens "Our first post is coming soon."**
-  That line states a future plan on a user surface. Hide the link until the
-  first post ships, or publish the first post (source material:
-  [tensor cleanup article material](articles/tensor-cleanup-material.md)).
+- [x] **(B2) Empty blog promotion.** The November 10 local SEO work points
+  desktop/mobile marketing navigation to the published guide library. The blog
+  route remains available without a promise of a future publication schedule.
+  Restore a blog navigation item when actual posts justify it.
 - [ ] **(OWNER) The Kit drafts carry two stale claims.** Fix them before
   creating the automations (plan §9 item 6). In [the drafts](email-retention-sequences.md), A1 says "The
   first lesson takes fifteen minutes", but lesson one's `estimatedMinutes` is
@@ -5459,10 +5488,11 @@ Measurement (needed before any funnel number, and before the B3 gate):
 - [ ] **(B2) Reverse proxy** (Installation Health fails; ad blockers on a
   JavaScript audience): Next.js rewrites under a neutral path (not
   `/ingest`), `ui_host`, then narrow the CSP.
-- [ ] **(B3) First-visit mount events are lost.** `lesson_started`,
-  `pricing_page_viewed`, `paywall_hit` and similar fire before Accept and
-  `capture()` drops them. Queue in memory and flush after opt-in, or re-fire
-  page-level events once analytics is ready.
+- [ ] **(B3) Remaining first-visit page-context events.** The November 10 work
+  makes pricing and paywall events observe analytics readiness and starts
+  visible session intervals at consent. `lesson_started` and similar mount
+  events still need review. Observe current page context after consent without
+  replaying prior actions. Verify actual SDK ingestion through the integration.
 - [ ] **(B3) Tabs initialised together split one person into several ids.**
   The consent broadcast initialises every open tab at once; each mints its
   own distinct id, and `consent_granted` fires once per tab. Initialise only
@@ -5480,9 +5510,9 @@ Measurement (needed before any funnel number, and before the B3 gate):
   payments, but `docs/deployment-guide.md:47` names `POSTHOG_KEY` while the
   API reads `POSTHOG_PROJECT_TOKEN`; confirm the Fly secret name.
 - [ ] **(B5) Launch links carry no UTMs** (zero tagged visits so far).
-- [ ] **(B9) Blog lesson links carry internal UTMs**
-  (`apps/web/app/blog/[slug]/lesson-link.tsx:25`) that overwrite the
-  session's real campaign.
+- [x] **(B9) Remove internal blog lesson UTMs.** November 10 local changes use
+  canonical lesson links and keep blog context in the click event. Regression
+  tests pass. Verify SDK acquisition attribution after release.
 - [ ] **(B9) Per-path Web Vitals are attributed to the next page**
   (`$pathname` at flush); break down by `$current_url`.
 

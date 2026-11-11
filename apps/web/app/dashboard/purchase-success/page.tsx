@@ -11,7 +11,6 @@ import {
 export const metadata: Metadata = {
   title: "Purchase Confirmation | Tensorcraft",
   description: "Your Tensorcraft purchase details and course access.",
-  robots: { index: false, follow: false },
 };
 
 export default async function PurchaseSuccessPage({

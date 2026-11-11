@@ -1,5 +1,7 @@
 # Tensorcraft: first 1,000 paying customers
 
+Historical plan. The owner requested a fresh strategy on November 10, 2026. Use [the current marketing plan](marketing-plan.md) for new work. The earlier assumptions and targets below remain as a record.
+
 Working plan, 2026-09-25. Starting point confirmed by the owner: **zero users, a target of 1,000 paying customers, and $200 per month for marketing.**
 
 Audience size and available working hours are unknown. This plan assumes no existing audience and proposes 10 hours of marketing work per week. The workload and timeline must change if less time is available. The $200 is treated as incremental marketing spend; hosting and other existing operating costs are outside it.

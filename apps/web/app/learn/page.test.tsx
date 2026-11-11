@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import LearnPage from "./page";
 import { INTRO_VIDEO } from "@/lib/intro-video";
 
@@ -112,23 +113,26 @@ describe("LearnPage trailer gate", () => {
       );
       expect(
         container.querySelector(
-          'img[src="/media/tensorcraft-intro-poster.webp"]',
+          'video[poster="/media/tensorcraft-intro-poster.webp"]',
         ),
       ).toBeInTheDocument();
-      expect(container.querySelector("video")).toBeNull();
+      expect(container.querySelector("video")).toHaveAttribute(
+        "preload",
+        "none",
+      );
+      expect(screen.queryByRole("dialog")).toBeNull();
 
       fireEvent.click(screen.getByTestId("learn-watch-trailer"));
       expect(screen.getByRole("dialog")).toHaveAccessibleName(
         "Tensorcraft introduction",
       );
-      expect(container.querySelector("video")).toHaveAttribute(
+      expect(screen.getByRole("dialog").querySelector("video")).toHaveAttribute(
         "src",
         "/media/tensorcraft-intro.mp4",
       );
-      expect(container.querySelector('track[kind="captions"]')).toHaveAttribute(
-        "src",
-        "/media/tensorcraft-intro.vtt",
-      );
+      expect(
+        screen.getByRole("dialog").querySelector('track[kind="captions"]'),
+      ).toHaveAttribute("src", "/media/tensorcraft-intro.vtt");
     } finally {
       exists.mockRestore();
     }
@@ -144,8 +148,44 @@ describe("LearnPage trailer gate", () => {
     } else {
       expect(screen.queryByTestId("learn-watch-trailer")).toBeNull();
     }
-    // The lightbox video mounts only when opened; never at rest.
-    expect(container.querySelector("video")).toBeNull();
+    // The preview video is present at rest. The lightbox still waits for
+    // the visitor to choose playback with sound.
+    expect(container.querySelectorAll("video")).toHaveLength(
+      hasTrailer ? 1 : 0,
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("includes the visible poster-backed video and captions in the first response", () => {
+    const exists = vi.spyOn(fs, "existsSync").mockReturnValue(true);
+    try {
+      const html = renderToStaticMarkup(<LearnPage />);
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const video = doc.querySelector("video");
+      expect(video?.getAttribute("src")).toBe(INTRO_VIDEO.src);
+      expect(video?.getAttribute("poster")).toBe(INTRO_VIDEO.poster);
+      expect(video?.getAttribute("preload")).toBe("none");
+      expect(video?.hasAttribute("autoplay")).toBe(false);
+      expect(video?.className).not.toMatch(/opacity-0|hidden/);
+      expect(video?.closest('[hidden], [aria-hidden="true"]')).toBeNull();
+      expect(
+        video?.querySelector('track[kind="captions"]')?.getAttribute("src"),
+      ).toBe(INTRO_VIDEO.captions);
+      const data = [
+        ...doc.querySelectorAll('script[type="application/ld+json"]'),
+      ].map((script) => JSON.parse(script.textContent!));
+      const declaredVideo = data.find(
+        (item) => item["@type"] === "VideoObject",
+      );
+      expect(new URL(declaredVideo.contentUrl).pathname).toBe(
+        video?.getAttribute("src"),
+      );
+      expect(new URL(declaredVideo.thumbnailUrl[0]).pathname).toBe(
+        video?.getAttribute("poster"),
+      );
+    } finally {
+      exists.mockRestore();
+    }
   });
 
   it("renders the crew strip", () => {

@@ -6,7 +6,6 @@ export const metadata: Metadata = {
   title: "Dashboard | Tensorcraft",
   description:
     "Return to your mission, chart your voyage and revisit your discoveries.",
-  robots: { index: false, follow: false },
 };
 
 export default async function DashboardPage() {

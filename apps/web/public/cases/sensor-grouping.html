@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101411" />
+    <meta
+      name="description"
+      content="A chart shows a spike the sensor never recorded. Follow the readings and try two TensorFlow.js operations in a free Tensorcraft case from Deep Orbit."
+    />
+    <meta property="og:title" content="Did sensor A really spike?" />
+    <meta
+      property="og:description"
+      content="Follow twelve readings, choose an operation, and find the grouping mistake. A free playable case from Tensorcraft’s Deep Orbit world."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://tensorcraft-cases.vercel.app/" />
+    <meta property="og:url" content="https://tensorcraft-cases.vercel.app/" />
+    <meta name="twitter:site" content="@diemlgal" />
+    <meta
+      property="og:image"
+      content="https://tensorcraft-cases.vercel.app/media/sensor-grouping-case/og-landscape.webp"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Tensorcraft case: a chart labelled Sensor A spikes from 2 to 20, then falls to 5. Did sensor A really spike?"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://tensorcraft-cases.vercel.app/media/sensor-grouping-case/og-landscape.webp"
+    />
+    <title>Did sensor A really spike? A Tensorcraft case</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --page: #101411;
+        --surface: #19231d;
+        --text: #f0f4ee;
+        --muted: #c0cfc3;
+        --quiet: #92a297;
+        --green: #89c8a5;
+        --brass: #bfaa75;
+        --line: #495c4e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.55;
+      }
+      a {
+        color: var(--green);
+        text-underline-offset: 4px;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:disabled {
+        cursor: wait;
+        opacity: 0.6;
+      }
+      :focus-visible {
+        outline: 3px solid var(--green);
+        outline-offset: 5px;
+      }
+      .skip {
+        position: absolute;
+        left: 24px;
+        top: -100px;
+        padding: 12px 16px;
+        background: var(--text);
+        color: var(--page);
+        z-index: 3;
+      }
+      .skip:focus {
+        top: 16px;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin-inline: auto;
+        padding-inline: clamp(20px, 4vw, 48px);
+      }
+      .mono,
+      code,
+      pre {
+        font-family:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding-block: 24px;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        background: var(--green);
+        color: var(--page);
+      }
+      header .world {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .opening {
+        padding-block: 28px 32px;
+      }
+      h1 {
+        max-width: 760px;
+        margin: 0;
+        font-size: clamp(36px, 6.5vw, 72px);
+        line-height: 1.08;
+        font-weight: 700;
+        letter-spacing: -0.045em;
+      }
+      .intro {
+        max-width: 660px;
+        margin: 20px 0 0;
+        color: var(--muted);
+        font-size: 18px;
+      }
+      .provenance {
+        margin: 18px 0 0;
+        color: var(--quiet);
+        font-size: 13px;
+      }
+      .chart-block {
+        padding: clamp(18px, 3vw, 32px);
+        background: var(--surface);
+      }
+      .chart-top {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .chart-top h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .chart-input {
+        color: var(--brass);
+        font-size: 14px;
+      }
+      .chart-input.is-correct {
+        color: var(--green);
+      }
+      .plot {
+        display: block;
+        width: 100%;
+        height: 260px;
+        overflow: visible;
+      }
+      .plot text {
+        fill: var(--muted);
+        font-family: inherit;
+        font-size: 13px;
+      }
+      .plot .axis-title {
+        fill: var(--quiet);
+        font-size: 12px;
+      }
+      .plot .value-label {
+        fill: var(--text);
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .plot .plot-line {
+        fill: none;
+        stroke: var(--brass);
+        stroke-width: 3;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+      .plot .dot {
+        fill: var(--surface);
+        stroke: var(--brass);
+        stroke-width: 3;
+      }
+      .plot.is-correct .plot-line,
+      .plot.is-correct .dot {
+        stroke: var(--green);
+      }
+      .plot .grid-line {
+        stroke: var(--line);
+        stroke-width: 1;
+        opacity: 0.6;
+      }
+      .chart-note {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .investigation {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 36px;
+        padding-block: 36px;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 22px;
+        letter-spacing: -0.02em;
+      }
+      .subcopy {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .recording {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+      .recording th {
+        text-align: left;
+        font-weight: 500;
+        color: var(--muted);
+        font-size: 13px;
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line);
+      }
+      .recording td {
+        padding: 12px 8px;
+        border-bottom: 1px solid var(--line);
+      }
+      .recording .sensor-a {
+        background: color-mix(in srgb, var(--green) 12%, transparent);
+        color: var(--green);
+      }
+      .recording .matched {
+        box-shadow: inset 0 -3px var(--brass);
+      }
+      .recording .matched.sensor-a {
+        box-shadow: inset 0 -3px var(--green);
+      }
+      .table-note {
+        margin: 12px 0 0;
+        font-size: 13px;
+        color: var(--quiet);
+      }
+      .question {
+        margin: 0 0 16px;
+        font-size: 16px;
+      }
+      .choices {
+        display: grid;
+        gap: 12px;
+      }
+      .choice {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        min-height: 70px;
+        border: 1px solid var(--line);
+        padding: 14px 16px;
+        color: var(--text);
+        background: transparent;
+        text-align: left;
+      }
+      .choice:hover {
+        background: var(--surface);
+        border-color: var(--muted);
+      }
+      .choice[aria-pressed="true"] {
+        border-color: var(--green);
+        background: color-mix(in srgb, var(--green) 12%, transparent);
+      }
+      .choice code {
+        font-size: 16px;
+      }
+      .choice span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .runtime {
+        margin: 14px 0 0;
+        min-height: 24px;
+        color: var(--quiet);
+        font-size: 12px;
+      }
+      .runtime.error {
+        color: var(--brass);
+      }
+      .result {
+        border-top: 1px solid var(--line);
+        padding-block: 30px;
+      }
+      .result[hidden] {
+        display: none;
+      }
+      .result-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .shape {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .verdict {
+        margin: 0 0 24px;
+        font-size: 17px;
+        color: var(--brass);
+      }
+      .verdict.correct {
+        color: var(--green);
+      }
+      .result-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 36px;
+        align-items: start;
+      }
+      .matrix {
+        position: relative;
+        height: 216px;
+      }
+      .row-label {
+        position: absolute;
+        left: 0;
+        width: 48px;
+        color: var(--quiet);
+        font-size: 12px;
+      }
+      .reading {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 42px;
+        background: var(--surface);
+        font-variant-numeric: tabular-nums;
+      }
+      .reading.a {
+        background: color-mix(in srgb, var(--green) 14%, transparent);
+        color: var(--green);
+      }
+      .reading .origin {
+        color: var(--quiet);
+        font-size: 12px;
+        line-height: 1.2;
+      }
+      .matrix.animate .reading {
+        transition: transform 0.5s cubic-bezier(0.22, 0.68, 0.24, 1);
+      }
+      .matrix-label {
+        margin: 0 0 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      pre {
+        margin: 0;
+        padding: 20px;
+        background: var(--surface);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: 13px;
+        line-height: 1.75;
+      }
+      .insight {
+        margin: 18px 0 0;
+        max-width: 72ch;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .next {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 28px;
+        align-items: center;
+        padding-block: 32px 40px;
+        border-top: 1px solid var(--line);
+      }
+      .next h2 {
+        margin-bottom: 10px;
+      }
+      .next p {
+        max-width: 620px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .actions {
+        display: grid;
+        gap: 14px;
+        justify-items: start;
+      }
+      .primary {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        padding: 13px 20px;
+        background: var(--green);
+        color: var(--page);
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        text-align: center;
+      }
+      .actions .secondary {
+        font-size: 14px;
+      }
+      .free-note {
+        margin-top: 12px !important;
+        font-size: 13px !important;
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        padding-block: 24px 32px;
+        color: var(--quiet);
+        font-size: 12px;
+      }
+      footer p {
+        margin: 0;
+        max-width: 78ch;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+      @media (max-width: 720px) {
+        header {
+          padding-block: 18px;
+        }
+        .opening {
+          padding-block: 24px;
+        }
+        .intro {
+          font-size: 16px;
+        }
+        .investigation,
+        .result-grid,
+        .next {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 26px;
+        }
+        .investigation {
+          padding-block: 28px;
+        }
+        .plot {
+          height: 230px;
+        }
+        .next .actions {
+          justify-items: stretch;
+        }
+        .next .secondary {
+          justify-self: center;
+          padding: 8px;
+        }
+        .recording th,
+        .recording td {
+          padding-inline: 6px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .matrix.animate .reading {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#case">Skip to the case</a>
+    <header class="wrap">
+      <a
+        class="brand mono"
+        href="https://tensorcraft.app/"
+        aria-label="Tensorcraft home"
+        ><span class="brand-mark" aria-hidden="true">T_</span>Tensorcraft</a
+      >
+      <span class="world">A case from Deep Orbit</span>
+    </header>
+    <main id="case" class="wrap">
+      <section class="opening" aria-labelledby="case-title">
+        <h1 id="case-title">Did sensor A really spike?</h1>
+        <p class="intro">
+          Farah is charting the ship’s sensor readings. The line below says
+          “Sensor A”. Check it against the recording.
+        </p>
+        <p class="provenance">
+          Supplied fictional recording excerpt. Sensors A to D, at three
+          moments.
+        </p>
+      </section>
+      <section class="chart-block" aria-labelledby="chart-heading">
+        <div class="chart-top">
+          <h2 id="chart-heading">Chart says Sensor A</h2>
+          <span class="chart-input mono" id="chart-input">[2, 20, 5]</span>
+        </div>
+        <svg
+          id="sensor-chart"
+          class="plot"
+          role="img"
+          aria-labelledby="plot-title plot-desc"
+        >
+          <title id="plot-title">Chart labelled Sensor A</title>
+          <desc id="plot-desc">
+            The supplied starting chart plots 2, 20, and 5 across three moments.
+            Compare those values with the recording below.
+          </desc>
+          <g id="plot-content"></g>
+        </svg>
+        <p class="chart-note" id="chart-note">
+          Supplied starting chart. Compare its input with the recording below.
+        </p>
+      </section>
+      <div class="investigation">
+        <section aria-labelledby="recording-title">
+          <h2 id="recording-title">The recording</h2>
+          <p class="subcopy">
+            The recording header gives the sensor order: A, B, C, D. Each row
+            below contains readings taken at the same moment.
+          </p>
+          <table
+            class="recording"
+            aria-label="Original supplied recording excerpt"
+          >
+            <thead>
+              <tr>
+                <th scope="col">Moment</th>
+                <th scope="col" class="sensor-a">A</th>
+                <th scope="col">B</th>
+                <th scope="col">C</th>
+                <th scope="col">D</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td class="sensor-a" data-origin="0-0">2</td>
+                <td data-origin="0-1">20</td>
+                <td data-origin="0-2">5</td>
+                <td data-origin="0-3">8</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td class="sensor-a" data-origin="1-0">3</td>
+                <td data-origin="1-1">18</td>
+                <td data-origin="1-2">7</td>
+                <td data-origin="1-3">8</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td class="sensor-a" data-origin="2-0">4</td>
+                <td data-origin="2-1">16</td>
+                <td data-origin="2-2">6</td>
+                <td data-origin="2-3">9</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="table-note">
+            Sensor A’s readings are <strong>2, 3, 4</strong>, in moment order.
+            The supplied values have no physical unit attached.
+          </p>
+        </section>
+        <section aria-labelledby="operation-title">
+          <h2 id="operation-title">One row per sensor</h2>
+          <p class="question">
+            Farah’s chart takes the first row for sensor A. Which operation puts
+            that sensor’s three readings together?
+          </p>
+          <div
+            class="choices"
+            role="group"
+            aria-label="Choose and run an operation"
+          >
+            <button
+              class="choice"
+              id="run-reshape"
+              type="button"
+              data-operation="reshape"
+              aria-pressed="false"
+              disabled
+            >
+              <code>grid.reshape([4, 3])</code><span>Run reshape</span>
+            </button>
+            <button
+              class="choice"
+              id="run-transpose"
+              type="button"
+              data-operation="transpose"
+              aria-pressed="false"
+              disabled
+            >
+              <code>grid.transpose()</code><span>Run transpose</span>
+            </button>
+          </div>
+          <p class="runtime mono" id="runtime-status" role="status">
+            Loading TensorFlow.js 4.22.0…
+          </p>
+          <noscript
+            ><p>
+              JavaScript runs the two operations. Sensor A’s column is [2, 3,
+              4]. Transpose makes that column a row. Reshape preserves flat
+              reading order and puts [2, 20, 5] in the first row.
+            </p></noscript
+          >
+        </section>
+      </div>
+      <section
+        class="result"
+        id="result"
+        aria-labelledby="result-heading"
+        hidden
+      >
+        <div class="result-heading">
+          <h2 id="result-heading">The result</h2>
+          <span class="shape mono">Both operations return shape [4, 3]</span>
+        </div>
+        <p class="verdict" id="verdict" role="status" aria-live="polite"></p>
+        <div class="result-grid">
+          <div>
+            <p class="matrix-label" id="matrix-label">One row per sensor</p>
+            <div
+              class="matrix"
+              id="matrix"
+              role="img"
+              aria-label="Operation result"
+            ></div>
+          </div>
+          <pre
+            aria-label="Operation code"
+          ><code id="executed-code"></code></pre>
+        </div>
+        <p class="insight" id="insight"></p>
+      </section>
+      <section class="next" aria-labelledby="next-title">
+        <div>
+          <h2 id="next-title">This is part of Deep Orbit</h2>
+          <p>
+            Tensorcraft teaches machine learning through interactive story
+            worlds and JavaScript exercises. Deep Orbit is the first available
+            world. Its crew’s work continues into building, training, and
+            evaluating models.
+          </p>
+          <p class="free-note">
+            First 5 lessons free. No account needed. Four more worlds are coming
+            soon.
+          </p>
+        </div>
+        <div class="actions">
+          <a
+            class="primary"
+            id="activity-link"
+            href="https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?start=experiment&amp;utm_source=sensor_case&amp;utm_medium=interactive&amp;utm_campaign=playable-cases-01&amp;utm_content=sensor-grouping"
+            >Open the free activity</a
+          >
+          <a
+            class="secondary"
+            id="start-link"
+            href="https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors?utm_source=sensor_case&amp;utm_medium=interactive&amp;utm_campaign=playable-cases-01&amp;utm_content=sensor-grouping"
+            >Start Deep Orbit free</a
+          >
+        </div>
+      </section>
+    </main>
+    <footer class="wrap">
+      <p>
+        Tensorcraft. The numbers come from a supplied fictional excerpt used in
+        Deep Orbit. This case demonstrates data grouping with TensorFlow.js, one
+        part of preparing data for machine learning.
+      </p>
+    </footer>
+    <script src="/vendor/tfjs-4.22.0.min.js"></script>
+    <script>
+      (() => {
+        "use strict";
+        const recording = [
+          [2, 20, 5, 8],
+          [3, 18, 7, 8],
+          [4, 16, 6, 9],
+        ];
+        const expectedA = recording.map((row) => row[0]);
+        const chart = document.getElementById("sensor-chart");
+        const plot = document.getElementById("plot-content");
+        const matrix = document.getElementById("matrix");
+        const result = document.getElementById("result");
+        const status = document.getElementById("runtime-status");
+        const buttons = Array.from(
+          document.querySelectorAll("[data-operation]"),
+        );
+        const ns = "http://www.w3.org/2000/svg";
+        let currentValues = [2, 20, 5];
+        let currentOperation = null;
+        let ready = false;
+        const readings = recording.flatMap((row, moment) =>
+          row.map((value, sensor) => ({ value, moment, sensor })),
+        );
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        );
+        let chartAnimation = 0;
+
+        function svgNode(tag, attributes, text) {
+          const node = document.createElementNS(ns, tag);
+          for (const [name, value] of Object.entries(attributes))
+            node.setAttribute(name, value);
+          if (text !== undefined) node.textContent = text;
+          return node;
+        }
+
+        function drawChart(values) {
+          const width = Math.max(240, chart.getBoundingClientRect().width);
+          const height = chart.getBoundingClientRect().height || 260;
+          const left = 42,
+            right = 20,
+            top = 36,
+            bottom = 46;
+          const x = (index) => left + (index * (width - left - right)) / 2;
+          const y = (value) =>
+            top + ((22 - value) / 22) * (height - top - bottom);
+          chart.setAttribute("viewBox", "0 0 " + width + " " + height);
+          plot.replaceChildren();
+          for (const tick of [0, 5, 10, 15, 20]) {
+            plot.appendChild(
+              svgNode("line", {
+                x1: left,
+                x2: width - right,
+                y1: y(tick),
+                y2: y(tick),
+                class: "grid-line",
+              }),
+            );
+            plot.appendChild(
+              svgNode(
+                "text",
+                { x: left - 10, y: y(tick) + 4, "text-anchor": "end" },
+                tick,
+              ),
+            );
+          }
+          plot.appendChild(
+            svgNode(
+              "text",
+              { x: left, y: 14, class: "axis-title" },
+              "Reading value",
+            ),
+          );
+          const points = values
+            .map((value, index) => x(index) + "," + y(value))
+            .join(" ");
+          plot.appendChild(svgNode("polyline", { points, class: "plot-line" }));
+          values.forEach((value, index) => {
+            plot.appendChild(
+              svgNode("circle", {
+                cx: x(index),
+                cy: y(value),
+                r: 5,
+                class: "dot",
+              }),
+            );
+            plot.appendChild(
+              svgNode(
+                "text",
+                {
+                  x: x(index),
+                  y: y(value) - 13,
+                  "text-anchor": "middle",
+                  class: "value-label",
+                },
+                Number.isInteger(value) ? value : value.toFixed(1),
+              ),
+            );
+            plot.appendChild(
+              svgNode(
+                "text",
+                { x: x(index), y: height - 20, "text-anchor": "middle" },
+                "Moment " + (index + 1),
+              ),
+            );
+          });
+        }
+
+        function animateChart(from, to) {
+          window.cancelAnimationFrame(chartAnimation);
+          if (reducedMotion.matches) {
+            drawChart(to);
+            return;
+          }
+          const start = performance.now();
+          function frame(now) {
+            const t = Math.min(1, (now - start) / 450);
+            const eased = 1 - Math.pow(1 - t, 3);
+            drawChart(
+              to.map(
+                (value, index) => from[index] + (value - from[index]) * eased,
+              ),
+            );
+            if (t < 1) chartAnimation = window.requestAnimationFrame(frame);
+          }
+          chartAnimation = window.requestAnimationFrame(frame);
+        }
+
+        readings.forEach((reading) => {
+          const element = document.createElement("div");
+          element.className = "reading" + (reading.sensor === 0 ? " a" : "");
+          const value = document.createElement("span");
+          value.textContent = reading.value;
+          const origin = document.createElement("span");
+          origin.className = "origin";
+          origin.textContent =
+            String.fromCharCode(65 + reading.sensor) + (reading.moment + 1);
+          element.append(value, origin);
+          element.setAttribute(
+            "aria-label",
+            "Sensor " +
+              String.fromCharCode(65 + reading.sensor) +
+              ", moment " +
+              (reading.moment + 1) +
+              ": " +
+              reading.value,
+          );
+          matrix.appendChild(element);
+          reading.element = element;
+        });
+        for (let row = 0; row < 4; row++) {
+          const label = document.createElement("span");
+          label.className = "row-label";
+          label.style.top = row * 52 + 10 + "px";
+          label.textContent = "Row " + (row + 1);
+          matrix.appendChild(label);
+        }
+
+        function positionMatrix(operation) {
+          const width = Math.max(240, matrix.getBoundingClientRect().width);
+          const left = 54,
+            gap = 8;
+          const cellWidth = (width - left - gap * 2) / 3;
+          readings.forEach((reading, originalIndex) => {
+            const index =
+              operation === "transpose"
+                ? reading.sensor * 3 + reading.moment
+                : originalIndex;
+            reading.element.style.width = cellWidth + "px";
+            reading.element.style.transform =
+              "translate(" +
+              (left + (index % 3) * (cellWidth + gap)) +
+              "px, " +
+              Math.floor(index / 3) * 52 +
+              "px)";
+          });
+        }
+
+        function runOperation(operation) {
+          if (!ready || !["reshape", "transpose"].includes(operation)) return;
+          const output = window.tf.tidy(() => {
+            const grid = window.tf.tensor2d(recording);
+            const grouped =
+              operation === "transpose"
+                ? grid.transpose()
+                : grid.reshape([4, 3]);
+            return grouped.arraySync();
+          });
+          const values = output[0];
+          const correct = values.every(
+            (value, index) => value === expectedA[index],
+          );
+          const firstRun = result.hidden;
+          result.hidden = false;
+          if (firstRun) {
+            positionMatrix("reshape");
+            matrix.getBoundingClientRect();
+          }
+          matrix.classList.add("animate");
+          positionMatrix(operation);
+          const from = currentValues.slice();
+          currentValues = values.slice();
+          currentOperation = operation;
+          animateChart(from, currentValues);
+          chart.classList.toggle("is-correct", correct);
+          document.getElementById("chart-input").textContent =
+            "[" + values.join(", ") + "]";
+          document
+            .getElementById("chart-input")
+            .classList.toggle("is-correct", correct);
+          document.getElementById("plot-desc").textContent =
+            "After " +
+            operation +
+            ", the chart plots " +
+            values.join(", ") +
+            ". " +
+            (correct
+              ? "All readings belong to sensor A in moment order."
+              : "The values belong to sensors A, B, and C at moment 1.");
+          document.getElementById("chart-note").textContent = correct
+            ? "Sensor A reads 2, 3, 4. The apparent spike came from the earlier grouping."
+            : "The first row holds A at moment 1, B at moment 1, and C at moment 1.";
+          const verdict = document.getElementById("verdict");
+          verdict.classList.toggle("correct", correct);
+          verdict.textContent = correct
+            ? "Correct. Transpose puts sensor A’s readings in one row, in moment order."
+            : "Not quite. Reshape puts three different sensors in the first row.";
+          document.getElementById("matrix-label").textContent =
+            "After " +
+            operation +
+            ". A1, A2, and A3 identify sensor A’s three readings.";
+          matrix.setAttribute(
+            "aria-label",
+            "Computed " + operation + " result: " + JSON.stringify(output),
+          );
+          const call =
+            operation === "transpose"
+              ? "grid.transpose()"
+              : "grid.reshape([4, 3])";
+          document.getElementById("executed-code").textContent =
+            "const groupedRows = tf.tidy(() => {\n  const grid = tf.tensor2d(readings);\n  const grouped = " +
+            call +
+            ";\n  return grouped.arraySync();\n});\nconst chartInput = groupedRows[0];\n// [" +
+            values.join(", ") +
+            "]";
+          document.getElementById("insight").textContent = correct
+            ? "Shape gives the dimensions. The recording header gives the sensor order. Transpose swaps rows and columns, so the readings from each sensor become one row. Keeping that meaning intact is part of preparing data for ML."
+            : "Reshape preserves the flat reading order and changes where each row ends. It has the right dimensions for this chart, but the first row does not represent one sensor. Try transpose and follow the highlighted A readings.";
+          buttons.forEach((button) =>
+            button.setAttribute(
+              "aria-pressed",
+              String(button.dataset.operation === operation),
+            ),
+          );
+          document
+            .querySelectorAll("[data-origin]")
+            .forEach((cell) => cell.classList.remove("matched"));
+          const origins = correct
+            ? ["0-0", "1-0", "2-0"]
+            : ["0-0", "0-1", "0-2"];
+          origins.forEach((origin) =>
+            document
+              .querySelector('[data-origin="' + origin + '"]')
+              .classList.add("matched"),
+          );
+          status.textContent =
+            "Ran in TensorFlow.js " +
+            window.tf.version.tfjs +
+            ". Tensors released after the operation.";
+          window.dispatchEvent(
+            new CustomEvent("tensorcraft:case-result", {
+              detail: { operation, values: values.slice(), output, correct },
+            }),
+          );
+        }
+
+        buttons.forEach((button) =>
+          button.addEventListener("click", () =>
+            runOperation(button.dataset.operation),
+          ),
+        );
+        const resize = new ResizeObserver(() => {
+          window.cancelAnimationFrame(chartAnimation);
+          drawChart(currentValues);
+          if (currentOperation) positionMatrix(currentOperation);
+        });
+        resize.observe(chart);
+        resize.observe(matrix);
+        drawChart(currentValues);
+        const params = new URLSearchParams(window.location.search);
+        const suppliedSource = params.get("utm_source");
+        const source =
+          suppliedSource && /^[a-z0-9_-]{1,60}$/i.test(suppliedSource)
+            ? suppliedSource
+            : "sensor_case";
+        for (const id of ["activity-link", "start-link"]) {
+          const link = document.getElementById(id);
+          const destination = new URL(link.href);
+          destination.searchParams.set("utm_source", source);
+          link.href = destination.href;
+        }
+        (async () => {
+          try {
+            if (!window.tf) throw new Error("Runtime unavailable");
+            await window.tf.setBackend("cpu");
+            await window.tf.ready();
+            if (window.tf.version.tfjs !== "4.22.0")
+              throw new Error("Unexpected runtime version");
+            ready = true;
+            buttons.forEach((button) => (button.disabled = false));
+            status.textContent =
+              "TensorFlow.js 4.22.0 is ready. Choose an operation to run it.";
+            window.dispatchEvent(new CustomEvent("tensorcraft:case-ready"));
+          } catch (error) {
+            status.classList.add("error");
+            status.textContent =
+              "The runtime could not load. You can inspect the readings above or open the free course activity below.";
+          }
+        })();
+      })();
+    </script>
+  </body>
+</html>

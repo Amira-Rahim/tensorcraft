@@ -1701,9 +1701,9 @@ retained inventory. Quality and learner-evidence requirements remain open.
 
   Rebuild the public `/bridges` catalog (51-bridge dataset lives in `packages/shared/src/bridges.ts`, rendered nowhere public since the 2026-05-05 revert).
 
-- **CB-144**, source line 1396. Status: Open as recorded / reproduce current state.
+- **CB-144**, source line 1396. Status: Foundation implemented locally on 2026-11-10 / deployment and measurement pending.
 
-  Flip sitemap from throttled "core" to "full"; scale blog from single post via the existing news→lesson matching pipeline.
+  The 2026-11-10 SEO work removed the core/full switch because paid lessons redirect signed-out visitors to pricing. The sitemap now selects public pages and free lessons, with real editorial dates only where recorded. Added a public worked guide and generated source summary. The compiled blog currently has zero posts. Expand public explanations using verified examples and query evidence. See [the SEO and GEO plan](docs/seo-geo-plan.md) for release checks, the live HTTP baseline, and measurement. The earlier instruction to flip the sitemap and scale from a single post is superseded.
 
 ### 8. Growth roadmap / Horizon 3: enterprise seats (optional; legacy 24-48-month planning label)
 
@@ -1921,9 +1921,9 @@ retained inventory. Quality and learner-evidence requirements remain open.
 
 ### Moved out of launch-blockers (2026-08-23) / Pricing re-price follow-ups (2026-08-31)
 
-- **CB-200**, source line 2631. Status: Open as recorded / reproduce current state.
+- **CB-200**, source line 2631. Status: Code fix implemented locally on 2026-11-10 / deployment pending.
 
-  **B0: fix `public/llms.txt` overclaims.** It ships publicly and says 55 lessons / ~22 hours / 295 exercises / "Module 1 of every world is free"; disk says 56 lessons, ~29 hours (matches the FAQ), 65 live exercises (300 authored), and one launched world. It is a hand-written file with no CI pin, unlike every rendered surface; consider pinning it to `WORLD_CONTENT` / `EXERCISE_CONTENT` the way the pages are.
+  **B0: keep `/llms.txt` facts accurate.** The original audit recorded stale counts, unsupported course scope, and an unpinned handwritten file. A later correction brought the static copy to 56 lessons and 65 exercises. The 2026-11-10 work replaces that file with a static route generated from the compiled launched course, shared pricing, and public guide registry. Regression checks pin counts and free lesson links. The summary identifies fictional data and supplied models, links canonical public sources, and labels future worlds coming soon. Treat it as optional reference documentation, without a claim of search ranking benefit.
 
 - **CB-201**, source line 2637. Status: Open as recorded / reproduce current state.
 

@@ -1,0 +1,35 @@
+1
+00:00:00,000 --> 00:00:03,500
+Did sensor A really spike?
+The chart shows 2, 20, 5.
+
+2
+00:00:03,500 --> 00:00:07,500
+The supplied fictional recording lists sensors A, B, C, D at each moment.
+Sensor A actually reads 2, 3, 4.
+
+3
+00:00:07,500 --> 00:00:11,500
+Which operation keeps each sensor together?
+reshape([4, 3]) or transpose()?
+
+4
+00:00:11,500 --> 00:00:16,500
+reshape([4, 3]) gives the first row [2, 20, 5].
+20 belongs to B. 5 belongs to C.
+
+5
+00:00:16,500 --> 00:00:22,000
+transpose() groups sensor A's readings in time order: [2, 3, 4].
+Both outputs have shape [4, 3].
+
+6
+00:00:22,000 --> 00:00:26,000
+Shape tells you the dimensions.
+The recording header tells you what they mean. This is data preparation for ML.
+
+7
+00:00:26,000 --> 00:00:30,000
+Try this case in Deep Orbit, Tensorcraft's first available world.
+First 5 lessons free. No account needed. tensorcraft.app
+

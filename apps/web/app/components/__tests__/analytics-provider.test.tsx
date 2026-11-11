@@ -53,6 +53,7 @@ vi.mock("../../../lib/analytics-events", () => ({
     CONSENT_GRANTED: "consent_granted",
     SESSION_STARTED: "session_started",
     SESSION_ENDED: "session_ended",
+    PRICING_PAGE_VIEWED: "pricing_page_viewed",
   },
   track: vi.fn(),
 }));
@@ -64,6 +65,8 @@ vi.mock("next/navigation", () => ({
 
 import { AnalyticsProvider } from "../analytics-provider";
 import { CONSENT_KEY, notifyConsentChanged } from "../../../lib/consent";
+import { track } from "../../../lib/analytics-events";
+import { PricingAnalytics } from "../../pricing/pricing-analytics";
 
 function pageviews() {
   return posthogMock.capture.mock.calls.filter(
@@ -94,6 +97,8 @@ describe("AnalyticsProvider", () => {
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it("counts a full page load with stored consent as one $pageview", () => {
@@ -206,5 +211,141 @@ describe("AnalyticsProvider", () => {
     expect(posthogMock.opt_in_capturing).toHaveBeenCalledWith({
       captureEventName: false,
     });
+  });
+
+  it("starts a visible interval at consent and excludes time before acceptance", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1000);
+    const visibility = vi
+      .spyOn(document, "visibilityState", "get")
+      .mockReturnValue("visible");
+    localStorage.removeItem(CONSENT_KEY);
+    renderProvider();
+    expect(track).not.toHaveBeenCalled();
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+      localStorage.setItem(CONSENT_KEY, "accepted");
+      notifyConsentChanged();
+    });
+    const start = vi
+      .mocked(track)
+      .mock.calls.find(([event]) => event === "session_started");
+    expect(start).toBeDefined();
+    act(() => {
+      vi.advanceTimersByTime(1000);
+      visibility.mockReturnValue("hidden");
+      document.dispatchEvent(new Event("visibilitychange"));
+      window.dispatchEvent(new Event("beforeunload"));
+    });
+    const ends = vi
+      .mocked(track)
+      .mock.calls.filter(([event]) => event === "session_ended");
+    expect(ends).toEqual([
+      [
+        "session_ended",
+        {
+          sessionId: (start![1] as { sessionId: string }).sessionId,
+          durationMs: 1000,
+        },
+      ],
+    ]);
+
+    act(() => {
+      visibility.mockReturnValue("visible");
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    expect(
+      vi
+        .mocked(track)
+        .mock.calls.filter(([event]) => event === "session_started"),
+    ).toHaveLength(2);
+  });
+
+  it("discards the interval on withdrawal and observes a new one on reacceptance", () => {
+    vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
+    const view = renderProvider();
+    expect(
+      vi
+        .mocked(track)
+        .mock.calls.filter(([event]) => event === "session_started"),
+    ).toHaveLength(1);
+    act(() => {
+      localStorage.setItem(CONSENT_KEY, "declined");
+      notifyConsentChanged();
+    });
+    vi.mocked(track).mockClear();
+    posthogMock.capture.mockClear();
+    route.pathname = "/pricing";
+    view.rerender(
+      <AnalyticsProvider>
+        <div />
+      </AnalyticsProvider>,
+    );
+    act(() => window.dispatchEvent(new Event("beforeunload")));
+    expect(track).not.toHaveBeenCalled();
+    expect(pageviews()).toHaveLength(0);
+
+    act(() => {
+      posthogMock.has_opted_out_capturing.mockReturnValue(true);
+      localStorage.setItem(CONSENT_KEY, "accepted");
+      notifyConsentChanged();
+    });
+    expect(
+      vi
+        .mocked(track)
+        .mock.calls.filter(([event]) => event === "session_started"),
+    ).toHaveLength(1);
+    expect(pageviews()).toHaveLength(1);
+  });
+
+  it("records the current pricing context after late consent without duplicate views", () => {
+    route.pathname = "/pricing";
+    route.query = "locked=deep-orbit&module=neural-networks";
+    localStorage.removeItem(CONSENT_KEY);
+    render(
+      <AnalyticsProvider>
+        <PricingAnalytics />
+      </AnalyticsProvider>,
+    );
+    expect(
+      vi
+        .mocked(track)
+        .mock.calls.filter(([event]) => event === "pricing_page_viewed"),
+    ).toHaveLength(0);
+    act(() => {
+      localStorage.setItem(CONSENT_KEY, "accepted");
+      notifyConsentChanged();
+      notifyConsentChanged();
+    });
+    expect(
+      vi
+        .mocked(track)
+        .mock.calls.filter(([event]) => event === "pricing_page_viewed"),
+    ).toEqual([
+      [
+        "pricing_page_viewed",
+        {
+          entryContext: "locked_lesson",
+          source: "paywall",
+          lockedWorldId: "deep-orbit",
+        },
+      ],
+    ]);
+  });
+
+  it("does not label ordinary pricing navigation as direct acquisition or a coming-soon paywall", () => {
+    route.pathname = "/pricing";
+    route.query = "locked=neon-protocol";
+    render(
+      <AnalyticsProvider>
+        <PricingAnalytics />
+      </AnalyticsProvider>,
+    );
+    expect(
+      vi
+        .mocked(track)
+        .mock.calls.filter(([event]) => event === "pricing_page_viewed"),
+    ).toEqual([["pricing_page_viewed", { entryContext: "standard" }]]);
   });
 });

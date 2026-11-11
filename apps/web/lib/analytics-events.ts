@@ -60,7 +60,7 @@ export const EVENTS = {
   FREE_LESSON_CTA_CLICKED: "free_lesson_cta_clicked",
   // Added 2026-08-25 with the /learn trailer hero: measures whether the
   // trailer earns its slot (loop = ambient hero playback began; full = the
-  // visitor chose the 90-second cut).
+  // visitor opened the introduction lightbox).
   TRAILER_PLAYED: "learn_trailer_played",
   // Added 2026-08-29 with the world-page trailer band. A separate event
   // from learn_trailer_played (different film, different surface) so the
@@ -233,8 +233,10 @@ export interface EventProperties {
   };
 
   [EVENTS.PRICING_PAGE_VIEWED]: {
-    /** How the user arrived at /pricing (direct, paywall redirect, etc.) */
+    /** Legacy entry labels. Do not interpret these as acquisition channels. */
     source?: "direct" | "paywall" | "dashboard" | "landing" | "upgrade_cta";
+    /** Current page context, separate from the SDK's external attribution. */
+    entryContext?: "standard" | "locked_lesson" | "checkout_cancelled";
     /** Populated when the user was redirected from a locked world. */
     lockedWorldId?: string;
   };
@@ -284,11 +286,18 @@ export interface EventProperties {
       | "learn_footer"
       | "world_trailer_endcard"
       | "landing_hero"
+      | "landing_intro"
       | "landing_footer"
-      | "pricing_footer";
+      | "pricing_footer"
+      | "compare"
+      | "guide";
+    guideSlug?: string;
+    /** Canonical lesson URL, without experiment-entry query parameters. */
+    targetLesson?: string;
+    placement?: "activity" | "source";
   };
   [EVENTS.TRAILER_PLAYED]: {
-    /** loop = silent hero loop began; full = the lightbox 90s cut opened. */
+    /** loop = silent hero loop began; full = introduction lightbox opened. */
     mode: "loop" | "full";
   };
   [EVENTS.WORLD_TRAILER_PLAYED]: {
@@ -419,7 +428,7 @@ export interface EventProperties {
     lessonSlug: string;
     moduleId: string;
     worldId: string;
-    /** ISO week label (used as utm_campaign). */
+    /** Digest week label, recorded as content context. */
     weekIso?: string;
   };
 }

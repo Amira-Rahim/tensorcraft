@@ -41,10 +41,8 @@ import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
 import { MissionLearningGoals } from "@/app/components/lesson-visuals/mission-learning-goals";
 import { supportsLessonResultExplanation } from "@/lib/lesson-result-explanations";
 
-// Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
-// runtime + editor (~300 KB gzipped). Loading it dynamically with
-// `ssr: false` keeps it out of the lesson's initial chunk and defers the
-// fetch until the learner reaches the Challenge step.
+// Keep the Challenge pane client-only. The public UI entry also loads the
+// editor implementation lazily, outside the initial lesson scripts.
 const Exercise = dynamic(
   () => import("@tensorcraft/ui").then((m) => ({ default: m.Exercise })),
   {

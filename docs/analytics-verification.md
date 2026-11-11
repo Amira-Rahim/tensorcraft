@@ -4,12 +4,9 @@ Per dev-plan §6i, every event in `apps/web/lib/analytics-events.ts`
 (which mirrors PRD Appendix B) must land in the PostHog EU dashboard
 before launch. This doc is the verification protocol.
 
-**Scope:** 20 events total - 15 originally defined plus 5 newly wired in
-2026-04 (`session_started`, `session_ended`, `progress_shared`,
-`code_pushed`, `upgrade_cta_shown`, `upgrade_cta_clicked`). All 20 are
-defined in the typed `track()` helper, covered by unit tests
-(`analytics-events.test.ts`), emitted either client-side with consent
-gating or server-side for Stripe/GitHub flows.
+The typed registry in `apps/web/lib/analytics-events.ts` defines current event
+names and payloads. The recipes below describe how to verify capture. Unit
+tests establish local behavior. Live Events establishes deployed ingestion.
 
 ## Verification approach
 
@@ -56,14 +53,14 @@ production release.
 | `consent_granted` | Accept the cookie banner in a fresh browser profile (fires once per browser) | `source="banner"` |
 | `module_completed` | Finish the last lesson of a module | `lessonsCount` |
 | `paywall_hit` | Visit a Module 2+ lesson without access | `worldId`, `moduleId` |
-| `pricing_page_viewed` | Land on `/pricing` (any path) | `source` |
+| `pricing_page_viewed` | View `/pricing` after analytics is ready, including late consent | `entryContext`, optional legacy `source` and `lockedWorldId` |
 | `checkout_started` | Click a paid-tier CTA on `/pricing` | `planId` |
 | `payment_completed` | Server-side: Stripe `checkout.session.completed` | `planId`, `worldIds`, `amount`, `sessionId` |
 | `payment_failed` | Server-side: Stripe `async_payment_failed` (use a test card) | `sessionId`, `reason` |
 | `payment_refunded` | Server-side: issue a refund in Stripe dashboard | `paymentIntentId`, `isFullRefund` |
 | `streak_achieved` | Complete a lesson after 24h of prior completion | `streakDays` (read back from the streaks table since 2026-09-04; previously hardcoded 1) |
-| `session_started` | App load / route into any page (fires from `AnalyticsProvider`) | `sessionId` |
-| `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
+| `session_started` | Begin a visible interval with initialized analytics and current consent | `sessionId` |
+| `session_ended` | End that visible interval on hide/unload, once | Matching `sessionId`, `durationMs` since the consented interval started |
 | `upgrade_cta_shown` | Land on `/pricing?locked=<launched-slug>` (fires headlessly from `<PaywallNotice>`; the visible banner was removed 2026-09-15), OR `/paywall` mounts | `source="paywall"`, `worldId?` |
 | `upgrade_cta_clicked` | Click "See Plans" on `/paywall` hero or footer | `source="paywall"` |
 | `free_lesson_cta_clicked` | Click a free-lesson CTA: the `/learn` hero or footer, the landing hero "Start Mission: Deep Orbit" or closing "Start Module 1" (since 2026-11-02), the `/pricing` closing "Start Module 1" (since 2026-11-02), or the trailer end card on a world page | `source` (`learn_hero`/`learn_footer`/`landing_hero`/`landing_footer`/`pricing_footer`/`world_trailer_endcard`) |
@@ -190,3 +187,43 @@ whenever `commitLessonArtifact` succeeds - same authoritative pattern as
 
 Check off boxes + commit this file with the commit message
 `docs: verify PostHog event taxonomy §6i`.
+
+
+## SEO and GEO cohort definitions (2026-11-10)
+
+Use verified SDK session/referrer/campaign fields from the actual project.
+Inspect Live Events before assuming which automatic properties are available.
+The application event `source` commonly names a button placement or page
+context. It does not establish an external acquisition channel.
+
+| Measure | Definition | What it establishes |
+| --- | --- | --- |
+| Guide landing | A consented pageview of the guide's canonical path. | An observed visit within analytics coverage. |
+| Guide handoff | `free_lesson_cta_clicked` with `source=guide`, guide ID, target lesson and placement. Deduplicate by observed SDK session for a session rate. | Someone chose to enter the activity. |
+| Submitted activity | `experiment_submitted` or `exercise_attempted` after the handoff, with the matching lesson in the same observed journey. Include failed attempts and label them separately from passes. | A submitted attempt, not independent mastery or necessarily edited starter code. |
+| Free-module completion | `module_completed` for Deep Orbit foundations, after confirming deployed guest and account capture. | Recorded completion within the available coverage. |
+| Purchase | Settled server `payment_completed`, checked against payment records and deduplicated by checkout session. | A completed payment, not retention or learning success. |
+
+Calculate a guide-to-attempt rate from consented guide sessions and matching
+consented attempts. Do not divide all server purchases by consented browser
+sessions and call it the site conversion rate. Report total settled purchases,
+refunds and unknown acquisition separately. Attribute purchases to an analytics
+cohort only where the observed identity/journey supports the join. Search
+Console query aggregates do not provide a query-to-individual-purchase join.
+
+Custom session events now describe visible intervals. They are distinct from
+the SDK's own session identifier. A hidden tab ends one interval; returning
+starts another. Consent withdrawal discards the current interval without an
+end event. Reacceptance starts a new interval and observes the current page.
+No pre-consent actions are queued or replayed.
+
+Pricing now uses `entryContext=standard`, `locked_lesson`, or
+`checkout_cancelled`. The historical fallback `source=direct` must not be used
+to classify direct acquisition. Internal article links no longer set campaign
+UTMs. Their existing `digest_link_clicked` event carries content context.
+
+The optional checkout-source question remains disabled by owner choice on
+2026-11-10. Account measurement will use integrations. PostHog and OpenSEO were
+available but not installed at the last check, so account results remain
+unverified until setup is complete. These definitions are a reporting contract,
+not a claim that a live dashboard or baseline has been verified.

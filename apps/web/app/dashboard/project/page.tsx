@@ -10,7 +10,6 @@ import { ProjectPipeline } from "./project-pipeline";
 import { heroPlateSrc } from "@/lib/location-art";
 export const metadata: Metadata = {
   title: "Project | Tensorcraft",
-  robots: { index: false, follow: false },
 };
 export default async function ProjectPage() {
   const { userId, stages, evidenceUnavailable, entitled, dashboard } =

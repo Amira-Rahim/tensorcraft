@@ -31,6 +31,9 @@ export function SiteFooter() {
             <Link href="/learn" className={FOOTER_LINK_CLASS}>
               Learn
             </Link>
+            <Link href="/guides" className={FOOTER_LINK_CLASS}>
+              Guides
+            </Link>
             <Link href="/compare" className={FOOTER_LINK_CLASS}>
               Compare
             </Link>

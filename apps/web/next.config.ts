@@ -79,6 +79,13 @@ const nextConfig: NextConfig = {
   ],
   headers: async () => {
     const rules = [
+      // Static files in public/design-previews bypass route metadata.
+      // Keep preview pages out of search while allowing crawlers to read
+      // this directive. Public campaign cases remain eligible for indexing.
+      ...["/design-previews/:path*", "/design/:path*"].map((source) => ({
+        source,
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      })),
       // Long-lived immutable cache for build-hashed chunks. Filenames carry
       // a content hash so the URL changes whenever bytes change, safe to
       // pin for a year + tell the CDN to skip revalidation.
