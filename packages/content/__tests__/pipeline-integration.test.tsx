@@ -23,8 +23,6 @@
  * schema drift concern using sample fixtures.
  */
 
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { lessonSchema } from "../src/schemas";
@@ -35,21 +33,17 @@ vi.mock("shiki", () => ({
   createHighlighter: () => Promise.reject(new Error("mocked, fallback")),
 }));
 
-// Import components directly by module path, sidestep the
-// `@tensorcraft/ui` barrel so we never touch the Exercise component
-// (which pulls in Sandpack's CSS-in-JS stack and blows up in jsdom).
-// The Exercise component is covered by its own suite
-// `packages/ui/src/mdx/exercise.test.ts`; we don't re-verify it here.
-// Its data provider lives in exercise-data.tsx, which imports no Sandpack
-// (spec 2026-09-24, section 3), so it loads here.
+// Render lightweight components directly. Import the public Exercise API
+// without mounting its editor. Its loading and run behavior have dedicated
+// UI tests, while this suite checks the pipeline's exported API and data.
 const { BridgeCallout } = await import("../../ui/src/mdx/bridge-callout");
 const { Dialogue } = await import("../../ui/src/mdx/dialogue");
 const { HintPanel } = await import("../../ui/src/mdx/hint-panel");
 const { Quiz } = await import("../../ui/src/mdx/quiz");
 const { SceneHeading } = await import("../../ui/src/mdx/scene-heading");
 const { CodeBlock } = await import("../../ui/src/mdx/code-block");
-const { ExerciseDataContext, ExerciseDataProvider } =
-  await import("../../ui/src/mdx/exercise-data");
+const { ExerciseDataContext } = await import("../../ui/src/mdx/exercise-data");
+const { Exercise, ExerciseDataProvider } = await import("@tensorcraft/ui");
 
 // ─────────────────────────────────────────────────────────────
 // Canonical frontmatter object, mirrors what Velite hands over
@@ -251,34 +245,7 @@ describe("Content pipeline: frontmatter → Zod → components", () => {
     });
 
     it("Exercise: the package exports Exercise and a working ExerciseDataProvider", () => {
-      // Exercise pulls Sandpack's CSS-in-JS stack at import time, which does
-      // not initialize cleanly in jsdom, so its module is checked as text;
-      // full behaviour is covered by `packages/ui/src/mdx/exercise.test.ts`.
-      const read = (file: string) =>
-        readFileSync(resolve(__dirname, "../../ui/src", file), "utf-8");
-      expect(read("mdx/exercise.tsx")).toMatch(
-        /export\s+function\s+Exercise\b/,
-      );
-
-      // Both barrels the pipeline imports through must name both
-      // components: `export { A, B } from "./x"`, mapped name to source.
-      const reExports = (src: string) => {
-        const names = new Map<string, string>();
-        for (const [, list, from] of src.matchAll(
-          /export\s*\{([^}]*)\}\s*from\s*"([^"]+)"/g,
-        )) {
-          for (const name of list.split(",")) {
-            if (name.trim()) names.set(name.trim(), from);
-          }
-        }
-        return names;
-      };
-      const mdx = reExports(read("mdx/index.ts"));
-      expect(mdx.get("Exercise")).toBe("./exercise");
-      expect(mdx.get("ExerciseDataProvider")).toMatch(/^\.\/exercise(-data)?$/);
-      const pkg = reExports(read("index.ts"));
-      expect(pkg.get("Exercise")).toBe("./mdx");
-      expect(pkg.get("ExerciseDataProvider")).toBe("./mdx");
+      expect(typeof Exercise).toBe("function");
 
       // The provider hands its map to the context the pane and the brief
       // read. Only the map's size matters here, so the entry is a stub.
