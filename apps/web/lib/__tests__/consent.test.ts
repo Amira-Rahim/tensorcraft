@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   CONSENT_KEY,
+  CONSENT_VERSION,
+  CONSENT_VERSION_KEY,
+  setConsentChoice,
   hasAnalyticsConsent,
   notifyConsentChanged,
   onConsentChange,
@@ -19,16 +22,30 @@ import {
  */
 describe("analytics consent", () => {
   beforeEach(() => {
+    setConsentChoice(null);
     localStorage.clear();
+    localStorage.setItem(CONSENT_VERSION_KEY, CONSENT_VERSION);
   });
 
   it("reports no consent before the banner is answered", () => {
     expect(hasAnalyticsConsent()).toBe(false);
   });
 
+  it("requires a fresh choice when an older acceptance has no version", () => {
+    localStorage.removeItem(CONSENT_VERSION_KEY);
+    localStorage.setItem(CONSENT_KEY, "accepted");
+    expect(hasAnalyticsConsent()).toBe(false);
+  });
+
   it("reports consent once accepted", () => {
     localStorage.setItem(CONSENT_KEY, "accepted");
     expect(hasAnalyticsConsent()).toBe(true);
+  });
+
+  it("preserves an older refusal without asking for a new acceptance", () => {
+    localStorage.removeItem(CONSENT_VERSION_KEY);
+    localStorage.setItem(CONSENT_KEY, "declined");
+    expect(hasAnalyticsConsent()).toBe(false);
   });
 
   it("treats an explicit decline as no consent", () => {

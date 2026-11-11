@@ -57,6 +57,14 @@ const WARN_IF_UNSET: ReadonlyArray<{ name: string; consequence: string }> = [
   },
   { name: "SENTRY_DSN", consequence: "API error reporting is OFF" },
   {
+    name: "POSTHOG_PROJECT_TOKEN",
+    consequence: "server payment and learning analytics are OFF",
+  },
+  {
+    name: "POSTHOG_HOST",
+    consequence: "server payment and learning analytics are OFF",
+  },
+  {
     name: "KIT_TAG_PAYWALL_HIT",
     consequence: "paywall-hit tagging skips (recoverable, R2-7)",
   },

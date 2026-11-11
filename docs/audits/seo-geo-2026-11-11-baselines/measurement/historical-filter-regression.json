@@ -1,0 +1,40 @@
+{
+  "collectedAt": "2026-11-11 09:47:37 UTC",
+  "input": {
+    "series": [
+      {
+        "kind": "EventsNode",
+        "event": "$pageview",
+        "math": "total"
+      }
+    ],
+    "dateRange": {
+      "date_from": "2026-10-12",
+      "date_to": "2026-11-08"
+    },
+    "filterTestAccounts": true,
+    "properties": [
+      {
+        "key": "$host",
+        "type": "event",
+        "operator": "exact",
+        "value": [
+          "tensorcraft.app"
+        ]
+      }
+    ],
+    "trendsFilter": {
+      "display": "ActionsTable"
+    }
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Date range|Aggregated value for $pageview\n2026-10-12 00:00:00+00:00 to 2026-11-08 23:59:59+00:00|139"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

@@ -8,6 +8,13 @@ The typed registry in `apps/web/lib/analytics-events.ts` defines current event
 names and payloads. The recipes below describe how to verify capture. Unit
 tests establish local behavior. Live Events establishes deployed ingestion.
 
+The [November 11 measurement follow-up](audits/seo-geo-2026-11-11-baselines/measurement-fix.md)
+updates browser traffic labels and payment payloads in the deployed release.
+Migration 067, API release 35, the web consent flow and PostHog settings are live.
+Eight live consent API checks pass. Full browser interaction and consented
+server-event delivery remain unverified. See the
+[release evidence](audits/seo-geo-2026-11-11-baselines/deployment.md).
+
 ## Verification approach
 
 Playwright network-intercept was considered and **deferred** in favor of
@@ -38,7 +45,7 @@ production release.
 | `world_selected` | Complete onboarding with a world picked | `worldId`, `source="onboarding"` |
 | `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
 | `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `yearsExperience?` |
-| `lesson_started` | Open any lesson (step 1 auto-fires) | `worldId`, `moduleId`, `lessonId` |
+| `lesson_started` | Current lesson visit once analytics is ready, including late consent (local follow-up, not yet released) | `worldId`, `moduleId`, `lessonId` |
 | `lesson_step_viewed` | Every step entry: mount, Continue, back-nav, step-bar jump | `step` (0-4), `stepsVersion=2`, `stepName`, `prevStep?`, `prevStepMs?`, `revisit` |
 | `script_skipped` | Skip intro button; Continue past a playing scene; the remembered preference suppressing playback | `step=0`, `elapsedMs`, `via` (`button`/`continue`/`auto`) |
 | `script_finished` | Let the Briefing scene play to its natural end | `step=0`, `elapsedMs`, `run` (`auto`/`replay`), `briefingVariant` |
@@ -55,9 +62,11 @@ production release.
 | `paywall_hit` | Visit a Module 2+ lesson without access | `worldId`, `moduleId` |
 | `pricing_page_viewed` | View `/pricing` after analytics is ready, including late consent | `entryContext`, optional legacy `source` and `lockedWorldId` |
 | `checkout_started` | Click a paid-tier CTA on `/pricing` | `planId` |
-| `payment_completed` | Server-side: Stripe `checkout.session.completed` | `planId`, `worldIds`, `amount`, `sessionId` |
+| `signup_completed` | Reserved for verified account creation. The released session listener emits no event for generic `SIGNED_IN` callbacks. | No current authoritative registration capture. |
+| `payment_completed` | Server-side: a paid or zero-charge Stripe checkout, or a successful delayed payment. Released version 2 removes the browser receipt event. | `planId`, `worldIds`, `sessionId`, `eventSource="stripe_webhook"`, `analyticsVersion=2`, `stripeEventId`, `paymentIntentId`, `amountMinor`, `currency`, `livemode`, `paymentKind`, legacy `amount` |
+| `purchase_access_granted` | Server-side: an upgrade covered entirely by credit, with no new cash charge. | `planId`, `worldIds`, `grantId`, `reason="upgrade_credit"` |
 | `payment_failed` | Server-side: Stripe `async_payment_failed` (use a test card) | `sessionId`, `reason` |
-| `payment_refunded` | Server-side: issue a refund in Stripe dashboard | `paymentIntentId`, `isFullRefund` |
+| `payment_refunded` | Server-side: a refund updates a charge. Released version 2 captures the cumulative refunded amount. | `paymentIntentId`, `isFullRefund`, `sessionId`, `chargeId`, `stripeEventId`, `eventSource="stripe_webhook"`, `analyticsVersion=2`, `currency`, `livemode`, `amountRefundedMinor` |
 | `streak_achieved` | Complete a lesson after 24h of prior completion | `streakDays` (read back from the streaks table since 2026-09-04; previously hardcoded 1) |
 | `session_started` | Begin a visible interval with initialized analytics and current consent | `sessionId` |
 | `session_ended` | End that visible interval on hide/unload, once | Matching `sessionId`, `durationMs` since the consented interval started |
@@ -130,7 +139,10 @@ unmeasurable. How to read the new metrics:
 
 ## Stripe server-side events
 
-Use `stripe trigger` from the Stripe CLI pointed at the API:
+Use a configured Stripe test-mode environment and fixtures that match the
+API's required purchase metadata. Generic CLI fixtures may exercise a webhook
+without identifying a Tensorcraft purchase. The event names for test triggers
+are:
 
 ```sh
 stripe trigger checkout.session.completed
@@ -138,8 +150,27 @@ stripe trigger checkout.session.async_payment_failed
 stripe trigger charge.refunded
 ```
 
-Confirm each event lands within ~30s under the originating user's
-`distinct_id` (not a session-level anonymous id).
+Confirm each event arrives under the originating account's `distinct_id`.
+Inspect `eventSource`, `analyticsVersion`, `livemode`, `sessionId`, currency
+and minor-unit amounts. Browser receipt views must not emit a purchase in the
+released version. Repeated webhook delivery must not add another cash checkout
+to a report deduplicated by `sessionId`. Record retries and missing captures
+instead of assuming delivery exactly once.
+
+Version 2 cash reports require `eventSource="stripe_webhook"`,
+`analyticsVersion=2`, `livemode=true`, `paymentKind="cash"` and a valid
+checkout `sessionId`. Reconcile the deduplicated sessions with Stripe records.
+Keep `no_charge`, `unknown`, test-mode and credit-only grants separate. Use
+`amountMinor` with its `currency`. The legacy `amount` field contains USD
+dollars when known and otherwise can be null.
+
+Refund events report the cumulative `amountRefundedMinor` for a charge. Never
+sum those snapshots as separate refunds. Reconcile the latest charge state or
+Stripe refund records before calculating refunded or net revenue.
+
+The released server SDK logs safe error types and attempts to flush pending
+events during graceful shutdown. Capture failures do not interrupt payment
+fulfillment. These protections do not establish production delivery.
 
 ## GitHub server-side events
 
@@ -217,13 +248,110 @@ starts another. Consent withdrawal discards the current interval without an
 end event. Reacceptance starts a new interval and observes the current page.
 No pre-consent actions are queued or replayed.
 
+The November 11 local lesson-arrival follow-up observes only the current visit
+once analytics is ready. It does not duplicate that visit on withdrawal and
+reacceptance or replay a lesson left before consent. Progress saving remains
+independent. A lesson arrival does not establish an attempt. Step dwell and
+lesson-completion duration retain their existing timing semantics, which may
+include time before consent. Do not label those durations consent-only.
+
 Pricing now uses `entryContext=standard`, `locked_lesson`, or
 `checkout_cancelled`. The historical fallback `source=direct` must not be used
 to classify direct acquisition. Internal article links no longer set campaign
 UTMs. Their existing `digest_link_clicked` event carries content context.
 
 The optional checkout-source question remains disabled by owner choice on
-2026-11-10. Account measurement will use integrations. PostHog and OpenSEO were
-available but not installed at the last check, so account results remain
-unverified until setup is complete. These definitions are a reporting contract,
-not a claim that a live dashboard or baseline has been verified.
+2026-11-10. The [November 11 account baseline](audits/seo-geo-2026-11-11-baselines/README.md)
+uses the connected PostHog project and a new OpenSEO project. PostHog reports
+2 visitors, 45 SDK sessions and 139 pageviews for October 12 to November 8.
+Its configured internal/test cohort contains zero people, so the population
+may include owner or test activity. Search Console now uses the verified
+`sc-domain:tensorcraft.app` property. Its final web-search data records 1 click
+and 70 impressions for October 12 to November 8, in Pacific Time. The previous
+28-day window, September 14 to October 11, records 4 clicks and 69 impressions.
+These search aggregates cannot identify an individual purchase journey.
+
+The baseline's 204 `signup_completed` events for one person cannot establish
+registrations. The old source emits on repeated sign-in callbacks. The released
+follow-up removes that emitter. Registration counts remain unknown until an
+authoritative account-creation signal exists. A recent account timestamp alone
+does not establish that a generic sign-in created the account.
+
+Both baseline `payment_completed` records are browser events without checkout
+settlement IDs. The released follow-up removes browser receipt capture and adds
+the version 2 server payload above. Historical browser confirmations remain
+separate from verified payment records. Exercise submissions, free-module
+completion, production server settlements and refunds still need ingestion
+verification.
+
+## November 11 internal traffic and delivery follow-up
+
+Live project 257980 keeps the cohort 221371 exclusion and adds event filters
+that exclude `tc_internal=true` and development or preview hostnames. It now
+enables internal/test exclusions by default. The cohort still has zero members,
+so these changes do not retrospectively identify unmarked owner activity.
+Preserve the dated baseline before reporting a new external-visitor cohort.
+
+The released browser SDK labels every outgoing event through `before_send`.
+Only `tensorcraft.app` and `www.tensorcraft.app` count as public hostnames.
+Other hostnames carry `tc_internal=true`. On a public host,
+`?tc_internal=1` persists the internal marker in `tc-internal-traffic` across
+sign-out. `?tc_internal=0` clears that marker. These labels and controls do
+not bypass analytics consent. Verify the label on production browser events,
+including SDK events and account changes.
+
+A controlled `analytics_ingestion_check` event used the local API environment
+and matched the live project. Its `tc_internal=true` record returned once
+without exclusions and zero times with the configured test-account filter.
+The hostname-negative filter alone retained it once, which verifies that
+hostless server events can remain visible. This check establishes the local
+configuration and SDK delivery path. It does not establish that production
+Fly secrets or deployed webhook ingestion work.
+
+A separate read-only Stripe check verified the live account's Tensorcraft
+domain and found one paid checkout created from October 12 through November
+8, UTC, for 5,000 USD minor units ($50). Supabase contains one matching
+purchase row for that checkout session, with completed status and the same
+amount. This verifies one paid checkout in a creation-date cohort. It does
+not establish a settlement-date revenue total, a site conversion rate or
+source attribution. Switching Fly to the owning account restored production
+access. The initial inspection found both machines missing the PostHog settings
+and running the earlier payment code. Protected API release 34 has since
+deployed with passing health and source-hash checks on both machines. The web
+release is promoted and its pages and assets pass HTTP checks. Eight live API
+checks verify grants and withdrawal. Release 35 enables the expected PostHog
+project token and EU host on the same protected image. Both machines pass
+runtime-setting and health checks. Actual consented server-event delivery,
+including webhook ingestion, still needs verification. The
+[measurement record](audits/seo-geo-2026-11-11-baselines/measurement-fix.md)
+preserves the evidence and remaining checks. Follow-up helper inspection
+coincided with failed health checks. Temporary-process cleanup restored one
+machine, and a restart restored the other. Future ingestion checks must account
+for the 256 MB memory limit and avoid another parallel SDK bootstrap.
+
+## Server consent release checks (2026-11-11)
+
+The [consent repair](audits/seo-geo-2026-11-11-baselines/server-consent-fix.md)
+adds authenticated account preferences. Migration 067 completed in production
+at 11:01:47 UTC, and all 15 catalog checks pass. Protected API release 35 is live
+with verified PostHog settings and passing health checks on both machines.
+The promoted web release passes public page and asset checks. Eight live API
+checks verify missing-choice defaults, grants, stale conflicts and withdrawal.
+Full browser runtime and live server-event delivery remain unverified in the
+[deployment record](audits/seo-geo-2026-11-11-baselines/deployment.md).
+Verify these cases through the released browser interface and
+normal application:
+
+- Earlier browser acceptance prompts for a fresh choice. No saved account
+  choice defaults to off.
+- A fresh acceptance saves the account choice. A consented server action
+  reaches PostHog after fulfillment.
+- Cookie settings stops browser capture immediately. An acknowledged account
+  withdrawal suppresses the next server event, including a delayed webhook.
+- Failed saves remain visible and retry after reconnecting. A stale grant
+  cannot replace a later withdrawal.
+- A declined choice or failed consent lookup leaves the underlying purchase
+  or GitHub action successful. Automatic server exception capture stays off.
+
+Consent checks cannot recall events already queued or sent. Server analytics
+observes a consented subset, so reconcile payment counts against Stripe.

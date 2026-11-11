@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-11-11T11:06:58.964Z",
+  "machines": [
+    {
+      "id": "48e1e7a7571518",
+      "state": "started",
+      "digest": "sha256:1c6e3f4d503d21ebb8e02bf3c58d39e8ecf764c415ca73205572ebfd19e4e27f",
+      "checks": [
+        {
+          "name": "health",
+          "status": "passing"
+        }
+      ],
+      "release": "34"
+    },
+    {
+      "id": "080d21dcee6d98",
+      "state": "started",
+      "digest": "sha256:1c6e3f4d503d21ebb8e02bf3c58d39e8ecf764c415ca73205572ebfd19e4e27f",
+      "checks": [
+        {
+          "name": "health",
+          "status": "passing"
+        }
+      ],
+      "release": "34"
+    }
+  ],
+  "httpChecks": [
+    {
+      "url": "https://tensorcraft-api.fly.dev/api/health",
+      "status": 200,
+      "cacheControl": null,
+      "cors": "https://tensorcraft.app"
+    },
+    {
+      "url": "https://tensorcraft-api.fly.dev/api/analytics-consent",
+      "status": 401,
+      "cacheControl": "no-store",
+      "cors": "https://tensorcraft.app"
+    },
+    {
+      "url": "https://api.tensorcraft.app/api/health",
+      "status": 200,
+      "cacheControl": null,
+      "cors": "https://tensorcraft.app"
+    },
+    {
+      "url": "https://api.tensorcraft.app/api/analytics-consent",
+      "status": 401,
+      "cacheControl": "no-store",
+      "cors": "https://tensorcraft.app"
+    }
+  ],
+  "posthogEnabled": false
+}

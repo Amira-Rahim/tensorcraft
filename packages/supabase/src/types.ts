@@ -54,6 +54,28 @@ export type Database = {
           },
         ];
       };
+      analytics_consents: {
+        Row: {
+          user_id: string;
+          granted: boolean;
+          revision: number;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          user_id: string;
+          granted?: boolean;
+          revision?: number;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          granted?: boolean;
+          revision?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       arena_submissions: {
         Row: {
           challenge_id: string;
@@ -1560,6 +1582,15 @@ export type Database = {
       restore_purchase_after_dispute: {
         Args: { p_payment_intent: string };
         Returns: number;
+      };
+      set_analytics_consent: {
+        Args: { p_granted: boolean; p_expected_revision: number };
+        Returns: {
+          updated_at: string;
+          applied: boolean;
+          granted: boolean;
+          revision: number;
+        }[];
       };
     };
     Enums: {

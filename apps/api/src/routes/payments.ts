@@ -134,6 +134,38 @@ export function purchaseStatusForSession(
     : "pending";
 }
 
+/** Preserve Stripe's settlement evidence separately from estimated plan prices. */
+function settlementAnalytics(
+  session: Stripe.Checkout.Session,
+  event: Stripe.Event,
+) {
+  const amountMinor =
+    typeof session.amount_total === "number" ? session.amount_total : null;
+  return {
+    eventSource: "stripe_webhook" as const,
+    analyticsVersion: 2 as const,
+    stripeEventId: event.id ?? null,
+    paymentIntentId:
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : (session.payment_intent?.id ?? null),
+    // Legacy amount is USD dollars. Other currencies use amountMinor.
+    amount:
+      amountMinor !== null && session.currency === "usd"
+        ? amountMinor / 100
+        : null,
+    amountMinor,
+    currency: session.currency ?? null,
+    livemode: event.livemode ?? session.livemode ?? null,
+    paymentKind:
+      amountMinor === null
+        ? ("unknown" as const)
+        : amountMinor > 0
+          ? ("cash" as const)
+          : ("no_charge" as const),
+  };
+}
+
 // ──────────────────────────────────────────────
 // POST /api/payments/checkout, Create a Stripe Checkout session
 // ──────────────────────────────────────────────
@@ -281,14 +313,13 @@ payments.post("/checkout", async (c) => {
       );
       return c.json({ error: "Failed to grant worlds" }, 500);
     }
-    captureServer(
-      SERVER_EVENTS.PAYMENT_COMPLETED,
+    await captureServer(
+      SERVER_EVENTS.PURCHASE_ACCESS_GRANTED,
       {
         planId: body.planId,
         worldIds: body.worldIds,
-        amount: 0,
-        sessionId: grantSessionId,
-        isUpgrade: true,
+        grantId: grantSessionId,
+        reason: "upgrade_credit",
       },
       userId,
     );
@@ -722,7 +753,7 @@ payments.post("/webhook", async (c) => {
           user_id: userId,
           plan_id: metadata.planId,
           world_ids: worldIds,
-          amount: amount ? amount / 100 : expectedAmount,
+          amount: amount != null ? amount / 100 : expectedAmount,
           tax_amount: typeof taxAmount === "number" ? taxAmount / 100 : null,
           tax_country: taxCountry,
           customer_tax_id: customerTaxId,
@@ -805,16 +836,15 @@ payments.post("/webhook", async (c) => {
         existingRow?.status !== "completed" &&
         (await claimEventSideEffects(supabase, event.id, event.type))
       ) {
-        // Fire authoritative server-side conversion event (§6i).
-        // Client may also fire one, but this is the revenue source of truth.
-        captureServer(
+        // Only settled Stripe sessions emit the payment conversion event.
+        await captureServer(
           SERVER_EVENTS.PAYMENT_COMPLETED,
           {
             planId: metadata.planId,
             worldIds,
-            amount: amount ? amount / 100 : expectedAmount,
             sessionId,
             isUpgrade: creditApplied > 0,
+            ...settlementAnalytics(session, event),
           },
           userId,
         );
@@ -826,10 +856,10 @@ payments.post("/webhook", async (c) => {
         void sendOperatorAlert({
           event: "purchase",
           severity: "info",
-          summary: `${worldIds.join(", ")} sold for $${(amount ? amount / 100 : expectedAmount).toFixed(2)}`,
+          summary: `${worldIds.join(", ")} sold for $${(amount != null ? amount / 100 : expectedAmount).toFixed(2)}`,
           detail: {
             worldIds: worldIds.join(", "),
-            amount: amount ? amount / 100 : expectedAmount,
+            amount: amount != null ? amount / 100 : expectedAmount,
             planId: metadata.planId,
             sessionId,
             userId,
@@ -872,7 +902,7 @@ payments.post("/webhook", async (c) => {
             await sendPurchaseReceipt({
               email: buyerEmail,
               worldIds,
-              amount: amount ? amount / 100 : expectedAmount,
+              amount: amount != null ? amount / 100 : expectedAmount,
               sessionId,
               purchasedAt: new Date(),
             });
@@ -1008,15 +1038,26 @@ payments.post("/webhook", async (c) => {
         // Look up owning user to correctly attribute the event.
         const { data: refundedRow } = await supabase
           .from("purchases")
-          .select("user_id")
+          .select("user_id, stripe_session_id")
           .eq("stripe_payment_intent", refundPaymentIntent)
           .maybeSingle();
         if (refundedRow?.user_id) {
-          captureServer(
+          await captureServer(
             SERVER_EVENTS.PAYMENT_REFUNDED,
             {
               paymentIntentId: refundPaymentIntent,
               isFullRefund,
+              sessionId: refundedRow.stripe_session_id ?? null,
+              chargeId: charge.id ?? null,
+              stripeEventId: event.id ?? null,
+              eventSource: "stripe_webhook",
+              analyticsVersion: 2,
+              currency: charge.currency ?? null,
+              livemode: event.livemode ?? charge.livemode ?? null,
+              amountRefundedMinor:
+                typeof charge.amount_refunded === "number"
+                  ? charge.amount_refunded
+                  : null,
             },
             refundedRow.user_id,
           );
@@ -1268,9 +1309,10 @@ payments.post("/webhook", async (c) => {
                   user_id: asyncUserId,
                   plan_id: asyncMetadata.planId,
                   world_ids: asyncWorldIds,
-                  amount: asyncSession.amount_total
-                    ? asyncSession.amount_total / 100
-                    : asyncPlan.price,
+                  amount:
+                    asyncSession.amount_total != null
+                      ? asyncSession.amount_total / 100
+                      : asyncPlan.price,
                   tax_amount:
                     typeof asyncTaxAmount === "number"
                       ? asyncTaxAmount / 100
@@ -1314,16 +1356,14 @@ payments.post("/webhook", async (c) => {
               existingAsyncRow?.status !== "completed" &&
               (await claimEventSideEffects(supabase, event.id, event.type))
             ) {
-              captureServer(
+              await captureServer(
                 SERVER_EVENTS.PAYMENT_COMPLETED,
                 {
                   planId: asyncMetadata.planId,
                   worldIds: asyncWorldIds,
-                  amount: asyncSession.amount_total
-                    ? asyncSession.amount_total / 100
-                    : asyncPlan.price,
                   sessionId: asyncSession.id,
                   isUpgrade: Number(asyncMetadata.creditApplied || "0") > 0,
+                  ...settlementAnalytics(asyncSession, event),
                 },
                 asyncUserId,
               );
@@ -1357,9 +1397,10 @@ payments.post("/webhook", async (c) => {
                   await sendPurchaseReceipt({
                     email: asyncBuyerEmail,
                     worldIds: asyncWorldIds,
-                    amount: asyncSession.amount_total
-                      ? asyncSession.amount_total / 100
-                      : asyncPlan.price,
+                    amount:
+                      asyncSession.amount_total != null
+                        ? asyncSession.amount_total / 100
+                        : asyncPlan.price,
                     sessionId: asyncSession.id,
                     purchasedAt: new Date(),
                   });
@@ -1460,7 +1501,7 @@ payments.post("/webhook", async (c) => {
       }
 
       if (failedSession.client_reference_id) {
-        captureServer(
+        await captureServer(
           SERVER_EVENTS.PAYMENT_FAILED,
           {
             planId: failedSession.metadata?.planId,

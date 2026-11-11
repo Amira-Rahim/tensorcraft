@@ -164,7 +164,12 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
         <p
           class="mb-3"
         >
-          No analytics run until you choose "Accept all" on the cookie banner. With your consent: PostHog (EU servers) records pageviews and product events keyed to a random account ID, never your name or email; Vercel Analytics counts pageviews without cookies; Vercel Speed Insights measures page load times, also without cookies. Declining the banner, or ignoring it, keeps all three off. You can change your answer any time via "Cookie settings" in the footer.
+          Analytics in this browser starts only after you choose "Accept all" on the cookie banner. PostHog (EU servers) records pageviews and product events keyed to a random account ID, without your name or email. Vercel Analytics counts pageviews without cookies. Vercel Speed Insights measures page load times, also without cookies. Declining or ignoring the banner keeps these tools off in this browser.
+        </p>
+        <p
+          class="mb-3"
+        >
+          When you sign in, accepting also saves consent for account-level analytics about purchases and code exports in PostHog. You can withdraw via "Cookie settings" in the footer. Browser analytics stops immediately. The account withdrawal takes effect when the server confirms it, including for later payment updates. If saving fails, the page shows that the withdrawal still needs to sync. Events already sent cannot be recalled by changing this setting.
         </p>
         <p>
           Sentry, our error monitor, runs without consent so we can see crashes: our legitimate interest in a working product. Before an error report leaves your browser, Sentry strips emails, user IDs, IP addresses, and auth headers. Session recording is off.

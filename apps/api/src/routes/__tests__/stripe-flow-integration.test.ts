@@ -38,9 +38,11 @@ const db: Record<string, Row[]> = {
   purchases: [],
   // Webhook idempotency ledger (migration 053).
   payment_events: [],
+  analytics_consents: [],
 };
 
 const mockAuthGetUser = vi.fn();
+let consentLookupError: { message: string } | null = null;
 
 function makeFrom(table: string) {
   const filters: Array<{ field: string; value: unknown }> = [];
@@ -58,6 +60,7 @@ function makeFrom(table: string) {
   }
 
   api.select = () => api;
+  api.abortSignal = () => api;
   api.eq = (field: string, value: unknown) => {
     filters.push({ field, value });
     return api;
@@ -69,7 +72,7 @@ function makeFrom(table: string) {
   api.maybeSingle = () =>
     Promise.resolve({
       data: applyFilters(db[table])[0] ?? null,
-      error: null,
+      error: table === "analytics_consents" ? consentLookupError : null,
     });
   api.single = () =>
     Promise.resolve({
@@ -169,27 +172,35 @@ vi.mock("../../lib/kit", () => ({
   removeTagFromSubscriber: (...args: unknown[]) => kitRemoveTag(...args),
 }));
 
-// PostHog, assert server event fires
+// Keep the real consent guard and mock only the outbound SDK.
 const captureServerMock = vi.fn();
+const sdkCaptureMock = vi.fn();
+vi.mock("posthog-node", () => ({
+  PostHog: class {
+    capture = sdkCaptureMock;
+    on = vi.fn();
+    shutdown = vi.fn().mockResolvedValue(undefined);
+  },
+}));
 const operatorAlertMock = vi.fn().mockResolvedValue(undefined);
 vi.mock("../../lib/operator-alert", () => ({
   sendOperatorAlert: (...args: unknown[]) => operatorAlertMock(...args),
 }));
-vi.mock("../../lib/posthog", () => ({
-  captureServer: (...args: unknown[]) => captureServerMock(...args),
-  withPostHogUserContext: (_distinctId: string, fn: () => unknown) => fn(),
-  SERVER_EVENTS: {
-    PAYMENT_COMPLETED: "payment_completed",
-    PAYMENT_FAILED: "payment_failed",
-    PAYMENT_REFUNDED: "payment_refunded",
-    PAYMENT_DISPUTED: "payment_disputed",
-    CODE_PUSHED: "code_pushed",
-  },
-}));
+vi.mock("../../lib/posthog", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../lib/posthog")>();
+  return {
+    ...actual,
+    captureServer: (...args: Parameters<typeof actual.captureServer>) => {
+      captureServerMock(...args);
+      return actual.captureServer(...args);
+    },
+  };
+});
 
 // Import routes after mocks.
 const { payments } = await import("../payments");
 const { purchases: purchasesRoute } = await import("../purchases");
+const { __resetForTests: resetPostHog } = await import("../../lib/posthog");
 
 function createApp() {
   const app = new Hono<AppEnv>();
@@ -202,6 +213,10 @@ beforeEach(() => {
   db.profiles = [];
   db.purchases = [];
   db.payment_events = [];
+  db.analytics_consents = [{ user_id: USER_ID, granted: true, revision: 1 }];
+  consentLookupError = null;
+  resetPostHog();
+  sdkCaptureMock.mockClear();
   mockAuthGetUser.mockReset();
   captureServerMock.mockReset();
   operatorAlertMock.mockClear();
@@ -212,12 +227,15 @@ beforeEach(() => {
   process.env.STRIPE_SECRET_KEY = "sk_test_dummy_for_construct_event";
   process.env.STRIPE_WEBHOOK_SECRET = TEST_SECRET;
   process.env.KIT_TAG_PURCHASED = "tag-purchase-123";
+  vi.stubEnv("POSTHOG_PROJECT_TOKEN", "phc_test");
+  vi.stubEnv("POSTHOG_HOST", "https://example.test");
 });
 
 afterEach(() => {
   delete process.env.STRIPE_SECRET_KEY;
   delete process.env.STRIPE_WEBHOOK_SECRET;
   delete process.env.KIT_TAG_PURCHASED;
+  vi.unstubAllEnvs();
 });
 
 /** Build a valid Stripe signature for a webhook payload. */
@@ -325,6 +343,12 @@ describe("Stripe webhook → purchase → access integration flow", () => {
       }),
       USER_ID,
     );
+    expect(sdkCaptureMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        distinctId: USER_ID,
+        event: "payment_completed",
+      }),
+    );
 
     // 3) Kit subscriber added + tagged
     expect(kitAddSubscriber).toHaveBeenCalledWith("buyer@example.com");
@@ -347,6 +371,52 @@ describe("Stripe webhook → purchase → access integration flow", () => {
       hasFullBundle: boolean;
     };
     expect(access.worldIds).toContain("deep-orbit");
+  });
+
+  it.each(["missing", "declined", "lookup failure"])(
+    "fulfills a payment without analytics when consent is %s",
+    async (consent) => {
+      db.analytics_consents =
+        consent === "declined"
+          ? [{ user_id: USER_ID, granted: false, revision: 2 }]
+          : [];
+      if (consent === "lookup failure") {
+        consentLookupError = { message: "Database unavailable" };
+      }
+      const payload = buildCheckoutCompletedEvent();
+      const res = await createApp().request("/api/payments/webhook", {
+        method: "POST",
+        headers: { "stripe-signature": signPayload(payload) },
+        body: payload,
+      });
+      expect(res.status).toBe(200);
+      expect(db.purchases).toHaveLength(1);
+      expect(db.purchases[0].status).toBe("completed");
+      expect(db.purchases[0].world_ids).toEqual(["deep-orbit"]);
+      expect(sdkCaptureMock).not.toHaveBeenCalled();
+    },
+  );
+
+  it("uses current consent when a delayed settlement follows withdrawal", async () => {
+    const event = JSON.parse(buildCheckoutCompletedEvent());
+    event.id = "evt_async_after_withdrawal";
+    event.type = "checkout.session.async_payment_succeeded";
+    // Even an earlier checkout snapshot must not override current consent.
+    event.data.object.metadata.analyticsConsent = "accepted";
+    db.analytics_consents[0] = {
+      user_id: USER_ID,
+      granted: false,
+      revision: 2,
+    };
+    const payload = JSON.stringify(event);
+    const res = await createApp().request("/api/payments/webhook", {
+      method: "POST",
+      headers: { "stripe-signature": signPayload(payload) },
+      body: payload,
+    });
+    expect(res.status).toBe(200);
+    expect(db.purchases[0].status).toBe("completed");
+    expect(sdkCaptureMock).not.toHaveBeenCalled();
   });
 
   it("is idempotent: second delivery of same session does not duplicate", async () => {

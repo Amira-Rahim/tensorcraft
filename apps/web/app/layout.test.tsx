@@ -17,6 +17,7 @@ vi.mock("./components/nav", () => ({ Nav: () => null }));
 vi.mock("./components/cookie-consent", () => ({
   CookieConsent: () => null,
 }));
+vi.mock("./components/consent-sync", () => ({ ConsentSync: () => null }));
 vi.mock("./components/report-issue-button", () => ({
   ReportIssueButton: () => null,
 }));

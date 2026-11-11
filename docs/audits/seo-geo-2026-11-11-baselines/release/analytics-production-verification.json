@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-11-11T11:11:00.058Z",
+  "projectId": 257980,
+  "host": "https://eu.i.posthog.com",
+  "runtime": [
+    {
+      "machine": "080d21dcee6d98",
+      "tokenMatchesExpectedProject": true,
+      "hostMatchesEU": true
+    },
+    {
+      "machine": "48e1e7a7571518",
+      "tokenMatchesExpectedProject": true,
+      "hostMatchesEU": true
+    }
+  ],
+  "eventDeliveryVerified": false,
+  "machines": [
+    {
+      "id": "48e1e7a7571518",
+      "state": "started",
+      "digest": "sha256:1c6e3f4d503d21ebb8e02bf3c58d39e8ecf764c415ca73205572ebfd19e4e27f",
+      "checks": [
+        {
+          "name": "health",
+          "status": "passing"
+        }
+      ],
+      "release": "35"
+    },
+    {
+      "id": "080d21dcee6d98",
+      "state": "started",
+      "digest": "sha256:1c6e3f4d503d21ebb8e02bf3c58d39e8ecf764c415ca73205572ebfd19e4e27f",
+      "checks": [
+        {
+          "name": "health",
+          "status": "passing"
+        }
+      ],
+      "release": "35"
+    }
+  ],
+  "settings": [
+    {
+      "name": "POSTHOG_HOST",
+      "status": "Deployed"
+    },
+    {
+      "name": "POSTHOG_PROJECT_TOKEN",
+      "status": "Deployed"
+    }
+  ],
+  "httpChecks": [
+    {
+      "url": "https://tensorcraft-api.fly.dev/api/health",
+      "status": 200
+    },
+    {
+      "url": "https://api.tensorcraft.app/api/health",
+      "status": 200
+    },
+    {
+      "url": "https://tensorcraft.app/privacy",
+      "status": 200
+    }
+  ],
+  "passed": true
+}

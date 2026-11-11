@@ -156,6 +156,7 @@ describe("lib/posthog", () => {
   it("keeps a granted consent after sign-out, without an $opt_in event", async () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test_key");
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
+    localStorage.setItem("tc-cookie-consent-version", "2");
     localStorage.setItem("tc-cookie-consent", "accepted");
 
     const mod = await import("../posthog");
@@ -183,5 +184,45 @@ describe("lib/posthog", () => {
     expect(posthog.capture).toHaveBeenCalledWith("lesson_completed", {
       lessonId: "l1",
     });
+  });
+
+  it("labels the first anonymous SDK event and preserves its other properties", async () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test_key");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
+    vi.stubGlobal("location", {
+      hostname: "tensorcraft.app",
+      search: "?tc_internal=1",
+    });
+    try {
+      const mod = await import("../posthog");
+      mod.initPostHog();
+      const options = vi.mocked(posthog.init).mock.calls[0]![1]!;
+      const beforeSend = options.before_send;
+      if (typeof beforeSend !== "function") {
+        throw new Error("Expected one before_send callback");
+      }
+      const event = {
+        uuid: "test-internal-pageview",
+        event: "$pageview",
+        properties: { $pathname: "/learn", tc_internal: false },
+      };
+      const labeled = beforeSend(event);
+      expect(labeled).toEqual({
+        ...event,
+        properties: { $pathname: "/learn", tc_internal: true },
+      });
+      // The SDK reset can clear its own persistence, but the browser marker
+      // must still label subsequent anonymous events.
+      mod.reset();
+      expect(
+        beforeSend({
+          uuid: "test-after-reset",
+          event: "$pageview",
+          properties: {},
+        }),
+      ).toMatchObject({ properties: { tc_internal: true } });
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

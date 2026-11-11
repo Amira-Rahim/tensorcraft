@@ -580,7 +580,7 @@ github.post("/commit", async (c) => {
 
     // Authoritative engagement event, fires only on a confirmed GitHub push.
     // Matches the server-side pattern used for payment_completed (§6i).
-    captureServer(
+    await captureServer(
       SERVER_EVENTS.CODE_PUSHED,
       {
         worldId,
@@ -793,7 +793,7 @@ github.post("/retroactive-push", async (c) => {
           status: "pushed",
           ...res,
         });
-        captureServer(
+        await captureServer(
           SERVER_EVENTS.CODE_PUSHED,
           {
             worldId: body.worldId,

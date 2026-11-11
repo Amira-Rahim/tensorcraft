@@ -22,7 +22,7 @@ Set these in Vercel Environment Variables dashboard or `.env.local` for local de
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous (public) key |
 | `NEXT_PUBLIC_API_URL` | Yes | API service URL (e.g., `https://api.tensorcraft.app`) |
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | PostHog project API key for product analytics |
-| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog instance URL - **must be EU** (`https://eu.posthog.com`) for GDPR residency |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | EU ingestion host from the PostHog project settings (`https://eu.i.posthog.com`) |
 | `NEXT_PUBLIC_SENTRY_DSN` | No | Sentry DSN for client + server + edge error tracking (EU-region project) |
 
 ### API (`apps/api`)
@@ -44,8 +44,8 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `UPSTASH_REDIS_REST_TOKEN` | Prod: yes | Upstash Redis REST token (same silent-degradation caveat) |
 | `ADMIN_API_KEY` | Yes | API key for admin endpoints (used by CI/scripts as fallback to role-based auth) |
 | `SENTRY_DSN` | No | Sentry DSN for the API (EU-region project) |
-| `POSTHOG_KEY` | No | PostHog server-side key for webhook-triggered conversion events |
-| `POSTHOG_HOST` | No | PostHog host - **must be EU** (`https://eu.posthog.com`) |
+| `POSTHOG_PROJECT_TOKEN` | Analytics | Project token for server webhook events. The API does not read `POSTHOG_KEY`. |
+| `POSTHOG_HOST` | Analytics | EU ingestion host from the same PostHog project (`https://eu.i.posthog.com`) |
 
 ### Optional Integrations (`apps/api`)
 
@@ -276,14 +276,17 @@ production launch (see `docs/privacy-compliance.md`).
 
 - **Web** - `apps/web/lib/posthog.ts` handles client-side init, called
   from `apps/web/app/components/analytics-provider.tsx`. Consent-gated via
-  the `tc-cookie-consent` localStorage flag (`apps/web/lib/consent.ts`).
+  a current versioned browser choice (`apps/web/lib/consent.ts`).
 - **API** - `apps/api/src/lib/posthog.ts` exposes a `posthog-node`
-  client for webhook-triggered conversion events. Only constructed
-  when `POSTHOG_PROJECT_TOKEN` and `POSTHOG_HOST` are set.
+  client for webhook-triggered conversion events. Captures require both
+  `POSTHOG_PROJECT_TOKEN` and `POSTHOG_HOST`, plus current stored account
+  consent. Missing consent or a failed lookup skips capture. Apply migration
+  067 and deploy the consent protection before enabling these settings.
+  Server exception autocapture is disabled.
 
-Host **must** be `https://eu.posthog.com` (enforced by default in
-both init paths) for GDPR data residency. DPA required - see
-`docs/privacy-compliance.md`.
+Use `https://eu.i.posthog.com`, the connected EU project's ingestion host.
+`https://eu.posthog.com` is its dashboard URL. Both init paths read the host
+from configuration. DPA requirements are in `docs/privacy-compliance.md`.
 
 ### Legacy stub
 

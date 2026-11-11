@@ -90,6 +90,7 @@ describe("AnalyticsProvider", () => {
     route.pathname = "/learn";
     route.query = "";
     localStorage.clear();
+    localStorage.setItem("tc-cookie-consent-version", "2");
     // Skip the once-per-browser consent_granted path; it is not under test.
     localStorage.setItem("tc-consent-reported", "1");
     localStorage.setItem(CONSENT_KEY, "accepted");

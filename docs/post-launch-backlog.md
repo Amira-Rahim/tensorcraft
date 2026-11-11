@@ -19,23 +19,46 @@ are historical and non-authoritative.
 
 Local implementation and item status live in the [execution checklist](seo-geo-plan.md).
 
-- [ ] **Account baseline.** The owner selected integrations. PostHog and OpenSEO
-  were available but not installed at the last check. Gate: integration setup
-  and verified Search Console, Bing and PostHog property access.
+- [ ] **Account baseline.** November 11 collection reached PostHog and OpenSEO.
+  The [provisional baseline](audits/seo-geo-2026-11-11-baselines/README.md)
+  records 2 visitors, 45 sessions and 139 pageviews for October 12 to November 8.
+  The original cohort matches zero people. Live event/host exclusions now pass
+  a controlled internal SDK check. The [measurement repair](audits/seo-geo-2026-11-11-baselines/measurement-fix.md)
+  ships browser/payment/signup changes and reconciles one paid $50
+  checkout creation cohort with Stripe and Supabase. Consent migration 067 is
+  applied in production, with all 15 catalog checks passing. Protected API
+  release 35 passes health checks on both machines, with verified PostHog settings.
+  Eight live API consent checks
+  and public web page/asset checks pass. Gate: full browser runtime,
+  owner-browser marking, production payment/learning ingestion, Bing
+  and refund reconciliation.
+  Search Console performance collection is complete. OpenSEO has no AI history.
+- [x] **Search Console performance baseline, November 11.** OpenSEO uses the
+  verified `sc-domain:tensorcraft.app` property. Final web-search data records
+  1 click and 70 impressions for October 12 to November 8, compared with
+  4 clicks and 69 impressions for September 14 to October 11. Both windows
+  contain 28 daily rows with no further page of results. Query, page, device
+  and country breakdowns are saved in the linked baseline. Search dates use
+  Pacific Time. URL Inspection, Bing and AI visibility remain separate gaps.
 - [ ] **Visual and real-browser capture QA.** HTTP/SSR and local event tests pass.
-  Browser and native computer-use hosts failed. Gate: a working browser review
+  Dedicated browser access remains unavailable and native window changes
+  interrupted navigation. Gate: a stable browser review
   environment for desktop/mobile, keyboard, video, Challenge editing/grading
   and consent/event ingestion.
-- [ ] **Normal release and production search checks.** Prepare the reviewed
-  revision without committing or pushing on the owner's behalf. After release,
-  inspect canonicals/rendered content/indexing, video discovery, crawler access
-  and the campaign canonical on the actual hosts.
+- [ ] **Remaining production search checks.** Owner-authorized main push
+  `65a1c242` deployed on November 11. Production HTTP checks pass for 23 sitemap
+  pages, guides, lesson links, media and canonicals. Gate: Search Console URL
+  Inspection, Bing indexing and verified crawler evidence through account access.
+- [ ] **Campaign-owner metadata release.** Main mirror now returns 200 and
+  names the existing campaign host as canonical/OG owner. The published campaign
+  root still lacks its source canonical tag. Gate: release that separate host
+  and verify its actual metadata.
 - [ ] **Field performance and outcome review.** Public PSI returned 429. Fresh
   compiled payload observations are not Core Web Vitals. Gate: current lab/field
   data and live cohort/citation records before tightening budgets or reporting
   an acquisition improvement. The optional checkout-source question stays off
   by the owner's November 10 choice.
-- [x] **Initial lesson editor payload, local fix November 11.** A lazy public
+- [x] **Initial lesson editor payload, deployed November 11.** A lazy public
   Exercise adapter removes the eager editor export. Both sampled free lessons
   changed from 931,675 to 670,486 summed initial gzip bytes (28.03% less).
   All six public control routes stayed unchanged. The runtime boundary and
@@ -124,6 +147,18 @@ access it grants. A local purchase also needs the Docker-based Supabase stack.
   list has 51 entries, and no page on the site states a count.
 
 ## CI repair follow-ups (2026-10-25)
+
+- [ ] **Dependency tooling advisories, rechecked November 11.** The Sentry
+  repair passes the workspace production audit. Full workspace audit still
+  reports 32 findings through development dependencies, including two critical
+  tinypool findings via postgres-meta/oxfmt. Gate: supported tooling updates
+  and full validation. No exploitable application request path was verified.
+- [ ] **Downloadable runtime-lab parity and advisories, rechecked November 11.**
+  Its independent npm/Python inputs and published archive are outside that
+  production audit. Reported protobufjs/msgpack findings and source/archive
+  differences need a separate repair and validation of the exact rebuilt zip.
+  Gate: confirm upstream affected/fixed ranges, update supported pins and check
+  clean archive extraction/runtime behavior. [Existing W03 evidence](audits/repository-reality-2026-11-06/web-ui.md#w03-the-downloadable-runtime-lab-is-behind-its-source-package-and-converter-pins-p1).
 
 Found while bringing `main` CI back to green after it stayed red from
 2026-10-06. None blocks CI; each is a real defect or an owner call.
@@ -5441,12 +5476,21 @@ Privacy:
   `enable_recording_console_log: false`) and in the project, or disclose it,
   sample it (`docs/tech-spec.md:482` says 10%), mask text, and version
   consent so earlier "accepted" values are asked again.
-- [ ] **(B1) Server-side PostHog events ignore the banner.** `payment_*`
-  (`apps/api/src/routes/payments.ts`), `code_pushed`
-  (`apps/api/src/routes/github.ts`) and `$exception` (user context from
-  `apps/api/src/middleware/auth.ts`) go out keyed to the Supabase user id
-  whatever the visitor chose, against `privacy/page.tsx:163-171`. None sent
-  yet. Gate them on a stored consent signal, or state a legal basis.
+- [ ] **(B1) Server analytics consent release verification.** November 11 changes
+  add revisioned account consent and withdrawal, fresh browser choices and
+  current-consent checks for every server capture. Missing choices and failed
+  lookups skip analytics while fulfillment continues. Server exception
+  autocapture is disabled. Migration 067 restricts writes to an authenticated
+  RPC, prevents stale grants from replacing withdrawals and includes consent
+  in account exports and erasure. Migration 067 completed in production at
+  11:01:47 UTC, with all 15 catalog checks passing. Protected API release 34
+  passes health and source-hash checks on both machines. The web release is
+  promoted and its public pages and assets pass HTTP checks. Eight live API
+  checks verify grants, stale conflicts and withdrawal. Release 35 enables the
+  expected PostHog project and EU host on both healthy machines. Gate: full
+  browser runtime and consented server-event delivery.
+  [Implementation record](audits/seo-geo-2026-11-11-baselines/server-consent-fix.md).
+  [Deployment evidence](audits/seo-geo-2026-11-11-baselines/deployment.md).
 - [ ] **(B2) Precise location is stored.** Events and the identified person
   carry city, postal code and coordinates although `anonymize_ips` is on;
   the policy says nothing about location. Strip below country or region
@@ -5468,31 +5512,35 @@ Privacy:
 
 Measurement (needed before any funnel number, and before the B3 gate):
 
-- [ ] **(B0) The internal-traffic filter matches nobody.** Cohort 221371
-  keys on `$internal_or_test_user`, which nothing sets, and anonymous
-  visitors get no person (identified-only profiles). Set
-  `internal_or_test_user_hostname: 'localhost'`, register a persisted
-  `tc_internal` super property (owner account, or a one-time
-  `?tc_internal=1`), filter on event properties, and turn "Filter test
-  accounts" on by default.
+- [ ] **(B0) Internal traffic, owner-browser marking pending.** November 11
+  live settings retain cohort 221371, add negative event-marker and dev/preview
+  host filters, and default exclusions on. The released browser hook labels
+  anonymous events and retains an explicit `?tc_internal=1` browser choice
+  through sign-out. A controlled SDK event records 1 unfiltered and 0 filtered.
+  Gate: mark owner browsers and verify their capture. Historical unmarked
+  activity remains unknown. Details: the linked measurement repair.
 - [ ] **(B0) Usage alerts.** Free plan, hard cap 1M events a month (data
   dropped above it): billing alert at 250k, insight alert on daily
   `$opt_in` above 50 as a loop tripwire.
-- [ ] **(B2) Dev servers send to the production project** (`localhost:3001`
-  events 2026-08-26/27). Separate dev project key, or the hostname flag.
-- [ ] **(B2) `signup_completed` is not a signup.** It fires on every
-  Supabase `SIGNED_IN`, including tab refocus (169 events for one account;
-  `apps/web/lib/supabase/session-listener.tsx:102-117`). Fire once for a
-  new account (account age plus a per-user key, or decided server-side in
-  the auth callback); treat every historical value as invalid.
+- [ ] **(B2) Development traffic, capture verification pending.** Live negative
+  host filters exclude localhost, loopback and Vercel preview hosts. The released
+  browser hook additionally marks every non-public hostname as internal.
+  Gate: verify automatic capture on development/preview hosts.
+- [ ] **(B2) Authoritative signup measurement.** The November 11 release
+  removes `signup_completed` from generic Supabase `SIGNED_IN` callbacks.
+  These callbacks also run for returning sessions and tab focus.
+  Gate: verify the deployed suppression and implement a verified account-creation
+  signal. Account-age guesses cannot prove a new registration. Historical
+  signup counts remain invalid.
 - [ ] **(B2) Reverse proxy** (Installation Health fails; ad blockers on a
   JavaScript audience): Next.js rewrites under a neutral path (not
   `/ingest`), `ui_host`, then narrow the CSP.
-- [ ] **(B3) Remaining first-visit page-context events.** The November 10 work
-  makes pricing and paywall events observe analytics readiness and starts
-  visible session intervals at consent. `lesson_started` and similar mount
-  events still need review. Observe current page context after consent without
-  replaying prior actions. Verify actual SDK ingestion through the integration.
+- [ ] **(B3) Remaining first-visit page-context events.** Deployed pricing,
+  paywall and visible-session events observe analytics readiness. The November
+  11 local `lesson_started` follow-up observes only the current visit after
+  consent, with no replay or duplicate on reacceptance. Its six regressions
+  pass. Gate: release that follow-up, verify SDK ingestion and review remaining
+  mount events. Existing lesson/step durations retain their timing semantics.
 - [ ] **(B3) Tabs initialised together split one person into several ids.**
   The consent broadcast initialises every open tab at once; each mints its
   own distinct id, and `consent_granted` fires once per tab. Initialise only
@@ -5503,12 +5551,29 @@ Measurement (needed before any funnel number, and before the B3 gate):
   internal traffic. Define B3's "users" as DB accounts and "data" as
   consented module-1 starts after these fixes. Dashboard: the existing
   "Success-metrics dashboard + alerts" operator item.
-- [ ] **(B1) `payment_completed` double count**: the client sends it on every
-  purchase-success mount and the webhook sends it too. Count revenue from
-  `$lib = posthog-node` only, or drop the client event.
-- [ ] **(B1) No posthog-node event has ever arrived.** Consistent with zero
-  payments, but `docs/deployment-guide.md:47` names `POSTHOG_KEY` while the
-  API reads `POSTHOG_PROJECT_TOKEN`; confirm the Fly secret name.
+- [ ] **(B1) Payment analytics reconciliation.** The November 11
+  release removes browser receipt capture, separates credit-only access grants
+  and adds version 2 Stripe IDs, amount, currency and live/test evidence.
+  Refund amounts are cumulative snapshots per charge. Gate: verify a
+  real webhook event and reconcile records. SDK delivery remains best effort.
+- [ ] **(B1) Production server ingestion.** A controlled internal event from
+  the local API configuration arrived in PostHog on November 11. One paid $50
+  live checkout creation cohort matches a completed Supabase purchase row.
+  The deployment guide now correctly names `POSTHOG_PROJECT_TOKEN`, and released
+  shutdown flushes the SDK. Switching Fly to the owning account restored app
+  access. The initial inspection found missing PostHog settings and the earlier
+  payment code on both machines. Consent migration 067 now passes all 15 catalog
+  checks, and protected API release 35 passes health checks on both machines.
+  Runtime settings match the existing PostHog project and EU host. The web
+  release and eight live API consent checks pass. Gate: full browser runtime
+  and consented server-event delivery, including actual webhook ingestion. The local
+  diagnostic does not verify the deployed API. Follow-up helper inspection
+  coincided with failed health checks. Temporary-process cleanup restored one
+  machine, and a restart restored the other. Future checks must account for
+  the 256 MB memory limit and avoid another parallel SDK bootstrap. No
+  transaction, webhook replay, secret change or code deploy occurred during
+  that initial inspection. The later API release has separate deployment evidence.
+  [Runtime evidence](audits/seo-geo-2026-11-11-baselines/measurement/production-runtime.json).
 - [ ] **(B5) Launch links carry no UTMs** (zero tagged visits so far).
 - [x] **(B9) Remove internal blog lesson UTMs.** November 10 local changes use
   canonical lesson links and keep blog context in the click event. Regression

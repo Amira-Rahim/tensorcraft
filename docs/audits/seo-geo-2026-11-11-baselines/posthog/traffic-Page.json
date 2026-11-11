@@ -1,0 +1,36 @@
+{
+  "collectedAt": "2026-11-11T09:11:09Z",
+  "projectId": 257980,
+  "projectUrl": "https://eu.posthog.com/project/257980",
+  "timezone": "UTC",
+  "sourceTool": "query-web-stats",
+  "input": {
+    "dateRange": {
+      "date_from": "2026-10-12",
+      "date_to": "2026-11-08"
+    },
+    "filterTestAccounts": true,
+    "properties": [
+      {
+        "key": "$host",
+        "type": "event",
+        "operator": "exact",
+        "value": [
+          "tensorcraft.app"
+        ]
+      }
+    ],
+    "breakdownBy": "Page",
+    "limit": 25
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"_posthogUrl\":\"https://eu.posthog.com/project/257980/insights/new#q=%7B%22kind%22%3A%22InsightVizNode%22%2C%22source%22%3A%7B%22breakdownBy%22%3A%22Page%22%2C%22dateRange%22%3A%7B%22date_from%22%3A%222026-10-12%22%2C%22date_to%22%3A%222026-11-08%22%7D%2C%22doPathCleaning%22%3Afalse%2C%22filterTestAccounts%22%3Atrue%2C%22includeAvgTimeOnPage%22%3Afalse%2C%22includeBounceRate%22%3Afalse%2C%22includeHost%22%3Afalse%2C%22kind%22%3A%22WebStatsTableQuery%22%2C%22limit%22%3A25%2C%22properties%22%3A%5B%7B%22key%22%3A%22%24host%22%2C%22operator%22%3A%22exact%22%2C%22type%22%3A%22event%22%2C%22value%22%3A%5B%22tensorcraft.app%22%5D%7D%5D%7D%7D\",\"query\":{\"breakdownBy\":\"Page\",\"dateRange\":{\"date_from\":\"2026-10-12\",\"date_to\":\"2026-11-08\"},\"doPathCleaning\":false,\"filterTestAccounts\":true,\"includeAvgTimeOnPage\":false,\"includeBounceRate\":false,\"includeHost\":false,\"kind\":\"WebStatsTableQuery\",\"limit\":25,\"properties\":[{\"key\":\"$host\",\"operator\":\"exact\",\"type\":\"event\",\"value\":[\"tensorcraft.app\"]}]},\"results\":[[\"/\",[2,null],[32,null],0.1,\"\"],[\"/worlds/deep-orbit/foundations/introduction-to-tensors\",[1,null],[35,null],0.05,\"\"],[\"/worlds/deep-orbit/foundations/tensor-shapes\",[1,null],[35,null],0.05,\"\"],[\"/worlds/deep-orbit\",[1,null],[13,null],0.05,\"\"],[\"/dashboard\",[1,null],[4,null],0.05,\"\"],[\"/dashboard/progress\",[1,null],[2,null],0.05,\"\"],[\"/dashboard/project\",[1,null],[2,null],0.05,\"\"],[\"/dashboard/purchase-success\",[1,null],[2,null],0.05,\"\"],[\"/learn\",[1,null],[2,null],0.05,\"\"],[\"/pricing\",[1,null],[2,null],0.05,\"\"],[\"/worlds/deep-orbit/foundations/normalization\",[1,null],[2,null],0.05,\"\"],[\"/blog\",[1,null],[1,null],0.05,\"\"],[\"/compare\",[1,null],[1,null],0.05,\"\"],[\"/paywall\",[1,null],[1,null],0.05,\"\"],[\"/settings\",[1,null],[1,null],0.05,\"\"],[\"/terms\",[1,null],[1,null],0.05,\"\"],[\"/worlds\",[1,null],[1,null],0.05,\"\"],[\"/worlds/deep-orbit/foundations/data-loading\",[1,null],[1,null],0.05,\"\"],[\"/worlds/deep-orbit/foundations/tensor-operations\",[1,null],[1,null],0.05,\"\"]],\"columns\":[\"context.columns.breakdown_value\",\"context.columns.visitors\",\"context.columns.views\",\"context.columns.ui_fill_fraction\",\"context.columns.cross_sell\"]}"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

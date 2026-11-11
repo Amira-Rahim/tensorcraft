@@ -1,0 +1,75 @@
+{
+  "collectedAt": "2026-11-11T09:11:09Z",
+  "projectId": 257980,
+  "projectUrl": "https://eu.posthog.com/project/257980",
+  "timezone": "UTC",
+  "sourceTool": "query-funnel",
+  "input": {
+    "dateRange": {
+      "date_from": "2026-10-12",
+      "date_to": "2026-11-08"
+    },
+    "filterTestAccounts": true,
+    "series": [
+      {
+        "kind": "EventsNode",
+        "event": "lesson_started",
+        "properties": [
+          {
+            "key": "$host",
+            "type": "event",
+            "operator": "exact",
+            "value": [
+              "tensorcraft.app"
+            ]
+          },
+          {
+            "key": "lessonId",
+            "type": "event",
+            "operator": "exact",
+            "value": [
+              "tensor-shapes"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "EventsNode",
+        "event": "experiment_submitted",
+        "properties": [
+          {
+            "key": "$host",
+            "type": "event",
+            "operator": "exact",
+            "value": [
+              "tensorcraft.app"
+            ]
+          },
+          {
+            "key": "lessonId",
+            "type": "event",
+            "operator": "exact",
+            "value": [
+              "tensor-shapes"
+            ]
+          }
+        ]
+      }
+    ],
+    "funnelsFilter": {
+      "funnelOrderType": "ordered",
+      "funnelWindowInterval": 1,
+      "funnelWindowIntervalUnit": "hour"
+    }
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Date range: 2026-10-12 00:00:00 to 2026-11-08 23:59:59 (UTC)\n\nMetric|lesson_started|experiment_submitted\nTotal person count|1|1\nConversion rate|100%|100%\nDropoff rate|0%|0%\nAverage conversion time|-|23m 33s\nMedian conversion time|-|23m 33s\n\nConversion and drop-off rates are calculated in overall. For example, \"Conversion rate: 9%\" means that 9% of users from the first step completed the funnel."
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

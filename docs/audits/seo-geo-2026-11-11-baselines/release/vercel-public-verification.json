@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-11-11T11:09:12.859512+00:00",
+  "pages": [
+    {
+      "path": "/?tc_internal=1",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/?tc_internal=1",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/privacy",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/auth/sign-in",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/auth/sign-in",
+      "contentType": "text/html; charset=utf-8",
+      "signInPresent": true
+    }
+  ],
+  "allPages200": true,
+  "homepageTitleTensorcraft": true,
+  "privacyAccountScope": true,
+  "scriptCount": 19,
+  "allScripts200": true,
+  "servedCodeAssertions": {
+    "tc-cookie-consent-version": true,
+    "tc-account-consent-withdrawal:": true,
+    "Retry account save": true,
+    "purchases and code exports": true,
+    "/api/analytics-consent": true,
+    "tc_internal": true,
+    "https://api.tensorcraft.app": true
+  },
+  "chunkSha256": {
+    "/_next/static/immutable/chunks/0c0hxoamwjsbw.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+    "/_next/static/immutable/chunks/0fqky4t01zha4.js": "c3e383f7c8ec623c8c2062df6f933007bc53139729bcafc00105db81c9ee604b",
+    "/_next/static/immutable/chunks/0mlgu-umlgyta.js": "3ae1489d847c6b759e190ed0ad188b172134405de7ddb94984025ca55965412e",
+    "/_next/static/immutable/chunks/0ofpe53zj72lh.js": "703bd1e39c310901eeeb6e4681718e3e93970bb28be649166aaa4dc7dbcdbd57",
+    "/_next/static/immutable/chunks/0wltusrjs17gh.js": "8ff0a8743570b4b52cd98efe2b850a80a1c0a52d97c01274677e272694b5360c",
+    "/_next/static/immutable/chunks/1ebf16y159qnk.js": "1a3811a0af50cb55e0284dfdad56cdc459cf97d75ff796312680e3d3b7fe0088",
+    "/_next/static/immutable/chunks/1eckn4txw07_l.js": "cf10cbe6bf2dbfb95ee21eabfa718014ad2397770d4f18427477ff1a69924c44",
+    "/_next/static/immutable/chunks/1lqq3vgx04e_i.js": "ebdc0df00d43ac8c9d0e871eef7cb6638a16736f854318d3cf23b840c48d6b09",
+    "/_next/static/immutable/chunks/1nu_y_73e79uf.js": "4a25a2d57252ebf6a01c02e3770aa7cb9d8ff26a142d750839ba58390f46dded",
+    "/_next/static/immutable/chunks/1rw9b-b4p_nd0.js": "d5187caccd531366c7874a0bd47bdae9d58dc12f9ef9c1d05bbc477d2cba86ac",
+    "/_next/static/immutable/chunks/1y0yq5v-caipj.js": "43fe762c161450e4dd76e663d9a4908c9090d093e5204a563b3149a3defed17a",
+    "/_next/static/immutable/chunks/2rge6gfhe9s51.js": "4931b008a2e198597905109718ca072314da8692b87129bb47e83dcb04ebedce",
+    "/_next/static/immutable/chunks/332p3b0jjrh3z.js": "3ee2efce627c8009fb77814022f5c3f75b3afa1f8f6e7e735a5f90e8ec4a326d",
+    "/_next/static/immutable/chunks/3j6pyt8lgzgw2.js": "9de00a4f99c4122cb2eb72a840dec12112baf40eb4cfcc819f9bd52ffef6bc5d",
+    "/_next/static/immutable/chunks/3k2-ht9o7rezp.js": "ad810736cda9a474e56723a70bbcc4a672751119493b14c5efc267a23c3bb9ca",
+    "/_next/static/immutable/chunks/3vezrxo3r90pi.js": "5c374957e0bd40a4f0bc859e27a08eda99cf8bcdbb96c570b1ec98ec486e65a6",
+    "/_next/static/immutable/chunks/40qfw-4-z29wz.js": "3e6a6b27f5267470b1a6202709749d4ede5d70392d4c9f6f3c059cc3ac8cd207",
+    "/_next/static/immutable/chunks/43bx9u0y70o5t.js": "fae2f0486806f8ab5774d259e61add0359fbad94f56403e2ed773f8589e637dd",
+    "/_next/static/immutable/chunks/turbopack-2_04ewhudzrza.js": "6930c2cc6ae51099b69e6d6dcaec2354099d3141567bc92e5d6fab4e73428ffa"
+  },
+  "browserRuntimeTested": false,
+  "browserLimitation": "Browser access host unavailable; verified anonymous HTTP responses and served JavaScript.",
+  "passed": true,
+  "nonRouteProbe": [
+    {
+      "path": "/login",
+      "status": 404
+    }
+  ]
+}

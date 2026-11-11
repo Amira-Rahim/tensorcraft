@@ -250,6 +250,7 @@ export interface EventProperties {
     worldIds?: string[];
     price?: number;
   };
+  /** Reserved server event. The API owns the current settlement payload. */
   [EVENTS.PAYMENT_COMPLETED]: {
     planId: string;
     worldIds: string[];
@@ -318,9 +319,8 @@ export interface EventProperties {
     method: "magic_link";
   };
   /**
-   * Closes the funnel opened by SIGNUP_STARTED. `method` comes from Supabase
-   * `app_metadata.provider`, so it is whatever actually established the
-   * session rather than what the user first clicked.
+   * Reserved for verified account creation. SIGNED_IN establishes a session,
+   * so the browser session listener does not emit this event.
    */
   [EVENTS.SIGNUP_COMPLETED]: {
     method: string;

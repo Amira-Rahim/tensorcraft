@@ -15,6 +15,7 @@ import { versionMiddleware } from "./middleware/version";
 import { requestIdMiddleware } from "./middleware/request-id";
 import { sentryMiddleware } from "./middleware/sentry";
 import { logger } from "./lib/logger";
+import { shutdownPostHog } from "./lib/posthog";
 import { assertEnv } from "./env";
 import { health } from "./routes/health";
 import { waitlist } from "./routes/waitlist";
@@ -32,6 +33,7 @@ import { emailTags } from "./routes/email-tags";
 import { certificates } from "./routes/certificates";
 import { onboarding } from "./routes/onboarding";
 import { preferences } from "./routes/preferences";
+import { analyticsConsent } from "./routes/analytics-consent";
 import { webhooks } from "./routes/webhooks";
 
 const app = new Hono();
@@ -109,6 +111,7 @@ app.route("/api/email", emailTags);
 app.route("/api/certificates", certificates);
 app.route("/api/onboarding", onboarding);
 app.route("/api/preferences", preferences);
+app.route("/api/analytics-consent", analyticsConsent);
 app.route("/api/webhooks", webhooks);
 
 // Root
@@ -137,15 +140,25 @@ const server = serve({
 });
 
 // Graceful shutdown
+let shuttingDown = false;
 function shutdown(signal: string) {
+  if (shuttingDown) return;
+  shuttingDown = true;
   logger.info({ signal }, `${signal} received, shutting down gracefully`);
   server.close(() => {
-    logger.info("Server closed");
-    process.exit(0);
+    void shutdownPostHog()
+      .catch(() => {
+        logger.warn("PostHog server event flush failed during shutdown");
+      })
+      .finally(() => {
+        clearTimeout(shutdownTimeout);
+        logger.info("Server closed");
+        process.exit(0);
+      });
   });
 
   // Force exit after 10s if connections are still hanging
-  setTimeout(() => {
+  const shutdownTimeout = setTimeout(() => {
     logger.error("Forcing exit after timeout");
     process.exit(1);
   }, 10_000).unref();

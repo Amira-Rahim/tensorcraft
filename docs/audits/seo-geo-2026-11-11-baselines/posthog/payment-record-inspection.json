@@ -1,0 +1,16 @@
+{
+  "collectedAt": "2026-11-11T09:11:09Z",
+  "projectId": 257980,
+  "timezone": "UTC",
+  "command": "call execute-sql {\"query\":\"SELECT timestamp, properties.$lib AS library, properties.amount AS amount, properties.planId AS plan, properties.$host AS host FROM events WHERE event = 'payment_completed' AND timestamp >= toDateTime('2026-10-12 00:00:00') AND timestamp < toDateTime('2026-11-11 00:00:00') ORDER BY timestamp LIMIT 20\",\"context\":\"Inspect sanitized payment records to distinguish browser confirmation from settlement; governed catalog consulted: no match\"}",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "timestamp|library|amount|plan|host\n2026-10-14T12:08:47.314000Z|web|50.0|single|tensorcraft.app\n2026-10-14T12:11:06.289000Z|web|50.0|single|tensorcraft.app"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "collectedAt": "2026-11-11 09:23:55 UTC",
+  "property": "sc-domain:tensorcraft.app",
+  "searchType": "web",
+  "requestedDataState": "final",
+  "timezone": "America/Los_Angeles",
+  "market": "all countries, no country filter",
+  "metrics": {
+    "current": {
+      "startDate": "2026-10-12",
+      "endDate": "2026-11-08",
+      "clicks": 1,
+      "impressions": 70,
+      "ctr": 0.014285714285714285,
+      "approxWeightedPosition": 6.058571428571429,
+      "rows": 28,
+      "hasMore": false
+    },
+    "previous": {
+      "startDate": "2026-09-14",
+      "endDate": "2026-10-11",
+      "clicks": 4,
+      "impressions": 69,
+      "ctr": 0.057971014492753624,
+      "approxWeightedPosition": 6.530434782608696,
+      "rows": 28,
+      "hasMore": false
+    }
+  },
+  "method": {
+    "totals": "Sum complete returned daily property rows. Both windows return 28 distinct dates and hasMore=false.",
+    "ctr": "sum(clicks) / sum(impressions)",
+    "position": "sum(position * impressions) / sum(impressions), approximate because the connector returns rounded positions. Zero-impression dates contribute no weight.",
+    "connectorLimit": "Dimensionless queries are rejected by connector validation. Daily totals reconcile with current device and country totals.",
+    "queryCoverage": "Current query rows expose 24 impressions and no clicks, so they cannot identify the recorded click query.",
+    "pageAggregation": "Current page rows sum to 124 page-level impressions. Do not substitute this for the 70 property-level impressions."
+  }
+}

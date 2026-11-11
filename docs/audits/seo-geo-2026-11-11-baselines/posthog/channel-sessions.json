@@ -1,0 +1,53 @@
+{
+  "collectedAt": "2026-11-11T09:11:09Z",
+  "projectId": 257980,
+  "projectUrl": "https://eu.posthog.com/project/257980",
+  "timezone": "UTC",
+  "sourceTool": "query-trends",
+  "input": {
+    "dateRange": {
+      "date_from": "2026-10-12",
+      "date_to": "2026-11-08"
+    },
+    "filterTestAccounts": true,
+    "properties": [
+      {
+        "key": "$host",
+        "type": "event",
+        "operator": "exact",
+        "value": [
+          "tensorcraft.app"
+        ]
+      }
+    ],
+    "series": [
+      {
+        "kind": "EventsNode",
+        "event": "$pageview",
+        "math": "unique_session"
+      }
+    ],
+    "breakdownFilter": {
+      "breakdowns": [
+        {
+          "property": "$channel_type",
+          "type": "session"
+        }
+      ],
+      "breakdown_limit": 25
+    },
+    "trendsFilter": {
+      "display": "ActionsTable"
+    }
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Date range|Aggregated value for Direct breakdown for the value `Direct`|Aggregated value for Organic Social breakdown for the value `Organic Social`\n2026-10-12 00:00:00+00:00 to 2026-11-08 23:59:59+00:00|44|1"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

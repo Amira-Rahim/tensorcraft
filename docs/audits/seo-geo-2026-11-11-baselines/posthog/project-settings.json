@@ -1,0 +1,20 @@
+{
+  "collectedAt": "2026-11-11 09:12:52 UTC",
+  "projectId": 257980,
+  "sourceTool": "project-get",
+  "settings": {
+    "id": 257980,
+    "name": "Default project",
+    "test_account_filters": [
+      {
+        "key": "id",
+        "type": "cohort",
+        "value": 221371,
+        "operator": "not_in"
+      }
+    ],
+    "test_account_filters_default_checked": null,
+    "timezone": "UTC"
+  },
+  "note": "Only baseline-relevant non-secret fields retained."
+}

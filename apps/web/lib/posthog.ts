@@ -6,6 +6,7 @@
 
 import posthog, { type PostHog } from "posthog-js";
 import { hasAnalyticsConsent } from "./consent";
+import { isInternalTraffic } from "./analytics-traffic";
 
 let initialized = false;
 let pendingIdentity:
@@ -58,6 +59,15 @@ export function initPostHog(): PostHog | null {
     // from the next $pageview's $prev_pageview_* properties.
     capture_pageview: false,
     capture_pageleave: true,
+    // Event properties also cover anonymous traffic. Keep the browser marker
+    // outside SDK persistence so sign-out cannot turn internal visits public.
+    before_send: (event) => {
+      event.properties = {
+        ...event.properties,
+        tc_internal: isInternalTraffic(),
+      };
+      return event;
+    },
     persistence: "localStorage+cookie",
     tracing_headers: tracingHeaders,
     capture_performance: { web_vitals: true },

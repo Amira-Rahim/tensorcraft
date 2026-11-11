@@ -1,0 +1,168 @@
+{
+  "app": "tensorcraft-api",
+  "projectId": 257980,
+  "flyctlVersion": "0.5.7",
+  "access": {
+    "owningAccountLoginCompleted": true,
+    "appVisible": true,
+    "machineListingSucceeded": true,
+    "secretListingSucceeded": true,
+    "sshEnvironmentAndSourceReadsSucceeded": true
+  },
+  "secretNames": {
+    "POSTHOG_PROJECT_TOKEN": false,
+    "POSTHOG_HOST": false
+  },
+  "machines": [
+    {
+      "machineId": "080d21dcee6d98",
+      "checkedAt": "2026-11-11T10:08:15.788Z",
+      "stateAtInventory": "started",
+      "region": "iad",
+      "imageDigest": "sha256:aba3a11ba4f694f259ac01f23ce372fe71c0982407bccb108911f862e25742cb",
+      "configuration": {
+        "tokenPresent": false,
+        "tokenMatchesExpectedProject": false,
+        "hostPresent": false,
+        "hostMatchesExpected": false,
+        "legacyPosthogKeyPresent": false
+      },
+      "sourceHashes": {
+        "src/lib/posthog.ts": "df500a1f42dc35d0b1bdd760b9bb46061766e331b2bccc6cc0b7d6802246f651",
+        "src/routes/payments.ts": "1ced5b5c42d34efa1ca3f0151ce8d75dc74ca97807d158f9a54ac8209fdb38c1",
+        "src/index.ts": "587c4eb737fd4f73529be18522e78f8ed317546bac9cc7eb248a6302c46e2eee",
+        "src/env.ts": "e589b8a0e6df4280a5a1c8799636c9efb5d763ca2b6e1c87c5ff3a1017e0fd64"
+      },
+      "features": {
+        "paymentAnalyticsVersion2": false,
+        "sdkDeliveryErrorLogging": false,
+        "sdkCaptureErrorLogging": false,
+        "shutdownFlush": false,
+        "startupTokenWarning": false
+      }
+    },
+    {
+      "machineId": "48e1e7a7571518",
+      "checkedAt": "2026-11-11T10:10:34.994Z",
+      "stateAtInventory": "started",
+      "region": "iad",
+      "imageDigest": "sha256:aba3a11ba4f694f259ac01f23ce372fe71c0982407bccb108911f862e25742cb",
+      "configuration": {
+        "tokenPresent": false,
+        "tokenMatchesExpectedProject": false,
+        "hostPresent": false,
+        "hostMatchesExpected": false,
+        "legacyPosthogKeyPresent": false
+      },
+      "sourceHashes": {
+        "src/lib/posthog.ts": "df500a1f42dc35d0b1bdd760b9bb46061766e331b2bccc6cc0b7d6802246f651",
+        "src/routes/payments.ts": "1ced5b5c42d34efa1ca3f0151ce8d75dc74ca97807d158f9a54ac8209fdb38c1",
+        "src/index.ts": "587c4eb737fd4f73529be18522e78f8ed317546bac9cc7eb248a6302c46e2eee",
+        "src/env.ts": "e589b8a0e6df4280a5a1c8799636c9efb5d763ca2b6e1c87c5ff3a1017e0fd64"
+      },
+      "features": {
+        "paymentAnalyticsVersion2": false,
+        "sdkDeliveryErrorLogging": false,
+        "sdkCaptureErrorLogging": false,
+        "shutdownFlush": false,
+        "startupTokenWarning": false
+      }
+    }
+  ],
+  "helperAssessment": {
+    "basis": "Both SSH environments lack both required settings. The deployed helper source checks if (!key || !host) return null.",
+    "captureEnabled": false,
+    "directHelperInvocationVerified": false,
+    "invocationLimitation": "Follow-up helper-only SSH attempts did not produce a verified helper result. Waiting sessions were interrupted. Their commands contained no capture call.",
+    "diagnosticSent": false
+  },
+  "publicHealth": {
+    "url": "https://tensorcraft-api.fly.dev/api/health",
+    "earlierHttpStatus": 200,
+    "earlierResponseTimestamp": "2026-11-11T09:58:24.413Z",
+    "followUpRequest": "Python and curl requests timed out. Public health recovered to HTTP 200 at 2026-11-11T10:15:42.519Z after temporary-helper cleanup on machine 48e1e7a7571518.",
+    "finalVerification": {
+      "checkedAt": "2026-11-11T10:18:17.550598+00:00",
+      "httpStatus": 200,
+      "service": "tensorcraft-api",
+      "status": "ok",
+      "responseTimestamp": "2026-11-11T10:18:17.579Z"
+    }
+  },
+  "releasePrerequisites": [
+    "Persist analytics consent and withdrawal and gate all server analytics paths, including exception autocapture.",
+    "Release consent protection together with the pending measurement changes.",
+    "Configure the verified project token and EU ingestion host with the protected release.",
+    "Verify ingestion through the released service with internal marking and measured resource headroom, then reconcile a naturally occurring settled payment. Do not launch another parallel SDK bootstrap on these constrained machines."
+  ],
+  "remoteChanges": {
+    "deployed": false,
+    "secretsChanged": false,
+    "restartsRequested": true,
+    "diagnosticSent": false,
+    "paymentsCreated": false,
+    "webhooksReplayed": false,
+    "temporaryHelperProcessesTerminated": true
+  },
+  "credentialValuesRetained": false,
+  "operationalIncident": {
+    "observed": "Health checks failed during follow-up helper inspection.",
+    "affectedMachineIds": [
+      "080d21dcee6d98",
+      "48e1e7a7571518"
+    ],
+    "configuredResourcesPerMachine": {
+      "sharedCpuCount": 1,
+      "memoryMb": 256
+    },
+    "firstTimeoutLogAt": {
+      "080d21dcee6d98": "2026-11-11T10:09:13.700Z",
+      "48e1e7a7571518": "2026-11-11T10:11:52.033Z"
+    },
+    "cleanup": "Terminated processes matching the unique helper_configuration_check_failed marker. Second machine cleanup succeeded and its health passed at 10:15:43.272Z. First machine SSH and exec cleanup remained unresponsive.",
+    "restartRequestedFor": "080d21dcee6d98",
+    "restartReason": "Restore the remaining unhealthy machine after temporary-helper cleanup could not complete. The second machine was passing and serving requests.",
+    "resourceCause": "Temporary helper contention is consistent with the timeline. Actual CPU/RSS was not measured, and available buffered logs did not establish OOM.",
+    "recoveryVerification": {
+      "machines": [
+        {
+          "machineId": "080d21dcee6d98",
+          "state": "started",
+          "updatedAt": "2026-11-11T10:17:48Z",
+          "imageDigest": "sha256:aba3a11ba4f694f259ac01f23ce372fe71c0982407bccb108911f862e25742cb",
+          "checks": [
+            {
+              "name": "health",
+              "status": "passing",
+              "output": "{\"status\":\"ok\",\"service\":\"tensorcraft-api\",\"timestamp\":\"2026-11-11T10:17:55.145Z\"}",
+              "updated_at": "2026-11-11T10:17:55.154Z"
+            }
+          ]
+        },
+        {
+          "machineId": "48e1e7a7571518",
+          "state": "started",
+          "updatedAt": "2026-11-09T08:06:06Z",
+          "imageDigest": "sha256:aba3a11ba4f694f259ac01f23ce372fe71c0982407bccb108911f862e25742cb",
+          "checks": [
+            {
+              "name": "health",
+              "status": "passing",
+              "output": "{\"status\":\"ok\",\"service\":\"tensorcraft-api\",\"timestamp\":\"2026-11-11T10:15:43.272Z\"}",
+              "updated_at": "2026-11-11T10:15:43.272Z"
+            }
+          ]
+        }
+      ],
+      "publicHealth": {
+        "checkedAt": "2026-11-11T10:18:17.550598+00:00",
+        "httpStatus": 200,
+        "service": "tensorcraft-api",
+        "status": "ok",
+        "responseTimestamp": "2026-11-11T10:18:17.579Z"
+      },
+      "allChecksPassing": true,
+      "restartedMachineCount": 1
+    }
+  }
+}

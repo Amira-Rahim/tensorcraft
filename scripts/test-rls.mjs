@@ -1,5 +1,5 @@
 /** Real RLS tests in a throwaway PostgreSQL cluster. Never reads DATABASE_URL. */
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import {
   mkdtempSync,
   readdirSync,
@@ -56,6 +56,76 @@ function run(command, args, input) {
 function sql(input) {
   return run("psql", ["-X", "-v", "ON_ERROR_STOP=1", "-q"], input);
 }
+
+async function checkConsentRace(userId, firstGranted, expectedRevision) {
+  sql(
+    `insert into auth.users(id,email) values('${userId}','consent-race@example.test');`,
+  );
+  function client(applicationName) {
+    const child = spawn(
+      pgBin ? join(pgBin, "psql") : "psql",
+      ["-X", "-v", "ON_ERROR_STOP=1", "-q", "-t", "-A"],
+      { env: { ...env, PGAPPNAME: applicationName }, stdio: "pipe" },
+    );
+    let output = "";
+    let errors = "";
+    child.stdout.on("data", (chunk) => {
+      output += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      errors += chunk;
+    });
+    const finished = new Promise((resolve, reject) => {
+      child.on("error", reject);
+      child.on("exit", (code) =>
+        code === 0 ? resolve(output) : reject(new Error(errors)),
+      );
+    });
+    // Both clients run while the lock assertions execute. Handle an early
+    // rejection here, then surface it when the test awaits completion.
+    void finished.catch(() => {});
+    return { child, finished, output: () => output };
+  }
+  const first = client("tensorcraft-consent-race-first");
+  const second = client("tensorcraft-consent-race-second");
+  const identity = `set role authenticated; set request.jwt.claim.sub='${userId}';`;
+  try {
+    first.child.stdin.write(
+      `begin; ${identity} select * from set_analytics_consent(${firstGranted},0);\n\\echo consent-lock-held\n`,
+    );
+    for (
+      let attempt = 0;
+      !first.output().includes("consent-lock-held");
+      attempt++
+    ) {
+      if (attempt >= 100) throw new Error("Consent race setup timed out");
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    second.child.stdin.end(
+      `${identity} select * from set_analytics_consent(${!firstGranted},0);`,
+    );
+    let blocked = false;
+    for (let attempt = 0; attempt < 100 && !blocked; attempt++) {
+      blocked = sql(
+        "select exists(select 1 from pg_stat_activity where application_name='tensorcraft-consent-race-second' and wait_event_type='Lock');",
+      ).includes(" t");
+      if (!blocked) await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    if (!blocked)
+      throw new Error(
+        "Concurrent consent choice did not wait for the transaction",
+      );
+    first.child.stdin.end("commit;");
+    await Promise.all([first.finished, second.finished]);
+    sql(
+      `select test_assert((select not granted and revision=${expectedRevision} from public.analytics_consents where user_id='${userId}'), 'concurrent choices preserve withdrawal');`,
+    );
+  } finally {
+    first.child.kill();
+    second.child.kill();
+    await Promise.allSettled([first.finished, second.finished]);
+  }
+}
 try {
   run("initdb", [
     "-D",
@@ -109,6 +179,35 @@ try {
     ),
   );
   console.log("RLS assertions passed.");
+  console.log(
+    sql(
+      readFileSync(
+        join(root, "packages/supabase/tests/analytics-consent.sql"),
+        "utf8",
+      ),
+    ),
+  );
+  // Reapplying this migration must preserve choices and withdrawn revisions.
+  sql(readFileSync(join(dir, "067_analytics_consent.sql"), "utf8"));
+  sql(
+    "select test_assert((select revision=5 and not granted from public.analytics_consents where user_id='11111111-1111-4111-8111-111111111111'), 'consent migration reapply preserves withdrawal');",
+  );
+  await checkConsentRace("44444444-4444-4444-8444-444444444444", true, 2);
+  await checkConsentRace("55555555-5555-4555-8555-555555555555", false, 1);
+  const consentDown = readFileSync(
+    join(dir, "067_analytics_consent.down.sql"),
+    "utf8",
+  );
+  sql(consentDown);
+  sql(consentDown);
+  sql(
+    "select test_assert(to_regclass('public.analytics_consents') is null, 'consent rollback removes its table'); select test_assert(not exists(select 1 from public.schema_migrations where version=67), 'consent rollback clears its ledger entry');",
+  );
+  sql(readFileSync(join(dir, "067_analytics_consent.sql"), "utf8"));
+  sql(
+    "select test_assert((select count(*)=0 from public.analytics_consents), 'reapply after rollback requires fresh consent');",
+  );
+  console.log("Analytics consent assertions passed.");
   if (process.argv.includes("--types")) {
     const { PostgresMeta } = await import("@supabase/postgres-meta");
     const { getGeneratorMetadata } =

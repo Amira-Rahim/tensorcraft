@@ -3,8 +3,8 @@
 November 10, 2026, with a November 11 performance follow-up. The
 [execution checklist](../../seo-geo-plan.md) owns the
 current work sequence. This record separates the original diagnosis from
-implemented fixes and pending verification. Application changes remain local
-until release.
+implemented fixes and pending verification. Main release `22cae183` is deployed.
+The later lesson-arrival consent fix remains local.
 
 The [frozen production HTTP report](live-baseline.json) captured 19 sitemap
 URLs returning HTTP 200. Its zero hard errors apply only to the original smoke
@@ -21,6 +21,71 @@ Browser visual QA was
 unavailable because the computer-use host was unavailable. The standard review
 launcher required Docker. HTTP/build checks used an isolated source snapshot
 with local placeholder configuration and no production credentials.
+
+## November 11 release and next measurement fix
+
+The owner requested commit and push. Commit `0c270b62` contains the SEO/GEO
+work. Follow-up `65a1c242` updates the navigation snapshots and replaces an
+old exercise-file-path assertion with a runtime public-export check. Normal
+push hooks passed monorepo typechecking and 4,252 tests, with 65 skipped.
+GitHub's main ref and the successful Vercel deployment were verified. The
+local push client stalled after remote acceptance and was closed only after
+those independent checks. An initial CLI credential source returned HTTP 401.
+The existing stored GitHub login provided Actions access without changing any
+credentials.
+
+That CI run found broken links, stale E2E expectations and two production
+dependency advisories. Repair `22cae183` updates Sentry within 11.x, repairs
+links to absent art artifacts honestly, and aligns tests with supplied-example
+labels and free-module navigation. Fixture controls can shrink at 320px. The
+document-width assertion and spacing budgets remain intact, with failure-only
+overflow diagnostics. No visual snapshots or audit exclusions were weakened.
+
+Normal hooks passed 4,258 tests and monorepo typechecking. Vercel deployed the
+repair. All remote CI jobs and visual regression pass. E2E reports 307 passed
+and 38 skipped, including the 320px width checks and added free-module links.
+The latest 34-request production spot check confirms guides, lesson links,
+video/media and 24 initial lesson scripts with no detected editor signatures.
+
+The clean production audit covers the workspace production dependency graph.
+It excludes development tooling, independent npm/Python manifests and lab
+archives. Remaining findings are indexed in the post-launch backlog; no claim
+of a fully vulnerability-free repository or verified exploit path is made.
+
+Production HTTP verification covered 72 bounded requests. The sitemap's 23
+pages passed with zero audit errors or warnings. All three guides, five free
+lesson footers, canonical/OG identity, video markup and sampled media passed.
+Paid lessons still redirect to pricing and planned lessons return 404.
+The two sampled production lessons expose 24 initial script URLs, with no
+detected editor signatures. HTTP cannot establish search indexing or browser
+interaction.
+
+The main campaign mirror now returns 200 and names the existing campaign host
+as canonical/OG owner. That host still lacks the source canonical tag, so its
+separate metadata release remains pending.
+
+The next local fix makes `lesson_started` wait for analytics readiness. It
+observes the current lesson visit without replaying earlier visits or counting
+the same visit again on reacceptance. Progress writes, lesson timers and step
+tracking keep their existing behavior. All 173 focused tests and web typecheck
+pass. This follow-up is uncommitted and has not been deployed.
+
+Production project data, preview, starter, README and zip URLs all return 200.
+The preview and starter match the pushed commit. All three repository
+reproduction files are anonymously accessible at that commit, and the fixture
+source hash matches the public record. A second local follow-up links those
+exact code versions directly from the case and updates its editorial date.
+Nine focused guide/sitemap/summary tests and web typecheck pass.
+
+A fresh mobile PSI request against the release returned HTTP 429 again.
+Dedicated browser access remains unavailable. Native Chrome window changes
+interrupted navigation. The existing remote browser suite passes, while manual
+review of the new acquisition pages and live analytics delivery remain incomplete.
+The later [account collection](../seo-geo-2026-11-11-baselines/README.md)
+obtained provisional PostHog traffic and created the OpenSEO project. The
+subsequent Search Console collection uses the verified domain property and
+records 1 click and 70 impressions for October 12 to November 8. External-visitor
+exclusions, rendered URL Inspection and verified settlements remain pending.
 
 ## Correction to the earlier lesson diagnosis
 
@@ -188,10 +253,11 @@ competitor outcomes.
 
 ## Account evidence and attribution
 
-The next baseline should include Search Console queries, pages, countries,
-devices and indexing reasons, plus rendered URL Inspection for representative
-routes. Inspect overlapping homepage and `/learn` query coverage before calling
-it cannibalization or changing either page's established purpose.
+The November 11 baseline includes Search Console daily performance, queries,
+pages, countries and devices. Indexing reasons and rendered URL Inspection for
+representative routes remain pending. Inspect overlapping homepage and `/learn`
+query coverage before calling it cannibalization or changing either page's
+established purpose.
 
 Use PostHog to examine consented landing cohorts, guide handoffs, actual
 experiment submissions or exercise attempts, free-module completion, and
@@ -209,9 +275,17 @@ consented guide visits would produce a misleading conversion rate.
 The owner confirmed on November 10 that the optional checkout-source question
 stays disabled. This work does not activate it or change checkout privacy.
 
-The owner chose integrations for account measurement. PostHog and OpenSEO were
-available but still uninstalled at the November 11 check. Setup, property access and
-verified account baselines remain pending. No account results were obtained.
+The owner chose integrations for account measurement. The earlier November 11
+check found the tools available but uninstalled. The later
+[account baseline](../seo-geo-2026-11-11-baselines/README.md) records 2 observed
+visitors, 45 SDK sessions and 139 pageviews in PostHog for October 12 to
+November 8. The internal cohort has zero members. OpenSEO now uses the verified
+`sc-domain:tensorcraft.app` Search Console property. Final web-search data for
+October 12 to November 8 records 1 click and 70 impressions, compared with
+4 clicks and 69 impressions for September 14 to October 11. Both daily
+responses contain all 28 requested dates and report no additional rows.
+Search dates use Pacific Time. Verified purchase and AI visibility baselines
+remain incomplete.
 
 Bing's AI Performance can show cited URLs and grounding queries. Its newer
 Topics Portfolio beta can help plan coverage when a property has enough data.

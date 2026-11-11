@@ -145,6 +145,7 @@ describe("GET /api/profiles/export", () => {
     expect(Object.keys(body.tables)).toContain("review_queue");
     expect(Object.keys(body.tables)).toContain("learning_activity_progress");
     expect(Object.keys(body.tables)).toContain("learning_activity_streams");
+    expect(Object.keys(body.tables)).toContain("analytics_consents");
     expect(Array.isArray(body.waitlist)).toBe(true);
   });
 

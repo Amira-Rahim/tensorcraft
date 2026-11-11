@@ -1,0 +1,30 @@
+{
+  "collectedAt": "2026-11-11 09:47:37 UTC",
+  "settings": {
+    "id": 257980,
+    "timezone": "UTC",
+    "test_account_filters": [
+      {
+        "key": "id",
+        "type": "cohort",
+        "value": 221371,
+        "operator": "not_in"
+      },
+      {
+        "key": "tc_internal",
+        "type": "event",
+        "value": [
+          "true"
+        ],
+        "operator": "is_not"
+      },
+      {
+        "key": "$host",
+        "type": "event",
+        "value": "^(localhost|127(?:\\.[0-9]{1,3}){3}|\\[::1\\])(:[0-9]+)?$|\\.localhost(:[0-9]+)?$|\\.vercel\\.app(:[0-9]+)?$",
+        "operator": "not_regex"
+      }
+    ],
+    "test_account_filters_default_checked": true
+  }
+}

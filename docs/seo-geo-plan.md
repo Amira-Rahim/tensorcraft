@@ -2,8 +2,21 @@
 
 Updated November 11, 2026. This is the single current work list. The
 [audit record](audits/seo-geo-2026-11-10/README.md) preserves evidence,
-corrections and verification limits. Changes require release before they affect
-production. Search demand, AI citations and acquisition results remain unknown.
+corrections and verification limits. Main release `22cae183` is deployed. The
+lesson-arrival consent follow-up remains local. The
+[account baseline](audits/seo-geo-2026-11-11-baselines/README.md) records
+provisional PostHog traffic and measured Search Console performance. The
+October 12 to November 8 search window has 1 click and 70 impressions. AI
+citations and verified commercial conversion remain unknown.
+
+The [consent and measurement release](audits/seo-geo-2026-11-11-baselines/deployment.md)
+has applied migration 067 in production and passed all 15 catalog checks.
+Protected API release 35 is live with both machines passing health checks.
+Runtime settings match the existing PostHog project and EU host.
+The web release is promoted and its public pages and assets pass HTTP checks.
+Eight live API consent checks pass. Full browser runtime and live ingestion
+verification remain pending.
+This does not close the separate lesson-arrival or evidence-link follow-ups.
 
 ## Cleanup
 
@@ -17,30 +30,30 @@ Preserve the existing teaser and marketing work.
 
 | Item | Work | Status and completion evidence |
 | --- | --- | --- |
-| 1 | Supply video sitemap media URLs. | Local tests verify emitted watch-page XML and media paths. Secondary course trailers are not promoted as watch pages. |
-| 2 | Render discoverable video without interaction. | Local SSR/playback tests pass. Poster, captions, reduced motion, Save-Data and delayed playback remain. |
-| 3 | Correct consent-aware session/pricing events. | Local regression tests pass for late consent, withdrawal/reacceptance, visible intervals and pricing/paywall readiness. |
+| 1 | Supply video sitemap media URLs. | Deployed. Production video sitemap has one watch-page content_loc and working media. Secondary course trailers are not promoted as watch pages. |
+| 2 | Render discoverable video without interaction. | Deployed initial video, poster and captions verified in production HTML. Local playback regressions pass. Real-browser playback remains pending. |
+| 3 | Correct consent-aware session/pricing events. | Session/pricing fixes deployed. A further local lesson_started fix observes the current visit after consent without replay or duplicate capture. 173 focused tests and web typecheck pass; follow-up release and live ingestion remain pending. |
 | 4 | Track guide-to-lesson handoffs. | Local tests verify guide ID, canonical target and placement. Existing callers retain their payloads. |
-| 5 | Define meaningful learning activity. | Defined in analytics-verification.md: submitted attempts, passes and progression remain distinct. Live coverage awaits integrations. |
+| 5 | Define meaningful learning activity. | Defined in analytics-verification.md. Account baseline observes one incorrect assisted experiment submission. Exercise and module-completion ingestion remain unverified. |
 | 6 | Preserve acquisition attribution. | Pricing entryContext separates page context from acquisition. Internal blog UTMs removed. Local tests pass. |
 | 7 | Define conversion reporting populations. | Reporting contract distinguishes consented cohorts, matched journeys, all payments/refunds and unknown source. |
 | 8 | Review optional checkout source reporting. | Owner confirmed on November 10: keep disabled. No checkout or privacy activation. |
-| 9 | Establish account baselines. | Owner selected integrations. PostHog/OpenSEO remain uninstalled at the November 11 check. Account data and Bing property access remain pending. |
-| 10 | Inspect rendered acquisition pages. | Isolated production-preview HTTP/SSR checks pass for guides, five free lessons, media, breadcrumbs and access redirects. Browser and native computer-use hosts failed; visual desktop/mobile/keyboard verification remains incomplete. |
+| 9 | Establish account baselines. | Partial. Search Console records 1 click and 70 impressions for October 12 to November 8. PostHog records 2 visitors, 45 sessions and 139 pageviews. Live event/host exclusions pass a controlled SDK check. Browser/payment/signup repairs are deployed. Consent migration 067 passes all 15 production catalog checks, and protected API release 35 passes health checks on both machines. PostHog runtime settings match the project and EU host. Eight live API consent checks and public web page/asset checks pass. One paid $50 checkout creation cohort reconciles with Stripe/Supabase. Full browser runtime, owner-browser marking, production payment ingestion, Bing and AI visibility remain pending. See account baseline, measurement repair and deployment record. |
+| 10 | Inspect rendered acquisition pages. | Production HTTP/SSR and the existing remote browser suite pass (307 passed, 38 skipped). Manual review of new acquisition pages remains incomplete: dedicated browser host unavailable and native window changes interrupted navigation. |
 | 11 | Inspect the internal link graph. | Bounded production scan: 19 HTML pages and 18 sampled media URLs returned 200. Initial-link gaps identified; no fabricated coverage of private/query routes. |
-| 12 | Improve contextual lesson navigation. | Local free-module footer links and course-to-lesson breadcrumbs implemented. No gating, story or answer changes. |
-| 13 | Stabilize the guide registry. | Local cleanup: slug lookup and per-guide summaries, without a publishing framework. |
-| 14 | Establish campaign canonical ownership. | Keep the existing published campaign host as owner. Source canonical now matches its OG URL. It returned 200; the main-domain mirror still returned 404. Campaign release remains pending. |
-| 15 | Establish current mobile performance. | Fresh mobile PSI attempt returned 429. Old main .next artifacts predate this revision. Field/lab performance remains unknown. Fresh compiled-byte evidence is in the audit record. |
-| 16 | Fix measured performance bottlenecks. | Public Exercise now loads its implementation lazily. Exact build comparison on two free lessons: 26 to 24 initial scripts, 931,675 to 670,486 summed gzip bytes (28.03% less). Six public controls unchanged. 282 tests and typechecks pass. Browser Challenge and field/lab verification remain pending. Earlier unsuccessful candidates were removed. |
-| 17 | Create a JavaScript ML learning path. | Implemented with compiled curriculum counts, prerequisites, three goals, inspectable outputs and tracked free links. |
-| 18 | Publish the reproducible project case. | Implemented locally with provenance, responsibilities, artifact links and a supplied-score threshold explorer. Data/fixture/decisions verified. Release pending. |
-| 19 | Repair the sourced course comparison. | Named primary sources and observable criteria replace unsupported competitor prices/prerequisites/quality labels. Local tests pass. |
-| 20 | Connect acquisition assets. | Guides, project case, comparison, About, free module and pricing are contextually linked. New guide/compare lesson handoffs use existing tracking. |
-| 21 | Make technical credibility inspectable. | About and project case expose the recorded fixture, reproduction/hash evidence and checked examples. No learner outcomes invented. |
-| 22 | Verify release and prepare deployment. | Changed-file behavior tests, audit tests, web/UI typechecks, lint and isolated production build pass. Visual and live-account checks remain pending. No commit or push without the owner's request. |
-| 23 | Verify production search behavior. | Needs deployment, URL Inspection, Bing and verified crawler logs where available. |
-| 24 | Prepare distribution. | Unpublished DEV article and curator pitch prepared in marketing/seo-release-drafts.md. Release URLs must return 200 before use. No messages or purchases. |
+| 12 | Improve contextual lesson navigation. | Deployed. Production free-module footers have five canonical lesson links and one current item, after the reader. Breadcrumbs link directly through the course. |
+| 13 | Stabilize the guide registry. | Deployed slug lookup and per-guide summaries, without a publishing framework. |
+| 14 | Establish campaign canonical ownership. | Main mirror now returns 200 with the published campaign host as canonical/OG owner. The campaign host returns 200 but still lacks the source canonical tag. Its separate release remains pending. |
+| 15 | Establish current mobile performance. | Post-release mobile PSI retry on November 11 returned 429 again. Field/lab performance remains unknown. Compiled-byte evidence is in the audit record. |
+| 16 | Fix measured performance bottlenecks. | Lazy public Exercise boundary deployed. Local exact comparison: 26 to 24 initial scripts, 28.03% fewer summed gzip bytes on two free lessons. Production confirms 24 initial scripts without detected editor signatures. Browser/field verification remains pending. |
+| 17 | Create a JavaScript ML learning path. | Deployed learning path with curriculum counts, prerequisites, three goals, outputs and tracked free links. Production canonical/OG and content checks pass. |
+| 18 | Publish the reproducible project case. | Project case deployed; five production artifact URLs return 200 and recorded fixture/source checks pass. Local follow-up adds immutable code links. Interactive browser check remains pending. |
+| 19 | Repair the sourced course comparison. | Sourced comparison deployed. Named primary sources and observable criteria replace unsupported competitor claims. Local tests pass. |
+| 20 | Connect acquisition assets. | Acquisition crosslinks deployed. Guides, case, comparison, About, free module and pricing are connected; new lesson handoffs use existing tracking. |
+| 21 | Make technical credibility inspectable. | Recorded fixture and checked examples deployed. Three reproduction files verified anonymously at the pushed commit; fixture hash matches. Local case follow-up links them directly. No learner outcomes invented. |
+| 22 | Verify release and prepare deployment. | Main 22cae183 pushed/deployed after normal hooks (4,258 passed, 65 skipped). All remote CI jobs and visual regression pass, including 307 browser tests (38 skipped). Width/spacing budgets retained. New lesson-arrival/evidence-link follow-ups remain uncommitted. |
+| 23 | Verify production search behavior. | Production HTTP audit: 23 sitemap pages, zero errors/warnings; media, canonicals, guides, free links and access redirects verified. Search Console URL Inspection, Bing indexing and verified crawler logs remain pending. |
+| 24 | Prepare distribution. | Unpublished DEV article and curator pitch prepared in marketing/seo-release-drafts.md. Main release URLs now return 200. No outreach or external publication; campaign-owner metadata release remains pending. |
 | 25 | Review outcomes before expanding. | Needs live acquisition/learning data. Keep citations separate from visits and purchases. |
 
 ## Verification

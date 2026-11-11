@@ -22,7 +22,11 @@ const mockSessionCreate = vi.fn();
  * used by the webhook's race-condition no-regression logic (§338).
  * Default null means "row does not exist".
  */
-let mockAdminExistingRow: { status: string; user_id?: string } | null = null;
+let mockAdminExistingRow: {
+  status: string;
+  user_id?: string;
+  stripe_session_id?: string;
+} | null = null;
 // When set, controls what update().eq()[.select()] resolves to.
 let mockEqResult: { data: unknown; error: unknown } | null = null;
 
@@ -214,6 +218,7 @@ vi.mock("../lib/posthog", () => ({
   withPostHogUserContext: (_distinctId: string, fn: () => unknown) => fn(),
   SERVER_EVENTS: {
     PAYMENT_COMPLETED: "payment_completed",
+    PURCHASE_ACCESS_GRANTED: "purchase_access_granted",
     PAYMENT_REFUNDED: "payment_refunded",
   },
 }));
@@ -1087,6 +1092,7 @@ describe("Upgrade path", () => {
       url: "https://checkout.stripe.com/c/pay/cs_test_upgrade",
     });
     mockServerInsert.mockReset();
+    mockCaptureServer.mockClear();
     mockExistingPurchases = null;
     mockProfileEmail = "buyer@example.com";
     mockProfileCustomerId = null;
@@ -1293,6 +1299,19 @@ describe("Upgrade path", () => {
     const body = await res.json();
     expect(body.granted).toBe(true);
     expect(body.worlds).toEqual(["deep-orbit", "neon-protocol"]);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "purchase_access_granted",
+      expect.objectContaining({
+        grantId: expect.stringMatching(/^auto_grant_/),
+        reason: "upgrade_credit",
+      }),
+      "user-test-123",
+    );
+    expect(
+      mockCaptureServer.mock.calls.some(
+        ([name]) => name === "payment_completed",
+      ),
+    ).toBe(false);
     expect(mockServerInsert).toHaveBeenCalledWith(
       expect.objectContaining({
         amount: 0,
@@ -1810,6 +1829,197 @@ describe("purchase receipt on delayed settle", () => {
         amount: 49,
         sessionId: "cs_async_1",
       }),
+    );
+  });
+});
+
+// Payment reporting needs provider evidence and cannot substitute current prices.
+describe("settlement analytics evidence", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    mockInsert.mockReset();
+    mockInsert.mockResolvedValue({ error: null });
+    mockConstructEvent.mockReset();
+    mockCaptureServer.mockClear();
+    mockEventLedgerInsert.mockReset();
+    mockAdminExistingRow = null;
+    mockEqResult = null;
+  });
+
+  async function deliver(
+    type:
+      "checkout.session.completed" | "checkout.session.async_payment_succeeded",
+    overrides: Record<string, unknown> = {},
+    livemode = false,
+  ) {
+    const event = {
+      id: "evt_settlement_evidence",
+      type,
+      livemode,
+      data: {
+        object: {
+          id: "cs_test_evidence",
+          client_reference_id: "user_evidence",
+          payment_status: "paid",
+          amount_total: 7900,
+          currency: "usd",
+          payment_intent: "pi_evidence",
+          metadata: { planId: "single", worldIds: "deep-orbit" },
+          ...overrides,
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+    return app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: { "stripe-signature": "sig_test" },
+      body: JSON.stringify(event),
+    });
+  }
+
+  it.each([
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
+  ] as const)("keeps provider IDs, currency and mode for %s", async (type) => {
+    const res = await deliver(type);
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        sessionId: "cs_test_evidence",
+        stripeEventId: "evt_settlement_evidence",
+        paymentIntentId: "pi_evidence",
+        eventSource: "stripe_webhook",
+        analyticsVersion: 2,
+        amount: 79,
+        amountMinor: 7900,
+        currency: "usd",
+        livemode: false,
+        paymentKind: "cash",
+      }),
+      "user_evidence",
+    );
+  });
+
+  it.each([
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
+  ] as const)("keeps a no-charge %s at zero", async (type) => {
+    const res = await deliver(
+      type,
+      {
+        amount_total: 0,
+        payment_status: "no_payment_required",
+      },
+      true,
+    );
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 0 }),
+      expect.anything(),
+    );
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        amount: 0,
+        amountMinor: 0,
+        paymentKind: "no_charge",
+        livemode: true,
+      }),
+      "user_evidence",
+    );
+  });
+
+  it("keeps a missing amount unknown instead of reporting the plan price", async () => {
+    const res = await deliver("checkout.session.completed", {
+      amount_total: null,
+    });
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        amount: null,
+        amountMinor: null,
+        paymentKind: "unknown",
+      }),
+      "user_evidence",
+    );
+  });
+
+  it("does not label an unknown currency as USD revenue", async () => {
+    const res = await deliver("checkout.session.completed", { currency: null });
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        amount: null,
+        amountMinor: 7900,
+        currency: null,
+      }),
+      "user_evidence",
+    );
+  });
+
+  it("does not count an unpaid checkout as a settlement", async () => {
+    await deliver("checkout.session.completed", { payment_status: "unpaid" });
+    expect(mockCaptureServer).not.toHaveBeenCalled();
+  });
+
+  it("does not emit another settlement for an already completed checkout", async () => {
+    mockAdminExistingRow = { status: "completed" };
+    await deliver("checkout.session.completed");
+    expect(mockCaptureServer).not.toHaveBeenCalled();
+  });
+
+  it("does not emit another settlement after losing the duplicate delivery claim", async () => {
+    mockEventLedgerInsert.mockResolvedValue({ error: { code: "23505" } });
+    await deliver("checkout.session.completed");
+    expect(mockCaptureServer).not.toHaveBeenCalled();
+  });
+
+  it("records refund evidence as cumulative minor units, with its checkout link", async () => {
+    mockAdminExistingRow = {
+      status: "partially_refunded",
+      user_id: "user_evidence",
+      stripe_session_id: "cs_live_evidence",
+    };
+    const event = {
+      id: "evt_refund_evidence",
+      type: "charge.refunded",
+      livemode: true,
+      data: {
+        object: {
+          id: "ch_evidence",
+          payment_intent: "pi_evidence",
+          amount: 7900,
+          amount_refunded: 2000,
+          currency: "usd",
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: { "stripe-signature": "sig_test" },
+      body: JSON.stringify(event),
+    });
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_refunded",
+      expect.objectContaining({
+        sessionId: "cs_live_evidence",
+        chargeId: "ch_evidence",
+        stripeEventId: "evt_refund_evidence",
+        paymentIntentId: "pi_evidence",
+        amountRefundedMinor: 2000,
+        currency: "usd",
+        livemode: true,
+        eventSource: "stripe_webhook",
+        analyticsVersion: 2,
+        isFullRefund: false,
+      }),
+      "user_evidence",
     );
   });
 });

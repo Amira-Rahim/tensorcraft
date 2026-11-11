@@ -9,6 +9,7 @@ import {
 import { WorldProvider } from "./components/world-provider";
 import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
+import { ConsentSync } from "./components/consent-sync";
 import { ReportIssueButton } from "./components/report-issue-button";
 import { SiteFooter } from "./components/site-footer";
 import { AnalyticsProvider } from "./components/analytics-provider";
@@ -173,6 +174,7 @@ export default function RootLayout({
                 {children}
               </div>
               <SessionListener />
+              <ConsentSync />
               <SessionToast />
               <GithubNudgeToast />
               <GuestProgressBridge />

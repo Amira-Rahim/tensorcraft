@@ -1,0 +1,75 @@
+{
+  "collectedAt": "2026-11-11 09:23:55 UTC",
+  "sourceTool": "get_search_console_performance",
+  "request": {
+    "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+    "startDate": "2026-10-12",
+    "endDate": "2026-11-08",
+    "dataState": "final",
+    "type": "web",
+    "rowLimit": 1000,
+    "dimensions": [
+      "query",
+      "page"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "siteUrl": "sc-domain:tensorcraft.app",
+    "startDate": "2026-10-12",
+    "endDate": "2026-11-08",
+    "dimensions": [
+      "query",
+      "page"
+    ],
+    "rowCount": 4,
+    "rows": [
+      {
+        "keys": [
+          "deep orbit",
+          "https://tensorcraft.app/worlds/deep-orbit"
+        ],
+        "clicks": 0,
+        "impressions": 19,
+        "ctr": 0,
+        "position": 8.8
+      },
+      {
+        "keys": [
+          "deeporbit",
+          "https://tensorcraft.app/worlds/deep-orbit"
+        ],
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "position": 10
+      },
+      {
+        "keys": [
+          "tensorcraft",
+          "https://tensorcraft.app/"
+        ],
+        "clicks": 0,
+        "impressions": 4,
+        "ctr": 0,
+        "position": 1.8
+      },
+      {
+        "keys": [
+          "tensorcraft",
+          "https://tensorcraft.app/learn"
+        ],
+        "clicks": 0,
+        "impressions": 4,
+        "ctr": 0,
+        "position": 8
+      }
+    ],
+    "hasMore": false,
+    "meta": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/search-performance"
+    },
+    "resultId": "ff8fcdcf-0be9-44e8-8491-3cf05e294916"
+  }
+}
