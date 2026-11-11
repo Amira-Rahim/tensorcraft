@@ -1,0 +1,101 @@
+{
+  "collectedAtUTC": "2026-11-11T12:57:43Z",
+  "projectId": 257980,
+  "timezone": "UTC",
+  "purpose": "Controlled internal production verification of a lesson arrival after analytics consent.",
+  "window": {
+    "start": "2026-11-11T12:49:50Z",
+    "endExclusive": "2026-11-11T12:57:25Z"
+  },
+  "release": {
+    "deploymentId": "dpl_A2jk8MtCZBcGGrEkRGJCWL7oRtoi",
+    "promotedAtUTC": "2026-11-11T12:49:41Z",
+    "source": "Release agent's deployment verification."
+  },
+  "browserObservation": {
+    "method": "Native Chrome Incognito through CUA. The release agent reported these UI observations.",
+    "initialURL": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors?tc_internal=1",
+    "initialNavigationAtUTC": "2026-11-11T12:50:00Z",
+    "initialNavigationTimePrecision": "approximate",
+    "currentURL": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?tc_internal=1",
+    "navigation": "Full-page address navigation from the introduction to Tensor Shapes before accepting analytics.",
+    "beforeConsent": "The Tensor Shapes lesson and a fresh consent banner were visible.",
+    "acceptedAtUTC": "2026-11-11T12:55:25.574Z",
+    "afterConsent": "The banner disappeared and the browser remained on the Tensor Shapes URL."
+  },
+  "schemaVerification": {
+    "tool": "read-data-schema",
+    "query": {
+      "kind": "event_properties",
+      "event_name": "lesson_started"
+    },
+    "confirmedProperties": {
+      "lessonId": "String",
+      "worldId": "String",
+      "moduleId": "String",
+      "tc_internal": "Boolean"
+    },
+    "sourceSequence": "AnalyticsProvider captures consent_granted and the current pageview after initialization. The consent-ready context then allows LessonSteps to observe the current lesson visit."
+  },
+  "lessonArrivals": {
+    "query": {
+      "kind": "HogQLQuery",
+      "query": "SELECT\n    properties.lessonId AS lesson_id,\n    properties.tc_internal AS internal,\n    min(timestamp) AS first_arrival_at,\n    max(timestamp) AS last_arrival_at,\n    count() AS arrivals,\n    uniq($session_id) AS sdk_sessions,\n    countIf($session_id IS NULL OR $session_id = '') AS missing_session_ids\nFROM events\nWHERE timestamp >= toDateTime('2026-11-11 12:49:50')\n    AND timestamp < toDateTime('2026-11-11 12:57:25')\n    AND event = 'lesson_started'\n    AND properties.tc_internal = true\nGROUP BY lesson_id, internal\nORDER BY first_arrival_at\nLIMIT 20"
+    },
+    "results": "lesson_id|internal|first_arrival_at|last_arrival_at|arrivals|sdk_sessions|missing_session_ids\ntensor-shapes|True|2026-11-11T12:55:26.847000Z|2026-11-11T12:55:26.847000Z|1|1|0"
+  },
+  "companionEvents": {
+    "testAccountExclusionApplied": false,
+    "internalOnlyFilterApplied": false,
+    "query": {
+      "kind": "HogQLQuery",
+      "query": "SELECT\n    event,\n    properties.tc_internal AS internal,\n    properties.lessonId AS lesson_id,\n    count() AS events,\n    min(timestamp) AS first_event_at,\n    max(timestamp) AS last_event_at,\n    uniq($session_id) AS sdk_sessions,\n    countIf($session_id IS NULL OR $session_id = '') AS missing_session_ids\nFROM events\nWHERE timestamp >= toDateTime('2026-11-11 12:49:50')\n    AND timestamp < toDateTime('2026-11-11 12:57:25')\n    AND event IN ('$pageview', 'consent_granted', 'lesson_started')\nGROUP BY event, internal, lesson_id\nORDER BY first_event_at\nLIMIT 30"
+    },
+    "results": "event|internal|lesson_id|events|first_event_at|last_event_at|sdk_sessions|missing_session_ids\n$pageview|True|(null)|1|2026-11-11T12:55:26.839000Z|2026-11-11T12:55:26.839000Z|1|0\nconsent_granted|True|(null)|1|2026-11-11T12:55:26.839000Z|2026-11-11T12:55:26.839000Z|1|0\nlesson_started|True|tensor-shapes|1|2026-11-11T12:55:26.847000Z|2026-11-11T12:55:26.847000Z|1|0"
+  },
+  "sameSession": {
+    "query": {
+      "kind": "HogQLQuery",
+      "query": "SELECT\n    uniq($session_id) AS sdk_sessions,\n    countIf($session_id IS NULL OR $session_id = '') AS missing_session_ids,\n    countIf(event = '$pageview') AS pageviews,\n    countIf(event = 'consent_granted') AS consent_events,\n    countIf(event = 'lesson_started') AS lesson_arrivals,\n    countIf(timestamp < toDateTime('2026-11-11 12:55:25')) AS events_before_consent_second,\n    min(timestamp) AS first_event_at,\n    max(timestamp) AS last_event_at\nFROM events\nWHERE timestamp >= toDateTime('2026-11-11 12:49:50')\n    AND timestamp < toDateTime('2026-11-11 12:57:25')\n    AND properties.tc_internal = true\n    AND event IN ('$pageview', 'consent_granted', 'lesson_started')"
+    },
+    "results": "sdk_sessions|missing_session_ids|pageviews|consent_events|lesson_arrivals|events_before_consent_second|first_event_at|last_event_at\n1|0|1|1|1|0|2026-11-11T12:55:26.839000Z|2026-11-11T12:55:26.847000Z",
+    "timestampComparison": "The pre-consent count rounds the acceptance second down to 12:55:25 UTC. All three returned event timestamps are also later than the exact UI acceptance time of 12:55:25.574 UTC."
+  },
+  "observations": {
+    "currentLesson": "tensor-shapes",
+    "currentLessonArrivals": 1,
+    "currentLessonArrivalAtUTC": "2026-11-11T12:55:26.847Z",
+    "elapsedAfterRecordedConsentMilliseconds": 1273,
+    "introductionLessonArrivalsReturned": 0,
+    "pageviews": 1,
+    "consentEvents": 1,
+    "allThreeEventsInternal": true,
+    "sdkSessionsAcrossAllThreeEvents": 1,
+    "missingSessionIds": 0
+  },
+  "ingestionChecks": [
+    {
+      "collectedAtUTC": "2026-11-11T12:55:56Z",
+      "result": "The first internal lesson-arrival query returned no rows. This read occurred about 31 seconds after consent and was treated as pending ingestion."
+    },
+    {
+      "collectedAtUTC": "2026-11-11T12:56:24Z",
+      "result": "The companion query returned the Tensor Shapes arrival. Consent and pageview rows had not appeared yet."
+    },
+    {
+      "collectedAtUTC": "2026-11-11T12:57:25Z",
+      "result": "The final arrival and companion reads returned one Tensor Shapes arrival, one consent event and one pageview."
+    },
+    {
+      "collectedAtUTC": "2026-11-11T12:57:43Z",
+      "result": "A separate aggregate confirmed that all three internal events share one SDK session."
+    }
+  ],
+  "limitations": [
+    "This verifies one controlled anonymous internal browser visit after the production release.",
+    "The browser sequence used full-page navigation. It does not prove the same-mounted SPA navigation regression. Focused unit tests cover that behavior.",
+    "The bounded event results establish late-consent delivery. They do not establish preconsent network silence, consent withdrawal or reacceptance, signed-in account persistence, server payment events or customer acquisition.",
+    "The returned companion events are all internal. No project test-account exclusion was applied to the companion query.",
+    "The evidence contains no raw person, user, distinct, session or transaction identifiers."
+  ]
+}

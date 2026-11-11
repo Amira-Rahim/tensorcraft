@@ -8,9 +8,19 @@ import {
   within,
 } from "@testing-library/react";
 import type { ExerciseSubmitResult } from "@tensorcraft/ui";
+import { StrictMode } from "react";
+import { AnalyticsReadyContext } from "@/lib/analytics-ready";
 import { LessonSteps } from "./lesson-steps";
-import { trackLessonCompleted, track } from "@/lib/analytics";
-import { markLessonCompleted, emitSkillEvent } from "@/lib/progress-client";
+import {
+  trackLessonStarted,
+  trackLessonCompleted,
+  track,
+} from "@/lib/analytics";
+import {
+  markLessonStarted,
+  markLessonCompleted,
+  emitSkillEvent,
+} from "@/lib/progress-client";
 import { recordGuestCompletion } from "@/lib/guest-progress";
 import { enqueueGuestReviews, getGuestReviews } from "@/lib/review-store-guest";
 import { LESSON_SCENE_ART } from "@/lib/lesson-scene-art";
@@ -329,6 +339,98 @@ beforeEach(() => {
   // `location` across tests: a hash left by one test reads as a deep link
   // in the next mount. Reset it like localStorage.
   window.history.replaceState(null, "", window.location.pathname);
+});
+
+describe("LessonSteps, consent-ready lesson arrivals", () => {
+  const secondLesson = {
+    ...lesson,
+    slug: "tensor-shapes",
+    title: "Understanding Tensor Shapes",
+    order: 2,
+  };
+  function tree(ready: boolean, currentLesson = lesson) {
+    return (
+      <AnalyticsReadyContext.Provider value={ready}>
+        <LessonSteps
+          lesson={currentLesson}
+          exercises={[]}
+          worldSlug="deep-orbit"
+          moduleSlug="foundations"
+          prevLesson={null}
+          nextLesson={null}
+        />
+      </AnalyticsReadyContext.Provider>
+    );
+  }
+  beforeEach(() => {
+    vi.mocked(trackLessonStarted).mockClear();
+    vi.mocked(markLessonStarted).mockClear();
+  });
+
+  it("keeps functional progress independent while analytics is unavailable", () => {
+    render(tree(false));
+    expect(markLessonStarted).toHaveBeenCalledTimes(1);
+    expect(markLessonStarted).toHaveBeenCalledWith(
+      "deep-orbit",
+      "foundations",
+      lesson.slug,
+    );
+    expect(trackLessonStarted).not.toHaveBeenCalled();
+  });
+
+  it("observes only the current lesson when consent arrives after navigation", () => {
+    const view = render(tree(false));
+    view.rerender(tree(false, secondLesson));
+    expect(trackLessonStarted).not.toHaveBeenCalled();
+    expect(markLessonStarted).toHaveBeenCalledTimes(2);
+    view.rerender(tree(true, secondLesson));
+    expect(trackLessonStarted).toHaveBeenCalledExactlyOnceWith(
+      "deep-orbit",
+      "foundations",
+      secondLesson.slug,
+    );
+    expect(markLessonStarted).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not duplicate the same visit after withdrawal and reacceptance", () => {
+    const view = render(tree(true));
+    view.rerender(tree(false));
+    view.rerender(tree(true));
+    expect(trackLessonStarted).toHaveBeenCalledExactlyOnceWith(
+      "deep-orbit",
+      "foundations",
+      lesson.slug,
+    );
+    expect(markLessonStarted).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts a return visit without replaying an intervening unobserved lesson", () => {
+    const view = render(tree(true));
+    view.rerender(tree(false));
+    view.rerender(tree(false, secondLesson));
+    view.rerender(tree(false));
+    expect(trackLessonStarted).toHaveBeenCalledTimes(1);
+    view.rerender(tree(true));
+    expect(vi.mocked(trackLessonStarted).mock.calls).toEqual([
+      ["deep-orbit", "foundations", lesson.slug],
+      ["deep-orbit", "foundations", lesson.slug],
+    ]);
+    expect(markLessonStarted).toHaveBeenCalledTimes(3);
+  });
+
+  it.each([false, true])(
+    "emits once in StrictMode with initial readiness %s",
+    (ready) => {
+      const view = render(<StrictMode>{tree(ready)}</StrictMode>);
+      expect(trackLessonStarted).toHaveBeenCalledTimes(ready ? 1 : 0);
+      if (!ready) view.rerender(<StrictMode>{tree(true)}</StrictMode>);
+      expect(trackLessonStarted).toHaveBeenCalledExactlyOnceWith(
+        "deep-orbit",
+        "foundations",
+        lesson.slug,
+      );
+    },
+  );
 });
 
 describe("account-owned lesson position", () => {

@@ -12,9 +12,15 @@ import preview from "@/public/assignments/room-project-preview.json";
 import { ThresholdExample } from "./threshold-example";
 
 const guide = getGuide("browser-machine-learning-project");
+const updatedDate = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "long",
+  timeZone: "UTC",
+}).format(new Date(guide.updatedAt));
 const url = `${SITE_URL}${guide.path}`;
 const image = `/api/og?title=${encodeURIComponent("A browser ML project")}&world=deep-orbit`;
 const firstLesson = "/worlds/deep-orbit/foundations/introduction-to-tensors";
+const evidenceSource =
+  "https://github.com/Amira-Rahim/tensorcraft/blob/65a1c242eaef5dd310a7a1093f420ad92bbe2b4d";
 
 export const metadata: Metadata = {
   title: `${guide.title}, Tensorcraft`,
@@ -118,7 +124,7 @@ export default function BrowserProjectGuide() {
               Tensorcraft
             </Link>
             , a group of JavaScript engineers. Updated{" "}
-            <time dateTime={guide.updatedAt}>November 10, 2026</time>.
+            <time dateTime={guide.updatedAt}>{updatedDate}</time>.
           </p>
         </header>
         <section className={section}>
@@ -189,6 +195,31 @@ export default function BrowserProjectGuide() {
             </a>
             . The recorded hashes identify the demonstration artifacts. The
             starter download contains no trained solution.
+          </p>
+          <p>
+            Read the{" "}
+            <a
+              className={link}
+              href={`${evidenceSource}/scripts/check-room-project.mjs`}
+            >
+              reproduction runner
+            </a>
+            , the{" "}
+            <a
+              className={link}
+              href={`${evidenceSource}/scripts/fixtures/room-project/train.mjs`}
+            >
+              fixture training code
+            </a>
+            , and the{" "}
+            <a
+              className={link}
+              href={`${evidenceSource}/scripts/build-room-project-preview.mjs`}
+            >
+              preview builder
+            </a>{" "}
+            in the source repository. These links pin the source version. The
+            training file&apos;s hash matches the record above.
           </p>
         </section>
         <section className={section}>

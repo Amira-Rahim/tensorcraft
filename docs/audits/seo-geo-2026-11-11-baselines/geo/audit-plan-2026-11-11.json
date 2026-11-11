@@ -1,0 +1,418 @@
+{
+  "preparedAtUTC": "2026-11-11T12:42:27Z",
+  "status": "Prepared for user approval. No paid collection or remote mutation has occurred.",
+  "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+  "website": "https://tensorcraft.app",
+  "brand": "Tensorcraft",
+  "purpose": "Establish the first observed AI-answer baseline and identify one to three evidence-backed changes.",
+  "promptProvenance": "Manually proposed from the current product, course and public guides. These are not logged consumer prompts, measured demand or prompt-research results.",
+  "collectionScope": {
+    "prompts": [
+      {
+        "text": "What are good machine learning courses for JavaScript developers who are new to ML?",
+        "topic": "Learning ML with JavaScript"
+      },
+      {
+        "text": "How can a frontend developer learn machine learning using JavaScript?",
+        "topic": "Learning ML with JavaScript"
+      },
+      {
+        "text": "Where can I practice machine learning in JavaScript with interactive exercises?",
+        "topic": "Learning ML with JavaScript"
+      },
+      {
+        "text": "What should I learn before building my first machine learning model in JavaScript?",
+        "topic": "Learning ML with JavaScript"
+      },
+      {
+        "text": "What is the difference between reshape and transpose in TensorFlow.js?",
+        "topic": "TensorFlow.js practical skills"
+      },
+      {
+        "text": "How do tensor shapes work in TensorFlow.js?",
+        "topic": "TensorFlow.js practical skills"
+      },
+      {
+        "text": "How should I normalize data for a TensorFlow.js model?",
+        "topic": "TensorFlow.js practical skills"
+      },
+      {
+        "text": "Where can I find TensorFlow.js tutorials with runnable examples?",
+        "topic": "TensorFlow.js practical skills"
+      },
+      {
+        "text": "What is a good first machine learning project to build in the browser with JavaScript?",
+        "topic": "Browser machine learning projects"
+      },
+      {
+        "text": "How can I train and evaluate a small machine learning model in the browser?",
+        "topic": "Browser machine learning projects"
+      },
+      {
+        "text": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+        "topic": "Browser machine learning projects"
+      },
+      {
+        "text": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+        "topic": "Browser machine learning projects"
+      }
+    ],
+    "engines": [
+      "chatgpt",
+      "gemini",
+      "google_ai_overview"
+    ],
+    "locationCode": 2840,
+    "languageCode": "en",
+    "locationName": "United States",
+    "marketStatus": "Proposed collection market. The owner has not confirmed a geographic business target.",
+    "neutralPrompts": 12,
+    "brandedPrompts": 0,
+    "plannedObservations": 36
+  },
+  "estimate": {
+    "request": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "patch": {
+        "prompts": [
+          {
+            "text": "What are good machine learning courses for JavaScript developers who are new to ML?",
+            "topic": "Learning ML with JavaScript"
+          },
+          {
+            "text": "How can a frontend developer learn machine learning using JavaScript?",
+            "topic": "Learning ML with JavaScript"
+          },
+          {
+            "text": "Where can I practice machine learning in JavaScript with interactive exercises?",
+            "topic": "Learning ML with JavaScript"
+          },
+          {
+            "text": "What should I learn before building my first machine learning model in JavaScript?",
+            "topic": "Learning ML with JavaScript"
+          },
+          {
+            "text": "What is the difference between reshape and transpose in TensorFlow.js?",
+            "topic": "TensorFlow.js practical skills"
+          },
+          {
+            "text": "How do tensor shapes work in TensorFlow.js?",
+            "topic": "TensorFlow.js practical skills"
+          },
+          {
+            "text": "How should I normalize data for a TensorFlow.js model?",
+            "topic": "TensorFlow.js practical skills"
+          },
+          {
+            "text": "Where can I find TensorFlow.js tutorials with runnable examples?",
+            "topic": "TensorFlow.js practical skills"
+          },
+          {
+            "text": "What is a good first machine learning project to build in the browser with JavaScript?",
+            "topic": "Browser machine learning projects"
+          },
+          {
+            "text": "How can I train and evaluate a small machine learning model in the browser?",
+            "topic": "Browser machine learning projects"
+          },
+          {
+            "text": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+            "topic": "Browser machine learning projects"
+          },
+          {
+            "text": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+            "topic": "Browser machine learning projects"
+          }
+        ],
+        "engines": [
+          "chatgpt",
+          "gemini",
+          "google_ai_overview"
+        ],
+        "locationCode": 2840,
+        "languageCode": "en"
+      },
+      "scheduleInterval": "weekly"
+    },
+    "response": {
+      "status": "success",
+      "data": {
+        "promptCount": 12,
+        "engineCount": 3,
+        "observations": 36,
+        "providerCostUsd": 0.0432,
+        "costUsd": 0.072,
+        "costCredits": 72,
+        "runNowCostUsd": 0.216,
+        "runNowCostCredits": 216,
+        "scheduleInterval": "weekly",
+        "checksPerMonth": 4,
+        "monthlyCostUsd": 0.288,
+        "currency": "USD",
+        "warnings": [
+          "Customer cost uses OpenSEO data credits, including the service markup.",
+          "One fresh answer per prompt and engine. The weekly estimate assumes 4 checks per month."
+        ]
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    }
+  },
+  "existingSetup": {
+    "trackerRequest": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44"
+    },
+    "trackerResponse": {
+      "status": "success",
+      "data": {
+        "configured": false,
+        "providerConfigured": true,
+        "tracker": null,
+        "topics": [],
+        "prompts": [],
+        "brands": [
+          {
+            "name": "Tensorcraft",
+            "domain": "tensorcraft.app",
+            "own": true
+          }
+        ],
+        "engines": [],
+        "capabilities": [
+          {
+            "engine": "chatgpt",
+            "label": "ChatGPT",
+            "unsupportedLocationCodes": [
+              2275,
+              2344,
+              2831,
+              2832,
+              2833,
+              2862
+            ],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "gemini",
+            "label": "Gemini",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "google_ai_overview",
+            "label": "Google AI Overviews",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "The AI Overview on one Google results page. A page without an AI Overview is a no-answer result, not a missing brand.",
+            "modelApi": false
+          },
+          {
+            "engine": "claude",
+            "label": "Claude",
+            "unsupportedLocationCodes": [
+              2008,
+              2012,
+              2020,
+              2024,
+              2051,
+              2031,
+              2044,
+              2048,
+              2050,
+              2052,
+              2084,
+              2068,
+              2070,
+              2072,
+              2096,
+              2100,
+              2854,
+              2116,
+              2120,
+              2170,
+              2188,
+              2384,
+              2191,
+              2196,
+              2203,
+              2214,
+              2218,
+              2818,
+              2222,
+              2233,
+              2231,
+              2242,
+              2268,
+              2288,
+              2300,
+              2320,
+              2831,
+              2328,
+              2332,
+              2340,
+              2348,
+              2352,
+              2368,
+              2372,
+              2833,
+              2376,
+              2388,
+              2832,
+              2400,
+              2398,
+              2404,
+              2414,
+              2417,
+              2418,
+              2428,
+              2422,
+              2438,
+              2440,
+              2442,
+              2450,
+              2454,
+              2462,
+              2470,
+              2480,
+              2498,
+              2492,
+              2496,
+              2499,
+              2504,
+              2508,
+              2104,
+              2516,
+              2524,
+              2558,
+              2566,
+              2807,
+              2512,
+              2586,
+              2275,
+              2591,
+              2598,
+              2600,
+              2604,
+              2634,
+              2642,
+              2646,
+              2674,
+              2686,
+              2688,
+              2702,
+              2703,
+              2705,
+              2144,
+              2740,
+              2762,
+              2834,
+              2764,
+              2780,
+              2788,
+              2795,
+              2800,
+              2804,
+              2784,
+              2858,
+              2860,
+              2862,
+              2704,
+              2894,
+              2716
+            ],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          },
+          {
+            "engine": "perplexity",
+            "label": "Perplexity",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          }
+        ],
+        "recentRuns": []
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    },
+    "reportsRequest": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "limit": 20
+    },
+    "reportsResponse": {
+      "reports": [],
+      "totalCount": 0,
+      "rowCount": 0,
+      "remaining": 10000,
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports"
+      }
+    }
+  },
+  "schedulePlan": {
+    "auditOnly": true,
+    "requestedScheduleEnabled": false,
+    "creationBehavior": "A new tracker defaults to weekly checks, with the first scheduled check about a week later.",
+    "plannedSequence": [
+      "Obtain approval for this exact one-off cost and proposed collection market.",
+      "Save the exact prompt, topic, engine and market settings.",
+      "Immediately pause the tracker schedule with enabled: false, before starting the manual run.",
+      "Verify the schedule is disabled.",
+      "Start one manual check using maxCostUsd: 0.216.",
+      "Follow the returned run and reuse its completed evidence without starting duplicate checks."
+    ],
+    "pricingDisclosure": "One-off check: USD 0.216 or 216 OpenSEO credits. Weekly alternative: USD 0.072 per check or 72 credits, estimated USD 0.288 per month at four checks. No recurring checks are requested.",
+    "optionalAnalysisExcluded": "Later explore_prompt calls are not included in this estimate and have not been started."
+  },
+  "approvalRequiredBy": {
+    "skill": "/Users/amira.salah/.codex/plugins/cache/openai-curated-remote/openseo/1.0.26/skills/ai-visibility-audit/SKILL.md",
+    "instruction": "Show one plan with the check cost and the monthly cost from estimate_ai_visibility_cost, then get approval once.",
+    "toolRequirement": "run_ai_visibility_check requires the approved runNowCostUsd as maxCostUsd."
+  },
+  "comparisonCandidates": {
+    "status": "References from the current comparison page. None is confirmed or saved as a project competitor.",
+    "sources": [
+      "apps/web/app/compare/page.tsx"
+    ],
+    "candidates": [
+      {
+        "name": "TensorFlow.js learning resources",
+        "domain": "tensorflow.org"
+      },
+      {
+        "name": "Charlie Gerard's Machine Learning in JavaScript with TensorFlow.js",
+        "domain": "master.dev"
+      },
+      {
+        "name": "fast.ai Practical Deep Learning",
+        "domain": "fast.ai"
+      },
+      {
+        "name": "Scrimba AI Engineer Path",
+        "domain": "scrimba.com",
+        "qualification": "Focuses on AI integration, so curriculum overlap must be stated accurately."
+      }
+    ]
+  },
+  "methodologyLimits": [
+    "Each observation is one answer for a prompt, engine and collection market.",
+    "ChatGPT and Gemini use consumer-site answers. Google AI Overviews uses an AI Overview on a Google results page.",
+    "A Google results page without an AI Overview is a no-answer observation, not an absent-brand observation.",
+    "Mention and citation rates must use answered collections as denominators and report failures separately.",
+    "This first run cannot establish a trend, traffic, purchases or all-market visibility.",
+    "A source citation beside a competitor does not prove the source mentions it. Read the deciding source pages.",
+    "No saved competitor set is available. Do not invent competitor rates."
+  ]
+}

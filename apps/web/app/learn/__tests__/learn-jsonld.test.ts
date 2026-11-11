@@ -25,7 +25,7 @@ describe("buildLearnVideo", () => {
       "https://tensorcraft.app/media/tensorcraft-intro-poster.webp",
     ]);
     expect(video.duration).toBe("PT27S");
-    expect(video.uploadDate).toBe("2026-11-09");
+    expect(video.uploadDate).toBe("2026-11-09T19:44:03Z");
     // Query register: schema descriptions say "JavaScript developers".
     expect(video.description).toContain("JavaScript developers");
     expect(video.description).toContain("different story worlds");

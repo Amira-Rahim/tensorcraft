@@ -28,7 +28,7 @@ export const GUIDES = [
       "Inspect a JavaScript machine learning project with recorded room data, a baseline, a TensorFlow.js model, and a reproducible validation mistake.",
     summary:
       "See what the independent project asks you to build. Inspect one recorded model mistake and how a decision threshold changes that single prediction.",
-    updatedAt: "2026-11-10",
+    updatedAt: "2026-11-11",
   },
 ] as const;
 

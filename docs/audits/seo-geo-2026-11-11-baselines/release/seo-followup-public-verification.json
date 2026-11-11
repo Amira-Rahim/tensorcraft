@@ -1,0 +1,49 @@
+{
+  "checkedAtUTC": "2026-11-11T12:51:32.210820+00:00",
+  "method": "Anonymous public HTTP GET and initial HTML/XML parsing. No browser JavaScript executed.",
+  "allAssertionsPassed": true,
+  "pages": [
+    {
+      "path": "/learn",
+      "status": 200,
+      "canonical": "https://tensorcraft.app/learn",
+      "h1Count": 1,
+      "videoUploadDate": "2026-11-09T19:44:03Z"
+    },
+    {
+      "path": "/worlds/deep-orbit",
+      "status": 200,
+      "canonical": "https://tensorcraft.app/worlds/deep-orbit",
+      "h1Count": 1,
+      "videoUploadDate": "2026-08-29T14:31:46Z"
+    },
+    {
+      "path": "/guides/browser-machine-learning-project",
+      "status": 200,
+      "canonical": "https://tensorcraft.app/guides/browser-machine-learning-project",
+      "h1Count": 1,
+      "pinnedSourceLinks": [
+        "https://github.com/Amira-Rahim/tensorcraft/blob/65a1c242eaef5dd310a7a1093f420ad92bbe2b4d/scripts/check-room-project.mjs",
+        "https://github.com/Amira-Rahim/tensorcraft/blob/65a1c242eaef5dd310a7a1093f420ad92bbe2b4d/scripts/fixtures/room-project/train.mjs",
+        "https://github.com/Amira-Rahim/tensorcraft/blob/65a1c242eaef5dd310a7a1093f420ad92bbe2b4d/scripts/build-room-project-preview.mjs"
+      ],
+      "visibleUpdatedDate": "November 11, 2026",
+      "articleDateModified": "2026-11-11"
+    },
+    {
+      "path": "/worlds/deep-orbit/foundations/tensor-shapes",
+      "status": 200,
+      "canonical": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+      "h1Count": 1
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "projectGuideLastModified": "2026-11-11T00:00:00.000Z"
+    }
+  ],
+  "limitations": [
+    "This confirms deployed metadata and source links, not live browser consent/event delivery or Google warning clearance."
+  ],
+  "diagnosticCorrection": "The first local checker expected TechArticle. Source and production correctly use Article. The corrected checker passes without application changes."
+}

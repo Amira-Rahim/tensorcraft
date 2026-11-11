@@ -1,0 +1,1234 @@
+{
+  "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+  "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+  "run": {
+    "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+    "status": "partial",
+    "trigger": "manual",
+    "expected": 36,
+    "completed": 34,
+    "failed": 2,
+    "pending": 0,
+    "createdAt": "2026-11-11T12:56:59.201Z",
+    "completedAt": "2026-11-11T13:02:39.655Z",
+    "pollAfterSeconds": 5
+  },
+  "market": {
+    "locationCode": 2840,
+    "country": "United States",
+    "languageCode": "en",
+    "status": "Approved for this collection, not confirmed business targeting."
+  },
+  "verdict": "OpenSEO recorded no Tensorcraft mention or own-site citation in 34 answered observations. Two failed Google AI Overview observations are excluded from those denominators.",
+  "statistics": {
+    "overall": {
+      "expected": 36,
+      "answered": 34,
+      "failed": 2,
+      "noAnswer": 0,
+      "pending": 0,
+      "ownMentions": 0,
+      "ownCitations": 0,
+      "mentionRate": 0,
+      "citationRate": 0
+    },
+    "topicCounts": [
+      {
+        "topic": "Browser machine learning projects",
+        "expected": 12,
+        "answered": 12,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "Learning ML with JavaScript",
+        "expected": 12,
+        "answered": 11,
+        "failed": 1,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "TensorFlow.js practical skills",
+        "expected": 12,
+        "answered": 11,
+        "failed": 1,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      }
+    ],
+    "engineCounts": [
+      {
+        "engine": "chatgpt",
+        "expected": 12,
+        "answered": 12,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "engine": "gemini",
+        "expected": 12,
+        "answered": 12,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "engine": "google_ai_overview",
+        "expected": 12,
+        "answered": 10,
+        "failed": 2,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      }
+    ],
+    "topicEngineCounts": [
+      {
+        "topic": "Browser machine learning projects",
+        "engine": "chatgpt",
+        "expected": 4,
+        "answered": 4,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "Browser machine learning projects",
+        "engine": "gemini",
+        "expected": 4,
+        "answered": 4,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "Browser machine learning projects",
+        "engine": "google_ai_overview",
+        "expected": 4,
+        "answered": 4,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "Learning ML with JavaScript",
+        "engine": "chatgpt",
+        "expected": 4,
+        "answered": 4,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "Learning ML with JavaScript",
+        "engine": "gemini",
+        "expected": 4,
+        "answered": 4,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "Learning ML with JavaScript",
+        "engine": "google_ai_overview",
+        "expected": 4,
+        "answered": 3,
+        "failed": 1,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "TensorFlow.js practical skills",
+        "engine": "chatgpt",
+        "expected": 4,
+        "answered": 4,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "TensorFlow.js practical skills",
+        "engine": "gemini",
+        "expected": 4,
+        "answered": 4,
+        "failed": 0,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      },
+      {
+        "topic": "TensorFlow.js practical skills",
+        "engine": "google_ai_overview",
+        "expected": 4,
+        "answered": 3,
+        "failed": 1,
+        "noAnswer": 0,
+        "pending": 0,
+        "ownMentions": 0,
+        "ownCitations": 0,
+        "mentionRate": 0,
+        "citationRate": 0
+      }
+    ],
+    "brandedPromptsExcluded": 0,
+    "neutralPrompts": 12,
+    "answersWithAnyCitations": 26,
+    "citationLinksAcrossAnswers": 191,
+    "sources": {
+      "exactUrls": 143,
+      "ownSourceRows": 0,
+      "rowsWithTruncatedSupportingIds": 0,
+      "unresolvedGoogleRedirectRows": 23,
+      "domainCounts": [
+        {
+          "domain": "tensorflow.org",
+          "answers": 18,
+          "exactUrls": 11
+        },
+        {
+          "domain": "youtube.com",
+          "answers": 12,
+          "exactUrls": 15
+        },
+        {
+          "domain": "medium.com",
+          "answers": 10,
+          "exactUrls": 11
+        },
+        {
+          "domain": "google.com",
+          "answers": 8,
+          "exactUrls": 23
+        },
+        {
+          "domain": "ml5js.org",
+          "answers": 7,
+          "exactUrls": 3
+        },
+        {
+          "domain": "geeksforgeeks.org",
+          "answers": 7,
+          "exactUrls": 6
+        },
+        {
+          "domain": "javascript.plainenglish.io",
+          "answers": 4,
+          "exactUrls": 2
+        },
+        {
+          "domain": "dev.to",
+          "answers": 4,
+          "exactUrls": 4
+        },
+        {
+          "domain": "robinwieruch.de",
+          "answers": 3,
+          "exactUrls": 1
+        },
+        {
+          "domain": "codelabs.developers.google.com",
+          "answers": 3,
+          "exactUrls": 2
+        },
+        {
+          "domain": "onnxruntime.ai",
+          "answers": 3,
+          "exactUrls": 2
+        },
+        {
+          "domain": "github.com",
+          "answers": 3,
+          "exactUrls": 8
+        },
+        {
+          "domain": "js.tensorflow.org",
+          "answers": 3,
+          "exactUrls": 5
+        },
+        {
+          "domain": "discuss.ai.google.dev",
+          "answers": 2,
+          "exactUrls": 1
+        },
+        {
+          "domain": "coursera.org",
+          "answers": 2,
+          "exactUrls": 2
+        },
+        {
+          "domain": "w3schools.com",
+          "answers": 2,
+          "exactUrls": 1
+        },
+        {
+          "domain": "developers.google.com",
+          "answers": 2,
+          "exactUrls": 2
+        },
+        {
+          "domain": "observablehq.com",
+          "answers": 2,
+          "exactUrls": 2
+        },
+        {
+          "domain": "stackoverflow.com",
+          "answers": 2,
+          "exactUrls": 3
+        },
+        {
+          "domain": "reddit.com",
+          "answers": 2,
+          "exactUrls": 2
+        },
+        {
+          "domain": "4geeks.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "arxiv.org",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "blog.logrocket.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "brain.js.org",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "coddy.tech",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "codecraft.tv",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "courseonic.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "datascience.stackexchange.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "deloitteprehirelearning.udemy.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "gilberttanner.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "hpssjellis.github.io",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "huggingface.co",
+          "answers": 1,
+          "exactUrls": 2
+        },
+        {
+          "domain": "jdhao.github.io",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "kedevked.medium.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "mlconference.ai",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "omdayal.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "opensource.microsoft.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "playground.tensorflow.org",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "scikit-learn.org",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "serengetitech.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "stackshare.io",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "stats.stackexchange.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "teachablemachine.withgoogle.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "towardsdatascience.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "web.dev",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "classcentral.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "coddykit.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "deeplearning.ai",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "freecodecamp.org",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "pluralsight.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "pythonalchemist.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "quora.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "researchgate.net",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "smashingmagazine.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "techtarget.com",
+          "answers": 1,
+          "exactUrls": 1
+        },
+        {
+          "domain": "udemy.com",
+          "answers": 1,
+          "exactUrls": 1
+        }
+      ]
+    }
+  },
+  "topExactSources": [
+    {
+      "key": "https://www.tensorflow.org/js",
+      "url": "https://www.tensorflow.org/js",
+      "domain": "www.tensorflow.org",
+      "title": "Machine Learning for JavaScript Developers - TensorFlow.js",
+      "ownership": "other",
+      "answerCount": 10,
+      "promptCount": 6,
+      "promptIds": [
+        "60c26cfe-cc34-4911-b938-164c5cefff9a",
+        "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+        "c08543bc-5d93-4dde-9106-48bfe7421402",
+        "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+        "401af286-3254-4e64-96e3-00d40aa79ab0",
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 5
+        },
+        {
+          "engine": "chatgpt",
+          "answerCount": 5
+        }
+      ],
+      "observationIds": [
+        "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+        "a05696fd-c31f-48d5-85c3-f3d2477745c9",
+        "20ab565e-c50a-4492-9417-b38d0a31cfaf",
+        "fae5b7de-21f6-4852-98ce-b20f5283982a",
+        "9cd38377-a383-483d-8cea-097d18c1a4bf",
+        "c94ed5aa-df1b-45dc-8c59-65645da03df2",
+        "df0fc708-a544-4b90-a815-51af79ad1090",
+        "5f40dc35-95c5-44ee-8bfb-88247206356d",
+        "0c3c8938-4a98-4c79-b579-b841a30d2784",
+        "bce918dd-b7a9-4eec-994b-15885e82c735"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: official library documentation",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://www.tensorflow.org/js/tutorials",
+      "url": "https://www.tensorflow.org/js/tutorials",
+      "domain": "www.tensorflow.org",
+      "title": "Open official tutorials",
+      "ownership": "other",
+      "answerCount": 10,
+      "promptCount": 8,
+      "promptIds": [
+        "401af286-3254-4e64-96e3-00d40aa79ab0",
+        "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+        "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+        "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+        "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+        "60c26cfe-cc34-4911-b938-164c5cefff9a",
+        "c08543bc-5d93-4dde-9106-48bfe7421402"
+      ],
+      "engines": [
+        {
+          "engine": "chatgpt",
+          "answerCount": 5
+        },
+        {
+          "engine": "gemini",
+          "answerCount": 5
+        }
+      ],
+      "observationIds": [
+        "5f40dc35-95c5-44ee-8bfb-88247206356d",
+        "c94ed5aa-df1b-45dc-8c59-65645da03df2",
+        "bce918dd-b7a9-4eec-994b-15885e82c735",
+        "7b0a54c2-5053-4e97-95e7-56c7b8e66589",
+        "9729a44f-6b95-4f1b-8265-c1b371217258",
+        "0c3c8938-4a98-4c79-b579-b841a30d2784",
+        "fae5b7de-21f6-4852-98ce-b20f5283982a",
+        "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+        "20ab565e-c50a-4492-9417-b38d0a31cfaf",
+        "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: official tutorials",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://ml5js.org/",
+      "url": "https://ml5js.org/",
+      "domain": "ml5js.org",
+      "title": "ml5.js | Friendly Machine Learning for the Web",
+      "ownership": "other",
+      "answerCount": 6,
+      "promptCount": 5,
+      "promptIds": [
+        "c08543bc-5d93-4dde-9106-48bfe7421402",
+        "60c26cfe-cc34-4911-b938-164c5cefff9a",
+        "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+        "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 4
+        },
+        {
+          "engine": "chatgpt",
+          "answerCount": 2
+        }
+      ],
+      "observationIds": [
+        "df0fc708-a544-4b90-a815-51af79ad1090",
+        "9cd38377-a383-483d-8cea-097d18c1a4bf",
+        "a05696fd-c31f-48d5-85c3-f3d2477745c9",
+        "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+        "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643",
+        "809be288-d871-4297-bd1d-862e7d4b2a24"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: official library page",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://www.youtube.com/watch?v=ECotpcPCTaU",
+      "url": "https://www.youtube.com/watch?v=ECotpcPCTaU",
+      "domain": "www.youtube.com",
+      "title": "Machine Learning in JavaScript with ml5.js",
+      "ownership": "other",
+      "answerCount": 4,
+      "promptCount": 4,
+      "promptIds": [
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+        "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+        "c08543bc-5d93-4dde-9106-48bfe7421402",
+        "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+      ],
+      "engines": [
+        {
+          "engine": "google_ai_overview",
+          "answerCount": 3
+        },
+        {
+          "engine": "chatgpt",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "f55ea614-4a61-47c9-8988-821b8f8300c0",
+        "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0",
+        "502c898d-ea2b-43a8-a506-d94e7be47f16",
+        "7b0a54c2-5053-4e97-95e7-56c7b8e66589"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: course video",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://javascript.plainenglish.io/javascript-beyond-the-browser-my-first-steps-into-ai-with-tensorflow-js-a7afb7f450da",
+      "url": "https://javascript.plainenglish.io/javascript-beyond-the-browser-my-first-steps-into-ai-with-tensorflow-js-a7afb7f450da",
+      "domain": "javascript.plainenglish.io",
+      "title": "My First Steps into AI with TensorFlow.js - JavaScript in Plain English",
+      "ownership": "other",
+      "answerCount": 3,
+      "promptCount": 3,
+      "promptIds": [
+        "60c26cfe-cc34-4911-b938-164c5cefff9a",
+        "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+        "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 3
+        }
+      ],
+      "observationIds": [
+        "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+        "fae5b7de-21f6-4852-98ce-b20f5283982a",
+        "c94ed5aa-df1b-45dc-8c59-65645da03df2"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: authored tutorial",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://www.robinwieruch.de/machine-learning-javascript-web-developers/",
+      "url": "https://www.robinwieruch.de/machine-learning-javascript-web-developers/",
+      "domain": "www.robinwieruch.de",
+      "title": "A Web Developer's Guide to Machine Learning in JavaScript - Robin Wieruch",
+      "ownership": "other",
+      "answerCount": 3,
+      "promptCount": 2,
+      "promptIds": [
+        "c08543bc-5d93-4dde-9106-48bfe7421402",
+        "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+      ],
+      "engines": [
+        {
+          "engine": "google_ai_overview",
+          "answerCount": 2
+        },
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "502c898d-ea2b-43a8-a506-d94e7be47f16",
+        "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0",
+        "df0fc708-a544-4b90-a815-51af79ad1090"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: authored learning guide",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://www.youtube.com/watch?v=26uABexmOX4",
+      "url": "https://www.youtube.com/watch?v=26uABexmOX4",
+      "domain": "www.youtube.com",
+      "title": "Beginner's Guide to Machine Learning in JavaScript with ml5.js",
+      "ownership": "other",
+      "answerCount": 3,
+      "promptCount": 3,
+      "promptIds": [
+        "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+        "c08543bc-5d93-4dde-9106-48bfe7421402",
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        },
+        {
+          "engine": "google_ai_overview",
+          "answerCount": 2
+        }
+      ],
+      "observationIds": [
+        "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643",
+        "502c898d-ea2b-43a8-a506-d94e7be47f16",
+        "f55ea614-4a61-47c9-8988-821b8f8300c0"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: course video",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://codelabs.developers.google.com/codelabs/tfjs-training-regression",
+      "url": "https://codelabs.developers.google.com/codelabs/tfjs-training-regression",
+      "domain": "codelabs.developers.google.com",
+      "title": "TensorFlow.js Regression Tutorial",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 2,
+      "promptIds": [
+        "218d035d-3f09-4842-9442-0195449c8917",
+        "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+      ],
+      "engines": [
+        {
+          "engine": "chatgpt",
+          "answerCount": 1
+        },
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "878cb67e-7186-4e6c-9633-0857a20f3154",
+        "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: official codelab",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://discuss.ai.google.dev/t/if-i-already-know-all-the-shapes-of-the-array-what-is-the-difference-between-reshape-and-transpose/31519",
+      "url": "https://discuss.ai.google.dev/t/if-i-already-know-all-the-shapes-of-the-array-what-is-the-difference-between-reshape-and-transpose/31519",
+      "domain": "discuss.ai.google.dev",
+      "title": "If I already know all the shapes of the array, what is the difference",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 1,
+      "promptIds": [
+        "a49f2580-c42e-486e-9351-4afc17378db2"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        },
+        {
+          "engine": "google_ai_overview",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "37d8de57-b653-4c24-893a-59f9406802e3",
+        "f4d4052f-e119-4375-a7a7-94b4175aa888"
+      ],
+      "truncated": false,
+      "sourceType": "Forum or community",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://medium.com/@connect.hashblock/running-machine-learning-models-directly-in-the-browser-with-tensorflow-js-798cfdd6ede4",
+      "url": "https://medium.com/@connect.hashblock/running-machine-learning-models-directly-in-the-browser-with-tensorflow-js-798cfdd6ede4",
+      "domain": "medium.com",
+      "title": "Running Machine Learning Models Directly in the Browser with",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 2,
+      "promptIds": [
+        "60c26cfe-cc34-4911-b938-164c5cefff9a",
+        "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 2
+        }
+      ],
+      "observationIds": [
+        "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+        "c94ed5aa-df1b-45dc-8c59-65645da03df2"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: authored tutorial",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://ml5js.org/learn/",
+      "url": "https://ml5js.org/learn/",
+      "domain": "ml5js.org",
+      "title": "Explore ml5.js learning resources",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 1,
+      "promptIds": [
+        "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+      ],
+      "engines": [
+        {
+          "engine": "chatgpt",
+          "answerCount": 1
+        },
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "7b0a54c2-5053-4e97-95e7-56c7b8e66589",
+        "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: official learning resources",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://onnxruntime.ai/docs/get-started/with-javascript/web.html",
+      "url": "https://onnxruntime.ai/docs/get-started/with-javascript/web.html",
+      "domain": "onnxruntime.ai",
+      "title": "ONNX Runtime Web",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 2,
+      "promptIds": [
+        "c08543bc-5d93-4dde-9106-48bfe7421402",
+        "60c26cfe-cc34-4911-b938-164c5cefff9a"
+      ],
+      "engines": [
+        {
+          "engine": "chatgpt",
+          "answerCount": 2
+        }
+      ],
+      "observationIds": [
+        "20ab565e-c50a-4492-9417-b38d0a31cfaf",
+        "9cd38377-a383-483d-8cea-097d18c1a4bf"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: official runtime documentation",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://www.coursera.org/learn/browser-based-models-tensorflow",
+      "url": "https://www.coursera.org/learn/browser-based-models-tensorflow",
+      "domain": "www.coursera.org",
+      "title": "Browser-based Models with TensorFlow.js | Coursera",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 1,
+      "promptIds": [
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+      ],
+      "engines": [
+        {
+          "engine": "google_ai_overview",
+          "answerCount": 1
+        },
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "f55ea614-4a61-47c9-8988-821b8f8300c0",
+        "809be288-d871-4297-bd1d-862e7d4b2a24"
+      ],
+      "truncated": false,
+      "sourceType": "Competitor course page",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://www.geeksforgeeks.org/deep-learning/how-to-reshape-a-tensor-in-tensorflow/",
+      "url": "https://www.geeksforgeeks.org/deep-learning/how-to-reshape-a-tensor-in-tensorflow/",
+      "domain": "www.geeksforgeeks.org",
+      "title": "How to Reshape a Tensor in Tensorflow? - GeeksforGeeks",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 1,
+      "promptIds": [
+        "a49f2580-c42e-486e-9351-4afc17378db2"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        },
+        {
+          "engine": "google_ai_overview",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "37d8de57-b653-4c24-893a-59f9406802e3",
+        "f4d4052f-e119-4375-a7a7-94b4175aa888"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: tutorial",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    },
+    {
+      "key": "https://www.geeksforgeeks.org/javascript/how-to-get-started-with-ml5js/",
+      "url": "https://www.geeksforgeeks.org/javascript/how-to-get-started-with-ml5js/",
+      "domain": "www.geeksforgeeks.org",
+      "title": "How to Get Started with ml5.js? - GeeksforGeeks",
+      "ownership": "other",
+      "answerCount": 2,
+      "promptCount": 2,
+      "promptIds": [
+        "c08543bc-5d93-4dde-9106-48bfe7421402",
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+      ],
+      "engines": [
+        {
+          "engine": "gemini",
+          "answerCount": 1
+        },
+        {
+          "engine": "google_ai_overview",
+          "answerCount": 1
+        }
+      ],
+      "observationIds": [
+        "df0fc708-a544-4b90-a815-51af79ad1090",
+        "f55ea614-4a61-47c9-8988-821b8f8300c0"
+      ],
+      "truncated": false,
+      "sourceType": "Reference or editorial: tutorial",
+      "classificationBasis": "URL, source title and primary-page review where available. Classification does not establish every page's brand mentions.",
+      "tensorcraftListed": "Not established from source records alone. Consult page-review evidence for pages read."
+    }
+  ],
+  "failedObservations": [
+    {
+      "id": "a98f30ef-696e-4e15-93cb-5f4622aef94d",
+      "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+      "promptId": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+      "prompt": "Where can I practice machine learning in JavaScript with interactive exercises?",
+      "topic": "Learning ML with JavaScript",
+      "branded": false,
+      "engine": "google_ai_overview",
+      "status": "failed",
+      "brands": [],
+      "answerStatus": null,
+      "citationCount": 0,
+      "collectedAt": null,
+      "error": "UPSTREAM_UNAVAILABLE"
+    },
+    {
+      "id": "320d84f7-68cf-4d7f-a1cf-693311265e1d",
+      "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+      "promptId": "218d035d-3f09-4842-9442-0195449c8917",
+      "prompt": "How should I normalize data for a TensorFlow.js model?",
+      "topic": "TensorFlow.js practical skills",
+      "branded": false,
+      "engine": "google_ai_overview",
+      "status": "failed",
+      "brands": [],
+      "answerStatus": null,
+      "citationCount": 0,
+      "collectedAt": null,
+      "error": "UPSTREAM_UNAVAILABLE"
+    }
+  ],
+  "answerReads": {
+    "count": 6,
+    "observations": [
+      {
+        "id": "9cd38377-a383-483d-8cea-097d18c1a4bf",
+        "prompt": "How can I train and evaluate a small machine learning model in the browser?",
+        "engine": "chatgpt",
+        "truncated": false
+      },
+      {
+        "id": "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+        "prompt": "How can I train and evaluate a small machine learning model in the browser?",
+        "engine": "gemini",
+        "truncated": false
+      },
+      {
+        "id": "8e7a89c4-1b4b-4f57-8096-8ed51d025875",
+        "prompt": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+        "engine": "google_ai_overview",
+        "truncated": false
+      },
+      {
+        "id": "bce918dd-b7a9-4eec-994b-15885e82c735",
+        "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+        "engine": "chatgpt",
+        "truncated": false
+      },
+      {
+        "id": "809be288-d871-4297-bd1d-862e7d4b2a24",
+        "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+        "engine": "gemini",
+        "truncated": false
+      },
+      {
+        "id": "f55ea614-4a61-47c9-8988-821b8f8300c0",
+        "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+        "engine": "google_ai_overview",
+        "truncated": false
+      }
+    ],
+    "selection": "Two browser-training answers, one data-leakage answer, and the course-recommendation prompt in all three engines. Purposive, not representative of every alternative name."
+  },
+  "manualAlternativeEvidence": [
+    {
+      "prompt": "How can I train and evaluate a small machine learning model in the browser?",
+      "engines": [
+        "chatgpt",
+        "gemini"
+      ],
+      "observationIds": [
+        "9cd38377-a383-483d-8cea-097d18c1a4bf",
+        "e0ba7029-e325-4cff-830a-ec6ee5c27999"
+      ],
+      "namedAlternatives": [
+        "TensorFlow.js",
+        "ml5.js"
+      ],
+      "note": "ChatGPT also names ONNX Runtime Web. These are tools, not equivalent course businesses."
+    },
+    {
+      "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+      "engines": [
+        "gemini",
+        "google_ai_overview"
+      ],
+      "observationIds": [
+        "809be288-d871-4297-bd1d-862e7d4b2a24",
+        "f55ea614-4a61-47c9-8988-821b8f8300c0"
+      ],
+      "namedAlternatives": [
+        "Browser-based Models with TensorFlow.js by DeepLearning.AI on Coursera",
+        "The Coding Train"
+      ],
+      "citation": "https://www.coursera.org/learn/browser-based-models-tensorflow",
+      "note": "Two of the three course-prompt answers name this specific Coursera course. This is a prompt-level observation, not a market-wide competitor rate."
+    },
+    {
+      "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+      "engines": [
+        "chatgpt"
+      ],
+      "observationIds": [
+        "bce918dd-b7a9-4eec-994b-15885e82c735"
+      ],
+      "namedAlternatives": [
+        "Stephen Grider's Machine Learning with JavaScript",
+        "Google TensorFlow.js tutorials",
+        "Andrew Ng's Machine Learning Specialization",
+        "Google Machine Learning Crash Course"
+      ],
+      "note": "Names are retained as answer evidence. Course claims require current publisher verification before comparison."
+    }
+  ],
+  "candidateActions": [
+    {
+      "type": "Improve an owned page",
+      "status": "Leading candidate",
+      "action": "Give the existing browser-project guide a direct path from its evidence and fixtures to a runnable train/evaluate example and visible held-out comparison.",
+      "promptIds": [
+        "60c26cfe-cc34-4911-b938-164c5cefff9a",
+        "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+        "401af286-3254-4e64-96e3-00d40aa79ab0"
+      ],
+      "evidence": "Official TF.js tutorials recur in 10 answered observations across 8 prompts. Two inspected browser-training answers point to practical libraries and a code workflow.",
+      "effort": "Medium",
+      "uncertainty": "The guide and linked lessons already teach preprocessing and evaluation. The newly released direct reproduction links must be included in the before/after assessment. Citation selection and indexing, not a missing concept, may explain absence."
+    },
+    {
+      "type": "Improve an owned page",
+      "status": "Leading candidate",
+      "action": "Add a sourced comparison with Coursera's Browser-based Models with TensorFlow.js to the existing comparison page.",
+      "promptIds": [
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+      ],
+      "evidence": "Gemini and Google AI Overview name and cite the same course. Its primary page states intermediate level, prior TensorFlow recommendation, four modules and browser/Python-conversion scope. Existing /compare omits it.",
+      "effort": "Small to medium",
+      "uncertainty": "The signal comes from one course prompt. A comparison improves reader fit but does not guarantee citations. Do not infer quality or outcomes."
+    },
+    {
+      "type": "Third-party source qualification",
+      "status": "Defer until fit and submission rules verified",
+      "action": "Check whether Class Central accepts TensorFlow.js course listings in an appropriate category.",
+      "promptIds": [
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+      ],
+      "evidence": "Gemini cites the ml5.js directory once. Tensorcraft was absent in the retrieved page text, and a public contact page exists.",
+      "effort": "Small research task",
+      "uncertainty": "The cited ml5 category does not match Tensorcraft's TF.js course. New-course acceptance policy and eligible category are unverified. No outreach was sent."
+    },
+    {
+      "type": "Third-party editorial contribution",
+      "status": "Secondary candidate",
+      "action": "Prepare a distinctive, technically verified browser ML example before qualifying a relevant editorial contribution route.",
+      "promptIds": [
+        "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+        "401af286-3254-4e64-96e3-00d40aa79ab0"
+      ],
+      "evidence": "The course answer cites freeCodeCamp's ml5.js course announcement. Other tutorial publishers appear in the sources.",
+      "effort": "Medium",
+      "uncertainty": "The cited announcement promotes its own course. This is not evidence that the publisher will add Tensorcraft. No verified contribution route or recurring editorial placement opportunity yet."
+    },
+    {
+      "type": "Create a new owned page",
+      "status": "Do not prioritize",
+      "action": "Avoid duplicating basic normalization or reshape instruction before assessing existing lessons and guides.",
+      "promptIds": [
+        "218d035d-3f09-4842-9442-0195449c8917",
+        "a49f2580-c42e-486e-9351-4afc17378db2"
+      ],
+      "evidence": "Owned-side reads show a reshape guide with runnable code and free normalization lesson with training-only statistics and reuse.",
+      "effort": "None now",
+      "uncertainty": "No observed citation identifies a missing explanation. An indexing or authority problem remains possible."
+    },
+    {
+      "type": "Access repair",
+      "status": "No observed repair needed",
+      "action": "Keep public crawl access and server-rendered answer content intact.",
+      "promptIds": [],
+      "evidence": "Robots permits public pages. Seven targeted pages returned 200, self-canonical and initial-HTML text.",
+      "effort": "None now",
+      "uncertainty": "Ordinary HTTP reads do not prove every provider can fetch the site from every IP, and do not establish indexing."
+    },
+    {
+      "type": "Community contribution",
+      "status": "Do not pursue the old leakage thread",
+      "action": "Exclude the cited inactive Cross Validated leakage thread from promotional outreach.",
+      "promptIds": [
+        "e81b9fcb-316b-4641-ab6f-88d9a7d4206d"
+      ],
+      "evidence": "Independent page review found an unanswered older thread without recent activity.",
+      "effort": "None now",
+      "uncertainty": "A future genuinely relevant, permitted technical contribution may be useful elsewhere. This single citation does not establish an active community opportunity."
+    }
+  ],
+  "limitations": [
+    "One observation per manually selected neutral prompt and engine. Findings describe this run only, not all AI use, ranking, traffic, conversions or prompt demand.",
+    "All topics have zero recorded mentions and citations. There is no strongest or weakest visibility topic within this sample. Coverage differs.",
+    "No competitor brands were configured. Provider competitor-gap counts cannot rank alternatives. Named alternatives above come only from the six inspected answers.",
+    "All 36 observation rows and all 143 exact URL rows were retrieved. Each page and source row reported truncated=false. Six selected full answers reported truncated=false.",
+    "Exact URL variants are preserved. Domain-level answer totals deduplicate observation IDs and remove only an initial www. prefix. Subdomains remain separate.",
+    "Twenty-three source rows contain unresolved Google redirect URLs. Their final destinations were not independently verified. Zero own citations is OpenSEO's recorded brand result, not a claim that every redirect target was inspected.",
+    "Two upstream failures are not no-answer results and are not brand absence. No retries were purchased.",
+    "Extra explore_prompt and paid search research were skipped because authorization was limited to the exact $0.216 manual check. No fan-out or search-causality claims.",
+    "This first run has no comparable historical baseline. No trend is claimed.",
+    "Provider responses did not return an actual credit debit. The exact approved run cap was $0.216, quoted as 216 credits. Schedule is disabled before and after collection."
+  ]
+}

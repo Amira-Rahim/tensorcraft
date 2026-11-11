@@ -1,0 +1,48 @@
+{
+  "observedAtUTC": "2026-11-11T13:03:20Z",
+  "scope": "Independent public source review and local comparison. This supplement preserves the collector's source-review-courses-2026-11-11.json.",
+  "actions": {
+    "paidResearch": false,
+    "outreach": false,
+    "formsSubmitted": false,
+    "applicationCodeChanged": false
+  },
+  "coursePageChecks": {
+    "urls": [
+      "https://www.coursera.org/learn/browser-based-models-tensorflow",
+      "https://www.classcentral.com/subject/ml5",
+      "https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/"
+    ],
+    "tensorcraftPresence": "No Tensorcraft text match on any retrieved page. This does not establish absence from each publisher's entire site.",
+    "agreementWithCollector": "The sources identify browser ML course alternatives and a directory specific to ml5.js. That directory category does not match Tensorcraft's stated TensorFlow.js curriculum.",
+    "countLimit": "The Class Central response in this review showed eight courses, but the collector observed changing totals. No stable course-count claim is used."
+  },
+  "existingOwnedPages": {
+    "compare": {
+      "path": "apps/web/app/compare/page.tsx",
+      "currentExternalOptions": [
+        "TensorFlow.js learning resources",
+        "Charlie Gerard / Master.dev",
+        "fast.ai",
+        "Scrimba"
+      ],
+      "observedGap": "The comparison omits DeepLearning.AI's browser TensorFlow.js course on Coursera and Henry Ly's ml5.js course announced by freeCodeCamp. Both appear in this GEO run's cited sources.",
+      "boundedAction": "Consider adding these named alternatives using primary-source goals, prerequisites, practice formats and example outputs. The citation sample alone does not establish demand, relative quality or conversion impact."
+    },
+    "learningPath": {
+      "path": "apps/web/app/guides/javascript-machine-learning-learning-path/page.tsx",
+      "alreadyPresent": "Training, pretrained inference and hosted API routes. JavaScript prerequisites. Input preparation, baseline comparison, held-out evaluation, browser delivery and inspectable project evidence.",
+      "implication": "The observed source sample supports a specific comparator update. It does not establish a need for another general learning-path guide."
+    }
+  },
+  "freeCodeCampContributorRoute": {
+    "discovery": "A separate search of the publisher's site found its contributor instructions. The cited course announcement itself did not expose a course-submission route.",
+    "instructionsURL": "https://www.freecodecamp.org/news/how-to-write-for-freecodecamp",
+    "policyURL": "https://www.freecodecamp.org/news/developer-news-style-guide/",
+    "applicationLink": "https://forms.gle/HzY5nDLsqug1FqhS6",
+    "verifiedPolicy": "The current style guide links to a contributor application and requires human-authored articles. It explicitly rejects AI-written submissions. The linked contributor explainer asks applicants for three previous writing samples.",
+    "applicationAccess": "The short link redirected to Google Forms, which the web reader could not access. Form fields and current acceptance were not verified.",
+    "viability": "A human-authored technical tutorial has a documented editorial application route, subject to editorial acceptance. This does not establish a course-listing route or guarantee a Tensorcraft citation.",
+    "nextAction": "A human contributor can review the current policy and application before preparing original work. An AI-written article would conflict with the stated submission policy."
+  }
+}

@@ -49,6 +49,7 @@ import {
   track,
   EVENTS,
 } from "@/lib/analytics";
+import { useAnalyticsReady } from "@/lib/analytics-ready";
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 import { SceneHeading, ScenePortrait } from "@tensorcraft/ui";
 import { worlds } from "@tensorcraft/worlds";
@@ -309,6 +310,7 @@ function LessonStepsInner({
   freeRecallPrompts = [],
 }: LessonStepsProps) {
   const reviewUserId = useActivityUser();
+  const analyticsReady = useAnalyticsReady();
   const requiresCurrentRecall =
     recallContentVersion(worldSlug, lesson.slug) > 1;
   const knownCompleted = !!lessons?.some(
@@ -389,6 +391,10 @@ function LessonStepsInner({
   // lesson_completed.durationMs/hintsUsed, script_skipped(via:"continue"),
   // and the world_progress hints/attempts columns that were permanently 0.
   const lessonStartedAtRef = useRef<number>(Date.now());
+  const observedLessonVisitRef = useRef<{
+    key: string;
+    observed: boolean;
+  } | null>(null);
   const stepEnteredAtRef = useRef<number>(Date.now());
   const prevViewedStepRef = useRef<number | null>(null);
   // Steps this browser has ever seen for this lesson: seeded from the
@@ -698,8 +704,19 @@ function LessonStepsInner({
   useEffect(() => {
     lessonStartedAtRef.current = Date.now();
     markLessonStarted(worldSlug, moduleSlug, lesson.slug).catch(() => {});
-    trackLessonStarted(worldSlug, moduleSlug, lesson.slug);
   }, [worldSlug, moduleSlug, lesson.slug]);
+
+  // Observe only the current visit once capture is ready. Route changes
+  // reset the visit even without consent, so earlier visits are not replayed.
+  useEffect(() => {
+    const key = `${worldSlug}/${moduleSlug}/${lesson.slug}`;
+    if (observedLessonVisitRef.current?.key !== key) {
+      observedLessonVisitRef.current = { key, observed: false };
+    }
+    if (!analyticsReady || observedLessonVisitRef.current.observed) return;
+    observedLessonVisitRef.current.observed = true;
+    trackLessonStarted(worldSlug, moduleSlug, lesson.slug);
+  }, [analyticsReady, worldSlug, moduleSlug, lesson.slug]);
 
   // Per-step funnel. Fires on every step entry once the mount-restore has
   // settled (so a resumed session reports its restored step, not a

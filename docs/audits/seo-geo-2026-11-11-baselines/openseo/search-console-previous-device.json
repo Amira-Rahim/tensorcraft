@@ -1,0 +1,66 @@
+{
+  "name": "previous-device",
+  "sourceTool": "get_search_console_performance",
+  "exhaustedPagination": true,
+  "pages": [
+    {
+      "calledAtUTC": "2026-11-11T11:52:55.708Z",
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "startDate": "2026-09-14",
+        "endDate": "2026-10-11",
+        "dataState": "final",
+        "type": "web",
+        "dimensions": [
+          "device"
+        ],
+        "rowLimit": 1000
+      },
+      "response": {
+        "ok": true,
+        "siteUrl": "sc-domain:tensorcraft.app",
+        "startDate": "2026-09-14",
+        "endDate": "2026-10-11",
+        "dimensions": [
+          "device"
+        ],
+        "rowCount": 3,
+        "rows": [
+          {
+            "keys": [
+              "DESKTOP"
+            ],
+            "clicks": 4,
+            "impressions": 46,
+            "ctr": 0.087,
+            "position": 6.9
+          },
+          {
+            "keys": [
+              "MOBILE"
+            ],
+            "clicks": 0,
+            "impressions": 22,
+            "ctr": 0,
+            "position": 5.9
+          },
+          {
+            "keys": [
+              "TABLET"
+            ],
+            "clicks": 0,
+            "impressions": 1,
+            "ctr": 0,
+            "position": 1
+          }
+        ],
+        "hasMore": false,
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/search-performance"
+        },
+        "resultId": "8ed4a0bf-9580-47da-b570-5b7c1be1bbcd"
+      }
+    }
+  ]
+}

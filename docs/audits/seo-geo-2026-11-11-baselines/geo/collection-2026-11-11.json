@@ -1,0 +1,1823 @@
+{
+  "artifact": "Approved one-time GEO collection evidence",
+  "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+  "domain": "tensorcraft.app",
+  "approvedScope": {
+    "prompts": 12,
+    "engines": [
+      "chatgpt",
+      "gemini",
+      "google_ai_overview"
+    ],
+    "locationCode": 2840,
+    "languageCode": "en",
+    "maxCostUsd": 0.216,
+    "quotedCredits": 216,
+    "recurringScheduleAuthorized": false,
+    "extraExplorationAuthorized": false
+  },
+  "limitations": [
+    "This is one manually selected prompt sample, not consumer prompt demand or traffic.",
+    "US English is the approved collection market, not a confirmed business targeting decision.",
+    "Quoted cost is an authorization cap. Actual debited credits are reported only if the provider returns them."
+  ],
+  "preRunTracker": {
+    "request": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44"
+    },
+    "response": {
+      "status": "success",
+      "data": {
+        "configured": false,
+        "providerConfigured": true,
+        "tracker": null,
+        "topics": [],
+        "prompts": [],
+        "brands": [
+          {
+            "name": "Tensorcraft",
+            "domain": "tensorcraft.app",
+            "own": true
+          }
+        ],
+        "engines": [],
+        "capabilities": [
+          {
+            "engine": "chatgpt",
+            "label": "ChatGPT",
+            "unsupportedLocationCodes": [
+              2275,
+              2344,
+              2831,
+              2832,
+              2833,
+              2862
+            ],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "gemini",
+            "label": "Gemini",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "google_ai_overview",
+            "label": "Google AI Overviews",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "The AI Overview on one Google results page. A page without an AI Overview is a no-answer result, not a missing brand.",
+            "modelApi": false
+          },
+          {
+            "engine": "claude",
+            "label": "Claude",
+            "unsupportedLocationCodes": [
+              2008,
+              2012,
+              2020,
+              2024,
+              2051,
+              2031,
+              2044,
+              2048,
+              2050,
+              2052,
+              2084,
+              2068,
+              2070,
+              2072,
+              2096,
+              2100,
+              2854,
+              2116,
+              2120,
+              2170,
+              2188,
+              2384,
+              2191,
+              2196,
+              2203,
+              2214,
+              2218,
+              2818,
+              2222,
+              2233,
+              2231,
+              2242,
+              2268,
+              2288,
+              2300,
+              2320,
+              2831,
+              2328,
+              2332,
+              2340,
+              2348,
+              2352,
+              2368,
+              2372,
+              2833,
+              2376,
+              2388,
+              2832,
+              2400,
+              2398,
+              2404,
+              2414,
+              2417,
+              2418,
+              2428,
+              2422,
+              2438,
+              2440,
+              2442,
+              2450,
+              2454,
+              2462,
+              2470,
+              2480,
+              2498,
+              2492,
+              2496,
+              2499,
+              2504,
+              2508,
+              2104,
+              2516,
+              2524,
+              2558,
+              2566,
+              2807,
+              2512,
+              2586,
+              2275,
+              2591,
+              2598,
+              2600,
+              2604,
+              2634,
+              2642,
+              2646,
+              2674,
+              2686,
+              2688,
+              2702,
+              2703,
+              2705,
+              2144,
+              2740,
+              2762,
+              2834,
+              2764,
+              2780,
+              2788,
+              2795,
+              2800,
+              2804,
+              2784,
+              2858,
+              2860,
+              2862,
+              2704,
+              2894,
+              2716
+            ],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          },
+          {
+            "engine": "perplexity",
+            "label": "Perplexity",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          }
+        ],
+        "recentRuns": []
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    }
+  },
+  "trackerSave": {
+    "request": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "prompts": [
+        {
+          "text": "What are good machine learning courses for JavaScript developers who are new to ML?",
+          "topic": "Learning ML with JavaScript"
+        },
+        {
+          "text": "How can a frontend developer learn machine learning using JavaScript?",
+          "topic": "Learning ML with JavaScript"
+        },
+        {
+          "text": "Where can I practice machine learning in JavaScript with interactive exercises?",
+          "topic": "Learning ML with JavaScript"
+        },
+        {
+          "text": "What should I learn before building my first machine learning model in JavaScript?",
+          "topic": "Learning ML with JavaScript"
+        },
+        {
+          "text": "What is the difference between reshape and transpose in TensorFlow.js?",
+          "topic": "TensorFlow.js practical skills"
+        },
+        {
+          "text": "How do tensor shapes work in TensorFlow.js?",
+          "topic": "TensorFlow.js practical skills"
+        },
+        {
+          "text": "How should I normalize data for a TensorFlow.js model?",
+          "topic": "TensorFlow.js practical skills"
+        },
+        {
+          "text": "Where can I find TensorFlow.js tutorials with runnable examples?",
+          "topic": "TensorFlow.js practical skills"
+        },
+        {
+          "text": "What is a good first machine learning project to build in the browser with JavaScript?",
+          "topic": "Browser machine learning projects"
+        },
+        {
+          "text": "How can I train and evaluate a small machine learning model in the browser?",
+          "topic": "Browser machine learning projects"
+        },
+        {
+          "text": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+          "topic": "Browser machine learning projects"
+        },
+        {
+          "text": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+          "topic": "Browser machine learning projects"
+        }
+      ],
+      "engines": [
+        "chatgpt",
+        "gemini",
+        "google_ai_overview"
+      ],
+      "locationCode": 2840,
+      "languageCode": "en"
+    },
+    "response": {
+      "status": "success",
+      "data": {
+        "state": {
+          "configured": true,
+          "providerConfigured": true,
+          "tracker": {
+            "id": "59531053-5b00-4a4a-88a8-191e707451e5",
+            "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+            "enabled": true,
+            "locationCode": 2840,
+            "languageCode": "en",
+            "scheduleInterval": "weekly",
+            "nextCheckAt": "2026-11-19T06:30:00.000Z",
+            "lastSkipReason": null,
+            "createdAt": "2026-11-11T12:55:11.873Z"
+          },
+          "topics": [
+            "Browser machine learning projects",
+            "Learning ML with JavaScript",
+            "TensorFlow.js practical skills"
+          ],
+          "prompts": [
+            {
+              "id": "218d035d-3f09-4842-9442-0195449c8917",
+              "text": "How should I normalize data for a TensorFlow.js model?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "401af286-3254-4e64-96e3-00d40aa79ab0",
+              "text": "Where can I find TensorFlow.js tutorials with runnable examples?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "60c26cfe-cc34-4911-b938-164c5cefff9a",
+              "text": "How can I train and evaluate a small machine learning model in the browser?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+              "text": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+              "text": "What should I learn before building my first machine learning model in JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+              "text": "Where can I practice machine learning in JavaScript with interactive exercises?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+              "text": "What are good machine learning courses for JavaScript developers who are new to ML?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "a49f2580-c42e-486e-9351-4afc17378db2",
+              "text": "What is the difference between reshape and transpose in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "c08543bc-5d93-4dde-9106-48bfe7421402",
+              "text": "How can a frontend developer learn machine learning using JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "e81b9fcb-316b-4641-ab6f-88d9a7d4206d",
+              "text": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "f0f15810-192f-4a9c-8329-84579e82aa13",
+              "text": "How do tensor shapes work in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+              "text": "What is a good first machine learning project to build in the browser with JavaScript?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            }
+          ],
+          "brands": [
+            {
+              "name": "Tensorcraft",
+              "domain": "tensorcraft.app",
+              "own": true
+            }
+          ],
+          "engines": [
+            "chatgpt",
+            "gemini",
+            "google_ai_overview"
+          ],
+          "capabilities": [
+            {
+              "engine": "chatgpt",
+              "label": "ChatGPT",
+              "unsupportedLocationCodes": [
+                2275,
+                2344,
+                2831,
+                2832,
+                2833,
+                2862
+              ],
+              "maxPromptLength": 2000,
+              "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": false
+            },
+            {
+              "engine": "gemini",
+              "label": "Gemini",
+              "unsupportedLocationCodes": [],
+              "maxPromptLength": 2000,
+              "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": false
+            },
+            {
+              "engine": "google_ai_overview",
+              "label": "Google AI Overviews",
+              "unsupportedLocationCodes": [],
+              "maxPromptLength": 2000,
+              "note": "The AI Overview on one Google results page. A page without an AI Overview is a no-answer result, not a missing brand.",
+              "modelApi": false
+            },
+            {
+              "engine": "claude",
+              "label": "Claude",
+              "unsupportedLocationCodes": [
+                2008,
+                2012,
+                2020,
+                2024,
+                2051,
+                2031,
+                2044,
+                2048,
+                2050,
+                2052,
+                2084,
+                2068,
+                2070,
+                2072,
+                2096,
+                2100,
+                2854,
+                2116,
+                2120,
+                2170,
+                2188,
+                2384,
+                2191,
+                2196,
+                2203,
+                2214,
+                2218,
+                2818,
+                2222,
+                2233,
+                2231,
+                2242,
+                2268,
+                2288,
+                2300,
+                2320,
+                2831,
+                2328,
+                2332,
+                2340,
+                2348,
+                2352,
+                2368,
+                2372,
+                2833,
+                2376,
+                2388,
+                2832,
+                2400,
+                2398,
+                2404,
+                2414,
+                2417,
+                2418,
+                2428,
+                2422,
+                2438,
+                2440,
+                2442,
+                2450,
+                2454,
+                2462,
+                2470,
+                2480,
+                2498,
+                2492,
+                2496,
+                2499,
+                2504,
+                2508,
+                2104,
+                2516,
+                2524,
+                2558,
+                2566,
+                2807,
+                2512,
+                2586,
+                2275,
+                2591,
+                2598,
+                2600,
+                2604,
+                2634,
+                2642,
+                2646,
+                2674,
+                2686,
+                2688,
+                2702,
+                2703,
+                2705,
+                2144,
+                2740,
+                2762,
+                2834,
+                2764,
+                2780,
+                2788,
+                2795,
+                2800,
+                2804,
+                2784,
+                2858,
+                2860,
+                2862,
+                2704,
+                2894,
+                2716
+              ],
+              "maxPromptLength": 2000,
+              "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": true
+            },
+            {
+              "engine": "perplexity",
+              "label": "Perplexity",
+              "unsupportedLocationCodes": [],
+              "maxPromptLength": 2000,
+              "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": true
+            }
+          ],
+          "recentRuns": []
+        },
+        "created": 12,
+        "updated": 0,
+        "skipped": 0
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    }
+  },
+  "trackerPause": {
+    "request": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "enabled": false
+    },
+    "response": {
+      "status": "success",
+      "data": {
+        "state": {
+          "configured": true,
+          "providerConfigured": true,
+          "tracker": {
+            "id": "59531053-5b00-4a4a-88a8-191e707451e5",
+            "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+            "enabled": false,
+            "locationCode": 2840,
+            "languageCode": "en",
+            "scheduleInterval": "weekly",
+            "nextCheckAt": "2026-11-19T06:30:00.000Z",
+            "lastSkipReason": null,
+            "createdAt": "2026-11-11T12:55:11.873Z"
+          },
+          "topics": [
+            "Browser machine learning projects",
+            "Learning ML with JavaScript",
+            "TensorFlow.js practical skills"
+          ],
+          "prompts": [
+            {
+              "id": "218d035d-3f09-4842-9442-0195449c8917",
+              "text": "How should I normalize data for a TensorFlow.js model?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "401af286-3254-4e64-96e3-00d40aa79ab0",
+              "text": "Where can I find TensorFlow.js tutorials with runnable examples?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "60c26cfe-cc34-4911-b938-164c5cefff9a",
+              "text": "How can I train and evaluate a small machine learning model in the browser?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+              "text": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+              "text": "What should I learn before building my first machine learning model in JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+              "text": "Where can I practice machine learning in JavaScript with interactive exercises?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+              "text": "What are good machine learning courses for JavaScript developers who are new to ML?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "a49f2580-c42e-486e-9351-4afc17378db2",
+              "text": "What is the difference between reshape and transpose in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "c08543bc-5d93-4dde-9106-48bfe7421402",
+              "text": "How can a frontend developer learn machine learning using JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "e81b9fcb-316b-4641-ab6f-88d9a7d4206d",
+              "text": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "f0f15810-192f-4a9c-8329-84579e82aa13",
+              "text": "How do tensor shapes work in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            },
+            {
+              "id": "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+              "text": "What is a good first machine learning project to build in the browser with JavaScript?",
+              "topic": "Browser machine learning projects",
+              "paused": false,
+              "archived": false,
+              "branded": false,
+              "hasResults": false
+            }
+          ],
+          "brands": [
+            {
+              "name": "Tensorcraft",
+              "domain": "tensorcraft.app",
+              "own": true
+            }
+          ],
+          "engines": [
+            "chatgpt",
+            "gemini",
+            "google_ai_overview"
+          ],
+          "capabilities": [
+            {
+              "engine": "chatgpt",
+              "label": "ChatGPT",
+              "unsupportedLocationCodes": [
+                2275,
+                2344,
+                2831,
+                2832,
+                2833,
+                2862
+              ],
+              "maxPromptLength": 2000,
+              "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": false
+            },
+            {
+              "engine": "gemini",
+              "label": "Gemini",
+              "unsupportedLocationCodes": [],
+              "maxPromptLength": 2000,
+              "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": false
+            },
+            {
+              "engine": "google_ai_overview",
+              "label": "Google AI Overviews",
+              "unsupportedLocationCodes": [],
+              "maxPromptLength": 2000,
+              "note": "The AI Overview on one Google results page. A page without an AI Overview is a no-answer result, not a missing brand.",
+              "modelApi": false
+            },
+            {
+              "engine": "claude",
+              "label": "Claude",
+              "unsupportedLocationCodes": [
+                2008,
+                2012,
+                2020,
+                2024,
+                2051,
+                2031,
+                2044,
+                2048,
+                2050,
+                2052,
+                2084,
+                2068,
+                2070,
+                2072,
+                2096,
+                2100,
+                2854,
+                2116,
+                2120,
+                2170,
+                2188,
+                2384,
+                2191,
+                2196,
+                2203,
+                2214,
+                2218,
+                2818,
+                2222,
+                2233,
+                2231,
+                2242,
+                2268,
+                2288,
+                2300,
+                2320,
+                2831,
+                2328,
+                2332,
+                2340,
+                2348,
+                2352,
+                2368,
+                2372,
+                2833,
+                2376,
+                2388,
+                2832,
+                2400,
+                2398,
+                2404,
+                2414,
+                2417,
+                2418,
+                2428,
+                2422,
+                2438,
+                2440,
+                2442,
+                2450,
+                2454,
+                2462,
+                2470,
+                2480,
+                2498,
+                2492,
+                2496,
+                2499,
+                2504,
+                2508,
+                2104,
+                2516,
+                2524,
+                2558,
+                2566,
+                2807,
+                2512,
+                2586,
+                2275,
+                2591,
+                2598,
+                2600,
+                2604,
+                2634,
+                2642,
+                2646,
+                2674,
+                2686,
+                2688,
+                2702,
+                2703,
+                2705,
+                2144,
+                2740,
+                2762,
+                2834,
+                2764,
+                2780,
+                2788,
+                2795,
+                2800,
+                2804,
+                2784,
+                2858,
+                2860,
+                2862,
+                2704,
+                2894,
+                2716
+              ],
+              "maxPromptLength": 2000,
+              "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": true
+            },
+            {
+              "engine": "perplexity",
+              "label": "Perplexity",
+              "unsupportedLocationCodes": [],
+              "maxPromptLength": 2000,
+              "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+              "modelApi": true
+            }
+          ],
+          "recentRuns": []
+        },
+        "run": null
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    }
+  },
+  "trackerVerifiedBeforeRun": {
+    "request": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44"
+    },
+    "response": {
+      "status": "success",
+      "data": {
+        "configured": true,
+        "providerConfigured": true,
+        "tracker": {
+          "id": "59531053-5b00-4a4a-88a8-191e707451e5",
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "enabled": false,
+          "locationCode": 2840,
+          "languageCode": "en",
+          "scheduleInterval": "weekly",
+          "nextCheckAt": "2026-11-19T06:30:00.000Z",
+          "lastSkipReason": null,
+          "createdAt": "2026-11-11T12:55:11.873Z"
+        },
+        "topics": [
+          "Browser machine learning projects",
+          "Learning ML with JavaScript",
+          "TensorFlow.js practical skills"
+        ],
+        "prompts": [
+          {
+            "id": "218d035d-3f09-4842-9442-0195449c8917",
+            "text": "How should I normalize data for a TensorFlow.js model?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "401af286-3254-4e64-96e3-00d40aa79ab0",
+            "text": "Where can I find TensorFlow.js tutorials with runnable examples?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "60c26cfe-cc34-4911-b938-164c5cefff9a",
+            "text": "How can I train and evaluate a small machine learning model in the browser?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+            "text": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+            "text": "What should I learn before building my first machine learning model in JavaScript?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+            "text": "Where can I practice machine learning in JavaScript with interactive exercises?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+            "text": "What are good machine learning courses for JavaScript developers who are new to ML?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "a49f2580-c42e-486e-9351-4afc17378db2",
+            "text": "What is the difference between reshape and transpose in TensorFlow.js?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "c08543bc-5d93-4dde-9106-48bfe7421402",
+            "text": "How can a frontend developer learn machine learning using JavaScript?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "e81b9fcb-316b-4641-ab6f-88d9a7d4206d",
+            "text": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "f0f15810-192f-4a9c-8329-84579e82aa13",
+            "text": "How do tensor shapes work in TensorFlow.js?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          },
+          {
+            "id": "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+            "text": "What is a good first machine learning project to build in the browser with JavaScript?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": false
+          }
+        ],
+        "brands": [
+          {
+            "name": "Tensorcraft",
+            "domain": "tensorcraft.app",
+            "own": true
+          }
+        ],
+        "engines": [
+          "chatgpt",
+          "gemini",
+          "google_ai_overview"
+        ],
+        "capabilities": [
+          {
+            "engine": "chatgpt",
+            "label": "ChatGPT",
+            "unsupportedLocationCodes": [
+              2275,
+              2344,
+              2831,
+              2832,
+              2833,
+              2862
+            ],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "gemini",
+            "label": "Gemini",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "google_ai_overview",
+            "label": "Google AI Overviews",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "The AI Overview on one Google results page. A page without an AI Overview is a no-answer result, not a missing brand.",
+            "modelApi": false
+          },
+          {
+            "engine": "claude",
+            "label": "Claude",
+            "unsupportedLocationCodes": [
+              2008,
+              2012,
+              2020,
+              2024,
+              2051,
+              2031,
+              2044,
+              2048,
+              2050,
+              2052,
+              2084,
+              2068,
+              2070,
+              2072,
+              2096,
+              2100,
+              2854,
+              2116,
+              2120,
+              2170,
+              2188,
+              2384,
+              2191,
+              2196,
+              2203,
+              2214,
+              2218,
+              2818,
+              2222,
+              2233,
+              2231,
+              2242,
+              2268,
+              2288,
+              2300,
+              2320,
+              2831,
+              2328,
+              2332,
+              2340,
+              2348,
+              2352,
+              2368,
+              2372,
+              2833,
+              2376,
+              2388,
+              2832,
+              2400,
+              2398,
+              2404,
+              2414,
+              2417,
+              2418,
+              2428,
+              2422,
+              2438,
+              2440,
+              2442,
+              2450,
+              2454,
+              2462,
+              2470,
+              2480,
+              2498,
+              2492,
+              2496,
+              2499,
+              2504,
+              2508,
+              2104,
+              2516,
+              2524,
+              2558,
+              2566,
+              2807,
+              2512,
+              2586,
+              2275,
+              2591,
+              2598,
+              2600,
+              2604,
+              2634,
+              2642,
+              2646,
+              2674,
+              2686,
+              2688,
+              2702,
+              2703,
+              2705,
+              2144,
+              2740,
+              2762,
+              2834,
+              2764,
+              2780,
+              2788,
+              2795,
+              2800,
+              2804,
+              2784,
+              2858,
+              2860,
+              2862,
+              2704,
+              2894,
+              2716
+            ],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          },
+          {
+            "engine": "perplexity",
+            "label": "Perplexity",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          }
+        ],
+        "recentRuns": []
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    }
+  },
+  "manualRunStart": {
+    "request": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "maxCostUsd": 0.216
+    },
+    "response": {
+      "status": "success",
+      "data": {
+        "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+        "status": "queued",
+        "trigger": "manual",
+        "expected": 36,
+        "completed": 0,
+        "failed": 0,
+        "pending": 36,
+        "createdAt": "2026-11-11T12:56:59.201Z",
+        "completedAt": null,
+        "pollAfterSeconds": 5
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    },
+    "observedAt": "2026-11-11T12:57:01.091Z"
+  },
+  "runPolls": [
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 0,
+          "failed": 0,
+          "pending": 36,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T12:57:18.508Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 0,
+          "failed": 0,
+          "pending": 36,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T12:57:44.849Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 6,
+          "failed": 0,
+          "pending": 30,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T12:58:17.817Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 12,
+          "failed": 0,
+          "pending": 24,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T12:58:57.848Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 18,
+          "failed": 0,
+          "pending": 18,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T12:59:41.523Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 23,
+          "failed": 0,
+          "pending": 13,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T13:00:25.499Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 23,
+          "failed": 1,
+          "pending": 12,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T13:01:10.849Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "running",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 28,
+          "failed": 2,
+          "pending": 6,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": null,
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T13:01:53.731Z"
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "status": "partial",
+          "trigger": "manual",
+          "expected": 36,
+          "completed": 34,
+          "failed": 2,
+          "pending": 0,
+          "createdAt": "2026-11-11T12:56:59.201Z",
+          "completedAt": "2026-11-11T13:02:39.655Z",
+          "pollAfterSeconds": 5
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      },
+      "observedAt": "2026-11-11T13:02:44.933Z"
+    }
+  ],
+  "trackerVerifiedAfterRun": {
+    "request": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44"
+    },
+    "response": {
+      "status": "success",
+      "data": {
+        "configured": true,
+        "providerConfigured": true,
+        "tracker": {
+          "id": "59531053-5b00-4a4a-88a8-191e707451e5",
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "enabled": false,
+          "locationCode": 2840,
+          "languageCode": "en",
+          "scheduleInterval": "weekly",
+          "nextCheckAt": "2026-11-19T06:30:00.000Z",
+          "lastSkipReason": null,
+          "createdAt": "2026-11-11T12:55:11.873Z"
+        },
+        "topics": [
+          "Browser machine learning projects",
+          "Learning ML with JavaScript",
+          "TensorFlow.js practical skills"
+        ],
+        "prompts": [
+          {
+            "id": "218d035d-3f09-4842-9442-0195449c8917",
+            "text": "How should I normalize data for a TensorFlow.js model?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "401af286-3254-4e64-96e3-00d40aa79ab0",
+            "text": "Where can I find TensorFlow.js tutorials with runnable examples?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "60c26cfe-cc34-4911-b938-164c5cefff9a",
+            "text": "How can I train and evaluate a small machine learning model in the browser?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+            "text": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+            "text": "What should I learn before building my first machine learning model in JavaScript?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+            "text": "Where can I practice machine learning in JavaScript with interactive exercises?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+            "text": "What are good machine learning courses for JavaScript developers who are new to ML?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "a49f2580-c42e-486e-9351-4afc17378db2",
+            "text": "What is the difference between reshape and transpose in TensorFlow.js?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "c08543bc-5d93-4dde-9106-48bfe7421402",
+            "text": "How can a frontend developer learn machine learning using JavaScript?",
+            "topic": "Learning ML with JavaScript",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "e81b9fcb-316b-4641-ab6f-88d9a7d4206d",
+            "text": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "f0f15810-192f-4a9c-8329-84579e82aa13",
+            "text": "How do tensor shapes work in TensorFlow.js?",
+            "topic": "TensorFlow.js practical skills",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          },
+          {
+            "id": "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+            "text": "What is a good first machine learning project to build in the browser with JavaScript?",
+            "topic": "Browser machine learning projects",
+            "paused": false,
+            "archived": false,
+            "branded": false,
+            "hasResults": true
+          }
+        ],
+        "brands": [
+          {
+            "name": "Tensorcraft",
+            "domain": "tensorcraft.app",
+            "own": true
+          }
+        ],
+        "engines": [
+          "chatgpt",
+          "gemini",
+          "google_ai_overview"
+        ],
+        "capabilities": [
+          {
+            "engine": "chatgpt",
+            "label": "ChatGPT",
+            "unsupportedLocationCodes": [
+              2275,
+              2344,
+              2831,
+              2832,
+              2833,
+              2862
+            ],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "gemini",
+            "label": "Gemini",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One consumer-site answer. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": false
+          },
+          {
+            "engine": "google_ai_overview",
+            "label": "Google AI Overviews",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "The AI Overview on one Google results page. A page without an AI Overview is a no-answer result, not a missing brand.",
+            "modelApi": false
+          },
+          {
+            "engine": "claude",
+            "label": "Claude",
+            "unsupportedLocationCodes": [
+              2008,
+              2012,
+              2020,
+              2024,
+              2051,
+              2031,
+              2044,
+              2048,
+              2050,
+              2052,
+              2084,
+              2068,
+              2070,
+              2072,
+              2096,
+              2100,
+              2854,
+              2116,
+              2120,
+              2170,
+              2188,
+              2384,
+              2191,
+              2196,
+              2203,
+              2214,
+              2218,
+              2818,
+              2222,
+              2233,
+              2231,
+              2242,
+              2268,
+              2288,
+              2300,
+              2320,
+              2831,
+              2328,
+              2332,
+              2340,
+              2348,
+              2352,
+              2368,
+              2372,
+              2833,
+              2376,
+              2388,
+              2832,
+              2400,
+              2398,
+              2404,
+              2414,
+              2417,
+              2418,
+              2428,
+              2422,
+              2438,
+              2440,
+              2442,
+              2450,
+              2454,
+              2462,
+              2470,
+              2480,
+              2498,
+              2492,
+              2496,
+              2499,
+              2504,
+              2508,
+              2104,
+              2516,
+              2524,
+              2558,
+              2566,
+              2807,
+              2512,
+              2586,
+              2275,
+              2591,
+              2598,
+              2600,
+              2604,
+              2634,
+              2642,
+              2646,
+              2674,
+              2686,
+              2688,
+              2702,
+              2703,
+              2705,
+              2144,
+              2740,
+              2762,
+              2834,
+              2764,
+              2780,
+              2788,
+              2795,
+              2800,
+              2804,
+              2784,
+              2858,
+              2860,
+              2862,
+              2704,
+              2894,
+              2716
+            ],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          },
+          {
+            "engine": "perplexity",
+            "label": "Perplexity",
+            "unsupportedLocationCodes": [],
+            "maxPromptLength": 2000,
+            "note": "One answer from the model's live API with web search, at live API pricing. Collects in any project market country except unsupportedLocationCodes.",
+            "modelApi": true
+          }
+        ],
+        "recentRuns": [
+          {
+            "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+            "status": "partial",
+            "trigger": "manual",
+            "expected": 36,
+            "completed": 34,
+            "failed": 2,
+            "pending": 0,
+            "createdAt": "2026-11-11T12:56:59.201Z",
+            "completedAt": "2026-11-11T13:02:39.655Z",
+            "pollAfterSeconds": 5
+          }
+        ]
+      },
+      "meta": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+      }
+    }
+  },
+  "finalRun": {
+    "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+    "status": "partial",
+    "trigger": "manual",
+    "expected": 36,
+    "completed": 34,
+    "failed": 2,
+    "pending": 0,
+    "createdAt": "2026-11-11T12:56:59.201Z",
+    "completedAt": "2026-11-11T13:02:39.655Z",
+    "pollAfterSeconds": 5
+  },
+  "actualDebitReported": false,
+  "actualDebitUsd": null,
+  "actualDebitCredits": null
+}

@@ -29,26 +29,84 @@ Local implementation and item status live in the [execution checklist](seo-geo-p
   applied in production, with all 15 catalog checks passing. Protected API
   release 35 passes health checks on both machines, with verified PostHog settings.
   Eight live API consent checks
-  and public web page/asset checks pass. Gate: full browser runtime,
-  owner-browser marking, production payment/learning ingestion, Bing
+  and public web page/asset checks pass. Gate: remaining account-consent,
+  withdrawal, normal owner-browser marking, production payment/exercise/module ingestion, Bing
   and refund reconciliation.
-  Search Console performance collection is complete. OpenSEO has no AI history.
+  A later [browser check](audits/seo-geo-2026-11-11-baselines/browser-followup.md)
+  verified guide handoff, lesson arrival and prediction submission in one
+  internal SDK session. Project filters exclude the test events. Search Console
+  performance collection and the first GEO sample are complete. The separate
+  GEO item below records coverage and limits.
 - [x] **Search Console performance baseline, November 11.** OpenSEO uses the
   verified `sc-domain:tensorcraft.app` property. Final web-search data records
   1 click and 70 impressions for October 12 to November 8, compared with
   4 clicks and 69 impressions for September 14 to October 11. Both windows
   contain 28 daily rows with no further page of results. Query, page, device
   and country breakdowns are saved in the linked baseline. Search dates use
-  Pacific Time. URL Inspection, Bing and AI visibility remain separate gaps.
+  Pacific Time. A 90-day extension records 9 clicks and 383 property impressions
+  for August 11 through November 8. Bing remains a separate gap.
+- [x] **First GEO sample, November 11.** The one-off check returned 34 answers,
+  two upstream failures and zero no-answer results. OpenSEO recorded 0/34
+  Tensorcraft mentions and 0/34 own-site citations. Twenty-three unresolved
+  Google redirect URLs limit independent destination verification. This is
+  the provider's recorded result for one sample, with no trend or traffic claim.
+  Recurrence is disabled. The approved cap was 216 credits ($0.216), and the
+  provider did not return the actual debit. See the
+  [private report](https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports/faddb2f6-fed3-4397-a0cc-992419c10721)
+  and [sample evidence](audits/seo-geo-2026-11-11-baselines/geo/findings-2026-11-11.json).
+- [ ] **Runnable project training and evaluation.** Improve the existing
+  browser-project guide with a direct path to running training and inspecting
+  a held-out comparison. Build on the deployed fixture and immutable source
+  links. Gate: execute the example against the pinned runtime, verify split
+  and preprocessing boundaries, show baseline/model results and a useful
+  failure, and check browser and keyboard behavior. Preserve the distinction
+  between a supplied demonstration and learner-produced output. The evidence
+  supports this reader task but does not promise AI citations. No new page,
+  outreach or recurring collection is authorized by this item.
+- [ ] **Sourced course comparison additions.** Add DeepLearning.AI's browser
+  TensorFlow.js course on Coursera and Henry Ly's freeCodeCamp ml5.js course
+  to the existing comparison. Gate: verify current publisher sources for
+  goals, prerequisites, practice format and outputs, preserve the Coursera
+  intermediate/prior-TensorFlow qualification, and check responsive table
+  readability. Avoid unsupported quality, outcome and citation claims. See
+  the [source review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-2026-11-11.json)
+  and [independent review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-independent-2026-11-11.json).
 - [ ] **Visual and real-browser capture QA.** HTTP/SSR and local event tests pass.
-  Dedicated browser access remains unavailable and native window changes
-  interrupted navigation. Gate: a stable browser review
-  environment for desktop/mobile, keyboard, video, Challenge editing/grading
-  and consent/event ingestion.
+  Native desktop checks now verify the guide hub, reshape interaction,
+  lesson handoff, incorrect prediction feedback and retained practice record.
+  PostHog confirms their internal event delivery and exclusion. Gate: stable
+  browser access for mobile, keyboard, video, Challenge editing/grading,
+  account-consent persistence, withdrawal and server-event delivery.
 - [ ] **Remaining production search checks.** Owner-authorized main push
   `65a1c242` deployed on November 11. Production HTTP checks pass for 23 sitemap
-  pages, guides, lesson links, media and canonicals. Gate: Search Console URL
-  Inspection, Bing indexing and verified crawler evidence through account access.
+  pages, guides, lesson links, media and canonicals. The 15 initial Search Console
+  inspections found eight indexed pages, four guide URLs unknown to Google,
+  normalization discovered but unindexed, and two expected www redirects.
+  Current normalization and operations pages return 200 with self-canonicals.
+  A later owner-account action resubmitted the sitemap successfully, with
+  Google reporting 23 pages and one video. All five indexing requests were
+  accepted. The 12:41 UTC follow-up confirms the hub, all three guides and
+  normalization indexed with successful mobile fetches and matching canonicals.
+  Gate: verify Bing indexing and collect crawler evidence. See the
+  [indexing follow-up](audits/seo-geo-2026-11-11-baselines/openseo/indexing-followup.md).
+- [x] **SEO follow-up release, November 11.** The eight-file release was
+  promoted at 12:49 UTC. It includes verified first-production video timestamps,
+  immutable project-source links, the November 11 project update and the
+  lesson-arrival consent implementation. The release passed 156 focused tests
+  across ten files, web typechecking, migration checks and a 104-page build.
+  Public page/metadata/link checks pass and the deployment is ready.
+  The release manifest records the deployed source.
+  [Release verification](audits/seo-geo-2026-11-11-baselines/release/seo-followup-public-verification.json).
+- [x] **Late-consent lesson delivery, November 11.** A production browser
+  accepted analytics at 12:55:25.574 UTC. PostHog then received one consent
+  event, one pageview and one tensor-shapes arrival in the same SDK session,
+  all marked internal. No introduction arrival appears in the bounded query.
+  [Delivery evidence](audits/seo-geo-2026-11-11-baselines/posthog/browser-late-consent-verification.json).
+  This closes the narrow delivery check. SPA navigation, withdrawal/reacceptance
+  and signed-in account persistence remain in the browser QA item.
+- [ ] **Video datetime recrawl.** Corrected intro and Deep Orbit timestamps
+  now appear in production HTML. Gate: confirm Google has recrawled them
+  before claiming the warning is cleared.
 - [ ] **Campaign-owner metadata release.** Main mirror now returns 200 and
   names the existing campaign host as canonical/OG owner. The published campaign
   root still lacks its source canonical tag. Gate: release that separate host
@@ -5537,10 +5595,13 @@ Measurement (needed before any funnel number, and before the B3 gate):
   `/ingest`), `ui_host`, then narrow the CSP.
 - [ ] **(B3) Remaining first-visit page-context events.** Deployed pricing,
   paywall and visible-session events observe analytics readiness. The November
-  11 local `lesson_started` follow-up observes only the current visit after
+  11 released `lesson_started` follow-up observes only the current visit after
   consent, with no replay or duplicate on reacceptance. Its six regressions
-  pass. Gate: release that follow-up, verify SDK ingestion and review remaining
-  mount events. Existing lesson/step durations retain their timing semantics.
+  pass. The 12:49 UTC production release includes this change. The later
+  browser check verifies one current lesson arrival after late consent, in
+  the same SDK session as its consent event and pageview. Gate: review remaining
+  mount events and cover SPA navigation, withdrawal/reacceptance and signed-in
+  persistence in a browser. Existing lesson/step durations retain their timing semantics.
 - [ ] **(B3) Tabs initialised together split one person into several ids.**
   The consent broadcast initialises every open tab at once; each mints its
   own distinct id, and `consent_granted` fires once per tab. Initialise only

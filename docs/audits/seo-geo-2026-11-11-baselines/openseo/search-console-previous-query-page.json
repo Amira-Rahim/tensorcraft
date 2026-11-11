@@ -1,0 +1,81 @@
+{
+  "name": "previous-query-page",
+  "sourceTool": "get_search_console_performance",
+  "exhaustedPagination": true,
+  "pages": [
+    {
+      "calledAtUTC": "2026-11-11T11:52:55.708Z",
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "startDate": "2026-09-14",
+        "endDate": "2026-10-11",
+        "dataState": "final",
+        "type": "web",
+        "dimensions": [
+          "query",
+          "page"
+        ],
+        "rowLimit": 1000
+      },
+      "response": {
+        "ok": true,
+        "siteUrl": "sc-domain:tensorcraft.app",
+        "startDate": "2026-09-14",
+        "endDate": "2026-10-11",
+        "dimensions": [
+          "query",
+          "page"
+        ],
+        "rowCount": 4,
+        "rows": [
+          {
+            "keys": [
+              "deep orbit",
+              "https://tensorcraft.app/worlds/deep-orbit"
+            ],
+            "clicks": 0,
+            "impressions": 24,
+            "ctr": 0,
+            "position": 7.9
+          },
+          {
+            "keys": [
+              "tensorcraft",
+              "https://tensorcraft.app/"
+            ],
+            "clicks": 0,
+            "impressions": 7,
+            "ctr": 0,
+            "position": 1.4
+          },
+          {
+            "keys": [
+              "tensorcraft",
+              "https://tensorcraft.app/learn"
+            ],
+            "clicks": 0,
+            "impressions": 6,
+            "ctr": 0,
+            "position": 7.3
+          },
+          {
+            "keys": [
+              "tensorcraft",
+              "https://tensorcraft.app/pricing"
+            ],
+            "clicks": 0,
+            "impressions": 1,
+            "ctr": 0,
+            "position": 4
+          }
+        ],
+        "hasMore": false,
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/search-performance"
+        },
+        "resultId": "3b51d5b8-3ec2-4ca4-89a3-d6e557e8c15a"
+      }
+    }
+  ]
+}

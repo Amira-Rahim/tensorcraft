@@ -1,0 +1,3427 @@
+{
+  "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+  "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+  "paginationComplete": true,
+  "groupBy": "url",
+  "exactUrlGrouping": true,
+  "notes": [
+    "Counts refer to distinct answered observations per exact source URL. Trailing-slash variants are not merged.",
+    "Google redirect URLs remain unresolved evidence, not verified publisher domains."
+  ],
+  "pages": [
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+        "topic": null,
+        "engines": null,
+        "promptId": null,
+        "cursor": null,
+        "competitorGap": false,
+        "limit": 50,
+        "branded": "neutral",
+        "groupBy": "url",
+        "ownership": "all"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "rows": [
+            {
+              "key": "https://www.tensorflow.org/js",
+              "url": "https://www.tensorflow.org/js",
+              "domain": "www.tensorflow.org",
+              "title": "Machine Learning for JavaScript Developers - TensorFlow.js",
+              "ownership": "other",
+              "answerCount": 10,
+              "promptCount": 6,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a",
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+                "c08543bc-5d93-4dde-9106-48bfe7421402",
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+                "401af286-3254-4e64-96e3-00d40aa79ab0",
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 5
+                },
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 5
+                }
+              ],
+              "observationIds": [
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+                "a05696fd-c31f-48d5-85c3-f3d2477745c9",
+                "20ab565e-c50a-4492-9417-b38d0a31cfaf",
+                "fae5b7de-21f6-4852-98ce-b20f5283982a",
+                "9cd38377-a383-483d-8cea-097d18c1a4bf",
+                "c94ed5aa-df1b-45dc-8c59-65645da03df2",
+                "df0fc708-a544-4b90-a815-51af79ad1090",
+                "5f40dc35-95c5-44ee-8bfb-88247206356d",
+                "0c3c8938-4a98-4c79-b579-b841a30d2784",
+                "bce918dd-b7a9-4eec-994b-15885e82c735"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/js/tutorials",
+              "url": "https://www.tensorflow.org/js/tutorials",
+              "domain": "www.tensorflow.org",
+              "title": "Open official tutorials",
+              "ownership": "other",
+              "answerCount": 10,
+              "promptCount": 8,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0",
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+                "60c26cfe-cc34-4911-b938-164c5cefff9a",
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 5
+                },
+                {
+                  "engine": "gemini",
+                  "answerCount": 5
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d",
+                "c94ed5aa-df1b-45dc-8c59-65645da03df2",
+                "bce918dd-b7a9-4eec-994b-15885e82c735",
+                "7b0a54c2-5053-4e97-95e7-56c7b8e66589",
+                "9729a44f-6b95-4f1b-8265-c1b371217258",
+                "0c3c8938-4a98-4c79-b579-b841a30d2784",
+                "fae5b7de-21f6-4852-98ce-b20f5283982a",
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+                "20ab565e-c50a-4492-9417-b38d0a31cfaf",
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://ml5js.org/",
+              "url": "https://ml5js.org/",
+              "domain": "ml5js.org",
+              "title": "ml5.js | Friendly Machine Learning for the Web",
+              "ownership": "other",
+              "answerCount": 6,
+              "promptCount": 5,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402",
+                "60c26cfe-cc34-4911-b938-164c5cefff9a",
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 4
+                },
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "df0fc708-a544-4b90-a815-51af79ad1090",
+                "9cd38377-a383-483d-8cea-097d18c1a4bf",
+                "a05696fd-c31f-48d5-85c3-f3d2477745c9",
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643",
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=ECotpcPCTaU",
+              "url": "https://www.youtube.com/watch?v=ECotpcPCTaU",
+              "domain": "www.youtube.com",
+              "title": "Machine Learning in JavaScript with ml5.js",
+              "ownership": "other",
+              "answerCount": 4,
+              "promptCount": 4,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+                "c08543bc-5d93-4dde-9106-48bfe7421402",
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 3
+                },
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0",
+                "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0",
+                "502c898d-ea2b-43a8-a506-d94e7be47f16",
+                "7b0a54c2-5053-4e97-95e7-56c7b8e66589"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://javascript.plainenglish.io/javascript-beyond-the-browser-my-first-steps-into-ai-with-tensorflow-js-a7afb7f450da",
+              "url": "https://javascript.plainenglish.io/javascript-beyond-the-browser-my-first-steps-into-ai-with-tensorflow-js-a7afb7f450da",
+              "domain": "javascript.plainenglish.io",
+              "title": "My First Steps into AI with TensorFlow.js - JavaScript in Plain English",
+              "ownership": "other",
+              "answerCount": 3,
+              "promptCount": 3,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a",
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 3
+                }
+              ],
+              "observationIds": [
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+                "fae5b7de-21f6-4852-98ce-b20f5283982a",
+                "c94ed5aa-df1b-45dc-8c59-65645da03df2"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.robinwieruch.de/machine-learning-javascript-web-developers/",
+              "url": "https://www.robinwieruch.de/machine-learning-javascript-web-developers/",
+              "domain": "www.robinwieruch.de",
+              "title": "A Web Developer's Guide to Machine Learning in JavaScript - Robin Wieruch",
+              "ownership": "other",
+              "answerCount": 3,
+              "promptCount": 2,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402",
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 2
+                },
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16",
+                "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0",
+                "df0fc708-a544-4b90-a815-51af79ad1090"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=26uABexmOX4",
+              "url": "https://www.youtube.com/watch?v=26uABexmOX4",
+              "domain": "www.youtube.com",
+              "title": "Beginner's Guide to Machine Learning in JavaScript with ml5.js",
+              "ownership": "other",
+              "answerCount": 3,
+              "promptCount": 3,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+                "c08543bc-5d93-4dde-9106-48bfe7421402",
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643",
+                "502c898d-ea2b-43a8-a506-d94e7be47f16",
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://codelabs.developers.google.com/codelabs/tfjs-training-regression",
+              "url": "https://codelabs.developers.google.com/codelabs/tfjs-training-regression",
+              "domain": "codelabs.developers.google.com",
+              "title": "TensorFlow.js Regression Tutorial",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "218d035d-3f09-4842-9442-0195449c8917",
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "878cb67e-7186-4e6c-9633-0857a20f3154",
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://discuss.ai.google.dev/t/if-i-already-know-all-the-shapes-of-the-array-what-is-the-difference-between-reshape-and-transpose/31519",
+              "url": "https://discuss.ai.google.dev/t/if-i-already-know-all-the-shapes-of-the-array-what-is-the-difference-between-reshape-and-transpose/31519",
+              "domain": "discuss.ai.google.dev",
+              "title": "If I already know all the shapes of the array, what is the difference",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3",
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@connect.hashblock/running-machine-learning-models-directly-in-the-browser-with-tensorflow-js-798cfdd6ede4",
+              "url": "https://medium.com/@connect.hashblock/running-machine-learning-models-directly-in-the-browser-with-tensorflow-js-798cfdd6ede4",
+              "domain": "medium.com",
+              "title": "Running Machine Learning Models Directly in the Browser with",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a",
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+                "c94ed5aa-df1b-45dc-8c59-65645da03df2"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://ml5js.org/learn/",
+              "url": "https://ml5js.org/learn/",
+              "domain": "ml5js.org",
+              "title": "Explore ml5.js learning resources",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 1,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "7b0a54c2-5053-4e97-95e7-56c7b8e66589",
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://onnxruntime.ai/docs/get-started/with-javascript/web.html",
+              "url": "https://onnxruntime.ai/docs/get-started/with-javascript/web.html",
+              "domain": "onnxruntime.ai",
+              "title": "ONNX Runtime Web",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402",
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "20ab565e-c50a-4492-9417-b38d0a31cfaf",
+                "9cd38377-a383-483d-8cea-097d18c1a4bf"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.coursera.org/learn/browser-based-models-tensorflow",
+              "url": "https://www.coursera.org/learn/browser-based-models-tensorflow",
+              "domain": "www.coursera.org",
+              "title": "Browser-based Models with TensorFlow.js | Coursera",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0",
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.geeksforgeeks.org/deep-learning/how-to-reshape-a-tensor-in-tensorflow/",
+              "url": "https://www.geeksforgeeks.org/deep-learning/how-to-reshape-a-tensor-in-tensorflow/",
+              "domain": "www.geeksforgeeks.org",
+              "title": "How to Reshape a Tensor in Tensorflow? - GeeksforGeeks",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3",
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.geeksforgeeks.org/javascript/how-to-get-started-with-ml5js/",
+              "url": "https://www.geeksforgeeks.org/javascript/how-to-get-started-with-ml5js/",
+              "domain": "www.geeksforgeeks.org",
+              "title": "How to Get Started with ml5.js? - GeeksforGeeks",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402",
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "df0fc708-a544-4b90-a815-51af79ad1090",
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/guide/tensor",
+              "url": "https://www.tensorflow.org/guide/tensor",
+              "domain": "www.tensorflow.org",
+              "title": "Introduction to Tensors | TensorFlow Core",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3",
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/js/demos",
+              "url": "https://www.tensorflow.org/js/demos",
+              "domain": "www.tensorflow.org",
+              "title": "TensorFlow.js demos",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0",
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "0c3c8938-4a98-4c79-b579-b841a30d2784",
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/js/demos/",
+              "url": "https://www.tensorflow.org/js/demos/",
+              "domain": "www.tensorflow.org",
+              "title": "Explore interactive demos",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0",
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d",
+                "7b0a54c2-5053-4e97-95e7-56c7b8e66589"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/js/guide",
+              "url": "https://www.tensorflow.org/js/guide",
+              "domain": "www.tensorflow.org",
+              "title": "TensorFlow.js Complete Guide",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+                "218d035d-3f09-4842-9442-0195449c8917"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "9729a44f-6b95-4f1b-8265-c1b371217258",
+                "878cb67e-7186-4e6c-9633-0857a20f3154"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.w3schools.com/ai/ai_javascript.asp",
+              "url": "https://www.w3schools.com/ai/ai_javascript.asp",
+              "domain": "www.w3schools.com",
+              "title": "Machine Learning in JavaScript - W3Schools",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0",
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=9Hz3P1VgLz4",
+              "url": "https://www.youtube.com/watch?v=9Hz3P1VgLz4",
+              "domain": "www.youtube.com",
+              "title": "Machine Learning Tutorial for Beginners - USING JAVASCRIPT!",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                },
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643",
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=O4hd2mnTVbw",
+              "url": "https://www.youtube.com/watch?v=O4hd2mnTVbw",
+              "domain": "www.youtube.com",
+              "title": "Machine Learning in JavaScript with TensorFlow.js with ... - YouTube",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "c94ed5aa-df1b-45dc-8c59-65645da03df2",
+                "fae5b7de-21f6-4852-98ce-b20f5283982a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=TuYbgZ59Kpg",
+              "url": "https://www.youtube.com/watch?v=TuYbgZ59Kpg",
+              "domain": "www.youtube.com",
+              "title": "1.1: Machine Learning for Web Devs & Creatives (Web ML ...",
+              "ownership": "other",
+              "answerCount": 2,
+              "promptCount": 2,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 2
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0",
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://4geeks.com/en/interactive-exercises?page=2",
+              "url": "https://4geeks.com/en/interactive-exercises?page=2",
+              "domain": "4geeks.com",
+              "title": "Free Interactive Coding & AI Exercises | 4Geeks.com",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://arxiv.org/html/2508.04035v1",
+              "url": "https://arxiv.org/html/2508.04035v1",
+              "domain": "arxiv.org",
+              "title": "A Comparative Survey of PyTorch vs TensorFlow for Deep Learning",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://blog.logrocket.com/tensorflow-js-an-intro-and-analysis-with-use-cases-8e1f9a973183/",
+              "url": "https://blog.logrocket.com/tensorflow-js-an-intro-and-analysis-with-use-cases-8e1f9a973183/",
+              "domain": "blog.logrocket.com",
+              "title": "TensorFlow.js: An intro and analysis with use cases - LogRocket Blog",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "0c3c8938-4a98-4c79-b579-b841a30d2784"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://brain.js.org/",
+              "url": "https://brain.js.org/",
+              "domain": "brain.js.org",
+              "title": "Official website",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "a05696fd-c31f-48d5-85c3-f3d2477745c9"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://coddy.tech/landing/javascript",
+              "url": "https://coddy.tech/landing/javascript",
+              "domain": "coddy.tech",
+              "title": "Learn JavaScript - Free Interactive Course - Coddy Tech",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://codecraft.tv/courses/tensorflowjs",
+              "url": "https://codecraft.tv/courses/tensorflowjs",
+              "domain": "codecraft.tv",
+              "title": "CodeCraft • Introduction to Machine Learning with TensorFlow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://codelabs.developers.google.com/codelabs/tensorflowjs-nodejs-codelab",
+              "url": "https://codelabs.developers.google.com/codelabs/tensorflowjs-nodejs-codelab",
+              "domain": "codelabs.developers.google.com",
+              "title": "TensorFlow.js Training in Node.js Codelab",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "0c3c8938-4a98-4c79-b579-b841a30d2784"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://courseonic.com/best-machine-learning-courses-for-beginners/",
+              "url": "https://courseonic.com/best-machine-learning-courses-for-beginners/",
+              "domain": "courseonic.com",
+              "title": "Best Machine Learning Courses for Beginners (2026 Picks)",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://datascience.stackexchange.com/questions/90175/comparing-ml-models-to-baselines",
+              "url": "https://datascience.stackexchange.com/questions/90175/comparing-ml-models-to-baselines",
+              "domain": "datascience.stackexchange.com",
+              "title": "Comparing ML models to baselines - Data Science Stack Exchange",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://deloitteprehirelearning.udemy.com/course/machine-learning-with-javascript/",
+              "url": "https://deloitteprehirelearning.udemy.com/course/machine-learning-with-javascript/",
+              "domain": "deloitteprehirelearning.udemy.com",
+              "title": "View course on Udemy",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bce918dd-b7a9-4eec-994b-15885e82c735"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://dev.to/coder_studios/from-zero-to-ai-hero-with-javascript-complete-roadmap-to-learn-aiml-for-beginners-58h0",
+              "url": "https://dev.to/coder_studios/from-zero-to-ai-hero-with-javascript-complete-roadmap-to-learn-aiml-for-beginners-58h0",
+              "domain": "dev.to",
+              "title": "Complete Roadmap to Learn AI/ML for Beginners - DEV Community",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "df0fc708-a544-4b90-a815-51af79ad1090"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://dev.to/dev_tips/10-best-ai-engineering-courses-for-developers-i-reviewed-50-so-you-dont-have-to-76n",
+              "url": "https://dev.to/dev_tips/10-best-ai-engineering-courses-for-developers-i-reviewed-50-so-you-dont-have-to-76n",
+              "domain": "dev.to",
+              "title": "10 best AI engineering courses for developers (I reviewed 50 so you",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://dev.to/mohsenkamrani/hello-world-with-tensorflowjs-1jon",
+              "url": "https://dev.to/mohsenkamrani/hello-world-with-tensorflowjs-1jon",
+              "domain": "dev.to",
+              "title": "Hello World with TensorFlow.js - DEV Community",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "0c3c8938-4a98-4c79-b579-b841a30d2784"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://dev.to/vsfarooqkhan/unlocking-machine-learning-in-the-browser-with-tensorflowjs-18i0",
+              "url": "https://dev.to/vsfarooqkhan/unlocking-machine-learning-in-the-browser-with-tensorflowjs-18i0",
+              "domain": "dev.to",
+              "title": "Unlocking Machine Learning in the Browser with TensorFlow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "c94ed5aa-df1b-45dc-8c59-65645da03df2"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://developers.google.com/machine-learning/crash-course/",
+              "url": "https://developers.google.com/machine-learning/crash-course/",
+              "domain": "developers.google.com",
+              "title": "Start Google's ML Crash Course",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bce918dd-b7a9-4eec-994b-15885e82c735"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+              "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+              "domain": "developers.google.com",
+              "title": "Rules of Machine Learning: | Google for Developers",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://gilberttanner.com/blog/tensorflow-js-crash-course/",
+              "url": "https://gilberttanner.com/blog/tensorflow-js-crash-course/",
+              "domain": "gilberttanner.com",
+              "title": "Tensorflow.js Crash-Course - Gilbert Tanner",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "0c3c8938-4a98-4c79-b579-b841a30d2784"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/4GeeksAcademy/master-javascript-programming-exercises",
+              "url": "https://github.com/4GeeksAcademy/master-javascript-programming-exercises",
+              "domain": "github.com",
+              "title": "GitHub - 4GeeksAcademy/master-javascript-programming-exercises",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/tensorflow/tfjs-examples",
+              "url": "https://github.com/tensorflow/tfjs-examples",
+              "domain": "github.com",
+              "title": "Explore GitHub repository",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/tensorflow/tfjs-examples/tree/master/mnist",
+              "url": "https://github.com/tensorflow/tfjs-examples/tree/master/mnist",
+              "domain": "github.com",
+              "title": "Runnable example",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression",
+              "url": "https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression",
+              "domain": "github.com",
+              "title": "Runnable example",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/tensorflow/tfjs-examples/tree/master/sentiment",
+              "url": "https://github.com/tensorflow/tfjs-examples/tree/master/sentiment",
+              "domain": "github.com",
+              "title": "Runnable example",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/tensorflow/tfjs-examples/tree/master/webcam-transfer-learning",
+              "url": "https://github.com/tensorflow/tfjs-examples/tree/master/webcam-transfer-learning",
+              "domain": "github.com",
+              "title": "Runnable example",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/tensorflow/tfjs-models/blob/master/mobilenet/src/index.ts",
+              "url": "https://github.com/tensorflow/tfjs-models/blob/master/mobilenet/src/index.ts",
+              "domain": "github.com",
+              "title": "tfjs-models/mobilenet/src/index.ts at master · tensorflow/tfjs-models",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "218d035d-3f09-4842-9442-0195449c8917"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "878cb67e-7186-4e6c-9633-0857a20f3154"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://github.com/tensorflow/tfjs/blob/master/GALLERY.md",
+              "url": "https://github.com/tensorflow/tfjs/blob/master/GALLERY.md",
+              "domain": "github.com",
+              "title": "Browse project gallery",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "5f40dc35-95c5-44ee-8bfb-88247206356d"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESaAHEIkXX5poLfO1lYi7-JgG3IDMiz6b8mUrCGVd6O_hlMrxKcSR5dPknKL52wBK5h6tSMY_XcoOsVKvxQPjgmhh5XGQYPUN6Qj-Jmkz4cT8ArAzgy1GDc2XlaffdlXduLkAxFAHg4nye",
+              "url": "https://google.com/goto?url=CAESaAHEIkXX5poLfO1lYi7-JgG3IDMiz6b8mUrCGVd6O_hlMrxKcSR5dPknKL52wBK5h6tSMY_XcoOsVKvxQPjgmhh5XGQYPUN6Qj-Jmkz4cT8ArAzgy1GDc2XlaffdlXduLkAxFAHg4nye",
+              "domain": "google.com",
+              "title": "Image Classification with ml5.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESaAHEIkXX8_1pQusoh2JpESf_bhzvD7baB_glCiSpgQzIIj52toHO5z_FV3WXa71Mm_xSu65AyUvls9CoJpmUwFPPiyfzxu3TN_IGvNUPKBbTmbxtv9OeM8NlTd1R553UKgNRLQUT8-Tw",
+              "url": "https://google.com/goto?url=CAESaAHEIkXX8_1pQusoh2JpESf_bhzvD7baB_glCiSpgQzIIj52toHO5z_FV3WXa71Mm_xSu65AyUvls9CoJpmUwFPPiyfzxu3TN_IGvNUPKBbTmbxtv9OeM8NlTd1R553UKgNRLQUT8-Tw",
+              "domain": "google.com",
+              "title": "Machine Learning Tutorial for Beginners - USING JAVASCRIPT!",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            }
+          ],
+          "totalCount": 143,
+          "nextCursor": "50",
+          "coverage": {
+            "expected": 36,
+            "completed": 34,
+            "failed": 2,
+            "pending": 0,
+            "noAnswer": 0
+          },
+          "appliedFilters": {
+            "competitorGap": false,
+            "branded": "neutral",
+            "ownership": "all"
+          },
+          "groupBy": "url",
+          "truncated": false
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility/sources"
+        }
+      }
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+        "topic": null,
+        "engines": null,
+        "promptId": null,
+        "cursor": "50",
+        "competitorGap": false,
+        "limit": 50,
+        "branded": "neutral",
+        "groupBy": "url",
+        "ownership": "all"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "rows": [
+            {
+              "key": "https://google.com/goto?url=CAESaAHEIkXXbhLQAY8RdSsEKl87OfSsVxac-Cqx5txjCfScmIq2wyu7E7GzGFKgW4VDqWiiwVCMTcf12hkX2-2aLZJK4XsI0kER2s3PJp7tsFw4BKUv4uwXs1RrBJ38d_2uYSrBdP0RXfZj",
+              "url": "https://google.com/goto?url=CAESaAHEIkXXbhLQAY8RdSsEKl87OfSsVxac-Cqx5txjCfScmIq2wyu7E7GzGFKgW4VDqWiiwVCMTcf12hkX2-2aLZJK4XsI0kER2s3PJp7tsFw4BKUv4uwXs1RrBJ38d_2uYSrBdP0RXfZj",
+              "domain": "google.com",
+              "title": "Train Your Own AI in 5 Minutes! 🤯 (No Coding)",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "31a5d8e2-495c-4260-b6ff-00a02055399e"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESaAHEIkXXBXU7i01tn_5pgBkAL5pJ3JQ4tORum0Ngsp9ldydypoBRu7ore6gFVM20a0MSChFMxwM3sPfzw9SR_cJL5-XfIRUepD7ujVEehYwqKYWZFEn8HocqJ-xACEE071mrAXeod9_L",
+              "url": "https://google.com/goto?url=CAESaAHEIkXXBXU7i01tn_5pgBkAL5pJ3JQ4tORum0Ngsp9ldydypoBRu7ore6gFVM20a0MSChFMxwM3sPfzw9SR_cJL5-XfIRUepD7ujVEehYwqKYWZFEn8HocqJ-xACEE071mrAXeod9_L",
+              "domain": "google.com",
+              "title": "Efficient TensorFlow Tensor Manipulation Techniques",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESaAHEIkXXMOY1jTIk_R2WgLxR4JbNqLAqgtMcUIdbsQNmWTlGgfxFCvUQqTABH3saf8_xdRWAmxl54jCTxyMDA06ftPRX_k0DsgWX1s8Gmf3AxE3DblIRlJAxGI0W3PezPj5WnEensNck",
+              "url": "https://google.com/goto?url=CAESaAHEIkXXMOY1jTIk_R2WgLxR4JbNqLAqgtMcUIdbsQNmWTlGgfxFCvUQqTABH3saf8_xdRWAmxl54jCTxyMDA06ftPRX_k0DsgWX1s8Gmf3AxE3DblIRlJAxGI0W3PezPj5WnEensNck",
+              "domain": "google.com",
+              "title": "A Beginner's Guide to Machine Learning with ml5.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESaAHEIkXXt_WLiaUvPd0IKtbmC3Gxcues0195ecpFi-ssPqP_Jq1tVj7a8a-PsNvTbzPqkPfiyoT9hIemqxl5qRjnALhD1CmGLekULtY8Jv5L-0UtRzB5EPhna0hSSP7F8vo-xO7dl0lc",
+              "url": "https://google.com/goto?url=CAESaAHEIkXXt_WLiaUvPd0IKtbmC3Gxcues0195ecpFi-ssPqP_Jq1tVj7a8a-PsNvTbzPqkPfiyoT9hIemqxl5qRjnALhD1CmGLekULtY8Jv5L-0UtRzB5EPhna0hSSP7F8vo-xO7dl0lc",
+              "domain": "google.com",
+              "title": "Face Mesh Detection with ml5.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESbgHEIkXX4-k-gVWquv0I5S21CCyBBbTLbyUwGekzM9CdBFKfGIUHTIp7BxOqPAVZk39FclxuHBPJxCgwnIVgLjhUYrCkUozlnl-XRvqL-ACo7uQ5_AYeJmPvMfELoGGv5nZ2BkfNtXPzSQr7Ltvc",
+              "url": "https://google.com/goto?url=CAESbgHEIkXX4-k-gVWquv0I5S21CCyBBbTLbyUwGekzM9CdBFKfGIUHTIp7BxOqPAVZk39FclxuHBPJxCgwnIVgLjhUYrCkUozlnl-XRvqL-ACo7uQ5_AYeJmPvMfELoGGv5nZ2BkfNtXPzSQr7Ltvc",
+              "domain": "google.com",
+              "title": "How web developers can use machine learning",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESfAHEIkXXFoYhEHg5Le7gJTly2GNZxl7qWGZ0ruMD9nTg7Qnr1Kw4sIYWIGUx8Cnv90Cg14cSZTPZ3PFgJhoKdk6OyzzbMcwd9GCvEgiVudWRljJpckbzYRj5oSXyRuqqsDwhheUMg9u4RB0D0BdUqOhwiP7rO6wIBWILhQ0",
+              "url": "https://google.com/goto?url=CAESfAHEIkXXFoYhEHg5Le7gJTly2GNZxl7qWGZ0ruMD9nTg7Qnr1Kw4sIYWIGUx8Cnv90Cg14cSZTPZ3PFgJhoKdk6OyzzbMcwd9GCvEgiVudWRljJpckbzYRj5oSXyRuqqsDwhheUMg9u4RB0D0BdUqOhwiP7rO6wIBWILhQ0",
+              "domain": "google.com",
+              "title": "7 stages of ML model development | Steps in machine learning life cycle",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAEShQEBxCJF1_vbBK1L_7m_KgWHla57xtppeFrFYi_rrAy4K1N4GsE4wNzMYWw9FnbZiLetwpR_X9rNCScE_QEl62g8Q1ksY4w2o6PaNuCSFPvfk30lHgV-8xmX2ZxXE_cTseFCtI8_96oePF6U5jns0aBjWHkv_cKRbUDW2iCt5iX-xe_ekqs6",
+              "url": "https://google.com/goto?url=CAEShQEBxCJF1_vbBK1L_7m_KgWHla57xtppeFrFYi_rrAy4K1N4GsE4wNzMYWw9FnbZiLetwpR_X9rNCScE_QEl62g8Q1ksY4w2o6PaNuCSFPvfk30lHgV-8xmX2ZxXE_cTseFCtI8_96oePF6U5jns0aBjWHkv_cKRbUDW2iCt5iX-xe_ekqs6",
+              "domain": "google.com",
+              "title": "How to prevent data leakage in machine learning models?",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "e81b9fcb-316b-4641-ab6f-88d9a7d4206d"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "8e7a89c4-1b4b-4f57-8096-8ed51d025875"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAEShQEBxCJF161Kgi4lMHrcqka34a_fDkZtpRjVdOxBUS6_M3uCL4UC8NwAVq1WtiruFpjnwIXtZvJU6LqT9xJb9_rScdkPs9dBQ6Qvl_R7HwBiyIg8VF-jRVaAG6jpVvdm1Hk-qhvOyFH4zcaj74vMCOec9_HiKidfM9rAbjT_oIrnbwLLiSSN",
+              "url": "https://google.com/goto?url=CAEShQEBxCJF161Kgi4lMHrcqka34a_fDkZtpRjVdOxBUS6_M3uCL4UC8NwAVq1WtiruFpjnwIXtZvJU6LqT9xJb9_rScdkPs9dBQ6Qvl_R7HwBiyIg8VF-jRVaAG6jpVvdm1Hk-qhvOyFH4zcaj74vMCOec9_HiKidfM9rAbjT_oIrnbwLLiSSN",
+              "domain": "google.com",
+              "title": "javascript beginner's guide and machine learning",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAEShQEBxCJF18PIQ2CqeLcVEqNLkwYCRi-75NRNxWu7Gj1a6yIkX5kY-Hq0IZrDd8QMYWmfp_Y9_qUIISQo5m0UTWQxyFtqevNFz66CZFG3oePz30n4iKFsUvlQMiKdJfiwmkoBa1LN-VGDaId4Lyk3Vv6YKxATEf_st86OxpDVKHRh98zEeikR",
+              "url": "https://google.com/goto?url=CAEShQEBxCJF18PIQ2CqeLcVEqNLkwYCRi-75NRNxWu7Gj1a6yIkX5kY-Hq0IZrDd8QMYWmfp_Y9_qUIISQo5m0UTWQxyFtqevNFz66CZFG3oePz30n4iKFsUvlQMiKdJfiwmkoBa1LN-VGDaId4Lyk3Vv6YKxATEf_st86OxpDVKHRh98zEeikR",
+              "domain": "google.com",
+              "title": "Beginners Guide to Machine Learning in JavaScript - YouTube",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESiwEBxCJF1xj6BMwSxCdQkNmYbbD5SqKd32seu8NGQqYfbCufnsG66QZS-xIphQCWYR7EcLmGbj_mPWLTpV7XH767Zlvd6b2dmr47re6JX87ak18t7aPtZ3qdNw4TuonXboejwWbmKNB1UecIAjtgT099RQxAaejnsmAKYuRGOrEzweSXjAHKVOYbdC7w",
+              "url": "https://google.com/goto?url=CAESiwEBxCJF1xj6BMwSxCdQkNmYbbD5SqKd32seu8NGQqYfbCufnsG66QZS-xIphQCWYR7EcLmGbj_mPWLTpV7XH767Zlvd6b2dmr47re6JX87ak18t7aPtZ3qdNw4TuonXboejwWbmKNB1UecIAjtgT099RQxAaejnsmAKYuRGOrEzweSXjAHKVOYbdC7w",
+              "domain": "google.com",
+              "title": "Rotational Labs | 5 Javascript Libraries to Use for Machine Learning",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESiwEBxCJF1yY-3RujMUoax7QOCczr0gbYG2xuu0Ymc9SBpcaOEq7zxf725Qi1jEApeczdsU0mluQVzNeLj27oGWAhyNhY4lH97X6c_KGk_vZKq4zobbmM4SVXZcv1pJXL9b9dXl1cG9svh2BOE93CIv-TmEUz2hJtgwfnnYkhUXF3N191_A_pqPbn9avj",
+              "url": "https://google.com/goto?url=CAESiwEBxCJF1yY-3RujMUoax7QOCczr0gbYG2xuu0Ymc9SBpcaOEq7zxf725Qi1jEApeczdsU0mluQVzNeLj27oGWAhyNhY4lH97X6c_KGk_vZKq4zobbmM4SVXZcv1pJXL9b9dXl1cG9svh2BOE93CIv-TmEUz2hJtgwfnnYkhUXF3N191_A_pqPbn9avj",
+              "domain": "google.com",
+              "title": "00. Getting started with TensorFlow: A guide to the fundamentals",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESkgEBxCJF17hEBiIkpcpSGTLa4kZtkjlN_aKlFIRSquQe36U1882bnvmz4uARI9dKIUBlg3TXXfR-Y0QlROgLeUEwxs2SYpcYVdzt-WzKQG70OcKWh_wRVukuAJL7sFO3_W0fUG_rBZsLkOdi37BoAU0ZKQACEZJ-buzKxIsWX0XEopHE5wduw-s6OYmG9nJ9zc77bg",
+              "url": "https://google.com/goto?url=CAESkgEBxCJF17hEBiIkpcpSGTLa4kZtkjlN_aKlFIRSquQe36U1882bnvmz4uARI9dKIUBlg3TXXfR-Y0QlROgLeUEwxs2SYpcYVdzt-WzKQG70OcKWh_wRVukuAJL7sFO3_W0fUG_rBZsLkOdi37BoAU0ZKQACEZJ-buzKxIsWX0XEopHE5wduw-s6OYmG9nJ9zc77bg",
+              "domain": "google.com",
+              "title": "Basics of TensorFlow for JavaScript development",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESkQEBxCJF1yZpgce8CkhH2R5x8o88cMEXfKpD4VVM7t7YHc1qVqFrBSiSdpcs6EDbDc6KfELRTAHJVKXjs06uk3yD9D6zePg45yY6h59WIURAJCxFt0xdgLCMxc3vfUBX9fg0WFMnX8l-r8RR_9kjhMJ6IHcaULiHY83v0Cg34K84j3n0P7aEdBaSZ7R0bJvsWTkg",
+              "url": "https://google.com/goto?url=CAESkQEBxCJF1yZpgce8CkhH2R5x8o88cMEXfKpD4VVM7t7YHc1qVqFrBSiSdpcs6EDbDc6KfELRTAHJVKXjs06uk3yD9D6zePg45yY6h59WIURAJCxFt0xdgLCMxc3vfUBX9fg0WFMnX8l-r8RR_9kjhMJ6IHcaULiHY83v0Cg34K84j3n0P7aEdBaSZ7R0bJvsWTkg",
+              "domain": "google.com",
+              "title": "Get to know TensorFlow.js in 7 minutes | by Akshay Lamba",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESlwEBxCJF1zkB4z5t8zKMzGMPywpTZt56ol1VLJmSkDD_-JAl1sK78DsquJEOIlfnJqXmNITeuFRJzzYJbAh1ziNrtNvpsuCsyJOgYItUV1Z3pP862KEqF68X5qsJ4iEg8PsDrOeRVgE-XLoViOBeBac87hRi-meABU7NqDTT16iFL4LmQC-b6QehrsSOxwdprpo4DFjwTuTY",
+              "url": "https://google.com/goto?url=CAESlwEBxCJF1zkB4z5t8zKMzGMPywpTZt56ol1VLJmSkDD_-JAl1sK78DsquJEOIlfnJqXmNITeuFRJzzYJbAh1ziNrtNvpsuCsyJOgYItUV1Z3pP862KEqF68X5qsJ4iEg8PsDrOeRVgE-XLoViOBeBac87hRi-meABU7NqDTT16iFL4LmQC-b6QehrsSOxwdprpo4DFjwTuTY",
+              "domain": "google.com",
+              "title": "Leveraging Frontend Skills in AI Development",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESpwEBxCJF1w6wNeMy5hbDp-OSwMDsQMAhnx57-gtHjJNOMwZIRYRB7D_9EjNPfIBXKlNWyHAw_26pwb3YyBHVEpLX_8ZI-Q_QyYqhy6SVe0sLadNHBfJM2pi3LvOQYhJuG-LDXsNxEakRVYJcBbVJvT7eUCtgLHBs4WpB88znsN5szZmNvIJGaM0KQFrl8RNQUO6LIuiCF7wZ9rkf87AK9H9D_396nMZccQ",
+              "url": "https://google.com/goto?url=CAESpwEBxCJF1w6wNeMy5hbDp-OSwMDsQMAhnx57-gtHjJNOMwZIRYRB7D_9EjNPfIBXKlNWyHAw_26pwb3YyBHVEpLX_8ZI-Q_QyYqhy6SVe0sLadNHBfJM2pi3LvOQYhJuG-LDXsNxEakRVYJcBbVJvT7eUCtgLHBs4WpB88znsN5szZmNvIJGaM0KQFrl8RNQUO6LIuiCF7wZ9rkf87AK9H9D_396nMZccQ",
+              "domain": "google.com",
+              "title": "How Data Scientist Use JavaScript to Develop Machine Learning | by Be Beyond Code by @boatchrnthn | Medium",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESqgEBxCJF162l3_pdDatYpAZ3hP79Z-GeDv97ChUZCuvavnoLVVwDUHFWF99e6cpxcYMJcS_n9JMe6LTBb9WAkaFnzEgvF2yPX3as5QFA7guGRI4OGl3DqExZaTOZn8-cX1z-wDkdLInrrbRKQM5_7KCTUNaYPEmEISFEsitS3Zfe_JLlN7viBqikPKxwbsSiLuh9OpfHDJ2xqhDpckJP3UEmFFG-rQXwAcwGmQ",
+              "url": "https://google.com/goto?url=CAESqgEBxCJF162l3_pdDatYpAZ3hP79Z-GeDv97ChUZCuvavnoLVVwDUHFWF99e6cpxcYMJcS_n9JMe6LTBb9WAkaFnzEgvF2yPX3as5QFA7guGRI4OGl3DqExZaTOZn8-cX1z-wDkdLInrrbRKQM5_7KCTUNaYPEmEISFEsitS3Zfe_JLlN7viBqikPKxwbsSiLuh9OpfHDJ2xqhDpckJP3UEmFFG-rQXwAcwGmQ",
+              "domain": "google.com",
+              "title": "In",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "31a5d8e2-495c-4260-b6ff-00a02055399e"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESsQEBxCJF11UivjrL0sc1y4Tdq8s8YhMyzXzqvIEon121JmQiYLwkmW0zVhr_lqNwsYcoh-MhzEbBhrTBTse6Ear1ebkjXCd477eOwLtf_wqdjzNjCHsoeffrN0IcVyozKhg2fPdK2kCues9DIIoMaDfz2x7sIxeo0OkVz8ZNFxWZo4F209ww2YjE-VDfgBkaSK8p9AHBEiVhgAwbxUrtWyKELcwXtbm4XB9J-B8Ji-Xyuwk",
+              "url": "https://google.com/goto?url=CAESsQEBxCJF11UivjrL0sc1y4Tdq8s8YhMyzXzqvIEon121JmQiYLwkmW0zVhr_lqNwsYcoh-MhzEbBhrTBTse6Ear1ebkjXCd477eOwLtf_wqdjzNjCHsoeffrN0IcVyozKhg2fPdK2kCues9DIIoMaDfz2x7sIxeo0OkVz8ZNFxWZo4F209ww2YjE-VDfgBkaSK8p9AHBEiVhgAwbxUrtWyKELcwXtbm4XB9J-B8Ji-Xyuwk",
+              "domain": "google.com",
+              "title": "Interactive Machine Learning in the Browser with ml5.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESVQHEIkXXjuhwUM_GE-CarDar3n52oAdfz9qCxssmjP2s0ckYzXbMeKLevMsxT2V18I1q9r6J-8rxDtVIzcWxTJx17VG0go5xlQ-eFFSBegFVdSovdpk",
+              "url": "https://google.com/goto?url=CAESVQHEIkXXjuhwUM_GE-CarDar3n52oAdfz9qCxssmjP2s0ckYzXbMeKLevMsxT2V18I1q9r6J-8rxDtVIzcWxTJx17VG0go5xlQ-eFFSBegFVdSovdpk",
+              "domain": "google.com",
+              "title": "ml5.js | Friendly Machine Learning for the Web",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESWgHEIkXXkrLQ-NsA-967Vz2FFyVkbGEpNjE-hcHeJDkX0Rbo2G9ao55FJZD7eGVK6Aq2d0LVi2vOKsJhKbohIJ_C1Zr-0C9XhEe1rsYOI8pQNBYJqgt1l3l3EA",
+              "url": "https://google.com/goto?url=CAESWgHEIkXXkrLQ-NsA-967Vz2FFyVkbGEpNjE-hcHeJDkX0Rbo2G9ao55FJZD7eGVK6Aq2d0LVi2vOKsJhKbohIJ_C1Zr-0C9XhEe1rsYOI8pQNBYJqgt1l3l3EA",
+              "domain": "google.com",
+              "title": "TensorFlow.js | Machine Learning for JavaScript Developers",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESYQHEIkXXybYGIQTl9kp1JkXAmmk9VCBCd-ZbRcX2hVSCHVip4qif2C8UvG-i26jfKwYdpEHNFtFsg1rrri7zs1D0kBQdFv6xFCsC-DOIUb-PDCCAx4KEAQ7stF0SIYMcBrs",
+              "url": "https://google.com/goto?url=CAESYQHEIkXXybYGIQTl9kp1JkXAmmk9VCBCd-ZbRcX2hVSCHVip4qif2C8UvG-i26jfKwYdpEHNFtFsg1rrri7zs1D0kBQdFv6xFCsC-DOIUb-PDCCAx4KEAQ7stF0SIYMcBrs",
+              "domain": "google.com",
+              "title": "tf.reshape(): Reshape tensors in TensorFlow",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://google.com/goto?url=CAESZwHEIkXXp4yVyJJzbIqJTGa4KribYsPqddXvY_HYXthoedPEiW7FfOPxC9F98YqdH0iZbKHCemCFoLp3-FVQQmAwJ8E8u4lajiPPPbT1gWG5rGRtOq3inHBcSjvlodxhTUlushGBEXM",
+              "url": "https://google.com/goto?url=CAESZwHEIkXXp4yVyJJzbIqJTGa4KribYsPqddXvY_HYXthoedPEiW7FfOPxC9F98YqdH0iZbKHCemCFoLp3-FVQQmAwJ8E8u4lajiPPPbT1gWG5rGRtOq3inHBcSjvlodxhTUlushGBEXM",
+              "domain": "google.com",
+              "title": "Shape, Broadcasting, Dtypes & GPU Memory| Sharad Khare",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://hpssjellis.github.io/beginner-tensorflowjs-examples-in-javascript/",
+              "url": "https://hpssjellis.github.io/beginner-tensorflowjs-examples-in-javascript/",
+              "domain": "hpssjellis.github.io",
+              "title": "Beginner Tensorflowjs Examples in Javascript - GitHub Pages",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "0c3c8938-4a98-4c79-b579-b841a30d2784"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://huggingface.co/docs/transformers.js",
+              "url": "https://huggingface.co/docs/transformers.js",
+              "domain": "huggingface.co",
+              "title": "Transformers.js documentation",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "20ab565e-c50a-4492-9417-b38d0a31cfaf"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://huggingface.co/docs/transformers.js/en/index",
+              "url": "https://huggingface.co/docs/transformers.js/en/index",
+              "domain": "huggingface.co",
+              "title": "Transformers.js documentation",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "20ab565e-c50a-4492-9417-b38d0a31cfaf"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://javascript.plainenglish.io/bringing-ai-to-the-browser-a-beginners-guide-to-ai-and-machine-learning-in-javascript-51a703b32160",
+              "url": "https://javascript.plainenglish.io/bringing-ai-to-the-browser-a-beginners-guide-to-ai-and-machine-learning-in-javascript-51a703b32160",
+              "domain": "javascript.plainenglish.io",
+              "title": "A Beginner's Guide to AI and Machine Learning in JavaScript",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://jdhao.github.io/2019/07/10/pytorch_view_reshape_transpose_permute/",
+              "url": "https://jdhao.github.io/2019/07/10/pytorch_view_reshape_transpose_permute/",
+              "domain": "jdhao.github.io",
+              "title": "Difference between view, reshape, transpose and permute in PyTorch",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://js.tensorflow.org/api/2.3.0/",
+              "url": "https://js.tensorflow.org/api/2.3.0/",
+              "domain": "js.tensorflow.org",
+              "title": "TensorFlow.js API",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://js.tensorflow.org/api/3.12.0/",
+              "url": "https://js.tensorflow.org/api/3.12.0/",
+              "domain": "js.tensorflow.org",
+              "title": "TensorFlow.js API Reference",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "218d035d-3f09-4842-9442-0195449c8917"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "878cb67e-7186-4e6c-9633-0857a20f3154"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://js.tensorflow.org/api/3.6.0/",
+              "url": "https://js.tensorflow.org/api/3.6.0/",
+              "domain": "js.tensorflow.org",
+              "title": "TensorFlow.js API",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "96e3cce4-c14c-4d56-857c-a2e9c1b4e5db"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://js.tensorflow.org/api/latest/",
+              "url": "https://js.tensorflow.org/api/latest/",
+              "domain": "js.tensorflow.org",
+              "title": "TensorFlow.js API",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://js.tensorflow.org/api/latest/?hl=es-419",
+              "url": "https://js.tensorflow.org/api/latest/?hl=es-419",
+              "domain": "js.tensorflow.org",
+              "title": "TensorFlow.js API",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "218d035d-3f09-4842-9442-0195449c8917"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "878cb67e-7186-4e6c-9633-0857a20f3154"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://kedevked.medium.com/data-processing-with-tensorflow-js-b42175e0e86e",
+              "url": "https://kedevked.medium.com/data-processing-with-tensorflow-js-b42175e0e86e",
+              "domain": "kedevked.medium.com",
+              "title": "Data processing with tensorflow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@jdeol/machine-learning-for-beginners-22840669be5e",
+              "url": "https://medium.com/@jdeol/machine-learning-for-beginners-22840669be5e",
+              "domain": "medium.com",
+              "title": "Machine Learning for beginners",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@karanaryan/ultimate-guide-to-getting-started-with-tensorflow-js-7db1d3f3954e",
+              "url": "https://medium.com/@karanaryan/ultimate-guide-to-getting-started-with-tensorflow-js-7db1d3f3954e",
+              "domain": "medium.com",
+              "title": "Ultimate Guide to Getting Started with TensorFlow.js | by Karan Aryan",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "401af286-3254-4e64-96e3-00d40aa79ab0"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "0c3c8938-4a98-4c79-b579-b841a30d2784"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@lmoroney_google/getting-started-with-tensorflow-js-9f778d4d0a1",
+              "url": "https://medium.com/@lmoroney_google/getting-started-with-tensorflow-js-9f778d4d0a1",
+              "domain": "medium.com",
+              "title": "Getting Started with TensorFlow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@lulindeng073/reshape-or-transpose-5823e05f83ce",
+              "url": "https://medium.com/@lulindeng073/reshape-or-transpose-5823e05f83ce",
+              "domain": "medium.com",
+              "title": "Reshape or Transpose? - Medium",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@mrunalimane2728/ai-in-javascript-beginner-to-pro-roadmap-2d283e128e70",
+              "url": "https://medium.com/@mrunalimane2728/ai-in-javascript-beginner-to-pro-roadmap-2d283e128e70",
+              "domain": "medium.com",
+              "title": "AI in JavaScript: Beginner to Pro Roadmap - Medium",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@satyamv57/harnessing-machine-learning-in-javascript-a-beginners-guide-with-tensorflow-js-3cea05c8e3bb",
+              "url": "https://medium.com/@satyamv57/harnessing-machine-learning-in-javascript-a-beginners-guide-with-tensorflow-js-3cea05c8e3bb",
+              "domain": "medium.com",
+              "title": "Harnessing Machine Learning in JavaScript: A Beginner's Guide",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fae5b7de-21f6-4852-98ce-b20f5283982a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@thekimmykola/a-beginners-checklist-to-starting-your-first-machine-learning-project-9ea8220cb913",
+              "url": "https://medium.com/@thekimmykola/a-beginners-checklist-to-starting-your-first-machine-learning-project-9ea8220cb913",
+              "domain": "medium.com",
+              "title": "A Beginner's Checklist to Starting Your First Machine Learning ...",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/@wing.y.tse.jobs/a-step-by-step-guide-to-avoid-data-leakage-by-pipeline-randomizedsearchcv-and-votingregressor-in-68b01aca6109",
+              "url": "https://medium.com/@wing.y.tse.jobs/a-step-by-step-guide-to-avoid-data-leakage-by-pipeline-randomizedsearchcv-and-votingregressor-in-68b01aca6109",
+              "domain": "medium.com",
+              "title": "A Step-by-Step Guide to Avoid Data Leakage by Pipeline ...",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "e81b9fcb-316b-4641-ab6f-88d9a7d4206d"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "8e7a89c4-1b4b-4f57-8096-8ed51d025875"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/friendly-data/machine-learning-vs-rule-based-systems-in-nlp-5476de53c3b8",
+              "url": "https://medium.com/friendly-data/machine-learning-vs-rule-based-systems-in-nlp-5476de53c3b8",
+              "domain": "medium.com",
+              "title": "Machine Learning vs. Rule Based Systems in NLP | by Maryna Dorash",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://medium.com/rewrite-tech/welcome-to-the-machine-a-gentle-introduction-to-machine-learning-in-javascript-9906a46f0450",
+              "url": "https://medium.com/rewrite-tech/welcome-to-the-machine-a-gentle-introduction-to-machine-learning-in-javascript-9906a46f0450",
+              "domain": "medium.com",
+              "title": "a gentle introduction to Machine Learning in JavaScript - Medium",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "df0fc708-a544-4b90-a815-51af79ad1090"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://ml5js.org/about/",
+              "url": "https://ml5js.org/about/",
+              "domain": "ml5js.org",
+              "title": "Friendly Machine Learning for the Web - ml5.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "df0fc708-a544-4b90-a815-51af79ad1090"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://mlconference.ai/blog/machine-learning-in-the-browser-what-possibilities-are-there-with-tensorflow-js/",
+              "url": "https://mlconference.ai/blog/machine-learning-in-the-browser-what-possibilities-are-there-with-tensorflow-js/",
+              "domain": "mlconference.ai",
+              "title": "TensorFlow.js: What is possible with Machine learning in the browser?",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f3866939-06ee-4b62-87a0-b73c6b99d29a"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "c94ed5aa-df1b-45dc-8c59-65645da03df2"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://observablehq.com/@a-kyselova/machine-learning-in-js-with-tensor-flow-js-part-i",
+              "url": "https://observablehq.com/@a-kyselova/machine-learning-in-js-with-tensor-flow-js-part-i",
+              "domain": "observablehq.com",
+              "title": "Machine Learning in JS with TensorFlow.js (Part I) | a-k | Observable",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fae5b7de-21f6-4852-98ce-b20f5283982a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://observablehq.com/d/66fe291eb3a35c19",
+              "url": "https://observablehq.com/d/66fe291eb3a35c19",
+              "domain": "observablehq.com",
+              "title": "Introduction to the TensorFlow.js core API",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://omdayal.com/blog/btech-ai-ml-vs-cse/",
+              "url": "https://omdayal.com/blog/btech-ai-ml-vs-cse/",
+              "domain": "omdayal.com",
+              "title": "B.Tech AI & ML vs CSE: Which Is Better After 12th?",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://onnxruntime.ai/docs/tutorials/web/",
+              "url": "https://onnxruntime.ai/docs/tutorials/web/",
+              "domain": "onnxruntime.ai",
+              "title": "Web | onnxruntime",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://opensource.microsoft.com/blog/2024/02/06/on-device-training-training-a-model-in-browser/",
+              "url": "https://opensource.microsoft.com/blog/2024/02/06/on-device-training-training-a-model-in-browser/",
+              "domain": "opensource.microsoft.com",
+              "title": "On-Device Training: Training a model in browser",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://playground.tensorflow.org/",
+              "url": "https://playground.tensorflow.org/",
+              "domain": "playground.tensorflow.org",
+              "title": "Try TensorFlow Playground",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "7b0a54c2-5053-4e97-95e7-56c7b8e66589"
+              ],
+              "truncated": false
+            }
+          ],
+          "totalCount": 143,
+          "nextCursor": "100",
+          "coverage": {
+            "expected": 36,
+            "completed": 34,
+            "failed": 2,
+            "pending": 0,
+            "noAnswer": 0
+          },
+          "appliedFilters": {
+            "competitorGap": false,
+            "branded": "neutral",
+            "ownership": "all"
+          },
+          "groupBy": "url",
+          "truncated": false
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility/sources"
+        }
+      }
+    },
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+        "topic": null,
+        "engines": null,
+        "promptId": null,
+        "cursor": "100",
+        "competitorGap": false,
+        "limit": 50,
+        "branded": "neutral",
+        "groupBy": "url",
+        "ownership": "all"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "rows": [
+            {
+              "key": "https://scikit-learn.org/stable/common_pitfalls.html",
+              "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+              "domain": "scikit-learn.org",
+              "title": "12. Common pitfalls and recommended practices - Scikit-learn",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "e81b9fcb-316b-4641-ab6f-88d9a7d4206d"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "8e7a89c4-1b4b-4f57-8096-8ed51d025875"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://serengetitech.com/tech/tensorflow-js-machine-learning-for-javascript-developers-part-i/",
+              "url": "https://serengetitech.com/tech/tensorflow-js-machine-learning-for-javascript-developers-part-i/",
+              "domain": "serengetitech.com",
+              "title": "TensorFlow.js – Machine Learning for JavaScript Developers",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://stackoverflow.com/questions/49922674/difference-between-tf-reshapea-m-n-and-tf-transposetf-reshapea-n-m",
+              "url": "https://stackoverflow.com/questions/49922674/difference-between-tf-reshapea-m-n-and-tf-transposetf-reshapea-n-m",
+              "domain": "stackoverflow.com",
+              "title": "python - Difference between `tf.reshape(a, [m, n])` and `tf.transpose",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://stackoverflow.com/questions/68700008/difference-between-just-reshaping-and-reshaping-and-getting-transpose",
+              "url": "https://stackoverflow.com/questions/68700008/difference-between-just-reshaping-and-reshaping-and-getting-transpose",
+              "domain": "stackoverflow.com",
+              "title": "python - Difference between just reshaping and ... - Stack Overflow",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://stackoverflow.com/questions/69452875/how-to-format-input-data-in-tensorflow-js",
+              "url": "https://stackoverflow.com/questions/69452875/how-to-format-input-data-in-tensorflow-js",
+              "domain": "stackoverflow.com",
+              "title": "how to format input data in tensorflow.js? - Stack Overflow",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://stackshare.io/stackups/ml5-js-vs-tensorflow-js",
+              "url": "https://stackshare.io/stackups/ml5-js-vs-tensorflow-js",
+              "domain": "stackshare.io",
+              "title": "TensorFlow.js vs ml5.js | What are the differences? - StackShare",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "df0fc708-a544-4b90-a815-51af79ad1090"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://stats.stackexchange.com/questions/574824/avoiding-data-leakage-in-preprocessing-and-handling-unseen-values-in-test-data",
+              "url": "https://stats.stackexchange.com/questions/574824/avoiding-data-leakage-in-preprocessing-and-handling-unseen-values-in-test-data",
+              "domain": "stats.stackexchange.com",
+              "title": "Avoiding data leakage in preprocessing and handling unseen ...",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "e81b9fcb-316b-4641-ab6f-88d9a7d4206d"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "8e7a89c4-1b4b-4f57-8096-8ed51d025875"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://teachablemachine.withgoogle.com/",
+              "url": "https://teachablemachine.withgoogle.com/",
+              "domain": "teachablemachine.withgoogle.com",
+              "title": "Try Teachable Machine",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "69abb0c5-6d03-40a5-a88e-49e102eb5668"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "7b0a54c2-5053-4e97-95e7-56c7b8e66589"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://towardsdatascience.com/baseline-models-your-guide-for-model-building-1ec3aa244b8d/",
+              "url": "https://towardsdatascience.com/baseline-models-your-guide-for-model-building-1ec3aa244b8d/",
+              "domain": "towardsdatascience.com",
+              "title": "Baseline Models: Your Guide For Model Building",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://web.dev/learn/ai/client-side?authuser=7",
+              "url": "https://web.dev/learn/ai/client-side?authuser=7",
+              "domain": "web.dev",
+              "title": "The client-side AI stack",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "20ab565e-c50a-4492-9417-b38d0a31cfaf"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.classcentral.com/subject/ml5",
+              "url": "https://www.classcentral.com/subject/ml5",
+              "domain": "www.classcentral.com",
+              "title": "ml5.js Online Courses for 2026 | Explore Free Courses & Certifications",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.coddykit.com/courses/learn_data_science/stop-data-leakage-before-it-starts-11915560",
+              "url": "https://www.coddykit.com/courses/learn_data_science/stop-data-leakage-before-it-starts-11915560",
+              "domain": "www.coddykit.com",
+              "title": "Stop Data Leakage Before It Starts \u2014 Data Science Academy",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "e81b9fcb-316b-4641-ab6f-88d9a7d4206d"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "8e7a89c4-1b4b-4f57-8096-8ed51d025875"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.coursera.org/courses?query=machine%20learning&productDifficultyLevel=Beginner",
+              "url": "https://www.coursera.org/courses?query=machine%20learning&productDifficultyLevel=Beginner",
+              "domain": "www.coursera.org",
+              "title": "Best Beginner Machine Learning Courses & Certificates [2026]",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.deeplearning.ai/specializations/machine-learning",
+              "url": "https://www.deeplearning.ai/specializations/machine-learning",
+              "domain": "www.deeplearning.ai",
+              "title": "View specialization",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bce918dd-b7a9-4eec-994b-15885e82c735"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/",
+              "url": "https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/",
+              "domain": "www.freecodecamp.org",
+              "title": "Learn ml5.js for Machine Learning in JavaScript - freeCodeCamp",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.geeksforgeeks.org/javascript/tensorflow-js-introduction/",
+              "url": "https://www.geeksforgeeks.org/javascript/tensorflow-js-introduction/",
+              "domain": "www.geeksforgeeks.org",
+              "title": "Tensorflow.js Introduction - GeeksforGeeks",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fae5b7de-21f6-4852-98ce-b20f5283982a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.geeksforgeeks.org/javascript/tensorflow-js-tf-reshape-function/",
+              "url": "https://www.geeksforgeeks.org/javascript/tensorflow-js-tf-reshape-function/",
+              "domain": "www.geeksforgeeks.org",
+              "title": "Tensorflow.js tf.reshape() Function - GeeksforGeeks",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.geeksforgeeks.org/javascript/tensorflow-js-tf-tensor6d-function/",
+              "url": "https://www.geeksforgeeks.org/javascript/tensorflow-js-tf-tensor6d-function/",
+              "domain": "www.geeksforgeeks.org",
+              "title": "Tensorflow.js tf.tensor6d() Function - GeeksforGeeks",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.geeksforgeeks.org/machine-learning/machine-learning-with-javascript/",
+              "url": "https://www.geeksforgeeks.org/machine-learning/machine-learning-with-javascript/",
+              "domain": "www.geeksforgeeks.org",
+              "title": "Machine Learning with JavaScript - GeeksforGeeks",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "e0ba7029-e325-4cff-830a-ec6ee5c27999"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.pluralsight.com/courses/building-machine-learning-solutions-tensorflow-js-tfjs",
+              "url": "https://www.pluralsight.com/courses/building-machine-learning-solutions-tensorflow-js-tfjs",
+              "domain": "www.pluralsight.com",
+              "title": "Building Machine Learning Solutions with TensorFlow.js 2",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.pythonalchemist.com/blog/numpy-reshape-transpose",
+              "url": "https://www.pythonalchemist.com/blog/numpy-reshape-transpose",
+              "domain": "www.pythonalchemist.com",
+              "title": "NumPy Reshape vs Transpose: Why One Can't Rotate Images",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.quora.com/Is-it-true-that-machine-learning-is-more-difficult-to-learn-for-front-end-developers-than-back-end-developers",
+              "url": "https://www.quora.com/Is-it-true-that-machine-learning-is-more-difficult-to-learn-for-front-end-developers-than-back-end-developers",
+              "domain": "www.quora.com",
+              "title": "Is it true that machine learning is more difficult to learn for front ...",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.reddit.com/r/learnmachinelearning/comments/1qhxmtr/best_aiml_course_for_beginners_to_advanced_any/",
+              "url": "https://www.reddit.com/r/learnmachinelearning/comments/1qhxmtr/best_aiml_course_for_beginners_to_advanced_any/",
+              "domain": "www.reddit.com",
+              "title": "Best AI/ML course for Beginners to Advanced, any recommendations?",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "809be288-d871-4297-bd1d-862e7d4b2a24"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.reddit.com/r/learnprogramming/comments/14587r2/what_prerequisites_should_i_have_before_leaning/",
+              "url": "https://www.reddit.com/r/learnprogramming/comments/14587r2/what_prerequisites_should_i_have_before_leaning/",
+              "domain": "www.reddit.com",
+              "title": "What prerequisites should I have before leaning tensorflow.js?",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "fae5b7de-21f6-4852-98ce-b20f5283982a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.researchgate.net/publication/405132939_A_Comparative_Analysis_of_Rule-Based_and_Machine_Learning_Decision_Systems_Under_Normal_and_Edge-Case_Conditions_Introduction",
+              "url": "https://www.researchgate.net/publication/405132939_A_Comparative_Analysis_of_Rule-Based_and_Machine_Learning_Decision_Systems_Under_Normal_and_Edge-Case_Conditions_Introduction",
+              "domain": "www.researchgate.net",
+              "title": "(PDF) A Comparative Analysis of Rule-Based and Machine",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.smashingmagazine.com/2019/09/machine-learning-front-end-developers-tensorflowjs/",
+              "url": "https://www.smashingmagazine.com/2019/09/machine-learning-front-end-developers-tensorflowjs/",
+              "domain": "www.smashingmagazine.com",
+              "title": "Machine Learning For Front-End Developers With Tensorflow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "df0fc708-a544-4b90-a815-51af79ad1090"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.techtarget.com/news/Choosing-between-a-rule-based-vs-machine-learning-system/834793/",
+              "url": "https://www.techtarget.com/news/Choosing-between-a-rule-based-vs-machine-learning-system/834793/",
+              "domain": "www.techtarget.com",
+              "title": "Choosing between a rule-based vs. machine learning system",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/api_docs/python/tf/reshape",
+              "url": "https://www.tensorflow.org/api_docs/python/tf/reshape",
+              "domain": "www.tensorflow.org",
+              "title": "tf.reshape | TensorFlow v2.21.0",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f4d4052f-e119-4375-a7a7-94b4175aa888"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/js/guide/tensors_operations?authuser=104",
+              "url": "https://www.tensorflow.org/js/guide/tensors_operations?authuser=104",
+              "domain": "www.tensorflow.org",
+              "title": "Tensors and operations  |  TensorFlow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "96e3cce4-c14c-4d56-857c-a2e9c1b4e5db"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/js/guide/train_models?authuser=131",
+              "url": "https://www.tensorflow.org/js/guide/train_models?authuser=131",
+              "domain": "www.tensorflow.org",
+              "title": "TensorFlow.js – Training Models",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "9729a44f-6b95-4f1b-8265-c1b371217258"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/resources/learn-ml/basics-of-tensorflow-for-js-development?authuser=789423169",
+              "url": "https://www.tensorflow.org/resources/learn-ml/basics-of-tensorflow-for-js-development?authuser=789423169",
+              "domain": "www.tensorflow.org",
+              "title": "Start learning TensorFlow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "chatgpt",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "20ab565e-c50a-4492-9417-b38d0a31cfaf"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.tensorflow.org/tutorials/structured_data/imbalanced_data",
+              "url": "https://www.tensorflow.org/tutorials/structured_data/imbalanced_data",
+              "domain": "www.tensorflow.org",
+              "title": "Classification on imbalanced data | TensorFlow Core",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.udemy.com/course/machine-learning-in-javascript-with-tensorflow-js/",
+              "url": "https://www.udemy.com/course/machine-learning-in-javascript-with-tensorflow-js/",
+              "domain": "www.udemy.com",
+              "title": "Machine Learning in JavaScript with TensorFlow.js",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "85b53809-39a9-4cc8-89f9-f0fe8af5e152"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "f55ea614-4a61-47c9-8988-821b8f8300c0"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=54Y6d9aFdsc",
+              "url": "https://www.youtube.com/watch?v=54Y6d9aFdsc",
+              "domain": "www.youtube.com",
+              "title": "YouTube",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=ALibvXwhMlQ&t=2",
+              "url": "https://www.youtube.com/watch?v=ALibvXwhMlQ&t=2",
+              "domain": "www.youtube.com",
+              "title": "Machine learning without coding inside browser - ML Playground",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "31a5d8e2-495c-4260-b6ff-00a02055399e"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=aLMT3B30unM",
+              "url": "https://www.youtube.com/watch?v=aLMT3B30unM",
+              "domain": "www.youtube.com",
+              "title": "Machine Learning on JavaScript",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "6278b268-ba57-4ad6-8443-ad60ac385d1e"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "bca4862b-484b-4b76-9465-f8e4b1b4c04a"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=IzL35o5XkqY",
+              "url": "https://www.youtube.com/watch?v=IzL35o5XkqY",
+              "domain": "www.youtube.com",
+              "title": "What is reshape, view, transpose, and permute in PyTorch? - YouTube",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "a49f2580-c42e-486e-9351-4afc17378db2"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "37d8de57-b653-4c24-893a-59f9406802e3"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=J7-EZCj96_Y",
+              "url": "https://www.youtube.com/watch?v=J7-EZCj96_Y",
+              "domain": "www.youtube.com",
+              "title": "Using Machine Learning Models in JavaScript Application",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=L-PBwM56qmI&t=5",
+              "url": "https://www.youtube.com/watch?v=L-PBwM56qmI&t=5",
+              "domain": "www.youtube.com",
+              "title": "Run machine learning models in the browser easily with ...",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "60c26cfe-cc34-4911-b938-164c5cefff9a"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "31a5d8e2-495c-4260-b6ff-00a02055399e"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=O4hd2mnTVbw&t=7",
+              "url": "https://www.youtube.com/watch?v=O4hd2mnTVbw&t=7",
+              "domain": "www.youtube.com",
+              "title": "Machine Learning in JavaScript with TensorFlow.js with Charlie ...",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "c08543bc-5d93-4dde-9106-48bfe7421402"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "502c898d-ea2b-43a8-a506-d94e7be47f16"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=QheqfvqCFS4",
+              "url": "https://www.youtube.com/watch?v=QheqfvqCFS4",
+              "domain": "www.youtube.com",
+              "title": "88: Shape of a tensor | TensorFlow | Tutorial",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=XdErOpUzupY",
+              "url": "https://www.youtube.com/watch?v=XdErOpUzupY",
+              "domain": "www.youtube.com",
+              "title": "Build a neural network with TensorFlow for Beginners",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "f0f15810-192f-4a9c-8329-84579e82aa13"
+              ],
+              "engines": [
+                {
+                  "engine": "google_ai_overview",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "90731fa4-f30e-466e-b51d-e0ac9e20eb76"
+              ],
+              "truncated": false
+            },
+            {
+              "key": "https://www.youtube.com/watch?v=yjy90pdBLfo",
+              "url": "https://www.youtube.com/watch?v=yjy90pdBLfo",
+              "domain": "www.youtube.com",
+              "title": "When Do You Use Machine Learning vs. a Rules Based System?",
+              "ownership": "other",
+              "answerCount": 1,
+              "promptCount": 1,
+              "promptIds": [
+                "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335"
+              ],
+              "engines": [
+                {
+                  "engine": "gemini",
+                  "answerCount": 1
+                }
+              ],
+              "observationIds": [
+                "375ec7c6-be82-4448-af7a-1ba601592b3b"
+              ],
+              "truncated": false
+            }
+          ],
+          "totalCount": 143,
+          "nextCursor": null,
+          "coverage": {
+            "expected": 36,
+            "completed": 34,
+            "failed": 2,
+            "pending": 0,
+            "noAnswer": 0
+          },
+          "appliedFilters": {
+            "competitorGap": false,
+            "branded": "neutral",
+            "ownership": "all"
+          },
+          "groupBy": "url",
+          "truncated": false
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility/sources"
+        }
+      }
+    }
+  ]
+}

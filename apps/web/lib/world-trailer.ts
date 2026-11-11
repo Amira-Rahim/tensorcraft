@@ -10,9 +10,13 @@ const WORLD_TRAILERS: Record<
   string,
   { durationSeconds: number; uploadDate: string }
 > = {
-  // Deep Orbit's 88-second film. uploadDate feeds the VideoObject; bump it
-  // whenever the mp4 is replaced.
-  "deep-orbit": { durationSeconds: 88, uploadDate: "2026-08-29" },
+  // First successful production deployment of this film (commit e1a869e7).
+  // https://api.github.com/repos/Amira-Rahim/tensorcraft/deployments/6156720039/statuses
+  // Keep its original publication time when re-encoding the same film.
+  "deep-orbit": {
+    durationSeconds: 88,
+    uploadDate: "2026-08-29T14:31:46Z",
+  },
 };
 
 export interface WorldTrailer {

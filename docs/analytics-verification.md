@@ -11,9 +11,25 @@ tests establish local behavior. Live Events establishes deployed ingestion.
 The [November 11 measurement follow-up](audits/seo-geo-2026-11-11-baselines/measurement-fix.md)
 updates browser traffic labels and payment payloads in the deployed release.
 Migration 067, API release 35, the web consent flow and PostHog settings are live.
-Eight live consent API checks pass. Full browser interaction and consented
-server-event delivery remain unverified. See the
+Eight live consent API checks pass. Broader browser consent behavior and
+consented server-event delivery remain unverified. See the
 [release evidence](audits/seo-geo-2026-11-11-baselines/deployment.md).
+
+The later [production browser check](audits/seo-geo-2026-11-11-baselines/browser-followup.md)
+observed a guide CTA, matching tensor-shapes arrival and incorrect unassisted
+experiment submission in one SDK session. All three carry `tc_internal=true`
+and disappear with project test exclusions enabled. This verifies those
+released browser events. The separate lesson-arrival follow-up was promoted
+at 12:49 UTC as part of the eight-file SEO release. A browser accepted late
+consent at 12:55:25.574 UTC. The settled PostHog read records one
+`consent_granted` and one `$pageview` at 12:55:26.839 UTC, followed by one
+`lesson_started` for tensor-shapes at 12:55:26.847 UTC. All three are marked
+internal and share one SDK session. The bounded query contains no introduction
+arrival. This closes the narrow late-consent delivery check. SPA navigation,
+withdrawal/reacceptance, signed-in persistence and server payment capture
+remain outside the completed check.
+[Delivery evidence](audits/seo-geo-2026-11-11-baselines/posthog/browser-late-consent-verification.json).
+[Release evidence](audits/seo-geo-2026-11-11-baselines/release/seo-followup-build.json).
 
 ## Verification approach
 
@@ -45,7 +61,7 @@ production release.
 | `world_selected` | Complete onboarding with a world picked | `worldId`, `source="onboarding"` |
 | `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
 | `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `yearsExperience?` |
-| `lesson_started` | Current lesson visit once analytics is ready, including late consent (local follow-up, not yet released) | `worldId`, `moduleId`, `lessonId` |
+| `lesson_started` | Current lesson visit once analytics is ready, including late consent. Released November 11, with one current-lesson arrival verified after late consent in production. | `worldId`, `moduleId`, `lessonId` |
 | `lesson_step_viewed` | Every step entry: mount, Continue, back-nav, step-bar jump | `step` (0-4), `stepsVersion=2`, `stepName`, `prevStep?`, `prevStepMs?`, `revisit` |
 | `script_skipped` | Skip intro button; Continue past a playing scene; the remembered preference suppressing playback | `step=0`, `elapsedMs`, `via` (`button`/`continue`/`auto`) |
 | `script_finished` | Let the Briefing scene play to its natural end | `step=0`, `elapsedMs`, `run` (`auto`/`replay`), `briefingVariant` |
@@ -248,7 +264,7 @@ starts another. Consent withdrawal discards the current interval without an
 end event. Reacceptance starts a new interval and observes the current page.
 No pre-consent actions are queued or replayed.
 
-The November 11 local lesson-arrival follow-up observes only the current visit
+The November 11 released lesson-arrival follow-up observes only the current visit
 once analytics is ready. It does not duplicate that visit on withdrawal and
 reacceptance or replay a lesson left before consent. Progress saving remains
 independent. A lesson arrival does not establish an attempt. Step dwell and
@@ -270,6 +286,17 @@ may include owner or test activity. Search Console now uses the verified
 and 70 impressions for October 12 to November 8, in Pacific Time. The previous
 28-day window, September 14 to October 11, records 4 clicks and 69 impressions.
 These search aggregates cannot identify an individual purchase journey.
+
+The [first GEO sample](audits/seo-geo-2026-11-11-baselines/geo/findings-2026-11-11.json)
+returned 34 answers, two upstream failures and zero no-answer results.
+OpenSEO recorded 0/34 Tensorcraft mentions and 0/34 own-site citations.
+Twenty-three Google redirect URLs remain unresolved, so the citation count
+retains the provider's attribution limit. Exclude failed observations from
+the answered denominator. These results measure this sample of AI answers,
+not visits, purchases or a visibility trend. The
+[private report](https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports/faddb2f6-fed3-4397-a0cc-992419c10721)
+preserves the interpretation. Recurrence is disabled. The approved cap was
+216 credits ($0.216), and the provider did not return the actual debit.
 
 The baseline's 204 `signup_completed` events for one person cannot establish
 registrations. The old source emits on repeated sign-in callbacks. The released

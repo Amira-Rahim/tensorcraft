@@ -1,0 +1,182 @@
+{
+  "collectedAt": "2026-11-11T11:58:52Z",
+  "projectId": 257980,
+  "timezone": "UTC",
+  "purpose": "Controlled internal browser verification, not customer acquisition",
+  "window": {
+    "start": "2026-11-11T11:52:00Z",
+    "endExclusive": "2026-11-11T11:56:00Z"
+  },
+  "method": "Native Chrome Incognito through CUA. Opened /guides?tc_internal=1, accepted analytics, selected reshape guide, changed selected reading, followed activity link, submitted an intentionally incorrect prediction. No account sign-in or payment.",
+  "payloads": {
+    "query": {
+      "kind": "HogQLQuery",
+      "query": "SELECT event, properties.tc_internal AS internal, properties.guideSlug AS guide_slug, properties.source AS source, properties.placement AS placement, properties.targetLesson AS target_lesson, properties.lessonId AS lesson_id, properties.correct AS correct, properties.assisted AS assisted, count() AS events FROM events WHERE timestamp >= toDateTime('2026-11-11 11:52:00') AND timestamp < toDateTime('2026-11-11 11:56:00') AND event IN ('$pageview','consent_granted','free_lesson_cta_clicked','lesson_started','experiment_submitted') GROUP BY event, internal, guide_slug, source, placement, target_lesson, lesson_id, correct, assisted ORDER BY event LIMIT 30"
+    },
+    "results": "event|internal|guide_slug|source|placement|target_lesson|lesson_id|correct|assisted|events\n$pageview|True|(null)|(null)|(null)|(null)|(null)|(null)|(null)|4\nconsent_granted|True|(null)|banner|(null)|(null)|(null)|(null)|(null)|1\nexperiment_submitted|True|(null)|(null)|(null)|(null)|tensor-shapes|False|False|1\nfree_lesson_cta_clicked|True|tensorflow-js-reshape-vs-transpose|guide|activity|https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes|(null)|(null)|(null)|1\nlesson_started|True|(null)|(null)|(null)|(null)|tensor-shapes|(null)|(null)|1",
+    "__formatted_results_override": "event|internal|guide_slug|source|placement|target_lesson|lesson_id|correct|assisted|events\n$pageview|True|(null)|(null)|(null)|(null)|(null)|(null)|(null)|4\nconsent_granted|True|(null)|banner|(null)|(null)|(null)|(null)|(null)|1\nexperiment_submitted|True|(null)|(null)|(null)|(null)|tensor-shapes|False|False|1\nfree_lesson_cta_clicked|True|tensorflow-js-reshape-vs-transpose|guide|activity|https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes|(null)|(null)|(null)|1\nlesson_started|True|(null)|(null)|(null)|(null)|tensor-shapes|(null)|(null)|1"
+  },
+  "sameSession": {
+    "query": {
+      "kind": "HogQLQuery",
+      "query": "SELECT uniq($session_id) AS sdk_sessions, countIf($session_id IS NULL OR $session_id = '') AS missing_session_ids, countIf(event = 'free_lesson_cta_clicked') AS handoffs, countIf(event = 'lesson_started') AS arrivals, countIf(event = 'experiment_submitted') AS submissions, minIf(timestamp, event = 'free_lesson_cta_clicked') AS handoff_at, minIf(timestamp, event = 'lesson_started') AS arrival_at, minIf(timestamp, event = 'experiment_submitted') AS submission_at FROM events WHERE timestamp >= toDateTime('2026-11-11 11:52:00') AND timestamp < toDateTime('2026-11-11 11:56:00') AND properties.tc_internal = true AND event IN ('free_lesson_cta_clicked','lesson_started','experiment_submitted')"
+    },
+    "results": "sdk_sessions|missing_session_ids|handoffs|arrivals|submissions|handoff_at|arrival_at|submission_at\n1|0|1|1|1|2026-11-11T11:53:54.853000Z|2026-11-11T11:53:55.835000Z|2026-11-11T11:54:24.123000Z",
+    "__formatted_results_override": "sdk_sessions|missing_session_ids|handoffs|arrivals|submissions|handoff_at|arrival_at|submission_at\n1|0|1|1|1|2026-11-11T11:53:54.853000Z|2026-11-11T11:53:55.835000Z|2026-11-11T11:54:24.123000Z"
+  },
+  "withoutInternalExclusion": {
+    "_posthogUrl": "https://eu.posthog.com/project/257980/insights/new#q=%7B%22kind%22%3A%22InsightVizNode%22%2C%22source%22%3A%7B%22dateRange%22%3A%7B%22date_from%22%3A%222026-11-11T11%3A52%3A00Z%22%2C%22date_to%22%3A%222026-11-11T11%3A56%3A00Z%22%7D%2C%22filterTestAccounts%22%3Afalse%2C%22interval%22%3A%22day%22%2C%22kind%22%3A%22TrendsQuery%22%2C%22properties%22%3A%5B%5D%2C%22series%22%3A%5B%7B%22event%22%3A%22free_lesson_cta_clicked%22%2C%22kind%22%3A%22EventsNode%22%2C%22math%22%3A%22total%22%7D%2C%7B%22event%22%3A%22lesson_started%22%2C%22kind%22%3A%22EventsNode%22%2C%22math%22%3A%22total%22%7D%2C%7B%22event%22%3A%22experiment_submitted%22%2C%22kind%22%3A%22EventsNode%22%2C%22math%22%3A%22total%22%7D%5D%2C%22trendsFilter%22%3A%7B%22aggregationAxisFormat%22%3A%22numeric%22%2C%22display%22%3A%22ActionsTable%22%2C%22metricColorByDirection%22%3Afalse%2C%22metricShowChange%22%3Atrue%2C%22metricSummary%22%3A%22total%22%2C%22showAlertThresholdLines%22%3Afalse%2C%22showLabelsOnSeries%22%3Afalse%2C%22showLegend%22%3Afalse%2C%22showMultipleYAxes%22%3Afalse%2C%22showPercentStackView%22%3Afalse%2C%22showValuesOnSeries%22%3Afalse%2C%22smoothingIntervals%22%3A1%2C%22yAxisScaleType%22%3A%22linear%22%7D%7D%7D",
+    "query": {
+      "dateRange": {
+        "date_from": "2026-11-11T11:52:00Z",
+        "date_to": "2026-11-11T11:56:00Z"
+      },
+      "filterTestAccounts": false,
+      "interval": "day",
+      "kind": "TrendsQuery",
+      "properties": [],
+      "series": [
+        {
+          "event": "free_lesson_cta_clicked",
+          "kind": "EventsNode",
+          "math": "total"
+        },
+        {
+          "event": "lesson_started",
+          "kind": "EventsNode",
+          "math": "total"
+        },
+        {
+          "event": "experiment_submitted",
+          "kind": "EventsNode",
+          "math": "total"
+        }
+      ],
+      "trendsFilter": {
+        "aggregationAxisFormat": "numeric",
+        "display": "ActionsTable",
+        "metricColorByDirection": false,
+        "metricShowChange": true,
+        "metricSummary": "total",
+        "showAlertThresholdLines": false,
+        "showLabelsOnSeries": false,
+        "showLegend": false,
+        "showMultipleYAxes": false,
+        "showPercentStackView": false,
+        "showValuesOnSeries": false,
+        "smoothingIntervals": 1,
+        "yAxisScaleType": "linear"
+      }
+    },
+    "results": [
+      {
+        "data": [],
+        "days": [],
+        "count": 0,
+        "aggregated_value": 1,
+        "label": "free_lesson_cta_clicked",
+        "order": 0,
+        "custom_name": null
+      },
+      {
+        "data": [],
+        "days": [],
+        "count": 0,
+        "aggregated_value": 1,
+        "label": "lesson_started",
+        "order": 1,
+        "custom_name": null
+      },
+      {
+        "data": [],
+        "days": [],
+        "count": 0,
+        "aggregated_value": 1,
+        "label": "experiment_submitted",
+        "order": 2,
+        "custom_name": null
+      }
+    ]
+  },
+  "withInternalExclusion": {
+    "_posthogUrl": "https://eu.posthog.com/project/257980/insights/new#q=%7B%22kind%22%3A%22InsightVizNode%22%2C%22source%22%3A%7B%22dateRange%22%3A%7B%22date_from%22%3A%222026-11-11T11%3A52%3A00Z%22%2C%22date_to%22%3A%222026-11-11T11%3A56%3A00Z%22%7D%2C%22filterTestAccounts%22%3Atrue%2C%22interval%22%3A%22day%22%2C%22kind%22%3A%22TrendsQuery%22%2C%22properties%22%3A%5B%5D%2C%22series%22%3A%5B%7B%22event%22%3A%22free_lesson_cta_clicked%22%2C%22kind%22%3A%22EventsNode%22%2C%22math%22%3A%22total%22%7D%2C%7B%22event%22%3A%22lesson_started%22%2C%22kind%22%3A%22EventsNode%22%2C%22math%22%3A%22total%22%7D%2C%7B%22event%22%3A%22experiment_submitted%22%2C%22kind%22%3A%22EventsNode%22%2C%22math%22%3A%22total%22%7D%5D%2C%22trendsFilter%22%3A%7B%22aggregationAxisFormat%22%3A%22numeric%22%2C%22display%22%3A%22ActionsTable%22%2C%22metricColorByDirection%22%3Afalse%2C%22metricShowChange%22%3Atrue%2C%22metricSummary%22%3A%22total%22%2C%22showAlertThresholdLines%22%3Afalse%2C%22showLabelsOnSeries%22%3Afalse%2C%22showLegend%22%3Afalse%2C%22showMultipleYAxes%22%3Afalse%2C%22showPercentStackView%22%3Afalse%2C%22showValuesOnSeries%22%3Afalse%2C%22smoothingIntervals%22%3A1%2C%22yAxisScaleType%22%3A%22linear%22%7D%7D%7D",
+    "query": {
+      "dateRange": {
+        "date_from": "2026-11-11T11:52:00Z",
+        "date_to": "2026-11-11T11:56:00Z"
+      },
+      "filterTestAccounts": true,
+      "interval": "day",
+      "kind": "TrendsQuery",
+      "properties": [],
+      "series": [
+        {
+          "event": "free_lesson_cta_clicked",
+          "kind": "EventsNode",
+          "math": "total"
+        },
+        {
+          "event": "lesson_started",
+          "kind": "EventsNode",
+          "math": "total"
+        },
+        {
+          "event": "experiment_submitted",
+          "kind": "EventsNode",
+          "math": "total"
+        }
+      ],
+      "trendsFilter": {
+        "aggregationAxisFormat": "numeric",
+        "display": "ActionsTable",
+        "metricColorByDirection": false,
+        "metricShowChange": true,
+        "metricSummary": "total",
+        "showAlertThresholdLines": false,
+        "showLabelsOnSeries": false,
+        "showLegend": false,
+        "showMultipleYAxes": false,
+        "showPercentStackView": false,
+        "showValuesOnSeries": false,
+        "smoothingIntervals": 1,
+        "yAxisScaleType": "linear"
+      }
+    },
+    "results": [
+      {
+        "data": [],
+        "days": [],
+        "count": 0,
+        "aggregated_value": 0,
+        "label": "free_lesson_cta_clicked",
+        "order": 0,
+        "custom_name": null
+      },
+      {
+        "data": [],
+        "days": [],
+        "count": 0,
+        "aggregated_value": 0,
+        "label": "lesson_started",
+        "order": 1,
+        "custom_name": null
+      },
+      {
+        "data": [],
+        "days": [],
+        "count": 0,
+        "aggregated_value": 0,
+        "label": "experiment_submitted",
+        "order": 2,
+        "custom_name": null
+      }
+    ]
+  },
+  "limitations": [
+    "One controlled anonymous internal browser session.",
+    "Taxonomy snapshot preceded these events; live queries subsequently confirmed delivery.",
+    "No proof of preconsent network silence, withdrawal, signed-in account persistence or server-event delivery.",
+    "Browser control shifted to another active window during DevTools work; further UI actions stopped.",
+    "No personal, session or transaction identifiers are included."
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "reviewedAtUTC": "2026-11-11T13:01:36Z",
+  "scope": "Read-only review of three primary pages selected from the first ChatGPT and Gemini answers to the training and evaluation prompt. The parent audit owns answer counts and citation attribution.",
+  "method": "Read all three sources with the web tool. Read the current Tensorcraft guide through public HTTP and parsed initial HTML after the web tool could not open it. No code or model execution.",
+  "sources": [
+    {
+      "url": "https://www.tensorflow.org/js",
+      "type": "Official library overview",
+      "read": true,
+      "offers": "JavaScript model development for browsers and Node.js. It separates using existing models, retraining them and building models, with links to tutorials, models and live demos.",
+      "runnablePath": "The homepage links runnable demos and their source, including the Webcam Controller.",
+      "evaluationCoverage": "The overview does not itself walk through an evaluation experiment.",
+      "tensorcraftMentionFound": false,
+      "visibleRoutes": "Community, TensorFlow Forum, GitHub issues, the TF.js Special Interest Group and Dev Library community projects.",
+      "submissionLimit": "No explicit listing-submission form appeared on the reviewed page. Community links do not establish acceptance criteria.",
+      "comparison": "Tensorcraft supplies a specific room-measurement task and evaluation cautions. The official overview offers broader direct routes into implementation."
+    },
+    {
+      "url": "https://www.tensorflow.org/js/tutorials",
+      "type": "Official getting-started tutorial",
+      "read": true,
+      "displayedUpdatedDate": "2023-02-09 UTC",
+      "teaches": "A minimal browser model trains on synthetic data following y = 2x - 1, then predicts for x = 20 and displays a result near 39.",
+      "runnablePath": {
+        "source": "https://github.com/tensorflow/tfjs-examples/tree/master/getting-started",
+        "prerequisites": [
+          "Node.js",
+          "Yarn"
+        ],
+        "sequence": [
+          "Clone or download tfjs-examples.",
+          "Enter getting-started.",
+          "Run yarn install, then yarn watch.",
+          "Open http://127.0.0.1:1234."
+        ],
+        "runtime": "The displayed HTML loads TensorFlow.js from a CDN."
+      },
+      "evaluationCoverage": "The page checks one unseen input against its known formula. It does not teach dataset splitting, a separate final test, baseline comparison or error-cost selection.",
+      "tensorcraftMentionFound": false,
+      "visibleRoutes": "Example source, TensorFlow Forum, GitHub and issue-tracker links. No specific resource-submission form appeared.",
+      "comparison": "This page gives a shorter execution path than Tensorcraft's project guide. Tensorcraft explains broader evaluation responsibilities and data limitations."
+    },
+    {
+      "url": "https://ml5js.org/",
+      "type": "Official library homepage",
+      "read": true,
+      "offers": "A TensorFlow.js-based browser library aimed at artists, creative coders and students. Listed APIs cover pose, hands, face landmarks, image and sound classification, plus custom neural networks.",
+      "runnablePath": {
+        "entry": "https://docs.ml5js.org/#/",
+        "neuralNetwork": "https://docs.ml5js.org/#/reference/neural-network",
+        "observation": "The homepage links API documentation and creative coding tutorials. It does not present a complete runnable training script inline."
+      },
+      "tensorcraftMentionFound": false,
+      "visibleRoutes": [
+        {
+          "label": "Public project contact",
+          "url": "mailto:info@ml5js.org"
+        },
+        {
+          "label": "Contribution guide",
+          "url": "https://docs.ml5js.org/#/contributing/how-to-contribute"
+        },
+        {
+          "label": "Community",
+          "url": "https://ml5js.org/community/"
+        }
+      ],
+      "submissionLimit": "These routes are visible, but their submission rules were not read. The homepage does not promise to list external courses.",
+      "comparison": "ml5 emphasizes approachable model APIs and creative examples. Tensorcraft's guide emphasizes a recorded tabular-data task, policy mistakes and evaluation choices."
+    }
+  ],
+  "ownedPage": {
+    "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+    "publicHTTPStatus": 200,
+    "displayedUpdatedDate": "November 11, 2026",
+    "observations": [
+      "Initial HTML explains a room-occupancy project with 2,056 sampled UCI recordings, provenance, chronological periods and a simple light-threshold baseline.",
+      "The interactive example applies a threshold to a fixed recorded score. The page explicitly says this does not retrain the model or evaluate the rest of the data.",
+      "It explains train-only preprocessing, validation-based choices, a separate final test, false positives, missed occupancy and error costs.",
+      "The current public page contains pinned reproduction-runner, fixture-training and preview-builder links at commit 65a1c242eaef5dd310a7a1093f420ad92bbe2b4d.",
+      "A starter archive and project brief support the independent project. The page states Node.js 22 or later and an initial dependency download are required. The first five course lessons are free, and training continues in the full course."
+    ]
+  },
+  "implications": [
+    {
+      "action": "Make the existing project's training and evaluation execution path easier for a beginner to follow, with visible commands, expected artifacts and a clearly labeled runnable example.",
+      "basis": "The official starter supplies an immediate train-and-predict sequence. Tensorcraft's guide supplies stronger evaluation context but sends execution details to linked artifacts.",
+      "uncertainty": "This is a content hypothesis from a small initial answer sample. It does not establish why an engine selected a citation or promise future mentions."
+    },
+    {
+      "action": "Keep the current provenance, pinned source links and explicit limits on the threshold demonstration.",
+      "basis": "These explain what the example actually establishes and distinguish a supplied result from learner training."
+    }
+  ],
+  "limits": [
+    "A missing brand name applies only to the three reviewed pages, not their entire sites or the broader web.",
+    "Linked tutorials, contribution policies and runnable examples were not executed or comprehensively audited.",
+    "Visible contact and community routes are possible research leads, not confirmed listing opportunities. No outreach occurred.",
+    "This review collected no paid answers, changed no tracker or remote configuration, and measured no citation trend, traffic or conversion."
+  ]
+}

@@ -2,8 +2,38 @@
 
 Collected November 11, 2026 through PostHog and OpenSEO. PostHog supplies a
 provisional traffic baseline. The connected Search Console property supplies
-the search baseline below. AI visibility and verified purchases remain
-incomplete. This is a one-off analysis, with no saved metric definition.
+the search baseline below. The first GEO sample is complete, with its coverage
+limits below. Verified purchase reporting remains incomplete. This is a
+one-off analysis, with no saved metric definition.
+
+Later November 11 checks extend this record: the
+[indexing follow-up](openseo/indexing-followup.md) covers 15 URLs and a 90-day search
+window. The [browser follow-up](browser-followup.md) verifies a real internal
+guide click, matching lesson arrival and submitted prediction in one SDK
+session. Project filters exclude all three test events. Remaining account,
+withdrawal and server-event checks stay open.
+
+The later indexing action resubmitted the current sitemap and obtained five
+accepted Google indexing requests. Google now reports 23 sitemap pages and
+one video. A new inspection completed at 12:41 UTC confirms all five URLs
+indexed with successful mobile fetches and matching canonicals.
+See the [confirmation](openseo/indexing-followup.md#all-five-urls-indexed).
+
+The eight-file SEO follow-up was promoted at 12:49 UTC and its production
+deployment is ready. It releases the lesson-arrival consent implementation,
+verified video timestamps and three immutable reproduction links. Public
+checks confirm those video dates, the source links, the project's visible
+November 11 date, matching Article metadata and sitemap date. The release
+passed 156 focused tests across ten files, web typechecking, migration checks
+and a 104-page production build.
+[Build evidence](release/seo-followup-build.json),
+[public verification](release/seo-followup-public-verification.json).
+A browser accepted late consent at 12:55 UTC. A settled PostHog read confirms
+one consent event, pageview and current tensor-shapes arrival in one internal
+SDK session. No introduction arrival appears in the bounded query.
+[Late-consent delivery evidence](posthog/browser-late-consent-verification.json).
+SPA navigation, withdrawal/reacceptance and signed-in persistence still need
+browser coverage. Google video-warning clearance still requires a recrawl.
 
 The main window is October 12 through November 8, 2026, inclusive. PostHog uses
 UTC. The Search Console window uses the same calendar dates in Pacific
@@ -108,11 +138,15 @@ unknown.
 
 The October 12 to November 10 event census contains no
 `free_lesson_cta_clicked`, `exercise_attempted`, `exercise_completed`,
-`module_completed` or `payment_refunded`. Their ingestion coverage remains
-unverified. Their absence cannot establish zero real attempts, module
+`module_completed` or `payment_refunded`. Their ingestion coverage was
+unverified in that census. Their absence cannot establish zero real attempts, module
 completions or refunds. A guide-to-attempt rate has no observed guide-session
 denominator and remains unavailable.
 [Event freshness](posthog/event-freshness.json).
+The later [controlled browser check](browser-followup.md) verifies
+`free_lesson_cta_clicked`, `lesson_started` and `experiment_submitted` delivery
+in one SDK session. The internal test is excluded from acquisition reports.
+Exercise, module-completion and refund ingestion remain unverified.
 
 The later [measurement repair](measurement-fix.md) enables live internal
 filters and ships browser/server corrections. Migration 067 is now
@@ -120,13 +154,15 @@ applied in production, with all 15 catalog checks passing. Protected API release
 35 is deployed and both machines pass health checks. Runtime settings match
 the existing PostHog project and EU host. The web release is
 promoted, public pages and assets pass HTTP checks, and eight live API consent
-checks pass. Full browser runtime and live ingestion remain unverified in the
-[deployment record](deployment.md).
+checks pass. The later controlled browser check verifies guide handoff,
+lesson arrival and prediction submission delivery. Broader account-consent,
+withdrawal, exercise, module and server payment checks remain open alongside
+the [deployment record](deployment.md).
 A read-only Stripe and Supabase check verifies one paid $50 checkout in the
 same UTC checkout
 creation cohort. This does not establish settlement-date revenue or source
-attribution. The new application events still need browser runtime checks and
-production ingestion verification. The historical observations above remain intact.
+attribution. Server payment and refund events still need production delivery
+verification. The historical observations above remain intact.
 
 ## Search and AI visibility
 
@@ -190,30 +226,50 @@ not identify an individual purchase path or establish an ingestion failure.
 [country evidence](openseo/search-console-current-country.json).
 
 GA4 also requires connection. PostHog supplies the traffic observations above.
-OpenSEO contains no rank tracker or AI visibility history. Live tracked ranks,
-brand mentions and AI citations remain unknown. No result establishes zero
-citations. Bing property access and representative URL Inspection remain pending.
+The initial OpenSEO inventory contained no rank tracker or AI visibility
+history. The first one-off GEO check is complete: 34 answered observations,
+two upstream failures and zero no-answer results. OpenSEO recorded 0/34
+Tensorcraft mentions and 0/34 own-site citations. Twenty-three Google redirect
+URLs remain unresolved, so this records the provider's attribution rather
+than independently verifying every destination. The failures do not count
+as brand absence. This single sample establishes no trend, visits or purchases.
+See the [private report](https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports/faddb2f6-fed3-4397-a0cc-992419c10721)
+and [sample evidence](geo/findings-2026-11-11.json).
+Live tracked ranks and Bing property access remain pending. The later
+[initial 15-URL inspection](openseo/indexing-followup.md) recorded eight indexed pages, four
+guide URLs unknown to Google, one discovered but unindexed normalization
+lesson and two expected www redirects. After the accepted requests, the
+[12:41 UTC follow-up](openseo/indexing-followup.md#all-five-urls-indexed)
+confirms all five target URLs indexed. Current HTTP checks confirm that
+normalization and tensor-operations return 200 with self-canonicals.
 [OpenSEO findings and raw evidence](openseo/README.md).
 
 ## Remaining baseline gates
 
-1. Inspect representative released URLs in Search Console and obtain Bing
-   property evidence. Search performance baseline collection is complete for
-   the bounded periods above. Guide indexing and post-release effects remain
-   unverified. Query-row sums do not establish property totals or individual
-   purchase attribution.
+1. Obtain Bing property evidence. All five requested Google URLs are indexed,
+   and representative Search Console inspection is complete. The 90-day
+   extension records 9 clicks and 383 property impressions
+   for August 11 through November 8. All search windows precede the release.
+   Query-row sums do not establish property totals or individual purchase
+   attribution.
 2. Mark owner browsers using the released browser marker. Live project
    exclusions now work for marked events, including the controlled diagnostic.
    Historical unmarked owner traffic remains unclassified.
-3. Verify actual submission, free-module and server payment ingestion. Separate
+3. The controlled browser check verifies guide handoff and experiment submission
+   ingestion. Verify exercise, free-module and server payment ingestion. Separate
    browser confirmations, settled cash checkouts, test payments and zero-dollar
    grants. One paid checkout creation cohort now reconciles with Stripe and
    Supabase. Verify production delivery and complete refund reporting before
    calculating conversion or net revenue.
 4. Collect a later cohort after the release and instrumentation verification.
-   Agree prompts, engines and market before pricing an AI visibility check.
+   The first GEO sample supports two bounded improvements to the existing
+   project guide and course comparison. Their validation gates live in the
+   [canonical backlog](../../post-launch-backlog.md#seo-and-geo-release-verification-2026-11-10).
 
-This collection spent zero OpenSEO credits. It enabled no recurring tracking,
-published no content and changed no checkout or privacy settings. Application
-code and preexisting local changes remain intact. The execution checklist and
-canonical backlog retain the unfinished baseline work.
+The search baseline and indexing reads spent zero OpenSEO credits. The
+completed GEO collection had an approved cap of 216 credits ($0.216). The
+provider did not return the actual debit. Recurrence remains disabled.
+The later SEO follow-up release publishes the reviewed metadata,
+source links and lesson-arrival implementation. It does not activate the
+optional checkout-source question. The execution checklist and canonical
+backlog retain the unfinished baseline work.

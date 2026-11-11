@@ -1,10 +1,23 @@
-# Consent and measurement release
+# Consent, measurement and SEO releases
+
+The latest web release is `dpl_A2jk8MtCZBcGGrEkRGJCWL7oRtoi`, promoted at
+12:49:41 UTC on November 11. It adds the reviewed lesson-arrival handling,
+video publication timestamps and direct reproduction-source links. The
+production alias resolves to this ready deployment. The earlier release
+records below preserve their original check times.
 
 November 11, 2026. Migration 067, API release 35, the web consent changes and
 PostHog production configuration are live. Both Fly machines pass their health
 checks. Eight live API consent checks pass. Production pages and their
 JavaScript assets respond successfully. Full browser runtime checks and
 consented server-event delivery remain unverified.
+
+A later [browser check](browser-followup.md) verified fresh anonymous
+acceptance, the guide handoff, lesson arrival and an experiment submission.
+PostHog received those events with internal marking, and configured exclusions
+removed them from the test-filtered query. This closes that narrow browser
+delivery check. It does not verify account-save recovery, withdrawal or
+consented server events.
 
 ## Release source
 
@@ -115,10 +128,72 @@ results and the limits of withdrawal for events already queued or in flight.
 
 This release verification does not establish payment-event ingestion, an
 external conversion rate or complete revenue reporting. The historical browser
-payment events remain unsuitable as transaction counts. Separate lesson-arrival
-and evidence-link follow-ups remain pending.
+payment events remain unsuitable as transaction counts. The later web release
+below ships the separate lesson-arrival and evidence-link follow-ups.
 
 If the API must return to the previous image, disable the PostHog settings
 before that rollback because the old image does not check consent. Retain the
 additive database migration during an application rollback. Its down migration
 deletes stored choices and requires a separate deliberate decision.
+
+## Reviewed SEO follow-up at 12:49 UTC
+
+The isolated snapshot starts from commit `7e016d33` and overlays eight reviewed
+files. It excludes the unrelated sensor-case edits and uncommitted
+documentation. No files were staged, committed or pushed. The source manifest
+records each overlay's hash.
+[Source manifest](release/seo-followup-manifest.json).
+
+The release includes three changes:
+
+- Video structured data now uses the verified first-publication date and time
+  for the introduction and Deep Orbit trailer. Re-encoding keeps that date.
+- `lesson_started` observes the current lesson visit when analytics becomes
+  ready, including consent granted after the lesson loads. Visit changes reset
+  the observation guard without replaying earlier unobserved visits.
+- The browser ML project guide links directly to three reproduction files at
+  an immutable repository commit. Its visible update date, article metadata
+  and sitemap modification date agree on November 11.
+
+Fresh validation passed 156 tests across ten files, the web typecheck, scoped
+format checks and whitespace checks. The production build passed its existing
+migration gate and generated all 104 pages. This follow-up changed no API code
+or database schema.
+[Build and validation](release/seo-followup-build.json).
+
+The installed Vercel CLI could not upload because the service required a newer
+version. The retry used official npm package `vercel@65.14.0`, without changing
+repository dependencies or the global installation. The production build held
+domain promotion until it was ready. Promotion succeeded at 12:49:41 UTC, and
+inspection of `https://tensorcraft.app` confirmed the new deployment at
+12:56:02 UTC.
+[Promotion](release/seo-followup-promotion.json),
+[production alias](release/seo-followup-production-alias.json).
+
+Anonymous HTTP checks passed for `/learn`, `/worlds/deep-orbit`, the project
+guide, the tensor-shapes lesson and `/sitemap.xml`. The HTML confirms the
+expected video timestamps, all three source links and the guide's updated
+article date. The sitemap matches that date. These response checks do not
+establish Google warning clearance or browser event delivery.
+[Public verification](release/seo-followup-public-verification.json).
+
+A fresh guest browser visited the introduction without consenting, then opened
+the tensor-shapes lesson by full-page navigation with `tc_internal=1`. The
+lesson loaded with the consent banner still visible. Accepting at
+12:55:25.574 UTC dismissed the banner without navigation. PostHog received one
+`consent_granted` and one pageview at 12:55:26.839 UTC, then exactly one
+`lesson_started` for tensor-shapes at 12:55:26.847 UTC. All three events carry
+the internal marker and share one SDK session. The bounded read returned no
+introduction arrival.
+[Late-consent delivery](posthog/browser-late-consent-verification.json).
+
+The first analytics read preceded ingestion. A later settled read confirmed
+delivery, so the early empty result is not evidence of suppression. This check
+establishes current-lesson capture after late guest consent in production.
+Single-page route changes, consent withdrawal and regrant have local regression
+coverage but were not exercised in this browser sequence. Broader account and
+server-event checks remain open.
+
+The immediately preceding web deployment is
+`dpl_91sgf6uQ6n4Lwp7B8Qu88De459SF`. It remains the recorded rollback target for
+this web-only follow-up. Its consent-protected API and database remain in place.

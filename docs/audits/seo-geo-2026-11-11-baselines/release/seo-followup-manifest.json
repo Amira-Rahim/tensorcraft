@@ -1,0 +1,50 @@
+{
+  "createdAtUTC": "2026-11-11T12:43:10.641302+00:00",
+  "sourceHead": "7e016d33184437aef202a60c14fcb829b93fd9d7",
+  "releaseDirectory": "/var/folders/xk/h8l0ml8n51n_b2nj6f_xsn7r0000gp/T/tensorcraft-seo-release-20261111-nyuu3bon/source",
+  "overlayFileCount": 8,
+  "overlay": [
+    {
+      "path": "apps/web/lib/intro-video.ts",
+      "sha256": "3a82191f97f67b2c6608095a8257506bb63be4e71491c4670f0b950c0eba57b3"
+    },
+    {
+      "path": "apps/web/lib/world-trailer.ts",
+      "sha256": "99caec41633707d85f8bb7764ecabd1faf78ea0bfa316519441dc3d426c44da7"
+    },
+    {
+      "path": "apps/web/lib/guides.ts",
+      "sha256": "f64cf4696a1da7cac6b4c7a61a81501421fce6fcca668c74b0d31a29a7697937"
+    },
+    {
+      "path": "apps/web/app/learn/__tests__/learn-jsonld.test.ts",
+      "sha256": "86d27f58b4fa7f7b7dee45f8a174f27b62484b5908e9f69c228b43a0aef789bc"
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/__tests__/world-video-jsonld.test.ts",
+      "sha256": "243503b057eeb01f6a0250fe9bb76193f9f7baa64eab9aa7a1625612f4543e04"
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx",
+      "sha256": "7560455e13621dbdab6c2c96103d75a7790f33f593c10313b511027d3c0f326e"
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.test.tsx",
+      "sha256": "4f6b040257ccf5f0a9da23a1dce1149d3b12134f621c47d10b225b00c8e770fd"
+    },
+    {
+      "path": "apps/web/app/guides/browser-machine-learning-project/page.tsx",
+      "sha256": "3bb78a7f2ce3ea0694a266c252748b8b8420bc9eab071822b4a1beff3a226fe0"
+    }
+  ],
+  "excludedChanges": [
+    "apps/web/public/cases/sensor-grouping.html",
+    "apps/web/public/cases/sensor-grouping.css",
+    "apps/web/public/cases/sensor-grouping.js",
+    "all uncommitted documentation"
+  ],
+  "gitMutations": false,
+  "environmentFilesIncluded": false,
+  "dependenciesIncluded": false,
+  "deploymentType": "Production build with promotion held until build validation"
+}

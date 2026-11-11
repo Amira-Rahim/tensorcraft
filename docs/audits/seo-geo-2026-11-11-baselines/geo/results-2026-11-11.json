@@ -1,0 +1,916 @@
+{
+  "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+  "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+  "paginationComplete": true,
+  "pages": [
+    {
+      "request": {
+        "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+        "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+        "topic": null,
+        "engines": null,
+        "promptId": null,
+        "cursor": null,
+        "competitorGap": false,
+        "limit": 50,
+        "branded": "neutral"
+      },
+      "response": {
+        "status": "success",
+        "data": {
+          "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+          "run": {
+            "id": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+            "status": "partial",
+            "trigger": "manual",
+            "expected": 36,
+            "completed": 34,
+            "failed": 2,
+            "pending": 0,
+            "createdAt": "2026-11-11T12:56:59.201Z",
+            "completedAt": "2026-11-11T13:02:39.655Z",
+            "pollAfterSeconds": 5
+          },
+          "rows": [
+            {
+              "id": "016c283c-78ea-4018-a563-6a22fcc02274",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "e81b9fcb-316b-4641-ab6f-88d9a7d4206d",
+              "prompt": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T12:57:39.000Z",
+              "error": null
+            },
+            {
+              "id": "123907a4-b144-488f-843f-928d22d94a9a",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "e81b9fcb-316b-4641-ab6f-88d9a7d4206d",
+              "prompt": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T12:57:35.000Z",
+              "error": null
+            },
+            {
+              "id": "8e7a89c4-1b4b-4f57-8096-8ed51d025875",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "e81b9fcb-316b-4641-ab6f-88d9a7d4206d",
+              "prompt": "How can I prevent data leakage when preparing training and test data in JavaScript?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 5,
+              "collectedAt": "2026-11-11T12:57:09.000Z",
+              "error": null
+            },
+            {
+              "id": "9cd38377-a383-483d-8cea-097d18c1a4bf",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "60c26cfe-cc34-4911-b938-164c5cefff9a",
+              "prompt": "How can I train and evaluate a small machine learning model in the browser?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 3,
+              "collectedAt": "2026-11-11T12:57:34.000Z",
+              "error": null
+            },
+            {
+              "id": "e0ba7029-e325-4cff-830a-ec6ee5c27999",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "60c26cfe-cc34-4911-b938-164c5cefff9a",
+              "prompt": "How can I train and evaluate a small machine learning model in the browser?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 8,
+              "collectedAt": "2026-11-11T12:57:53.000Z",
+              "error": null
+            },
+            {
+              "id": "31a5d8e2-495c-4260-b6ff-00a02055399e",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "60c26cfe-cc34-4911-b938-164c5cefff9a",
+              "prompt": "How can I train and evaluate a small machine learning model in the browser?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 4,
+              "collectedAt": "2026-11-11T12:57:07.000Z",
+              "error": null
+            },
+            {
+              "id": "9729a44f-6b95-4f1b-8265-c1b371217258",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+              "prompt": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 3,
+              "collectedAt": "2026-11-11T12:58:47.000Z",
+              "error": null
+            },
+            {
+              "id": "375ec7c6-be82-4448-af7a-1ba601592b3b",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+              "prompt": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 9,
+              "collectedAt": "2026-11-11T12:58:19.000Z",
+              "error": null
+            },
+            {
+              "id": "b7ffeffc-cbaf-4a1e-b854-c3fb137241a9",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "616e8ca0-81b2-4ffb-9f3a-a78c8bbef335",
+              "prompt": "How do I compare a simple rule with a TensorFlow.js model for a classification project?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T12:58:00.000Z",
+              "error": null
+            },
+            {
+              "id": "10c7bb19-c12d-4059-bf97-d3d2445a0ee4",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+              "prompt": "What is a good first machine learning project to build in the browser with JavaScript?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T12:58:18.000Z",
+              "error": null
+            },
+            {
+              "id": "c94ed5aa-df1b-45dc-8c59-65645da03df2",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+              "prompt": "What is a good first machine learning project to build in the browser with JavaScript?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 7,
+              "collectedAt": "2026-11-11T12:58:36.000Z",
+              "error": null
+            },
+            {
+              "id": "35c6c7dd-e8b4-41ce-8db4-6f311d48cca0",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "f3866939-06ee-4b62-87a0-b73c6b99d29a",
+              "prompt": "What is a good first machine learning project to build in the browser with JavaScript?",
+              "topic": "Browser machine learning projects",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 6,
+              "collectedAt": "2026-11-11T12:58:00.000Z",
+              "error": null
+            },
+            {
+              "id": "20ab565e-c50a-4492-9417-b38d0a31cfaf",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "c08543bc-5d93-4dde-9106-48bfe7421402",
+              "prompt": "How can a frontend developer learn machine learning using JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 7,
+              "collectedAt": "2026-11-11T12:59:13.000Z",
+              "error": null
+            },
+            {
+              "id": "df0fc708-a544-4b90-a815-51af79ad1090",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "c08543bc-5d93-4dde-9106-48bfe7421402",
+              "prompt": "How can a frontend developer learn machine learning using JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 9,
+              "collectedAt": "2026-11-11T12:59:06.000Z",
+              "error": null
+            },
+            {
+              "id": "502c898d-ea2b-43a8-a506-d94e7be47f16",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "c08543bc-5d93-4dde-9106-48bfe7421402",
+              "prompt": "How can a frontend developer learn machine learning using JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 13,
+              "collectedAt": "2026-11-11T12:58:55.000Z",
+              "error": null
+            },
+            {
+              "id": "bce918dd-b7a9-4eec-994b-15885e82c735",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+              "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 5,
+              "collectedAt": "2026-11-11T12:59:27.000Z",
+              "error": null
+            },
+            {
+              "id": "809be288-d871-4297-bd1d-862e7d4b2a24",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+              "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 8,
+              "collectedAt": "2026-11-11T12:59:10.000Z",
+              "error": null
+            },
+            {
+              "id": "f55ea614-4a61-47c9-8988-821b8f8300c0",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "85b53809-39a9-4cc8-89f9-f0fe8af5e152",
+              "prompt": "What are good machine learning courses for JavaScript developers who are new to ML?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 15,
+              "collectedAt": "2026-11-11T12:58:53.000Z",
+              "error": null
+            },
+            {
+              "id": "a05696fd-c31f-48d5-85c3-f3d2477745c9",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+              "prompt": "What should I learn before building my first machine learning model in JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 3,
+              "collectedAt": "2026-11-11T12:59:58.000Z",
+              "error": null
+            },
+            {
+              "id": "fae5b7de-21f6-4852-98ce-b20f5283982a",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+              "prompt": "What should I learn before building my first machine learning model in JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 8,
+              "collectedAt": "2026-11-11T12:59:49.000Z",
+              "error": null
+            },
+            {
+              "id": "bca4862b-484b-4b76-9465-f8e4b1b4c04a",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "6278b268-ba57-4ad6-8443-ad60ac385d1e",
+              "prompt": "What should I learn before building my first machine learning model in JavaScript?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 9,
+              "collectedAt": "2026-11-11T12:59:39.000Z",
+              "error": null
+            },
+            {
+              "id": "7b0a54c2-5053-4e97-95e7-56c7b8e66589",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+              "prompt": "Where can I practice machine learning in JavaScript with interactive exercises?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 6,
+              "collectedAt": "2026-11-11T12:59:45.000Z",
+              "error": null
+            },
+            {
+              "id": "fc8b71c3-bdec-4e0d-b0f8-2b4f2383b643",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+              "prompt": "Where can I practice machine learning in JavaScript with interactive exercises?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 10,
+              "collectedAt": "2026-11-11T12:59:44.000Z",
+              "error": null
+            },
+            {
+              "id": "a98f30ef-696e-4e15-93cb-5f4622aef94d",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "69abb0c5-6d03-40a5-a88e-49e102eb5668",
+              "prompt": "Where can I practice machine learning in JavaScript with interactive exercises?",
+              "topic": "Learning ML with JavaScript",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "failed",
+              "brands": [],
+              "answerStatus": null,
+              "citationCount": 0,
+              "collectedAt": null,
+              "error": "UPSTREAM_UNAVAILABLE"
+            },
+            {
+              "id": "96e3cce4-c14c-4d56-857c-a2e9c1b4e5db",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "f0f15810-192f-4a9c-8329-84579e82aa13",
+              "prompt": "How do tensor shapes work in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 2,
+              "collectedAt": "2026-11-11T13:01:07.000Z",
+              "error": null
+            },
+            {
+              "id": "d1f63eee-1dc9-49b4-86f0-16677dfde4ff",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "f0f15810-192f-4a9c-8329-84579e82aa13",
+              "prompt": "How do tensor shapes work in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T13:01:12.000Z",
+              "error": null
+            },
+            {
+              "id": "90731fa4-f30e-466e-b51d-e0ac9e20eb76",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "f0f15810-192f-4a9c-8329-84579e82aa13",
+              "prompt": "How do tensor shapes work in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 10,
+              "collectedAt": "2026-11-11T13:01:46.000Z",
+              "error": null
+            },
+            {
+              "id": "878cb67e-7186-4e6c-9633-0857a20f3154",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "218d035d-3f09-4842-9442-0195449c8917",
+              "prompt": "How should I normalize data for a TensorFlow.js model?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 5,
+              "collectedAt": "2026-11-11T13:01:00.000Z",
+              "error": null
+            },
+            {
+              "id": "9d2411e6-9364-4ac7-b162-fb64262db3ff",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "218d035d-3f09-4842-9442-0195449c8917",
+              "prompt": "How should I normalize data for a TensorFlow.js model?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T13:01:05.000Z",
+              "error": null
+            },
+            {
+              "id": "320d84f7-68cf-4d7f-a1cf-693311265e1d",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "218d035d-3f09-4842-9442-0195449c8917",
+              "prompt": "How should I normalize data for a TensorFlow.js model?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "failed",
+              "brands": [],
+              "answerStatus": null,
+              "citationCount": 0,
+              "collectedAt": null,
+              "error": "UPSTREAM_UNAVAILABLE"
+            },
+            {
+              "id": "c30e4b69-c35f-46ba-b59a-647a7168baed",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "a49f2580-c42e-486e-9351-4afc17378db2",
+              "prompt": "What is the difference between reshape and transpose in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T13:02:19.000Z",
+              "error": null
+            },
+            {
+              "id": "37d8de57-b653-4c24-893a-59f9406802e3",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "a49f2580-c42e-486e-9351-4afc17378db2",
+              "prompt": "What is the difference between reshape and transpose in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 9,
+              "collectedAt": "2026-11-11T13:02:38.000Z",
+              "error": null
+            },
+            {
+              "id": "f4d4052f-e119-4375-a7a7-94b4175aa888",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "a49f2580-c42e-486e-9351-4afc17378db2",
+              "prompt": "What is the difference between reshape and transpose in TensorFlow.js?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 9,
+              "collectedAt": "2026-11-11T13:02:02.000Z",
+              "error": null
+            },
+            {
+              "id": "5f40dc35-95c5-44ee-8bfb-88247206356d",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "401af286-3254-4e64-96e3-00d40aa79ab0",
+              "prompt": "Where can I find TensorFlow.js tutorials with runnable examples?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "chatgpt",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 9,
+              "collectedAt": "2026-11-11T13:02:12.000Z",
+              "error": null
+            },
+            {
+              "id": "0c3c8938-4a98-4c79-b579-b841a30d2784",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "401af286-3254-4e64-96e3-00d40aa79ab0",
+              "prompt": "Where can I find TensorFlow.js tutorials with runnable examples?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "gemini",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 9,
+              "collectedAt": "2026-11-11T13:02:13.000Z",
+              "error": null
+            },
+            {
+              "id": "dec889c6-4a03-46e9-ae57-98016ab79083",
+              "runId": "47a84cfe-43ca-41cb-83db-921e77d8f447",
+              "promptId": "401af286-3254-4e64-96e3-00d40aa79ab0",
+              "prompt": "Where can I find TensorFlow.js tutorials with runnable examples?",
+              "topic": "TensorFlow.js practical skills",
+              "branded": false,
+              "engine": "google_ai_overview",
+              "status": "completed",
+              "brands": [
+                {
+                  "name": "Tensorcraft",
+                  "domain": "tensorcraft.app",
+                  "own": true,
+                  "mentioned": false,
+                  "cited": false,
+                  "firstMention": null
+                }
+              ],
+              "answerStatus": "answered",
+              "citationCount": 0,
+              "collectedAt": "2026-11-11T13:02:03.000Z",
+              "error": null
+            }
+          ],
+          "totalCount": 36,
+          "nextCursor": null,
+          "summaries": [
+            {
+              "name": "Tensorcraft",
+              "domain": "tensorcraft.app",
+              "own": true,
+              "answers": 34,
+              "mentions": 0,
+              "citations": 0,
+              "positionTotal": 0,
+              "positionCount": 0
+            }
+          ],
+          "coverage": {
+            "expected": 36,
+            "completed": 34,
+            "failed": 2,
+            "pending": 0,
+            "noAnswer": 0
+          },
+          "appliedFilters": {
+            "competitorGap": false,
+            "branded": "neutral"
+          },
+          "truncated": false
+        },
+        "meta": {
+          "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+          "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility"
+        }
+      }
+    }
+  ]
+}

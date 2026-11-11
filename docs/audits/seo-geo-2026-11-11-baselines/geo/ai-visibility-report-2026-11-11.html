@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Visibility Audit: Nov 11, 2026</title><style>/* One light look, on screen and on paper. The report is read inside the app,
+   which has its own theme toggle, and a saved document has no way to hear about
+   it: a report that follows the OS scheme alone shows a black panel inside a
+   light app for anyone whose two settings disagree. */
+:root{--bg:#fff;--fg:#0a0a0a;--fg-2:#454545;--fg-3:#8f8f8f;--rule:#ebebeb;--rule-2:#dcdcdc;--sunk:#fafafa;
+  /* The one token a report template may change. Left as the text color, so a
+     report with no template looks exactly as it did before. */
+  --accent:var(--fg)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);margin:0;padding:0 24px 120px;font-size:18px;line-height:1.65;letter-spacing:-.003em;
+  font-family:Geist,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.shell{max-width:1100px;margin:0 auto}
+header{padding:40px 0 0;max-width:660px}
+h1{font-size:clamp(34px,6vw,56px);font-weight:700;line-height:1.03;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.byline{margin:24px 0 0;font-size:16px;color:var(--fg-2)}
+.body{display:grid;grid-template-columns:minmax(0,660px) 1fr;gap:0 64px;margin:48px 0 0}
+/* Both explicitly in row 1: without it the rail auto-places into row 1 and
+   pushes the article down a whole row, opening an empty band above the text. */
+article{grid-column:1;grid-row:1;min-width:0}
+.rail{grid-column:2;grid-row:1;font-size:14px;color:var(--fg-3);padding-top:6px}
+.rail .sticky{position:sticky;top:40px}
+.toc-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3);margin:0 0 10px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{margin:0 0 7px}
+.toc a{color:var(--fg-2);text-decoration:none}
+.toc a:hover{color:var(--fg)}
+/* Below 900px the rail is dropped rather than stacked: a contents list above
+   the report is a wall to scroll past on a phone, not a shortcut. */
+@media (max-width:900px){.body{grid-template-columns:1fr}.rail{display:none}}
+article p{margin:0 0 26px;text-wrap:pretty}
+h2{font-size:30px;font-weight:600;letter-spacing:-.025em;line-height:1.2;margin:60px 0 22px;text-wrap:balance}
+h3{font-size:20px;font-weight:600;letter-spacing:-.015em;margin:38px 0 14px}
+.finding{list-style:none;padding:0;margin:0 0 26px}
+.finding li{margin:0 0 8px;color:var(--fg-2)}
+.finding b{color:var(--accent);font-weight:600}
+a{color:var(--fg);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--rule-2)}
+strong{font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;background:var(--sunk);border:1px solid var(--rule);padding:1px 5px;border-radius:4px}
+ul,ol{margin:0 0 26px;padding-left:22px}li{margin:0 0 11px}li::marker{color:var(--fg-3)}
+.note{background:var(--sunk);padding:16px 20px;margin:0 0 26px}
+.note p{margin:0;color:var(--fg-2)}
+.note p+p{margin-top:14px}
+.tw{overflow-x:auto;margin:0 0 30px}
+table{border-collapse:collapse;width:100%;font-size:15.5px;min-width:440px}
+th{text-align:left;font-weight:500;color:var(--fg-3);padding:0 20px 10px 0;border-bottom:1px solid var(--rule-2);white-space:nowrap}
+td{padding:13px 20px 13px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--fg-2)}
+td:first-child{color:var(--fg)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td:last-child,th:last-child{padding-right:0}
+tr:last-child td{border-bottom:none}
+figure{margin:0 0 30px}
+figcaption{font-size:14px;color:var(--fg-3);margin-top:8px}
+.bars{display:grid;grid-template-columns:minmax(90px,170px) 1fr auto;gap:10px 12px;align-items:center;font-size:14px}
+.bars .label{color:var(--fg-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars .track{display:block;height:20px;background:var(--sunk)}
+.bars .bar{display:block;height:100%;background:var(--accent);opacity:.16}
+.bars .value{font-variant-numeric:tabular-nums;min-width:3ch;text-align:right}
+svg{display:block;max-width:100%;height:auto}
+hr{border:none;border-top:1px solid var(--rule);margin:60px 0}
+footer{max-width:660px;margin:64px 0 0;padding:26px 0 0;border-top:1px solid var(--rule);font-size:15px;color:var(--fg-3)}
+@media print{
+  /* A zero top margin hides the browser's own print header (date, tab title);
+     the bottom margin holds a page counter instead of the browser's URL line.
+     The body padding supplies the visible page margins. */
+  @page{margin:0 0 12mm 0;@bottom-center{content:counter(page) " of " counter(pages);font:10px -apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;color:#8f8f8f}}
+  body{background:#fff;color:#111;padding:14mm 16mm 6mm;font-size:11pt}
+  .shell,.body{display:block;max-width:none}
+  header{padding:0;max-width:none}
+  h1{font-size:26pt}
+  h2{font-size:15pt;margin:22pt 0 10pt}
+  h3{font-size:12pt;margin:14pt 0 6pt}
+  article,footer{max-width:none}
+  .rail{display:none}
+  h1,h2,h3{break-after:avoid}
+  table,figure,.note,svg{break-inside:avoid}
+  tr,td,th{break-inside:avoid}
+  p,li{orphans:3;widows:3}
+  thead{display:table-header-group}
+  .tw{overflow:visible}
+  table{font-size:10pt;min-width:0}
+  .byline,footer,figcaption{font-size:9.5pt}
+  svg,.bars .bar,.bars .track{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  a{text-decoration:none}
+}</style></head><body><div class="shell"><header><h1>AI Visibility Audit: Nov 11, 2026</h1><p class="byline">Prepared for Tensorcraft. November 11, 2026.</p></header><div class="body"><aside class="rail"><div class="sticky"><p class="toc-label">Contents</p><nav class="toc" aria-label="Contents"><ol><li><a href="#where-you-stand-in-ai-answers">Where you stand</a></li><li><a href="#recommendations">Recommendations</a></li><li><a href="#what-ai-cites-in-your-market">Cited sources</a></li><li><a href="#what-else-we-checked">Other opportunities</a></li><li><a href="#how-this-report-was-made">Methodology</a></li></ol></nav></div></aside><article><h2 id="where-you-stand-in-ai-answers">Where you stand in AI answers</h2>
+<ul>
+<li>OpenSEO recorded <strong>0 Tensorcraft mentions and 0 own-site citations in 34 answered collections</strong>. All three topics tie at 0%: learning ML with JavaScript, 0/11; practical TensorFlow.js skills, 0/11; browser projects, 0/12. Each denominator applies to both mentions and citations.</li>
+<li>The 12 neutral prompts produced 12 ChatGPT answers, 12 Gemini answers and 10 Google AI Overviews. Two Google collections failed upstream. There were zero no-answer results and zero branded prompts excluded. Failed collections are outside every rate.</li>
+<li>The TensorFlow.js homepage and starter are the most recurring exact sources, each cited by 10/34 answers. No competitors were configured, so this run cannot establish a comprehensive competitor mention leader. Tensorcraft's public content is accessible, and Google now indexes the five previously pending URLs, but this first AI sample contains no recorded own-site citations.</li>
+</ul>
+<div class="note"><p>This is one US-English sample collected on November 11, 2026, shortly after the release. It measures neither all AI conversations nor traffic, revenue or improvement over time. The newly indexed pages have had little time to appear in retrieval.</p></div>
+<h2 id="recommendations">Recommendations</h2>
+<h3>1. A runnable training and evaluation example on the project guide</h3>
+<p><strong>Do this</strong></p>
+<ul>
+<li>Add a small, clearly labelled maintainer demonstration to <a href="https://tensorcraft.app/guides/browser-machine-learning-project" target="_blank" rel="noopener">the existing browser ML project guide</a>. Let readers train a model and inspect its result without assembling a workflow from several linked files.</li>
+<li>Show the data split, training-only scaling and evaluation of the rule and model on the same rows reserved for evaluation. Keep the recorded mistake, data attribution and immutable source links.</li>
+<li>State the runtime and setup beside the example. Distinguish browser training from the existing independent project, which requires Node.js 22 or later, and distinguish the supplied demonstration from learner work.</li>
+<li>Check every displayed result against the pinned runtime. Measure consented guide-to-lesson visits separately from any later AI citations.</li>
+</ul>
+<p><strong>Why</strong></p>
+<ul>
+<li>The inspected ChatGPT and Gemini answers to the training-and-evaluation question name TensorFlow.js and ml5.js and cite their public resources. TensorFlow's starter makes training easy to run. Tensorcraft already provides useful evaluation evidence, but the public threshold control adjusts a supplied score and does not train a model.</li>
+<li>A complete worked path could help readers judge the course and give answer engines one page with a verifiable example. Effort is medium. The audit does not establish that this change will earn citations or increase purchases.</li>
+</ul>
+<div class="tw"><table><thead><tr><th>Prompt</th><th>Engines naming alternatives</th><th>Pages cited instead</th></tr></thead><tbody>
+<tr><td>How can I train and evaluate a small machine learning model in the browser?</td><td>ChatGPT and Gemini name TensorFlow.js and ml5.js. Neither names Tensorcraft.</td><td><a href="https://www.tensorflow.org/js" target="_blank" rel="noopener">TensorFlow.js</a>, <a href="https://ml5js.org/" target="_blank" rel="noopener">ml5.js</a>. Gemini also cites the <a href="https://www.tensorflow.org/js/tutorials" target="_blank" rel="noopener">TensorFlow starter</a>.</td></tr>
+<tr><td>How can I prevent data leakage when preparing training and test data in JavaScript?</td><td>The inspected Google AI Overview names scikit-learn and TensorFlow.js. It does not name Tensorcraft.</td><td><a href="https://scikit-learn.org/stable/common_pitfalls.html" target="_blank" rel="noopener">scikit-learn's paired preprocessing examples</a>. Tensorcraft's existing free normalization lesson already covers fitting and reusing training statistics.</td></tr>
+</tbody></table></div>
+
+<h3>2. The cited JavaScript courses in the existing comparison</h3>
+<p><strong>Do this</strong></p>
+<ul>
+<li>Add a sourced comparison of DeepLearning.AI's <a href="https://www.coursera.org/learn/browser-based-models-tensorflow" target="_blank" rel="noopener">Browser-based Models with TensorFlow.js</a> and <a href="https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/" target="_blank" rel="noopener">Henry Ly's freeCodeCamp ml5.js course</a> to <a href="https://tensorcraft.app/compare" target="_blank" rel="noopener">the current comparison page</a>.</li>
+<li>Compare the work taught, stated prerequisites, runtime, practice format and outputs. Preserve the disclosure that Tensorcraft sells Deep Orbit. Keep prices and access terms tied to current provider sources.</li>
+<li>Link the relevant comparison from <a href="https://tensorcraft.app/guides/javascript-machine-learning-learning-path" target="_blank" rel="noopener">the existing learning path</a>. Keep its useful distinction between training, pretrained inference and hosted APIs.</li>
+</ul>
+<p><strong>Why</strong></p>
+<ul>
+<li>The three inspected course answers omit Tensorcraft and recommend established learning resources. Gemini and Google AI Overviews cite the same Coursera course. Gemini also cites the freeCodeCamp course post. The existing comparison omits both.</li>
+<li>A factual comparison would answer the choice readers already face. Coursera labels its course intermediate and recommends prior TensorFlow study, so it must not be presented as equivalent to a first-time ML course. Effort is small to medium. A new comparison entry alone does not establish visibility gains.</li>
+</ul>
+<div class="tw"><table><thead><tr><th>Prompt</th><th>Engines naming alternatives</th><th>Pages cited instead</th></tr></thead><tbody>
+<tr><td>What are good machine learning courses for JavaScript developers who are new to ML?</td><td>Gemini and Google AI Overviews cite DeepLearning.AI/Coursera. Gemini cites Henry Ly/freeCodeCamp. Tensorcraft is absent from all three inspected answers.</td><td><a href="https://www.coursera.org/learn/browser-based-models-tensorflow" target="_blank" rel="noopener">Coursera course</a>, <a href="https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/" target="_blank" rel="noopener">freeCodeCamp course announcement</a>.</td></tr>
+</tbody></table></div>
+
+<h2 id="what-ai-cites-in-your-market">What AI cites in your market</h2><p>The top 15 exact URLs appear below. Counts are distinct answered collections, out of 34. One answer can cite several pages, so counts overlap.</p><div class="tw"><table><thead><tr><th>Source</th><th>Type</th><th class="n">Answers</th><th>Lists Tensorcraft?</th><th>Other resources on page</th></tr></thead><tbody><tr><td><a href="https://www.tensorflow.org/js" target="_blank" rel="noopener">TensorFlow.js homepage</a></td><td>Reference documentation</td><td class="n">10</td><td>No in inspected text</td><td>TensorFlow ecosystem and community work</td></tr><tr><td><a href="https://www.tensorflow.org/js/tutorials" target="_blank" rel="noopener">TensorFlow.js starter</a></td><td>Reference documentation</td><td class="n">10</td><td>No in inspected text</td><td>Own training example</td></tr><tr><td><a href="https://ml5js.org/" target="_blank" rel="noopener">ml5.js homepage</a></td><td>Library homepage</td><td class="n">6</td><td>No in inspected text</td><td>Own APIs and creative tutorials</td></tr><tr><td><a href="https://www.youtube.com/watch?v=ECotpcPCTaU" target="_blank" rel="noopener">ml5.js video course</a></td><td>Video</td><td class="n">4</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://javascript.plainenglish.io/javascript-beyond-the-browser-my-first-steps-into-ai-with-tensorflow-js-a7afb7f450da" target="_blank" rel="noopener">First steps into AI article</a></td><td>Editorial</td><td class="n">3</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://www.robinwieruch.de/machine-learning-javascript-web-developers/" target="_blank" rel="noopener">JavaScript ML guide</a></td><td>Editorial</td><td class="n">3</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://www.youtube.com/watch?v=26uABexmOX4" target="_blank" rel="noopener">Beginner ml5.js video</a></td><td>Video</td><td class="n">3</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://codelabs.developers.google.com/codelabs/tfjs-training-regression" target="_blank" rel="noopener">Google regression codelab</a></td><td>Reference tutorial</td><td class="n">2</td><td>No in inspected sections</td><td>Own car-regression walkthrough</td></tr><tr><td><a href="https://discuss.ai.google.dev/t/if-i-already-know-all-the-shapes-of-the-array-what-is-the-difference-between-reshape-and-transpose/31519" target="_blank" rel="noopener">Google reshape/transpose discussion</a></td><td>Community</td><td class="n">2</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://medium.com/@connect.hashblock/running-machine-learning-models-directly-in-the-browser-with-tensorflow-js-798cfdd6ede4" target="_blank" rel="noopener">Browser ML article</a></td><td>Editorial</td><td class="n">2</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://ml5js.org/learn/" target="_blank" rel="noopener">ml5.js learning resources</a></td><td>Learning resources</td><td class="n">2</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://onnxruntime.ai/docs/get-started/with-javascript/web.html" target="_blank" rel="noopener">ONNX Runtime Web docs</a></td><td>Reference documentation</td><td class="n">2</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://www.coursera.org/learn/browser-based-models-tensorflow" target="_blank" rel="noopener">Coursera browser-models course</a></td><td>Course page</td><td class="n">2</td><td>No in inspected text</td><td>DeepLearning.AI course</td></tr><tr><td><a href="https://www.geeksforgeeks.org/deep-learning/how-to-reshape-a-tensor-in-tensorflow/" target="_blank" rel="noopener">Tensor reshape article</a></td><td>Editorial tutorial</td><td class="n">2</td><td>Not checked</td><td>Not checked</td></tr><tr><td><a href="https://www.geeksforgeeks.org/javascript/how-to-get-started-with-ml5js/" target="_blank" rel="noopener">ml5.js getting-started article</a></td><td>Editorial tutorial</td><td class="n">2</td><td>Not checked</td><td>Not checked</td></tr></tbody></table></div><div class="note"><p>Types for unread pages follow their titles and URLs. Their contents and provider listings remain unverified. The recommendations rely on inspected answers and primary pages, not those unread rows. Source URLs keep their exact spelling, including trailing-slash variants and unresolved Google redirect URLs.</p></div><h2 id="what-else-we-checked">What else we checked</h2>
+<div class="tw"><table><thead><tr><th>Opportunity</th><th>What we found</th><th>Decision</th></tr></thead><tbody>
+<tr><td>AI search access</td><td>Public pages return 200 and declare themselves the preferred URL. The robots file allows the public site, with no AI-specific block. These checks do not establish actual bot visits.</td><td>Keep current access rules. No barrier found. Low effort.</td></tr>
+<tr><td>A separate normalization guide</td><td>The free normalization lesson already includes train-only statistics, code, numerical outputs and constant-column handling. It is Google-indexed.</td><td>Link the existing lesson from the worked project. Avoid a duplicate page. Low effort.</td></tr>
+<tr><td>Class Central placement</td><td>The cited directory covers ml5.js courses. Tensorcraft teaches TensorFlow.js. A contact page exists, but eligibility and a new-course submission route are unverified.</td><td>Qualify a relevant category before drafting outreach. Medium effort. No placement claim.</td></tr>
+<tr><td>Community answers</td><td>The cited Cross Validated leakage question dates to 2022 and has no answer in the retrieved page. No recent activity was established.</td><td>Defer this thread. One citation is insufficient reason for promotional participation.</td></tr>
+<tr><td>A freeCodeCamp editorial pitch</td><td>The cited post announces its own free video course and concrete projects. It is not a list that accepts competing courses.</td><td>Consider an owner-authored tutorial after the worked example exists. The <a href="https://www.freecodecamp.org/news/developer-news-style-guide/" target="_blank" rel="noopener">publisher policy</a> rejects AI-written submissions. Medium effort. No outreach sent.</td></tr>
+<tr><td>More broad guides or special AI markup</td><td>Existing pages cover all 12 prompts directly or through linked lessons. The sample does not isolate a markup problem.</td><td>Prioritize the two bounded improvements above. Do not expand page count for its own sake.</td></tr>
+</tbody></table></div>
+<h2 id="how-this-report-was-made">How this report was made</h2>
+<p>Generated by the <a href="https://openseo.so/docs/skills/ai-visibility-audit" target="_blank" rel="noopener">OpenSEO AI Visibility Audit skill</a>, run by Codex on November 11, 2026.</p>
+<ul class="finding">
+<li><b>Run:</b> <code>47a84cfe-43ca-41cb-83db-921e77d8f447</code>, a one-time manual collection from 12:56:59 to 13:02:39 UTC. Market: United States, English. Engines: ChatGPT, Gemini and Google AI Overviews.</li>
+<li><b>Coverage:</b> 36 planned collections, 34 answered, two failed, zero no-answer and zero pending. All 36 result rows and 143 exact source URLs were read across complete pagination. Six full answers were inspected. Brand rates come from OpenSEO's Tensorcraft match.</li>
+<li><b>Cost and schedule:</b> The owner approved a cap of $0.216, quoted as 216 credits. Recurring checks were disabled and verified before collection. No paid follow-up exploration or retry was started. Actual debited credits were not returned in the collection evidence.</li>
+<li><b>Live release:</b> The reviewed eight-file release is live. It passed 156 focused tests, web typechecking and the production build. Public HTML verifies the video dates and three pinned project-source links. A late-consent guest visit delivered exactly one internal lesson arrival to PostHog. These checks establish deployment and test-event delivery, not acquisition growth.</li>
+</ul>
+<details><summary>Evidence and methodology</summary>
+<h3>Selected prompts</h3><p>The 12 prompts were chosen for the site's existing learning topics. They are not measured consumer demand. US English is the approved audit market and does not establish the business's geographic target.</p><ol><li>How can I prevent data leakage when preparing training and test data in JavaScript? <small>(Browser machine learning projects)</small></li><li>How can I train and evaluate a small machine learning model in the browser? <small>(Browser machine learning projects)</small></li><li>How do I compare a simple rule with a TensorFlow.js model for a classification project? <small>(Browser machine learning projects)</small></li><li>What is a good first machine learning project to build in the browser with JavaScript? <small>(Browser machine learning projects)</small></li><li>How can a frontend developer learn machine learning using JavaScript? <small>(Learning ML with JavaScript)</small></li><li>What are good machine learning courses for JavaScript developers who are new to ML? <small>(Learning ML with JavaScript)</small></li><li>What should I learn before building my first machine learning model in JavaScript? <small>(Learning ML with JavaScript)</small></li><li>Where can I practice machine learning in JavaScript with interactive exercises? <small>(Learning ML with JavaScript)</small></li><li>How do tensor shapes work in TensorFlow.js? <small>(TensorFlow.js practical skills)</small></li><li>How should I normalize data for a TensorFlow.js model? <small>(TensorFlow.js practical skills)</small></li><li>What is the difference between reshape and transpose in TensorFlow.js? <small>(TensorFlow.js practical skills)</small></li><li>Where can I find TensorFlow.js tutorials with runnable examples? <small>(TensorFlow.js practical skills)</small></li></ol>
+<h3>Answers inspected</h3><ul><li>chatgpt: How can I train and evaluate a small machine learning model in the browser? Observation <code>9cd38377-a383-483d-8cea-097d18c1a4bf</code>.</li><li>gemini: How can I train and evaluate a small machine learning model in the browser? Observation <code>e0ba7029-e325-4cff-830a-ec6ee5c27999</code>.</li><li>google_ai_overview: How can I prevent data leakage when preparing training and test data in JavaScript? Observation <code>8e7a89c4-1b4b-4f57-8096-8ed51d025875</code>.</li><li>chatgpt: What are good machine learning courses for JavaScript developers who are new to ML? Observation <code>bce918dd-b7a9-4eec-994b-15885e82c735</code>.</li><li>gemini: What are good machine learning courses for JavaScript developers who are new to ML? Observation <code>809be288-d871-4297-bd1d-862e7d4b2a24</code>.</li><li>google_ai_overview: What are good machine learning courses for JavaScript developers who are new to ML? Observation <code>f55ea614-4a61-47c9-8988-821b8f8300c0</code>.</li></ul>
+<p>The training/evaluation and course questions were used to compare source content with owned pages. No competitor list was saved. Named alternatives in those answers are manual observations, not exhaustive competitor rates. Answer code and recommendations were not treated as verified technical facts.</p>
+<h3>Pages inspected</h3><ul>
+<li>TensorFlow.js homepage and starter, ml5.js homepage, Google's regression codelab, scikit-learn's common pitfalls, Microsoft's browser-training article, and the cited Cross Validated question.</li>
+<li>The Coursera browser-models course, freeCodeCamp's ml5.js course post, Class Central's ml5.js category and contact page, plus freeCodeCamp's contributor policy.</li>
+<li>Tensorcraft's homepage, About, comparison, guide hub, three guides and normalization lesson. The project guide was rechecked after release to verify the new source links.</li>
+</ul>
+<p>The Google codelab supplies a visible setup, training and prediction sequence. Its displayed example uses an older runtime and does not demonstrate an independent held-out evaluation. The proposed Tensorcraft example must retain its own verified split and evaluation rules.</p>
+<h3>Access and collection limits</h3>
+<p>The robots file contains <code>User-Agent: *</code>, <code>Allow: /</code>, <code>Allow: /api/og</code> and <code>Disallow: /api/</code>, plus the sitemap. The inspected public HTML pages returned 200, declared their own preferred URLs and had no observed indexing prohibition. No AI-specific exclusion was found. Bot access logs were not available.</p>
+<p>The two failures were Google AI Overviews for interactive JavaScript ML exercises and TensorFlow.js normalization, both <code>UPSTREAM_UNAVAILABLE</code>. They were not retried. No-answer is a separate outcome, and none occurred in this run.</p>
+<p>No paid search-expansion inspection was authorized. No fan-out queries were obtained and no follow-up search ranking claims are made. There is no comparable earlier run, so no trend is reported.</p>
+<p>The collected sources include 23 unresolved Google redirect URLs. Zero own-site citations is OpenSEO's recorded result, with those destinations unresolved. Counts use exact URLs and do not infer their final domains. Rates exclude failures, and source counts overlap across answers. The raw observations remain in the <a href="https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/ai-visibility" target="_blank" rel="noopener">private OpenSEO tracker</a>.</p>
+</details></article></div><footer>Prepared with OpenSEO. Data as of November 11, 2026. Private report.</footer></div></body></html>

@@ -41,7 +41,11 @@ The earlier retry at 09:11:24 UTC (11:11:24 Cairo time) returned
 `not_connected`. After the owner reported completion, a new request still
 needed property selection. The collection then selected the verified domain
 property and retrieved the data. Earlier failed responses remain historical
-evidence. Representative URL Inspection and Bing evidence remain pending.
+evidence. Representative URL Inspection is complete. The
+[indexing follow-up](indexing-followup.md) records five accepted requests,
+and the 12:41 UTC confirmation records all five URLs indexed with matching
+declared and Google-selected canonicals. The earlier pending snapshots remain
+historical evidence. Bing evidence remains pending.
 
 AI visibility needs an agreed prompt set, engines and market plus approval of
 the priced collection before a paid check. Saving a new AI tracker enables

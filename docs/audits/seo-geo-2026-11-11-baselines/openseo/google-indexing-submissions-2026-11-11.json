@@ -1,0 +1,70 @@
+{
+  "observedOn": "2026-11-11",
+  "observationWindowUTC": {
+    "from": "12:16",
+    "to": "12:24",
+    "precision": "minute"
+  },
+  "method": "Search Console owner account in Chrome, operated through CUA. Manually transcribed visible UI results; no private account identifiers or browser screenshots stored.",
+  "property": "sc-domain:tensorcraft.app",
+  "sitemap": {
+    "url": "https://tensorcraft.app/sitemap.xml",
+    "before": {
+      "lastRead": "2026-11-06",
+      "status": "Success",
+      "discoveredPages": 19,
+      "discoveredVideos": 0
+    },
+    "submissionConfirmation": "Sitemap submitted successfully",
+    "after": {
+      "submitted": "2026-11-11",
+      "lastRead": "2026-11-11",
+      "status": "Success",
+      "discoveredPages": 23,
+      "discoveredVideos": 1
+    }
+  },
+  "urls": [
+    {
+      "url": "https://tensorcraft.app/guides",
+      "eligibilityCheck": "Separate live test: URL is available to Google; Page can be indexed.",
+      "requestConfirmation": "Indexing requested",
+      "outcome": "Google confirmed adding the URL to its priority crawl queue.",
+      "inspectionURL": "https://search.google.com/search-console/inspect?resource_id=sc-domain%3Atensorcraft.app&id=NQJvzml6EzFsUFkKwNh0Dw"
+    },
+    {
+      "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+      "eligibilityCheck": "Request indexing ran its live eligibility preflight before acceptance.",
+      "requestConfirmation": "Indexing requested",
+      "outcome": "Google confirmed adding the URL to its priority crawl queue.",
+      "inspectionURL": "https://search.google.com/search-console/inspect?resource_id=sc-domain%3Atensorcraft.app&id=Fu3GdoyWv3aEgoiSOz9FpA"
+    },
+    {
+      "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+      "eligibilityCheck": "Request indexing ran its live eligibility preflight before acceptance.",
+      "requestConfirmation": "Indexing requested",
+      "outcome": "Google confirmed adding the URL to its priority crawl queue.",
+      "inspectionURL": "https://search.google.com/search-console/inspect?resource_id=sc-domain%3Atensorcraft.app&id=dsaG0XrgZuyi3nId50Bw9g"
+    },
+    {
+      "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+      "eligibilityCheck": "Request indexing ran its live eligibility preflight before acceptance.",
+      "requestConfirmation": "Indexing requested",
+      "outcome": "Google confirmed adding the URL to its priority crawl queue.",
+      "inspectionURL": "https://search.google.com/search-console/inspect?resource_id=sc-domain%3Atensorcraft.app&id=JRPsW_MJnGtbOjpgJUvCug"
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+      "eligibilityCheck": "Request indexing ran its live eligibility preflight before acceptance.",
+      "requestConfirmation": "Indexing requested",
+      "outcome": "Google confirmed adding the URL to its priority crawl queue.",
+      "inspectionURL": "https://search.google.com/search-console/inspect?resource_id=sc-domain%3Atensorcraft.app&id=naUaI49QiPdzVt8iEodtag"
+    }
+  ],
+  "limits": [
+    "Request acceptance does not prove inclusion or ranking.",
+    "Only the hub had a separate live-test result view. The other four used the eligibility preflight in Request indexing.",
+    "The stale www sitemap entry was not changed.",
+    "No application code, crawler rules or publishing timestamps were changed for these submissions."
+  ]
+}
