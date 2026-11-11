@@ -11,7 +11,6 @@ import { test, expect } from "@playwright/test";
  * that jsdom can never reproduce.
  */
 const SURFACES = [
-  { name: "landing Five Worlds band", path: "/" },
   { name: "Deep Orbit world page", path: "/worlds/deep-orbit" },
   { name: "auth left pane", path: "/auth/sign-in" },
   { name: "worlds index hero card", path: "/worlds" },

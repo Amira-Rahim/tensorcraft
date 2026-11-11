@@ -133,14 +133,14 @@ function Fixture() {
         Predetermined captures check the production viewer and styles. This page
         executes no learner code and makes no account or network writes.
       </p>
-      <fieldset className="grid gap-4 my-6 border border-border p-4">
+      <fieldset className="grid min-w-0 gap-4 my-6 border border-border p-4">
         <legend className="text-lg font-semibold">
           Browser fixture controls
         </legend>
-        <label className="grid gap-2">
+        <label className="grid min-w-0 gap-2">
           Fixture scenario
           <select
-            className="min-h-11 max-w-full border border-border bg-page px-3 py-2"
+            className="min-h-11 w-full min-w-0 max-w-full border border-border bg-page px-3 py-2"
             value={scenario}
             onChange={(event) => setScenario(event.target.value)}
           >

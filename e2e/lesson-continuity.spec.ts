@@ -228,7 +228,9 @@ for (const [width, scheme] of [
     await expect(preview).toBeEnabled();
     await preview.focus();
     await page.keyboard.press("Space");
-    await expect(chart.getByRole("status")).toHaveText("From your latest run");
+    await expect(chart.getByRole("status")).toHaveText(
+      "From this supplied example run",
+    );
     const shapeResult = instrument.getByText(
       "The example’s tensor has shape [12]: one axis holding 12 values. The supplied chart code groups those readings into 4 lines, one for each sensor.",
     );

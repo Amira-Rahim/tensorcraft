@@ -59,7 +59,7 @@ test("character portraits stay hoverable and keyboard accessible throughout a le
   await page.getByRole("button", { name: "Run example", exact: true }).click();
   await expect(
     page.locator(".lesson-instrument").getByRole("status"),
-  ).toHaveText("From your latest run");
+  ).toHaveText("From this supplied example run");
   await expect(
     page
       .locator(".lesson-instrument")

@@ -38,10 +38,10 @@ When JavaScript runs, the briefing keeps that prose hidden until the learner
 enters the Concept step. Complete Concept components, experiments, bridges,
 and derivations also depend on step selection.
 
-Relevant source: [teaching visibility](../../../apps/web/app/globals.css:281),
-[note visibility](../../../apps/web/app/globals.css:971),
-[no-JavaScript override](../../../apps/web/app/worlds/[slug]/[module]/[lesson]/noscript-reveal.tsx:40),
-[step selection](../../../apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx:1184).
+Relevant source: [teaching visibility](../../../apps/web/app/globals.css#L281),
+[note visibility](../../../apps/web/app/globals.css#L971),
+[no-JavaScript override](../../../apps/web/app/worlds/[slug]/[module]/[lesson]/noscript-reveal.tsx#L40),
+[step selection](../../../apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx#L1184).
 
 This requires rendered-content inspection. It does not establish cloaking, and
 the raw count of roughly 1,800 words does not establish 1,800 useful visible
@@ -69,11 +69,11 @@ guidance also says that discovery must not depend on user actions.
 [video discovery guidance](https://developers.google.com/search/docs/appearance/video).
 
 Source references for measurement findings:
-[session effect](../../../apps/web/app/components/analytics-provider.tsx:100),
-[capture guard](../../../apps/web/lib/posthog.ts:90),
-[pricing event](../../../apps/web/app/pricing/pricing-analytics.tsx:20),
-[guide handoff](../../../apps/web/app/guides/tensorflow-js-reshape-vs-transpose/page.tsx:256),
-[performance limits](../../../.github/lighthouse-budget.json:5).
+[session effect](../../../apps/web/app/components/analytics-provider.tsx#L100),
+[capture guard](../../../apps/web/lib/posthog.ts#L90),
+[pricing event](../../../apps/web/app/pricing/pricing-analytics.tsx#L20),
+[guide handoff](../../../apps/web/app/guides/tensorflow-js-reshape-vs-transpose/page.tsx#L256),
+[performance limits](../../../.github/lighthouse-budget.json#L5).
 
 No current Core Web Vitals measurement was obtained. The public PageSpeed API
 returned HTTP 429. Historical scores and the existence of a passing CI budget
@@ -165,7 +165,7 @@ path through data preparation, training, evaluation and deployment. The useful
 question is why this learning method and sequence justify the purchase.
 
 The strongest underused evidence already exists in
-[CourseProjectPreview](../../../apps/web/app/components/course-project-preview.tsx:4).
+[CourseProjectPreview](../../../apps/web/app/components/course-project-preview.tsx#L4).
 The independent project uses 2,056 recorded measurements, compares a rule with a
 trained model, and exposes a validation case where both fail. The public fixture
 includes attribution, artifact hashes, a reproduction command and limitations.

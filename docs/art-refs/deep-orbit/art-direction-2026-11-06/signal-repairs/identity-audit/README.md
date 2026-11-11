@@ -8,13 +8,17 @@ The retained briefing images already contain much of the same drift, so correcti
 
 ## Strongest failures
 
+The repository does not contain the paired PNG comparisons named below. The
+[retained crop index](face-index.json) records their filenames, source paths and
+crop coordinates. The findings below preserve the original review.
+
 | Image | Character | Concrete mismatch | Evidence |
 |---|---|---|---|
-| fourier-transform / concept | farah | Strong drift: tiny nose, pointed chin, enlarged eyes and erased adult facial planes give a younger different face. | [Paired crop](fourier-transform-concept-farah-pair.png) |
-| fourier-transform / concept | demir | Strongest Demir drift: almost smooth adolescent face, tiny tapered chin and much smaller nose. Light uneven adult stubble is largely lost. | [Paired crop](fourier-transform-concept-demir-pair.png) |
-| time-vs-frequency / takeaways | farah | Added visible freckles, fuller lips, sculpted jaw and narrow nose are strong identity drift in a large clear face. | [Paired crop](time-vs-frequency-takeaways-farah-pair.png) |
-| windowing-and-overlap / takeaways | demir | Near-front view makes the narrower lower face, narrow nose and taller quiff easier to compare; clearly more sculpted than the anchor. | [Paired crop](windowing-and-overlap-takeaways-demir-pair.png) |
-| fft-as-features / takeaways | nazari | Gray bob and forehead lines are stable, but crow feet, cheek breadth and lower-mouth folds are reduced. Moderate drift. | [Paired crop](fft-as-features-takeaways-nazari-pair.png) |
+| fourier-transform / concept | farah | Strong drift: tiny nose, pointed chin, enlarged eyes and erased adult facial planes give a younger different face. | `fourier-transform-concept-farah-pair.png` ([crop coordinates](face-index.json)) |
+| fourier-transform / concept | demir | Strongest Demir drift: almost smooth adolescent face, tiny tapered chin and much smaller nose. Light uneven adult stubble is largely lost. | `fourier-transform-concept-demir-pair.png` ([crop coordinates](face-index.json)) |
+| time-vs-frequency / takeaways | farah | Added visible freckles, fuller lips, sculpted jaw and narrow nose are strong identity drift in a large clear face. | `time-vs-frequency-takeaways-farah-pair.png` ([crop coordinates](face-index.json)) |
+| windowing-and-overlap / takeaways | demir | Near-front view makes the narrower lower face, narrow nose and taller quiff easier to compare; clearly more sculpted than the anchor. | `windowing-and-overlap-takeaways-demir-pair.png` ([crop coordinates](face-index.json)) |
+| fft-as-features / takeaways | nazari | Gray bob and forehead lines are stable, but crow feet, cheek breadth and lower-mouth folds are reduced. Moderate drift. | `fft-as-features-takeaways-nazari-pair.png` ([crop coordinates](face-index.json)) |
 
 ## Per-face record
 

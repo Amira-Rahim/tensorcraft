@@ -172,13 +172,42 @@ for (const width of [1440, 390, 320]) {
       });
       const chart = viewer.getByRole("group", { name: "Choose a series" });
       const noOverflow = async () => {
-        await expect
-          .poll(() =>
-            page.evaluate(
-              () => document.documentElement.scrollWidth <= innerWidth + 1,
-            ),
-          )
-          .toBe(true);
+        try {
+          await expect
+            .poll(() =>
+              page.evaluate(
+                () => document.documentElement.scrollWidth <= innerWidth + 1,
+              ),
+            )
+            .toBe(true);
+        } catch (error) {
+          const overflow = await page.evaluate(() => ({
+            viewport: innerWidth,
+            documentWidth: document.documentElement.scrollWidth,
+            elements: [...document.querySelectorAll("body *")]
+              .map((element) => {
+                const rect = element.getBoundingClientRect();
+                return {
+                  tag: element.tagName,
+                  classes: element.getAttribute("class"),
+                  label: element.getAttribute("aria-label"),
+                  x: rect.x,
+                  right: rect.right,
+                  width: rect.width,
+                };
+              })
+              .filter(
+                (element) =>
+                  element.width > 0 && element.right > innerWidth + 1,
+              )
+              .slice(0, 30),
+          }));
+          await testInfo.attach("horizontal-overflow.json", {
+            body: JSON.stringify(overflow, null, 2),
+            contentType: "application/json",
+          });
+          throw error;
+        }
       };
       const axeCounts: number[] = [];
       const accessibility = async () => {
