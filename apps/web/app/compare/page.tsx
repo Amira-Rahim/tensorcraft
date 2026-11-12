@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FreeLessonCtaTracker } from "@/app/components/free-lesson-cta-tracker";
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { PRICING, WORLD_SHAPE } from "@tensorcraft/shared";
 import {
   ORGANIZATION_ID,
@@ -9,7 +10,7 @@ import {
   serializeJsonLd,
 } from "@/lib/site-identity";
 
-const REVIEWED_AT = "2026-11-10";
+const REVIEWED_AT = "2026-11-12";
 const title = "JavaScript ML courses compared, Tensorcraft";
 const description =
   "Compare machine learning options for JavaScript developers by goal, prerequisites, runtime, and project work, with links to the providers' published curricula.";
@@ -49,6 +50,18 @@ const OPTIONS = [
     href: "https://www.tensorflow.org/resources/learn-ml/basics-of-tensorflow-for-js-development",
   },
   {
+    id: "coursera",
+    name: "Browser-based Models with TensorFlow.js",
+    publisher: "DeepLearning.AI, Coursera",
+    href: "https://www.coursera.org/learn/browser-based-models-tensorflow",
+  },
+  {
+    id: "freecodecamp",
+    name: "ml5.js video course",
+    publisher: "Henry Ly, freeCodeCamp",
+    href: "https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/",
+  },
+  {
     id: "charlie",
     name: "Machine Learning in JavaScript with TensorFlow.js",
     publisher: "Charlie Gerard, Master.dev",
@@ -78,6 +91,10 @@ const ROWS: Row[] = [
       "Learn ML through JavaScript exercises and a continuing story. Build, evaluate, and run small browser models.",
     tensorflow:
       "Build models in JavaScript, run existing models, and deploy them to browsers.",
+    coursera:
+      "Train and run browser models, handle data, and adapt pretrained image models with webcam examples.",
+    freecodecamp:
+      "Use pretrained models, transfer learning, and custom prediction models with ml5.js.",
     charlie:
       "Use pretrained models and train custom models for image, gesture, and audio applications.",
     fastai:
@@ -90,6 +107,9 @@ const ROWS: Row[] = [
     tensorcraft:
       "JavaScript and TensorFlow.js in browser lessons. The independent project uses a local browser app.",
     tensorflow: "JavaScript, TensorFlow.js, browsers, and Node.js.",
+    coursera:
+      "JavaScript and TensorFlow.js in the browser. One module trains a model in Python and converts it for JavaScript.",
+    freecodecamp: "JavaScript and ml5.js for browser projects.",
     charlie:
       "JavaScript and TensorFlow.js, including webcam input in the browser.",
     fastai: "Python notebooks with PyTorch, fastai, and other libraries.",
@@ -102,6 +122,10 @@ const ROWS: Row[] = [
       "JavaScript functions, arrays, objects, modules, and async code. Lessons explain the math as it comes up.",
     tensorflow:
       "HTML, CSS, JavaScript browser programming, and command-line use for Node.js scripts.",
+    coursera:
+      "Intermediate level. The provider recommends TensorFlow in Practice first if you are new to TensorFlow.",
+    freecodecamp:
+      "The course announcement introduces ml5.js to beginners and lists no formal prerequisites.",
     charlie: "Introductory web development or equivalent knowledge.",
     fastai: "Coding experience, preferably Python, and high-school math.",
     scrimba:
@@ -113,6 +137,10 @@ const ROWS: Row[] = [
       "Browser code editor, exercise checks, illustrated scenes, and solved code you can save to GitHub.",
     tensorflow:
       "Tutorials, videos, codelabs, and example source code. Official guides and tutorials are free to read.",
+    coursera:
+      "Videos, readings, quizzes, programming assignments, and a model-conversion lab.",
+    freecodecamp:
+      "Free YouTube video course by Henry Ly with project walkthroughs.",
     charlie:
       "Video lessons, transcripts, and follow-along recognition projects.",
     fastai:
@@ -126,6 +154,10 @@ const ROWS: Row[] = [
       "An evaluated signal classifier in the lessons and an independent room-occupancy browser project.",
     tensorflow:
       "A minimal trained model that makes a browser prediction, with source code you can run.",
+    coursera:
+      "A handwritten-digit recognizer, a Python model converted for JavaScript, and webcam rock-paper-scissors recognition.",
+    freecodecamp:
+      "MobileNet image recognition, a Teachable Machine clone, and a saved student-score prediction model.",
     charlie:
       "Custom webcam models and image, gesture, or audio recognition applications.",
     fastai:
@@ -177,7 +209,7 @@ export default function ComparePage() {
             Tensorcraft
           </Link>
           . Sources reviewed{" "}
-          <time dateTime={REVIEWED_AT}>November 10, 2026</time>.
+          <time dateTime={REVIEWED_AT}>November 12, 2026</time>.
         </p>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mb-12">
@@ -195,23 +227,40 @@ export default function ComparePage() {
           </p>
         </section>
 
+        <p
+          id="comparison-scroll-help"
+          className="mb-4 text-sm leading-relaxed text-text-muted"
+        >
+          Scroll horizontally to compare all seven options. The criteria stay
+          visible on the left.
+        </p>
         <div
           tabIndex={0}
           role="region"
           aria-label="Learning options comparison"
+          aria-describedby="comparison-scroll-help"
           className="overflow-x-auto border border-border focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
         >
-          <table className="w-full min-w-[68rem] font-mono text-sm">
+          <table
+            className="w-full min-w-[calc(7rem+9rem*var(--comparison-options))] table-fixed font-mono text-sm sm:min-w-[calc(7rem+14rem*var(--comparison-options))]"
+            style={{ "--comparison-options": OPTIONS.length } as CSSProperties}
+          >
             <caption className="sr-only">
               Named learning options compared by goal, language, starting
               knowledge, practice format, and example output. Column links open
               each provider&apos;s published curriculum.
             </caption>
+            <colgroup>
+              <col className="w-28" />
+              {OPTIONS.map((option) => (
+                <col key={option.id} className="w-36 sm:w-56" />
+              ))}
+            </colgroup>
             <thead className="bg-surface-raised">
               <tr>
                 <th
                   scope="col"
-                  className="text-left p-3 text-text-primary font-bold align-top"
+                  className="sticky left-0 z-10 bg-surface-raised text-left p-3 text-text-primary font-bold align-top"
                 >
                   Feature
                 </th>
@@ -239,7 +288,7 @@ export default function ComparePage() {
                 >
                   <th
                     scope="row"
-                    className="text-left p-3 text-text-primary font-bold"
+                    className="sticky left-0 z-10 bg-page text-left p-3 text-text-primary font-bold"
                   >
                     {row.feature}
                   </th>
@@ -254,7 +303,7 @@ export default function ComparePage() {
           </table>
         </div>
         <p className="mt-4 text-sm leading-relaxed text-text-muted">
-          The table scrolls horizontally on smaller screens. TensorFlow&apos;s{" "}
+          TensorFlow&apos;s{" "}
           <a
             href="https://www.tensorflow.org/js/tutorials"
             className={linkClass}
@@ -262,8 +311,10 @@ export default function ComparePage() {
             getting-started tutorial
           </a>{" "}
           supplies the minimal-model example. Scrimba&apos;s linked
-          documentation describes its projects and local setup. Check each
-          provider&apos;s course page for current access terms.
+          documentation describes its projects and local setup. The freeCodeCamp
+          column cites its course announcement, which links to Henry Ly&apos;s
+          video. Check each provider&apos;s course page for current access
+          terms.
         </p>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mt-12">

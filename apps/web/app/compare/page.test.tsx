@@ -21,6 +21,8 @@ describe("source-based learning comparison", () => {
     expect(offeringLinks.map((link) => link.getAttribute("href"))).toEqual([
       "/worlds/deep-orbit",
       "https://www.tensorflow.org/resources/learn-ml/basics-of-tensorflow-for-js-development",
+      "https://www.coursera.org/learn/browser-based-models-tensorflow",
+      "https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/",
       "https://master.dev/courses/tensorflow-js/",
       "https://course.fast.ai/",
       "https://docs.scrimba.com/ai-engineer-path/",
@@ -38,6 +40,42 @@ describe("source-based learning comparison", () => {
     expect(doc.querySelectorAll("h1")).toHaveLength(1);
   });
 
+  it("preserves the new courses' prerequisites, Python scope and video format", () => {
+    const doc = renderPage();
+    const headers = [...doc.querySelectorAll("thead th")];
+    function value(feature: string, offering: string) {
+      const index = headers.findIndex((header) =>
+        header.textContent?.includes(offering),
+      );
+      const row = [...doc.querySelectorAll("tbody tr")].find(
+        (entry) => entry.querySelector("th")?.textContent === feature,
+      )!;
+      expect(index).toBeGreaterThan(0);
+      return row.children[index]!.textContent;
+    }
+    expect(value("Starting knowledge", "Coursera")).toContain("Intermediate");
+    expect(value("Starting knowledge", "Coursera")).toContain(
+      "TensorFlow in Practice first",
+    );
+    expect(value("Language and runtime", "Coursera")).toContain("Python");
+    expect(value("Practice format", "Coursera")).toContain(
+      "programming assignments",
+    );
+    expect(value("Starting knowledge", "freeCodeCamp")).toContain(
+      "announcement",
+    );
+    expect(value("Starting knowledge", "freeCodeCamp")).toContain(
+      "no formal prerequisites",
+    );
+    expect(value("Practice format", "freeCodeCamp")).toContain("YouTube video");
+    expect(value("Example output", "freeCodeCamp")).toContain(
+      "saved student-score prediction model",
+    );
+    const region = doc.querySelector("[role='region']")!;
+    const help = doc.getElementById(region.getAttribute("aria-describedby")!);
+    expect(help?.textContent).toContain("Scroll horizontally");
+  });
+
   it("ties the visible review date and primary sources to the page identity", () => {
     const doc = renderPage();
     const schema = JSON.parse(
@@ -45,7 +83,7 @@ describe("source-based learning comparison", () => {
     );
     const reviewedAt = doc.querySelector("time")!.getAttribute("datetime");
     expect(schema.dateModified).toBe(reviewedAt);
-    expect(reviewedAt).toBe("2026-11-10");
+    expect(reviewedAt).toBe("2026-11-12");
     expect(metadata.openGraph).toMatchObject({ modifiedTime: reviewedAt });
     expect(schema.url).toBe(metadata.alternates?.canonical);
     expect(schema.headline).toBe(doc.querySelector("h1")!.textContent);
@@ -55,7 +93,7 @@ describe("source-based learning comparison", () => {
     const visibleHrefs = new Set(
       [...doc.querySelectorAll("a")].map((link) => link.getAttribute("href")),
     );
-    expect(schema.citation).toHaveLength(5);
+    expect(schema.citation).toHaveLength(7);
     for (const citation of schema.citation) {
       expect(visibleHrefs.has(citation)).toBe(true);
     }
