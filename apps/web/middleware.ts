@@ -31,7 +31,7 @@ export const config = {
     // and Supabase REST volume is the documented bottleneck.
     //
     // Excluded: _next internals, favicon, the public/ asset types (images,
-    // fonts, and the js/json/bin/wasm the exercise runner and demos fetch),
+    // fonts, and the js/mjs/json/bin/wasm the exercise runner and demos fetch),
     // and the crawler files robots.txt + sitemap.xml - route handlers, but
     // public by definition and no use for a session.
     //
@@ -42,6 +42,6 @@ export const config = {
     // not session.
     //
     // Still matched: every HTML page route, which is where auth matters.
-    "/((?!_next/static|_next/image|favicon.ico|vendor/|models/|api/og|unsubscribe/one-click|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|otf|js|json|bin|wasm|txt|xml)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|vendor/|models/|api/og|unsubscribe/one-click|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|otf|js|mjs|json|bin|wasm|txt|xml)$).*)",
   ],
 };

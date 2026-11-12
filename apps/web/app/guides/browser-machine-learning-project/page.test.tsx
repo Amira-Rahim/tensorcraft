@@ -66,6 +66,26 @@ describe("public project evidence", () => {
     expect(schema.mainEntityOfPage).toBe(metadata.alternates?.canonical);
     expect(schema.dateModified).toBe(doc.querySelector("time")!.dateTime);
   });
+  it("explains runnable training in initial HTML without inventing a completed run", () => {
+    const doc = new DOMParser().parseFromString(
+      renderToStaticMarkup(<ProjectGuide />),
+      "text/html",
+    );
+    expect(doc.body.textContent).toContain(
+      "Training and validation in your browser",
+    );
+    expect(doc.body.textContent).toContain("First 1,200 readings");
+    expect(doc.body.textContent).toContain("Next 400 readings");
+    expect(doc.body.textContent).toContain("Last 456 readings");
+    expect(doc.body.textContent).toContain("maintainer-supplied example");
+    expect(
+      doc.querySelector('a[href="/demos/room-training.mjs"]'),
+    ).not.toBeNull();
+    expect(
+      doc.querySelector('a[href="/assignments/room-occupancy-v1/data.json"]'),
+    ).not.toBeNull();
+    expect(doc.body.textContent).not.toContain("This browser run");
+  });
   it("applies a threshold to the supplied score without inventing a new model result", () => {
     render(<ThresholdExample />);
     expect(screen.getByRole("status")).toHaveTextContent(

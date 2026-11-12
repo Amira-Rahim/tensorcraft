@@ -25,9 +25,9 @@ export const GUIDES = [
     path: "/guides/browser-machine-learning-project",
     title: "A browser ML project: a rule, a model, and a recorded mistake",
     description:
-      "Inspect a JavaScript machine learning project with recorded room data, a baseline, a TensorFlow.js model, and a reproducible validation mistake.",
+      "Train a TensorFlow.js model in your browser on recorded room data. Compare it with a light-threshold rule on 400 later readings and inspect its mistakes.",
     summary:
-      "See what the independent project asks you to build. Inspect one recorded model mistake and how a decision threshold changes that single prediction.",
+      "Run a supplied JavaScript training example, compare validation errors with a simple rule, and inspect the room readings behind the results.",
     updatedAt: "2026-11-11",
   },
 ] as const;

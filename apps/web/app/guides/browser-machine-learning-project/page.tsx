@@ -10,6 +10,7 @@ import {
 } from "@/lib/site-identity";
 import preview from "@/public/assignments/room-project-preview.json";
 import { ThresholdExample } from "./threshold-example";
+import { TrainingDemo } from "./training-demo";
 
 const guide = getGuide("browser-machine-learning-project");
 const updatedDate = new Intl.DateTimeFormat("en-US", {
@@ -116,7 +117,9 @@ export default function BrowserProjectGuide() {
             A useful ML project compares a trained model with a simple baseline,
             inspects mistakes, and runs the saved result in an application. Deep
             Orbit&apos;s independent project asks you to do that with recorded
-            room measurements and JavaScript.
+            room measurements and JavaScript. Try the supplied training example
+            below to see how a model compares with a light-threshold rule on
+            later readings.
           </p>
           <p className="mt-5 text-sm text-text-muted">
             By{" "}
@@ -168,12 +171,13 @@ export default function BrowserProjectGuide() {
             for access controls.
           </p>
         </section>
+        <TrainingDemo />
         <ThresholdExample />
         <section className={section}>
-          <h2 className={heading}>What the demonstration establishes</h2>
+          <h2 className={heading}>About the recorded demonstration</h2>
           <p>
-            The example above comes from a maintainer integration fixture,
-            recorded{" "}
+            The threshold example above comes from a maintainer integration
+            fixture, recorded{" "}
             <time dateTime={preview.recordedAt}>
               {preview.recordedAt.slice(0, 10)}
             </time>{" "}
