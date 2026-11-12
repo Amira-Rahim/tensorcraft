@@ -54,22 +54,35 @@ Local implementation and item status live in the [execution checklist](seo-geo-p
   provider did not return the actual debit. See the
   [private report](https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports/faddb2f6-fed3-4397-a0cc-992419c10721)
   and [sample evidence](audits/seo-geo-2026-11-11-baselines/geo/findings-2026-11-11.json).
-- [ ] **Runnable project training and evaluation.** Improve the existing
-  browser-project guide with a direct path to running training and inspecting
-  a held-out comparison. Build on the deployed fixture and immutable source
-  links. Gate: execute the example against the pinned runtime, verify split
-  and preprocessing boundaries, show baseline/model results and a useful
-  failure, and check browser and keyboard behavior. Preserve the distinction
-  between a supplied demonstration and learner-produced output. The evidence
-  supports this reader task but does not promise AI citations. No new page,
-  outreach or recurring collection is authorized by this item.
-- [ ] **Sourced course comparison additions.** Add DeepLearning.AI's browser
-  TensorFlow.js course on Coursera and Henry Ly's freeCodeCamp ml5.js course
-  to the existing comparison. Gate: verify current publisher sources for
-  goals, prerequisites, practice format and outputs, preserve the Coursera
-  intermediate/prior-TensorFlow qualification, and check responsive table
-  readability. Avoid unsupported quality, outcome and citation claims. See
-  the [source review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-2026-11-11.json)
+- [ ] **Runnable project training and evaluation.** Implemented locally in the
+  existing browser-project guide, uncommitted and undeployed. The example
+  trains for 1, 5 or 15 epochs and displays actual losses, a paired comparison
+  on 400 validation readings and selectable mistakes. Real-runtime tests
+  verify train-only scaling, split boundaries, the recorded default mistake
+  and cleanup. All 55 focused tests, web typecheck, lint and the production
+  build pass. Initial HTML exposes method/source links without invented run
+  results. Gate: real-browser worker execution, keyboard behavior and narrow
+  layouts, then release verification. Browser access currently fails. The
+  [implementation record](audits/seo-geo-2026-11-11-baselines/runnable-project-followup.md)
+  distinguishes executed tests from pending checks. The evidence supports
+  this reader task but does not promise AI citations. No outreach or recurring
+  collection occurred.
+- [ ] **Sourced course comparison additions.** Implemented locally on November
+  12, uncommitted and undeployed. The existing comparison now includes
+  DeepLearning.AI's browser TensorFlow.js course on Coursera and Henry Ly's
+  freeCodeCamp ml5.js video course. Rechecked all seven linked external
+  sources. The new entries cover goals, prerequisites, practice and outputs.
+  Coursera retains its intermediate/prior-TensorFlow qualification and Python
+  conversion module. The freeCodeCamp entry identifies its announcement as
+  the source and attributes the video to Henry Ly. Seven schema citations
+  match visible sources, with a November 12 review date. Six focused tests,
+  web typecheck, scoped lint and the 104-page production build pass. Local
+  HTTP returns 200 with the new content in initial HTML. The table implements
+  responsive column widths and a sticky criteria column.
+  Gate: verify touch/keyboard scrolling and narrow layouts in a real browser,
+  then release. CUA lost its connection and native retries failed. No quality,
+  learner-outcome or citation-growth claims were added. The prior evidence is
+  in the [source review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-2026-11-11.json)
   and [independent review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-independent-2026-11-11.json).
 - [ ] **Visual and real-browser capture QA.** HTTP/SSR and local event tests pass.
   Native desktop checks now verify the guide hub, reshape interaction,

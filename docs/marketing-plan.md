@@ -1,12 +1,16 @@
 # Tensorcraft marketing plan
 
-Working proposal, November 10, 2026. This is the current marketing direction following the owner's request for a fresh strategy. It replaces the earlier first-1,000 plan as the planning baseline.
+Working proposal, updated November 11, 2026. This is the current marketing direction following the owner's request for a fresh strategy. It replaces the earlier first-1,000 plan as the planning baseline.
 
 The owner confirmed a **$200 monthly marketing budget**. Existing audience size and available marketing hours are unknown. The first month assumes we must earn attention from people who have never heard of Tensorcraft. Targets below describe work and review points, not predicted reach or sales.
 
 ## 1. Strategic direction
 
-Make the first encounter with Tensorcraft a small example of how it teaches. Give a JavaScript engineer a problem they can inspect, a prediction they can make, and an action that produces a visible result. Use Deep Orbit's crew and readings to give that problem a purpose.
+The first encounter must explain the offer to someone who has never heard of Tensorcraft: an interactive machine-learning course for JavaScript engineers. Show a capability they might want to learn before introducing character names or tensor operations.
+
+Use the [model-teaching preview](https://tensorcraft-cases.vercel.app/) as that entry. Visitors identify a generated pattern, compare their choice with a real model, label a separate example, and train again. Show the model's actual prediction on the same held-out pattern. Both labels must affect the real training result. These illustrative patterns are separate from Deep Orbit's fictional recordings.
+
+After that payoff, a 14-second character film introduces Deep Orbit as Tensorcraft's first world. Explain that the free lessons begin with data preparation and the full course continues into model building, training, and evaluation. Keep the first-five-free scope and no-account offer visible.
 
 Build a recurring campaign from these cases. Each case should work on its own and make the next part of the course easy to understand. The story supplies continuity across the campaign. The code and observed result explain the learning value.
 
@@ -44,7 +48,7 @@ Use three initial cases from the free material. These are production briefs, not
 | The input shape | One extra level of nesting changes how the runtime describes the input. What does that dimension represent? | Edit a small input, run it, and connect its shape to the supplied readings. | The first free mission and its tensor explanation. |
 | The input scale | The preprocessing used with a model matters to its predictions. What happens when it changes? | Change the input in the existing normalization interaction and inspect the actual result. | The free normalization lesson. Clearly identify any supplied model. |
 
-Lead with the sensor-grouping case because it offers a visual decision before asking someone to understand a new ML term. It also has an existing direct entry path:
+Keep the [sensor-grouping case](https://tensorcraft-cases.vercel.app/sensor-grouping.html) as a supporting lesson preview. It shows data preparation, which is too indirect to carry the first product introduction on its own. The related free course activity also has an existing direct entry path:
 
 `/worlds/deep-orbit/foundations/tensor-shapes?start=experiment`
 
@@ -95,6 +99,8 @@ Submit the finished experiment for editorial consideration at Frontend Horse and
 Frontend Horse welcomes suggestions and publishes visual experiments and interactive explanations. JavaScript Weekly issue 809 includes a JavaScript-to-neural-network demonstration, providing a concrete example of topic fit. Frontend Focus is another candidate when the case emphasizes the browser interaction. Placement and traffic are uncertain. [Frontend Horse contact](https://frontend.horse/contact/), [example issue](https://frontend.horse/issues/78/), [JavaScript Weekly example](https://javascriptweekly.com/issues/809), [Cooperpress contact](https://cooperpress.com/contact/).
 
 Supply a finished playable URL, a clear image, and the short recording so a curator can understand and demonstrate the case quickly. A creator can use the same package for a public playthrough. Neither a free feature nor a sponsorship price is assumed.
+
+The two pitches sent on November 10, 2026 link the cases host root with `utm_content=sensor-grouping`. The root now serves the model-teaching preview. A redirect in `output/marketing/tensorcraft-cases/vercel.json` sends requests with that value to `/sensor-grouping.html` and keeps their UTM parameters. If an editor publishes the link without those parameters, readers land on the model-teaching preview. Keep the rule while editors and readers can still open those emails. Before a shared URL serves a different page, add a redirect like this one for every link already sent.
 
 ### A distinct public launch through Show HN
 
