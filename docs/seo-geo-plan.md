@@ -2,7 +2,7 @@
 
 Updated November 12, 2026. This is the single current work list. The
 [audit record](audits/seo-geo-2026-11-10/README.md) preserves evidence,
-corrections and verification limits. Main release `22cae183` is deployed. The
+corrections and verification limits. Main release `22772ee3` is deployed. The
 eight-file SEO follow-up was promoted at 12:49 UTC on November 11 and its
 production deployment is ready. The
 [account baseline](audits/seo-geo-2026-11-11-baselines/README.md) records
@@ -32,17 +32,12 @@ Recurrence is disabled. The approved cap was 216 credits ($0.216), and the
 provider did not return the actual debit. This single sample establishes no trend.
 
 Commit `46e311d4` pushed the reviewed release and GEO evidence after normal
-hooks passed workspace typechecks and 4,343 tests (65 skipped). The next
+hooks passed workspace typechecks and 4,343 tests (65 skipped). On November
+12, commit `470ded71` released the
 [runnable project follow-up](audits/seo-geo-2026-11-11-baselines/runnable-project-followup.md)
-is implemented locally and remains uncommitted. Its 55 focused tests, web
-typecheck, lint and 104-page production build pass. Real-browser verification
-and release remain pending because browser access is unavailable. The sourced
-course-comparison additions are also implemented locally. All seven linked
-external sources were rechecked on November 12. Six focused checks, web
-typecheck, scoped lint, development HTTP checks and the production build pass.
-Actual scrolling, sticky-column rendering and narrow layouts remain pending
-after the native browser connection failed. Both follow-ups remain uncommitted
-and undeployed.
+and `68d6e3d7` released the sourced course-comparison additions. Browser
+checks on production in Chromium and WebKit passed both release gates. The
+follow-up record and the backlog list those checks and their limits.
 
 The [consent and measurement release](audits/seo-geo-2026-11-11-baselines/deployment.md)
 has applied migration 067 in production and passed all 15 catalog checks.
@@ -89,8 +84,8 @@ Preserve the existing teaser and marketing work.
 | 15 | Establish current mobile performance. | Post-release mobile PSI retry on November 11 returned 429 again. Field/lab performance remains unknown. Compiled-byte evidence is in the audit record. |
 | 16 | Fix measured performance bottlenecks. | Lazy public Exercise boundary deployed. Local exact comparison: 26 to 24 initial scripts, 28.03% fewer summed gzip bytes on two free lessons. Production confirms 24 initial scripts without detected editor signatures. Browser/field verification remains pending. |
 | 17 | Create a JavaScript ML learning path. | Deployed learning path with curriculum counts, prerequisites, three goals, outputs and tracked free links. Production canonical/OG and content checks pass. |
-| 18 | Publish the reproducible project case. | Project case and immutable code links are deployed. Five production artifact URLs return 200 and recorded fixture/source checks pass. Public HTML exposes three pinned reproduction links, the visible November 11 update and matching Article metadata. A local follow-up now adds runnable training, loss values, paired validation results and actual mistakes. Its 55 focused tests, web typecheck, lint and production build pass. Native-browser execution, keyboard/mobile checks and release remain pending. See runnable-project-followup.md. |
-| 19 | Repair the sourced course comparison. | The original sourced comparison is deployed. A November 12 local follow-up adds DeepLearning.AI/Coursera and Henry Ly/freeCodeCamp with verified goals, prerequisites, format and outputs. It preserves Coursera's intermediate/prior-TensorFlow/Python scope and identifies freeCodeCamp's video announcement. The visible date and seven Article citations match the sources. Six focused tests, web typecheck, scoped lint, initial-HTML HTTP checks and the 104-page production build pass. Narrow layout and actual scroll behavior still need browser verification. Uncommitted and undeployed. |
+| 18 | Publish the reproducible project case. | Project case and immutable code links are deployed. Five production artifact URLs return 200 and recorded fixture/source checks pass. Public HTML exposes three pinned reproduction links, the visible November 11 update and matching Article metadata. Commit `470ded71` added runnable training, loss values, paired validation results and actual mistakes on November 12. Production checks in Chromium and WebKit passed worker execution, keyboard runs, cancel and restart, and the 393 px layout. See runnable-project-followup.md. |
+| 19 | Repair the sourced course comparison. | The original sourced comparison is deployed. A November 12 follow-up adds DeepLearning.AI/Coursera and Henry Ly/freeCodeCamp with verified goals, prerequisites, format and outputs. It preserves Coursera's intermediate/prior-TensorFlow/Python scope and identifies freeCodeCamp's video announcement. The visible date and seven Article citations match the sources. Six focused tests, web typecheck, scoped lint, initial-HTML HTTP checks and the 104-page production build pass. Commit `68d6e3d7` released it on November 12. Production checks confirm the 393 px layout, the pinned criteria column, keyboard scrolling in Chromium and a synthesized touch swipe. Safari keyboard scrolling and physical devices remain unverified. |
 | 20 | Connect acquisition assets. | Acquisition crosslinks deployed. Guides, case, comparison, About, free module and pricing are connected; new lesson handoffs use existing tracking. |
 | 21 | Make technical credibility inspectable. | Recorded fixture and checked examples deployed. Three reproduction files are verified anonymously at the pinned commit, and the fixture hash matches. The released case links directly to all three sources. No learner outcomes invented. |
 | 22 | Verify release and prepare deployment. | Main 22cae183 pushed/deployed after normal hooks (4,258 passed, 65 skipped). All remote CI jobs and visual regression pass, including 307 browser tests (38 skipped). The later eight-file SEO follow-up deployed from isolated source at 12:49 UTC after 156 focused tests, web typechecking, migration checks and a 104-page production build. Public metadata/source-link checks pass and deployment readiness is confirmed. The release manifest records the deployed source. |

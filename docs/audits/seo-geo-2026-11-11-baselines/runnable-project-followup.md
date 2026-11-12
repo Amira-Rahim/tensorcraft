@@ -2,8 +2,9 @@
 
 November 11, 2026. Local implementation after commit `46e311d4`, which was
 pushed to `origin/main` after normal hooks passed workspace typechecks and
-4,343 tests (65 skipped). The runnable demonstration described here remains
-uncommitted and undeployed. Native-browser verification remains pending.
+4,343 tests (65 skipped). On November 12, commit `470ded71` released the
+runnable demonstration. Production browser checks then passed, as recorded in
+the last section.
 
 ## Reader task and implementation
 
@@ -30,8 +31,8 @@ of one room. It links directly to the executable source and recorded data.
 
 ## Executed default result
 
-These values come from the real CPU runtime test. They do not establish that
-the browser interaction or production release works.
+These values come from the real CPU runtime test. On November 12, the
+production page displayed the same values in Chromium and WebKit.
 
 | Validation outcome | Light rule | Model, five epochs |
 | --- | ---: | ---: |
@@ -83,19 +84,35 @@ The build and combined tests used Node 26.10.0. The implementation follows the
 and [tensor cleanup guidance](https://www.tensorflow.org/js/guide/tensors_operations).
 The worker terminates on completion, error, cancellation, timeout or unmount.
 
-## Remaining checks
+## Production browser check
 
-CUA reported an unavailable browser host. Both native Chrome connection
+The first attempts on November 11 never reached a browser check. CUA
+reported an unavailable browser host, and both native Chrome connection
 attempts failed with `Sky Computer Use native pipe closed before response`.
-No visual, keyboard-in-browser, mobile, worker-import or CSP-execution success
-is claimed. Check a real five-epoch run, changing epochs, selecting a mistake,
-cancel/restart, keyboard controls and narrow layouts before release.
+A local `next start` served the static assets but returned 500 for page
+requests because its instrumentation guard requires `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY`. No credentials or guards were changed.
 
-A separate local `next start` attempt served the static assets but returned
-500 for page requests because its instrumentation guard requires missing
-`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` variables. The production build
-and development HTTP checks passed. No credentials or guards were changed.
+On November 12, after the release, headless Playwright ran the checks against
+tensorcraft.app in Chromium at 1440x900 and WebKit at 393x659.
 
-The sourced course-comparison additions remain the next content task. This
+- The page requests no worker, runtime or data before Run.
+- A five-epoch run started from the keyboard finishes and shows the table
+  above. Reading `datatest2.txt:1193` shows score 0.65626.
+- Selecting another of the eight listed mistakes updates the inspection
+  panel. Reading `datatest2.txt:1203` shows score 0.71889.
+- Cancel during a 15-epoch run shows the cancelled status, and no result
+  appears three seconds later. A one-epoch restart then finishes.
+- The worker, runtime, helper modules and data return 200 under the
+  production CSP. Neither browser reported a console error or CSP violation.
+- The page has no horizontal scroll at 393 px.
+
+The check did not cover physical devices, Safari itself, Firefox or screen
+readers. WebKit's default Tab order skips buttons, so the keyboard run
+focused each button before pressing Enter or Space. The reading picker is a
+native select, so its keyboard behavior comes from the browser.
+
+Commit `68d6e3d7` released the sourced course-comparison additions on
+November 12. This
 implementation makes no ranking or citation claim. No paid audit rerun,
 recurring collection, outreach or checkout-question activation occurred.
