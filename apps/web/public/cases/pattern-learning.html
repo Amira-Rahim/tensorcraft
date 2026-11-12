@@ -1,0 +1,1586 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#edf3f1" />
+    <title>Tensorcraft: Machine learning with JavaScript</title>
+    <meta
+      name="description"
+      content="Teach a small model to recognize a pattern. Then learn machine learning with JavaScript through interactive story worlds. First five lessons free, with no account needed."
+    />
+    <link rel="canonical" href="https://tensorcraft-cases.vercel.app/" />
+    <meta property="og:url" content="https://tensorcraft-cases.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Could you teach this model what to look for?"
+    />
+    <meta
+      property="og:description"
+      content="Pick a pattern. Give a small model another example. See what changes. A playable introduction to Tensorcraft, the machine-learning course for JavaScript engineers."
+    />
+    <meta
+      property="og:image"
+      content="https://tensorcraft-cases.vercel.app/media/pattern-intro/share.webp"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Deep Orbit’s crew aboard Archimedes, Tensorcraft’s first interactive learning world"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://tensorcraft-cases.vercel.app/media/pattern-intro/share.webp"
+    />
+    <link
+      rel="icon"
+      href="/media/sensor-grouping-case/tensorcraft-avatar.png"
+    />
+    <link
+      rel="preload"
+      href="/case-fonts/syne-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/cases/pattern-learning.css" />
+    <link rel="stylesheet" href="/cases/pattern-continuation.css" />
+    <script defer src="/vendor/tfjs-4.22.0.min.js"></script>
+    <script defer src="/cases/pattern-model.js"></script>
+    <script defer src="/cases/pattern-stage.js"></script>
+    <script defer src="/cases/pattern-learning.js"></script>
+    <script defer src="/cases/pattern-continuation.js"></script>
+  </head>
+  <body data-view="intro">
+    <a class="skip" href="#experiment">Skip to the experiment</a>
+    <header class="site-header wrap">
+      <a
+        class="brand"
+        href="https://tensorcraft.app/"
+        aria-label="Tensorcraft home"
+        ><span aria-hidden="true">T_</span>Tensorcraft</a
+      >
+      <nav>
+        <a class="header-link" href="#deep-orbit">The story behind it</a
+        ><button id="reset" type="button" hidden>Start over</button>
+      </nav>
+    </header>
+    <main>
+      <section class="experience" id="experiment" aria-labelledby="page-title">
+        <div class="scene-backdrop" aria-hidden="true">
+          <video
+            id="atmosphere"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="/media/pattern-atmosphere/poster.webp"
+            tabindex="-1"
+          >
+            <source
+              src="/media/pattern-atmosphere/loop.webm"
+              type="video/webm"
+            />
+            <source src="/media/pattern-atmosphere/loop.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="scene-shade" aria-hidden="true"></div>
+        <div class="scene-layout wrap">
+          <div class="sculpture" id="sculpture">
+            <div class="sculpture-heading">
+              <span id="visual-caption"
+                >A pattern your model has never trained on</span
+              ><button
+                class="motion-control"
+                id="motion-control"
+                type="button"
+                aria-pressed="false"
+              >
+                Pause motion
+              </button>
+            </div>
+            <canvas id="signal-stage" aria-hidden="true"></canvas>
+            <div class="interpretation" id="interpretation" hidden>
+              <span id="visual-context">The model’s interpretation</span
+              ><strong id="visual-label"></strong
+              ><span id="visual-score"></span>
+            </div>
+            <svg
+              id="probe-wave"
+              class="flat-probe"
+              viewBox="0 0 560 130"
+              role="img"
+              aria-label="The test pattern: four tall, closely spaced pulses"
+            ></svg>
+            <p class="art-note">
+              Illustrated view of the same generated practice pattern.
+            </p>
+          </div>
+          <div class="intro-view scene-copy" id="intro-view">
+            <p class="category">Machine learning with JavaScript</p>
+            <h1 id="page-title">A model<br />you can teach.</h1>
+            <p class="product-definition">
+              Tensorcraft is an interactive machine-learning course for
+              JavaScript engineers.
+            </p>
+
+            <div class="intro-actions">
+              <button id="enter" class="primary" type="button" disabled>
+                Teach this model</button
+              ><a
+                id="top-course"
+                href="https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors?utm_source=pattern_preview&amp;utm_medium=interactive&amp;utm_campaign=learn-by-teaching&amp;utm_content=top"
+                >Start the free lessons</a
+              >
+            </div>
+            <p class="free-note">First five lessons free. No account needed.</p>
+          </div>
+          <div class="controls-view scene-copy" id="controls-view" hidden>
+            <ol class="chapters" aria-label="Experiment steps">
+              <li data-chapter="predict">Predict</li>
+              <li data-chapter="teaching">Teach</li>
+              <li data-chapter="result">Test</li>
+            </ol>
+            <section id="predict-step" aria-labelledby="experiment-title">
+              <h2 id="experiment-title" tabindex="-1">
+                What pattern<br />do you see?
+              </h2>
+              <p class="instruction" id="initial-instruction">
+                Make a guess. Then see what the model thinks.
+              </p>
+              <div class="pattern-key" aria-label="Examples of the two labels">
+                <div class="key-example wide">
+                  <svg
+                    id="example-wide"
+                    viewBox="0 0 180 48"
+                    role="img"
+                    aria-label="One tall, broadly spaced pulse"
+                  ></svg
+                  ><span>Wide pulses</span>
+                </div>
+                <div class="key-example tight">
+                  <svg
+                    id="example-tight"
+                    viewBox="0 0 180 48"
+                    role="img"
+                    aria-label="Four small, closely spaced pulses"
+                  ></svg
+                  ><span>Tight pulses</span>
+                </div>
+              </div>
+              <div
+                class="prediction-choices"
+                role="group"
+                aria-label="Your prediction"
+              >
+                <button type="button" data-guess="wide" disabled>
+                  Wide pulses</button
+                ><button type="button" data-guess="tight" disabled>
+                  Tight pulses
+                </button>
+              </div>
+              <p class="helper">
+                Compare the test pattern with the examples above.
+              </p>
+            </section>
+            <section
+              id="first-reveal"
+              aria-labelledby="first-reveal-title"
+              hidden
+            >
+              <div class="first-result" role="status" aria-live="polite">
+                <span id="your-guess"></span>
+                <p id="first-reveal-title"></p>
+                <span class="score" id="baseline-score"></span>
+              </div>
+              <h2 class="teaching-heading" tabindex="-1" id="teaching-heading">
+                What would<br />you teach it?
+              </h2>
+              <p class="reveal-question" id="reveal-question"></p>
+              <div class="teaching-example">
+                <div class="teaching-example-label">
+                  <span>A different example</span
+                  ><span>The test pattern stays separate</span>
+                </div>
+                <svg
+                  id="teaching-wave"
+                  viewBox="0 0 560 100"
+                  role="img"
+                  aria-label="A different tall wave with several closely spaced pulses to label"
+                ></svg>
+              </div>
+              <div
+                class="teaching-choices"
+                role="group"
+                aria-label="Label the new teaching example"
+              >
+                <button type="button" data-label="wide" aria-pressed="false">
+                  Wide pulses</button
+                ><button type="button" data-label="tight" aria-pressed="false">
+                  Tight pulses
+                </button>
+              </div>
+              <button
+                id="train"
+                class="primary train-button"
+                type="button"
+                disabled
+              >
+                Train with my label
+              </button>
+              <details class="training-data">
+                <summary>The four examples it started with</summary>
+                <div id="training-gallery" class="training-gallery"></div>
+              </details>
+            </section>
+            <section
+              class="after-training"
+              id="after-training"
+              aria-labelledby="after-title"
+              hidden
+            >
+              <p class="actual-result">Your model, after training</p>
+              <h2 id="after-title" tabindex="-1"></h2>
+              <div class="comparison">
+                <div>
+                  <p>Before your example</p>
+                  <strong id="before-label"></strong
+                  ><svg
+                    id="before-wave"
+                    viewBox="0 0 250 65"
+                    role="img"
+                    aria-label="The same test pattern before training"
+                  ></svg
+                  ><span id="before-score"></span>
+                  <div class="score-track"><span id="before-bar"></span></div>
+                </div>
+                <div>
+                  <p>After your example</p>
+                  <strong id="after-label"></strong
+                  ><svg
+                    id="after-wave"
+                    viewBox="0 0 250 65"
+                    role="img"
+                    aria-label="The same test pattern after training"
+                  ></svg
+                  ><span id="after-score"></span>
+                  <div class="score-track"><span id="after-bar"></span></div>
+                </div>
+              </div>
+              <p class="outcome-copy" id="outcome-copy"></p>
+              <div class="code-payoff" id="payoff" hidden>
+                <p>You’ll write the JavaScript behind this.</p>
+                <pre><code>await model.fit(xs, ys, { epochs: 160, shuffle: false });
+const scores = model.predict(input);</code></pre>
+              </div>
+              <div class="result-actions">
+                <a class="primary" href="#deep-orbit">Explore the course</a
+                ><button class="try-label" id="try-label" type="button">
+                  Try the other label
+                </button>
+              </div>
+              <details class="what-ran">
+                <summary>What ran in your browser</summary>
+                <p>
+                  Each run uses the original four examples plus your one labeled
+                  example. The test pattern never enters training. The model
+                  compares the height of each wave and how often it crosses the
+                  center line.
+                </p>
+                <p>
+                  A model score is its output for one label, rather than an
+                  accuracy rate.
+                </p>
+              </details>
+            </section>
+          </div>
+        </div>
+        <div class="stage-bottom wrap">
+          <div>
+            <p class="status" id="status" role="status" aria-live="polite">
+              Preparing a small model in your browser…
+            </p>
+            <progress
+              id="training-progress"
+              max="160"
+              value="0"
+              aria-label="Model training progress"
+              hidden
+            ></progress>
+          </div>
+          <p class="practice-note">
+            Generated practice patterns.<br />Deep Orbit’s story recordings are
+            separate.
+          </p>
+        </div>
+        <noscript
+          ><p class="wrap">
+            This experiment uses JavaScript. You can watch the introduction
+            below or open the free lessons.
+          </p></noscript
+        >
+      </section>
+      <div class="continuation">
+        <section
+          class="story-screen"
+          id="deep-orbit"
+          aria-labelledby="story-title"
+        >
+          <div class="story-screen-media" aria-hidden="true">
+            <video
+              data-ambient
+              muted
+              loop
+              playsinline
+              preload="none"
+              poster="/media/pattern-continuation/crew-poster.webp"
+              tabindex="-1"
+            >
+              <source
+                src="/media/pattern-continuation/crew-loop.webm"
+                type="video/webm"
+              />
+              <source
+                src="/media/pattern-continuation/crew-loop.mp4"
+                type="video/mp4"
+              />
+            </video>
+          </div>
+          <div class="story-screen-shade" aria-hidden="true"></div>
+          <div class="story-screen-content wrap">
+            <p class="continuation-label">
+              Deep Orbit, Tensorcraft’s first world
+            </p>
+            <h2 id="story-title">A crew needs a system that can learn.</h2>
+            <p class="story-premise">
+              Aboard the research ship Archimedes, the crew has received an
+              unexplained signal. You write the JavaScript that helps them
+              investigate it.
+            </p>
+            <button
+              class="film-trigger"
+              id="open-story-film"
+              type="button"
+              aria-haspopup="dialog"
+            >
+              <span class="film-play" aria-hidden="true"
+                ><svg viewBox="0 0 20 20"><path d="M7 4L16 10L7 16Z" /></svg
+              ></span>
+              <span
+                >Watch the introduction<small
+                  >14 seconds inside Deep Orbit</small
+                ></span
+              >
+            </button>
+            <figure class="story-dialogue">
+              <blockquote>
+                “Then we need a system that can learn from examples.”
+              </blockquote>
+              <figcaption>Commander Mirza</figcaption>
+            </figure>
+          </div>
+          <p class="story-scene-note">Mirza and Farah aboard Archimedes</p>
+        </section>
+        <dialog
+          class="story-film-dialog"
+          id="story-film-dialog"
+          aria-labelledby="story-film-title"
+        >
+          <div class="film-dialog-heading">
+            <h2 id="story-film-title">Inside Deep Orbit</h2>
+            <button id="close-story-film" type="button" aria-label="Close film">
+              Close <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <video
+            id="story-film"
+            controls
+            playsinline
+            preload="none"
+            poster="/media/pattern-intro/poster.webp"
+            aria-label="An introduction to Deep Orbit’s crew and story"
+          >
+            <source src="/media/pattern-intro/intro.mp4" type="video/mp4" />
+            <track
+              kind="captions"
+              src="/media/pattern-intro/captions.vtt"
+              srclang="en"
+              label="English"
+            />
+          </video>
+        </dialog>
+        <section class="mission-path" aria-labelledby="mission-title">
+          <div class="mission-heading wrap">
+            <div>
+              <p class="continuation-label">A look inside the course</p>
+              <h2 id="mission-title">The JavaScript behind the mission.</h2>
+            </div>
+            <p>
+              You start by preparing the crew’s data. The full course takes you
+              into building, training, and testing models you can run in the
+              browser.
+            </p>
+          </div>
+          <div
+            class="mission-tabs wrap"
+            role="tablist"
+            aria-label="Course preview"
+          >
+            <button
+              id="course-tab-data"
+              data-course-tab="data"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="course-panel-data"
+              tabindex="0"
+            >
+              <span>Prepare data</span><small>First five lessons free</small>
+            </button>
+            <button
+              id="course-tab-model"
+              data-course-tab="model"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="course-panel-model"
+              tabindex="-1"
+            >
+              <span>Build a model</span><small>Later in Deep Orbit</small>
+            </button>
+            <button
+              id="course-tab-browser"
+              data-course-tab="browser"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="course-panel-browser"
+              tabindex="-1"
+            >
+              <span>Run it in the browser</span
+              ><small>Later in Deep Orbit</small>
+            </button>
+          </div>
+          <div class="mission-theatre">
+            <div class="mission-art" aria-hidden="true">
+              <img
+                data-course-scene="data"
+                class="is-active"
+                src="/scenes/deep-orbit/foundations/introduction-to-tensors-challenge.webp"
+                alt=""
+                width="1536"
+                height="1024"
+                loading="lazy"
+              />
+              <img
+                data-course-scene="model"
+                src="/scenes/deep-orbit/neural-networks/building-a-network.webp"
+                alt=""
+                width="1536"
+                height="1024"
+                loading="lazy"
+                hidden
+              />
+              <img
+                data-course-scene="browser"
+                src="/locations/deep-orbit/dashboard-station.webp"
+                alt=""
+                width="1536"
+                height="1024"
+                loading="lazy"
+                hidden
+              />
+            </div>
+            <div class="mission-art-shade" aria-hidden="true"></div>
+            <div class="mission-panels wrap">
+              <div
+                id="course-panel-data"
+                data-course-panel="data"
+                class="mission-panel"
+                role="tabpanel"
+                aria-labelledby="course-tab-data"
+                tabindex="0"
+              >
+                <div class="mission-code-copy">
+                  <h3>Every sensor keeps its readings.</h3>
+                  <p>
+                    Turn an array into a tensor, then group the values by
+                    sensor. Choose a sensor to follow its readings across three
+                    moments.
+                  </p>
+                  <div class="code-window">
+                    <p class="code-filename">readings.js</p>
+                    <pre><code><span class="code-keyword">const</span> readings = tf.<span class="code-call">tensor2d</span>([
+  [<span class="code-number">2, 20, 5, 8</span>],
+  [<span class="code-number">3, 18, 7, 8</span>],
+  [<span class="code-number">4, 16, 6, 9</span>]
+]);
+
+<span class="code-keyword">const</span> bySensor = readings.<span class="code-call">transpose</span>();</code></pre>
+                  </div>
+                  <a class="continuation-text-link" href="/sensor-grouping.html"
+                    >Try the sensor case</a
+                  >
+                </div>
+                <figure class="sensor-instrument">
+                  <div class="instrument-heading">
+                    <span>Sensor <span id="sensor-name">A</span></span
+                    ><span class="instrument-tag">Supplied course example</span>
+                  </div>
+                  <div
+                    class="sensor-switch"
+                    role="group"
+                    aria-label="Choose a sensor"
+                  >
+                    <button type="button" data-sensor="A" aria-pressed="true">
+                      A</button
+                    ><button type="button" data-sensor="B" aria-pressed="false">
+                      B</button
+                    ><button type="button" data-sensor="C" aria-pressed="false">
+                      C</button
+                    ><button type="button" data-sensor="D" aria-pressed="false">
+                      D
+                    </button>
+                  </div>
+                  <svg
+                    class="sensor-plot"
+                    viewBox="0 0 360 218"
+                    role="img"
+                    aria-labelledby="sensor-chart-title sensor-chart-desc"
+                  >
+                    <title id="sensor-chart-title">
+                      Readings from the selected sensor
+                    </title>
+                    <desc id="sensor-chart-desc">
+                      All sensors use the same vertical scale, from zero to
+                      twenty-two. Select a sensor to see its three values below.
+                    </desc>
+                    <g class="plot-grid">
+                      <path d="M40 40H320 M40 109H320 M40 178H320" />
+                    </g>
+                    <g class="plot-labels">
+                      <text x="11" y="45">22</text>
+                      <text x="11" y="114">11</text>
+                      <text x="18" y="183">0</text>
+                      <text x="40" y="208" text-anchor="middle">Moment 1</text>
+                      <text x="180" y="208" text-anchor="middle">Moment 2</text>
+                      <text x="320" y="208" text-anchor="middle">Moment 3</text>
+                    </g>
+                    <polyline
+                      id="sensor-line"
+                      points="40,165.45 180,159.18 320,152.91"
+                    />
+                    <g class="sensor-points">
+                      <circle data-sensor-point="0" cx="40" cy="165.45" r="5" />
+                      <circle
+                        data-sensor-point="1"
+                        cx="180"
+                        cy="159.18"
+                        r="5"
+                      />
+                      <circle
+                        data-sensor-point="2"
+                        cx="320"
+                        cy="152.91"
+                        r="5"
+                      />
+                    </g>
+                  </svg>
+                  <div class="sensor-readout">
+                    <span>Grouped readings</span
+                    ><output id="sensor-values" aria-live="polite"
+                      >2, 3, 4</output
+                    >
+                  </div>
+                  <figcaption>
+                    A small excerpt from Deep Orbit’s fictional recording.
+                    Columns A, B, C, D keep the supplied sensor order.
+                  </figcaption>
+                </figure>
+              </div>
+              <div
+                id="course-panel-model"
+                data-course-panel="model"
+                class="mission-panel"
+                role="tabpanel"
+                aria-labelledby="course-tab-model"
+                tabindex="0"
+                hidden
+              >
+                <div class="mission-code-copy">
+                  <h3>You build the network in JavaScript.</h3>
+                  <p>
+                    Choose the layers that connect inputs to a prediction.
+                    Training then adjusts the model’s parameters using examples.
+                  </p>
+                  <div class="code-window">
+                    <p class="code-filename">classifier.js</p>
+                    <pre><code><span class="code-keyword">const</span> model = tf.<span class="code-call">sequential</span>();
+model.<span class="code-call">add</span>(tf.layers.<span class="code-call">dense</span>({
+  units: <span class="code-number">32</span>, inputShape: [<span class="code-number">3</span>],
+  activation: <span class="code-string">"relu"</span>
+}));
+model.<span class="code-call">add</span>(tf.layers.<span class="code-call">dense</span>({
+  units: <span class="code-number">16</span>, activation: <span class="code-string">"relu"</span>
+}));
+model.<span class="code-call">add</span>(tf.layers.<span class="code-call">dense</span>({
+  units: <span class="code-number">1</span>, activation: <span class="code-string">"sigmoid"</span>
+}));</code></pre>
+                  </div>
+                </div>
+                <figure class="network-instrument">
+                  <div class="instrument-heading">
+                    <span>A larger course example</span
+                    ><span class="instrument-tag">Network structure</span>
+                  </div>
+                  <svg
+                    class="network-plot"
+                    viewBox="0 0 406 302"
+                    role="img"
+                    aria-labelledby="network-title network-desc"
+                  >
+                    <title id="network-title">
+                      Three inputs, two hidden layers, one output
+                    </title>
+                    <desc id="network-desc">
+                      The network has 32 units in its first hidden layer, 16 in
+                      its second, and 673 trainable parameters. These
+                      connections show the structure, with no prediction or
+                      learned weights.
+                    </desc>
+                    <g class="network-connections">
+                      <path d="M38,44.00L148,44.00" />
+                      <path d="M38,44.00L148,50.77" />
+                      <path d="M38,44.00L148,57.55" />
+                      <path d="M38,44.00L148,64.32" />
+                      <path d="M38,44.00L148,71.10" />
+                      <path d="M38,44.00L148,77.87" />
+                      <path d="M38,44.00L148,84.65" />
+                      <path d="M38,44.00L148,91.42" />
+                      <path d="M38,44.00L148,98.19" />
+                      <path d="M38,44.00L148,104.97" />
+                      <path d="M38,44.00L148,111.74" />
+                      <path d="M38,44.00L148,118.52" />
+                      <path d="M38,44.00L148,125.29" />
+                      <path d="M38,44.00L148,132.06" />
+                      <path d="M38,44.00L148,138.84" />
+                      <path d="M38,44.00L148,145.61" />
+                      <path d="M38,44.00L148,152.39" />
+                      <path d="M38,44.00L148,159.16" />
+                      <path d="M38,44.00L148,165.94" />
+                      <path d="M38,44.00L148,172.71" />
+                      <path d="M38,44.00L148,179.48" />
+                      <path d="M38,44.00L148,186.26" />
+                      <path d="M38,44.00L148,193.03" />
+                      <path d="M38,44.00L148,199.81" />
+                      <path d="M38,44.00L148,206.58" />
+                      <path d="M38,44.00L148,213.35" />
+                      <path d="M38,44.00L148,220.13" />
+                      <path d="M38,44.00L148,226.90" />
+                      <path d="M38,44.00L148,233.68" />
+                      <path d="M38,44.00L148,240.45" />
+                      <path d="M38,44.00L148,247.23" />
+                      <path d="M38,44.00L148,254.00" />
+                      <path d="M38,149.00L148,44.00" />
+                      <path d="M38,149.00L148,50.77" />
+                      <path d="M38,149.00L148,57.55" />
+                      <path d="M38,149.00L148,64.32" />
+                      <path d="M38,149.00L148,71.10" />
+                      <path d="M38,149.00L148,77.87" />
+                      <path d="M38,149.00L148,84.65" />
+                      <path d="M38,149.00L148,91.42" />
+                      <path d="M38,149.00L148,98.19" />
+                      <path d="M38,149.00L148,104.97" />
+                      <path d="M38,149.00L148,111.74" />
+                      <path d="M38,149.00L148,118.52" />
+                      <path d="M38,149.00L148,125.29" />
+                      <path d="M38,149.00L148,132.06" />
+                      <path d="M38,149.00L148,138.84" />
+                      <path d="M38,149.00L148,145.61" />
+                      <path d="M38,149.00L148,152.39" />
+                      <path d="M38,149.00L148,159.16" />
+                      <path d="M38,149.00L148,165.94" />
+                      <path d="M38,149.00L148,172.71" />
+                      <path d="M38,149.00L148,179.48" />
+                      <path d="M38,149.00L148,186.26" />
+                      <path d="M38,149.00L148,193.03" />
+                      <path d="M38,149.00L148,199.81" />
+                      <path d="M38,149.00L148,206.58" />
+                      <path d="M38,149.00L148,213.35" />
+                      <path d="M38,149.00L148,220.13" />
+                      <path d="M38,149.00L148,226.90" />
+                      <path d="M38,149.00L148,233.68" />
+                      <path d="M38,149.00L148,240.45" />
+                      <path d="M38,149.00L148,247.23" />
+                      <path d="M38,149.00L148,254.00" />
+                      <path d="M38,254.00L148,44.00" />
+                      <path d="M38,254.00L148,50.77" />
+                      <path d="M38,254.00L148,57.55" />
+                      <path d="M38,254.00L148,64.32" />
+                      <path d="M38,254.00L148,71.10" />
+                      <path d="M38,254.00L148,77.87" />
+                      <path d="M38,254.00L148,84.65" />
+                      <path d="M38,254.00L148,91.42" />
+                      <path d="M38,254.00L148,98.19" />
+                      <path d="M38,254.00L148,104.97" />
+                      <path d="M38,254.00L148,111.74" />
+                      <path d="M38,254.00L148,118.52" />
+                      <path d="M38,254.00L148,125.29" />
+                      <path d="M38,254.00L148,132.06" />
+                      <path d="M38,254.00L148,138.84" />
+                      <path d="M38,254.00L148,145.61" />
+                      <path d="M38,254.00L148,152.39" />
+                      <path d="M38,254.00L148,159.16" />
+                      <path d="M38,254.00L148,165.94" />
+                      <path d="M38,254.00L148,172.71" />
+                      <path d="M38,254.00L148,179.48" />
+                      <path d="M38,254.00L148,186.26" />
+                      <path d="M38,254.00L148,193.03" />
+                      <path d="M38,254.00L148,199.81" />
+                      <path d="M38,254.00L148,206.58" />
+                      <path d="M38,254.00L148,213.35" />
+                      <path d="M38,254.00L148,220.13" />
+                      <path d="M38,254.00L148,226.90" />
+                      <path d="M38,254.00L148,233.68" />
+                      <path d="M38,254.00L148,240.45" />
+                      <path d="M38,254.00L148,247.23" />
+                      <path d="M38,254.00L148,254.00" />
+                      <path d="M148,44.00L258,44.00" />
+                      <path d="M148,44.00L258,58.00" />
+                      <path d="M148,44.00L258,72.00" />
+                      <path d="M148,44.00L258,86.00" />
+                      <path d="M148,44.00L258,100.00" />
+                      <path d="M148,44.00L258,114.00" />
+                      <path d="M148,44.00L258,128.00" />
+                      <path d="M148,44.00L258,142.00" />
+                      <path d="M148,44.00L258,156.00" />
+                      <path d="M148,44.00L258,170.00" />
+                      <path d="M148,44.00L258,184.00" />
+                      <path d="M148,44.00L258,198.00" />
+                      <path d="M148,44.00L258,212.00" />
+                      <path d="M148,44.00L258,226.00" />
+                      <path d="M148,44.00L258,240.00" />
+                      <path d="M148,44.00L258,254.00" />
+                      <path d="M148,50.77L258,44.00" />
+                      <path d="M148,50.77L258,58.00" />
+                      <path d="M148,50.77L258,72.00" />
+                      <path d="M148,50.77L258,86.00" />
+                      <path d="M148,50.77L258,100.00" />
+                      <path d="M148,50.77L258,114.00" />
+                      <path d="M148,50.77L258,128.00" />
+                      <path d="M148,50.77L258,142.00" />
+                      <path d="M148,50.77L258,156.00" />
+                      <path d="M148,50.77L258,170.00" />
+                      <path d="M148,50.77L258,184.00" />
+                      <path d="M148,50.77L258,198.00" />
+                      <path d="M148,50.77L258,212.00" />
+                      <path d="M148,50.77L258,226.00" />
+                      <path d="M148,50.77L258,240.00" />
+                      <path d="M148,50.77L258,254.00" />
+                      <path d="M148,57.55L258,44.00" />
+                      <path d="M148,57.55L258,58.00" />
+                      <path d="M148,57.55L258,72.00" />
+                      <path d="M148,57.55L258,86.00" />
+                      <path d="M148,57.55L258,100.00" />
+                      <path d="M148,57.55L258,114.00" />
+                      <path d="M148,57.55L258,128.00" />
+                      <path d="M148,57.55L258,142.00" />
+                      <path d="M148,57.55L258,156.00" />
+                      <path d="M148,57.55L258,170.00" />
+                      <path d="M148,57.55L258,184.00" />
+                      <path d="M148,57.55L258,198.00" />
+                      <path d="M148,57.55L258,212.00" />
+                      <path d="M148,57.55L258,226.00" />
+                      <path d="M148,57.55L258,240.00" />
+                      <path d="M148,57.55L258,254.00" />
+                      <path d="M148,64.32L258,44.00" />
+                      <path d="M148,64.32L258,58.00" />
+                      <path d="M148,64.32L258,72.00" />
+                      <path d="M148,64.32L258,86.00" />
+                      <path d="M148,64.32L258,100.00" />
+                      <path d="M148,64.32L258,114.00" />
+                      <path d="M148,64.32L258,128.00" />
+                      <path d="M148,64.32L258,142.00" />
+                      <path d="M148,64.32L258,156.00" />
+                      <path d="M148,64.32L258,170.00" />
+                      <path d="M148,64.32L258,184.00" />
+                      <path d="M148,64.32L258,198.00" />
+                      <path d="M148,64.32L258,212.00" />
+                      <path d="M148,64.32L258,226.00" />
+                      <path d="M148,64.32L258,240.00" />
+                      <path d="M148,64.32L258,254.00" />
+                      <path d="M148,71.10L258,44.00" />
+                      <path d="M148,71.10L258,58.00" />
+                      <path d="M148,71.10L258,72.00" />
+                      <path d="M148,71.10L258,86.00" />
+                      <path d="M148,71.10L258,100.00" />
+                      <path d="M148,71.10L258,114.00" />
+                      <path d="M148,71.10L258,128.00" />
+                      <path d="M148,71.10L258,142.00" />
+                      <path d="M148,71.10L258,156.00" />
+                      <path d="M148,71.10L258,170.00" />
+                      <path d="M148,71.10L258,184.00" />
+                      <path d="M148,71.10L258,198.00" />
+                      <path d="M148,71.10L258,212.00" />
+                      <path d="M148,71.10L258,226.00" />
+                      <path d="M148,71.10L258,240.00" />
+                      <path d="M148,71.10L258,254.00" />
+                      <path d="M148,77.87L258,44.00" />
+                      <path d="M148,77.87L258,58.00" />
+                      <path d="M148,77.87L258,72.00" />
+                      <path d="M148,77.87L258,86.00" />
+                      <path d="M148,77.87L258,100.00" />
+                      <path d="M148,77.87L258,114.00" />
+                      <path d="M148,77.87L258,128.00" />
+                      <path d="M148,77.87L258,142.00" />
+                      <path d="M148,77.87L258,156.00" />
+                      <path d="M148,77.87L258,170.00" />
+                      <path d="M148,77.87L258,184.00" />
+                      <path d="M148,77.87L258,198.00" />
+                      <path d="M148,77.87L258,212.00" />
+                      <path d="M148,77.87L258,226.00" />
+                      <path d="M148,77.87L258,240.00" />
+                      <path d="M148,77.87L258,254.00" />
+                      <path d="M148,84.65L258,44.00" />
+                      <path d="M148,84.65L258,58.00" />
+                      <path d="M148,84.65L258,72.00" />
+                      <path d="M148,84.65L258,86.00" />
+                      <path d="M148,84.65L258,100.00" />
+                      <path d="M148,84.65L258,114.00" />
+                      <path d="M148,84.65L258,128.00" />
+                      <path d="M148,84.65L258,142.00" />
+                      <path d="M148,84.65L258,156.00" />
+                      <path d="M148,84.65L258,170.00" />
+                      <path d="M148,84.65L258,184.00" />
+                      <path d="M148,84.65L258,198.00" />
+                      <path d="M148,84.65L258,212.00" />
+                      <path d="M148,84.65L258,226.00" />
+                      <path d="M148,84.65L258,240.00" />
+                      <path d="M148,84.65L258,254.00" />
+                      <path d="M148,91.42L258,44.00" />
+                      <path d="M148,91.42L258,58.00" />
+                      <path d="M148,91.42L258,72.00" />
+                      <path d="M148,91.42L258,86.00" />
+                      <path d="M148,91.42L258,100.00" />
+                      <path d="M148,91.42L258,114.00" />
+                      <path d="M148,91.42L258,128.00" />
+                      <path d="M148,91.42L258,142.00" />
+                      <path d="M148,91.42L258,156.00" />
+                      <path d="M148,91.42L258,170.00" />
+                      <path d="M148,91.42L258,184.00" />
+                      <path d="M148,91.42L258,198.00" />
+                      <path d="M148,91.42L258,212.00" />
+                      <path d="M148,91.42L258,226.00" />
+                      <path d="M148,91.42L258,240.00" />
+                      <path d="M148,91.42L258,254.00" />
+                      <path d="M148,98.19L258,44.00" />
+                      <path d="M148,98.19L258,58.00" />
+                      <path d="M148,98.19L258,72.00" />
+                      <path d="M148,98.19L258,86.00" />
+                      <path d="M148,98.19L258,100.00" />
+                      <path d="M148,98.19L258,114.00" />
+                      <path d="M148,98.19L258,128.00" />
+                      <path d="M148,98.19L258,142.00" />
+                      <path d="M148,98.19L258,156.00" />
+                      <path d="M148,98.19L258,170.00" />
+                      <path d="M148,98.19L258,184.00" />
+                      <path d="M148,98.19L258,198.00" />
+                      <path d="M148,98.19L258,212.00" />
+                      <path d="M148,98.19L258,226.00" />
+                      <path d="M148,98.19L258,240.00" />
+                      <path d="M148,98.19L258,254.00" />
+                      <path d="M148,104.97L258,44.00" />
+                      <path d="M148,104.97L258,58.00" />
+                      <path d="M148,104.97L258,72.00" />
+                      <path d="M148,104.97L258,86.00" />
+                      <path d="M148,104.97L258,100.00" />
+                      <path d="M148,104.97L258,114.00" />
+                      <path d="M148,104.97L258,128.00" />
+                      <path d="M148,104.97L258,142.00" />
+                      <path d="M148,104.97L258,156.00" />
+                      <path d="M148,104.97L258,170.00" />
+                      <path d="M148,104.97L258,184.00" />
+                      <path d="M148,104.97L258,198.00" />
+                      <path d="M148,104.97L258,212.00" />
+                      <path d="M148,104.97L258,226.00" />
+                      <path d="M148,104.97L258,240.00" />
+                      <path d="M148,104.97L258,254.00" />
+                      <path d="M148,111.74L258,44.00" />
+                      <path d="M148,111.74L258,58.00" />
+                      <path d="M148,111.74L258,72.00" />
+                      <path d="M148,111.74L258,86.00" />
+                      <path d="M148,111.74L258,100.00" />
+                      <path d="M148,111.74L258,114.00" />
+                      <path d="M148,111.74L258,128.00" />
+                      <path d="M148,111.74L258,142.00" />
+                      <path d="M148,111.74L258,156.00" />
+                      <path d="M148,111.74L258,170.00" />
+                      <path d="M148,111.74L258,184.00" />
+                      <path d="M148,111.74L258,198.00" />
+                      <path d="M148,111.74L258,212.00" />
+                      <path d="M148,111.74L258,226.00" />
+                      <path d="M148,111.74L258,240.00" />
+                      <path d="M148,111.74L258,254.00" />
+                      <path d="M148,118.52L258,44.00" />
+                      <path d="M148,118.52L258,58.00" />
+                      <path d="M148,118.52L258,72.00" />
+                      <path d="M148,118.52L258,86.00" />
+                      <path d="M148,118.52L258,100.00" />
+                      <path d="M148,118.52L258,114.00" />
+                      <path d="M148,118.52L258,128.00" />
+                      <path d="M148,118.52L258,142.00" />
+                      <path d="M148,118.52L258,156.00" />
+                      <path d="M148,118.52L258,170.00" />
+                      <path d="M148,118.52L258,184.00" />
+                      <path d="M148,118.52L258,198.00" />
+                      <path d="M148,118.52L258,212.00" />
+                      <path d="M148,118.52L258,226.00" />
+                      <path d="M148,118.52L258,240.00" />
+                      <path d="M148,118.52L258,254.00" />
+                      <path d="M148,125.29L258,44.00" />
+                      <path d="M148,125.29L258,58.00" />
+                      <path d="M148,125.29L258,72.00" />
+                      <path d="M148,125.29L258,86.00" />
+                      <path d="M148,125.29L258,100.00" />
+                      <path d="M148,125.29L258,114.00" />
+                      <path d="M148,125.29L258,128.00" />
+                      <path d="M148,125.29L258,142.00" />
+                      <path d="M148,125.29L258,156.00" />
+                      <path d="M148,125.29L258,170.00" />
+                      <path d="M148,125.29L258,184.00" />
+                      <path d="M148,125.29L258,198.00" />
+                      <path d="M148,125.29L258,212.00" />
+                      <path d="M148,125.29L258,226.00" />
+                      <path d="M148,125.29L258,240.00" />
+                      <path d="M148,125.29L258,254.00" />
+                      <path d="M148,132.06L258,44.00" />
+                      <path d="M148,132.06L258,58.00" />
+                      <path d="M148,132.06L258,72.00" />
+                      <path d="M148,132.06L258,86.00" />
+                      <path d="M148,132.06L258,100.00" />
+                      <path d="M148,132.06L258,114.00" />
+                      <path d="M148,132.06L258,128.00" />
+                      <path d="M148,132.06L258,142.00" />
+                      <path d="M148,132.06L258,156.00" />
+                      <path d="M148,132.06L258,170.00" />
+                      <path d="M148,132.06L258,184.00" />
+                      <path d="M148,132.06L258,198.00" />
+                      <path d="M148,132.06L258,212.00" />
+                      <path d="M148,132.06L258,226.00" />
+                      <path d="M148,132.06L258,240.00" />
+                      <path d="M148,132.06L258,254.00" />
+                      <path d="M148,138.84L258,44.00" />
+                      <path d="M148,138.84L258,58.00" />
+                      <path d="M148,138.84L258,72.00" />
+                      <path d="M148,138.84L258,86.00" />
+                      <path d="M148,138.84L258,100.00" />
+                      <path d="M148,138.84L258,114.00" />
+                      <path d="M148,138.84L258,128.00" />
+                      <path d="M148,138.84L258,142.00" />
+                      <path d="M148,138.84L258,156.00" />
+                      <path d="M148,138.84L258,170.00" />
+                      <path d="M148,138.84L258,184.00" />
+                      <path d="M148,138.84L258,198.00" />
+                      <path d="M148,138.84L258,212.00" />
+                      <path d="M148,138.84L258,226.00" />
+                      <path d="M148,138.84L258,240.00" />
+                      <path d="M148,138.84L258,254.00" />
+                      <path d="M148,145.61L258,44.00" />
+                      <path d="M148,145.61L258,58.00" />
+                      <path d="M148,145.61L258,72.00" />
+                      <path d="M148,145.61L258,86.00" />
+                      <path d="M148,145.61L258,100.00" />
+                      <path d="M148,145.61L258,114.00" />
+                      <path d="M148,145.61L258,128.00" />
+                      <path d="M148,145.61L258,142.00" />
+                      <path d="M148,145.61L258,156.00" />
+                      <path d="M148,145.61L258,170.00" />
+                      <path d="M148,145.61L258,184.00" />
+                      <path d="M148,145.61L258,198.00" />
+                      <path d="M148,145.61L258,212.00" />
+                      <path d="M148,145.61L258,226.00" />
+                      <path d="M148,145.61L258,240.00" />
+                      <path d="M148,145.61L258,254.00" />
+                      <path d="M148,152.39L258,44.00" />
+                      <path d="M148,152.39L258,58.00" />
+                      <path d="M148,152.39L258,72.00" />
+                      <path d="M148,152.39L258,86.00" />
+                      <path d="M148,152.39L258,100.00" />
+                      <path d="M148,152.39L258,114.00" />
+                      <path d="M148,152.39L258,128.00" />
+                      <path d="M148,152.39L258,142.00" />
+                      <path d="M148,152.39L258,156.00" />
+                      <path d="M148,152.39L258,170.00" />
+                      <path d="M148,152.39L258,184.00" />
+                      <path d="M148,152.39L258,198.00" />
+                      <path d="M148,152.39L258,212.00" />
+                      <path d="M148,152.39L258,226.00" />
+                      <path d="M148,152.39L258,240.00" />
+                      <path d="M148,152.39L258,254.00" />
+                      <path d="M148,159.16L258,44.00" />
+                      <path d="M148,159.16L258,58.00" />
+                      <path d="M148,159.16L258,72.00" />
+                      <path d="M148,159.16L258,86.00" />
+                      <path d="M148,159.16L258,100.00" />
+                      <path d="M148,159.16L258,114.00" />
+                      <path d="M148,159.16L258,128.00" />
+                      <path d="M148,159.16L258,142.00" />
+                      <path d="M148,159.16L258,156.00" />
+                      <path d="M148,159.16L258,170.00" />
+                      <path d="M148,159.16L258,184.00" />
+                      <path d="M148,159.16L258,198.00" />
+                      <path d="M148,159.16L258,212.00" />
+                      <path d="M148,159.16L258,226.00" />
+                      <path d="M148,159.16L258,240.00" />
+                      <path d="M148,159.16L258,254.00" />
+                      <path d="M148,165.94L258,44.00" />
+                      <path d="M148,165.94L258,58.00" />
+                      <path d="M148,165.94L258,72.00" />
+                      <path d="M148,165.94L258,86.00" />
+                      <path d="M148,165.94L258,100.00" />
+                      <path d="M148,165.94L258,114.00" />
+                      <path d="M148,165.94L258,128.00" />
+                      <path d="M148,165.94L258,142.00" />
+                      <path d="M148,165.94L258,156.00" />
+                      <path d="M148,165.94L258,170.00" />
+                      <path d="M148,165.94L258,184.00" />
+                      <path d="M148,165.94L258,198.00" />
+                      <path d="M148,165.94L258,212.00" />
+                      <path d="M148,165.94L258,226.00" />
+                      <path d="M148,165.94L258,240.00" />
+                      <path d="M148,165.94L258,254.00" />
+                      <path d="M148,172.71L258,44.00" />
+                      <path d="M148,172.71L258,58.00" />
+                      <path d="M148,172.71L258,72.00" />
+                      <path d="M148,172.71L258,86.00" />
+                      <path d="M148,172.71L258,100.00" />
+                      <path d="M148,172.71L258,114.00" />
+                      <path d="M148,172.71L258,128.00" />
+                      <path d="M148,172.71L258,142.00" />
+                      <path d="M148,172.71L258,156.00" />
+                      <path d="M148,172.71L258,170.00" />
+                      <path d="M148,172.71L258,184.00" />
+                      <path d="M148,172.71L258,198.00" />
+                      <path d="M148,172.71L258,212.00" />
+                      <path d="M148,172.71L258,226.00" />
+                      <path d="M148,172.71L258,240.00" />
+                      <path d="M148,172.71L258,254.00" />
+                      <path d="M148,179.48L258,44.00" />
+                      <path d="M148,179.48L258,58.00" />
+                      <path d="M148,179.48L258,72.00" />
+                      <path d="M148,179.48L258,86.00" />
+                      <path d="M148,179.48L258,100.00" />
+                      <path d="M148,179.48L258,114.00" />
+                      <path d="M148,179.48L258,128.00" />
+                      <path d="M148,179.48L258,142.00" />
+                      <path d="M148,179.48L258,156.00" />
+                      <path d="M148,179.48L258,170.00" />
+                      <path d="M148,179.48L258,184.00" />
+                      <path d="M148,179.48L258,198.00" />
+                      <path d="M148,179.48L258,212.00" />
+                      <path d="M148,179.48L258,226.00" />
+                      <path d="M148,179.48L258,240.00" />
+                      <path d="M148,179.48L258,254.00" />
+                      <path d="M148,186.26L258,44.00" />
+                      <path d="M148,186.26L258,58.00" />
+                      <path d="M148,186.26L258,72.00" />
+                      <path d="M148,186.26L258,86.00" />
+                      <path d="M148,186.26L258,100.00" />
+                      <path d="M148,186.26L258,114.00" />
+                      <path d="M148,186.26L258,128.00" />
+                      <path d="M148,186.26L258,142.00" />
+                      <path d="M148,186.26L258,156.00" />
+                      <path d="M148,186.26L258,170.00" />
+                      <path d="M148,186.26L258,184.00" />
+                      <path d="M148,186.26L258,198.00" />
+                      <path d="M148,186.26L258,212.00" />
+                      <path d="M148,186.26L258,226.00" />
+                      <path d="M148,186.26L258,240.00" />
+                      <path d="M148,186.26L258,254.00" />
+                      <path d="M148,193.03L258,44.00" />
+                      <path d="M148,193.03L258,58.00" />
+                      <path d="M148,193.03L258,72.00" />
+                      <path d="M148,193.03L258,86.00" />
+                      <path d="M148,193.03L258,100.00" />
+                      <path d="M148,193.03L258,114.00" />
+                      <path d="M148,193.03L258,128.00" />
+                      <path d="M148,193.03L258,142.00" />
+                      <path d="M148,193.03L258,156.00" />
+                      <path d="M148,193.03L258,170.00" />
+                      <path d="M148,193.03L258,184.00" />
+                      <path d="M148,193.03L258,198.00" />
+                      <path d="M148,193.03L258,212.00" />
+                      <path d="M148,193.03L258,226.00" />
+                      <path d="M148,193.03L258,240.00" />
+                      <path d="M148,193.03L258,254.00" />
+                      <path d="M148,199.81L258,44.00" />
+                      <path d="M148,199.81L258,58.00" />
+                      <path d="M148,199.81L258,72.00" />
+                      <path d="M148,199.81L258,86.00" />
+                      <path d="M148,199.81L258,100.00" />
+                      <path d="M148,199.81L258,114.00" />
+                      <path d="M148,199.81L258,128.00" />
+                      <path d="M148,199.81L258,142.00" />
+                      <path d="M148,199.81L258,156.00" />
+                      <path d="M148,199.81L258,170.00" />
+                      <path d="M148,199.81L258,184.00" />
+                      <path d="M148,199.81L258,198.00" />
+                      <path d="M148,199.81L258,212.00" />
+                      <path d="M148,199.81L258,226.00" />
+                      <path d="M148,199.81L258,240.00" />
+                      <path d="M148,199.81L258,254.00" />
+                      <path d="M148,206.58L258,44.00" />
+                      <path d="M148,206.58L258,58.00" />
+                      <path d="M148,206.58L258,72.00" />
+                      <path d="M148,206.58L258,86.00" />
+                      <path d="M148,206.58L258,100.00" />
+                      <path d="M148,206.58L258,114.00" />
+                      <path d="M148,206.58L258,128.00" />
+                      <path d="M148,206.58L258,142.00" />
+                      <path d="M148,206.58L258,156.00" />
+                      <path d="M148,206.58L258,170.00" />
+                      <path d="M148,206.58L258,184.00" />
+                      <path d="M148,206.58L258,198.00" />
+                      <path d="M148,206.58L258,212.00" />
+                      <path d="M148,206.58L258,226.00" />
+                      <path d="M148,206.58L258,240.00" />
+                      <path d="M148,206.58L258,254.00" />
+                      <path d="M148,213.35L258,44.00" />
+                      <path d="M148,213.35L258,58.00" />
+                      <path d="M148,213.35L258,72.00" />
+                      <path d="M148,213.35L258,86.00" />
+                      <path d="M148,213.35L258,100.00" />
+                      <path d="M148,213.35L258,114.00" />
+                      <path d="M148,213.35L258,128.00" />
+                      <path d="M148,213.35L258,142.00" />
+                      <path d="M148,213.35L258,156.00" />
+                      <path d="M148,213.35L258,170.00" />
+                      <path d="M148,213.35L258,184.00" />
+                      <path d="M148,213.35L258,198.00" />
+                      <path d="M148,213.35L258,212.00" />
+                      <path d="M148,213.35L258,226.00" />
+                      <path d="M148,213.35L258,240.00" />
+                      <path d="M148,213.35L258,254.00" />
+                      <path d="M148,220.13L258,44.00" />
+                      <path d="M148,220.13L258,58.00" />
+                      <path d="M148,220.13L258,72.00" />
+                      <path d="M148,220.13L258,86.00" />
+                      <path d="M148,220.13L258,100.00" />
+                      <path d="M148,220.13L258,114.00" />
+                      <path d="M148,220.13L258,128.00" />
+                      <path d="M148,220.13L258,142.00" />
+                      <path d="M148,220.13L258,156.00" />
+                      <path d="M148,220.13L258,170.00" />
+                      <path d="M148,220.13L258,184.00" />
+                      <path d="M148,220.13L258,198.00" />
+                      <path d="M148,220.13L258,212.00" />
+                      <path d="M148,220.13L258,226.00" />
+                      <path d="M148,220.13L258,240.00" />
+                      <path d="M148,220.13L258,254.00" />
+                      <path d="M148,226.90L258,44.00" />
+                      <path d="M148,226.90L258,58.00" />
+                      <path d="M148,226.90L258,72.00" />
+                      <path d="M148,226.90L258,86.00" />
+                      <path d="M148,226.90L258,100.00" />
+                      <path d="M148,226.90L258,114.00" />
+                      <path d="M148,226.90L258,128.00" />
+                      <path d="M148,226.90L258,142.00" />
+                      <path d="M148,226.90L258,156.00" />
+                      <path d="M148,226.90L258,170.00" />
+                      <path d="M148,226.90L258,184.00" />
+                      <path d="M148,226.90L258,198.00" />
+                      <path d="M148,226.90L258,212.00" />
+                      <path d="M148,226.90L258,226.00" />
+                      <path d="M148,226.90L258,240.00" />
+                      <path d="M148,226.90L258,254.00" />
+                      <path d="M148,233.68L258,44.00" />
+                      <path d="M148,233.68L258,58.00" />
+                      <path d="M148,233.68L258,72.00" />
+                      <path d="M148,233.68L258,86.00" />
+                      <path d="M148,233.68L258,100.00" />
+                      <path d="M148,233.68L258,114.00" />
+                      <path d="M148,233.68L258,128.00" />
+                      <path d="M148,233.68L258,142.00" />
+                      <path d="M148,233.68L258,156.00" />
+                      <path d="M148,233.68L258,170.00" />
+                      <path d="M148,233.68L258,184.00" />
+                      <path d="M148,233.68L258,198.00" />
+                      <path d="M148,233.68L258,212.00" />
+                      <path d="M148,233.68L258,226.00" />
+                      <path d="M148,233.68L258,240.00" />
+                      <path d="M148,233.68L258,254.00" />
+                      <path d="M148,240.45L258,44.00" />
+                      <path d="M148,240.45L258,58.00" />
+                      <path d="M148,240.45L258,72.00" />
+                      <path d="M148,240.45L258,86.00" />
+                      <path d="M148,240.45L258,100.00" />
+                      <path d="M148,240.45L258,114.00" />
+                      <path d="M148,240.45L258,128.00" />
+                      <path d="M148,240.45L258,142.00" />
+                      <path d="M148,240.45L258,156.00" />
+                      <path d="M148,240.45L258,170.00" />
+                      <path d="M148,240.45L258,184.00" />
+                      <path d="M148,240.45L258,198.00" />
+                      <path d="M148,240.45L258,212.00" />
+                      <path d="M148,240.45L258,226.00" />
+                      <path d="M148,240.45L258,240.00" />
+                      <path d="M148,240.45L258,254.00" />
+                      <path d="M148,247.23L258,44.00" />
+                      <path d="M148,247.23L258,58.00" />
+                      <path d="M148,247.23L258,72.00" />
+                      <path d="M148,247.23L258,86.00" />
+                      <path d="M148,247.23L258,100.00" />
+                      <path d="M148,247.23L258,114.00" />
+                      <path d="M148,247.23L258,128.00" />
+                      <path d="M148,247.23L258,142.00" />
+                      <path d="M148,247.23L258,156.00" />
+                      <path d="M148,247.23L258,170.00" />
+                      <path d="M148,247.23L258,184.00" />
+                      <path d="M148,247.23L258,198.00" />
+                      <path d="M148,247.23L258,212.00" />
+                      <path d="M148,247.23L258,226.00" />
+                      <path d="M148,247.23L258,240.00" />
+                      <path d="M148,247.23L258,254.00" />
+                      <path d="M148,254.00L258,44.00" />
+                      <path d="M148,254.00L258,58.00" />
+                      <path d="M148,254.00L258,72.00" />
+                      <path d="M148,254.00L258,86.00" />
+                      <path d="M148,254.00L258,100.00" />
+                      <path d="M148,254.00L258,114.00" />
+                      <path d="M148,254.00L258,128.00" />
+                      <path d="M148,254.00L258,142.00" />
+                      <path d="M148,254.00L258,156.00" />
+                      <path d="M148,254.00L258,170.00" />
+                      <path d="M148,254.00L258,184.00" />
+                      <path d="M148,254.00L258,198.00" />
+                      <path d="M148,254.00L258,212.00" />
+                      <path d="M148,254.00L258,226.00" />
+                      <path d="M148,254.00L258,240.00" />
+                      <path d="M148,254.00L258,254.00" />
+                      <path d="M258,44.00L368,149.00" />
+                      <path d="M258,58.00L368,149.00" />
+                      <path d="M258,72.00L368,149.00" />
+                      <path d="M258,86.00L368,149.00" />
+                      <path d="M258,100.00L368,149.00" />
+                      <path d="M258,114.00L368,149.00" />
+                      <path d="M258,128.00L368,149.00" />
+                      <path d="M258,142.00L368,149.00" />
+                      <path d="M258,156.00L368,149.00" />
+                      <path d="M258,170.00L368,149.00" />
+                      <path d="M258,184.00L368,149.00" />
+                      <path d="M258,198.00L368,149.00" />
+                      <path d="M258,212.00L368,149.00" />
+                      <path d="M258,226.00L368,149.00" />
+                      <path d="M258,240.00L368,149.00" />
+                      <path d="M258,254.00L368,149.00" />
+                    </g>
+                    <g class="network-nodes">
+                      <circle cx="38" cy="44.00" r="5" />
+                      <circle cx="38" cy="149.00" r="5" />
+                      <circle cx="38" cy="254.00" r="5" />
+                      <circle cx="148" cy="44.00" r="2.8" />
+                      <circle cx="148" cy="50.77" r="2.8" />
+                      <circle cx="148" cy="57.55" r="2.8" />
+                      <circle cx="148" cy="64.32" r="2.8" />
+                      <circle cx="148" cy="71.10" r="2.8" />
+                      <circle cx="148" cy="77.87" r="2.8" />
+                      <circle cx="148" cy="84.65" r="2.8" />
+                      <circle cx="148" cy="91.42" r="2.8" />
+                      <circle cx="148" cy="98.19" r="2.8" />
+                      <circle cx="148" cy="104.97" r="2.8" />
+                      <circle cx="148" cy="111.74" r="2.8" />
+                      <circle cx="148" cy="118.52" r="2.8" />
+                      <circle cx="148" cy="125.29" r="2.8" />
+                      <circle cx="148" cy="132.06" r="2.8" />
+                      <circle cx="148" cy="138.84" r="2.8" />
+                      <circle cx="148" cy="145.61" r="2.8" />
+                      <circle cx="148" cy="152.39" r="2.8" />
+                      <circle cx="148" cy="159.16" r="2.8" />
+                      <circle cx="148" cy="165.94" r="2.8" />
+                      <circle cx="148" cy="172.71" r="2.8" />
+                      <circle cx="148" cy="179.48" r="2.8" />
+                      <circle cx="148" cy="186.26" r="2.8" />
+                      <circle cx="148" cy="193.03" r="2.8" />
+                      <circle cx="148" cy="199.81" r="2.8" />
+                      <circle cx="148" cy="206.58" r="2.8" />
+                      <circle cx="148" cy="213.35" r="2.8" />
+                      <circle cx="148" cy="220.13" r="2.8" />
+                      <circle cx="148" cy="226.90" r="2.8" />
+                      <circle cx="148" cy="233.68" r="2.8" />
+                      <circle cx="148" cy="240.45" r="2.8" />
+                      <circle cx="148" cy="247.23" r="2.8" />
+                      <circle cx="148" cy="254.00" r="2.8" />
+                      <circle cx="258" cy="44.00" r="2.8" />
+                      <circle cx="258" cy="58.00" r="2.8" />
+                      <circle cx="258" cy="72.00" r="2.8" />
+                      <circle cx="258" cy="86.00" r="2.8" />
+                      <circle cx="258" cy="100.00" r="2.8" />
+                      <circle cx="258" cy="114.00" r="2.8" />
+                      <circle cx="258" cy="128.00" r="2.8" />
+                      <circle cx="258" cy="142.00" r="2.8" />
+                      <circle cx="258" cy="156.00" r="2.8" />
+                      <circle cx="258" cy="170.00" r="2.8" />
+                      <circle cx="258" cy="184.00" r="2.8" />
+                      <circle cx="258" cy="198.00" r="2.8" />
+                      <circle cx="258" cy="212.00" r="2.8" />
+                      <circle cx="258" cy="226.00" r="2.8" />
+                      <circle cx="258" cy="240.00" r="2.8" />
+                      <circle cx="258" cy="254.00" r="2.8" />
+                      <circle cx="368" cy="149.00" r="5" />
+                    </g>
+                    <g class="network-labels">
+                      <text x="38" y="286" text-anchor="middle">3 inputs</text>
+                      <text x="148" y="286" text-anchor="middle">32 units</text>
+                      <text x="258" y="286" text-anchor="middle">16 units</text>
+                      <text x="368" y="286" text-anchor="middle">1 output</text>
+                    </g>
+                  </svg>
+                  <div class="network-total">
+                    <strong>673</strong
+                    ><span>values the model adjusts<br />during training</span>
+                  </div>
+                  <figcaption>
+                    Layer structure from Deep Orbit’s model-building lessons.
+                    Building the network comes before training it.
+                  </figcaption>
+                </figure>
+              </div>
+              <div
+                id="course-panel-browser"
+                data-course-panel="browser"
+                class="mission-panel"
+                role="tabpanel"
+                aria-labelledby="course-tab-browser"
+                tabindex="0"
+                hidden
+              >
+                <div class="mission-code-copy">
+                  <h3>The model runs where your UI runs.</h3>
+                  <p>
+                    Load a saved model with TensorFlow.js and use it in the
+                    browser. Keep input preparation consistent, then test on
+                    data the model hasn’t trained on.
+                  </p>
+                  <div class="code-window">
+                    <p class="code-filename">predict.js</p>
+                    <pre><code><span class="code-keyword">const</span> model = <span class="code-keyword">await</span> tf.<span class="code-call">loadLayersModel</span>(
+  modelUrl
+);
+
+<span class="code-keyword">const</span> values = tf.<span class="code-call">tidy</span>(() =&gt;
+  Array.<span class="code-call">from</span>(model.<span class="code-call">predict</span>(input).<span class="code-call">dataSync</span>())
+);</code></pre>
+                  </div>
+                  <p class="code-context">
+                    Course excerpt: <code>modelUrl</code> points to your saved
+                    model. <code>input</code> contains the prepared readings.
+                  </p>
+                </div>
+                <figure class="browser-instrument">
+                  <div class="instrument-heading">
+                    <span>From a trained model to your interface</span>
+                  </div>
+                  <div class="browser-frame">
+                    <div class="browser-toolbar">
+                      <span aria-hidden="true"></span
+                      ><span>Archimedes monitoring console</span>
+                    </div>
+                    <div class="browser-flow">
+                      <div>
+                        <svg viewBox="0 0 60 60" aria-hidden="true">
+                          <path
+                            d="M16 8H36L46 18V52H16Z M36 8V18H46 M23 29H38 M23 36H38 M23 43H33"
+                          /></svg
+                        ><strong>Saved model</strong
+                        ><span>Load the trained layers</span>
+                      </div>
+                      <div class="browser-connection" aria-hidden="true"></div>
+                      <div>
+                        <svg viewBox="0 0 60 60" aria-hidden="true">
+                          <path
+                            d="M8 19H52 M8 30H52 M8 41H52 M19 8V52 M30 8V52 M41 8V52"
+                          /></svg
+                        ><strong>Prepared input</strong
+                        ><span>Match the training format</span>
+                      </div>
+                      <div class="browser-connection" aria-hidden="true"></div>
+                      <div>
+                        <svg viewBox="0 0 60 60" aria-hidden="true">
+                          <path
+                            d="M8 12H52V45H8Z M21 53H39 M30 45V53 M16 33L24 25L32 30L44 20"
+                          /></svg
+                        ><strong>Browser prediction</strong
+                        ><span>Use the output in your UI</span>
+                      </div>
+                    </div>
+                  </div>
+                  <figcaption>
+                    Later lessons connect a saved model to the crew’s browser
+                    console.
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section
+          class="worlds-display wrap"
+          id="worlds"
+          aria-labelledby="worlds-title"
+        >
+          <div class="worlds-heading">
+            <p class="continuation-label">The worlds of Tensorcraft</p>
+            <h2 id="worlds-title">Deep Orbit is the beginning.</h2>
+            <p>
+              Tensorcraft teaches machine learning through interactive story
+              worlds. Start aboard Archimedes today. Four more worlds are coming
+              soon.
+            </p>
+          </div>
+          <div class="worlds-explorer">
+            <div
+              class="world-constellation"
+              role="group"
+              aria-label="Choose a Tensorcraft world"
+            >
+              <svg
+                class="constellation-orbits"
+                viewBox="0 0 700 590"
+                aria-hidden="true"
+              >
+                <ellipse
+                  cx="344"
+                  cy="290"
+                  rx="282"
+                  ry="208"
+                  transform="rotate(-24 344 290)"
+                />
+                <ellipse
+                  cx="344"
+                  cy="290"
+                  rx="204"
+                  ry="137"
+                  transform="rotate(28 344 290)"
+                />
+                <path d="M213 270L419 90L577 254L465 472L167 470Z" />
+              </svg>
+              <button
+                class="world-planet planet-orbit"
+                data-world="deep-orbit"
+                type="button"
+                aria-pressed="true"
+                aria-controls="world-detail"
+              >
+                <span class="planet-body" aria-hidden="true"><span></span></span
+                ><strong>Deep Orbit</strong><small>Available now</small>
+              </button>
+              <button
+                class="world-planet planet-neon"
+                data-world="neon-protocol"
+                type="button"
+                aria-pressed="false"
+                aria-controls="world-detail"
+              >
+                <span class="planet-body" aria-hidden="true"><span></span></span
+                ><strong>Neon Protocol</strong><small>Coming soon</small>
+              </button>
+              <button
+                class="world-planet planet-signal"
+                data-world="signal-ward"
+                type="button"
+                aria-pressed="false"
+                aria-controls="world-detail"
+              >
+                <span class="planet-body" aria-hidden="true"><span></span></span
+                ><strong>Signal Ward</strong><small>Coming soon</small>
+              </button>
+              <button
+                class="world-planet planet-nova"
+                data-world="nova-canvas"
+                type="button"
+                aria-pressed="false"
+                aria-controls="world-detail"
+              >
+                <span class="planet-body" aria-hidden="true"><span></span></span
+                ><strong>Nova Canvas</strong><small>Coming soon</small>
+              </button>
+              <button
+                class="world-planet planet-terra"
+                data-world="terra-grid"
+                type="button"
+                aria-pressed="false"
+                aria-controls="world-detail"
+              >
+                <span class="planet-body" aria-hidden="true"><span></span></span
+                ><strong>Terra Grid</strong><small>Coming soon</small>
+              </button>
+            </div>
+            <div
+              class="world-detail"
+              id="world-detail"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <span id="world-status" class="world-availability"
+                >Available now</span
+              >
+              <h3 id="world-name">Deep Orbit</h3>
+              <p id="world-topic" class="world-topic">
+                Machine learning foundations
+              </p>
+              <p id="world-description">
+                Join the Archimedes crew. Prepare sensor data, build models, and
+                help investigate an unexplained signal with JavaScript.
+              </p>
+              <a
+                id="world-start"
+                class="continuation-text-link"
+                href="https://tensorcraft.app/worlds/deep-orbit"
+                >Explore Deep Orbit</a
+              >
+            </div>
+          </div>
+        </section>
+        <section class="course-invitation" aria-labelledby="invitation-title">
+          <img
+            class="invitation-scene"
+            src="/locations/deep-orbit/bridge.webp"
+            alt=""
+            width="1536"
+            height="1024"
+            loading="lazy"
+          />
+          <div class="invitation-shade" aria-hidden="true"></div>
+          <div class="invitation-content wrap">
+            <p class="continuation-label">Your place aboard Archimedes</p>
+            <h2 id="invitation-title">Your first five lessons are ready.</h2>
+            <p>
+              Open Deep Orbit and start working with the crew’s data. You only
+              need your JavaScript experience.
+            </p>
+            <a
+              class="primary"
+              id="bottom-course"
+              href="https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors?utm_source=pattern_preview&amp;utm_medium=interactive&amp;utm_campaign=learn-by-teaching&amp;utm_content=bottom"
+              >Start Deep Orbit free</a
+            >
+            <p class="invitation-free">
+              First five lessons free. No account needed.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="continuation-footer wrap">
+      <a class="brand" href="https://tensorcraft.app/"
+        ><span aria-hidden="true">T_</span>Tensorcraft</a
+      >
+      <p>Machine learning through story worlds and JavaScript.</p>
+      <a href="#worlds">The Tensorcraft worlds</a>
+    </footer>
+  </body>
+</html>

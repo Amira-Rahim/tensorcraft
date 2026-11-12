@@ -28,6 +28,24 @@ export default [
       },
     },
   },
+  // Static case pages, also deployed to the tensorcraft-cases host. They are
+  // plain browser scripts loaded with <script defer>.
+  {
+    files: ["public/cases/**/*.js"],
+    languageOptions: {
+      globals: {
+        window: "readonly",
+        document: "readonly",
+        performance: "readonly",
+        CustomEvent: "readonly",
+        IntersectionObserver: "readonly",
+        MutationObserver: "readonly",
+        ResizeObserver: "readonly",
+        URL: "readonly",
+        URLSearchParams: "readonly",
+      },
+    },
+  },
   // Classic two-rule preset. v7's "recommended-latest" adds the React
   // Compiler advisory rules as errors, which is a migration project, not a
   // launch gate; revisit post-V1.
