@@ -76,6 +76,12 @@ export function initPostHog(): PostHog | null {
       capture_unhandled_rejections: true,
       capture_console_errors: false,
     },
+    // Session replay, heatmaps and console-log recording stay off. The
+    // privacy policy describes pageviews and product events only, and the
+    // project's recording setting must not override that (B0, 2026-11-12).
+    disable_session_recording: true,
+    enable_heatmaps: false,
+    enable_recording_console_log: false,
   });
 
   initialized = true;

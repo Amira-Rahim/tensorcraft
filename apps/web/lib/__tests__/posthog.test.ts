@@ -121,6 +121,26 @@ describe("lib/posthog", () => {
     );
   });
 
+  it("keeps session replay, heatmaps and console recording off", async () => {
+    // The PostHog project records sessions, but the privacy policy covers
+    // pageviews and product events only. The init options must win.
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test_key");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
+
+    const mod = await import("../posthog");
+    mod.__resetForTests();
+    mod.initPostHog();
+
+    expect(posthog.init).toHaveBeenCalledWith(
+      "phc_test_key",
+      expect.objectContaining({
+        disable_session_recording: true,
+        enable_heatmaps: false,
+        enable_recording_console_log: false,
+      }),
+    );
+  });
+
   it("fails closed: nothing is captured until consent opts the SDK in", async () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test_key");
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");

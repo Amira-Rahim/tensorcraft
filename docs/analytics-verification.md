@@ -113,7 +113,7 @@ two tabs of the site open for at least a minute:
 | `$opt_in` | None. Opt-in is measured by `consent_granted`, and the SDK event is suppressed (`captureEventName: false`). Any `$opt_in` volume means the cross-tab storage loop is back; see `docs/observability.md`. |
 | `$autocapture` | No email or name in `elements_chain`. Clicking the user-menu button still captures, with only `aria-label="User menu"`: its avatar is decorative (no name in any attribute) and passes clicks through. |
 | `$dead_click` | Only if dead-click capture is enabled in the project: no name, email or GitHub handle in `$el_text` or the elements. Identity text carries `ph-no-capture`, which drops the event. |
-| Session replay | Spot-check one recording of a signed-in session: the avatar, emails, names, GitHub handle and certificate names appear blanked (`ph-no-capture` blocks them). |
+| Session replay | Off since 2026-11-12 (`disable_session_recording`, `enable_heatmaps: false` and `enable_recording_console_log: false` in `apps/web/lib/posthog.ts`). After a release, confirm that no new recordings or heatmap data appear. |
 
 ## In-lesson instrumentation (added 2026-09-04)
 
