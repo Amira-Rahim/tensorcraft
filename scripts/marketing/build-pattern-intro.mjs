@@ -193,7 +193,9 @@ function codeFrame(report, p) {
 }
 async function makeStills(output) {
   const posterFile = path.join(WORK, "poster.png");
-  run(["-ss", "3.3", "-i", output, "-frames:v", "1", posterFile]);
+  // 3.6 s: Mirza on screen with her line and her eyes open (3.3 s caught a
+  // blink once the second shot starts at 36.05).
+  run(["-ss", "3.6", "-i", output, "-frames:v", "1", posterFile]);
   await sharp(posterFile)
     .webp({ quality: 88 })
     .toFile(path.join(MEDIA, "poster.webp"));
@@ -217,7 +219,10 @@ async function main() {
   await fs.mkdir(WORK, { recursive: true });
   await fs.mkdir(MEDIA, { recursive: true });
   const reuseScenes = process.argv.includes("--closing-only");
-  const { report } = reuseScenes
+  // --footage-only re-cuts the film segments but keeps the recorded training
+  // run and its code frames, so the numbers on screen do not change.
+  const reuseRun = reuseScenes || process.argv.includes("--footage-only");
+  const { report } = reuseRun
     ? {
         report: JSON.parse(
           await fs.readFile(path.join(WORK, "training-run.json"), "utf8"),
@@ -252,16 +257,18 @@ async function main() {
       text(60, 520, "No account needed.", 30, C.ink),
   );
   const frames = 78;
-  for (let frame = 0; !reuseScenes && frame < frames; frame++)
+  for (let frame = 0; !reuseRun && frame < frames; frame++)
     await png(
       `code-${String(frame).padStart(3, "0")}`,
       codeFrame(report, frame / (frames - 1)),
     );
   const segments = reuseScenes
     ? [1, 2].map((index) => path.join(WORK, `segment-${index}.mp4`))
-    : [film(1, 21, 3.25, first), film(2, 35.7, 4.25, second)];
+    : // 36.05, not 35.7: earlier frames still show the "11 MODULES / 56
+      // LESSONS" sign under Mirza's line (audit 2026-11-12).
+      [film(1, 21, 3.25, first), film(2, 36.05, 4.25, second)];
   const codeFile = path.join(WORK, "segment-3.mp4");
-  if (!reuseScenes)
+  if (!reuseRun)
     run([
       "-framerate",
       String(FPS),
@@ -325,7 +332,7 @@ First five lessons free. No account needed.
     sourceFootage: "apps/web/public/media/learn-trailer.mp4",
     footageSegments: [
       { start: 21, duration: 3.25 },
-      { start: 35.7, duration: 4.25 },
+      { start: 36.05, duration: 4.25 },
       { source: "executed course run", duration: 3.25 },
       { start: 44.7, duration: 4 },
     ],
