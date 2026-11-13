@@ -25,7 +25,10 @@ headings, short-screen layout, loading and failure shown on the main button,
 double-click guard, answer backing plate, hero course-link tap target, code
 wrapping, film shot at 36.05 s with a new poster). Committed on 2026-11-13:
 the hidden guest email form, session replay off, and three CI fixes for the
-Ubuntu 26.04 runner image.
+Ubuntu 26.04 runner image. The same day the API moved to hono 4.13.16 and
+@hono/node-server 2.1.6, which fix seven advisories published on 2026-11-12.
+One let RegExpRouter skip wildcard middleware, which the API uses for
+authentication.
 
 Owner decisions and actions:
 
