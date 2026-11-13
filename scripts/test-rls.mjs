@@ -12,14 +12,23 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const pgBin =
-  process.env.PG_BIN ??
-  [
-    "/opt/homebrew/opt/postgresql@17/bin",
-    "/usr/lib/postgresql/17/bin",
-    "/usr/lib/postgresql/16/bin",
-  ].find((p) => existsSync(join(p, "postgres"))) ??
-  "";
+// PG_BIN wins. Otherwise use the newest server in the Debian/Ubuntu or
+// Homebrew layout, then PATH. The CI runner image decides the major
+// (ubuntu-24.04 ships 16, ubuntu-26.04 ships 18), so no major is pinned.
+function findPgBin() {
+  const found = [];
+  for (const [dir, pattern] of [
+    ["/usr/lib/postgresql", /^(\d+)$/],
+    ["/opt/homebrew/opt", /^postgresql@(\d+)$/],
+  ])
+    for (const entry of existsSync(dir) ? readdirSync(dir) : []) {
+      const major = Number(pattern.exec(entry)?.[1]);
+      const bin = join(dir, entry, "bin");
+      if (major && existsSync(join(bin, "initdb"))) found.push({ major, bin });
+    }
+  return found.sort((a, b) => b.major - a.major)[0]?.bin ?? "";
+}
+const pgBin = process.env.PG_BIN ?? findPgBin();
 const temp = mkdtempSync(join(tmpdir(), "tensorcraft-rls-"));
 const data = join(temp, "data");
 const env = {
@@ -127,6 +136,9 @@ async function checkConsentRace(userId, firstGranted, expectedRevision) {
   }
 }
 try {
+  console.log(
+    `Using ${run("postgres", ["--version"]).trim()} from ${pgBin || "PATH"}.`,
+  );
   run("initdb", [
     "-D",
     data,
