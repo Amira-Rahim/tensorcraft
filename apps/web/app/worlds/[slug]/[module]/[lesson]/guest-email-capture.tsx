@@ -17,7 +17,20 @@ import { submitWaitlist } from "@/lib/waitlist";
  * with a distinct source; `subscribed` stays false (migration 050), so this
  * never auto-enrolls anyone into the weekly digest.
  */
+
+/**
+ * Off since 2026-11-12. The form promised "a link back to where you
+ * stopped" and confirmed "Sent.", but no sender mails `free-module-end`
+ * waitlist rows. Turn it back on together with a sender for those rows.
+ */
+export const GUEST_EMAIL_CAPTURE_ENABLED = false;
+
 export function GuestEmailCapture({ worldSlug }: { worldSlug: string }) {
+  if (!GUEST_EMAIL_CAPTURE_ENABLED) return null;
+  return <GuestEmailCaptureForm worldSlug={worldSlug} />;
+}
+
+function GuestEmailCaptureForm({ worldSlug }: { worldSlug: string }) {
   const [isGuest, setIsGuest] = useState(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
