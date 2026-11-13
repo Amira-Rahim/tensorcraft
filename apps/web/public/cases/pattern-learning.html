@@ -48,11 +48,12 @@
     />
     <link rel="stylesheet" href="/cases/pattern-learning.css" />
     <link rel="stylesheet" href="/cases/pattern-continuation.css" />
+    <!-- The lower page runs first so its controls work before TensorFlow.js arrives. -->
+    <script defer src="/cases/pattern-continuation.js"></script>
     <script defer src="/vendor/tfjs-4.22.0.min.js"></script>
     <script defer src="/cases/pattern-model.js"></script>
     <script defer src="/cases/pattern-stage.js"></script>
     <script defer src="/cases/pattern-learning.js"></script>
-    <script defer src="/cases/pattern-continuation.js"></script>
   </head>
   <body data-view="intro">
     <a class="skip" href="#experiment">Skip to the experiment</a>
@@ -130,7 +131,7 @@
 
             <div class="intro-actions">
               <button id="enter" class="primary" type="button" disabled>
-                Teach this model</button
+                Loading the model…</button
               ><a
                 id="top-course"
                 href="https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors?utm_source=pattern_preview&amp;utm_medium=interactive&amp;utm_campaign=learn-by-teaching&amp;utm_content=top"
@@ -147,7 +148,7 @@
             </ol>
             <section id="predict-step" aria-labelledby="experiment-title">
               <h2 id="experiment-title" tabindex="-1">
-                What pattern<br />do you see?
+                What pattern <br />do you see?
               </h2>
               <p class="instruction" id="initial-instruction">
                 Make a guess. Then see what the model thinks.
@@ -198,7 +199,7 @@
                 <span class="score" id="baseline-score"></span>
               </div>
               <h2 class="teaching-heading" tabindex="-1" id="teaching-heading">
-                What would<br />you teach it?
+                What would <br />you teach it?
               </h2>
               <p class="reveal-question" id="reveal-question"></p>
               <div class="teaching-example">

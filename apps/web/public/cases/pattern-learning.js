@@ -17,6 +17,11 @@
   let view = "intro",
     motionPaused = reduced.matches,
     stage = null;
+  // A double click on "Teach this model" or on a guess must not also press
+  // the button that appears under the pointer in the next view.
+  const SETTLE_MS = 500;
+  let viewChangedAt = -Infinity;
+  const settling = () => performance.now() - viewChangedAt < SETTLE_MS;
 
   function node(tag, attrs) {
     const el = document.createElementNS(ns, tag);
@@ -62,6 +67,7 @@
   }
   function setView(next, { focus = true } = {}) {
     view = next;
+    viewChangedAt = performance.now();
     document.body.dataset.view = next;
     $("intro-view").hidden = next !== "intro";
     $("controls-view").hidden = next === "intro";
@@ -294,6 +300,7 @@
       } catch (error) {
         document.body.classList.add("no-stage");
       }
+      $("enter").textContent = "Teach this model";
       $("status").textContent = "A real model, running here in your browser.";
       setBusy(false);
       window.dispatchEvent(
@@ -307,6 +314,12 @@
         "The model could not load. Refresh to retry, or start the free lessons.";
       setBusy(false);
       $("enter").disabled = true;
+      // The status line sits below the fold on phones, so say it here too.
+      $("enter").textContent = "Model did not load";
+      const note = document.querySelector(".intro-view .free-note");
+      if (note)
+        note.textContent =
+          "The model could not load. Refresh to retry, or start the free lessons.";
       guesses.forEach((button) => (button.disabled = true));
     }
   }
@@ -317,10 +330,20 @@
     $("status").textContent = "Choose a label for the test pattern.";
   });
   guesses.forEach((button) =>
-    button.addEventListener("click", () => guess(button.dataset.guess)),
+    button.addEventListener("click", () => {
+      if (!settling()) guess(button.dataset.guess);
+    }),
   );
   labelButtons.forEach((button) =>
-    button.addEventListener("click", () => selectLabel(button.dataset.label)),
+    button.addEventListener("click", () => {
+      if (settling()) return;
+      selectLabel(button.dataset.label);
+      // On short phone screens Train can sit just below the fold.
+      $("train").scrollIntoView({
+        block: "nearest",
+        behavior: reduced.matches ? "auto" : "smooth",
+      });
+    }),
   );
   $("train").addEventListener("click", train);
   $("try-label").addEventListener("click", () => {

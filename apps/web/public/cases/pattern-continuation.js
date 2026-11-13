@@ -218,15 +218,24 @@
       });
     });
     if (window.IntersectionObserver) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          visible.set(
-            entry.target,
-            entry.isIntersecting && entry.intersectionRatio > 0,
-          );
-        });
-        syncAmbient();
-      });
+      // A video counts as visible from 1% of its area, and the observer
+      // fires at exactly that ratio, so every change produces a callback.
+      // With the default threshold, a section that starts at the viewport
+      // edge reports ratio 0 at load and never reports again, and a smooth
+      // scroll back to the top can stop inside the 0 to 1% band.
+      const VISIBLE_RATIO = 0.01;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            visible.set(
+              entry.target,
+              entry.isIntersecting && entry.intersectionRatio >= VISIBLE_RATIO,
+            );
+          });
+          syncAmbient();
+        },
+        { threshold: [0, VISIBLE_RATIO] },
+      );
       ambient.forEach((video) => observer.observe(video));
     } else {
       let scheduled = false;

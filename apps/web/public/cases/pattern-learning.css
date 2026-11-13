@@ -130,6 +130,7 @@ h2:focus {
 }
 #reset {
   font-size: 11px;
+  white-space: nowrap;
   color: var(--paper);
   background: transparent;
   border: 1px solid #a3bebc80;
@@ -300,6 +301,14 @@ h2:focus {
   left: 5%;
   right: 5%;
   bottom: 12%;
+  /* Shrink-wrapped backing: the animated line passes behind this text, and
+     without it the contrast fell to about 1.4:1. */
+  width: fit-content;
+  max-width: 90%;
+  margin-inline: auto;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(4, 14, 16, 0.72);
   text-align: center;
   pointer-events: none;
   animation: interpretation-in 0.65s ease both;
@@ -307,7 +316,7 @@ h2:focus {
 .interpretation > span:first-child {
   display: block;
   color: #b7cac3;
-  font-size: 11px;
+  font-size: 13px;
   margin-bottom: 9px;
 }
 .interpretation strong {
@@ -322,7 +331,7 @@ h2:focus {
 .interpretation > span:last-child {
   display: block;
   color: #b3c7bd;
-  font-size: 11px;
+  font-size: 13px;
   margin-top: 9px;
 }
 .flat-probe {
@@ -1037,6 +1046,10 @@ footer > a:last-child {
     font-size: 10px;
     max-width: 100px;
     line-height: 1.5;
+    /* The hero's only course link needs a full-size tap target. */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
   .intro-view .free-note {
     font-size: 10px;
@@ -1084,14 +1097,14 @@ footer > a:last-child {
     right: 0;
   }
   .interpretation > span:first-child {
-    font-size: 9px;
+    font-size: 13px;
     margin-bottom: 5px;
   }
   .interpretation strong {
     font-size: 35px;
   }
   .interpretation > span:last-child {
-    font-size: 9px;
+    font-size: 13px;
     margin-top: 6px;
   }
   body[data-view="intro"] .sculpture {
@@ -1313,6 +1326,8 @@ footer > a:last-child {
     font-size: 10px;
     line-height: 1.6;
     padding: 10px 12px;
+    /* Phones show no scrollbar, so wrap at spaces instead of cutting the line. */
+    white-space: pre-wrap;
   }
   .result-actions {
     margin-top: 15px;
@@ -1525,5 +1540,22 @@ body[data-view="predict"] .flat-probe {
 @media (min-width: 761px) {
   .comparison svg {
     display: none;
+  }
+}
+/* Short phone screens (Safari gives an iPhone 15 about 393x659): once the
+   demo starts, keep the header to one row and shrink the stage so the guess
+   and label buttons stay above the fold. */
+@media (max-width: 760px) and (max-height: 760px) {
+  body:not([data-view="intro"]) .header-link {
+    display: none;
+  }
+  body:not([data-view="intro"]) #signal-stage {
+    height: 140px;
+  }
+  body:not([data-view="intro"]) .interpretation strong {
+    font-size: 28px;
+  }
+  body:not([data-view="intro"]) .controls-view h2 {
+    font-size: 28px;
   }
 }
