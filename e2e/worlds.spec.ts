@@ -119,7 +119,7 @@ test.describe("World Detail Page", () => {
     await expect(
       page
         .getByTestId("module-map")
-        .getByText(/^Lesson \d+ · \d+ min$/)
+        .getByText(/^Lesson \d+, \d+ min$/)
         .first(),
     ).toBeVisible();
   });
