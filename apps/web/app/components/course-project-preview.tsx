@@ -76,7 +76,18 @@ export function CourseProjectPreview() {
           </a>
         </div>
       </div>
+      <p>
+        Try the supplied example to train a model and compare its validation
+        errors with a simple rule. This is a demonstration you can inspect
+        before starting your own project.
+      </p>
       <div className="flex flex-wrap gap-4 text-sm">
+        <a
+          className="min-h-11 border border-border px-4 py-3 underline underline-offset-4"
+          href="/guides/browser-machine-learning-project"
+        >
+          Try the browser training example
+        </a>
         <a
           className="min-h-11 border border-border px-4 py-3 underline underline-offset-4"
           href="/assignments/room-occupancy-v1/README.md"

@@ -23,7 +23,7 @@ export function buildCourseJsonLd(
     "@context": "https://schema.org",
     "@type": "Course",
     "@id": `https://tensorcraft.app/worlds/${world.slug}#course`,
-    name: `${world.displayName}: ${world.specialization}`,
+    name: `${world.displayName}: Machine Learning in JavaScript`,
     // Plain-language description: search snippets reach strangers with no
     // story context, so the manifest's story hook stays off structured data.
     description: `${world.displayName} is a story-driven machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Module 1 is free.`,
@@ -34,7 +34,7 @@ export function buildCourseJsonLd(
       url: "https://tensorcraft.app",
     },
     url: `https://tensorcraft.app/worlds/${world.slug}`,
-    educationalLevel: "Intermediate",
+    educationalLevel: "ML foundations through intermediate and advanced topics",
     programmingLanguage: ["JavaScript", "TypeScript"],
     audience: {
       "@type": "EducationalAudience",

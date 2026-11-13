@@ -34,16 +34,9 @@ interface ModuleMapClientProps {
   worldSlug: string;
   continueHref: string;
   continueLabel: string;
-  /**
-   * Set for non-purchasers: locked rows render a clickable "Unlock →"
-   * instead of a bare lock emoji (2026-07-14 UX audit: the lock emoji +
-   * pointer-events-none made the post-free-module map a dead end).
-   */
+  /** Purchase destination for signed-in learners without course access. */
   unlockHref?: string;
-  /**
-   * Set for guests (no unlockHref): locked rows show price + free-module
-   * fact instead of an unexplained lock emoji (2026-07-19 UX audit).
-   */
+  /** Guest pricing destination, with the price shown on the first paid row. */
   lockedTeaser?: { href: string; label: string };
 }
 
@@ -57,13 +50,10 @@ const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2";
 
 /**
- * Brutalist module map. Each unlocked module is a native `<details>`
- * element (keyboard-accessible, no JS state) with a numbered node
- * indicator (option a from spec §11d), a lesson list with status icons,
- * and per-module stats. Locked modules are plain cards, fully wrapped in
- * their unlock/pricing link when one applies (see ModuleRow). Colors come
- * from CSS custom properties set by `WorldSync`, this component carries
- * no hex values.
+ * Every module exposes its syllabus through a native disclosure. Paid
+ * lesson titles stay readable without linking to lesson content. Purchase
+ * links sit outside the disclosure and its lesson list. Colors come from
+ * CSS custom properties set by `WorldSync`.
  */
 export function ModuleMapClient({
   modules,
@@ -73,6 +63,8 @@ export function ModuleMapClient({
   unlockHref,
   lockedTeaser,
 }: ModuleMapClientProps) {
+  const firstLockedIndex = modules.findIndex((mod) => mod.status === "locked");
+
   return (
     <div
       className="flex flex-col gap-2"
@@ -85,12 +77,6 @@ export function ModuleMapClient({
         const isLocked = mod.status === "locked";
         const shouldOpen = isActive && continueHref.includes(`/${mod.slug}/`);
         const accentOn = isDone || isActive;
-        // The price fact renders once, on the first locked row; stating it
-        // on all ten reads as a wall of price chips (2026-08-29 design
-        // audit). Every locked row stays clickable regardless.
-        const firstLockedIndex = modules.findIndex(
-          (m) => m.status === "locked",
-        );
 
         return (
           <ModuleRow
@@ -106,7 +92,7 @@ export function ModuleMapClient({
             worldSlug={worldSlug}
             unlockHref={unlockHref}
             lockedTeaser={lockedTeaser}
-            teaserShowsPrice={i === firstLockedIndex}
+            showPurchaseAction={i === firstLockedIndex}
           />
         );
       })}
@@ -140,8 +126,8 @@ interface ModuleRowProps {
   worldSlug: string;
   unlockHref?: string;
   lockedTeaser?: { href: string; label: string };
-  /** True on the first locked row only: the one that states the price. */
-  teaserShowsPrice?: boolean;
+  /** The first locked row carries the course purchase action and price. */
+  showPurchaseAction: boolean;
 }
 
 function ModuleRow({
@@ -156,7 +142,7 @@ function ModuleRow({
   worldSlug,
   unlockHref,
   lockedTeaser,
-  teaserShowsPrice,
+  showPurchaseAction,
 }: ModuleRowProps) {
   const moduleLabel = `M${String(mod.order).padStart(2, "0")}`;
   const pct =
@@ -176,123 +162,9 @@ function ModuleRow({
     />
   );
 
-  // Locked rows are plain cards, not <details>: they have no expanded body,
-  // and a disclosure widget that never discloses is noise to a screen
-  // reader. It also lets the unlock/pricing link wrap the WHOLE row in
-  // normal flow. The link used to be a chip absolutely positioned into the
-  // title row (kept outside the <summary> for axe's nested-interactive
-  // rule), and at phone widths that chip sat on top of the module title
-  // (2026-08-29 design audit).
-  if (isLocked) {
-    const href = unlockHref ?? lockedTeaser?.href;
-    const chipClass =
-      "ml-auto shrink-0 whitespace-nowrap rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest";
-    const rowBody = (
-      <div className="flex items-start gap-4 px-6 py-5">
-        <div
-          className="flex shrink-0 items-center justify-center rounded-none border-2 font-mono text-xs font-bold"
-          style={{
-            width: 32,
-            height: 32,
-            borderColor: "var(--tc-muted)",
-            color: "var(--tc-muted)",
-            opacity: 0.45,
-          }}
-          aria-hidden="true"
-          data-decorative="true"
-        >
-          {moduleLabel.replace("M", "")}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
-            <span
-              className="font-mono text-xs"
-              style={{ color: "var(--tc-muted)" }}
-            >
-              {moduleLabel}
-            </span>
-            <span
-              className="font-sans text-sm md:text-lg font-bold"
-              style={{ color: "var(--tc-muted)" }}
-            >
-              {mod.title}
-            </span>
-            {unlockHref ? (
-              <span
-                className={chipClass}
-                style={{
-                  color: "var(--tc-primary)",
-                  borderColor: "var(--tc-primary)",
-                  background: "var(--tc-bg)",
-                }}
-              >
-                Unlock
-              </span>
-            ) : lockedTeaser && teaserShowsPrice ? (
-              <span
-                className={chipClass}
-                style={{
-                  color: "var(--tc-primary)",
-                  borderColor: "var(--tc-primary)",
-                  background: "var(--tc-bg)",
-                }}
-              >
-                {lockedTeaser.label}
-              </span>
-            ) : (
-              <span
-                className="ml-auto font-mono text-xs"
-                style={{ color: "var(--tc-muted)" }}
-                aria-hidden="true"
-              >
-                &#x1F512;
-              </span>
-            )}
-          </div>
-          <p
-            className="mt-1 font-sans text-xs md:text-sm"
-            style={{ color: "var(--tc-muted)" }}
-          >
-            {mod.description}
-          </p>
-        </div>
-      </div>
-    );
-
-    return (
-      <div className="relative">
-        {connector}
-        <div
-          className={`rounded-none border ${href ? "transition-all brutalist-hover" : ""}`}
-          data-module={mod.slug}
-          id={`module-${mod.slug}`}
-          data-status={mod.status}
-          style={{
-            borderColor: "var(--tc-border)",
-            background:
-              "color-mix(in srgb, var(--tc-surface) 60%, transparent)",
-          }}
-        >
-          {href ? (
-            <Link
-              href={href}
-              className={`block rounded-none ${FOCUS_RING}`}
-              aria-label={
-                unlockHref
-                  ? `Unlock module ${mod.order}: ${mod.title}`
-                  : `Module ${mod.order}: ${mod.title}. Paid content: ${lockedTeaser?.label}`
-              }
-              data-testid={unlockHref ? undefined : "locked-teaser"}
-            >
-              {rowBody}
-            </Link>
-          ) : (
-            rowBody
-          )}
-        </div>
-      </div>
-    );
-  }
+  const purchaseHref = unlockHref ?? lockedTeaser?.href;
+  const purchaseRequired = isLocked && Boolean(purchaseHref);
+  const accessLabel = purchaseRequired ? "Paid module" : "Locked module";
 
   return (
     <div className="relative">
@@ -312,8 +184,8 @@ function ModuleRow({
         }}
       >
         <summary
-          className={`flex cursor-pointer list-none items-start gap-4 rounded-none px-6 py-5 ${FOCUS_RING}`}
-          aria-label={`Module ${mod.order}: ${mod.title}`}
+          className={`flex min-h-11 cursor-pointer list-none items-start gap-4 rounded-none px-6 py-5 ${FOCUS_RING}`}
+          aria-label={`Module ${mod.order}: ${mod.title}${isLocked ? `, ${accessLabel.toLowerCase()}` : ""}`}
         >
           {/* Node indicator, simple numbered square at left edge (option a).
               A completed module trades the ✓ box for its earned mission
@@ -350,7 +222,7 @@ function ModuleRow({
 
           {/* Module meta */}
           <div className="min-w-0 flex-1">
-            <div className="flex items-baseline gap-3">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
               <span
                 className="font-mono text-xs"
                 style={{
@@ -394,41 +266,60 @@ function ModuleRow({
               {mod.description}
             </p>
 
-            {/* Progress pip row (brutalist segmented), one pip per lesson */}
-            <div
-              className="mt-3 flex gap-1"
-              role="progressbar"
-              aria-valuenow={pct}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`${mod.completedLessons} of ${mod.totalLessons} lessons complete`}
-            >
-              {mod.lessons.map((l) => {
-                const filled =
-                  l.status === "completed" ||
-                  isDone ||
-                  l.status === "in_progress";
-                return (
-                  <span
-                    key={l.slug}
-                    className="h-1.5 w-4 rounded-none"
-                    style={{
-                      background: filled
-                        ? "var(--tc-primary)"
-                        : "var(--tc-border)",
-                    }}
-                    aria-hidden="true"
-                  />
-                );
-              })}
-              <span
-                className="ml-2 font-mono text-[10px]"
+            {isLocked ? (
+              <p
+                className="mt-3 font-mono text-xs"
                 style={{ color: "var(--tc-muted)" }}
               >
-                {mod.completedLessons}/{mod.totalLessons}
-              </span>
-            </div>
+                {accessLabel}. {mod.totalLessons} lessons.
+              </p>
+            ) : (
+              <div
+                className="mt-3 flex gap-1"
+                role="progressbar"
+                aria-valuenow={pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${mod.completedLessons} of ${mod.totalLessons} lessons complete`}
+              >
+                {mod.lessons.map((l) => {
+                  const filled =
+                    l.status === "completed" ||
+                    isDone ||
+                    l.status === "in_progress";
+                  return (
+                    <span
+                      key={l.slug}
+                      className="h-1.5 w-4 rounded-none"
+                      style={{
+                        background: filled
+                          ? "var(--tc-primary)"
+                          : "var(--tc-border)",
+                      }}
+                      aria-hidden="true"
+                    />
+                  );
+                })}
+                <span
+                  className="ml-2 font-mono text-[10px]"
+                  style={{ color: "var(--tc-muted)" }}
+                >
+                  {mod.completedLessons}/{mod.totalLessons}
+                </span>
+              </div>
+            )}
           </div>
+          <svg
+            className="mt-1 h-5 w-5 shrink-0 group-open:rotate-180"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            style={{ color: "var(--tc-muted)" }}
+            aria-hidden="true"
+          >
+            <path d="m5 7.5 5 5 5-5" />
+          </svg>
         </summary>
 
         {/* Expanded body: lesson list */}
@@ -442,6 +333,8 @@ function ModuleRow({
                 <LessonCard
                   lesson={lesson}
                   moduleDone={isDone}
+                  moduleLocked={isLocked}
+                  purchaseRequired={purchaseRequired}
                   worldSlug={worldSlug}
                   moduleSlug={mod.slug}
                 />
@@ -450,6 +343,33 @@ function ModuleRow({
           </ul>
         </div>
       </details>
+      {isLocked && purchaseHref && showPurchaseAction && (
+        <div
+          className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border border-t-0 px-6 py-3"
+          style={{ borderColor: "var(--tc-border)" }}
+        >
+          {lockedTeaser && (
+            <p
+              className="font-sans text-sm"
+              style={{ color: "var(--tc-text)" }}
+            >
+              Course access: {lockedTeaser.label}
+            </p>
+          )}
+          <Link
+            href={purchaseHref}
+            className={`inline-flex min-h-11 items-center rounded-none border px-3 py-2 font-mono text-xs ${FOCUS_RING}`}
+            style={{
+              color: "var(--tc-primary)",
+              borderColor: "var(--tc-primary)",
+            }}
+            aria-label={unlockHref ? "Unlock course" : "View course pricing"}
+            data-testid={unlockHref ? undefined : "locked-teaser"}
+          >
+            {unlockHref ? "Unlock course" : "View course pricing"}
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
@@ -457,6 +377,8 @@ function ModuleRow({
 interface LessonCardProps {
   lesson: LessonItem;
   moduleDone: boolean;
+  moduleLocked: boolean;
+  purchaseRequired: boolean;
   worldSlug: string;
   moduleSlug: string;
 }
@@ -468,13 +390,17 @@ interface LessonCardProps {
 function LessonCard({
   lesson,
   moduleDone,
+  moduleLocked,
+  purchaseRequired,
   worldSlug,
   moduleSlug,
 }: LessonCardProps) {
-  const done = lesson.status === "completed" || moduleDone;
-  const current = lesson.status === "in_progress";
-  const available = lesson.status === "available";
-  const locked = lesson.status === "locked" && !moduleDone;
+  // Module access takes precedence over any saved lesson progress.
+  const status = moduleLocked ? "locked" : lesson.status;
+  const done = !moduleLocked && (status === "completed" || moduleDone);
+  const current = status === "in_progress";
+  const available = status === "available";
+  const locked = status === "locked" && !moduleDone;
   const clickable = done || current || available;
 
   // Status icon, ✓ done, ● current (in-progress), ○ available, 🔒 locked
@@ -488,10 +414,10 @@ function LessonCard({
     iconLabel = "In progress";
   } else if (locked) {
     icon = "🔒";
-    iconLabel = "Locked";
+    iconLabel = purchaseRequired ? "Purchase required" : "Locked";
   }
 
-  const locationLabel = `Lesson ${String(lesson.order).padStart(2, "0")} · ${lesson.estimatedMinutes} min`;
+  const locationLabel = `Lesson ${String(lesson.order).padStart(2, "0")}, ${lesson.estimatedMinutes} min`;
 
   const card = (
     <div
@@ -505,7 +431,7 @@ function LessonCard({
               ? "var(--tc-border-active)"
               : "var(--tc-border)",
       }}
-      data-lesson-status={lesson.status}
+      data-lesson-status={status}
     >
       {/* Side panel: ordinal + status icon */}
       <div
@@ -548,7 +474,7 @@ function LessonCard({
           }}
           role="img"
           aria-label={iconLabel}
-          data-testid={`lesson-icon-${lesson.status}`}
+          data-testid={`lesson-icon-${status}`}
         >
           {locked ? "🔒" : icon}
         </span>
@@ -571,10 +497,8 @@ function LessonCard({
               {locationLabel}
             </div>
             <div
-              className="mt-0.5 truncate font-sans text-sm md:text-base font-semibold"
-              style={{
-                color: locked ? "var(--tc-muted)" : "var(--tc-text)",
-              }}
+              className="mt-0.5 font-sans text-sm md:text-base font-semibold"
+              style={{ color: "var(--tc-text)" }}
             >
               {lesson.title}
             </div>

@@ -1,6 +1,6 @@
 # SEO and GEO execution checklist
 
-Updated November 12, 2026. This is the single current work list. The
+Updated November 13, 2026. This is the single current work list. The
 [audit record](audits/seo-geo-2026-11-10/README.md) preserves evidence,
 corrections and verification limits. Main release `22772ee3` is deployed. The
 eight-file SEO follow-up was promoted at 12:49 UTC on November 11 and its
@@ -38,6 +38,24 @@ hooks passed workspace typechecks and 4,343 tests (65 skipped). On November
 and `68d6e3d7` released the sourced course-comparison additions. Browser
 checks on production in Chromium and WebKit passed both release gates. The
 follow-up record and the backlog list those checks and their limits.
+
+The November 13 public-syllabus follow-up is implemented. Production release
+verification remains pending. The anonymous course page exposes all 56 lesson
+titles in 11 module disclosures, with paid lesson bodies and content access
+protected. It has a descriptive course/search/social title, explicit
+prerequisites and runtime scope, estimated workload, current pricing and a
+direct link to the runnable project. Course metadata matches that scope.
+All 57 initial focused tests, web typecheck, scoped lint, development HTTP
+checks and the 104-page production build pass. A Chrome desktop check opened
+the paid runtime module and exposed its lesson titles without paid lesson
+links. Owner feedback reduced ten repeated module purchase actions to one
+course-level action. Chrome and HTTP checks confirm one action and all 56
+titles, and 38 focused regression checks pass. Keyboard actions were
+interrupted after Chrome's active context changed. Keyboard, mobile and demo
+handoff checks remain pending. The
+[external sample-review brief](learning-study/browser-ml-review-brief-2026-11-13.md)
+contains two qualified inquiry routes and complete drafts. No inquiry, paid
+engagement or independent assessment has occurred.
 
 The [consent and measurement release](audits/seo-geo-2026-11-11-baselines/deployment.md)
 has applied migration 067 in production and passed all 15 catalog checks.

@@ -149,6 +149,30 @@ Local implementation and item status live in the [execution checklist](seo-geo-p
   learner-outcome or citation-growth claims were added. The prior evidence is
   in the [source review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-2026-11-11.json)
   and [independent review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-independent-2026-11-11.json).
+- [ ] **Public syllabus and course identity, November 13.** Implementation
+  is complete. Production release verification remains pending. All 56 lesson
+  titles render in initial HTML
+  across 11 native module disclosures. Paid lesson bodies stay outside public
+  HTML and client props, and purchase/progression gates remain in place.
+  Search and social titles describe the JavaScript ML course. Visible
+  prerequisites, runtime/simulation scope, estimated hours and current offer
+  agree with course metadata. The project preview links directly to the live
+  training example. All 57 focused tests, web typecheck, scoped lint,
+  development HTTP checks and the 104-page build pass. A later Chrome desktop
+  check opened a paid module and exposed its unlinked lesson titles. Owner
+  feedback reduced ten repeated module purchase actions to one course-level
+  action. Chrome and HTTP checks confirm one pricing action and all 56 titles.
+  The 38 focused follow-up checks pass. Gate: keyboard, mobile and direct
+  demo handoff checks, then release verification. Keyboard actions were
+  interrupted after Chrome's active context changed.
+- [ ] **Independent sample review, November 13.** The
+  [bounded brief and inquiry drafts](learning-study/browser-ml-review-brief-2026-11-13.md)
+  use the existing review process. Infinite Red and Curricular have relevant
+  primary-source service evidence. Availability, assigned reviewers,
+  independence and quotes remain unconfirmed. Recipient/draft approval and
+  sender identity are pending. No inquiry, hiring, payment, access grant or
+  external review has occurred. A sample cannot establish full-course quality
+  or actual learner outcomes.
 - [ ] **Visual and real-browser capture QA.** HTTP/SSR and local event tests pass.
   Native desktop checks now verify the guide hub, reshape interaction,
   lesson handoff, incorrect prediction feedback and retained practice record.

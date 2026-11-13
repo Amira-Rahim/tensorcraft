@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderToStaticMarkup } from "react-dom/server";
 import { ModuleMapClient } from "../module-map-client";
 
 // Render Next's <Link> as a plain anchor for href assertions in unit tests.
@@ -190,17 +192,41 @@ describe("ModuleMapClient", () => {
     expect(details).toHaveAttribute("open");
   });
 
-  it("does not auto-open a locked module and hides its lesson list", () => {
+  it("keeps paid lesson metadata inside a closed native disclosure", async () => {
+    const user = userEvent.setup();
     const mod = makeModule({
       status: "locked",
       lessons: [
         makeLesson({ slug: "x", order: 1, title: "Blocked", status: "locked" }),
       ],
     });
-    render(<ModuleMapClient {...defaultProps} modules={[mod]} />);
+    const { container } = render(
+      <ModuleMapClient {...defaultProps} modules={[mod]} />,
+    );
+    const details = container.querySelector("details");
+    const summary = container.querySelector("summary");
 
-    // Lesson list is omitted for locked modules (they render no expanded body).
-    expect(screen.queryByTestId("lesson-list")).not.toBeInTheDocument();
+    expect(details).not.toHaveAttribute("open");
+    expect(summary).toHaveAttribute(
+      "aria-label",
+      "Module 1: Foundations, locked module",
+    );
+    expect(summary).toHaveClass("min-h-11", "focus-visible:outline-2");
+    expect(summary?.querySelector("a, button, input, select")).toBeNull();
+    expect(within(details!).getByTestId("lesson-list")).toHaveTextContent(
+      "Blocked",
+    );
+    expect(within(details!).getByTestId("lesson-list")).toHaveTextContent(
+      "12 min",
+    );
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+
+    await user.tab();
+    expect(summary).toHaveFocus();
+    await user.click(summary!);
+    expect(details).toHaveAttribute("open");
+    await user.click(summary!);
+    expect(details).not.toHaveAttribute("open");
   });
 
   it("exposes a progressbar for module completion with correct percent", () => {
@@ -223,127 +249,234 @@ describe("ModuleMapClient", () => {
     expect(bar).toHaveAttribute("aria-valuemax", "100");
   });
 
-  it("guest locked rows render the pricing teaser link, not a bare lock", () => {
-    const locked = makeModule({
+  const paidModules = [
+    makeModule({
       slug: "neural-networks",
       title: "Neural Networks",
       order: 2,
+      description: "Build a neural network and inspect its predictions.",
       status: "locked",
-    });
-    render(
+      lessons: [
+        makeLesson({
+          slug: "neuron",
+          title: "A Single Neuron",
+          estimatedMinutes: 18,
+          status: "locked",
+        }),
+        makeLesson({
+          slug: "layers",
+          title: "Layers and Activations",
+          order: 2,
+          estimatedMinutes: 21,
+          status: "locked",
+        }),
+      ],
+    }),
+    makeModule({
+      slug: "training",
+      title: "Training",
+      order: 3,
+      description: "Train a model and compare its errors on later readings.",
+      status: "locked",
+      lessons: [
+        makeLesson({
+          slug: "loss",
+          title: "Loss Functions",
+          estimatedMinutes: 15,
+          status: "locked",
+        }),
+      ],
+    }),
+  ];
+  const guestTeaser = {
+    href: "/pricing?locked=deep-orbit",
+    label: "From $79, Module 1 free",
+  };
+
+  it.each([
+    { viewer: "guest", access: { lockedTeaser: guestTeaser } },
+    { viewer: "signed-in non-purchaser", access: { unlockHref: "/paywall" } },
+  ])(
+    "includes the complete syllabus in initial HTML for a $viewer",
+    ({ access }) => {
+      const html = renderToStaticMarkup(
+        <ModuleMapClient
+          {...defaultProps}
+          modules={[makeModule(), ...paidModules]}
+          {...access}
+        />,
+      );
+      const markup = document.createElement("div");
+      markup.innerHTML = html;
+
+      for (const mod of paidModules) {
+        const details = markup.querySelector(
+          `details[data-module="${mod.slug}"]`,
+        );
+        expect(details).not.toBeNull();
+        expect(details).not.toHaveAttribute("open");
+        expect(details).toHaveTextContent(mod.description);
+        expect(details).toHaveTextContent("Paid module");
+        for (const lesson of mod.lessons) {
+          const title = within(details as HTMLElement).getByText(lesson.title);
+          expect(title.closest("a")).toBeNull();
+          expect(title).not.toHaveClass("truncate");
+          expect(title).toHaveStyle({ color: "var(--tc-text)" });
+          expect(details).toHaveTextContent(`${lesson.estimatedMinutes} min`);
+          expect(
+            markup.querySelector(
+              `a[href="/worlds/deep-orbit/${mod.slug}/${lesson.slug}"]`,
+            ),
+          ).toBeNull();
+        }
+      }
+      expect(
+        markup.querySelector('a[href="/worlds/deep-orbit/foundations/l1"]'),
+      ).not.toBeNull();
+    },
+  );
+
+  it("shows one guest course pricing action outside the first paid disclosure", () => {
+    const { container } = render(
       <ModuleMapClient
         {...defaultProps}
-        modules={[locked]}
-        unlockHref={undefined}
-        lockedTeaser={{
-          href: "/pricing?locked=deep-orbit",
-          label: "From $50 · Module 1 free",
-        }}
+        modules={[makeModule(), ...paidModules]}
+        lockedTeaser={guestTeaser}
       />,
     );
 
-    const teaser = screen.getByTestId("locked-teaser");
+    const teasers = screen.getAllByTestId("locked-teaser");
+    expect(teasers).toHaveLength(1);
+    const teaser = screen.getByRole("link", { name: "View course pricing" });
     expect(teaser).toHaveAttribute("href", "/pricing?locked=deep-orbit");
-    expect(teaser).toHaveTextContent("From $50 · Module 1 free");
+    expect(teaser).toHaveTextContent("View course pricing");
+    expect(teaser).toHaveClass("min-h-11");
+    expect(teaser.closest("details, summary, ul")).toBeNull();
+    expect(
+      screen.getAllByText(`Course access: ${guestTeaser.label}`),
+    ).toHaveLength(1);
+    expect(
+      container.querySelector("#module-neural-networks")?.parentElement,
+    ).toContainElement(teaser);
+    expect(
+      container
+        .querySelector("#module-training")
+        ?.parentElement?.querySelector("a"),
+    ).toBeNull();
+    expect(
+      container.querySelectorAll('a[href="/pricing?locked=deep-orbit"]'),
+    ).toHaveLength(1);
   });
 
-  it("locked guest rows are clickable across the whole row, title included", () => {
-    // The teaser used to be a chip absolutely positioned into the title row;
-    // at phone widths it sat on top of the module titles (2026-08-29 design
-    // audit). The link now wraps the full row, so the title lives inside it.
-    const locked2 = makeModule({
-      slug: "neural-networks",
-      title: "Neural Networks",
-      order: 2,
-      status: "locked",
-    });
-    const locked3 = makeModule({
-      slug: "training",
-      title: "Training",
-      order: 3,
-      status: "locked",
-    });
-    render(
+  it("shows one signed-in course unlock action and keeps later rows as syllabus disclosures", () => {
+    const { container } = render(
       <ModuleMapClient
         {...defaultProps}
-        modules={[makeModule(), locked2, locked3]}
-        lockedTeaser={{
-          href: "/pricing?locked=deep-orbit",
-          label: "From $50 · Module 1 free",
-        }}
-      />,
-    );
-
-    const teasers = screen.getAllByTestId("locked-teaser");
-    expect(teasers).toHaveLength(2);
-    for (const teaser of teasers) {
-      expect(teaser).toHaveAttribute("href", "/pricing?locked=deep-orbit");
-    }
-    expect(teasers[0]).toHaveTextContent("Neural Networks");
-    expect(teasers[1]).toHaveTextContent("Training");
-  });
-
-  it("states the price fact once; later locked rows carry the lock glyph", () => {
-    const locked2 = makeModule({
-      slug: "neural-networks",
-      title: "Neural Networks",
-      order: 2,
-      status: "locked",
-    });
-    const locked3 = makeModule({
-      slug: "training",
-      title: "Training",
-      order: 3,
-      status: "locked",
-    });
-    render(
-      <ModuleMapClient
-        {...defaultProps}
-        modules={[makeModule(), locked2, locked3]}
-        lockedTeaser={{
-          href: "/pricing?locked=deep-orbit",
-          label: "From $50 · Module 1 free",
-        }}
-      />,
-    );
-
-    expect(screen.getAllByText("From $50 · Module 1 free")).toHaveLength(1);
-    const teasers = screen.getAllByTestId("locked-teaser");
-    expect(teasers[1]).toHaveTextContent("🔒");
-  });
-
-  it("locked rows for signed-in non-purchasers link the whole row to the paywall", () => {
-    const locked = makeModule({
-      slug: "neural-networks",
-      title: "Neural Networks",
-      order: 2,
-      status: "locked",
-    });
-    render(
-      <ModuleMapClient
-        {...defaultProps}
-        modules={[locked]}
+        modules={paidModules}
         unlockHref="/paywall"
       />,
     );
 
-    const link = screen.getByRole("link", {
-      name: /Unlock module 2: Neural Networks/i,
-    });
+    const link = screen.getByRole("link", { name: "Unlock course" });
     expect(link).toHaveAttribute("href", "/paywall");
-    expect(link).toHaveTextContent("Neural Networks");
+    expect(link).toHaveTextContent("Unlock course");
+    expect(link.closest("summary, details, ul")).toBeNull();
+    expect(
+      container.querySelector("#module-neural-networks")?.parentElement,
+    ).toContainElement(link);
+    expect(
+      container
+        .querySelector("#module-training")
+        ?.parentElement?.querySelector("a"),
+    ).toBeNull();
+    expect(container.querySelectorAll('a[href="/paywall"]')).toHaveLength(1);
+    expect(screen.getAllByText(/Paid module/)).toHaveLength(paidModules.length);
   });
 
-  it("locked rows without teaser or unlockHref keep the lock glyph", () => {
-    const locked = makeModule({ status: "locked" });
+  it("never links a paid lesson when saved progress says it was available or completed", () => {
     const { container } = render(
       <ModuleMapClient
         {...defaultProps}
-        modules={[locked]}
-        unlockHref={undefined}
+        modules={[
+          makeModule({
+            status: "locked",
+            lessons: [
+              makeLesson({
+                slug: "previously-open",
+                title: "Previously Open",
+                status: "available",
+              }),
+              makeLesson({
+                slug: "previously-done",
+                title: "Previously Done",
+                status: "completed",
+              }),
+            ],
+          }),
+        ]}
+        unlockHref="/paywall"
       />,
     );
-    expect(screen.queryByTestId("locked-teaser")).toBeNull();
-    expect(container.textContent).toContain("🔒");
+
+    const list = screen.getByTestId("lesson-list");
+    expect(list.querySelector("a")).toBeNull();
+    expect(within(list).getAllByLabelText("Purchase required")).toHaveLength(2);
+    expect(
+      container.querySelectorAll('[data-lesson-status="locked"]'),
+    ).toHaveLength(2);
+  });
+
+  it("keeps later syllabus rows available without purchase language for purchasers", () => {
+    const { container } = render(
+      <ModuleMapClient {...defaultProps} modules={paidModules} />,
+    );
+    expect(container.querySelectorAll("details")).toHaveLength(2);
+    expect(screen.getAllByTestId("lesson-list")).toHaveLength(2);
+    expect(screen.queryByTestId("locked-teaser")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+    expect(screen.getAllByText(/Locked module/)).toHaveLength(2);
+    expect(screen.queryByText(/Paid module/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText("Purchase required"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("preserves purchased module progress, current lesson links, and completed lessons", () => {
+    const mod = makeModule({
+      slug: "neural-networks",
+      title: "Neural Networks",
+      status: "active",
+      completedLessons: 1,
+      lessons: [
+        makeLesson({ slug: "done", title: "Done", status: "completed" }),
+        makeLesson({
+          slug: "current",
+          title: "Current",
+          status: "in_progress",
+        }),
+      ],
+    });
+    const { container } = render(
+      <ModuleMapClient
+        {...defaultProps}
+        modules={[mod]}
+        continueHref="/worlds/deep-orbit/neural-networks/current"
+      />,
+    );
+
+    expect(container.querySelector("details")).toHaveAttribute("open");
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "50",
+    );
+    expect(
+      screen.getByRole("link", { name: "Done, Completed" }),
+    ).toHaveAttribute("href", "/worlds/deep-orbit/neural-networks/done");
+    expect(
+      screen.getByRole("link", { name: "Current, In progress" }),
+    ).toHaveAttribute("href", "/worlds/deep-orbit/neural-networks/current");
+    expect(screen.queryByText(/Paid module/)).not.toBeInTheDocument();
+    expect(screen.queryByText("View course pricing")).not.toBeInTheDocument();
+    expect(screen.queryByText("Unlock course")).not.toBeInTheDocument();
   });
 });
