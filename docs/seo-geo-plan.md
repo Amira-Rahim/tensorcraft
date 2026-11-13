@@ -39,8 +39,9 @@ and `68d6e3d7` released the sourced course-comparison additions. Browser
 checks on production in Chromium and WebKit passed both release gates. The
 follow-up record and the backlog list those checks and their limits.
 
-The November 13 public-syllabus follow-up is implemented. Production release
-verification remains pending. The anonymous course page exposes all 56 lesson
+Commit `6e654bba` released the November 13 public-syllabus follow-up. Production
+HTTP checks confirm the descriptive title, self-canonical, direct demo link
+and single course pricing action. The anonymous course page exposes all 56 lesson
 titles in 11 module disclosures, with paid lesson bodies and content access
 protected. It has a descriptive course/search/social title, explicit
 prerequisites and runtime scope, estimated workload, current pricing and a
@@ -56,6 +57,15 @@ handoff checks remain pending. The
 [external sample-review brief](learning-study/browser-ml-review-brief-2026-11-13.md)
 contains two qualified inquiry routes and complete drafts. No inquiry, paid
 engagement or independent assessment has occurred.
+
+At 19:28 UTC on November 13, Google accepted the course page's targeted indexing
+request after its live eligibility preflight. The subsequent stored inspection
+still reports the November 5 crawl, so a crawl of the updated syllabus remains
+unconfirmed. The [request evidence](audits/seo-geo-2026-11-11-baselines/openseo/course-recrawl-2026-11-13.json)
+records production checks, the accepted request and both inspection snapshots.
+The binding release guidance in `CLAUDE.md` now requires assessing recrawl needs
+after every change, including changes without an obvious SEO impact. Record the
+affected URLs and decision, with a brief reason when no recrawl is needed.
 
 The [consent and measurement release](audits/seo-geo-2026-11-11-baselines/deployment.md)
 has applied migration 067 in production and passed all 15 catalog checks.

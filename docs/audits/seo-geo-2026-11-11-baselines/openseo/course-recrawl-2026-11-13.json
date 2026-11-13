@@ -1,0 +1,156 @@
+{
+  "observedOn": "2026-11-13",
+  "property": "sc-domain:tensorcraft.app",
+  "url": "https://tensorcraft.app/worlds/deep-orbit",
+  "releaseCommit": "6e654bba78d40116a5eb903e3c271de9b40ced4d",
+  "reason": "Descriptive course title, complete public syllabus, clarified course scope and direct runnable-demo link changed the indexable course page.",
+  "affectedUrlScope": "CourseProjectPreview is used only by the world page and renders only for the deep-orbit slug. The release affects this one public course URL.",
+  "productionCheck": {
+    "checkedAt": "2026-11-13T19:29:31Z",
+    "method": "Public HTTP response, HTML parsed without scripts or styles.",
+    "httpStatus": 200,
+    "title": "Deep Orbit: Machine Learning in JavaScript, Tensorcraft",
+    "canonical": "https://tensorcraft.app/worlds/deep-orbit",
+    "robotsMeta": [],
+    "xRobotsTag": null,
+    "coursePricingActionCount": 1,
+    "directDemoLink": "/guides/browser-machine-learning-project"
+  },
+  "submission": {
+    "observedAtUTC": "2026-11-13T19:28Z",
+    "precision": "minute",
+    "method": "Search Console owner session in Chrome, operated through CUA. Visible UI transcribed without account identifiers or screenshots.",
+    "eligibilityCheck": "Request indexing ran the live eligibility preflight before submission.",
+    "requestConfirmation": "Indexing requested",
+    "outcome": "Google confirmed adding the URL to a priority crawl queue.",
+    "status": "accepted",
+    "confirmedRecrawl": false
+  },
+  "storedInspectionBeforeRequest": {
+    "ok": true,
+    "siteUrl": "sc-domain:tensorcraft.app",
+    "results": [
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit",
+        "result": {
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:tensorcraft.app&id=9uMquy0fjSSe66AaoVxz2Q&utm_medium=link&utm_source=api",
+          "indexStatusResult": {
+            "verdict": "PASS",
+            "coverageState": "Submitted and indexed",
+            "robotsTxtState": "ALLOWED",
+            "indexingState": "INDEXING_ALLOWED",
+            "lastCrawlTime": "2026-11-05T18:16:34Z",
+            "pageFetchState": "SUCCESSFUL",
+            "googleCanonical": "https://tensorcraft.app/worlds/deep-orbit",
+            "userCanonical": "https://tensorcraft.app/worlds/deep-orbit",
+            "sitemap": [
+              "https://tensorcraft.app/sitemap.xml"
+            ],
+            "referringUrls": [
+              "https://www.tensorcraft.app/themes/deep-orbit/neural-networks/first-neuron",
+              "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors"
+            ],
+            "crawledAs": "MOBILE"
+          },
+          "mobileUsabilityResult": {
+            "verdict": "VERDICT_UNSPECIFIED"
+          },
+          "richResultsResult": {
+            "verdict": "PASS",
+            "detectedItems": [
+              {
+                "richResultType": "Videos",
+                "items": [
+                  {
+                    "name": "Deep Orbit course trailer",
+                    "issues": [
+                      {
+                        "issueMessage": "Invalid datetime value for \"uploadDate\"",
+                        "severity": "WARNING"
+                      },
+                      {
+                        "issueMessage": "Datetime property \"uploadDate\" is missing a timezone",
+                        "severity": "WARNING"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "meta": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/settings/integrations"
+    }
+  },
+  "storedInspectionAfterRequest": {
+    "ok": true,
+    "siteUrl": "sc-domain:tensorcraft.app",
+    "results": [
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit",
+        "result": {
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:tensorcraft.app&id=dMSlqq96dBYl8cpe6lNXyw&utm_medium=link&utm_source=api",
+          "indexStatusResult": {
+            "verdict": "PASS",
+            "coverageState": "Submitted and indexed",
+            "robotsTxtState": "ALLOWED",
+            "indexingState": "INDEXING_ALLOWED",
+            "lastCrawlTime": "2026-11-05T18:16:34Z",
+            "pageFetchState": "SUCCESSFUL",
+            "googleCanonical": "https://tensorcraft.app/worlds/deep-orbit",
+            "userCanonical": "https://tensorcraft.app/worlds/deep-orbit",
+            "sitemap": [
+              "https://tensorcraft.app/sitemap.xml"
+            ],
+            "referringUrls": [
+              "https://www.tensorcraft.app/themes/deep-orbit/neural-networks/first-neuron",
+              "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors"
+            ],
+            "crawledAs": "MOBILE"
+          },
+          "mobileUsabilityResult": {
+            "verdict": "VERDICT_UNSPECIFIED"
+          },
+          "richResultsResult": {
+            "verdict": "PASS",
+            "detectedItems": [
+              {
+                "richResultType": "Videos",
+                "items": [
+                  {
+                    "name": "Deep Orbit course trailer",
+                    "issues": [
+                      {
+                        "issueMessage": "Invalid datetime value for \"uploadDate\"",
+                        "severity": "WARNING"
+                      },
+                      {
+                        "issueMessage": "Datetime property \"uploadDate\" is missing a timezone",
+                        "severity": "WARNING"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "meta": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/settings/integrations"
+    }
+  },
+  "limits": [
+    "The post-request inspection still reports a successful November 5 crawl. It does not yet confirm Google fetched the November 13 syllabus release.",
+    "Request acceptance does not establish updated search results, rankings or AI citations.",
+    "The stored video datetime warnings predate the corrected production metadata. Warning clearance remains unconfirmed.",
+    "No repeated request, site-wide submission, paid audit or recurring collection was started."
+  ],
+  "nextCheck": "On a later Search Console inspection, confirm a crawl after the syllabus deployment, matching canonicals and the refreshed video result."
+}

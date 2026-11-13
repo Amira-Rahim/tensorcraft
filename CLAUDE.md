@@ -132,6 +132,25 @@
   `docs/story-style-bible.md`. The lexicon tier is CI-enforced by
   `packages/content/__tests__/slop-lexicon.test.ts`.
 
+## Search recrawl checks (binding, 2026-11-13)
+
+- After every change, assess whether search engines need to recrawl any
+  affected public URLs. This applies to all changes, including code, content,
+  styles, configuration, dependencies, infrastructure, tests and internal
+  documentation. Trace direct and indirect effects before deciding.
+- Record the assessment and affected URLs in task or release notes, including
+  a brief reason when no recrawl is needed. Consider public content, rendering,
+  titles, structured data, links, canonicals, redirects, crawl access and
+  indexing directives. Request a recrawl when the assessment justifies it.
+- Verify the changes in production HTML and confirm the intended canonical
+  and indexing state before requesting a recrawl. Use targeted Search Console
+  indexing requests for changed URLs intended for indexing, and use the
+  sitemap for larger batches. Carry this check through the release.
+- Record each URL, request date, and outcome in the release or SEO evidence.
+  Report an accepted request separately from a confirmed later crawl. Check
+  the recorded request before submitting again, and do not repeatedly submit
+  unchanged URLs or imply that a request guarantees indexing or AI citations.
+
 ## Git Rules
 
 - **Never commit on behalf of the user.** Do not run `git add`, `git commit`, or `git push` unless explicitly asked. After writing or editing code, stop and let the user decide when to commit.
