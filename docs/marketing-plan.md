@@ -94,9 +94,9 @@ These are the two recurring releases for each case. Adapt the same source materi
 
 ### Amplification through established developer audiences
 
-Submit the finished experiment for editorial consideration at Frontend Horse and Cooperpress's relevant JavaScript publications. A single accepted feature can distribute the case to an existing audience. The submission is an editorial pitch, not an invitation for the editor to become a customer.
+Submit the finished experiment for editorial consideration at Cooperpress's relevant JavaScript publications. A single accepted feature can distribute the case to an existing audience. The pitch asks the editors to consider the case for their readers. It does not ask them to buy the course.
 
-Frontend Horse welcomes suggestions and publishes visual experiments and interactive explanations. JavaScript Weekly issue 809 includes a JavaScript-to-neural-network demonstration, providing a concrete example of topic fit. Frontend Focus is another candidate when the case emphasizes the browser interaction. Placement and traffic are uncertain. [Frontend Horse contact](https://frontend.horse/contact/), [example issue](https://frontend.horse/issues/78/), [JavaScript Weekly example](https://javascriptweekly.com/issues/809), [Cooperpress contact](https://cooperpress.com/contact/).
+JavaScript Weekly issue 809 includes a JavaScript-to-neural-network demonstration, a concrete example of topic fit. Frontend Focus is another candidate when the case emphasizes the browser interaction. Placement and traffic are uncertain. Frontend Horse also received the November 10 pitch. Its archive ends at [issue 78](https://frontend.horse/issues/78/) and its curator describes it as on hiatus, so it gets no follow-up. [JavaScript Weekly example](https://javascriptweekly.com/issues/809), [Cooperpress contact](https://cooperpress.com/contact/).
 
 Supply a finished playable URL, a clear image, and the short recording so a curator can understand and demonstrate the case quickly. A creator can use the same package for a public playthrough. Neither a free feature nor a sponsorship price is assumed.
 

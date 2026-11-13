@@ -15,6 +15,62 @@ a link to the detail spec if one exists). Detail specs stay in their own files;
 this doc is the index of record. Deferred mentions in dated audit ledgers
 are historical and non-authoritative.
 
+## Marketing audit follow-ups (2026-11-12)
+
+Evidence: `output/marketing/audit-2026-11-12/` (git-ignored, start with
+`EVIDENCE.md`). Shipped on 2026-11-12: the redirect that keeps the November 10
+pitch links on the sensor case, X handle removal on both hosts, media kit links
+and posters, and the case-page fixes (script order, crew-video observer, phone
+headings, short-screen layout, loading and failure shown on the main button,
+double-click guard, answer backing plate, hero course-link tap target, code
+wrapping, film shot at 36.05 s with a new poster). Committed on 2026-11-13:
+the hidden guest email form, session replay off, and three CI fixes for the
+Ubuntu 26.04 runner image.
+
+Owner decisions and actions:
+
+- [ ] **Replies from `support@tensorcraft.app`.** The address only forwards, so
+  a reply from the private inbox shows the personal address. Set up send-as
+  through Resend SMTP or a mailbox, send a test to a separate account, and
+  check the full headers before replying to any editor. Then send
+  `output/marketing/sensor-grouping-launch/cooperpress-followup-draft.txt`.
+- [ ] **X account.** Choose a fresh brand handle or the legacy one.
+  `apps/web/lib/__tests__/case-pages-metadata.test.ts` keeps `twitter:site`
+  off until then.
+- [ ] **Where the case pages live.** A tensorcraft.app subdomain or the
+  `/cases` path. Today five URLs serve two pages.
+- [ ] **Public repository.** Amira-Rahim/tensorcraft has been public since
+  2026-03-08, and the browser-project guide links to it. Decide whether the
+  organization name fits the identity rule.
+- [ ] **Drafts before publishing.** Rewrite the DEV article by hand under an
+  organization account (DEV's AI-assisted rule), recut the sensor clip (its
+  end card points to tensorcraft.app), and point the unpublished X draft at
+  `/sensor-grouping.html`.
+- [ ] **PostHog project setting.** Optionally switch recording off in the
+  project too. The web SDK already ignores it.
+
+Engineering and content:
+
+- [ ] **Lower page.** Facts row (56 lessons, 11 modules, about 28 hours, five
+  free, $79 once, 5-day refund), a real lesson capture, a shorter worlds
+  section, the real ARIA and Mirza exchange, one type scale with a 13 px
+  floor, and a footer with maker line, pricing, terms, privacy and contact.
+- [ ] **Hero load time.** Enable "Teach this model" at first paint and wait
+  for the model only at the reveal, defer the hero video, and try a smaller
+  TensorFlow.js build. Slow 4G takes 6.4 s to an enabled button.
+- [ ] **Share images.** PNG cards built from the demo's real result.
+- [ ] **Sensor case quotes.** Three lines attributed to Farah and Demir do
+  not exist in the course. Replace them with canon or label them.
+- [ ] **Production leftovers.** `/media/learn-trailer.mp4` (45 MB) is
+  unreferenced on the site but is the source footage for
+  `scripts/marketing/build-pattern-intro.mjs`, so move it out of `public/`
+  and update the script. Remove `/media/tensorcraft-teaser.mp4` and
+  `/design-previews/`.
+- [ ] **Cases site operations.** A build script and CI for the git-ignored
+  deploy folder, plus cache and security headers
+  (`agents/perf-delivery-seo/proposed-vercel.json` in the evidence pack).
+- [ ] **Story section on phones.** The art crops to half a face.
+
 ## SEO and GEO release verification (2026-11-10)
 
 Local implementation and item status live in the [execution checklist](seo-geo-plan.md).
@@ -2601,7 +2657,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
 > against current code and several had their sub-items corrected.
 
 - [ ] **First lesson auto-play: AFFORDANCE FIXED 2026-08-23, scene kept by owner decision.** The complaint was never the story, it was being trapped in it. Fixed: Skip is now a real control ("Skip intro", `text-xs`, 44px min target, `--tc-border-interactive` which clears 3:1) instead of a 10px label on a decorative border; and a learner who skips once is not auto-played at again, remembered in `localStorage` through `lib/script-preference.ts`. Every storage access is guarded, because this API throws SecurityError when site data is blocked and an unguarded read once white-screened the whole site. "Replay scene" still exists, so the scene is never unreachable. 5 tests. **Still open:** the scene itself is unchanged at ~15.5s for a first-time visitor, which is a deliberate product call, not an oversight. Original finding: the page is functionally blank during playback, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the entire product, and it is the destination of the landing page's primary CTA. Re-verified 2026-08-20: `lesson-steps.tsx:1357` still auto-plays on first visit, per-beat hold is 800-3200ms so 6-8 beats lands in the 15s band, and the Skip control is still `text-[10px]`. The only other escape is `prefers-reduced-motion`.
-- [x] **Guest email capture: SHIPPED.** Corrected 2026-08-20; this entry said "no email capture for guests anywhere in the free module", which is no longer true. `guest-email-capture.tsx` renders for guests only and is mounted in the lesson flow behind `isFreeModule` (`lesson-steps.tsx:1757`). Rows land with `subscribed` false per migration 050, so capture does not imply digest consent.
+- [x] **Guest email capture: SHIPPED, then HIDDEN 2026-11-12.** The form confirmed "Sent." and promised a link back, but no sender mails `free-module-end` rows. `GUEST_EMAIL_CAPTURE_ENABLED` in `guest-email-capture.tsx` brings it back once the open "Guest resume-link email" item ships. Corrected 2026-08-20; this entry said "no email capture for guests anywhere in the free module", which is no longer true. `guest-email-capture.tsx` renders for guests only and is mounted in the lesson flow behind `isFreeModule` (`lesson-steps.tsx:1757`). Rows land with `subscribed` false per migration 050, so capture does not imply digest consent.
 - [x] **Mobile editor type: CLOSED 2026-08-23, 16px shipped WITH the scroller focus fix. B9.** Both Sandpack themes now set 16px (clears the iOS auto-zoom threshold), and the Exercise component makes `.cm-scroller` keyboard-reachable. Root cause of the earlier failure, found in the packages themselves: CodeMirror's constructor sets `scrollDOM.tabIndex = -1`, and Sandpack additionally sets `tabindex="-1"` on the contenteditable surface (its keyboard pattern is Tab to the wrapper, Enter to enter the editor), so once the 16px type overflowed the 400px box the scroller was a scrollable region with nothing focusable inside it: axe `scrollable-region-focusable`, serious, both schemes. A MutationObserver-backed effect in `packages/ui/src/mdx/exercise.tsx` overwrites the scroller to `tabindex="0"` with `role="group"` and an aria-label, and re-applies when Sandpack recreates the editor (theme swaps). Browser-verified locally: both Challenge-step axe audits pass, and `e2e/exercise-run.spec.ts` ("Exercise editor keyboard access") now pins the attribute contract so a Sandpack or CodeMirror upgrade that drops it fails by name, not only in the axe sweep.
   **History:** the first attempt (same day) shipped the size bump alone and was reverted when CI caught the axe violation; no local test could, because it needs a real browser to lay out. Still open in this area: no axe run at any mobile viewport, and all non-axe e2e is dark-only via the global `colorScheme: "dark"` pin. Original finding:
   **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold. Re-verified 2026-08-20: still `size: "13px"` in BOTH Sandpack themes (`packages/ui/src/mdx/exercise.tsx:174` dark, `:205` light). Also still true: no axe run at any mobile viewport (`e2e/accessibility.spec.ts` runs only in the chromium project, which excludes the mobile specs), and all non-axe e2e is dark-only via the global `colorScheme: "dark"` pin (`playwright.config.ts:32`). **Corrected:** the "no mobile affordance past the exercise gate" clause is stale, the mobile pane toggle exists (`lesson-steps.tsx:820`).
@@ -5543,7 +5599,17 @@ visitors between 2026-08-26 and 2026-10-02.
 
 Privacy:
 
-- [ ] **(B0) Session replay is on but undisclosed.** Project settings record
+- [ ] **Guest resume-link email.** The free-module guest form is hidden
+  because nothing mailed its rows. To bring it back, have the API send the
+  promised link back to the guest's lesson for new `free-module-end` rows
+  (Resend, transactional, no digest enrollment), test delivery, then set
+  `GUEST_EMAIL_CAPTURE_ENABLED` to true.
+- [x] **(B0) Session replay is on but undisclosed.** Closed in code
+  2026-11-12 by the disable option: `apps/web/lib/posthog.ts` passes
+  `disable_session_recording: true`, `enable_heatmaps: false` and
+  `enable_recording_console_log: false`, so the policy's "pageviews and
+  product events" is accurate again. Optional owner step: also switch
+  recording off in the PostHog project settings. Original finding: project settings record
   100% of consenting sessions (replay, console logs, heatmaps; default
   masking, 30-day retention), and `apps/web/lib/posthog.ts` does not turn
   them off. The policy promises "pageviews and product events"
