@@ -105,10 +105,12 @@ Run discovery, acquisition QA and reporting repairs in parallel with the
 source/licensing inventory. The public export and privacy transition depend
 on that inventory. The independent internal checks can continue immediately.
 
-The public guide currently links three reproduction scripts into the main
-repository. Its recorded command also assumes a repository checkout. The
-Terms link there for licenses and material notices. Prepare durable public
-evidence and notices before these links become inaccessible. Inventory MPL
+At the initial review, the public guide linked three reproduction scripts into
+the main repository and its recorded command assumed a repository checkout.
+The November 14 release replaces those dependencies with a verified same-origin
+export. The Terms still link to the repository for licenses and material
+notices. Preserve durable notices before these links become inaccessible.
+Inventory MPL
 coverage and distribution obligations before assuming a small demo export
 settles all source-access requirements. Preserve existing notices and rights.
 
@@ -150,11 +152,12 @@ below has its own assessment for material public-page changes.
 ## First implementation batch, November 14
 
 The [implementation record](audits/seo-geo-2026-11-11-baselines/implementation-2026-11-14.md)
-advances 14 plan items: six verified local implementations, five partial items
-and three prepared materials. No code is committed, pushed or deployed.
-Outreach remains paused.
+records the initial readiness of 14 plan items: six verified local
+implementations, five partial items and three prepared materials. Commit
+`bf0e9025` is now pushed and deployed. The historical readiness record predates
+that release. Outreach remains paused.
 
-The local candidate includes a complete standalone reproduction export,
+The deployed batch includes a complete standalone reproduction export,
 same-origin project evidence links, a source-hashed numerical reference in
 initial HTML, interactive error costs, a five-route runtime selector, Grider
 and Manning comparison coverage, corrected reporting queries and certificate
@@ -165,13 +168,20 @@ consent/payment verification and actual browser QA remain open.
 All 61 focused Vitest checks, seven Node CLI checks, web typechecking and
 scoped lint pass. The 104-page production build passes. The clean exported
 numerical run matches the recorded fixture and paired metrics. The account
-snapshot remains a baseline, not an effect of unreleased changes.
+snapshot predates the release and does not measure its effect.
 
-Chrome controls timed out before indexing requests could be submitted. After
-release, verify the project guide, learning path, `/compare` and `/guides`,
-then request targeted indexing where justified. Verify certificate noindex
-without requesting indexing. The sitemap and existing `/llms.txt` also change
-through the registry. The implementation record preserves the full assessment.
+Production HTTP checks now verify the project guide, learning path, `/compare`
+and `/guides`. Chrome controls timed out again before indexing requests could
+be submitted. Targeted requests remain pending. Verify certificate noindex
+without requesting indexing. The sitemap and existing `/llms.txt` registry
+updates are live. The implementation record preserves the full assessment.
+
+The [release discovery record](audits/seo-geo-2026-11-11-baselines/discovery-followup-2026-11-14.md)
+confirms ten workspace typechecks, 4,399 passed tests and a checksum-matched
+public archive. All 23 sitemap pages pass HTTP checks. A free 45-URL crawl
+reports no critical issue. Nine scoped follow-ups refine existing plan items,
+led by actual release-path performance coverage and clearer practice discovery.
+The record preserves acceptance criteria and the still-pending Google requests.
 
 Measured SEO traffic lift and AI visibility lift are not established. Compare
 post-release outcomes only after deployment, crawl confirmation and an adequate
