@@ -1,0 +1,412 @@
+{
+  "reviewDate": "2026-11-14",
+  "timezone": "Africa/Cairo",
+  "stage": "first internal implementation batch",
+  "release": {
+    "localOnly": true,
+    "committed": false,
+    "pushed": false,
+    "deployed": false,
+    "outreachSent": false,
+    "newPaidAiCollection": false
+  },
+  "items": [
+    {
+      "id": "P01",
+      "status": "partial",
+      "result": "Source/material inventory prepared. Application-wide delivered-source coverage and owner decision remain open."
+    },
+    {
+      "id": "P02",
+      "status": "partial",
+      "result": "Public/protected material classes inventoried. Anonymous HTTP/RSC/chunk/source-map checks remain open."
+    },
+    {
+      "id": "P03",
+      "status": "verified locally",
+      "result": "Fourteen-file standalone export and clean numerical reproduction, including exact old hashes and new paired metrics."
+    },
+    {
+      "id": "P04",
+      "status": "partial",
+      "result": "Scoped reproduction notices available. Application-wide source/notices destination is unresolved."
+    },
+    {
+      "id": "P05",
+      "status": "partial",
+      "result": "All three project guide source links and the fixture command now use the standalone package locally. Whole-application Terms link remains unchanged pending P04."
+    },
+    {
+      "id": "P07",
+      "status": "prepared",
+      "result": "Private-repository deployment/access transition runbook prepared. No visibility or permission change."
+    },
+    {
+      "id": "M03",
+      "status": "verified locally",
+      "result": "Explicit bounded UTC reports, population exclusions, unknown coverage, cash deduplication and current event definitions."
+    },
+    {
+      "id": "M09",
+      "status": "partial",
+      "result": "Generic certificate HTML title, preserved personalized share preview, explicit noindex/follow. Geolocation/account-level checks remain open."
+    },
+    {
+      "id": "E04",
+      "status": "verified locally",
+      "result": "Five task/tool routes added to the existing learning path with primary sources and runtime/version limits."
+    },
+    {
+      "id": "E05",
+      "status": "verified locally",
+      "result": "Comparison expanded from seven to eight course options with Grider. Manning separately identified as a January 2020 book."
+    },
+    {
+      "id": "E06",
+      "status": "verified locally",
+      "result": "Error costs can change policy preference on fixed current-run outcomes, without training again or accessing final-test predictions."
+    },
+    {
+      "id": "E10",
+      "status": "verified locally",
+      "result": "Real five-epoch supplied reference and source hashes appear in initial HTML, separate from current browser output."
+    },
+    {
+      "id": "D01",
+      "status": "prepared",
+      "result": "DEV and curator drafts refreshed and kept unpublished, with local candidates distinguished from live features."
+    },
+    {
+      "id": "D04",
+      "status": "prepared",
+      "result": "Canonical/external campaign conventions prepared. No messages, campaign activation or internal acquisition UTMs."
+    }
+  ],
+  "readinessChanges": [
+    {
+      "measure": "Main-monorepo anchors in project guide",
+      "productionBefore": 3,
+      "localCandidate": 0
+    },
+    {
+      "measure": "Paired policy comparison tables visible before interaction",
+      "productionBefore": 0,
+      "localCandidate": 1,
+      "notes": "Six labelled outcome rows from a supplied maintainer reference, not learner output."
+    },
+    {
+      "measure": "Task/tool choices in explicit selector",
+      "productionBefore": 0,
+      "localCandidate": 5
+    },
+    {
+      "measure": "Course options in comparison matrix",
+      "productionBefore": 7,
+      "localCandidate": 8,
+      "notes": "The Manning book stays outside the course matrix."
+    },
+    {
+      "measure": "Complete reference reproduction without main-repository checkout",
+      "productionBefore": "not provided",
+      "localCandidate": "verified clean export"
+    },
+    {
+      "measure": "Baseline date bounds",
+      "productionBefore": "implicit old start, no explicit end",
+      "localCandidate": "required validated inclusive/exclusive UTC dates"
+    }
+  ],
+  "validation": {
+    "vitest": {
+      "files": 10,
+      "passed": 61,
+      "scope": "Guide/comparison/certificate pages, real training core, export wrapper and repository character gate"
+    },
+    "nodeTests": {
+      "passed": 7,
+      "scope": "Reporting CLI/query population and credential-safe failure contract"
+    },
+    "pythonTests": {
+      "passed": 3,
+      "scope": "Export allowlist, starter separation, tamper/path escape"
+    },
+    "typecheck": "Web typecheck passed",
+    "build": "Production Next.js build passed, 104 static pages",
+    "compiledHtml": "Reference visible in initial HTML, no invented browser result, all intended package links, runtime selector and eight-option comparison present.",
+    "numericalReference": "Real CPU run matches supplied record and current source/data hashes.",
+    "exportReproduction": "Clean extracted archive reproduces original row/score and four model artifact hashes. Paired validation matches browser reference.",
+    "posthogQueryCompilation": "UTC/null checks and zero-row compilation passed. Taxonomy still lacks version 2 payment fields, so deployed ingestion remains unverified."
+  },
+  "pairedReference": {
+    "validationRows": 400,
+    "trainRows": 1200,
+    "reservedRows": 456,
+    "baseline": {
+      "tp": 61,
+      "fp": 36,
+      "tn": 303,
+      "fn": 0,
+      "accuracy": 0.91,
+      "errorCost": 36
+    },
+    "model": {
+      "tp": 60,
+      "fp": 20,
+      "tn": 319,
+      "fn": 1,
+      "accuracy": 0.9475,
+      "errorCost": 24
+    },
+    "runtime": "TensorFlow.js 4.22.0, CPU, five epochs",
+    "limitation": "Supplied validation results from one room, not learner mastery or independent test performance."
+  },
+  "posthogBaseline": {
+    "projectId": 257980,
+    "projectTimezone": "UTC",
+    "requestedWindow": {
+      "from": "2026-11-01T00:00:00Z",
+      "to": "2026-11-14T00:00:00Z"
+    },
+    "query": {
+      "series": [
+        {
+          "kind": "EventsNode",
+          "event": "$pageview"
+        }
+      ],
+      "dateRange": {
+        "date_from": "2026-11-01T00:00:00Z",
+        "date_to": "2026-11-14T00:00:00Z"
+      },
+      "interval": "day",
+      "filterTestAccounts": false,
+      "properties": [
+        {
+          "key": "$host",
+          "type": "event",
+          "operator": "exact",
+          "value": ["tensorcraft.app"]
+        }
+      ],
+      "breakdownFilter": {
+        "breakdowns": [
+          {
+            "property": "tc_internal",
+            "type": "event"
+          }
+        ],
+        "breakdown_limit": 5
+      }
+    },
+    "result": {
+      "productionHostPageviews": 21,
+      "markedInternal": 5,
+      "unclassifiedMarker": 16,
+      "explicitlyMarkedExternal": 0,
+      "returnedPartialDay": "November 14, zero events in that bucket"
+    },
+    "interpretation": "Raw production-host event counts with test filtering off. Unclassified rows are not external users. Not a conversion funnel or SEO-attributed audience.",
+    "rawResponse": [
+      "Date|true breakdown for the value `true`|None (i.e. no value) breakdown for the value `None (i.e. no value)`\n2026-11-01|0|1\n2026-11-02|0|2\n2026-11-03|0|0\n2026-11-04|0|0\n2026-11-05|0|2\n2026-11-06|0|5\n2026-11-07|0|0\n2026-11-08|0|2\n2026-11-09|0|1\n2026-11-10|0|3\n2026-11-11|5|0\n2026-11-12|0|0\n2026-11-13|0|0\n2026-11-14 (partial)|0|0\n\nNote: rows marked \"(partial)\" cover an interval that is still in progress as of the query time, so their values are incomplete. Timezone: UTC."
+    ]
+  },
+  "searchSnapshot": {
+    "ok": true,
+    "siteUrl": "sc-domain:tensorcraft.app",
+    "results": [
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit",
+        "result": {
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:tensorcraft.app&id=x8JyhqGP91zbptCTtkdPxA&utm_medium=link&utm_source=api",
+          "indexStatusResult": {
+            "verdict": "PASS",
+            "coverageState": "Submitted and indexed",
+            "robotsTxtState": "ALLOWED",
+            "indexingState": "INDEXING_ALLOWED",
+            "lastCrawlTime": "2026-11-13T19:31:36Z",
+            "pageFetchState": "SUCCESSFUL",
+            "googleCanonical": "https://tensorcraft.app/worlds/deep-orbit",
+            "userCanonical": "https://tensorcraft.app/worlds/deep-orbit",
+            "sitemap": ["https://tensorcraft.app/sitemap.xml"],
+            "referringUrls": [
+              "https://www.tensorcraft.app/themes/deep-orbit/neural-networks/first-neuron",
+              "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors"
+            ],
+            "crawledAs": "MOBILE"
+          },
+          "mobileUsabilityResult": {
+            "verdict": "VERDICT_UNSPECIFIED"
+          },
+          "richResultsResult": {
+            "verdict": "PASS",
+            "detectedItems": [
+              {
+                "richResultType": "Videos",
+                "items": [
+                  {
+                    "name": "Deep Orbit course trailer"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "url": "https://tensorcraft.app/compare",
+        "result": {
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:tensorcraft.app&id=TVJcj7daRrvCsCZtonu7HQ&utm_medium=link&utm_source=api",
+          "indexStatusResult": {
+            "verdict": "NEUTRAL",
+            "coverageState": "URL is unknown to Google",
+            "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+            "indexingState": "INDEXING_STATE_UNSPECIFIED",
+            "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+          },
+          "mobileUsabilityResult": {
+            "verdict": "VERDICT_UNSPECIFIED"
+          }
+        }
+      },
+      {
+        "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "result": {
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:tensorcraft.app&id=iRYuHx2BnMz_TUxyOefxFw&utm_medium=link&utm_source=api",
+          "indexStatusResult": {
+            "verdict": "PASS",
+            "coverageState": "Submitted and indexed",
+            "robotsTxtState": "ALLOWED",
+            "indexingState": "INDEXING_ALLOWED",
+            "lastCrawlTime": "2026-11-11T12:24:09Z",
+            "pageFetchState": "SUCCESSFUL",
+            "googleCanonical": "https://tensorcraft.app/guides/browser-machine-learning-project",
+            "userCanonical": "https://tensorcraft.app/guides/browser-machine-learning-project",
+            "sitemap": ["https://tensorcraft.app/sitemap.xml"],
+            "referringUrls": ["https://tensorcraft.app/sitemap.xml"],
+            "crawledAs": "MOBILE"
+          },
+          "mobileUsabilityResult": {
+            "verdict": "VERDICT_UNSPECIFIED"
+          },
+          "richResultsResult": {
+            "verdict": "PASS",
+            "detectedItems": [
+              {
+                "richResultType": "Breadcrumbs",
+                "items": [
+                  {
+                    "name": "Unnamed item"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "url": "https://tensorcraft.app/learn",
+        "result": {
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:tensorcraft.app&id=1iGjy28oRXHGDTDGfJR28g&utm_medium=link&utm_source=api",
+          "indexStatusResult": {
+            "verdict": "PASS",
+            "coverageState": "Submitted and indexed",
+            "robotsTxtState": "ALLOWED",
+            "indexingState": "INDEXING_ALLOWED",
+            "lastCrawlTime": "2026-10-26T12:58:48Z",
+            "pageFetchState": "SUCCESSFUL",
+            "googleCanonical": "https://tensorcraft.app/learn",
+            "userCanonical": "https://tensorcraft.app/learn",
+            "referringUrls": [
+              "https://www.tensorcraft.app/learn",
+              "https://tensorcraft.app/sitemap.xml"
+            ],
+            "crawledAs": "MOBILE"
+          },
+          "mobileUsabilityResult": {
+            "verdict": "VERDICT_UNSPECIFIED"
+          },
+          "richResultsResult": {
+            "verdict": "PASS",
+            "detectedItems": [
+              {
+                "richResultType": "Breadcrumbs",
+                "items": [
+                  {
+                    "name": "Unnamed item"
+                  }
+                ]
+              },
+              {
+                "richResultType": "Videos",
+                "items": [
+                  {
+                    "name": "How Tensorcraft works",
+                    "issues": [
+                      {
+                        "issueMessage": "Invalid datetime value for \"uploadDate\"",
+                        "severity": "WARNING"
+                      },
+                      {
+                        "issueMessage": "Datetime property \"uploadDate\" is missing a timezone",
+                        "severity": "WARNING"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "meta": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/settings/integrations"
+    }
+  },
+  "baselineSource": "pre-private-review-2026-11-14.json preserves the first-party search and November 11 GEO baseline.",
+  "recrawl": {
+    "requestsSubmitted": [],
+    "browserAttempt": "Native Chrome control timed out twice before any Request indexing action. No submission accepted or claimed.",
+    "afterDeploymentIndexablePages": [
+      "https://tensorcraft.app/guides/browser-machine-learning-project",
+      "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+      "https://tensorcraft.app/compare",
+      "https://tensorcraft.app/guides"
+    ],
+    "generatedResources": [
+      "https://tensorcraft.app/sitemap.xml",
+      "https://tensorcraft.app/llms.txt"
+    ],
+    "certificateRouteClass": "/certificates/[id]: material noindex change. Verify after deployment. Do not submit for indexing; existing Google coverage unknown.",
+    "unchangedButPending": "The earlier /learn metadata fix still needs a later Google crawl. Deep Orbit's November 13 crawl is already confirmed.",
+    "internalOnly": "Reporting scripts, internal documents, unpublished drafts and private report require no page indexing request."
+  },
+  "impact": {
+    "measuredSeoTrafficLift": null,
+    "measuredAiVisibilityLift": null,
+    "commercialLift": null,
+    "reason": "Changes are local and unreleased. No post-release measurement window or new comparable AI sample exists.",
+    "plausibleBenefits": [
+      "Maintain public evidence through repository privacy",
+      "Expose reproducible quantitative answers before interaction",
+      "Answer task/runtime and paid-resource questions more completely",
+      "Improve the validity of future acquisition/learning/payment reports"
+    ],
+    "followup": "After release verify public content/asset bytes and consent behavior, record Google requests/crawls, compare matched Search Console periods, and request a new approved cap before any comparable AI collection. Keep attribution unknowns and collection failures explicit."
+  },
+  "export": {
+    "files": 14,
+    "hashedMembers": 13,
+    "zipBytes": 99704,
+    "sha256": "9e0e351f2c3d56a7d9651d58583f10f4f249a1656480122c4332c388278a3439",
+    "freshnessCheck": "passed after synchronizing the preview generator with portable reproduction instructions",
+    "cleanReproduction": "passed after final rebuild; commands, source/model hashes and metrics match"
+  },
+  "progressReport": {
+    "id": "54368fb8-2732-4de4-a9be-38c25e4fe327",
+    "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports/54368fb8-2732-4de4-a9be-38c25e4fe327",
+    "private": true,
+    "htmlBytes": 20528
+  }
+}

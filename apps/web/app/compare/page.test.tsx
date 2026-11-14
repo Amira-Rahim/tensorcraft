@@ -24,6 +24,7 @@ describe("source-based learning comparison", () => {
       "https://www.coursera.org/learn/browser-based-models-tensorflow",
       "https://www.freecodecamp.org/news/learn-ml5js-for-machine-learning-in-javascript/",
       "https://master.dev/courses/tensorflow-js/",
+      "https://www.udemy.com/course/machine-learning-with-javascript/",
       "https://course.fast.ai/",
       "https://docs.scrimba.com/ai-engineer-path/",
     ]);
@@ -40,7 +41,7 @@ describe("source-based learning comparison", () => {
     expect(doc.querySelectorAll("h1")).toHaveLength(1);
   });
 
-  it("preserves the new courses' prerequisites, Python scope and video format", () => {
+  it("preserves each course's prerequisites, language scope and practice format", () => {
     const doc = renderPage();
     const headers = [...doc.querySelectorAll("thead th")];
     function value(feature: string, offering: string) {
@@ -71,19 +72,34 @@ describe("source-based learning comparison", () => {
     expect(value("Example output", "freeCodeCamp")).toContain(
       "saved student-score prediction model",
     );
+    expect(value("Starting knowledge", "Stephen Grider")).toContain(
+      "terminal and command-line",
+    );
+    expect(value("Starting knowledge", "Stephen Grider")).toContain(
+      "basic math equations",
+    );
+    expect(value("Learning goal", "Stephen Grider")).toContain(
+      "algorithms from scratch",
+    );
+    expect(value("Example output", "Stephen Grider")).toContain(
+      "k-nearest-neighbor classifier",
+    );
     const region = doc.querySelector("[role='region']")!;
     const help = doc.getElementById(region.getAttribute("aria-describedby")!);
     expect(help?.textContent).toContain("Scroll horizontally");
   });
 
-  it("ties the visible review date and primary sources to the page identity", () => {
+  it("ties the visible update date and primary sources to the page identity", () => {
     const doc = renderPage();
     const schema = JSON.parse(
       doc.querySelector('script[type="application/ld+json"]')!.textContent!,
     );
     const reviewedAt = doc.querySelector("time")!.getAttribute("datetime");
     expect(schema.dateModified).toBe(reviewedAt);
-    expect(reviewedAt).toBe("2026-11-12");
+    expect(reviewedAt).toBe("2026-11-14");
+    expect(doc.querySelector("time")!.parentElement!.textContent).toContain(
+      "Comparison updated",
+    );
     expect(metadata.openGraph).toMatchObject({ modifiedTime: reviewedAt });
     expect(schema.url).toBe(metadata.alternates?.canonical);
     expect(schema.headline).toBe(doc.querySelector("h1")!.textContent);
@@ -93,13 +109,25 @@ describe("source-based learning comparison", () => {
     const visibleHrefs = new Set(
       [...doc.querySelectorAll("a")].map((link) => link.getAttribute("href")),
     );
-    expect(schema.citation).toHaveLength(7);
+    expect(schema.citation).toHaveLength(9);
     for (const citation of schema.citation) {
       expect(visibleHrefs.has(citation)).toBe(true);
     }
     expect(doc.querySelector('a[rel="author"]')?.getAttribute("href")).toBe(
       "/about",
     );
+  });
+
+  it("identifies the Manning resource as a dated book outside the course matrix", () => {
+    const doc = renderPage();
+    const book = doc.querySelector(
+      'a[href="https://www.manning.com/books/deep-learning-with-javascript"]',
+    )!;
+    expect(book.closest("table")).toBeNull();
+    const section = book.closest("section")!;
+    expect(section.textContent).toContain("January 2020 book");
+    expect(section.textContent).toContain("publisher supplies source code");
+    expect(section.textContent).toContain("dependencies");
   });
 
   it("links the decision to the free lesson, learning path, project evidence and current offer", () => {

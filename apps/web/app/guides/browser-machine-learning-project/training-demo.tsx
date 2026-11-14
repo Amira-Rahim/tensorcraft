@@ -254,9 +254,27 @@ export function TrainingDemo() {
 
 function RunResults({ result, id }: { result: TrainingResult; id: string }) {
   const [selected, setSelected] = useState(0);
+  const [costs, setCosts] = useState({ falsePositive: 1, falseNegative: 4 });
+  const choices = [0, 1, 2, 4, 8, 16, 32];
   const row = result.mistakes[selected];
   const model = result.modelMetrics,
     baseline = result.baselineMetrics;
+  const modelCost =
+    model.fp * costs.falsePositive + model.fn * costs.falseNegative;
+  const baselineCost =
+    baseline.fp * costs.falsePositive + baseline.fn * costs.falseNegative;
+  const preferred =
+    modelCost === baselineCost
+      ? "Both policies have the same illustrative validation error cost."
+      : modelCost < baselineCost
+        ? "The model has the lower illustrative validation error cost."
+        : "The light rule has the lower illustrative validation error cost.";
+
+  function changeCost(key: keyof typeof costs, value: string) {
+    const next = Number(value);
+    if (choices.includes(next))
+      setCosts((current) => ({ ...current, [key]: next }));
+  }
   return (
     <div className="space-y-8 border-t border-border pt-7">
       <div className="space-y-3">
@@ -274,9 +292,52 @@ function RunResults({ result, id }: { result: TrainingResult; id: string }) {
         </h3>
         <p className="mb-4">
           A false alarm calls an empty room occupied. A miss calls an occupied
-          room empty. These illustrative costs count a false alarm as 1 and a
-          miss as 4. They are choices for this demonstration.
+          room empty. Choose illustrative costs for those two mistakes. The
+          predictions and error counts stay fixed while their costs change.
         </p>
+        <div className="my-5 grid gap-5 sm:grid-cols-2">
+          <div className="space-y-2">
+            <label
+              htmlFor={`${id}-false-alarm-cost`}
+              className="block font-medium"
+            >
+              Cost per false alarm
+            </label>
+            <select
+              id={`${id}-false-alarm-cost`}
+              className={select}
+              value={costs.falsePositive}
+              onChange={(event) =>
+                changeCost("falsePositive", event.target.value)
+              }
+            >
+              {choices.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label htmlFor={`${id}-miss-cost`} className="block font-medium">
+              Cost per missed occupied reading
+            </label>
+            <select
+              id={`${id}-miss-cost`}
+              className={select}
+              value={costs.falseNegative}
+              onChange={(event) =>
+                changeCost("falseNegative", event.target.value)
+              }
+            >
+              {choices.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         <div
           role="region"
           aria-label="Validation policy comparison"
@@ -343,15 +404,19 @@ function RunResults({ result, id }: { result: TrainingResult; id: string }) {
                 <th scope="row" className={cell}>
                   Illustrative error cost
                 </th>
-                <td className={cell}>{baseline.totalErrorCost}</td>
-                <td className={cell}>{model.totalErrorCost}</td>
+                <td className={cell}>{baselineCost}</td>
+                <td className={cell}>{modelCost}</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p className="mt-3 text-sm text-text-muted">
-          Cost = false alarms + 4 × misses. The model can do worse than the
-          rule. Use the mistakes and the task’s costs to judge the tradeoff.
+          Cost = {costs.falsePositive} × false alarms + {costs.falseNegative} ×
+          misses. Changing these costs does not retrain the model or inspect the
+          reserved final-test readings.
+        </p>
+        <p aria-live="polite" aria-atomic="true" className="mt-3 font-medium">
+          {preferred}
         </p>
       </div>
       <div className="space-y-4">

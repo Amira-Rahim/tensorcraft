@@ -15,10 +15,10 @@ export const GUIDES = [
     path: "/guides/javascript-machine-learning-learning-path",
     title: "Machine learning in JavaScript: a learning path",
     description:
-      "A practical machine learning path for JavaScript developers: compare training, pretrained inference, and model APIs, with prerequisites, outputs, and free lessons.",
+      "Choose JavaScript ML tools by task: TensorFlow.js, Transformers.js, ONNX Runtime Web, ml5 or hosted APIs. Follow prerequisites, outputs and free lessons.",
     summary:
-      "Choose the kind of ML work you want to do, see what each stage should produce, and explore Deep Orbit's free starting lessons.",
-    updatedAt: "2026-11-10",
+      "Choose your ML goal, compare JavaScript tools and inspect the outputs each stage should produce. Explore Deep Orbit's free starting lessons.",
+    updatedAt: "2026-11-14",
   },
   {
     slug: "browser-machine-learning-project",
@@ -28,7 +28,7 @@ export const GUIDES = [
       "Train a TensorFlow.js model in your browser on recorded room data. Compare it with a light-threshold rule on 400 later readings and inspect its mistakes.",
     summary:
       "Run a supplied JavaScript training example, compare validation errors with a simple rule, and inspect the room readings behind the results.",
-    updatedAt: "2026-11-11",
+    updatedAt: "2026-11-14",
   },
 ] as const;
 

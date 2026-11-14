@@ -198,6 +198,66 @@ describe("supplied browser training demonstration", () => {
     expect(screen.getByText(/1 epoch with TensorFlow/)).toBeInTheDocument();
   });
 
+  it("changes the policy decision through error costs without retraining or changing predictions", async () => {
+    render(<TrainingDemo />);
+    fireEvent.click(runButton());
+    await complete();
+    const comparison = screen.getByRole("region", {
+      name: "Validation policy comparison",
+    });
+    expect(
+      within(comparison).getByRole("row", {
+        name: "Illustrative error cost 17 19",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The light rule has the lower illustrative validation error cost.",
+      ),
+    ).toBeInTheDocument();
+    const choice = screen.getByRole("combobox", {
+      name: "Cost per false alarm",
+    });
+    choice.focus();
+    fireEvent.change(choice, { target: { value: "8" } });
+    expect(choice).toHaveFocus();
+    expect(
+      within(comparison).getByRole("row", {
+        name: "Illustrative error cost 80 40",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The model has the lower illustrative validation error cost.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(comparison).getByRole("row", { name: "False alarms 9 3" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("row", { name: "Model score from this run 0.656" }),
+    ).toBeInTheDocument();
+    expect(TestWorker.instances).toHaveLength(1);
+    fireEvent.change(choice, { target: { value: "0" } });
+    fireEvent.change(
+      screen.getByRole("combobox", {
+        name: "Cost per missed occupied reading",
+      }),
+      { target: { value: "0" } },
+    );
+    expect(
+      screen.getByText(
+        "Both policies have the same illustrative validation error cost.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(comparison).getByRole("row", {
+        name: "Illustrative error cost 0 0",
+      }),
+    ).toBeInTheDocument();
+    expect(TestWorker.instances).toHaveLength(1);
+  });
+
   it("cancels without losing focus and rejects an old reply during a new run", async () => {
     render(<TrainingDemo />);
     fireEvent.click(runButton());

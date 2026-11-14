@@ -1,0 +1,87 @@
+{
+  "kind": "maintainer_reproduction_export",
+  "version": 1,
+  "scope": "Supplied room-project integration evidence and separate learner starter.",
+  "browserChecks": "Not implied by numerical reproduction. Run separately.",
+  "sourceNotice": "MPL 2.0 applies to reproduction code. Starter and data retain their separate notices. This is not an application-wide licensing inventory.",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 16726,
+      "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+      "source": "LICENSE"
+    },
+    {
+      "path": "NOTICE.md",
+      "bytes": 1392,
+      "sha256": "5a8af6c12a36fea0caf3b2f2ef7f6a044221ced706f87a3db4ad43a0f0ac15ee",
+      "source": "scripts/fixtures/room-evidence-package/NOTICE.md"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4177,
+      "sha256": "155e3948632e22f97379dde4cc363578f8ea6a4f9804c8da6bccfe4f9ac8fddf",
+      "source": "scripts/fixtures/room-evidence-package/README.md"
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1.zip",
+      "bytes": 80612,
+      "sha256": "2764155a3a1bb36bf6b81ac38cd480e8c5e2164fcfac6f948ea1af8fa979ef00",
+      "source": "apps/web/public/assignments/room-occupancy-v1.zip"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 1809,
+      "sha256": "2a57370222c7cce6f16fffef2a06c713132ad8f5640a99649cb3ce16601c83f1",
+      "source": "scripts/fixtures/room-evidence-package/package-lock.json"
+    },
+    {
+      "path": "package.json",
+      "bytes": 386,
+      "sha256": "876d666889cc3ce07e9ed88ca09db2c49faef9977e35c64f5dff8585943f3891",
+      "source": "scripts/fixtures/room-evidence-package/package.json"
+    },
+    {
+      "path": "reference-preview.json",
+      "bytes": 1654,
+      "sha256": "67f9f153161ab4f7999b3e8ce7400442436ba35a676a087f75ddfc6d262aa66c",
+      "source": "apps/web/public/assignments/room-project-preview.json"
+    },
+    {
+      "path": "reproduce.mjs",
+      "bytes": 2351,
+      "sha256": "499db85ca9b1f481d2655a2c4f9404cca34f01c72a5fcbdf94e7d19053f5908c",
+      "source": "scripts/fixtures/room-evidence-package/reproduce.mjs"
+    },
+    {
+      "path": "room-training-reference-v1.json",
+      "bytes": 1802,
+      "sha256": "367899f8268eaa280260b7483d7764a1c1e41b82ba256d6b25e571a059dcd2a2",
+      "source": "apps/web/public/assignments/room-training-reference-v1.json"
+    },
+    {
+      "path": "scripts/build-room-project-preview.mjs",
+      "bytes": 3347,
+      "sha256": "b512a1196543fea55cd97308be80a6293a6da35c5b645ae8519707d909b2fb63",
+      "source": "scripts/build-room-project-preview.mjs"
+    },
+    {
+      "path": "scripts/check-room-project.mjs",
+      "bytes": 6452,
+      "sha256": "bfe5b8b2ad5f4399ca775b89a02a10334527410edb3de8bf196e37f9718570ff",
+      "source": "scripts/check-room-project.mjs"
+    },
+    {
+      "path": "scripts/fixtures/room-project/train.mjs",
+      "bytes": 2608,
+      "sha256": "7561c5e6ac58d51afb0eba0a862b887a6b9a4d7793b467a577d435cc8d96449c",
+      "source": "scripts/fixtures/room-project/train.mjs"
+    },
+    {
+      "path": "verify.mjs",
+      "bytes": 1213,
+      "sha256": "d8d3de00866f382e38f0ac13ae88295cd3073db1538e820d013ad27fc7aa365b",
+      "source": "scripts/fixtures/room-evidence-package/verify.mjs"
+    }
+  ]
+}

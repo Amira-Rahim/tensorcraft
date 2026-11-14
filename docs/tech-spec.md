@@ -405,7 +405,7 @@ Sandpack is a client-only component and cannot be server-side rendered. The foll
 
 ## 4. Analytics Layer (Day One)
 
-Analytics are a first-class concern, instrumented from the initial launch. Every user interaction with learning content is tracked to drive product decisions, content improvements, and business metrics.
+Product analytics capture consented pageviews and selected learning actions. Capture coverage, event delivery and independent learning evidence are separate checks. The current reporting definitions below supersede the earlier event proposals in this section.
 
 ### 4.1 Tool Selection
 
@@ -416,46 +416,53 @@ Analytics are a first-class concern, instrumented from the initial launch. Every
 | Vercel Analytics | Web Vitals + performance | Automatic Core Web Vitals tracking (LCP, FID, CLS) per route. Zero-config with Vercel hosting. |
 | Sentry | Error tracking + performance | Real-time error monitoring with source maps. Sandpack errors are tagged separately from platform errors. |
 
-### 4.2 Event Taxonomy
+### 4.2 Current event contract
 
-All events are typed in `packages/analytics/events.ts` and tracked via a type-safe `track()` function. Event names use `snake_case`. Properties use `camelCase`.
+The browser registry is `apps/web/lib/analytics-events.ts`. The server registry
+is `apps/api/src/lib/posthog.ts`. `docs/analytics-verification.md` records
+verification procedures and delivery limits. A registry entry alone does not
+establish that its producer or deployed capture has been verified.
 
-#### Learning Events
+#### Learning and engagement signals
 
-| Event Name | Properties | Trigger |
-|------------|-----------|---------|
-| `lesson_started` | `lessonId`, `moduleId`, `worldId`, `difficulty`, `estimatedMinutes` | User opens a lesson page and scrolls past the hero section |
-| `lesson_completed` | `lessonId`, `moduleId`, `worldId`, `timeSpentSeconds`, `scrollDepthPercent` | User reaches the `<KeyTakeaways>` component at the bottom |
-| `exercise_started` | `exerciseId`, `lessonId`, `moduleId` | Sandpack editor mounts and user makes their first keystroke |
-| `exercise_submitted` | `exerciseId`, `lessonId`, `attemptNumber`, `testsPassed`, `testsTotal`, `codeLength` | User clicks "Submit" or "Run Tests" |
-| `exercise_completed` | `exerciseId`, `lessonId`, `attemptNumber`, `timeSpentSeconds`, `hintsUsed` | All tests pass for the first time |
-| `exercise_hint_requested` | `exerciseId`, `lessonId`, `hintLevel` (1 = nudge, 2 = partial, 3 = solution) | User clicks "Hint" button (tracked per hint level) |
-| `quiz_answered` | `lessonId`, `questionIndex`, `isCorrect`, `selectedAnswer`, `timeSpentSeconds` | User submits a quiz answer |
-| `module_completed` | `moduleId`, `worldId`, `totalTimeSeconds`, `lessonsCompleted`, `exercisesCompleted` | User completes the final lesson in a module |
+| Event | Current properties | Meaning and limits |
+| --- | --- | --- |
+| `lesson_started` | `worldId`, `moduleId`, `lessonId` | The current lesson visit reaches analytics after consent is ready. Late consent observes the current visit without replaying earlier visits. |
+| `lesson_step_viewed` | Context IDs, `step`, `stepName`, `stepsVersion`, `revisit`, optional `prevStep` and `prevStepMs` | A reader step becomes active. Separate first visits, revisits and reader versions. |
+| `lesson_completed` | Context IDs, optional `durationMs` and `hintsUsed` | The reader enters the Epilogue during this session. This records navigation/completion, not independent mastery. |
+| `experiment_started` | `worldId`, `lessonId`, `experimentId`, `contentVersion` | A learner starts an interactive concept activity. |
+| `experiment_submitted` | Experiment context, `phase`, `attempt`, `correct`, `assisted` | A prediction or changed-case submission. Keep assisted and unassisted results separate. |
+| `exercise_attempted` | `worldId`, `lessonId`, `exerciseSlug`, `passed`, `score`, optional `durationMs`, `hintsUsed` and `errored` | A graded run, including failed, crashed or timed-out runs. This is the attempt denominator. |
+| `exercise_completed` | Exercise context, `score`, optional `hintsUsed` | A passing graded run. Repeated passes can emit this event, so it is not a unique first-completion count. |
+| `hint_requested` | Optional exercise/lesson/world context, `hintLevel` | A hint reveal. Solution-view evidence also needs the relevant progress records. |
+| `checkpoint_submitted` | Optional context, `checkpointId`, `passed`, `attempts` | An in-lesson checkpoint submission. |
+| `recall_answered` | Optional context and `action` | A recall interaction. Self-reported recall is separate from graded exercise performance. |
+| `module_completed` | `worldId`, `moduleId`, `lessonsCount` | Entering the Epilogue completes the observed module. Restored mounts do not invent new completions. Deployed delivery remains a verification task. |
+| `learning_route_selected` | `worldId`, `route`, `source`, `persistence` | A choice of guided or Challenge route. |
+| `session_started`, `session_ended` | Custom `sessionId`, optional `userId`; end includes `durationMs` | One consented visible interval. This custom identifier differs from the SDK's session identifier. |
+| `script_skipped`, `script_finished` | Context, timing, `via` or `run`, optional `briefingVariant` | Narrative playback observations. Reduced-motion visits need their own interpretation. |
+| `scene_clip_played`, `scene_clip_completed` | Context, `trigger` or `watchedMs` | Scene-video playback observations, separate from lesson completion. |
 
-#### Engagement Events
+#### Acquisition and payment signals
 
-| Event Name | Properties | Trigger |
-|------------|-----------|---------|
-| `world_selected` | `worldId`, `previousWorldId`, `isFirstSelection` | User selects or switches a world |
-| `world_switched` | `fromWorldId`, `toWorldId`, `lessonId` (if mid-lesson) | User changes world from Settings |
-| `recall_prompt_shown` | `lessonId`, `referencedLessonId`, `concept` | A `<RecallPrompt>` component enters the viewport |
-| `recall_prompt_answered` | `lessonId`, `referencedLessonId`, `selfRatedRecall` (1--5) | User self-rates their recall |
-| `page_scroll_depth` | `lessonId`, `depth` (25, 50, 75, 100) | User scrolls past 25% increments of the page |
-| `session_duration` | `totalSeconds`, `lessonsViewed`, `exercisesAttempted` | Fires on session end (tab close / 30-min inactivity) |
+| Event | Current properties | Meaning and limits |
+| --- | --- | --- |
+| `free_lesson_cta_clicked` | `source`, optional `guideSlug`, `targetLesson`, `placement` | A free-lesson handoff. Page/placement context does not establish external acquisition. |
+| `pricing_page_viewed` | `entryContext`, optional legacy `source` and `lockedWorldId` | Pricing context such as a locked-lesson redirect. Legacy `source=direct` is not direct acquisition. |
+| `paywall_hit` | `worldId`, `moduleId`, optional `lessonId` | The pricing redirect records a restricted lesson visit. |
+| `checkout_started` | `planId`, optional `worldIds` and `price` | Paid intent. It does not establish payment settlement. |
+| `signup_started`, `magic_link_sent`, `signup_failed` | Authentication `method` | Authentication intent and delivery/failure observations. |
+| `signup_completed` | Reserved `method` contract | No authoritative account-creation producer is implemented. Generic `SIGNED_IN` callbacks no longer emit registrations. Signup-cohort metrics remain unavailable. |
+| `payment_completed` | `planId`, `worldIds`, checkout `sessionId`, `eventSource`, `analyticsVersion`, Stripe IDs, `amountMinor`, `currency`, `livemode`, `paymentKind`, legacy `amount` | The consent-gated Stripe webhook captures settlement evidence. Browser receipt-page events are historical and do not establish transactions. |
+| `purchase_access_granted` | `planId`, `worldIds`, `grantId`, `reason` | An upgrade covered entirely by credit, separate from a cash charge. |
+| `payment_refunded` | Checkout and charge linkage, `eventSource`, `analyticsVersion`, `livemode`, `currency`, cumulative `amountRefundedMinor` | A refund snapshot. Deduplicate by charge and retain the latest cumulative value rather than summing snapshots. |
+| `payment_failed`, `payment_disputed` | Relevant checkout/payment linkage | Server-side failure or dispute evidence. |
+| `code_pushed` | World, lesson, exercise and commit context | A successful solution-code push, separate from learning quality. |
 
-#### Conversion Events
-
-| Event Name | Properties | Trigger |
-|------------|-----------|---------|
-| `signup_started` | `source` (landing, lesson-gate, pricing), `worldId` | User initiates signup flow |
-| `signup_completed` | `method` (github, email, google), `source`, `worldId` | Account successfully created |
-| `paywall_shown` | `lessonId`, `moduleId`, `paywallType` (soft, hard) | Free content limit reached and paywall appears |
-| `checkout_started` | `planId`, `source` | User clicks "Purchase" and Stripe Checkout opens |
-| `checkout_completed` | `planId`, `revenue`, `currency`, `couponCode` | Stripe webhook confirms successful payment |
-| `checkout_abandoned` | `planId`, `source`, `timeOnCheckoutSeconds` | User closes Stripe Checkout without completing |
-| `github_connected` | `hasExistingRepo`, `repoVisibility` (public, private) | User connects their GitHub account |
-| `github_commit_pushed` | `exerciseId`, `commitSha`, `filesChanged` | Code is successfully committed to the user's repo |
+There are no current `exercise_started`, `exercise_submitted`,
+`checkout_completed`, `checkout_abandoned`, `paywall_shown`, `world_switched`,
+`session_duration` or `github_commit_pushed` events in these registries. Use the
+implemented contracts above and verify producers before creating a report.
 
 ### Lesson phase telemetry (reader version 2, October 6)
 
@@ -471,31 +478,61 @@ while accounting for the new Concept containing both teaching and code.
 Restoring saved progress does not emit a new completion or invent visits to
 skipped phases. The baseline script separates versions in both queries.
 
-### 4.3 Critical Derived Metrics
+### 4.3 Reporting definitions and coverage
 
-These metrics are computed from raw events and displayed on the internal analytics dashboard.
+Earlier draft thresholds were design proposals, not validated decision rules.
+These definitions describe available signals and the evidence needed to use
+them. Deployed event checks and sufficient observed cohorts remain necessary.
 
-| Metric | Formula | Threshold / Target |
-|--------|---------|-------------------|
-| **Lesson Completion Rate** | `lesson_completed / lesson_started` per lesson | Target: >= 75% for beginner, >= 60% for intermediate, >= 45% for advanced |
-| **Exercise Pass Rate** | `exercise_completed / exercise_started` per exercise | Target: >= 70% within 3 attempts. Below 50% triggers content review. |
-| **Average Attempts to Pass** | `mean(attemptNumber)` from `exercise_completed` events | Target: 1.5--2.5 attempts. Above 3.0 suggests the exercise is too hard; below 1.2 suggests it's too easy. |
-| **Hint Dependency Rate** | `exercise_completed WHERE hintsUsed > 0 / exercise_completed` | Target: <= 40%. Above 60% triggers exercise redesign. |
-| **Free-to-Paid Conversion** | `checkout_completed / signup_completed` within 30 days | Target: >= 5% of signups. Track cohort-weekly. |
-| **Time-to-First-Exercise** | `median(exercise_started.timestamp - signup_completed.timestamp)` | Target: < 15 minutes. Indicates onboarding friction if high. |
-| **7-Day Retention** | `users active on day 7 / signup_completed` in same cohort | Target: >= 30%. Below 20% triggers onboarding investigation. |
+| Measure | Current definition | Coverage and interpretation |
+| --- | --- | --- |
+| Lesson completion | Unique observed lesson journeys that complete divided by matching starts in a defined cohort/window. | Raw completion/start counts alone do not match journeys. Resumed visits, consent and missing capture affect coverage. |
+| Graded-run pass proportion | `exercise_attempted` rows with `passed=true` divided by all observed `exercise_attempted` rows for the same exercise/window. | Include failed/crashed attempts. Report assisted attempts separately where help records support the join. This is not an earned-pass or mastery rate. |
+| Attempts to first observed pass | Order `exercise_attempted` by person/exercise and time, then count runs through the first observed `passed=true`. | No `attemptNumber` is emitted. A window that omits earlier attempts is censored and cannot establish lifetime attempts to pass. |
+| Hint use on passing runs | Passing exercise runs with known `hintsUsed>0` divided by passing runs with known `hintsUsed`. | Missing hint properties remain unknown. Solution-view/earned-pass analysis also uses Supabase evidence. |
+| Guide-to-attempt | Consented guide SDK sessions with a matching handoff and submitted activity divided by eligible consented guide sessions. | Keep the matching lesson and SDK session. `experiment_submitted.correct` differs from `exercise_attempted.passed`. |
+| Free-module completion | Verified `module_completed` for Deep Orbit foundations in the declared observed population. | Check guest/account delivery and deduplication before interpreting a completion rate. |
+| Consented cash evidence | Version 2 Stripe-webhook `payment_completed` with `livemode=true`, `paymentKind=cash`, valid checkout ID, known positive minor-unit amount and currency, deduplicated by checkout. | Group currencies separately. Exclude known internal/test activity. This analytics subset is not total settled revenue or a browser conversion denominator. |
+| Authoritative purchases and refunds | Reconciled Stripe/purchase records, with refund charge linkage and latest cumulative refund amount. | Report all settlements, no-charge/credit grants, tests and unknown acquisition separately. Never sum currencies or cumulative refund snapshots. |
+| Signup conversion and signup retention | Unavailable until an authoritative deduplicated account-creation signal exists. | Do not substitute returning sign-ins for registrations or publish a signup denominator from the reserved event. |
+
+The Module 1 script requires explicit UTC date bounds and offers a key-free
+query preview:
+
+```bash
+node scripts/analytics/module1-baseline.mjs --since 2026-11-11 --until 2026-11-15 --dry-run
+```
+
+`--since` includes midnight UTC and `--until` excludes midnight UTC. Execution
+requires `POSTHOG_PERSONAL_API_KEY` and numeric `POSTHOG_PROJECT_ID`. The dry run
+makes no requests and prints no credential. Browser reports require an explicit
+`tc_internal=false` marker, an exact production host and no positive test/person
+or verification flag. Unmarked historical events remain unclassified. Server
+payment reports retain missing browser host/marker properties while excluding
+positive internal/test evidence. Inspect the population-coverage tables before
+interpreting a change.
+
+The script reports raw observations and deduplicated consented cash evidence.
+It does not calculate a purchase funnel by dividing server payments by browser
+starts. It excludes conflicting checkout amount/currency snapshots pending
+reconciliation. A false internal marker cannot prove that the owner remembered
+to mark every testing browser. The optional checkout-source question remains
+disabled by owner choice.
+
+Recrawl assessment: this reporting-script and internal-spec update changes no
+public website URL. No indexing request is needed for these files.
 
 ### 4.4 Data Pipeline
 
 #### PostHog Setup
 
-- **Instance:** PostHog Cloud (EU region) for GDPR compliance. Self-hosted migration path documented for future scale.
+- **Instance:** PostHog Cloud in the EU region. Hosting region alone does not establish that collection and consent behavior meet the project policy.
 - **Client SDK:** `posthog-js` initialized in `apps/web/lib/posthog.ts`, called from the consent-gated `apps/web/app/components/analytics-provider.tsx`. `apps/web/lib/analytics-events.ts` (`track()`) ensures all events pass through a single typed interface.
-- **Server-side:** The Hono API (`apps/api`) uses `posthog-node` to track server-side events (e.g., `checkout_completed` from Stripe webhooks, `github_commit_pushed` from the commit flow).
+- **Server-side:** The Hono API (`apps/api`) uses `posthog-node` for consent-gated server events, including Stripe `payment_completed` and solution `code_pushed`. The current server contract owns settlement fields.
 - **Feature Flags:** PostHog feature flags gate new content and UI experiments. Flags are evaluated server-side in Next.js middleware for instant page-level gating.
 - **Session Replay:** Off since 2026-11-12. `apps/web/lib/posthog.ts` passes `disable_session_recording: true`, `enable_heatmaps: false` and `enable_recording_console_log: false`, so the web SDK records no replays whatever the project setting says. The privacy policy covers pageviews and product events only. Turning replay on requires a policy disclosure and a new consent version first (`docs/post-launch-backlog.md` B0).
 - **Data Retention:** Raw events retained for 12 months. Aggregated metrics retained indefinitely.
-- **PII Policy:** No PII (name, email) is sent to PostHog. Users are identified by their Supabase user id (a random UUID, not hashed). Elements that render a name, email or handle carry `ph-no-capture`, which keeps them out of autocapture and blanks them in replays. Email-based cohort analysis is done in Supabase directly.
+- **Data minimization:** Product events should omit names and email addresses. Identified users use their Supabase UUID. `ph-no-capture` protects relevant rendered elements, but it does not remove names from page-title properties. Certificate-title and geolocation behavior remain explicit verification/minimization tasks. Replay, heatmaps and console recording stay disabled. Keep contact-based analysis separate from product events.
 
 ---
 

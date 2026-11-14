@@ -10,7 +10,7 @@ import {
   serializeJsonLd,
 } from "@/lib/site-identity";
 
-const REVIEWED_AT = "2026-11-12";
+const UPDATED_AT = "2026-11-14";
 const title = "JavaScript ML courses compared, Tensorcraft";
 const description =
   "Compare machine learning options for JavaScript developers by goal, prerequisites, runtime, and project work, with links to the providers' published curricula.";
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     siteName: "Tensorcraft",
     title,
     description,
-    modifiedTime: REVIEWED_AT,
+    modifiedTime: UPDATED_AT,
     images: [image],
   },
   twitter: { card: "summary_large_image", title, description, images: [image] },
@@ -68,6 +68,12 @@ const OPTIONS = [
     href: "https://master.dev/courses/tensorflow-js/",
   },
   {
+    id: "grider",
+    name: "Machine Learning with Javascript",
+    publisher: "Stephen Grider, Udemy",
+    href: "https://www.udemy.com/course/machine-learning-with-javascript/",
+  },
+  {
     id: "fastai",
     name: "Practical Deep Learning",
     publisher: "fast.ai",
@@ -97,6 +103,8 @@ const ROWS: Row[] = [
       "Use pretrained models, transfer learning, and custom prediction models with ml5.js.",
     charlie:
       "Use pretrained models and train custom models for image, gesture, and audio applications.",
+    grider:
+      "Implement ML algorithms from scratch, then use low-level TensorFlow.js operations to build and optimize them.",
     fastai:
       "Apply deep learning to vision, text, tabular data, and recommendations, then deploy models.",
     scrimba:
@@ -112,6 +120,8 @@ const ROWS: Row[] = [
     freecodecamp: "JavaScript and ml5.js for browser projects.",
     charlie:
       "JavaScript and TensorFlow.js, including webcam input in the browser.",
+    grider:
+      "JavaScript with TensorFlow.js, command-line tooling, and browser project examples.",
     fastai: "Python notebooks with PyTorch, fastai, and other libraries.",
     scrimba:
       "JavaScript and TypeScript. Projects use browser and server code, hosted model APIs, or local models.",
@@ -127,6 +137,8 @@ const ROWS: Row[] = [
     freecodecamp:
       "The course announcement introduces ml5.js to beginners and lists no formal prerequisites.",
     charlie: "Introductory web development or equivalent knowledge.",
+    grider:
+      "Basic terminal and command-line use, plus the ability to read basic math equations.",
     fastai: "Coding experience, preferably Python, and high-school math.",
     scrimba:
       "Check the individual module's setup guide for its language, package, and provider requirements.",
@@ -143,6 +155,8 @@ const ROWS: Row[] = [
       "Free YouTube video course by Henry Ly with project walkthroughs.",
     charlie:
       "Video lessons, transcripts, and follow-along recognition projects.",
+    grider:
+      "Video lectures and follow-along implementation projects. The public syllabus lists 17 hours and 40 minutes.",
     fastai:
       "Free video course, notebooks, book, forums, and independent projects.",
     scrimba:
@@ -160,6 +174,8 @@ const ROWS: Row[] = [
       "MobileNet image recognition, a Teachable Machine clone, and a saved student-score prediction model.",
     charlie:
       "Custom webcam models and image, gesture, or audio recognition applications.",
+    grider:
+      "A JavaScript k-nearest-neighbor classifier and linear or logistic regression implementations.",
     fastai:
       "Trained models for practical tasks, with a path to a deployed web application.",
     scrimba:
@@ -179,7 +195,7 @@ export default function ComparePage() {
     publisher: { "@id": ORGANIZATION_ID },
     isPartOf: { "@id": WEBSITE_ID },
     mainEntityOfPage: url,
-    dateModified: REVIEWED_AT,
+    dateModified: UPDATED_AT,
     description,
     url,
     citation: [
@@ -187,6 +203,7 @@ export default function ComparePage() {
         (option) => option.href,
       ),
       "https://www.tensorflow.org/js/tutorials",
+      "https://www.manning.com/books/deep-learning-with-javascript",
     ],
   };
 
@@ -208,8 +225,8 @@ export default function ComparePage() {
           <Link href="/about" rel="author" className={linkClass}>
             Tensorcraft
           </Link>
-          . Sources reviewed{" "}
-          <time dateTime={REVIEWED_AT}>November 12, 2026</time>.
+          . Comparison updated{" "}
+          <time dateTime={UPDATED_AT}>November 14, 2026</time>.
         </p>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mb-12">
@@ -231,7 +248,7 @@ export default function ComparePage() {
           id="comparison-scroll-help"
           className="mb-4 text-sm leading-relaxed text-text-muted"
         >
-          Scroll horizontally to compare all seven options. The criteria stay
+          Scroll horizontally to compare all eight options. The criteria stay
           visible on the left.
         </p>
         <div
@@ -316,6 +333,26 @@ export default function ComparePage() {
           video. Check each provider&apos;s course page for current access
           terms.
         </p>
+
+        <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mt-12">
+          <h2 className="text-2xl font-mono font-bold text-text-primary">
+            A TensorFlow.js book
+          </h2>
+          <p>
+            Manning&apos;s{" "}
+            <a
+              href="https://www.manning.com/books/deep-learning-with-javascript"
+              className={linkClass}
+            >
+              Deep Learning with JavaScript
+            </a>{" "}
+            is a January 2020 book for JavaScript programmers. Its published
+            scope includes browser neural networks, image and language
+            processing, and transfer learning with TensorFlow.js. The publisher
+            supplies source code for the examples. Check those examples&apos;
+            dependencies against the library version you plan to use.
+          </p>
+        </section>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mt-12">
           <h2 className="text-2xl font-mono font-bold text-text-primary">

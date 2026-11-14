@@ -151,6 +151,13 @@
   the recorded request before submitting again, and do not repeatedly submit
   unchanged URLs or imply that a request guarantees indexing or AI citations.
 
+## Outreach pause (owner instruction, 2026-11-14)
+
+- Keep reviewer contact, learner recruitment, curator pitches, community
+  promotion and other outreach paused until the owner confirms that the main
+  repository is private again. Continue internal work and prepare drafts.
+  This instruction does not request a repository visibility change.
+
 ## Git Rules
 
 - **Never commit on behalf of the user.** Do not run `git add`, `git commit`, or `git push` unless explicitly asked. After writing or editing code, stop and let the user decide when to commit.

@@ -11,6 +11,7 @@ import {
   type RoomTrainingResult,
 } from "../../../public/demos/room-training.mjs";
 import preview from "../../../public/assignments/room-project-preview.json";
+import reference from "../../../public/assignments/room-training-reference-v1.json";
 
 const bytes = readFileSync(
   new URL(
@@ -33,6 +34,23 @@ beforeAll(async () => {
 });
 
 describe("browser room training", () => {
+  it("keeps the published supplied reference tied to the actual numerical run and source versions", () => {
+    expect(reference.kind).toBe("supplied-maintainer-reference");
+    expect(reference.runtimeVersion).toBe(result.runtimeVersion);
+    expect(reference.backend).toBe(result.backend);
+    expect(reference.epochs).toBe(result.epochs);
+    expect(reference.counts).toEqual(result.counts);
+    expect(reference.periods).toEqual(result.periods);
+    expect(reference.modelMetrics).toEqual(result.modelMetrics);
+    expect(reference.baselineMetrics).toEqual(result.baselineMetrics);
+    for (const [url, hash] of Object.entries(reference.sourceHashes)) {
+      const bytes = readFileSync(
+        new URL(`../../../public${url}`, import.meta.url),
+      );
+      expect(createHash("sha256").update(bytes).digest("hex")).toBe(hash);
+    }
+  });
+
   it("reproduces the identified fixture and computes a paired validation comparison", () => {
     expect(createHash("sha256").update(bytes).digest("hex")).toBe(
       ROOM_DATA_SHA256,

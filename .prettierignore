@@ -25,3 +25,7 @@ packages/content/content
 # into zips by scripts/package-*.py; formatting them after packaging made the
 # download differ from the served files (audit 2026-09-20). Hands off.
 apps/web/public/assignments
+
+# Versioned reproduction exports are copied and hashed by their package script.
+# Format the source templates, then rebuild rather than editing the export.
+apps/web/public/evidence

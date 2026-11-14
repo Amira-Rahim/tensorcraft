@@ -11,6 +11,7 @@ import {
 import preview from "@/public/assignments/room-project-preview.json";
 import { ThresholdExample } from "./threshold-example";
 import { TrainingDemo } from "./training-demo";
+import { TrainingReference } from "./training-reference";
 
 const guide = getGuide("browser-machine-learning-project");
 const updatedDate = new Intl.DateTimeFormat("en-US", {
@@ -20,8 +21,7 @@ const updatedDate = new Intl.DateTimeFormat("en-US", {
 const url = `${SITE_URL}${guide.path}`;
 const image = `/api/og?title=${encodeURIComponent("A browser ML project")}&world=deep-orbit`;
 const firstLesson = "/worlds/deep-orbit/foundations/introduction-to-tensors";
-const evidenceSource =
-  "https://github.com/Amira-Rahim/tensorcraft/blob/65a1c242eaef5dd310a7a1093f420ad92bbe2b4d";
+const evidenceSource = "/evidence/room-project-v1";
 
 export const metadata: Metadata = {
   title: `${guide.title}, Tensorcraft`,
@@ -171,6 +171,7 @@ export default function BrowserProjectGuide() {
             for access controls.
           </p>
         </section>
+        <TrainingReference />
         <TrainingDemo />
         <ThresholdExample />
         <section className={section}>
@@ -222,8 +223,25 @@ export default function BrowserProjectGuide() {
             >
               preview builder
             </a>{" "}
-            in the source repository. These links pin the source version. The
-            training file&apos;s hash matches the record above.
+            in the versioned reproduction package. Its{" "}
+            <a className={link} href={`${evidenceSource}/manifest.json`}>
+              file manifest
+            </a>{" "}
+            records the source hashes. The training file&apos;s hash matches the
+            record above.
+          </p>
+          <p>
+            Download the{" "}
+            <a className={link} href="/evidence/room-project-v1.zip">
+              standalone reproduction package
+            </a>{" "}
+            and follow its{" "}
+            <a className={link} href={`${evidenceSource}/README.md`}>
+              reproduction instructions
+            </a>
+            . It includes the supplied fixture and the tools to check it, with
+            no main-repository checkout required. The learner starter remains a
+            separate download without a trained solution.
           </p>
         </section>
         <section className={section}>

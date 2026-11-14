@@ -35,6 +35,6 @@
     "parity.json": "0fad6643979d9cb9cd061aa62dfa9e9581ddb9e372c7647927412aa3e259c9a9"
   },
   "fixtureSourceSha256": "7561c5e6ac58d51afb0eba0a862b887a6b9a4d7793b467a577d435cc8d96449c",
-  "reproduce": "node scripts/check-room-project.mjs; then node scripts/build-room-project-preview.mjs <printed project folder>",
+  "reproduce": "Download https://tensorcraft.app/evidence/room-project-v1.zip and extract it. In the exported folder run npm ci --ignore-scripts --no-audit --no-fund, then npm run reproduce. See https://tensorcraft.app/evidence/room-project-v1/README.md for prerequisites and the separate browser check.",
   "limitations": "Five fixed epochs verify integration. This is a validation example where both policies are wrong, not a quality recommendation, calibrated probability, or learner result."
 }

@@ -38,6 +38,11 @@ async function renderPage(id: string = RECORD.id): Promise<string> {
   return renderToStaticMarkup(element);
 }
 
+async function metadata(id: string = RECORD.id) {
+  const { generateMetadata } = await import("./page");
+  return generateMetadata({ params: Promise.resolve({ id }) });
+}
+
 describe("certificates/[id] share page", () => {
   beforeEach(() => {
     vi.unstubAllGlobals();
@@ -91,5 +96,60 @@ describe("certificates/[id] share page", () => {
     const html = await renderPage();
     expect(html).not.toContain("/seals/");
     expect(html).not.toContain("/patches/");
+  });
+
+  it("keeps the document title generic while preserving the intentional share preview", async () => {
+    stubFetch(RECORD);
+    const result = await metadata();
+    expect(result.title).toBe("Certificate of completion, Tensorcraft");
+    expect(result.title).not.toContain(RECORD.user_display_name);
+    expect(result.robots).toEqual({ index: false, follow: true });
+    expect(result.alternates?.canonical).toBe(
+      `https://tensorcraft.app/certificates/${RECORD.id}`,
+    );
+    expect(result.openGraph?.title).toBe(
+      "Amira Salah completed Deep Orbit, Tensorcraft",
+    );
+    expect(result.twitter?.title).toEqual(result.openGraph?.title);
+    expect(result.twitter).toMatchObject({ card: "summary_large_image" });
+    const images = result.openGraph?.images as string[];
+    const image = new URL(images[0], "https://tensorcraft.app");
+    expect(image.searchParams.get("learner")).toBe(RECORD.user_display_name);
+    expect(image.searchParams.get("world")).toBe(RECORD.world_id);
+    expect(result.twitter?.images).toEqual(images);
+  });
+
+  it("uses a generic title and share fallback when the learner has no display name", async () => {
+    stubFetch({ ...RECORD, user_display_name: null });
+    const result = await metadata();
+    expect(result.title).toBe("Certificate of completion, Tensorcraft");
+    expect(result.openGraph?.title).toBe(
+      "A Tensorcraft learner completed Deep Orbit, Tensorcraft",
+    );
+    expect(result.twitter?.title).toEqual(result.openGraph?.title);
+  });
+
+  it("handles an unrecognized world without using record values in the document title", async () => {
+    stubFetch({ ...RECORD, world_id: "retired-world" });
+    const result = await metadata();
+    expect(result.title).toBe("Certificate of completion, Tensorcraft");
+    expect(result.openGraph?.title).toBe(
+      "Amira Salah completed retired-world, Tensorcraft",
+    );
+    expect(result.robots).toEqual({ index: false, follow: true });
+  });
+
+  it("keeps missing and malformed certificate metadata generic and out of search", async () => {
+    stubFetch(null, 404);
+    expect(await metadata()).toEqual({
+      title: "Certificate of completion, Tensorcraft",
+      robots: { index: false, follow: true },
+    });
+    vi.mocked(fetch).mockClear();
+    expect(await metadata("not-a-certificate-id")).toEqual({
+      title: "Certificate of completion, Tensorcraft",
+      robots: { index: false, follow: true },
+    });
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

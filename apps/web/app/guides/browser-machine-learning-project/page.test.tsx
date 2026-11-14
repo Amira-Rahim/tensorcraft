@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import ProjectGuide, { metadata } from "./page";
 import { ThresholdExample } from "./threshold-example";
 import preview from "@/public/assignments/room-project-preview.json";
+import reference from "@/public/assignments/room-training-reference-v1.json";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -65,6 +66,24 @@ describe("public project evidence", () => {
     )[0];
     expect(schema.mainEntityOfPage).toBe(metadata.alternates?.canonical);
     expect(schema.dateModified).toBe(doc.querySelector("time")!.dateTime);
+    expect(
+      doc.querySelector('a[href="/evidence/room-project-v1.zip"]'),
+    ).not.toBeNull();
+    for (const path of [
+      "scripts/check-room-project.mjs",
+      "scripts/fixtures/room-project/train.mjs",
+      "scripts/build-room-project-preview.mjs",
+      "manifest.json",
+      "README.md",
+    ]) {
+      expect(
+        doc.querySelector(`a[href="/evidence/room-project-v1/${path}"]`),
+      ).not.toBeNull();
+    }
+    expect(
+      doc.querySelector('a[href*="github.com/Amira-Rahim/tensorcraft"]'),
+    ).toBeNull();
+    expect(preview.reproduce).toContain("/evidence/room-project-v1.zip");
   });
   it("explains runnable training in initial HTML without inventing a completed run", () => {
     const doc = new DOMParser().parseFromString(
@@ -101,5 +120,36 @@ describe("public project evidence", () => {
     expect(
       screen.getByText(/does not establish a useful threshold/),
     ).toBeInTheDocument();
+  });
+
+  it("exposes versioned supplied comparison evidence in initial HTML while keeping browser results separate", () => {
+    const doc = new DOMParser().parseFromString(
+      renderToStaticMarkup(<ProjectGuide />),
+      "text/html",
+    );
+    const region = doc.querySelector(
+      '[aria-label="Supplied reference validation comparison"]',
+    )!;
+    expect(region.textContent).toContain(
+      "Supplied reference on 400 validation readings",
+    );
+    expect(region.textContent).toContain("94.75%");
+    expect(region.textContent).toContain("91%");
+    expect(region.textContent).toContain("Illustrative error cost");
+    expect(
+      doc.querySelector(
+        'a[href="/assignments/room-training-reference-v1.json"]',
+      ),
+    ).not.toBeNull();
+    expect(
+      doc.querySelector(`time[datetime="${reference.verifiedOn}"]`),
+    ).not.toBeNull();
+    expect(doc.body.textContent).toContain(
+      "These are supplied reference results",
+    );
+    expect(doc.body.textContent).toContain(
+      "Your browser run appears in its own section below",
+    );
+    expect(doc.body.textContent).not.toContain("This browser run");
   });
 });

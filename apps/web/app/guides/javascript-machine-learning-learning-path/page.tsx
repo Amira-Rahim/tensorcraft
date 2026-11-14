@@ -61,6 +61,10 @@ const jsonLd = [
       "https://www.tensorflow.org/resources/learn-ml/basics-of-tensorflow-for-js-development",
       "https://www.tensorflow.org/js/guide/train_models",
       "https://www.tensorflow.org/js/models",
+      "https://huggingface.co/docs/transformers.js/en/index",
+      "https://onnxruntime.ai/docs/get-started/with-javascript/web.html",
+      "https://ml5js.org/learn/",
+      "https://ai.google.dev/gemini-api/docs/api-key",
     ],
   },
   {
@@ -103,6 +107,39 @@ const moduleOutputs: Record<string, string> = {
   capstone:
     "Release checks, monitoring, documentation, and a rehearsal of the assembled system.",
 };
+
+const runtimeChoices = [
+  {
+    task: "Build and train a small model in JavaScript",
+    tool: "TensorFlow.js",
+    href: "https://www.tensorflow.org/js/guide/train_models",
+    work: "Prepare tensors, fit model weights, inspect loss and evaluate separate examples. Browser and Node.js setups use different execution options.",
+  },
+  {
+    task: "Run a pretrained text, image or audio pipeline",
+    tool: "Transformers.js",
+    href: "https://huggingface.co/docs/transformers.js/en/index",
+    work: "Load a compatible model and its input processing. Browser examples use WebAssembly on the CPU or supported WebGPU execution. Check model download size and memory use.",
+  },
+  {
+    task: "Run an exported ONNX model in a web app",
+    tool: "ONNX Runtime Web",
+    href: "https://onnxruntime.ai/docs/get-started/with-javascript/web.html",
+    work: "Match the model's input types, shapes and operations to a supported browser execution option. The model file and its preprocessing need to agree.",
+  },
+  {
+    task: "Build a recognition or creative-coding sketch",
+    tool: "ml5.js",
+    href: "https://ml5js.org/learn/",
+    work: "Start from a documented model example, such as image classification or pose detection. Many examples use p5.js. Match library versions and request camera access when the example needs it.",
+  },
+  {
+    task: "Build a feature around a remotely hosted model",
+    tool: "A provider's model API or SDK",
+    href: "https://ai.google.dev/gemini-api/docs/api-key",
+    work: "Handle requests, errors, latency and usage costs. Keep long-lived private credentials on your server. The linked Gemini guide illustrates one provider's authentication requirements.",
+  },
+] as const;
 
 const linkClass = "text-primary underline underline-offset-4";
 const headingClass = "font-mono text-2xl font-bold tracking-tight sm:text-3xl";
@@ -147,7 +184,7 @@ export default function JavaScriptLearningPath() {
               Tensorcraft
             </Link>
             , a group of JavaScript engineers. Updated{" "}
-            <time dateTime={guide.updatedAt}>November 10, 2026</time>.
+            <time dateTime={guide.updatedAt}>November 14, 2026</time>.
           </p>
         </header>
 
@@ -243,6 +280,71 @@ export default function JavaScriptLearningPath() {
                 pretrained model catalog
               </a>{" "}
               gives you existing models to try on supported tasks.
+            </p>
+          </div>
+        </section>
+
+        <section aria-labelledby="runtime-choice" className={sectionClass}>
+          <div className="max-w-3xl space-y-5">
+            <h2 id="runtime-choice" className={headingClass}>
+              JavaScript ML tools for the task
+            </h2>
+            <p>
+              Choose a starting tool around the model work your feature needs. A
+              library can support several kinds of work. Follow its model
+              format, setup and execution requirements before choosing an API.
+            </p>
+          </div>
+          <div
+            role="region"
+            aria-label="JavaScript ML task and tool choices"
+            tabIndex={0}
+            className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          >
+            <table className="w-full min-w-[36rem] border-collapse text-left text-sm sm:text-base">
+              <caption className="mb-4 text-left font-medium">
+                Starting points for local models and hosted model APIs
+              </caption>
+              <thead>
+                <tr className="border-b border-border">
+                  <th scope="col" className="w-1/4 p-3 align-top">
+                    Your task
+                  </th>
+                  <th scope="col" className="w-1/4 p-3 align-top">
+                    Starting tool and source
+                  </th>
+                  <th scope="col" className="p-3 align-top">
+                    Work and setup to check
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {runtimeChoices.map((choice) => (
+                  <tr key={choice.tool} className="border-b border-border">
+                    <th scope="row" className="p-3 align-top font-medium">
+                      {choice.task}
+                    </th>
+                    <td className="p-3 align-top">
+                      <a href={choice.href} className={linkClass}>
+                        {choice.tool}
+                      </a>
+                    </td>
+                    <td className="p-3 align-top">{choice.work}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="max-w-3xl space-y-5">
+            <p>
+              ONNX Runtime Web also documents a separate training demo with its
+              own setup. Follow the linked guide when exploring that route.
+            </p>
+            <p>
+              Match the installed library and model versions to their
+              documentation. Test the exact model, browser and execution option
+              on the devices you expect people to use. Browser GPU support and
+              model loading costs can affect that choice.
             </p>
           </div>
         </section>

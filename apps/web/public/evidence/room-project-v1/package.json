@@ -1,0 +1,18 @@
+{
+  "name": "tensorcraft-room-project-evidence",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MPL-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "verify": "node verify.mjs",
+    "reproduce": "node reproduce.mjs",
+    "check:browser": "node scripts/check-room-project.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
+  }
+}

@@ -87,6 +87,49 @@ describe("JavaScript ML learning path", () => {
     expect(doc.querySelector('a[href="/pricing#curriculum"]')).not.toBeNull();
   });
 
+  it("exposes task-specific tools and their setup boundaries before interaction", () => {
+    const doc = initialDocument();
+    const choices = doc.querySelector(
+      'section[aria-labelledby="runtime-choice"]',
+    )!;
+    const region = choices.querySelector('[role="region"]')!;
+    expect(region.getAttribute("tabindex")).toBe("0");
+    const rows = [...choices.querySelectorAll("tbody tr")];
+    expect(rows).toHaveLength(5);
+    expect(
+      rows.map((row) => row.querySelector("a")!.getAttribute("href")),
+    ).toEqual([
+      "https://www.tensorflow.org/js/guide/train_models",
+      "https://huggingface.co/docs/transformers.js/en/index",
+      "https://onnxruntime.ai/docs/get-started/with-javascript/web.html",
+      "https://ml5js.org/learn/",
+      "https://ai.google.dev/gemini-api/docs/api-key",
+    ]);
+    for (const row of rows) {
+      expect(row.querySelectorAll('th[scope="row"]')).toHaveLength(1);
+      expect(row.querySelectorAll("td")).toHaveLength(2);
+    }
+    expect(rows[1].textContent).toContain("pretrained");
+    expect(rows[1].textContent).toContain("WebAssembly");
+    expect(rows[2].textContent).toContain("input types, shapes and operations");
+    expect(rows[4].textContent).toContain("private credentials on your server");
+    expect(choices.textContent).toContain("separate training demo");
+    expect(choices.textContent).toContain(
+      "Match the installed library and model versions",
+    );
+    const article = JSON.parse(
+      doc.querySelector('script[type="application/ld+json"]')!.textContent!,
+    )[0];
+    const visibleHrefs = new Set(
+      [...doc.querySelectorAll("a")].map((anchor) =>
+        anchor.getAttribute("href"),
+      ),
+    );
+    for (const citation of article.citation) {
+      expect(visibleHrefs.has(citation)).toBe(true);
+    }
+  });
+
   it("matches visible author, update date, and canonical identity in structured data", () => {
     const doc = initialDocument();
     const data = JSON.parse(
