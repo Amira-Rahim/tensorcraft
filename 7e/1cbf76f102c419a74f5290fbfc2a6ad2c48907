@@ -1,0 +1,32 @@
+scripts/runtime-lab/converter-requirements.txt
+  s_23a8ecc63f4366::t_08601d6a32d353 1,51-52
+docs/runtime-lab.md
+  s_23a8ecc63f4366::t_08601d6a32d353 32-33,35-38
+  s_23a8ecc63f4366::t_27c985be6868df 34
+LICENSING.md
+  s_23a8ecc63f4366::t_08601d6a32d353 21-23
+docs/audits/dependency-ci-2026-11-19.md
+  s_23a8ecc63f4366::t_7637e841da5294 36-40
+  s_23a8ecc63f4366::t_08601d6a32d353 29-35,41-44
+scripts/package-runtime-lab.py
+  s_23a8ecc63f4366::t_08601d6a32d353 17-18
+scripts/build-runtime-lab-hub-wheel.py
+  s_23a8ecc63f4366::t_43ec01681ac09a 33-35,39-40,71-72,79-80,84-86
+  s_23a8ecc63f4366::t_8db8c1da5ab2e7 1-32,36-38,41-70,73-78,81-83,87-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7e1cbf76f102c419a74f5290fbfc2a6ad2c48907",
+  "prompts": {},
+  "sessions": {
+    "s_23a8ecc63f4366": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1f364-c009-7e23-b4fe-9a0b211d652b",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
