@@ -26,3 +26,19 @@ The public file affected by this PR is
 [`/assignments/browser-runtime-lab-v1.zip`](https://tensorcraft.app/assignments/browser-runtime-lab-v1.zip).
 The production URL serves a ZIP and sits outside the sitemap. The lessons
 keep the same download link and page content. No search recrawl is needed.
+
+## Browser runtime lab setuptools update, November 20
+
+PR #89 upgrades setuptools to 84.1.0. TensorFlow Hub 0.16.1 imports
+`pkg_resources` when the converter starts. The learner ZIP includes a
+patched Hub wheel that uses `packaging.version` for that check.
+
+On Apple silicon, a fresh Python 3.11.18 environment installed the
+requirements from the extracted ZIP and passed `pip check`. The converter
+exported both uint8 and uint16 models. Chromium loaded both, and each
+matched the original model's classifications on all 261 probes.
+
+The change updates the contents of
+[`/assignments/browser-runtime-lab-v1.zip`](https://tensorcraft.app/assignments/browser-runtime-lab-v1.zip).
+The ZIP stays outside the sitemap. Lesson pages keep their existing content
+and download URL, so this change needs no search recrawl.

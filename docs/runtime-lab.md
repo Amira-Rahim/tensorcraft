@@ -29,6 +29,13 @@ TFJS_CONVERTER="$PWD/.venv-runtime/bin/tensorflowjs_converter" \
   node scripts/check-runtime-lab.mjs --pretrained
 ```
 
+The requirements file installs a bundled TensorFlow Hub 0.16.1 wheel. It
+uses `packaging.version` to check TensorFlow's version at startup because
+setuptools removed `pkg_resources` in version 82. To reproduce the wheel, run
+`python3 scripts/build-runtime-lab-hub-wheel.py`. An official Hub release
+with the [upstream fix](https://github.com/tensorflow/hub/pull/935) can
+replace the bundled copy.
+
 `--pretrained` downloads about 335 MB of pinned ONNX model weights plus
 tokenizer/configuration files. Downloads are cached under
 `test-results/runtime-model-cache/`. The lab records their SHA-256 hashes.

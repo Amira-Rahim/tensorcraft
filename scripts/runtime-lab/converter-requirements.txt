@@ -1,3 +1,4 @@
+--find-links ./wheels
 absl-py==2.3.1
 astunparse==1.6.3
 certifi==2026.10.19
@@ -42,13 +43,13 @@ PyYAML==6.0.3
 requests==2.33.0
 rich==15.0.0
 scipy==1.13.1
-# TensorFlow Hub 0.16.1 imports pkg_resources when the converter starts.
 setuptools==84.1.0
 six==1.17.0
 tensorboard==2.18.0
 tensorboard-data-server==0.7.2
 tensorflow==2.18.0
-tensorflow-hub==0.16.1
+# The bundled wheel uses packaging.version with setuptools 82 and later.
+tensorflow-hub==0.16.1+tensorcraft.1
 tensorflow-io-gcs-filesystem==0.37.1
 tensorflow_decision_forests==1.11.0
 tensorflowjs==4.22.0
