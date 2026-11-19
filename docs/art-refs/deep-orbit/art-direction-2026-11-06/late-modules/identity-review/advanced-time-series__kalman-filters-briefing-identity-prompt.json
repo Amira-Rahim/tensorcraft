@@ -1,0 +1,55 @@
+{
+  "queueIndex": 45,
+  "key": "deep-orbit/advanced-time-series/kalman-filters",
+  "phase": "briefing",
+  "status": "awaiting-identity-correction",
+  "inputScene": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+  "inputSceneSha256": "a0a74ce71f55481fc18be2565de54b6886b4615b739e61a362fe99f29a5b22b1",
+  "cast": [
+    "demir",
+    "farah"
+  ],
+  "faceBoxes": {
+    "farah": [
+      1050,
+      205,
+      310,
+      335
+    ],
+    "demir": [
+      165,
+      310,
+      340,
+      355
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261106.png",
+      "sha256": "2873769ee20929a1c86cab5e68d7ca0a0212dd347fee72d7bcc63cf151c10bde",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: identity-preserve. STRICT HEAD-ONLY IDENTITY CORRECTION. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the authoritative neutral portrait of ensign-demir. Last image is the target scene, not an identity authority. Replace only heads/hair and necessary neck transitions to faithfully match portraits. FARAH: faithfully reproduce the authoritative portrait's mature 38-year-old olive-tan face, its facial width, rounded lower cheeks, short rounded chin, broad nose bridge and rounded tip, restrained dark almond-shaped eyes, brow shapes, mouth proportions, natural dark hairline and loosely tied hair. Preserve faint eye and mouth lines. Do not slim her face, sharpen her chin, enlarge her eyes, smooth away adult features, add freckles, or give her glamorous flowing hair. Green rectangular AR lens stays on the same eye as the portrait. DEMIR: faithfully reproduce the authoritative portrait's face proportions, warm light-medium skin, broad softly squared lower face, round-ended nose, distinctive eyebrows and eye spacing, short uneven stubble with small below-lip patch, sparse freckles, compact tousled hair with the same front locks and green round comms earpiece. Do not elongate his jaw, make a different handsome anime character, increase eye size, expand the quiff, or change his mid-twenties age. IMPORTANT turn any sharply profiled face toward camera into a natural near-frontal three-quarter view so both eyes, full cheek width and round nose base are clearly visible. Keep the body's task and natural neck connection. Keep the story's warm expression; do not broaden smiles at cost of identity. Demir earpiece on his anatomical RIGHT ear. Farah lens same eye as portrait. Preserve EXACTLY all bodies, shoulder/elbow/wrist/hand chains, contacts, clothes, furniture, room, lighting, props, framing and every teaching display. Do not reinterpret or change any graph, curve, count, axes, data, shape, paper or screen. No new people, limbs, objects, words or symbols. One 1536x1024 scene.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__kalman-filters-briefing-identity-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261107.png",
+      "reason": "Root rejected narrow pointed Demir profile. Selected stronger independent art_repair_batch candidate instead."
+    }
+  ],
+  "candidateAuthor": "/root/art_repair_batch",
+  "candidateMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/window-kalman-identity-pending.json"
+}

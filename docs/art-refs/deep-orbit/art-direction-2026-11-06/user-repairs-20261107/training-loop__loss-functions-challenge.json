@@ -1,0 +1,204 @@
+{
+  "key": "deep-orbit/training-loop/loss-functions",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical Demir"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical Farah"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room-only lab master"
+    },
+    {
+      "path": "/tmp/loss-functions-challenge-perspective-final.png",
+      "sha256": "435978f5510ba35db39d158bb440a7b05aba9d2ab212348d421ca8493a512382",
+      "role": "current target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+      "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+      "sha256": "6992cb41c1b8bc28b5a5cc7d1e40eebde6f5fbe95a89fc0a766dc86608fdc7f9"
+    }
+  ],
+  "sourceMeaning": {
+    "sourceSection": "Challenge and mse-loss.yaml confident and right versus confident and wrong cases",
+    "actualFixture": {
+      "labels": [
+        1,
+        0
+      ],
+      "correctLogits": [
+        3,
+        -3
+      ],
+      "wrongLogits": [
+        -3,
+        3
+      ]
+    },
+    "visibleExcerpt": "First row only, label1 in both cases. Hollow probability markers sigmoid(+3),sigmoid(-3). Both losses remain pending.",
+    "verifiedProbabilities": [
+      0.9525741268224334,
+      0.04742587317756678
+    ]
+  },
+  "prompt": "Use case: precise-object-edit, single local palette correction. First two images canonical Demir and Farah identity references. Third is lab master for ROOM GEOMETRY ONLY, not its bright lights. LAST is the approved target. Change ONLY the luminous vertical pillar between the rear display and Farah, including its faint immediate reflection in adjacent glass. Dim and desaturate the entire lime-green tube interior and all bright bands and vertical lines to a subdued dark gray-sage. Keep the bands faintly visible, no bloom, no fluorescent lime or yellow-green. Preserve pillar shape, physical rings and brass caps. Keep the scene lively with the existing warm overhead task light. Do not dim or tint any character, skin or room task lighting.\nAbsolute invariants: exact two faces and facial morphology, eyes, expressions and gaze, hair, canonical ear/lens equipment, exact head/body scale, all poses, arms, hands, tablet, laptop keyboard and closed notebook. The complete rear screen is already approved: preserve its EXACT text, size, positions, probability rails, endpoint0and1, hollow markers, filled endpoint markers, projective perspective and sage colors. Preserve all other objects, surfaces, architecture, framing and colors. No restaging, new objects or screen edits. One1536x1024 clean cel-shaded scene.",
+  "candidatePath": "art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+  "candidateSha256": "aceca1966b0a8fdbe8796a453ec921bac121d22a32cfe65f718a5852f7598b3a",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-efe4d64f-7b1d-46b3-8dbe-7984623463f4.png",
+  "generationHistory": [
+    {
+      "prompt": "Use case: precise-object-edit, identity-preserving local screen perspective repair. Image1 canonical Demir face, image2 canonical Farah face. Image3 LAB MASTER is ROOM ARCHITECTURE AND MUTED PALETTE ONLY, not a pose or content reference. Image4 LAST is exact edit target. Preserve exactly both characters, their current natural expressions and gazes, canonical facial proportions, hair, adult age, Demir right-ear comms, Farah left-eye lens, head sizes, whole torsos, shoulders, all four arms and hands, seated chair, keyboard contact, held tablet back and closed notebook. No character restaging.\nPRIMARY EDIT: redraw ONLY the contents of the big rear wall screen so they are genuinely printed on its receding physical glass plane. Screen four corners define one projective homography. Use one flat rectangular two-row diagram and map EVERYTHING together into this quadrilateral. Every horizontal line and type baseline must converge with the panel top/bottom edges toward the SAME vanishing point, not stay viewer-horizontal. Rows nearer the top slope more downward toward viewer-right; lower row slopes less, following the real plane. Both rails, label baselines, numbers, divider if any, and circular markers share that projective transform. Round markers become correct perspective ellipses on the glass. Do not change the panel frame or room camera.\nGrounded content: keep the TWO probability rails, now label them as the FIRST ROW OF THE TWO SUPPLIED TEST CASES. Compact header exactly \"Supplied cases: first row\". Upper row short label \"Logit +3\" and a rail from0 to1. Hollow prediction marker at0.953, filled label marker at1. Lower row short label \"Logit -3\" and rail from0 to1. Hollow prediction marker at0.047, filled label marker at1. Common small legend exactly \"Open: sigmoid(logit)   Filled: label 1\". Small status \"Losses: pending\". Labels0and1 at each rail endpoints, no computed loss values or completion ticks. Keep diagram comfortably within screen away from character head occlusion. Accurate common scale: open upper dot very near filled right dot, open lower dot very near left endpoint; filled dots both at right endpoint. Values .953/.047 do not need extra printed labels. This comes directly from the supplied confident-correct/wrong BCE test first row, not an invented mission measurement. All type legible, short, naturally spaced, no textwall.\nDim the previously decorative secondary screen waveforms to inactive charcoal glass, no replacement invented data. Keep overall original room/skin lighting, architecture and brass. Restrain big screen ink and its border to muted sage, no neon bloom, do not introduce yellow wash. Preserve clean cel-shaded style and original1536x1024 composition. No extra props, figures or geometric overlays outside physical screens.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical Demir"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical Farah"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room-only lab master"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+          "sha256": "436646fbef527af9601878e647a79bb268489e8abbd38520bd416765542acb77",
+          "role": "exact target"
+        }
+      ],
+      "candidatePath": "/tmp/loss-functions-challenge-perspective-candidate.png",
+      "candidateSha256": "dd39ed2d6ca68e8b665ce646bf2daa4c7b55a70cc350adff5b06f65ee9023cbf",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0eba973d-0e70-45e0-a29c-7a451387a804.png",
+      "referenceCorrectionNote": "Restored original input path and SHA256 from the exact first-call generation arguments. Prior historical entry accidentally aliased the mutable references list and pointed to its own output."
+    },
+    {
+      "prompt": "Use case: precise-object-edit. First2 portraits exact canonical identities, lab master third ROOM ONLY, LAST current target. Preserve absolutely the current corrected screen perspective, every label baseline, all characters and exact faces, hair, eyes, expressions, head/body sizes, hands, poses, room and lighting. Make ONLY this narrow correction inside the big wallboard: both filled circular label1 markers must be precisely centered AT the RIGHT ENDPOINT of their rail, directly below the endpoint label1. Shorten the rail if necessary so no rail extends to right of filled marker. Both rails must share identical probability0..1 range. The upper hollow marker must have its center at0.953 of the rail length measured in the screen plane, about4.7percent of the range to the LEFT of its filled endpoint. The lower hollow marker must have its center at0.047, about4.7percent from the LEFT endpoint0. Keep marker diameters small enough that top hollow and filled dots remain distinguishable. Every marker remains the correct perspective ellipse and rail is in the existing panel homography. Preserve exact header Supplied cases: first row, row labels Logit +3 and Logit -3, legend Open: sigmoid(logit) Filled: label1, status Losses:pending, endpoint labels0and1. All text remains in same physical plane. Do not alter anything outside this two-rail display. One1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical Demir"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical Farah"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room-only lab master"
+        },
+        {
+          "path": "/tmp/loss-functions-challenge-perspective-candidate.png",
+          "sha256": "dd39ed2d6ca68e8b665ce646bf2daa4c7b55a70cc350adff5b06f65ee9023cbf",
+          "role": "current target"
+        }
+      ],
+      "candidatePath": "/tmp/loss-functions-challenge-perspective-final.png",
+      "candidateSha256": "435978f5510ba35db39d158bb440a7b05aba9d2ab212348d421ca8493a512382",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-cf4895a2-8eb5-40e1-8c73-0b91196a60e1.png",
+      "ownReview": {
+        "reviewer": "late_final",
+        "status": "approved",
+        "candidateSha256": "435978f5510ba35db39d158bb440a7b05aba9d2ab212348d421ca8493a512382",
+        "nativeFullFrame": "pass",
+        "canonicalFaces": "pass, compared directly with canonical portraits, expressions and morphology retained",
+        "anatomy": "unchanged coherent keyboard contact, tablet grip, notebook hands, torsos and head/neck alignment",
+        "screenPerspective": "Upper rail slopes down toward screen-right more than lower rail, both share receding panel plane; all short labels and endpoint markers follow panel plane. Filled markers now at exact right rail ends; hollow markers at projected near1/near0 supplied sigmoid cases.",
+        "sourceSemantics": "First row explicitly identified from same labels[1,0] and logits[3,-3]/[-3,3] fixtures, losses pending. Secondary decorative screens inactive.",
+        "proofMethod": "Native target and final plus canonical portraits inspected, no permanent crop/proof rasters created."
+      },
+      "independentReview": {
+        "reviewer": "root",
+        "candidateSha256": "435978f5510ba35db39d158bb440a7b05aba9d2ab212348d421ca8493a512382",
+        "screenSemanticsPerspective": "approved",
+        "canonicalFacesAnatomy": "approved",
+        "palette": "hold, vertical pillar glaring lime"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "aceca1966b0a8fdbe8796a453ec921bac121d22a32cfe65f718a5852f7598b3a",
+    "nativeFullFrame": "pass",
+    "palette": "Pillar bands/interior and immediate reflection now subdued dark gray-sage, no lime glow. Warm overhead task light and skin unchanged.",
+    "invariants": "Exact two faces, expressions, eyes, hair, equipment, all hands and poses, tablet/notebook/keyboard contacts retained. All approved panel text, two projected rails, endpoints and marker positions visually unchanged.",
+    "provenance": "Every current and historical generation reference path/hash checked against bytes. First-generation target corrected to original source436646fb, second targets0eba973d output, third targets cf4895a2 output.",
+    "proofMethod": "Native fullframe inspected against previous approved fullframe and canonical portraits in context, no permanent proof raster created."
+  },
+  "temporaryCandidatePathAtReview": "/tmp/loss-functions-challenge-perspective-sage.png",
+  "publishedSource": "art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+  "sourceSha256": "aceca1966b0a8fdbe8796a453ec921bac121d22a32cfe65f718a5852f7598b3a",
+  "webpSha256": "0392630daa6f782b846f839d34415e319098e0cce9b2c610f258310ec233113e",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+    "sourceSha256": "436646fbef527af9601878e647a79bb268489e8abbd38520bd416765542acb77",
+    "webpSha256": "7d991a3fbb0a5741f11b10cc25ad88c2d0a029c0b72b403182a56d8932ca9108",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f35974d8-6c15-4db5-9ee2-065653368722.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "aceca1966b0a8fdbe8796a453ec921bac121d22a32cfe65f718a5852f7598b3a",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "Canonical Demir and Farah compared directly at native resolution.",
+      "anatomy": "Keyboard hand, tablet grip, notebook fingers and whole arm/neck chains coherent.",
+      "perspective": "Rails, markers, endpoints and labels follow the wall panel perspective.",
+      "meaning": "Explicit first-row excerpt of supplied logits +3 and -3, both label1. Hollow sigmoid markers near .953 and .047; losses pending.",
+      "palette": "Gray-sage pillar and muted display, consistent warm task light.",
+      "story": "Shared working moment with gaze toward the laptop, no outward lesson card."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+        "sha256": "6992cb41c1b8bc28b5a5cc7d1e40eebde6f5fbe95a89fc0a766dc86608fdc7f9"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

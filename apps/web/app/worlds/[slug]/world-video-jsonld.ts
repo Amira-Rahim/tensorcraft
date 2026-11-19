@@ -7,9 +7,8 @@ const SITE = "https://tensorcraft.app";
  * VideoObject for a world's own trailer, a standalone block beside the
  * Course JSON-LD (extracted for the same testability reason as
  * course-jsonld.ts). This is a different film from /learn's trailer, with
- * its own contentUrl, so the two pages' video markup never competes for
- * one canonical watch page. The sitemap's video entry reads its fields
- * from this object so the identity signals stay byte-identical.
+ * its own contentUrl. The course page describes this secondary trailer,
+ * while the video sitemap lists /learn as the primary watch destination.
  *
  * Plain-language description: search snippets reach strangers with no
  * story framing, so the story hook stays off structured data (owner bar

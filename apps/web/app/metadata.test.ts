@@ -18,9 +18,8 @@ import { metadata as termsMetadata } from "./terms/page";
 import { metadata as privacyMetadata } from "./privacy/page";
 import { metadata as pricingMetadata } from "./pricing/page";
 import { metadata as worldsMetadata } from "./worlds/page";
-import { metadata as dashboardMetadata } from "./dashboard/page";
+import { metadata as dashboardMetadata } from "./dashboard/layout";
 import { metadata as settingsMetadata } from "./settings/page";
-import { metadata as purchaseSuccessMetadata } from "./dashboard/purchase-success/page";
 import { metadata as authLayoutMetadata } from "./auth/layout";
 import { metadata as onboardingLayoutMetadata } from "./onboarding/layout";
 
@@ -103,7 +102,6 @@ describe("SEO metadata", () => {
     it.each([
       ["dashboard", dashboardMetadata],
       ["settings", settingsMetadata],
-      ["purchase-success", purchaseSuccessMetadata],
       ["auth", authLayoutMetadata],
       ["onboarding", onboardingLayoutMetadata],
     ])("%s has robots index: false", (_name, meta) => {
@@ -130,10 +128,9 @@ describe("SEO metadata", () => {
   });
 
   describe("root layout structured data", () => {
-    it("has Course schema for all 5 worlds via JSON-LD (implicit)", () => {
-      // JSON-LD is rendered in layout.tsx head. Test ensures metadataBase set.
-      expect(layoutMetadata.metadataBase?.toString()).toContain(
-        "tensorcraft.app",
+    it("resolves relative metadata against the canonical production origin", () => {
+      expect(layoutMetadata.metadataBase?.toString()).toBe(
+        "https://tensorcraft.app/",
       );
     });
 

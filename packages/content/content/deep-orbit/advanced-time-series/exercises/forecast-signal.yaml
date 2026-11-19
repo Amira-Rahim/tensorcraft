@@ -208,6 +208,18 @@ testCode: |
           { name: 'Your one-step replay', values: out.oneStep },
         ],
       });
+      recordResult({
+        kind: 'table', title: 'Reference windows beside your returned forecasts',
+        summary: 'First three horizons. These windows are reconstructed references from the supplied past and prior returned rollout values or arrived observations. They do not observe the tensors your code passed to predict. Predictions are your actual returned values.',
+        columns: ['Horizon', 'Reference rollout window', 'Your rollout prediction', 'Reference replay window', 'Your replay prediction', 'Arrived observation'],
+        rows: out.rollout.slice(0, 3).map((prediction, h) => [
+          h + 1,
+          JSON.stringify([...CASE_A.past, ...out.rollout.slice(0, h)].slice(-CASE_A.windowSize)),
+          prediction,
+          JSON.stringify([...CASE_A.past, ...CASE_A.arrived.slice(0, h)].slice(-CASE_A.windowSize)),
+          out.oneStep[h], CASE_A.arrived[h],
+        ]),
+      });
     });
 
     it('builds the recurrent stack the instructions describe', async () => {

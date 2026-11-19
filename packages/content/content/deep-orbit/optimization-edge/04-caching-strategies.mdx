@@ -134,9 +134,32 @@ Help Demir separate useful reuse from stale answers. Build the cache, count the 
 ]}
 />
 
-## Inference Caching
+## One request key and one reuse decision
+
+The first required exercise keeps one cache per supplied model. Its key includes the input dtype, complete shape, and every rounded input value in order. Equal flattened values with different shapes are different requests. Rounding deliberately allows nearby inputs to collide.
+
+<CodeBlock language="javascript" title="cache-key-fields.js">
+{`const request = { dtype: 'float32', shape: [1, 2], values: [0.51, 0.5] };
+const rounded = request.values.map(value => Math.round(value * 10) / 10);
+const key = JSON.stringify([request.dtype, request.shape, rounded]);
+console.log({ rounded, key });`}
+</CodeBlock>
+
+With room for two entries, follow `A, B, A, C, A, B`. The first two requests miss. The third hits A and refreshes its recency. C then evicts B. A hits again, and the final B misses. That is four model calls and two hits. Read the activity's ordered trace to locate each eviction.
+
+Read a model prediction into plain numbers and dispose of that owned output tensor. Keep the caller's input alive. Store a copy and return a fresh array, including on a hit, so a caller cannot mutate the saved result. Recreate this model's cache after weights or preprocessing change.
+
+## Collisions, versions, and age
+
+A rounded collision can reuse another input's verdict even with current weights. An old-version entry can be stale even when it is recent. The second exercise checks supplied model versions and ages independently. Treat an age strictly greater than the TTL as expired. At the exact TTL boundary, a matching current-version entry still serves. A fresh old-version entry refreshes.
+
+The saved cache-policy decision remains a rehearsal choice. Neither this activity nor the incident audit measures device savings.
+
+## The separate application cache
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="A separate versioned application cache">
 
 <CodeBlock language="typescript" title="inference-cache.ts">
 {`class InferenceCache<T> {
@@ -239,6 +262,8 @@ console.log(optimisticMs.toFixed(4));  // 0.0215
 // keys cover every input and generation setting. Measure the complete path.`}
 </CodeBlock>
 
+</ConceptReference>
+
 This example stores strings from one fixed model and preprocessing version. JavaScript strings are immutable. For object or array results, copy them on storage and retrieval or enforce immutability. The exercise checks that callers can change a returned array without changing the cached result.
 
 This cache stores plain verdicts, so evicting an entry does not require tensor disposal. Caching tensors is possible but needs explicit ownership: dispose them on eviction and prevent callers from disposing shared handles. Otherwise later hits can fail with `Tensor is disposed.`
@@ -270,6 +295,8 @@ The next morning, a bridge console shows a cached classification that disagrees 
 Your audit returns a list the watch can act on: entries to serve and entries to refresh. Check the version and age beside each decision. This audit handles stale entries. It does not fix collisions caused by rounded input keys.
 
 <Exercise slug="incident-stale-verdict" />
+
+Compare your served and refreshed ID lists in their original order. For each surprising entry, inspect version first, then age against the exact boundary. A matching key alone cannot establish that an earlier verdict remains valid.
 
 <RecallPrompt
   question="When does a cache save work, and when is a stored prediction still valid?"

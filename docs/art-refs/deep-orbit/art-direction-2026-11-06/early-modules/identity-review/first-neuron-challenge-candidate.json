@@ -1,0 +1,86 @@
+{
+  "module": "neural-networks",
+  "lesson": "first-neuron",
+  "phase": "challenge",
+  "src": "/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+  "index": 12,
+  "characters": [
+    "ensign-demir",
+    "dr-farah"
+  ],
+  "prompt": "Strict identity-only repair. Image1 canonical Demir, image2 canonical Farah, image3 target scene. Correct Farah's FACE at the right side of the target only: turn her head slightly toward camera into a natural near-frontal three-quarter view while preserving her task and neck/body connection. She is the EXACT adult 38-year-old in portrait2. Her current tiny pinched nose and narrow triangular lower face are wrong. Faithfully restore her wider round-ended nose with full nostrils, broad rounded lower cheeks, compact round chin, adult restrained eyes and mouth proportions. Keep mature eye and smile creases. Preserve olive-tan skin, compact dark waves loosely tied and rectangular green AR lens on the same anatomical eye. Do not merely add lines to the same wrong geometry. Preserve Demir's already approved facial proportions and all bodies, arms, hands, fingers, clothing, furniture, screens, diagrams, scene framing and lighting unchanged. No other people or text. 1536x1024.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-96193c8a-6052-4fbc-9006-591c905acf0e.png"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-22bc5161-07c2-45e5-8c89-6e419bb2e247.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-96193c8a-6052-4fbc-9006-591c905acf0e.png",
+      "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of dr-farah. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=702): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. DR-FARAH (portrait 2, scene head near x=1163): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+      "references": [
+        "docs/art-refs/deep-orbit/ensign-demir.png",
+        "docs/art-refs/deep-orbit/dr-farah.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp"
+      ],
+      "reason": "Peer hold: Farah tiny nose, narrow pointed lower face."
+    }
+  ],
+  "candidate": "/tmp/early-identity-candidates/12.webp",
+  "candidateSha256": "5e0480394cc832d64f674db1ddf190192e106de5c3be7e75677c6cf1f8ddc061",
+  "sourceSha256": "e9c52ffc397133aaa5460c4675f5dffe7771d07fd50a608ec30e528aa4f3e094",
+  "beforeSha256": "bf3c46b00566a526145cc9de74c403ac4f5faa10e872e84f323601513c160b74",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-96193c8a-6052-4fbc-9006-591c905acf0e.png",
+      "role": "edit target",
+      "sha256": "c80156055e9848d33c53ac00314d86bc9390c1ef7ad328271def5e0bf75b7cd9"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 156860,
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-challenge-ensign-demir-correction.png",
+      "crop": {
+        "left": 540,
+        "top": 165,
+        "width": 324,
+        "height": 405
+      }
+    },
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-challenge-dr-farah-correction.png",
+      "crop": {
+        "left": 990,
+        "top": 15,
+        "width": 345,
+        "height": 405
+      }
+    }
+  ]
+}

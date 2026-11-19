@@ -6,15 +6,8 @@ import { buildCourseJsonLd } from "../course-jsonld";
 import { FAQ_ITEMS } from "../../../faq-data";
 
 /**
- * First coverage of the launched-world Course JSON-LD (2026-08-17), extracted
- * from page.tsx the same way pricing-jsonld.ts was: inline structured data in
- * an async server component had no tests, and that is how the pricing offers
- * shipped PreOrder for months.
- *
- * The trigger was a Search Console audit: the page emitted an otherwise valid
- * Course while missing offers.category, the one field Google's Course-info
- * rich result requires beyond the offer itself, so the page was ineligible
- * and GSC showed zero enhancements sitewide.
+ * The launched-world Course description must agree with the current offer,
+ * audience, and estimated workload shown to learners.
  */
 describe("buildCourseJsonLd", () => {
   // The same basis page.tsx sums for the module map: lesson minutes plus
@@ -25,12 +18,12 @@ describe("buildCourseJsonLd", () => {
   );
   const jsonLd = buildCourseJsonLd(worlds["deep-orbit"], { totalMinutes });
 
-  it("keeps the offer rich-result eligible: category is required by Google", () => {
+  it("describes the full course as a paid offer", () => {
     expect(jsonLd.offers.category).toBe("Paid");
     expect(jsonLd.offers["@type"]).toBe("Offer");
   });
 
-  it("prices the offer from the single-world tier, as a string per schema.org", () => {
+  it("prices the offer from the single-world tier", () => {
     expect(jsonLd.offers.price).toBe(String(PRICING.single.price));
     expect(jsonLd.offers.priceCurrency).toBe("USD");
     expect(jsonLd.offers.availability).toBe("https://schema.org/InStock");
@@ -41,10 +34,7 @@ describe("buildCourseJsonLd", () => {
     expect(jsonLd.offers.url).toBe("https://tensorcraft.app/pricing");
   });
 
-  it("carries a CourseInstance, unlike the coming-soon stub's Course", () => {
-    // The stub omits hasCourseInstance on purpose (no schedule exists for
-    // unshipped content). The launched world must keep one: it is the other
-    // Course-info eligibility requirement alongside offers.category.
+  it("describes online delivery and an estimated workload", () => {
     expect(jsonLd.hasCourseInstance["@type"]).toBe("CourseInstance");
     expect(jsonLd.hasCourseInstance.courseMode).toBe("online");
     expect(jsonLd.hasCourseInstance.courseWorkload).toMatch(/^PT\d+H$/);

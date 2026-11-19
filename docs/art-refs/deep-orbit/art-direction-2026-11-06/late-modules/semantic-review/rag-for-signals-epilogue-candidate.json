@@ -1,0 +1,142 @@
+{
+  "key": "deep-orbit/llm-integration/rag-for-signals",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+    "sha256": "fdf850e9575d230d3316937e80a7010059f74a7e27c462a109f88e9d62fb4570"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/rag-for-signals-epilogue-runtime-before.png",
+    "sha256": "908fbc302a123ce697a6f5a8283d310a12d2ad8acc13631a9a8573c9dd642b4a",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "908fbc302a123ce697a6f5a8283d310a12d2ad8acc13631a9a8573c9dd642b4a",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/rag-for-signals-epilogue-runtime-before.png",
+    "sha256": "908fbc302a123ce697a6f5a8283d310a12d2ad8acc13631a9a8573c9dd642b4a",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "908fbc302a123ce697a6f5a8283d310a12d2ad8acc13631a9a8573c9dd642b4a",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/retrieve-signals.yaml",
+      "sha256": "c970ffa0b76cfd80c37e13a15be953e1308c2df8bd320cd67d9efc11fb78fd38"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/rag-pipeline.yaml",
+      "sha256": "174a2dbee287992a08a59d6ede6bf1174ebd826e5ede0453ff941da2a3d81272"
+    }
+  ],
+  "panelSpecification": {
+    "state": "epilogue",
+    "concreteGenerationSpecification": "Candid bridge audit bench. Demir seated at a console on the RIGHT with body and chair facing it; he pauses over keyboard and looks toward Nazari with chastened concern. Nazari stands beside him, one hand on an open log flat on bench and the other naturally writing a small initial, eyes down at her own correction, wry sober expression. Camera is on their reading side and sees both natural three-quarter faces. One compact work monitor is turned toward both crew. Exact header Band-7 / Last 72 hours. Two rows Retrieved records: 14; Generated claim: 17, clearly mismatching. Small audit status Additional mismatches: 2; Free-text review: pending. No graphs or decorative numbers. Log has ruled lines and her small handwritten N facing Nazari, UPSIDE-DOWN from the camera, no other prose. No held report or camera gaze. Whole chair/torso alignment, four connected arms with real writing and keyboard contacts. Other monitors inactive charcoal glass.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+        "section": "Epilogue lines260-274"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/rag-for-signals-epilogue-runtime-before.png",
+      "sha256": "908fbc302a123ce697a6f5a8283d310a12d2ad8acc13631a9a8573c9dd642b4a",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "908fbc302a123ce697a6f5a8283d310a12d2ad8acc13631a9a8573c9dd642b4a",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve narrative restaging. Canonical face portraits FIRST, room reference next for architecture only, LAST current scene is edit target with old pose superseded. Preserve exact canonical facial morphology, age, hair and equipment. Demir comms anatomical RIGHT ear, Farah lens anatomical LEFT eye, Nazari no lens. Balanced warm stylized adult proportions, no large chibi heads or tiny realistic heads. Clean flat cel-shaded adventure illustration. Candid bridge audit bench. Demir seated at a console on the RIGHT with body and chair facing it; he pauses over keyboard and looks toward Nazari with chastened concern. Nazari stands beside him, one hand on an open log flat on bench and the other naturally writing a small initial, eyes down at her own correction, wry sober expression. Camera is on their reading side and sees both natural three-quarter faces. One compact work monitor is turned toward both crew. Exact header Band-7 / Last 72 hours. Two rows Retrieved records: 14; Generated claim: 17, clearly mismatching. Small audit status Additional mismatches: 2; Free-text review: pending. No graphs or decorative numbers. Log has ruled lines and her small handwritten N facing Nazari, UPSIDE-DOWN from the camera, no other prose. No held report or camera gaze. Whole chair/torso alignment, four connected arms with real writing and keyboard contacts. Other monitors inactive charcoal glass. Every label and grid follows its physical surface plane, all handwriting faces its writer. One1536x1024 scene.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "Nazari initials a correction while Demir checks the failed claim against retrieved records, their audit now reaching her earlier approval.",
+    "fullSpecification": "Candid bridge audit bench. Demir seated at a console on the RIGHT with body and chair facing it; he pauses over keyboard and looks toward Nazari with chastened concern. Nazari stands beside him, one hand on an open log flat on bench and the other naturally writing a small initial, eyes down at her own correction, wry sober expression. Camera is on their reading side and sees both natural three-quarter faces. One compact work monitor is turned toward both crew. Exact header Band-7 / Last 72 hours. Two rows Retrieved records: 14; Generated claim: 17, clearly mismatching. Small audit status Additional mismatches: 2; Free-text review: pending. No graphs or decorative numbers. Log has ruled lines and her small handwritten N facing Nazari, UPSIDE-DOWN from the camera, no other prose. No held report or camera gaze. Whole chair/torso alignment, four connected arms with real writing and keyboard contacts. Other monitors inactive charcoal glass."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidatePath": "art-src/scenes/llm-integration__rag-for-signals-epilogue-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/llm-integration__rag-for-signals-epilogue-narrative-stage1-openai-20261107.png",
+  "candidateSha256": "4c56e7334f13ac2de1372dd994c2e11033f87f64b1baed50386d00f8e7fa955b",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-22da6ccf-e359-4c01-81d3-64a0108bb593.png",
+  "faceBoxes": {
+    "nazari": [
+      250,
+      60,
+      335,
+      350
+    ],
+    "demir": [
+      895,
+      150,
+      280,
+      330
+    ]
+  },
+  "recoveryNote": "Recovered generated output after orchestration save helper failed; exact fullframe visually matched to prepared job before workspace copy.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/rag-for-signals-epilogue-identity-proof.jpg",
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "4c56e7334f13ac2de1372dd994c2e11033f87f64b1baed50386d00f8e7fa955b",
+    "proofSha256": "46107866d4d1e8ffe916ab2d2e5192073bede202da5bb2d13971560c77135458",
+    "gates": [
+      "Candid task action and story-tied emotion",
+      "Canonical face morphology and age",
+      "Moderate stylized adult proportions",
+      "Supported head/neck/shoulder and two arm-hand chains",
+      "Muted palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Perspective and reader direction"
+    ],
+    "actionEmotionStory": "Nazari initials a correction while Demir checks the failed claim against retrieved records, their audit now reaching her earlier approval."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-22da6ccf-e359-4c01-81d3-64a0108bb593.png",
+      "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+      "art-src/scenes/llm-integration__rag-for-signals-epilogue-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/llm-integration__rag-for-signals-epilogue-narrative-stage1-openai-20261107.png",
+    "sha256": "4c56e7334f13ac2de1372dd994c2e11033f87f64b1baed50386d00f8e7fa955b",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/llm-integration__rag-for-signals-epilogue.json"
+}

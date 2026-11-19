@@ -206,6 +206,7 @@ const USER_DATA_TABLES = [
   "review_queue",
   "learning_activity_progress",
   "learning_activity_streams",
+  "analytics_consents",
 ] as const;
 
 // Bug reports are service-role-only (020: no user SELECT policy) and

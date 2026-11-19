@@ -119,13 +119,12 @@ grant an artificial purchase to make that check pass.
 
 ## Independent reviewers
 
-The owner requested candidate research. The
-[shortlist](../learning-study/reviewer-candidates-2026-09-17.md) recommends
-first inquiries to Gant Laborde/Infinite Red for ML review and James N. Brook
-for editorial review, with two alternatives. Published qualifications and
-contact routes are linked there. Availability, fees and independence remain
-unconfirmed. [Inquiry drafts](../learning-study/reviewer-outreach-drafts.md)
-are ready; nobody has been contacted or hired.
+The owner requested candidate research. The public review copy now retains
+[reviewer criteria](../learning-study/reviewer-candidates-2026-09-17.md) and
+[reusable inquiry templates](../learning-study/reviewer-outreach-drafts.md)
+without candidate names or contact details. At the time of this record,
+availability, fees, and independence remained unconfirmed, and nobody had
+been contacted or hired.
 
 A frozen handoff is available locally at
 `learning-study-private/deep-orbit-review-handoff-2026-09-17.zip`: 229 files,

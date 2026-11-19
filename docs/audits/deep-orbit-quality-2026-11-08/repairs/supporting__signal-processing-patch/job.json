@@ -1,0 +1,88 @@
+{
+  "id": "supporting/signal-processing-patch",
+  "phase": "patch",
+  "owner": "quality_early",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "image-edit",
+  "prompt": "Use case: image-edit. Edit the LAST reference image only. It is a square 1024 x 1024 embroidered mission patch. The FIRST reference provides the series' near-black textile background and restrained brass/sage color reference only. Preserve the last image's exact circular patch, its brass border ring, stitching, central translucent sage prism, sine wave on the left and separate pulse bars on the right. Preserve their composition, geometry, size, colors and clean cel-shaded linework. Change ONLY the white area outside the circular brass border to a near-black charcoal textile field, matching the first reference. No new elements, no text, no letters or numbers, no added glow or bright saturation. The finished image must read as part of the same dark-field mission-patch series without a white square exterior. Keep the existing emblem fully legible, centered and uncropped.",
+  "source": "docs/art-refs/deep-orbit/patches/signal-processing-fal-2026-08-15T07-51-19-1.png",
+  "sourceSha256": "87f9c060d5b0e2f13672f0f2a516472abe1c880456a880543decdb34bbedf4ca",
+  "runtime": "apps/web/public/patches/deep-orbit/signal-processing.webp",
+  "runtimeSha256": "ae1fc5838657f065f36cb65b99492ecdbb07d91367762c2d6f5308fd2218084e",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/patches/capstone-fal-2026-08-15T07-54-08-1.png",
+      "role": "Series background and palette reference",
+      "sha256": "57f929712e7a8ddeb1a17cbe179dd4e3b603a92609c094726365b34b76178665"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/patches/signal-processing-fal-2026-08-15T07-51-19-1.png",
+      "role": "Edit target; preserve emblem and replace only white exterior",
+      "sha256": "87f9c060d5b0e2f13672f0f2a516472abe1c880456a880543decdb34bbedf4ca"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "docs/patch-bible.md",
+      "sha256": "779a9b0851c2226c3fd35ff8ed210980303ab8b742f71a00cc5bf16a706b6b06"
+    },
+    {
+      "path": "packages/ui/src/module-patch.tsx",
+      "sha256": "1d253775a7150f27194b83b7cd1a0596ac2ee9035e497947820ad1577228a313"
+    }
+  ],
+  "publication": {
+    "alt": "A sine wave passes through a sage prism and emerges as pulses inside a brass mission patch.",
+    "location": "mission patch",
+    "action": "A sine wave passes through a prism and emerges as pulses.",
+    "emotion": "Not applicable to the emblem.",
+    "eyeline": "Not applicable to the emblem.",
+    "checks": [
+      "Dark exterior matches the patch series.",
+      "Existing wave, prism and pulse emblem remains intact.",
+      "No text, letters or numbers.",
+      "Clear silhouette at runtime size."
+    ]
+  },
+  "promptSha256": "bd693166dfb92bd7933384be5477f37373aec3ef6b1d12bd651081c6dd571f86",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-302edfb8-ccda-41d8-844d-e5c85b2cd6a4.png",
+  "generatedSha256": "e37c19149b2b1f9257849b28fa66e19ec5f9d33cee7963ce9a7f527e09b7af3a",
+  "candidatePath": "docs/art-refs/deep-orbit/patches/signal-processing-fal-2026-08-15T07-51-19-1.png",
+  "candidateSha256": "e37c19149b2b1f9257849b28fa66e19ec5f9d33cee7963ce9a7f527e09b7af3a",
+  "ownReview": {
+    "candidateSha256": "e37c19149b2b1f9257849b28fa66e19ec5f9d33cee7963ce9a7f527e09b7af3a",
+    "nativeReviewed": true,
+    "runtimeSizePreviewReviewed": true,
+    "runtimeSizePreviewDimensions": [
+      320,
+      320
+    ],
+    "canonicalPortraitsCompared": "Not applicable; no human figures.",
+    "faceCropCoordinatesXYWH": [],
+    "handCropCoordinatesXYWH": [],
+    "scores": {
+      "color": 4,
+      "composition": 4,
+      "clarity": 4,
+      "purposeFit": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [],
+    "checks": [
+      "White exterior replaced by coherent near-black textile field.",
+      "Wave, prism and five pulse bars retain the source composition and meaning.",
+      "Clean brass ring and linework remain legible at 320 pixels.",
+      "No text or extra decorative elements."
+    ],
+    "temporaryCropsDeleted": true
+  },
+  "publishedSource": "docs/art-refs/deep-orbit/patches/signal-processing-fal-2026-08-15T07-51-19-1.png",
+  "publishedRuntime": "apps/web/public/patches/deep-orbit/signal-processing.webp",
+  "publishedSourceSha256": "e37c19149b2b1f9257849b28fa66e19ec5f9d33cee7963ce9a7f527e09b7af3a",
+  "publishedWebpSha256": "e47b049fcd4807f9444474af3de2a1f2e224d0d5d6e2be388d9fe25b88c00a33",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "publicationStatus": "published after independent exact-hash peer approval"
+}

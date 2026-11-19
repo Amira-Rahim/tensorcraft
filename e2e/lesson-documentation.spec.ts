@@ -31,7 +31,7 @@ for (const [width, scheme] of [
       "The example’s tensor has shape [12]: one axis holding 12 values.",
     );
     await expect(instrument.getByRole("status")).toHaveText(
-      "From your latest run",
+      "From this supplied example run",
     );
     await expect(result).toBeVisible();
     const tensor = instrument.getByRole("link", { name: /^tf.tensor,/ });
@@ -53,7 +53,7 @@ for (const [width, scheme] of [
     await docs.close();
     // The run result survives the trip to the documentation.
     await expect(instrument.getByRole("status")).toHaveText(
-      "From your latest run",
+      "From this supplied example run",
     );
     await expect(result).toBeVisible();
     await expect(page).toHaveURL(/#step-concept$/);

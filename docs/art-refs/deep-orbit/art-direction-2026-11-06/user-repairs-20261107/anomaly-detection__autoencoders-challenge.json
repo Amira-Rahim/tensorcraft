@@ -1,0 +1,139 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "challenge",
+  "index": 27,
+  "cast": [
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. Replace this Deep Orbit lesson scene,1536x1024. The first reference portraits are strict canonical identities, preserve facial morphology, age, complexion, nose, brow, eyes, mouth, hair, signature equipment. Next reference is the room master for ROOM ARCHITECTURE ONLY, not its old screens or bright colors. Last reference is the edit target to restage. Normal balanced stylized adult heads, short relaxed necks and ordinary shoulders. Exactly two coherent arm chains per person, natural five-finger hands and wrists, convincing contact with solid objects. Characters look at their task or each other with candid curiosity, dry amusement or modest delight, never camera posing or holding information out for the viewer. Every legible display faces its actual operator, with camera beside operator seeing that same front. All text, axes, rules and graphs are projected together onto physical screen plane, not independently pasted upright. Restrained sage #6BAA8A and aged brass #A89060 against charcoal/navy, natural skin and soft practical lights. All incidental screens and wrist displays inactive dark charcoal. Hologram table inactive charcoal; dim lab tube olive-sage. No neon outlining, no fake graphs, arbitrary symbols, invented results or furniture intersections. Demir sits naturally at side-on solid lab workstation preparing the synthetic training archive. One hand operates a keyboard in front of him, the other rests on a closed notebook, small focused grin as he excludes flagged records. Physical monitor faces him and nearby same-side camera. No floating tiles or holographic gestures. Exact concise screen text: \"Synthetic training archive\"; \"72 rows, 8 features\"; two clearly labelled groups \"48 calm: keep\" and \"24 flagged: exclude\"; bottom \"Fit: pending\". Small simple arrow from kept group to \"Training data\" only, excluded group visibly separate; don't connect excluded rows to model. No result scores, fancy node diagrams or invented features. Dark auxiliary screens and wrist, muted lab tube. Preserve Demir canonical proportions and coherent seating. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+    "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml"
+  ],
+  "location": "Archimedes, Lab",
+  "alt": "Demir separates the synthetic archive into calm training rows and excluded flagged rows.",
+  "tool": "built-in image_gen",
+  "replacesSha256": "b550e9c060a1b0247362a312eea10480c8d3f547a98238b08e0bf80440c7bf1e",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+  "candidateSha256": "5235b2c6cd137ec39c62cb65767cb3fa35606b3e4567be9f06ab196a6d39d772",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+      "sha256": "b550e9c060a1b0247362a312eea10480c8d3f547a98238b08e0bf80440c7bf1e",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-892a7406-12df-48b6-a1bb-344c3ee44d96.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "ownQA": {
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "inspection": "Native1536x1024 plus temporary face crops side by side with canonical original portraits, current MDX and exercise facts verified",
+    "notes": "Demir selects training rows at a lab keyboard. Synthetic archive72rows/8features,48calm kept and24flagged excluded match exercise fixture; fitting remains pending. Screen faces him and camera beside him. Natural keyboard fingers and notebook-resting hand, coherent elbows and wrists, canonical face in focused profile, normal head/neck/shoulders. Auxiliary screens and wrist dark.",
+    "faceCropCoordinates": [
+      [
+        "ensign-demir",
+        [
+          930,
+          100,
+          1240,
+          520
+        ]
+      ]
+    ],
+    "temporaryCropsRemoved": true
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-892a7406-12df-48b6-a1bb-344c3ee44d96.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp",
+  "sourceSha256": "5235b2c6cd137ec39c62cb65767cb3fa35606b3e4567be9f06ab196a6d39d772",
+  "webpSha256": "793630e1cf3e4ce925f3ffbe22d678ebb821e99c59ae62f97cc8ec2824e65b08",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+    "sourceSha256": "b550e9c060a1b0247362a312eea10480c8d3f547a98238b08e0bf80440c7bf1e",
+    "webpSha256": "ac22980a8cdda2321f237304f07dbc53ce5a9debbe92e128f9c261920f742cbc",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_late",
+    "status": "approved",
+    "candidateSha256": "5235b2c6cd137ec39c62cb65767cb3fa35606b3e4567be9f06ab196a6d39d772",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Demir selects training rows at a lab keyboard. Synthetic archive72rows/8features,48calm kept and24flagged excluded match exercise fixture; fitting remains pending. Screen faces him and camera beside him. Natural keyboard fingers and notebook-resting hand, coherent elbows and wrists, canonical face in focused profile, normal head/neck/shoulders. Auxiliary screens and wrist dark.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+          "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+          "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

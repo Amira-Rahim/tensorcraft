@@ -1,0 +1,82 @@
+[
+  {
+    "id": "browser-runtimes/inference-pipeline",
+    "phase": "briefing",
+    "cast": [
+      "ensign-demir",
+      "chief-nazari"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/inference-briefing-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 2 images are immutable canonical identities, next is room reference ONLY, LAST is edit target. Preserve exact people, face geometry, eyes, cheeks, noses, jaw and age, hair and expressions. Demir earpiece on anatomical RIGHT only. Keep current balanced stylized adult head/body proportions exactly, no shrink or stretched necks. Keep complete shoulder-elbow-wrist-hand continuity, natural fingers, tablet grips, and body separation from furniture. Preserve each distinct composition and warm approachable story mood. Replace only the main monitor contents with a concise incident panel. Heading \"Cancelled readbacks\". Large central count \"+120 tensors\". Beneath, a two-step connected diagram: \"Output retained\" then \"Cleanup missing\". Small footer \"Console check\". Do not invent elapsed time, plotted samples, a fix or a verdict. Keep Demir pointing and Nazari reviewing her tablet back. ALL other visible screens, including wrists, become inactive charcoal glass with no random waves, charts or fake text. Turn unused holo table off. Keep physical buttons. Muted sage #6BAA8A and aged brass #A89060, no neon mint, gold cast or glossy gradients. No colored left accent bars. Exact readable labels and counts. Output one 1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Demir shows Nazari the 120 tensors retained when cancelled readings skipped output cleanup.",
+    "location": "Archimedes, Bridge",
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+    "screenMeaning": "Replace only the main monitor contents with a concise incident panel. Heading \"Cancelled readbacks\". Large central count \"+120 tensors\". Beneath, a two-step connected diagram: \"Output retained\" then \"Cleanup missing\". Small footer \"Console check\". Do not invent elapsed time, plotted samples, a fix or a verdict. Keep Demir pointing and Nazari reviewing her tablet back.",
+    "status": "prepared"
+  },
+  {
+    "id": "browser-runtimes/inference-pipeline",
+    "phase": "concept",
+    "cast": [
+      "ensign-demir",
+      "chief-nazari"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/inference-concept-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 2 images are immutable canonical identities, next is room reference ONLY, LAST is edit target. Preserve exact people, face geometry, eyes, cheeks, noses, jaw and age, hair and expressions. Demir earpiece on anatomical RIGHT only. Keep current balanced stylized adult head/body proportions exactly, no shrink or stretched necks. Keep complete shoulder-elbow-wrist-hand continuity, natural fingers, tablet grips, and body separation from furniture. Preserve each distinct composition and warm approachable story mood. Replace central monitor with two clear rows showing asynchronous tensor ownership. Upper row title \"Inside sync tf.tidy()\" with connected boxes \"Input\" -> \"Predict\" -> \"Return output\". Lower row title \"Outside tidy\" with connected boxes \"await output.data()\" -> \"finally: output.dispose()\". A short note \"Input released; output kept for readback\". This is an ownership diagram, not a success result. Keep Nazari pointing and Demir holding his tablet with natural hands. ALL other visible screens, including wrists, become inactive charcoal glass with no random waves, charts or fake text. Turn unused holo table off. Keep physical buttons. Muted sage #6BAA8A and aged brass #A89060, no neon mint, gold cast or glossy gradients. No colored left accent bars. Exact readable labels and counts. Output one 1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Nazari traces which tensors tidy releases and which output Demir must dispose after asynchronous readback.",
+    "location": "Archimedes, Bridge",
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+    "screenMeaning": "Replace central monitor with two clear rows showing asynchronous tensor ownership. Upper row title \"Inside sync tf.tidy()\" with connected boxes \"Input\" -> \"Predict\" -> \"Return output\". Lower row title \"Outside tidy\" with connected boxes \"await output.data()\" -> \"finally: output.dispose()\". A short note \"Input released; output kept for readback\". This is an ownership diagram, not a success result. Keep Nazari pointing and Demir holding his tablet with natural hands.",
+    "status": "prepared"
+  },
+  {
+    "id": "browser-runtimes/inference-pipeline",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/inference-challenge-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 1 images are immutable canonical identities, next is room reference ONLY, LAST is edit target. Preserve exact people, face geometry, eyes, cheeks, noses, jaw and age, hair and expressions. Demir earpiece on anatomical RIGHT only. Keep current balanced stylized adult head/body proportions exactly, no shrink or stretched necks. Keep complete shoulder-elbow-wrist-hand continuity, natural fingers, tablet grips, and body separation from furniture. Preserve each distinct composition and warm approachable story mood. Replace main monitor with a concise input contract. Title \"Probe reading\". Table headers \"Feature | Raw\" with exact rows \"Amplitude | 512\", \"Zero crossings | 21\", \"Phase | pi/2\". Below a three-part task flow: \"Scale in this order\" -> \"Predict [1,3]\" -> \"Read inside tf.tidy()\". Bottom status \"Class and score: pending\". No computed normalized values, returned class, score or successful cleanup count. This fixture is in the exercise. Preserve the entire corrected seated anatomy: long adult thighs, knees clearing desk, pelvis on cushion, both feet on floor, natural two forearms and hands on keyboard. Preserve head size exactly. ALL other visible screens, including wrists, become inactive charcoal glass with no random waves, charts or fake text. Turn unused holo table off. Keep physical buttons. Muted sage #6BAA8A and aged brass #A89060, no neon mint, gold cast or glossy gradients. No colored left accent bars. Exact readable labels and counts. Output one 1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Demir prepares the supplied three-feature reading and checks that prediction and readback stay inside tidy.",
+    "location": "Archimedes, Bridge",
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+    "screenMeaning": "Replace main monitor with a concise input contract. Title \"Probe reading\". Table headers \"Feature | Raw\" with exact rows \"Amplitude | 512\", \"Zero crossings | 21\", \"Phase | pi/2\". Below a three-part task flow: \"Scale in this order\" -> \"Predict [1,3]\" -> \"Read inside tf.tidy()\". Bottom status \"Class and score: pending\". No computed normalized values, returned class, score or successful cleanup count. This fixture is in the exercise. Preserve the entire corrected seated anatomy: long adult thighs, knees clearing desk, pelvis on cushion, both feet on floor, natural two forearms and hands on keyboard. Preserve head size exactly.",
+    "status": "prepared"
+  },
+  {
+    "id": "browser-runtimes/inference-pipeline",
+    "phase": "takeaways",
+    "cast": [
+      "chief-nazari"
+    ],
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/inference-takeaways-input.png"
+    ],
+    "prompt": "Use case: precise-object-edit. First 1 images are immutable canonical identities, next is room reference ONLY, LAST is edit target. Preserve exact people, face geometry, eyes, cheeks, noses, jaw and age, hair and expressions. Demir earpiece on anatomical RIGHT only. Keep current balanced stylized adult head/body proportions exactly, no shrink or stretched necks. Keep complete shoulder-elbow-wrist-hand continuity, natural fingers, tablet grips, and body separation from furniture. Preserve each distinct composition and warm approachable story mood. Replace tablet graphs with concise ownership reminder. Title \"After readback\". Three clearly spaced rows \"Temporary input: tidy\", \"Returned output: dispose\", \"Model weights: keep until teardown\". On the one large rear monitor directly at screen-right of her head put \"Check counts AND bytes\" and \"After warmup\". Every other display off. No invented graphs or claim that a flat tensor count proves all memory safe. Preserve both natural tablet grips. ALL other visible screens, including wrists, become inactive charcoal glass with no random waves, charts or fake text. Turn unused holo table off. Keep physical buttons. Muted sage #6BAA8A and aged brass #A89060, no neon mint, gold cast or glossy gradients. No colored left accent bars. Exact readable labels and counts. Output one 1536x1024 image.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "alt": "Nazari checks tensor ownership and reminds the crew to inspect counts and bytes after warmup.",
+    "location": "Archimedes, Bridge",
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "exerciseSource": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+    "screenMeaning": "Replace tablet graphs with concise ownership reminder. Title \"After readback\". Three clearly spaced rows \"Temporary input: tidy\", \"Returned output: dispose\", \"Model weights: keep until teardown\". On the one large rear monitor directly at screen-right of her head put \"Check counts AND bytes\" and \"After warmup\". Every other display off. No invented graphs or claim that a flat tensor count proves all memory safe. Preserve both natural tablet grips.",
+    "status": "prepared"
+  }
+]

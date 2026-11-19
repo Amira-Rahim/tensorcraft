@@ -1,0 +1,678 @@
+{
+  "reviewDate": "2026-11-07",
+  "reviewer": "/root/late_final",
+  "scope": "Focused head, neck, shoulder, torso, chair and hand-support sweep of all final 80 late-batch images after user flagged the Beyond LSTM epilogue twist.",
+  "method": "Visually inspected all 80 full-body scenes in 10 contact sheets with 768x512 tiles. Expanded four plausible turning-pose candidates to full 1536x1024 frames. Beyond LSTM repaired pose and the final eight new candidates also received individual full-frame inspection before publication.",
+  "expandedChecks": [
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "epilogue"
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "briefing"
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "briefing"
+    },
+    {
+      "key": "deep-orbit/optimization-edge/quantization",
+      "phase": "briefing"
+    }
+  ],
+  "additionalDefects": [],
+  "repairedKnownDefect": "Beyond LSTM epilogue: completed whole-chair and torso rotation, independently passed by root and art_peer_final.",
+  "note": "This focused pose sweep supplements existing face, anatomy and teaching-display records. It does not replace their evidence.",
+  "entries": [
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+      "outputSha256": "5b2783e03624a58e174df3a4ccab00d29d3a7782c7ebed5f083582aa86482088",
+      "poseFinding": "Earlier pass superseded: user-reported incorrect shoulder attachment corrected and independently reviewed at native full-frame size.",
+      "expandedCheck": true
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+      "outputSha256": "16423d000acf7fe1ae2fe5b84d71eb9b6f990e73f584c5aa486a241430bab6ba",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+      "outputSha256": "2698bfc69a62b4ef22d84f19570bc03288b409bcdc055f2607de6f9219d33e92",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-epilogue.webp",
+      "outputSha256": "0c13d8384bdb55a03df26e136eeaef41295e865630118154e7322e63abd103b3",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+      "outputSha256": "0100203aa047a14f0f85652fe678a359f9f29b52cee855c8755f8c1b959de84c",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting.webp",
+      "outputSha256": "efca61e9f6a6091b5793e470441e94b7dae656b00018fa51aaf5e4c9a3a7dbbc",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+      "outputSha256": "77abb16aa9970c55be74d50931624c26627216db0ac9f6cfde5adc02395b829d",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+      "outputSha256": "94dd900299254e924ce09618aa6d45262a49ca3ea35163ae5771705b69d43e2a",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp",
+      "outputSha256": "afc00c6dd9876353e40cd1e1ce830a68d31a440bf8e1a9b0c5a9bb0d592875e9",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-takeaways.webp",
+      "outputSha256": "3b6fa3db8df8398b6f2a04c9ba4faa4065bc1a59b21b7729d5d1c54d1d826dc3",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+      "outputSha256": "7270fdca135af8607c77903b0377eadd9bd7b8002922578979efa8e1d3ffe57b",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-challenge.webp",
+      "outputSha256": "f40d770d145e339da17236984491c8b12e918071b363b0c9338de98c21ee3f5e",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+      "outputSha256": "967809409731bf95fe82784f6c20ff424425dcf402921604f67ef362bd813815",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+      "outputSha256": "f51c19f242ed2818919584663ea98f452dec0e490640a537cf63c67814aa02b2",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-takeaways.webp",
+      "outputSha256": "131084a8e975f1768439ed76a5a6c830e5f6fed448b59b430916c6f7c232abbf",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+      "outputSha256": "f15c9639514d8483e77e201974d7b25d9c8b976f698ece5d9785cadf4575c76a",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+      "outputSha256": "2a863f4fdb115aeda235e678e8dd1e4038a7fa764e38c85497ef8215eed39d18",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+      "outputSha256": "18901f6d5240c68345d23b07b172b4e0386505dfd4fca44cae362a2cf255bf19",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+      "outputSha256": "8c1e4a2467eb94618e731691d277e1379cd61aa16ac45b326bc3f5123f2e6302",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": true
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+      "outputSha256": "948a5528d8c13520ddbae53e267f853486e58707ec2a0a3e84befc3b4b6c2557",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods.webp",
+      "outputSha256": "0147f7eb82b9c35d0d2870118ab90c40e7a9c6234c1c303053224c6f40f83f8c",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-challenge.webp",
+      "outputSha256": "a5c255013c0bcc5fef76be94a2831523c06a47a9cd0b55a5aae19a6f3f210c49",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-concept.webp",
+      "outputSha256": "2c34d46037922d5168cc873c7506108444a28fc2d785152dea3b45c60c2d3b19",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-epilogue.webp",
+      "outputSha256": "c6bb7e2cdb688909a8734b5764a8f55b8415ba311f84cd00cec68479461c2b7a",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+      "outputSha256": "a5872fc7be7307cf75e31ece6676f88b936f48cfc52a3eee7ec21adb2ff9336c",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+      "outputSha256": "89690b0d81832e60fc18f9028924e8114868d1deeede4aa1ca20463347a5e783",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp",
+      "outputSha256": "ac22980a8cdda2321f237304f07dbc53ce5a9debbe92e128f9c261920f742cbc",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+      "outputSha256": "b1bba199ba459762c63112e3d5c3fd50bdf6dccada7839fdf239ff28e1fb934c",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+      "outputSha256": "f01d6f6eae0ba42a5ff8d215f8de6ee848dfe1c0b448075f70e0ec5131819aa5",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-takeaways.webp",
+      "outputSha256": "e8e406903f38f4d258ed3e7ace6823fa168bd84f1c3eb6006a9479b20f073274",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+      "outputSha256": "89e49301f5a593cd9241a6a8d3e99797b63bdd79544973383269111b13b620c5",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp",
+      "outputSha256": "6a686d029d39254e8db0fa81a2128d7cc6e51cf2a64293f894c7784d07c4a8d7",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+      "outputSha256": "f1903c5e58c5f11bbc2d8aead17a694d03f413a505b63076faf5730135995dd0",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+      "outputSha256": "49ab32f15766de5fd3201cd25ecf34b66523ad15efb7e1fd65a052545dcd2e91",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+      "outputSha256": "11fede63507d43606f09364b2303d4d013ecdfc5b83f90a3be1ff2b03da16b69",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp",
+      "outputSha256": "b1ef92b3c1b6feb10db7d871b1b669c363921ab7e3bd1f1e331570e73d6a5e5c",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": true
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+      "outputSha256": "a3f091cd2416ae4429535c728174211d5117d6196af8166172986426d499d231",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+      "outputSha256": "7ae843a6186946d054d5401dfd235df8de0182fa61631149e89d8dea9f7e95fb",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+      "outputSha256": "a3bb41238713eb0365da6de4c51a3d3327dbebd67a9426e906f6f71afd35b649",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+      "outputSha256": "0e2d0a1cd0c18c5de8a5a660d93418c99afb56ac215c4977adaf9c527477b1d8",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+      "outputSha256": "6d727b9bc84b52f81828d1d47717ee4cf2ef6b3102e444c4614405518e1f0226",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+      "outputSha256": "e66f419119ce45525a2f42dba5128f36856f5c2bae5d78a44da383c16c6e093a",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+      "outputSha256": "065a0ec1f583fa5c1bd6a71a3622e95246fe3b54eafa9c28d1271a9d762662c4",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-epilogue.webp",
+      "outputSha256": "b2a742fd927350702ba66aac4632aa785e8ebba277b83139e60b5a0fd1b016da",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-takeaways.webp",
+      "outputSha256": "f214cd48c698a269b49c67ad17bdf4fa1ccfb45a920114d650994cfe2decff04",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning.webp",
+      "outputSha256": "aecf17d409a584c4eb1b327109e0f37cb30a27fbc2bd5af5b75e8d2bf6d058a6",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+      "outputSha256": "731607d4ad0a940c14946cab4dcef010b4999d87c3090bad9aa01089f09d1ca4",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-concept.webp",
+      "outputSha256": "e3dea1206f0e7d00126afcd9331832cb1c74cc253dc7c0c911735b86272571fd",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-epilogue.webp",
+      "outputSha256": "396db9ff59d292c26462baf9b42827c5c550d215ef8308d8c65aac9f208621a3",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp",
+      "outputSha256": "4c9d441d977be5acee1426ccb4b25c05559f5704577948cd912048b8278fa2da",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science.webp",
+      "outputSha256": "44375a6fcfc4ddb26e40bf74a2ce6f78f07c388a8ab2a522f7dcf599821ae4b1",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-challenge.webp",
+      "outputSha256": "e0f7ad4f6738853cce13d74d38359eb0fab7a5c6f143d0b0f4d44029c078e72a",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-concept.webp",
+      "outputSha256": "9280d266b00f62b2bb2a0f897eec8ea6d983e764d1cd2053737d224070393165",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-epilogue.webp",
+      "outputSha256": "d9eebfabd2def48d06417531defc326a3dc5761faace54073c64ef983f8b6582",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/llms-for-science",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-takeaways.webp",
+      "outputSha256": "5b253f433182d983ebf23b7f5b3142e046ed8f5a1cd94efcc2f4fc12f2faeef2",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems.webp",
+      "outputSha256": "8c9444fe7dda3d7c42d4a82fb79443913e5cde99a7dad87dcac5a231d139057a",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-challenge.webp",
+      "outputSha256": "9524f182bf040de766fa069d14b8417614f97586616ff0c0c4fdc8363d5dd4f4",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-concept.webp",
+      "outputSha256": "606fa7fe8eed07a812c09af92bf7eb3b7ad1e72d8fd394e0f546bd3e66da1f96",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-epilogue.webp",
+      "outputSha256": "edb3f41fb64e2cd567a680adfb1ccbfed932c2b7d652a81c001eb528a88ee9ea",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/multi-model-systems",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-takeaways.webp",
+      "outputSha256": "bfc21c0e83b30ae788afe8994c7a20190d85f8fbb42f2842503ca721505c9f5d",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering.webp",
+      "outputSha256": "8938565edbc6d34d44a16c14d05dce7a6e2bba0c840ea0980dfc70b6ecafb3f3",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-challenge.webp",
+      "outputSha256": "aecfffbb4da40459cb2dfca08bb1a5af268882ed8003c072f45f0d2dbe2376f1",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-concept.webp",
+      "outputSha256": "94674468ebf1818a4754bedfe5f98c7c80d8ac84dbc6355453039382d93afc32",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-epilogue.webp",
+      "outputSha256": "c92b48dfc09b3bf9616adffc9811c42b387a90e3df66f29a05237f934e526e6b",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/prompt-engineering",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-takeaways.webp",
+      "outputSha256": "ce36322e975a41b2e004a3f55f5f8271f63bbbaeb87493803d084a4017f70300",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals.webp",
+      "outputSha256": "47cc2caafb636b373082a8531677b633e8a91595b272d9e9d15c021287395919",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": true
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-challenge.webp",
+      "outputSha256": "11823524cf83c9250cc02951495d5e0d63fc0f4716152d1b0a47cb30c688aa31",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-concept.webp",
+      "outputSha256": "2ec208f7366d32c934bda91bcc93a7370bb0e30430aa85bf10f84016f092434d",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+      "outputSha256": "fdf850e9575d230d3316937e80a7010059f74a7e27c462a109f88e9d62fb4570",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/rag-for-signals",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-takeaways.webp",
+      "outputSha256": "af7ce6864afeafbdbdb8ab2157eee6d72ba9d1e3b06009ad27417ca53cd59035",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation.webp",
+      "outputSha256": "7bf8130e274841fa0efaeccf5911943866b203e017eb2fbb9fcc4f603114f5f5",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "challenge",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-challenge.webp",
+      "outputSha256": "410cf105e69bbd618f144a60fbd439ec76d15a401e3a19f9577ac9c369f8aaa5",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "concept",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-concept.webp",
+      "outputSha256": "6dd33f3c1729322658c8df171646ccc4aade25b330201ba8d07888792a5c8269",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "epilogue",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-epilogue.webp",
+      "outputSha256": "66c3b6fccdcb87bbcc820c5c960b7caefe4aeaf859f2a1bd67712567962d79a4",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/llm-integration/report-generation",
+      "phase": "takeaways",
+      "output": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-takeaways.webp",
+      "outputSha256": "3fa3bff06af21aa703822c2045c6031fcdac2e7346da2e399e1f0aee0c4cc88e",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/optimization-edge/caching-strategies",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies.webp",
+      "outputSha256": "4b2d6e192b58ed628dd80162c565b9051692a8a774ed25d610b197db16d3ad8d",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/optimization-edge/model-profiling",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling.webp",
+      "outputSha256": "6bc677c17d539375d01a36870b8b3d6ef2355e097cb69311ea755263d3d2c03b",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/optimization-edge/pruning",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning.webp",
+      "outputSha256": "fdbc5a6babc04a20c8a90c81b8f632b77a8499cb879ecf2e6a59a2873da76275",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    },
+    {
+      "key": "deep-orbit/optimization-edge/quantization",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization.webp",
+      "outputSha256": "9765ddf2ea270876eb1637f0a3752324157c715ed6542af0f200e77a222610d9",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": true
+    },
+    {
+      "key": "deep-orbit/optimization-edge/webgpu-acceleration",
+      "phase": "briefing",
+      "output": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp",
+      "outputSha256": "d9ec02bedae3522b836ba4afcd439198b4c68e60e0eb52e5379dee42ee382b5e",
+      "poseFinding": "No additional defect observed",
+      "expandedCheck": false
+    }
+  ],
+  "subsequentUserFinding": {
+    "key": "deep-orbit/advanced-time-series/beyond-lstm",
+    "phase": "briefing",
+    "finding": "Farah raised and resting arms appeared to emerge from the same shoulder. Contact-sheet pass failed to catch this error. Entire torso and two shoulder-arm chains being rebuilt.",
+    "status": "corrected-and-independently-reviewed",
+    "reviewNote": "Root and art_peer_final independently passed final replacement with two distinct Farah shoulder-arm-hand chains, natural neck alignment, canonical faces, corrected Demir visible left ear and preserved waveform contrast. Earlier contact-sheet pass missed the defect and is superseded for this image.",
+    "finalOutputSha256": "5b2783e03624a58e174df3a4ccab00d29d3a7782c7ebed5f083582aa86482088",
+    "anatomyProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__beyond-lstm-briefing-anatomy-proof.jpg"
+  }
+}

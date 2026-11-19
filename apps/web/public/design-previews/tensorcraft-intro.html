@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="description"
+      content="A short introduction to Tensorcraft’s machine learning worlds and its first available course, Deep Orbit."
+    />
+    <title>Machine learning through stories and code, Tensorcraft</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --page: #111614;
+        --surface: #1a211d;
+        --text: #eaf0eb;
+        --muted: #aebbb2;
+        --line: #3d4e44;
+        --green: #91c4a5;
+        --brass: #c5b17d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      a:focus-visible,
+      video:focus-visible {
+        outline: 3px solid var(--green);
+        outline-offset: 5px;
+      }
+
+      header,
+      main,
+      footer {
+        width: min(1360px, 100%);
+        margin-inline: auto;
+        padding-inline: clamp(20px, 4vw, 56px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding-block: 26px;
+      }
+
+      .brand {
+        color: var(--green);
+        font:
+          700 17px/1.4 ui-monospace,
+          Menlo,
+          monospace;
+        text-decoration: none;
+      }
+
+      .back {
+        color: var(--muted);
+        font-size: 13px;
+        text-underline-offset: 5px;
+      }
+
+      main {
+        padding-top: 28px;
+      }
+
+      h1,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 900px;
+        font-family: ui-monospace, Menlo, monospace;
+        font-size: clamp(28px, 4vw, 49px);
+        line-height: 1.18;
+        letter-spacing: -0.045em;
+      }
+
+      .intro {
+        max-width: 720px;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: clamp(15px, 1.6vw, 17px);
+        line-height: 1.7;
+      }
+
+      figure {
+        margin: 30px 0 0;
+      }
+
+      video {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        background: #080c0a;
+        border: 1px solid var(--line);
+      }
+
+      figcaption {
+        margin-top: 13px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .next {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px 28px;
+        margin-top: 28px;
+        padding-block: 25px;
+        border-top: 1px solid var(--line);
+      }
+
+      .next p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .next strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .start {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 13px 20px;
+        border: 1px solid var(--green);
+        background: var(--green);
+        color: #102518;
+        font:
+          700 13px/1.5 ui-monospace,
+          Menlo,
+          monospace;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      .start:hover {
+        background: #b2d8c0;
+      }
+
+      footer {
+        padding-block: 12px 32px;
+        color: var(--brass);
+        font:
+          12px/1.6 ui-monospace,
+          Menlo,
+          monospace;
+      }
+
+      @media (max-width: 480px) {
+        header {
+          padding-block: 21px;
+        }
+
+        main {
+          padding-top: 16px;
+        }
+
+        .next {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/" aria-label="Tensorcraft home">T_Tensorcraft</a>
+      <a class="back" href="/">Back to Tensorcraft</a>
+    </header>
+    <main>
+      <h1>Machine learning through stories and code</h1>
+      <p class="intro" id="video-description">
+        Machine learning for JavaScript engineers, across worlds with their own
+        stories. Deep Orbit is the first available course.
+      </p>
+
+      <figure>
+        <video
+          controls
+          playsinline
+          preload="metadata"
+          poster="/media/tensorcraft-intro-poster.webp?v=3"
+          aria-label="Video introduction to Tensorcraft’s worlds and Deep Orbit"
+          aria-describedby="video-description video-audio"
+        >
+          <source src="/media/tensorcraft-intro.mp4?v=3" type="video/mp4" />
+          <track
+            kind="captions"
+            src="/media/tensorcraft-intro.vtt?v=3"
+            srclang="en"
+            label="English"
+          />
+          <p>
+            <a href="/media/tensorcraft-intro.mp4"
+              >Open the introduction video</a
+            >.
+          </p>
+        </video>
+        <figcaption id="video-audio">
+          27-second cut with gentler pacing and softer scene transitions.
+          <a href="/media/tensorcraft-intro.mp4" download>Download the MP4</a>.
+        </figcaption>
+      </figure>
+
+      <div class="next">
+        <p>
+          <strong>Deep Orbit is available now.</strong>
+          Five foundations lessons are free. No account needed.
+        </p>
+        <a
+          class="start"
+          href="/worlds/deep-orbit/foundations/introduction-to-tensors"
+        >
+          Start Deep Orbit free
+        </a>
+      </div>
+    </main>
+    <footer>Four more Tensorcraft worlds are coming soon.</footer>
+  </body>
+</html>

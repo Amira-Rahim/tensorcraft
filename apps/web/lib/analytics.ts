@@ -120,20 +120,6 @@ export function trackCheckoutStarted(planId: string) {
   track(EVENTS.CHECKOUT_STARTED, { planId });
 }
 
-/**
- * Back-compat: pre-existing `checkout_completed` client helper. Paired
- * with the server-side {@link EVENTS.PAYMENT_COMPLETED} event fired from
- * the Stripe webhook, the client event is for post-redirect UI tracking,
- * the server event is the authoritative revenue signal.
- */
-export function trackCheckoutCompleted(planId: string, amount: number) {
-  track(EVENTS.PAYMENT_COMPLETED, {
-    planId,
-    amount,
-    worldIds: [],
-  });
-}
-
 export function trackWorldSelected(
   worldId: string,
   source:

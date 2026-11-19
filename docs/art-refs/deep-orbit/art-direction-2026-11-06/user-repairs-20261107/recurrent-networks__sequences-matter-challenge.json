@@ -1,0 +1,243 @@
+{
+  "key": "sequences-matter-challenge",
+  "auditIndex": 19,
+  "id": "recurrent-networks/sequences-matter",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-42b5e5fa-21f2-4f6a-bd56-8283c372e8c0.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+    "sha256": "5027a4a3aeba54f1e9a638a954320f2930a45e8020ec14d7bb4245fc4e348f47"
+  },
+  "prompt": "Use case: identity-preserve. First canonical Demir portrait is identity authority; next room master ROOM ONLY; last image exact correction target. Make a single equipment-side correction only: Demir is seen from his anatomical LEFT side, so the visible left ear must be a natural bare ear. Remove the earpiece currently on that visible ear and reconstruct that small ear/hair area. His single earpiece belongs on anatomical RIGHT ear, which is on the far hidden side in this pose; do not draw a visible replacement or second earpiece. Preserve face morphology, hair, expression, gaze, full pose, hands, clothing, room, muted colors and every exact monitor word, number and screen perspective. Keep1536x1024 composition unchanged. No other edits.",
+  "meaning": "The challenge creates one-feature sliding input-target pairs, window3stride1,stream1..5.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-42b5e5fa-21f2-4f6a-bd56-8283c372e8c0.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-42b5e5fa-21f2-4f6a-bd56-8283c372e8c0.png",
+      "sha256": "e8dc354e313cae11543725cd581a12b7ebf7dc7d8b99cd63d7be4ccadc5c570f",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-39035268-ae22-420c-bd14-88ec883f9e63.png",
+  "candidatePath": "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+  "candidateSha256": "abd65b5897fed79d24fbbe6757fbde1cca465fdb89485bf316fd08473e0b8061",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir seated LEFT at lab workstation, shoulders and head comfortably aligned, typing with both hands naturally on keyboard. He leans slightly forward with bright concentrated expression, eyes RIGHT at actual work screen. Main monitor heading \"Practice stream\". Five boxes in order \"1\", \"2\", \"3\", \"4\", \"5\" under caption \"One feature per reading\". Below \"Window: 3 steps\", \"Stride: 1\", \"Target: next reading\". Footer \"Build input-target pairs\" and \"Checks pending\". No invented result or completion tick. Camera beside operator on front side of screen, no monitor behind his head. Keep all background screens inactive.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-42b5e5fa-21f2-4f6a-bd56-8283c372e8c0.png",
+          "sha256": "e8dc354e313cae11543725cd581a12b7ebf7dc7d8b99cd63d7be4ccadc5c570f",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-42b5e5fa-21f2-4f6a-bd56-8283c372e8c0.png",
+        "sha256": "e8dc354e313cae11543725cd581a12b7ebf7dc7d8b99cd63d7be4ccadc5c570f"
+      }
+    },
+    {
+      "prompt": "Use case: identity-preserve. First canonical Demir portrait is identity authority; next room master ROOM ONLY; last image exact correction target. Make a single equipment-side correction only: Demir is seen from his anatomical LEFT side, so the visible left ear must be a natural bare ear. Remove the earpiece currently on that visible ear and reconstruct that small ear/hair area. His single earpiece belongs on anatomical RIGHT ear, which is on the far hidden side in this pose; do not draw a visible replacement or second earpiece. Preserve face morphology, hair, expression, gaze, full pose, hands, clothing, room, muted colors and every exact monitor word, number and screen perspective. Keep1536x1024 composition unchanged. No other edits.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-42b5e5fa-21f2-4f6a-bd56-8283c372e8c0.png",
+          "sha256": "e8dc354e313cae11543725cd581a12b7ebf7dc7d8b99cd63d7be4ccadc5c570f",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-39035268-ae22-420c-bd14-88ec883f9e63.png",
+        "sha256": "abd65b5897fed79d24fbbe6757fbde1cca465fdb89485bf316fd08473e0b8061"
+      }
+    }
+  ],
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/sequences-matter-challenge/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/sequences-matter-challenge/hands-review.png"
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "The challenge creates one-feature sliding input-target pairs, window3stride1,stream1..5.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/sequences-matter-challenge/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/sequences-matter-challenge/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-42b5e5fa-21f2-4f6a-bd56-8283c372e8c0.png",
+      "sha256": "e8dc354e313cae11543725cd581a12b7ebf7dc7d8b99cd63d7be4ccadc5c570f",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "independentReview": {
+    "key": "sequences-matter-challenge",
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "challenge",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-39035268-ae22-420c-bd14-88ec883f9e63.png",
+    "candidateSha256": "abd65b5897fed79d24fbbe6757fbde1cca465fdb89485bf316fd08473e0b8061",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Five-row practice stream, window3 stride1, target next row; no output spoiling; natural typing and correct bare visible left ear.",
+    "alt": "Demir builds input-target pairs from a five-reading practice stream in the lab.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-39035268-ae22-420c-bd14-88ec883f9e63.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-challenge.webp",
+  "sourceSha256": "abd65b5897fed79d24fbbe6757fbde1cca465fdb89485bf316fd08473e0b8061",
+  "webpSha256": "65b4c893c36e8f4fff3e7f296ff386cb12084db03128e1bebacab40687488ccb",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+    "sourceSha256": "5027a4a3aeba54f1e9a638a954320f2930a45e8020ec14d7bb4245fc4e348f47",
+    "webpSha256": "3faa70afd5aacb5a64104c45b05e21b936283b5f7d3618412242aab0a47e1a7a",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7da6b13f-073b-48b0-ae07-cb2784d05988.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "abd65b5897fed79d24fbbe6757fbde1cca465fdb89485bf316fd08473e0b8061",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-challenge.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

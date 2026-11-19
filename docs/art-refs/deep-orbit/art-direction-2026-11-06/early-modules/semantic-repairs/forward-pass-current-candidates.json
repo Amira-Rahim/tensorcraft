@@ -1,0 +1,363 @@
+[
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "briefing",
+    "cast": [
+      "ensign-demir",
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Keep Demir currentheadsize and face, reduce Farah head only5percent subtly. Turn Demir entire chair/hip/chest slightly toward viewer so his chin-supported head and chest align naturally toward mainconsole; preserve two arm chains and keyboard/chin contacts, no backwards necktwist. Farah crossedarms preserved. Mainconsole darkscreen title 'Shape error'. Four spacious rows: 'Expected: [rows,3]', 'Received: [3]', 'Adapter result: [3,1]', 'Missing batch axis'. No successbadge or correctedoutput yet. Turn ALL other panels off, including foreground roundradar and Demirwrist.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a46ac1ec-b5eb-4d02-8ddd-b1822e027483.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/forward-pass-briefing-ensign-demir-proof.png",
+        "sha256": "bb4db42959c005e16a8e3df903ca0e7971aa34eaba29dc87064200bcc2121080",
+        "crop": {
+          "left": 750,
+          "top": 400,
+          "width": 220,
+          "height": 290
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-1bd7a069-20a8-42b2-a518-cf915004e39c.png",
+        "priorSha256": "d8c73b295569020875ea62dbe160438aaf09274cc6cae4c5915d6cf2ef753d6b",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a46ac1ec-b5eb-4d02-8ddd-b1822e027483.png",
+        "candidateSha256": "3cffe75ea94e905bf76d208d081bbeaafabcd3e5166112c1efadacaa991eefd5"
+      },
+      {
+        "character": "dr-farah",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/forward-pass-briefing-dr-farah-proof.png",
+        "sha256": "8684ca3baee34110d62790c928d431d5719801e11a0983ce27ea8dbdb3bac920",
+        "crop": {
+          "left": 1090,
+          "top": 120,
+          "width": 240,
+          "height": 300
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-1bd7a069-20a8-42b2-a518-cf915004e39c.png",
+        "priorSha256": "d8c73b295569020875ea62dbe160438aaf09274cc6cae4c5915d6cf2ef753d6b",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a46ac1ec-b5eb-4d02-8ddd-b1822e027483.png",
+        "candidateSha256": "3cffe75ea94e905bf76d208d081bbeaafabcd3e5166112c1efadacaa991eefd5"
+      }
+    ],
+    "pathSha256": "3cffe75ea94e905bf76d208d081bbeaafabcd3e5166112c1efadacaa991eefd5",
+    "screenMeaning": {
+      "section": "Opening StoryPassage",
+      "spec": "Shape-error panel:expected[rows,3],received[3]\u2192adapter[3,1]. Highlight missing batch axis; no arbitrary four-box pipeline.",
+      "currentSource": "art-src/scenes/neural-networks__forward-pass-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png",
+        "docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "cast": [
+        "ensign-demir",
+        "dr-farah"
+      ]
+    },
+    "alt": "Demir and Farah trace the failed demo to a missing batch axis.",
+    "peerReviewer": "/root/browser_final",
+    "peerVerdict": "Explicit five-scene fullframe and seven-canonical-proof PASS, recorded in forward-pass-independent-browser-review.json2026-11-07."
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "concept",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce wholeheads includinghair only8percent, preservefaceforms/neck. Keep Demir holdingtabletback and Farahpen/pocket pose. Replace floating panel with compactdiagram: top '[0.5,0.8,0.2]' and 'shape [3]', downwardarrow labeled 'expandDims(0)', bottom '[[0.5,0.8,0.2]]' and 'shape [1,3]'. Footer '1 row, 3 features'. This is one row of threevalues. No anonymouscoloredblocks. Adjacentlargephysicaldisplay and allbackground/wrist screens inactive.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-909725c2-d4a4-40df-b0a9-a08f6ca455cb.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "dr-farah",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/forward-pass-concept-dr-farah-proof.png",
+        "sha256": "e1af375a8d01dbc8279f8914b9d1697f532b59c1bb9f913363925775d8fecc44",
+        "crop": {
+          "left": 140,
+          "top": 155,
+          "width": 290,
+          "height": 355
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-efe22641-8d9d-45a6-acb7-c2798e6d7d68.png",
+        "priorSha256": "9417cd93e52a74c16fa28f71a1f3f81ddd9f9b5b67a971868f5a2f23df43c6c6",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-909725c2-d4a4-40df-b0a9-a08f6ca455cb.png",
+        "candidateSha256": "7303eef4457a4767dae0fc7982e48fa4dab3b133ade247d227d37526c930b7f2"
+      },
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/forward-pass-concept-ensign-demir-proof.png",
+        "sha256": "c8a9896fc83ba1dc815989afecaceaab9069275b0dcc817aa664d8d4d11f1923",
+        "crop": {
+          "left": 675,
+          "top": 100,
+          "width": 270,
+          "height": 365
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-efe22641-8d9d-45a6-acb7-c2798e6d7d68.png",
+        "priorSha256": "9417cd93e52a74c16fa28f71a1f3f81ddd9f9b5b67a971868f5a2f23df43c6c6",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-909725c2-d4a4-40df-b0a9-a08f6ca455cb.png",
+        "candidateSha256": "7303eef4457a4767dae0fc7982e48fa4dab3b133ade247d227d37526c930b7f2"
+      }
+    ],
+    "pathSha256": "7303eef4457a4767dae0fc7982e48fa4dab3b133ade247d227d37526c930b7f2",
+    "screenMeaning": {
+      "section": "Data Flows Forward",
+      "spec": "One three-feature reading shape[3]\u2192expandDims(0)\u2192one row shape[1,3]. Label rows/features axes and preserve all three feature positions; no changing values.",
+      "currentSource": "art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/dr-farah.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "dr-farah",
+        "ensign-demir"
+      ]
+    },
+    "alt": "Demir and Farah wrap three feature values into one row without changing them.",
+    "peerReviewer": "/root/browser_final",
+    "peerVerdict": "Explicit five-scene fullframe and seven-canonical-proof PASS, recorded in forward-pass-independent-browser-review.json2026-11-07.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-efe22641-8d9d-45a6-acb7-c2798e6d7d68.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-909725c2-d4a4-40df-b0a9-a08f6ca455cb.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+        "art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+        "docs/art-refs/deep-orbit/dr-farah.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce Demir wholehead includinghair only8percent, preserve canonicalmorphology and closeframepose. Keep onehandholdingphysicalcartridge/sideofmonitor and otherindexonkey. Mainpanel title 'Practice task'. Upper task shows 'Input [[1,2],[3,4]]', 'shape [2,2]', arrow to 'Dense: 3 units', arrow to 'Expected shape [2,3]'. Lower separate row 'Single reading [5,6]' and 'Add one batch axis'. Footer 'Awaiting code'. No numeric predictedoutputs, no successmark, no outputs presentedascompleted. All peripheral and wrist screens dark.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ea9183c5-b602-4cea-a9ed-6f9ed34edeb0.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/forward-pass-challenge-ensign-demir-proof.png",
+        "sha256": "e6fa94144bce265a8c120a8dc3b1859aaf24c1562c07dc882feb667a6f3bfd98",
+        "crop": {
+          "left": 340,
+          "top": 60,
+          "width": 335,
+          "height": 430
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-690f7f0c-35ab-4f2d-81bc-a8acaec0692b.png",
+        "priorSha256": "7a0ae8aa46c4e0cc7232f047fea6e44661aa34061ebf459b150efd6906135394",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ea9183c5-b602-4cea-a9ed-6f9ed34edeb0.png",
+        "candidateSha256": "cd43f2b0dd05e3f6b4aec13bb6e0f7edcf6665367396778653a7fa2a46956c0b"
+      }
+    ],
+    "pathSha256": "cd43f2b0dd05e3f6b4aec13bb6e0f7edcf6665367396778653a7fa2a46956c0b",
+    "screenMeaning": {
+      "section": "Challenge; forward-pass solutionCode",
+      "spec": "Practice batch[[1,2],[3,4]][2,2]\u2192Dense3\u2192output shape[2,3], and single[5,6][2]\u2192[[5,6]][1,2]. Outputs depend on random weights, so show shapes and units without invented numbers or success claims.",
+      "currentSource": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "ensign-demir"
+      ]
+    },
+    "alt": "Demir prepares the two-feature batch and single-reading forward-pass tasks.",
+    "peerReviewer": "/root/browser_final",
+    "peerVerdict": "Explicit five-scene fullframe and seven-canonical-proof PASS, recorded in forward-pass-independent-browser-review.json2026-11-07.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-690f7f0c-35ab-4f2d-81bc-a8acaec0692b.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ea9183c5-b602-4cea-a9ed-6f9ed34edeb0.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+        "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "takeaways",
+    "cast": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce Demirwholehead includinghair only8percent, maintainwarmadultface andtabletgrip. Tabletback preservedplain. Mainrear monitor replacesempty4blockpipeline with clear 'Add a batch axis', then '[n]' arrow labeled 'expandDims(0)' to '[1,n]'. Under it exactexample '[5,6]' arrow to '[[5,6]]'. Footer 'Values unchanged'. Allothermonitors includinglowerthree-slider panel andwristscreen inactive. No modelaccuracyclaims.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-7723c9f8-4e19-4283-a4f5-9c2d5f2631dc.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/forward-pass-takeaways-ensign-demir-proof.png",
+        "sha256": "c1e916941412ee26c411df88d2884628a4b034fcbaaaf415a7e6c612ed80ad23",
+        "crop": {
+          "left": 530,
+          "top": 0,
+          "width": 450,
+          "height": 600
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-94c25b8e-a2e3-402b-90b6-ed8d849d9b13.png",
+        "priorSha256": "c22dfd93897e0ce2e36f7caaaa259b817d7e17f18c52910d0c17e425332f6609",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-7723c9f8-4e19-4283-a4f5-9c2d5f2631dc.png",
+        "candidateSha256": "3bc419b539a8b1202032b9cc860283038957c97dedf9865d7319d8b16fa5475c"
+      }
+    ],
+    "pathSha256": "3bc419b539a8b1202032b9cc860283038957c97dedf9865d7319d8b16fa5475c",
+    "screenMeaning": {
+      "section": "LessonRecap",
+      "spec": "Show input shape[n]\u2192expandDims(0)\u2192[1,n], with exact practice[5,6]\u2192[[5,6]]. Separate output ownership/dispose note if needed; no classifier verdict.",
+      "currentSource": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "ensign-demir"
+      ]
+    },
+    "alt": "Demir checks that adding a leading batch axis preserves all values.",
+    "peerReviewer": "/root/browser_final",
+    "peerVerdict": "Explicit five-scene fullframe and seven-canonical-proof PASS, recorded in forward-pass-independent-browser-review.json2026-11-07."
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "epilogue",
+    "cast": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce Demirwholehead only8percent whilepreserving exactface/pose/hands. Leftforegroundconsole title 'Saved demo run'. Threesimplereadable rows '0.49', '0.53', '0.51', no bars and no invented sampleIDs. Rearwallpanel title 'Random initial weights', subtitle 'Training still needed'. Smallline 'Input shape [1,3]'. Do not claimtrustworthyclassificationoraccuracy. Keep handonkeyboard andotherholdingphysicalnotebook, wrist screenoff. All secondaryscreens dark.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-epilogue-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-7971dfab-929b-4cb0-88e5-1545854e12a4.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/forward-pass-epilogue-ensign-demir-proof.png",
+        "sha256": "e02b213f5b5a68da65e46728e2067101b04b92295e534584c368f6fdc033d60a",
+        "crop": {
+          "left": 910,
+          "top": 0,
+          "width": 340,
+          "height": 460
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e0c4b4dd-cb14-4197-b7a3-6e1d7236ce61.png",
+        "priorSha256": "b65cf1fb8855045cb285ffc8a7e6356efb4485418a5deba085d634edfb00a377",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-7971dfab-929b-4cb0-88e5-1545854e12a4.png",
+        "candidateSha256": "acb44e4c33255b7def42000aa10e7cc2605ea69ced29519d727457e979c2f301"
+      }
+    ],
+    "pathSha256": "acb44e4c33255b7def42000aa10e7cc2605ea69ced29519d727457e979c2f301",
+    "screenMeaning": {
+      "section": "Epilogue",
+      "spec": "Saved story run lists scores.49,.53,.51 labeled Random initial weights; not trustworthy predictions. Input contract[1,3] fixed. No green success bars suggesting useful classifications.",
+      "currentSource": "art-src/scenes/neural-networks__forward-pass-epilogue-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "ensign-demir"
+      ]
+    },
+    "alt": "Demir saves three untrained demo scores for comparison after training.",
+    "peerReviewer": "/root/browser_final",
+    "peerVerdict": "Explicit five-scene fullframe and seven-canonical-proof PASS, recorded in forward-pass-independent-browser-review.json2026-11-07.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e0c4b4dd-cb14-4197-b7a3-6e1d7236ce61.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-7971dfab-929b-4cb0-88e5-1545854e12a4.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp",
+        "art-src/scenes/neural-networks__forward-pass-epilogue-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  }
+]

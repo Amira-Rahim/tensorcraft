@@ -1,134 +1,171 @@
 # Tensorcraft
 
-An interactive, story-driven web application that teaches JavaScript engineers machine learning with TensorFlow.js. It bridges familiar JavaScript concepts to ML through 50+ JavaScript-to-ML bridges.
+Tensorcraft teaches machine learning to JavaScript engineers through a
+story-driven web course. Learners inspect fictional sensor data, write
+JavaScript, train small TensorFlow.js models, and compare the results. The
+course connects ML concepts to familiar JavaScript concepts and explains
+where each analogy stops being useful.
 
-## Worlds
+## Local review
 
-Tensorcraft is organized into five worlds, each with its own narrative:
-
-| World             | Setting     | Focus Area              |
-| ----------------- | ----------- | ----------------------- |
-| **Deep Orbit**    | Space       | Time-Series & Signals   |
-| **Neon Protocol** | Cyberpunk   | Computer Vision         |
-| **Signal Ward**   | Medical     | NLP & Text              |
-| **Nova Canvas**   | Creative AI | Multimodal & Generative |
-| **Terra Grid**    | Industrial  | Edge AI & Production ML |
-
-Deep Orbit is available: 11 modules, 56 lessons, and 65 in-browser exercises.
-Its first module (5 lessons) is free without an account. The other four worlds
-have authored content but remain coming soon and cannot be purchased.
-See [launch scope](docs/launch-scope.md).
-
-## Tech Stack
-
-- **Framework:** Next.js 16 (App Router) + React 19
-- **API:** Hono on Node.js, deployed separately from the web app
-- **Monorepo:** Turborepo + pnpm workspaces
-- **Content:** MDX v3 + Velite (Zod-validated content pipeline)
-- **Exercises:** Sandpack editor + a custom worker test runner using TensorFlow.js 4.22
-- **Styling:** Tailwind CSS 4 with `@theme` directive (CSS custom properties); no CSS Modules in use. Dark and light schemes: follows the OS, with a manual toggle.
-- **Auth & DB:** Supabase (Postgres + Auth)
-- **Payments:** Stripe (one-time per-world purchases)
-- **Analytics:** PostHog + Vercel Web Analytics (both consent-gated)
-- **Testing:** Vitest (unit), Playwright (e2e), axe-core (a11y)
-
-## Project Structure
-
-```
-tensorcraft/
-├── apps/
-│   ├── web/          # Next.js frontend
-│   └── api/          # API service
-├── packages/
-│   ├── content/      # MDX lessons, exercises, Velite config
-│   ├── ui/           # Shared UI components
-│   ├── worlds/       # World configuration (colors, assets)
-│   ├── shared/       # Shared utilities and types
-│   ├── config/       # Shared config (ESLint, TypeScript)
-│   ├── bridges-public/ # Public JavaScript-to-ML bridge package
-│   └── supabase/     # Supabase client, types, and database migrations
-├── docs/             # PRD, product plan, scripts
-└── e2e/              # Playwright end-to-end tests
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js >= 22
-- pnpm 10.12.4 (pinned in `package.json`)
-
-### Setup
+Start with the [review setup guide](docs/review-setup.md). It prepares an
+isolated local Supabase stack and fictional learner fixtures without
+production credentials. It requires Node.js 22 or later, pnpm 10.12.4, the
+Supabase CLI, and a running Docker engine.
 
 ```bash
 pnpm install --frozen-lockfile
-cp apps/web/.env.example apps/web/.env.local
-cp apps/api/.env.example apps/api/.env
+pnpm review:prepare
+pnpm review:dev
 ```
 
-Configure both env files before starting the apps:
+The guide covers the local sign-in inbox, fixture course access, checks, and
+cleanup. Review access uses fixture purchases, so reviewers can inspect the
+paid lesson routes without making a payment. Keep the review environment
+separate from hosted services and real learner data.
 
-- Web: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and
-  `NEXT_PUBLIC_API_URL` (local API: `http://localhost:3001`).
-- API: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `STRIPE_SECRET_KEY`, and
-  `STRIPE_WEBHOOK_SECRET`. Use Stripe test credentials locally.
-- Set `APP_URL=http://localhost:3000` for local checkout redirects. The example
-  files describe optional integrations and additional production requirements.
+The [product roadmap](ROADMAP.md) covers the remaining platform work,
+expansion to all five worlds, and later growth plans. It links each workstream
+to the existing backlog and identifies release dependencies.
 
-Keep service-role and Stripe secrets in server-only variables. Do not prefix
-those secrets with `NEXT_PUBLIC_`.
+## Course scope
+
+Deep Orbit is the launched course. Its 11 modules contain 56 lessons and 65
+in-browser exercises. The first module has five free lessons and works
+without an account. Later modules cover neural networks, training and
+evaluation, browser runtimes, signal processing, sequence models, anomaly
+detection, and model deployment.
+
+Four other worlds have authored source content and remain coming soon:
+
+- Neon Protocol covers computer vision.
+- Signal Ward covers text and natural language processing.
+- Nova Canvas covers multimodal and generative models.
+- Terra Grid covers edge deployment and production ML.
+
+The application excludes their lesson routes and purchases from the current
+launch. Authored source files do not establish release readiness. See the
+[launch scope](docs/launch-scope.md) and
+[world launch checklist](docs/world-launch-checklist.md).
+
+## Machine learning behavior
+
+The project includes real model training, inference, and runtime comparisons:
+
+- The [exercise runner](packages/ui/src/mdx/exercise-runner.ts) executes
+  TensorFlow.js 4.22.0 in a worker. Exercises such as
+  [simple-network](packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml)
+  and
+  [training-loop-exercise](packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml)
+  require actual `model.fit()` calls and inspect the resulting model or
+  training history.
+- Some exercise checks supply controlled model loaders or pipeline outputs.
+  Passing those checks establishes the exercise contract. It does not verify
+  external model downloads, browser caching, or real model accuracy.
+- [Training scripts](scripts/train-deep-scan-model.mjs) create course model
+  artifacts. Other scripts
+  [rebuild the capstone classifier](scripts/build-deep-scan-v1.mjs) and
+  [fine-tune the landing preview](scripts/finetune-deep-scan-preview.mjs).
+  The [public model directory](apps/web/public/models) contains trained
+  artifacts and aliases. The [model contracts](docs/capstone-models.md)
+  explain their synthetic data, architectures, uses, and limitations.
+- The optional [browser runtime lab](scripts/fixtures/runtime-lab-package/README.md)
+  runs a frozen classifier with TensorFlow.js and ONNX Runtime, compares
+  outputs, and checks caching and deployment failures. Its full mode also
+  downloads pinned pretrained DistilBERT sentiment models, about 335 MB plus
+  tokenizer and configuration files. Those third-party weights are not
+  included in the lab archive. The lab reports runtime observations rather
+  than a general model-quality ranking.
+
+The story uses fictional sensor records, and the shipped model contracts
+describe synthetic training data. Some standalone assignments use licensed
+public datasets, including the Room Occupancy dataset identified in the
+[licensing notes](LICENSING.md). These examples do not establish performance
+on new operational or medical data.
+
+## Application stack
+
+- Next.js 16 and React 19 provide the web application.
+- Hono runs the separate Node.js API.
+- pnpm workspaces and Turborepo manage two apps and seven shared packages.
+- MDX, Velite, and Zod validate lesson and exercise content.
+- Sandpack provides the editor, and the custom worker runs exercise checks.
+- Tailwind CSS 4 provides shared styles and light and dark themes.
+- Supabase provides PostgreSQL and authentication.
+- Stripe handles one-time course purchases in the deployed application.
+- PostHog and Vercel Web Analytics provide optional analytics integrations.
+  The local review setup omits their production configuration.
+- Vitest, Playwright, and axe-core support unit, browser, and accessibility
+  checks.
+
+## Repository structure
+
+```text
+apps/web/                  Next.js web application
+apps/api/                  Hono API
+packages/content/          MDX lessons, exercises, content validation
+packages/ui/               Shared components and exercise runner
+packages/worlds/           World manifests and assets
+packages/shared/           Types, utilities, curriculum and bridge data
+packages/config/           Shared lint and TypeScript configuration
+packages/bridges-public/   JavaScript-to-ML bridge package
+packages/supabase/         Database clients, types and migrations
+scripts/                   Verification, packaging and model tooling
+docs/                      Architecture, plans and review records
+e2e/                       Browser checks
+```
+
+## Development checks
+
+The root package pins pnpm 10.12.4 and requires Node.js 22 or later. After the
+review setup, use the checks that match the changed area:
 
 ```bash
-pnpm dev
+pnpm test             # Unit tests
+pnpm test:exercises   # Solutions, untouched starters and cheating fixtures
+pnpm typecheck        # TypeScript checks
+pnpm lint             # Lint checks
+pnpm test:e2e         # Browser checks
+pnpm build            # Application and package builds
 ```
 
-Turborepo builds content before starting the web app on port 3000 and the API
-on port 3001. Rebuild content after editing MDX or YAML:
+The [review setup guide](docs/review-setup.md) identifies which checks need
+the local services. `pnpm test:rls` creates and removes its own isolated
+PostgreSQL cluster. It needs PostgreSQL 16 or later and never reads
+`DATABASE_URL` or connects to a hosted database. Set `PG_BIN` when those
+binaries are outside `PATH`.
+
+Rebuild generated content after changing MDX or YAML:
 
 ```bash
 pnpm turbo build:content
 ```
 
-For database setup and migration ordering, use the
-[migration runbook](docs/migration-runbook.md). An optional local Supabase
-stack requires the Supabase CLI and Docker (`supabase start`).
+## Content authoring
 
-## Development
+Lessons live in `packages/content/content/<world>/<module>/`. Numbered MDX
+files contain lessons, `exercises/*.yaml` contains instructions and executable
+checks, and `module.yaml` declares module order and prerequisites. Velite
+validates the content through Zod schemas and generates application types.
 
-```bash
-pnpm dev            # Start all apps in dev mode
-pnpm build          # Build all packages and apps
-pnpm lint           # Lint all packages
-pnpm typecheck      # Type-check all packages
-pnpm format         # Format with Prettier
-pnpm test           # Run unit tests (Vitest)
-pnpm test:e2e       # Run end-to-end tests (Playwright)
-```
+Read [the project instructions](CLAUDE.md) and
+[writing quality rubric](docs/writing-quality-rubric.md) before editing
+course material. Preserve the story, exercise requirements, technical
+meaning, and accessible feedback across each lesson.
 
-## Deployment
+## Deployment references
 
-Web deploys through Vercel. Deploy the API through the **Deploy API** GitHub
-Actions workflow, which checks applied migrations and required Fly secrets
-before deploying. A direct `fly deploy` bypasses those checks.
-
-See [docs/deployment-guide.md](docs/deployment-guide.md) for environment variables and secrets, and [docs/infrastructure.md](docs/infrastructure.md) for the full production architecture.
-
-## Content Authoring
-
-Lessons are written in MDX and live in `packages/content/content/<world>/<module>/`. Each module contains:
-
-- Numbered `*.mdx` files: lessons (the module declares its lesson count)
-- `exercises/*.yaml`: exercise instructions, starter code, solutions, and tests
-- `module.yaml`: module order, summary, lesson count, and prerequisites
-
-Content is validated at build time through Velite with Zod schemas, and the generated types are used throughout the app.
+The web application deploys through Vercel. The API deployment workflow
+checks migrations and required Fly configuration before deploying. See the
+[deployment guide](docs/deployment-guide.md),
+[infrastructure overview](docs/infrastructure.md), and
+[migration runbook](docs/migration-runbook.md) for that separate operational
+setup. Local review does not require production access or a deployment.
 
 ## License
 
-All rights reserved.
-
-Local database policy checks: `pnpm test:rls` creates and removes an isolated
-PostgreSQL cluster. Set `PG_BIN` to your PostgreSQL 16+ binary directory if it
-is not on PATH. It never reads `DATABASE_URL` or connects to a hosted database.
-See [launch verification](docs/launch-verification.md) for scope and remaining
-external checks.
+Tensorcraft-owned code and course content use the
+[Mozilla Public License 2.0](LICENSE). The [licensing notes](LICENSING.md)
+describe scope and earlier grants. Third-party dependencies, models, fonts,
+and other material retain their own licenses and notices. Existing MIT and
+CC0 grants remain in effect as described there.

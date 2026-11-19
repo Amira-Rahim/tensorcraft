@@ -1,0 +1,155 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage as a candid working discussion across the lab bench. Farah sits at a low sloping evaluation console, three-quarter body angled into the work, with her stylus hovering over a calm input. Demir leans beside her, one hand on the bench and the other finger following the suspect input, brow pinched in reconsideration. Farah turns a small serious glance toward him as he asks a question; no one faces the camera. Four distinct connected arms, natural torso/neck alignments, no held-up cards or paper. Camera sees the work from a diagonal side angle, with the interface naturally oriented toward the crew. The single console shows a small supplied input pair titled Separate synthetic evaluation, subtitle One of 5 held-out pairs. Two exact eight-value rows: Calm [0.608,0.608,0.608,0.608,0.392,0.392,0.392,0.392] and Suspect [0.858,0.358,0.858,0.358,0.642,0.142,0.642,0.142]. No measured MSE is invented. One short task note below reads Inspect misses and false alarms. Keep figures and collaborative action dominant, compact table rather than a giant poster. All typography and table rules follow the console perspective. Other screens off, lab pillar dark muted sage, warm skin, aged brass, no fluorescent rim. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-takeaways-target.png",
+      "sha256": "d575685dac2359baea0d9c064892fd1fed3f36697f55d19dd8bea3767c294c9b",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "d575685dac2359baea0d9c064892fd1fed3f36697f55d19dd8bea3767c294c9b",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-takeaways.webp",
+    "sha256": "e8e406903f38f4d258ed3e7ace6823fa168bd84f1c3eb6006a9479b20f073274"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "recall",
+    "concreteGenerationSpecification": "Restage as a candid working discussion across the lab bench. Farah sits at a low sloping evaluation console, three-quarter body angled into the work, with her stylus hovering over a calm input. Demir leans beside her, one hand on the bench and the other finger following the suspect input, brow pinched in reconsideration. Farah turns a small serious glance toward him as he asks a question; no one faces the camera. Four distinct connected arms, natural torso/neck alignments, no held-up cards or paper. Camera sees the work from a diagonal side angle, with the interface naturally oriented toward the crew. The single console shows a small supplied input pair titled Separate synthetic evaluation, subtitle One of 5 held-out pairs. Two exact eight-value rows: Calm [0.608,0.608,0.608,0.608,0.392,0.392,0.392,0.392] and Suspect [0.858,0.358,0.858,0.358,0.642,0.142,0.642,0.142]. No measured MSE is invented. One short task note below reads Inspect misses and false alarms. Keep figures and collaborative action dominant, compact table rather than a giant poster. All typography and table rules follow the console perspective. Other screens off, lab pillar dark muted sage, warm skin, aged brass, no fluorescent rim.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "RecallPrompt and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": null
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-ad1389af-8a23-451a-bede-2d9369febf36.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "c7a6b9bfc5dfd0a7e3f3d4151450a82556a901d9ec0d543db4bbd8f25e4cf2d5",
+    "proofSha256": "c187e65060cc153d8a6896fe98dfdd606ace236bfc22f1454469b738a5caea8e",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Demir and Farah examine a separate synthetic evaluation pair, checking what the model might miss instead of posing with an explanation card."
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/autoencoders-takeaways-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-takeaways-target.png",
+    "sha256": "d575685dac2359baea0d9c064892fd1fed3f36697f55d19dd8bea3767c294c9b",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "d575685dac2359baea0d9c064892fd1fed3f36697f55d19dd8bea3767c294c9b",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-takeaways-runtime-before.png",
+    "sha256": "c6df67e9de10789f637bc7ac1f58a8b9729951499c40d15b52c847119054e511",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "c6df67e9de10789f637bc7ac1f58a8b9729951499c40d15b52c847119054e511",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir and Farah examine a separate synthetic evaluation pair, checking what the model might miss instead of posing with an explanation card.",
+    "fullSpecification": "Restage as a candid working discussion across the lab bench. Farah sits at a low sloping evaluation console, three-quarter body angled into the work, with her stylus hovering over a calm input. Demir leans beside her, one hand on the bench and the other finger following the suspect input, brow pinched in reconsideration. Farah turns a small serious glance toward him as he asks a question; no one faces the camera. Four distinct connected arms, natural torso/neck alignments, no held-up cards or paper. Camera sees the work from a diagonal side angle, with the interface naturally oriented toward the crew. The single console shows a small supplied input pair titled Separate synthetic evaluation, subtitle One of 5 held-out pairs. Two exact eight-value rows: Calm [0.608,0.608,0.608,0.608,0.392,0.392,0.392,0.392] and Suspect [0.858,0.358,0.858,0.358,0.642,0.142,0.642,0.142]. No measured MSE is invented. One short task note below reads Inspect misses and false alarms. Keep figures and collaborative action dominant, compact table rather than a giant poster. All typography and table rules follow the console perspective. Other screens off, lab pillar dark muted sage, warm skin, aged brass, no fluorescent rim."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "c7a6b9bfc5dfd0a7e3f3d4151450a82556a901d9ec0d543db4bbd8f25e4cf2d5",
+  "faceBoxes": {
+    "farah": [
+      180,
+      110,
+      350,
+      395
+    ],
+    "demir": [
+      610,
+      10,
+      330,
+      370
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-takeaways-identity-proof.jpg",
+  "previousPanelSpecification": {
+    "state": "recall",
+    "concreteGenerationSpecification": "Preserve Farah and Demir full head sizes, seated poses, both grips, distinct arm chains and natural necks. Demir holds the same tablet toward viewer. Replace both traces with two clearly separated compact text panels: \"Low error can miss anomalies\" and \"High error can flag normal inputs\". One rear board has a single short heading \"Test on separate data\" and two distinct outlined labels \"Normal examples\" and \"Known anomalies\". No sample values or invented error scores. All other screens and wrist off. Keep Farah open hand explanatory gesture and Demir thoughtful expression.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "RecallPrompt and LessonRecap"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-ad1389af-8a23-451a-bede-2d9369febf36.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-takeaways.webp",
+      "art-src/scenes/anomaly-detection__autoencoders-takeaways-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "publishedReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__autoencoders-takeaways.json",
+  "obsoleteWorkingImageRemoved": "art-src/scenes/anomaly-detection__autoencoders-takeaways-narrative-stage1-openai-20261107.png"
+}

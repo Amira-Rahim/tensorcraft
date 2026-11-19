@@ -122,7 +122,9 @@ export default function PaywallPage() {
             </Link>
           </div>
           <p className="mt-6 text-[11px] uppercase tracking-[0.15em] text-text-muted font-mono">
-            {`one payment, lifetime access, from $${PRICING.single.price}`}
+            {`$${PRICING.single.price} ${PRICING.single.price < PRICING.single.regularPrice ? "introductory price, " : ""}one payment, lifetime access`}
+            {PRICING.single.price < PRICING.single.regularPrice &&
+              `. Regular price $${PRICING.single.regularPrice}.`}
           </p>
         </section>
 
@@ -175,8 +177,14 @@ export default function PaywallPage() {
                         Paid
                       </div>
                       <div className="mt-1 text-base font-bold text-primary">
-                        From ${PRICING.single.price}
+                        ${PRICING.single.price}
                       </div>
+                      {PRICING.single.price < PRICING.single.regularPrice && (
+                        <p className="mt-1 text-xs font-normal text-text-muted">
+                          Introductory price. Regular price $
+                          {PRICING.single.regularPrice}.
+                        </p>
+                      )}
                     </th>
                   </tr>
                 </thead>

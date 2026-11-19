@@ -79,7 +79,7 @@ If you find yourself writing a `breaks:` longer than 3 sentences, the bridge pro
 ## Lifecycle
 
 - New lesson PR: reviewer rejects if structural/intuition bridge missing `breaks:` field.
-- Existing lessons: tracked retrofit per `analogy-breaks-retrofit-playbook.md`.
+- Existing lessons: review missing caveats through the [world launch checklist](../world-launch-checklist.md).
 - Canonical registry change: PR adding a structural bridge MUST also add `breaks:`.
 
 ## Related
@@ -87,4 +87,4 @@ If you find yourself writing a `breaks:` longer than 3 sentences, the bridge pro
 - `packages/shared/src/bridges.ts` - canonical 50-bridge registry.
 - `packages/ui/src/mdx/bridge-callout.tsx` - renders the bridge + breaks footer.
 - `docs/audits/bridge-tier-audit-2026-04-25.md` - current state of all 295 lesson bridges.
-- `docs/patterns/analogy-breaks-retrofit-playbook.md` - rollout plan.
+- [World launch checklist](../world-launch-checklist.md) - remaining authoring and launch checks.

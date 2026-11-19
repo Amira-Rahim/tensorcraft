@@ -1,0 +1,1071 @@
+{
+  "date": "2026-11-14",
+  "report": {
+    "id": "265fd79b-1d22-430c-ac3c-1e65f581ea45",
+    "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports/265fd79b-1d22-430c-ac3c-1e65f581ea45",
+    "private": true,
+    "htmlBytes": 27941
+  },
+  "scope": "Release verification and a fresh read-only SEO/GEO discovery loop. Nine scoped follow-ups refine the existing 53-item plan. No new product changes, outreach, visibility change or paid AI collection.",
+  "release": {
+    "commit": "bf0e90258625d57b27f4dba778b5d9fe9212efa1",
+    "branch": "main",
+    "pushed": true,
+    "sha": "bf0e90258625d57b27f4dba778b5d9fe9212efa1",
+    "state": "success",
+    "statuses": [
+      {
+        "context": "Vercel",
+        "state": "success",
+        "description": "Deployment has completed",
+        "url": "https://vercel.com/amira-salahs-projects/tensorcraft/GnJzKTWv6ypQRKdWKQc1kDwNSB1t",
+        "updatedAt": "2026-11-14T16:35:02Z"
+      }
+    ],
+    "checks": {
+      "workspaceTypechecks": 10,
+      "passedTests": 4399,
+      "skippedTests": 65,
+      "passedTestFiles": 384,
+      "skippedTestFiles": 1,
+      "normalHooks": true
+    }
+  },
+  "production": {
+    "checkedAt": "2026-11-14T16:42:51.064Z",
+    "method": "Direct anonymous HTTP and initial HTML parsing. No browser or Google live inspection.",
+    "pages": [
+      {
+        "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "status": 200,
+        "bytes": 76486,
+        "sha256": "1072601702a5332bac9c683292aa122bd8ecc46dd0d2acb1df0fb70c13262fb9",
+        "canonical": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "robots": [],
+        "h1": 1,
+        "xRobotsTag": null,
+        "expected": [
+          {
+            "value": "Supplied five-epoch reference",
+            "present": true
+          },
+          {
+            "value": "room-project-v1.zip",
+            "present": true
+          },
+          {
+            "value": "room-training-reference-v1.json",
+            "present": true
+          }
+        ],
+        "evidenceAnchors": [
+          "/evidence/room-project-v1/scripts/check-room-project.mjs",
+          "/evidence/room-project-v1/scripts/fixtures/room-project/train.mjs",
+          "/evidence/room-project-v1/scripts/build-room-project-preview.mjs",
+          "/evidence/room-project-v1/manifest.json",
+          "/evidence/room-project-v1.zip",
+          "/evidence/room-project-v1/README.md"
+        ]
+      },
+      {
+        "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "status": 200,
+        "bytes": 92200,
+        "sha256": "090324047d684f998a01948e96426ea435cb838be0ca38935bca694cf651edd2",
+        "canonical": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "robots": [],
+        "h1": 1,
+        "xRobotsTag": null,
+        "expected": [
+          {
+            "value": "Transformers.js",
+            "present": true
+          },
+          {
+            "value": "ONNX Runtime Web",
+            "present": true
+          },
+          {
+            "value": "ml5",
+            "present": true
+          },
+          {
+            "value": "hosted model",
+            "present": true
+          }
+        ]
+      },
+      {
+        "url": "https://tensorcraft.app/compare",
+        "status": 200,
+        "bytes": 73818,
+        "sha256": "d342ed16749b7aa48a2857c026c9e81b8bbdf9a1d6ff21f6ab9020a4182fd324",
+        "canonical": "https://tensorcraft.app/compare",
+        "robots": [],
+        "h1": 1,
+        "xRobotsTag": null,
+        "expected": [
+          {
+            "value": "Stephen Grider",
+            "present": true
+          },
+          {
+            "value": "Manning",
+            "present": true
+          },
+          {
+            "value": "2026-11-14",
+            "present": true
+          }
+        ]
+      },
+      {
+        "url": "https://tensorcraft.app/guides",
+        "status": 200,
+        "bytes": 41684,
+        "sha256": "0f364c1e40fb08ffbf1a2448af90e7556e5bcc078eac467b0de3ed400d447e42",
+        "canonical": "https://tensorcraft.app/guides",
+        "robots": [],
+        "h1": 1,
+        "xRobotsTag": null,
+        "expected": [
+          {
+            "value": "JavaScript machine learning guides",
+            "present": true
+          },
+          {
+            "value": "/guides/javascript-machine-learning-learning-path",
+            "present": true
+          }
+        ]
+      }
+    ],
+    "resources": [
+      {
+        "url": "https://tensorcraft.app/assignments/room-training-reference-v1.json",
+        "status": 200,
+        "bytes": 1802,
+        "contentType": "application/json; charset=utf-8",
+        "sha256": "367899f8268eaa280260b7483d7764a1c1e41b82ba256d6b25e571a059dcd2a2",
+        "xRobotsTag": null,
+        "version": "room-training-reference-v1",
+        "kind": "supplied-maintainer-reference"
+      },
+      {
+        "url": "https://tensorcraft.app/evidence/room-project-v1/manifest.json",
+        "status": 200,
+        "bytes": 3285,
+        "contentType": "application/json; charset=utf-8",
+        "sha256": "ad170f76d63233f78ca486a18d8c0ccad66ce9511702e810a2ad51c4b76df8f6",
+        "xRobotsTag": null,
+        "version": 1,
+        "kind": "maintainer_reproduction_export"
+      },
+      {
+        "url": "https://tensorcraft.app/evidence/room-project-v1.zip",
+        "status": 200,
+        "bytes": 99704,
+        "contentType": "application/zip",
+        "sha256": "9e0e351f2c3d56a7d9651d58583f10f4f249a1656480122c4332c388278a3439",
+        "xRobotsTag": null,
+        "matchesLocal": true
+      },
+      {
+        "url": "https://tensorcraft.app/llms.txt",
+        "status": 200,
+        "bytes": 3831,
+        "contentType": "text/plain; charset=utf-8",
+        "sha256": "47f4c721a183be294223a44a3920ef04c154737c38e2a8a310a66353269451f2",
+        "xRobotsTag": null,
+        "hasRuntimeSummary": true
+      },
+      {
+        "url": "https://tensorcraft.app/sitemap.xml",
+        "status": 200,
+        "bytes": 2517,
+        "contentType": "application/xml",
+        "sha256": "7b052f68b41621290a75122773441cf3b788595a0abeae46c4a1742f6726584d",
+        "xRobotsTag": null
+      }
+    ]
+  },
+  "httpSmoke": {
+    "generatedAt": "2026-11-14T16:41:28.768Z",
+    "origin": "https://tensorcraft.app",
+    "scope": "HTTP smoke checks for sitemap URLs and initial HTML only. Canonical checks enforce this site's preferred URL policy. No rendering, schema eligibility, crawler-network access, indexing, ranking, or AI-citation assessment.",
+    "robots": {
+      "url": "https://tensorcraft.app/robots.txt",
+      "status": 200,
+      "policy": "User-Agent: *\nAllow: /\nAllow: /api/og\nDisallow: /api/\n\nSitemap: https://tensorcraft.app/sitemap.xml"
+    },
+    "sitemaps": [
+      {
+        "url": "https://tensorcraft.app/sitemap.xml",
+        "status": 200,
+        "type": "urlset",
+        "urls": 23
+      }
+    ],
+    "pages": [
+      {
+        "url": "https://tensorcraft.app/",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Tensorcraft: Machine Learning for JavaScript Developers",
+        "description": "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for JavaScript developers: train real models in the browser, no Python required.",
+        "h1": ["Machine learning for JavaScript engineers."],
+        "canonical": "https://tensorcraft.app/",
+        "ogUrl": "https://tensorcraft.app/",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/about",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "About Tensorcraft, Why this course exists",
+        "description": "Why we built Tensorcraft, how it maps ML onto JavaScript, and what we deliberately left out.",
+        "h1": ["Why this course exists."],
+        "canonical": "https://tensorcraft.app/about",
+        "ogUrl": "https://tensorcraft.app/about",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/blog",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "The Bridge: JavaScript-to-ML Insights, Tensorcraft",
+        "description": "Machine learning notes for JavaScript developers, with connections to Tensorcraft lessons and practical guides.",
+        "h1": ["The Bridge"],
+        "canonical": "https://tensorcraft.app/blog",
+        "ogUrl": "https://tensorcraft.app/blog",
+        "jsonLdBlocks": 1,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/compare",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "JavaScript ML courses compared, Tensorcraft",
+        "description": "Compare machine learning options for JavaScript developers by goal, prerequisites, runtime, and project work, with links to the providers' published curricula.",
+        "h1": ["ML learning options for JavaScript engineers"],
+        "canonical": "https://tensorcraft.app/compare",
+        "ogUrl": "https://tensorcraft.app/compare",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/guides",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "JavaScript machine learning guides, Tensorcraft",
+        "description": "Worked machine learning examples for JavaScript developers, with inspectable data, runnable code, and links to free Tensorcraft lessons.",
+        "h1": ["JavaScript machine learning guides"],
+        "canonical": "https://tensorcraft.app/guides",
+        "ogUrl": "https://tensorcraft.app/guides",
+        "jsonLdBlocks": 1,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "A browser ML project: a rule, a model, and a recorded mistake, Tensorcraft",
+        "description": "Train a TensorFlow.js model in your browser on recorded room data. Compare it with a light-threshold rule on 400 later readings and inspect its mistakes.",
+        "h1": ["A browser ML project: a rule, a model, and a recorded mistake"],
+        "canonical": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "ogUrl": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Machine learning in JavaScript: a learning path, Tensorcraft",
+        "description": "Choose JavaScript ML tools by task: TensorFlow.js, Transformers.js, ONNX Runtime Web, ml5 or hosted APIs. Follow prerequisites, outputs and free lessons.",
+        "h1": ["Machine learning in JavaScript: a learning path"],
+        "canonical": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "ogUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "TensorFlow.js reshape vs transpose, Tensorcraft",
+        "description": "Compare reshape and transpose in TensorFlow.js with exact outputs, runnable JavaScript, and a sensor-data example for JavaScript developers.",
+        "h1": ["TensorFlow.js reshape vs transpose"],
+        "canonical": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+        "ogUrl": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/learn",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Machine Learning with JavaScript, Tensorcraft",
+        "description": "Machine learning for JavaScript developers. Write JavaScript and run ML experiments in your browser. No Python required. Module 1 is free.",
+        "h1": ["Machine Learning with JavaScript"],
+        "canonical": "https://tensorcraft.app/learn",
+        "ogUrl": "https://tensorcraft.app/learn",
+        "jsonLdBlocks": 3,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/pricing",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "ML Course Pricing: Free Preview, $79 per Course, Tensorcraft",
+        "description": "Learn browser-based ML through familiar JavaScript concepts, with lifetime access for one payment. Free preview, $79 per course.",
+        "h1": ["Course pricing"],
+        "canonical": "https://tensorcraft.app/pricing",
+        "ogUrl": "https://tensorcraft.app/pricing",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/privacy",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Privacy Policy | Tensorcraft",
+        "description": "How Tensorcraft collects, uses, and stores account, progress, and analytics data, plus your GDPR and CCPA rights.",
+        "h1": ["Privacy Policy"],
+        "canonical": "https://tensorcraft.app/privacy",
+        "ogUrl": "https://tensorcraft.app/privacy",
+        "jsonLdBlocks": 1,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/terms",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Terms of Service | Tensorcraft",
+        "description": "Read the Tensorcraft Terms of Service covering account use, one-time course purchases, refunds, intellectual property, and acceptable use.",
+        "h1": ["Terms of Service"],
+        "canonical": "https://tensorcraft.app/terms",
+        "ogUrl": "https://tensorcraft.app/terms",
+        "jsonLdBlocks": 1,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "ML Courses in JavaScript: 1 live, 4 coming, Tensorcraft",
+        "description": "Deep Orbit, a JavaScript course on reading signals and data that arrive over time (time series), is live. Four more story worlds (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) are coming. Join the waitlists.",
+        "h1": ["The course worlds"],
+        "canonical": "https://tensorcraft.app/worlds",
+        "ogUrl": "https://tensorcraft.app/worlds",
+        "jsonLdBlocks": 1,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Deep Orbit: Machine Learning in JavaScript, Tensorcraft",
+        "description": "Deep Orbit is a story-driven machine learning course in JavaScript: time-series & signals, taught in the browser with TensorFlow.js. Module 1 is free.",
+        "h1": ["Deep Orbit"],
+        "canonical": "https://tensorcraft.app/worlds/deep-orbit",
+        "ogUrl": "https://tensorcraft.app/worlds/deep-orbit",
+        "jsonLdBlocks": 3,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Loading and Preparing Data | Deep Orbit, Tensorcraft",
+        "description": "Prepare input shapes, batches and splits for the task. Shuffle training examples only when their order is not part of the example.",
+        "h1": ["Loading and Preparing Data"],
+        "canonical": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+        "ogUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "From JavaScript Arrays to Tensors | Deep Orbit, Tensorcraft",
+        "description": "Turn Demir’s selected readings into a tensor so the supplied code can draw one line per sensor.",
+        "h1": ["From JavaScript Arrays to Tensors"],
+        "canonical": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+        "ogUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Data Normalization | Deep Orbit, Tensorcraft",
+        "description": "Feature scaling puts measurements on comparable scales. This can make a neural network easier to train.",
+        "h1": ["Data Normalization"],
+        "canonical": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+        "ogUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Basic Tensor Operations | Deep Orbit, Tensorcraft",
+        "description": "Add or multiply values at matching positions, or use matrix multiplication to combine them into weighted sums.",
+        "h1": ["Basic Tensor Operations"],
+        "canonical": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+        "ogUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Understanding Tensor Shapes | Deep Orbit, Tensorcraft",
+        "description": "A grid's shape gives its number of rows and columns. Knowing what those rows and columns mean helps you arrange readings correctly.",
+        "h1": ["Understanding Tensor Shapes"],
+        "canonical": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+        "ogUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/neon-protocol",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Neon Protocol: Coming Soon, Tensorcraft",
+        "description": "Neon Protocol is a planned machine learning course in JavaScript: real-time computer vision, taught in the browser with TensorFlow.js. Not released yet. Join the waitlist.",
+        "h1": ["Neon Protocol"],
+        "canonical": "https://tensorcraft.app/worlds/neon-protocol",
+        "ogUrl": "https://tensorcraft.app/worlds/neon-protocol",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/nova-canvas",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Nova Canvas: Coming Soon, Tensorcraft",
+        "description": "Nova Canvas is a planned machine learning course in JavaScript: multimodal & generative ai, taught in the browser with TensorFlow.js. Not released yet. Join the waitlist.",
+        "h1": ["Nova Canvas"],
+        "canonical": "https://tensorcraft.app/worlds/nova-canvas",
+        "ogUrl": "https://tensorcraft.app/worlds/nova-canvas",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/signal-ward",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Signal Ward: Coming Soon, Tensorcraft",
+        "description": "Signal Ward is a planned machine learning course in JavaScript: nlp & text intelligence, taught in the browser with TensorFlow.js. Not released yet. Join the waitlist.",
+        "h1": ["Signal Ward"],
+        "canonical": "https://tensorcraft.app/worlds/signal-ward",
+        "ogUrl": "https://tensorcraft.app/worlds/signal-ward",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/terra-grid",
+        "status": 200,
+        "location": null,
+        "errors": [],
+        "warnings": [],
+        "title": "Terra Grid: Coming Soon, Tensorcraft",
+        "description": "Terra Grid is a planned machine learning course in JavaScript: edge ai & production ml, taught in the browser with TensorFlow.js. Not released yet. Join the waitlist.",
+        "h1": ["Terra Grid"],
+        "canonical": "https://tensorcraft.app/worlds/terra-grid",
+        "ogUrl": "https://tensorcraft.app/worlds/terra-grid",
+        "jsonLdBlocks": 2,
+        "robotsMeta": [],
+        "xRobotsTag": ""
+      }
+    ],
+    "errors": [],
+    "warnings": [],
+    "summary": {
+      "pages": 23,
+      "errors": 0,
+      "warnings": 0,
+      "passed": true
+    }
+  },
+  "crawl": {
+    "auditId": "4faecea1-d2fe-4d45-8ad0-c2196d1d87b4",
+    "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/audit?auditId=4faecea1-d2fe-4d45-8ad0-c2196d1d87b4",
+    "completedAt": "2026-11-14T16:36:43.010Z",
+    "mode": {
+      "maxPages": 50,
+      "renderJavaScript": false,
+      "runLighthouse": false
+    },
+    "urls": 45,
+    "statusCodes": {
+      "200": 41,
+      "307": 4
+    },
+    "sitemapPages": 23,
+    "criticalIssues": 0,
+    "warningInstances": 12,
+    "informationalInstances": 31,
+    "issueSummary": [
+      {
+        "issueType": "missing-h1",
+        "title": "Missing H1 heading",
+        "severity": "warning",
+        "count": 6
+      },
+      {
+        "issueType": "orphan-page",
+        "title": "Orphan page",
+        "severity": "warning",
+        "count": 5
+      },
+      {
+        "issueType": "thin-content",
+        "title": "Thin content",
+        "severity": "warning",
+        "count": 1
+      },
+      {
+        "issueType": "canonicalized-page",
+        "title": "Canonicalized to another URL",
+        "severity": "info",
+        "count": 9
+      },
+      {
+        "issueType": "heading-order-skip",
+        "title": "Heading levels skip",
+        "severity": "info",
+        "count": 9
+      },
+      {
+        "issueType": "noindex-page",
+        "title": "Page is noindex",
+        "severity": "info",
+        "count": 6
+      },
+      {
+        "issueType": "meta-description-too-long",
+        "title": "Meta description too long",
+        "severity": "info",
+        "count": 6
+      },
+      {
+        "issueType": "title-too-long",
+        "title": "Title too long",
+        "severity": "info",
+        "count": 1
+      }
+    ],
+    "triage": "Six missing-H1 flags concern intentionally noindex auth pages. Canonical pricing/section variants are intentional. Empty blog promotion is intentionally retired. Four planned-course cards are deliberately inert while their waitlist pages remain in the sitemap, an optional policy-alignment decision. Heading order needs semantic review. Length heuristics do not justify arbitrary copy cuts. No critical crawl, broken-link or server-error issue was reported in this crawl.",
+    "additionalChecks": {
+      "freeFoundationLessons": "All five canonical free lessons returned anonymous 200, one H1, substantial initial text and no redirect/noindex. Account links offer optional progress carry-over.",
+      "plannedWorlds": "Four coming-soon pages contain substantive initial text and honest planned status. If waitlist acquisition is desired, consider a modest contextual link while preserving intentionally inert cards.",
+      "blog": "The empty state and removed promotion follow backlog B2. No filler content or restored navigation is justified."
+    }
+  },
+  "googleInspection": {
+    "readOnly": true,
+    "liveCrawl": false,
+    "results": [
+      {
+        "url": "https://tensorcraft.app/compare",
+        "index": {
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+          "indexingState": "INDEXING_STATE_UNSPECIFIED",
+          "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+        }
+      },
+      {
+        "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "index": {
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "robotsTxtState": "ALLOWED",
+          "indexingState": "INDEXING_ALLOWED",
+          "lastCrawlTime": "2026-11-11T12:24:09Z",
+          "pageFetchState": "SUCCESSFUL",
+          "googleCanonical": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "userCanonical": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "sitemap": ["https://tensorcraft.app/sitemap.xml"],
+          "referringUrls": ["https://tensorcraft.app/sitemap.xml"],
+          "crawledAs": "MOBILE"
+        },
+        "richResults": {
+          "verdict": "PASS",
+          "detectedItems": [
+            {
+              "richResultType": "Breadcrumbs",
+              "items": [
+                {
+                  "name": "Unnamed item"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "index": {
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "robotsTxtState": "ALLOWED",
+          "indexingState": "INDEXING_ALLOWED",
+          "lastCrawlTime": "2026-11-11T21:59:56Z",
+          "pageFetchState": "SUCCESSFUL",
+          "googleCanonical": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "userCanonical": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "sitemap": ["https://tensorcraft.app/sitemap.xml"],
+          "referringUrls": ["https://tensorcraft.app/sitemap.xml"],
+          "crawledAs": "MOBILE"
+        },
+        "richResults": {
+          "verdict": "PASS",
+          "detectedItems": [
+            {
+              "richResultType": "Breadcrumbs",
+              "items": [
+                {
+                  "name": "Unnamed item"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "url": "https://tensorcraft.app/guides",
+        "index": {
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "robotsTxtState": "ALLOWED",
+          "indexingState": "INDEXING_ALLOWED",
+          "lastCrawlTime": "2026-11-11T12:20:24Z",
+          "pageFetchState": "SUCCESSFUL",
+          "googleCanonical": "https://tensorcraft.app/guides",
+          "userCanonical": "https://tensorcraft.app/guides",
+          "sitemap": ["https://tensorcraft.app/sitemap.xml"],
+          "crawledAs": "MOBILE"
+        }
+      },
+      {
+        "url": "https://tensorcraft.app/learn",
+        "index": {
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "robotsTxtState": "ALLOWED",
+          "indexingState": "INDEXING_ALLOWED",
+          "lastCrawlTime": "2026-10-26T12:58:48Z",
+          "pageFetchState": "SUCCESSFUL",
+          "googleCanonical": "https://tensorcraft.app/learn",
+          "userCanonical": "https://tensorcraft.app/learn",
+          "sitemap": ["https://tensorcraft.app/sitemap.xml"],
+          "referringUrls": [
+            "https://www.tensorcraft.app/learn",
+            "https://tensorcraft.app/sitemap.xml"
+          ],
+          "crawledAs": "MOBILE"
+        },
+        "richResults": {
+          "verdict": "PASS",
+          "detectedItems": [
+            {
+              "richResultType": "Breadcrumbs",
+              "items": [
+                {
+                  "name": "Unnamed item"
+                }
+              ]
+            },
+            {
+              "richResultType": "Videos",
+              "items": [
+                {
+                  "name": "How Tensorcraft works",
+                  "issues": [
+                    {
+                      "issueMessage": "Invalid datetime value for \"uploadDate\"",
+                      "severity": "WARNING"
+                    },
+                    {
+                      "issueMessage": "Datetime property \"uploadDate\" is missing a timezone",
+                      "severity": "WARNING"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "performance": {
+    "method": "Public initial script URLs from production HTML, identity fetch, summed independent gzip.compress outputs. No browser execution, no consent UI interaction and no field performance observation.",
+    "pages": {
+      "/compare": {
+        "scripts": 18,
+        "raw": 1450488,
+        "summedGzip": 453211,
+        "markedChunks": [
+          {
+            "url": "/_next/static/immutable/chunks/3k2-ht9o7rezp.js",
+            "raw": 34681,
+            "gzip": 10090,
+            "markers": ["opt_in_capturing"]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/3usyidgyjy5m5.js",
+            "raw": 322336,
+            "gzip": 105166,
+            "markers": [
+              "__PosthogExtensions__",
+              "opt_in_capturing",
+              "capture_pageleave"
+            ]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/1zd2mrp-jgax-.js",
+            "raw": 49518,
+            "gzip": 15496,
+            "markers": ["report-issue-panel"]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/3j6pyt8lgzgw2.js",
+            "raw": 236574,
+            "gzip": 60916,
+            "markers": ["@supabase", "supabase-js"]
+          }
+        ]
+      },
+      "/guides/browser-machine-learning-project": {
+        "scripts": 18,
+        "raw": 1475740,
+        "summedGzip": 460513,
+        "markedChunks": [
+          {
+            "url": "/_next/static/immutable/chunks/3k2-ht9o7rezp.js",
+            "raw": 34681,
+            "gzip": 10090,
+            "markers": ["opt_in_capturing"]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/3usyidgyjy5m5.js",
+            "raw": 322336,
+            "gzip": 105166,
+            "markers": [
+              "__PosthogExtensions__",
+              "opt_in_capturing",
+              "capture_pageleave"
+            ]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/1zd2mrp-jgax-.js",
+            "raw": 49518,
+            "gzip": 15496,
+            "markers": ["report-issue-panel"]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/3j6pyt8lgzgw2.js",
+            "raw": 236574,
+            "gzip": 60916,
+            "markers": ["@supabase", "supabase-js"]
+          }
+        ]
+      },
+      "/guides/javascript-machine-learning-learning-path": {
+        "scripts": 18,
+        "raw": 1450488,
+        "summedGzip": 453211,
+        "markedChunks": [
+          {
+            "url": "/_next/static/immutable/chunks/3k2-ht9o7rezp.js",
+            "raw": 34681,
+            "gzip": 10090,
+            "markers": ["opt_in_capturing"]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/3usyidgyjy5m5.js",
+            "raw": 322336,
+            "gzip": 105166,
+            "markers": [
+              "__PosthogExtensions__",
+              "opt_in_capturing",
+              "capture_pageleave"
+            ]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/1zd2mrp-jgax-.js",
+            "raw": 49518,
+            "gzip": 15496,
+            "markers": ["report-issue-panel"]
+          },
+          {
+            "url": "/_next/static/immutable/chunks/3j6pyt8lgzgw2.js",
+            "raw": 236574,
+            "gzip": 60916,
+            "markers": ["@supabase", "supabase-js"]
+          }
+        ]
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "N01",
+      "priority": "P1",
+      "planItems": ["F01", "F03"],
+      "title": "Performance coverage for direct releases",
+      "evidence": "The workflow runs only on pull_request to main. Its six URLs omit Deep Orbit, comparison, learning path and project guide.",
+      "action": "Add main and manual coverage with the changed acquisition routes. Collect repeatable mobile lab results before tightening budgets.",
+      "acceptance": "A direct-main or manual run produces saved results for the four missing routes. Preserve lab versus field distinctions and test-rendering environment limits.",
+      "sources": [
+        ".github/workflows/lighthouse.yml:3",
+        ".github/lighthouserc.json"
+      ],
+      "benefit": "Detect performance regressions on the actual release path. Ranking or conversion benefit remains unmeasured."
+    },
+    {
+      "id": "N02",
+      "priority": "P1",
+      "planItems": ["F02", "M02"],
+      "title": "Shared SDK loading on public pages",
+      "evidence": "Comparison and learning path each declare 18 initial scripts totaling 453211 independently gzipped bytes. Project guide totals 460513. Common chunks containing PostHog and Supabase total 105166 and 60916 gzip bytes respectively.",
+      "action": "Profile initial execution, then try deferred analytics loading and narrower app-only provider boundaries where behavior permits.",
+      "acceptance": "Compare the same routes and runtime before and after. Verify signed-out navigation, consent acceptance/withdrawal/reacceptance and authenticated behavior.",
+      "sources": [
+        "apps/web/app/layout.tsx:161",
+        "apps/web/app/components/analytics-provider.tsx:5",
+        "apps/web/lib/posthog.ts:7"
+      ],
+      "benefit": "Potentially reduce code delivery and execution. Chunk totals include other code and do not establish achievable savings, wire transfer, CWV or a current user-experience failure."
+    },
+    {
+      "id": "N03",
+      "priority": "P1",
+      "planItems": ["E07", "Q02"],
+      "title": "Practice choices on the guides hub",
+      "evidence": "Guide cards expose titles and summaries, followed by a general course link. They do not identify activity type, setup, expected output or direct graded-code entry.",
+      "action": "Add a concise choice between runnable demo, visual prediction and graded JavaScript exercise using existing material. State account/setup requirements and checked output.",
+      "acceptance": "A signed-out mobile and keyboard user can choose and reach each activity, understand setup and see meaningful feedback. Preserve story-first sections.",
+      "sources": ["apps/web/app/guides/page.tsx:37"],
+      "benefit": "Help readers and answer systems identify concrete practice options. Search demand and improved completion are hypotheses."
+    },
+    {
+      "id": "N04",
+      "priority": "P2",
+      "planItems": ["E05", "Q05"],
+      "title": "Access and goal choices before comparison",
+      "evidence": "The eight-option table has a 79rem minimum width and five criteria without access model. Actual current mobile usability has not been rechecked.",
+      "action": "Add a small provider-sourced goal/access summary before the matrix. Distinguish free tutorials, course purchase, membership and book without adding more columns.",
+      "acceptance": "Verify current provider terms and attribution. Check 393px layout, keyboard and touch traversal, and publisher disclosure.",
+      "sources": ["apps/web/app/compare/page.tsx:247"],
+      "benefit": "Make the existing comparison easier to choose from. Do not claim measured confusion or rank competitors by unsupported effectiveness."
+    },
+    {
+      "id": "N05",
+      "priority": "P2",
+      "planItems": ["E06", "E10"],
+      "title": "Class balance and conditional errors",
+      "evidence": "Validation contains 61 occupied and 339 empty readings. The model finds 60 of 61 occupied readings, while 60 of its 80 occupied flags are correct. Existing JSON stores recall 0.9836065573770492 and precision 0.75, but the HTML table does not explain them.",
+      "action": "Add a compact confusion view and the actual denominators beside precision 75% and recall 98.36%, preserving the fixed prediction set.",
+      "acceptance": "Derive every number from the same versioned reference and current-run data. Keep supplied reference separate from browser output and preserve one-room and unused-final-data limits.",
+      "sources": [
+        "apps/web/app/guides/browser-machine-learning-project/training-reference.tsx:8",
+        "apps/web/public/assignments/room-training-reference-v1.json",
+        "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall"
+      ],
+      "benefit": "Give a fuller explanation of the published result and a more precise answer readers can cite. No independent efficacy result follows."
+    },
+    {
+      "id": "N06",
+      "priority": "P2",
+      "planItems": ["M10", "F02"],
+      "title": "Handled demo outcomes",
+      "evidence": "TrainingDemo catches worker failures and shows the error. It emits no explicit bounded outcome event, so global unhandled-error capture cannot measure these handled failures.",
+      "action": "Define the reliability decision, then add consent-gated start/completion/failure/cancellation events with enumerated stage/reason, elapsed time and runtime version.",
+      "acceptance": "Verify controlled success, failure and cancellation with internal markers. Avoid raw error payloads, lesson content or personal data. A completed demo is not learner mastery.",
+      "sources": [
+        "apps/web/app/guides/browser-machine-learning-project/training-demo.tsx:71",
+        "apps/web/app/guides/browser-machine-learning-project/training-runner.ts:138"
+      ],
+      "benefit": "Establish whether the public demo reliably completes for consenting users. Event delivery and incidence remain unverified."
+    },
+    {
+      "id": "N07",
+      "priority": "P2",
+      "planItems": ["P05", "F02"],
+      "title": "Public evidence download middleware",
+      "evidence": "The installed Next 16.4.2 matcher includes the ZIP, README.md and LICENSE in updateSession. Their production downloads currently return 200 without redirects or cookies.",
+      "action": "Narrowly exclude /evidence/ from session processing.",
+      "acceptance": "Test the real matcher, preserve dashboard/protected HTML matching and confirm unchanged anonymous artifact bytes.",
+      "sources": [
+        "apps/web/middleware.ts:45",
+        "apps/web/lib/supabase/middleware.ts:82"
+      ],
+      "benefit": "Remove unnecessary session processing from public downloads. No current download failure, auth-network call or latency penalty was measured."
+    },
+    {
+      "id": "N08",
+      "priority": "P2",
+      "planItems": ["S05", "M09"],
+      "title": "Certificate image indexing policy",
+      "evidence": "Certificate HTML declares noindex. A separate synthetic certificate OG image returns 200 image/png without X-Robots-Tag. Robots permits /api/og.",
+      "action": "Return X-Robots-Tag:noindex only for the certificate image branch while preserving image fetching.",
+      "acceptance": "Synthetic certificate image remains 200 and renderable with the header. Ordinary course/guide images remain eligible. Do not inspect real learner records or block social preview fetching.",
+      "sources": [
+        "apps/web/app/certificates/[id]/page.tsx:74",
+        "apps/web/app/api/og/route.tsx:197",
+        "https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag"
+      ],
+      "benefit": "Complete the intended per-URL indexing policy. There is no evidence a certificate image is indexed, and noindex is not access control."
+    },
+    {
+      "id": "N09",
+      "priority": "P3",
+      "planItems": ["P03", "E08"],
+      "title": "Immutable released evidence",
+      "evidence": "The builder fixes room-project-v1 and manifest version 1, then overwrites those paths after input changes. The currently deployed archive and hashes are correct.",
+      "action": "Require a new version or content-addressed path when released package bytes change. Preserve old versions.",
+      "acceptance": "An altered fixture/source cannot silently overwrite a published version, and an old manifest/archive remains fetchable with matching hashes.",
+      "sources": [
+        "scripts/package-room-evidence.py:11",
+        "scripts/package-room-evidence.py:114"
+      ],
+      "benefit": "Keep future third-party citations reproducible through later releases. This addresses durability rather than a present hash failure."
+    }
+  ],
+  "measurement": {
+    "gscWindow": {
+      "start": "2026-11-01",
+      "end": "2026-11-11",
+      "timezone": "Pacific Time",
+      "dataState": "final",
+      "dimensions": ["query", "page"],
+      "completeReturnedRows": true,
+      "rows": [
+        {
+          "query": "deep orbit",
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "clicks": 0,
+          "impressions": 9,
+          "averagePosition": 8.7
+        },
+        {
+          "query": "javascript machine learning",
+          "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "clicks": 0,
+          "impressions": 3,
+          "averagePosition": 87.3
+        }
+      ]
+    },
+    "geo": "The November 11 sample remains 34 answered collections with 0 mentions/own-site citations. It predates this release. No new paid collection or recurring tracker was activated.",
+    "interpretation": "No post-release traffic, citation, learning or revenue lift is established. GSC query rows are a tiny disclosed sample and may omit queries. Static resource sums are not CWV or achieved savings."
+  },
+  "recrawl": {
+    "assessmentRequiredForEveryChange": true,
+    "changedIndexableUrls": [
+      "https://tensorcraft.app/guides/browser-machine-learning-project",
+      "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+      "https://tensorcraft.app/compare",
+      "https://tensorcraft.app/guides"
+    ],
+    "olderPending": ["https://tensorcraft.app/learn"],
+    "attemptDate": "2026-11-14",
+    "outcome": "pending_browser_control_timeout",
+    "requestAccepted": false,
+    "confirmedLaterCrawl": false,
+    "reason": "Native Chrome binds but new-tab action times out. No Request indexing action completed. Connected URL Inspection reads stored Google state only.",
+    "resources": [
+      "https://tensorcraft.app/sitemap.xml",
+      "https://tensorcraft.app/llms.txt"
+    ],
+    "certificates": "Noindex route class. Source/tests checked, no real learner IDs accessed. Do not submit for indexing.",
+    "deepOrbit": "No repeat request. Prior successful November13 crawl is already recorded.",
+    "discoveryNotes": "Internal documentation and private report only. No additional public URL change or recrawl submission follows from these notes."
+  },
+  "limits": [
+    "No current mobile/keyboard/browser execution check completed in this loop.",
+    "Third-party web reader returned stale seven-option comparison text while direct HTTP confirmed current eight-option HTML. A cached reader does not establish a production defect.",
+    "Outreach remains paused pending owner confirmation of repository privacy.",
+    "Repository visibility remains unchanged.",
+    "Unrelated promotional-video and character-trailer drafts are excluded from the commit scope."
+  ]
+}

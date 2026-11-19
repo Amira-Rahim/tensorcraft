@@ -68,26 +68,38 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const cert = await loadCertificate(id);
-  if (!cert) return { title: "Certificate | Tensorcraft" };
+  // Pageview tools can collect the HTML title. Personalization belongs in
+  // the learner's intentional public share preview and certificate display.
+  const title = "Certificate of completion, Tensorcraft";
+  const robots = { index: false, follow: true };
+  if (!cert) return { title, robots };
   const world = isValidWorldSlug(cert.world_id) ? worlds[cert.world_id] : null;
   const worldName = world?.displayName ?? cert.world_id;
   const learner = cert.user_display_name ?? "A Tensorcraft learner";
-  const title = `${learner} completed ${worldName} | Tensorcraft`;
+  const shareTitle = `${learner} completed ${worldName}, Tensorcraft`;
   const description = `Certificate of completion for the ${worldName} world on Tensorcraft.`;
+  const images = [
+    `/api/og?kind=cert&title=${encodeURIComponent(worldName)}&world=${encodeURIComponent(cert.world_id)}&learner=${encodeURIComponent(learner)}`,
+  ];
   return {
     title,
     description,
+    robots,
     alternates: {
       canonical: `https://tensorcraft.app/certificates/${cert.id}`,
     },
     openGraph: {
-      title,
+      title: shareTitle,
       description,
       url: `https://tensorcraft.app/certificates/${cert.id}`,
       type: "profile",
-      images: [
-        `/api/og?kind=cert&title=${encodeURIComponent(worldName)}&world=${encodeURIComponent(cert.world_id)}&learner=${encodeURIComponent(learner)}`,
-      ],
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: shareTitle,
+      description,
+      images,
     },
   };
 }

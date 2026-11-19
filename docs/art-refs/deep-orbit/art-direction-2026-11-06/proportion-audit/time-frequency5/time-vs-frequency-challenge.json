@@ -1,0 +1,48 @@
+{
+  "key": "time-vs-frequency-challenge",
+  "id": "signal-processing/time-vs-frequency",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+  "status": "prepared",
+  "input": "art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+  "inputSha256": "d33b31d1971e8e0f7ec1b0e3b7b3d77bfe362b2ff5e499f476904991af278f42",
+  "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-bc76d614-aaf4-454b-bf68-72ea5d28ecdf.png",
+  "archivedInputSha256": "d33b31d1971e8e0f7ec1b0e3b7b3d77bfe362b2ff5e499f476904991af278f42",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+      "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__time-vs-frequency-challenge-openai-20261107.png",
+      "sha256": "d33b31d1971e8e0f7ec1b0e3b7b3d77bfe362b2ff5e499f476904991af278f42"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+      "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+    }
+  ],
+  "screenMeaning": "Compare equal-length synthetic captures sample-by-sample and compare absolute matching-bin FFT magnitudes; return first above threshold, not peak.",
+  "screenSpecification": "Replace the main monitor with a sparse task plan titled \"CAPTURE COMPARISON\". Header \"Synthetic captures: 512 samples at 256 Hz\". Two rows: \"Samples: abs(A - B) <= 0.05\" and \"FFT magnitudes: abs(A - B) > 5.0\". Below them \"Return first differing bin\". Two unfilled fields \"timeTwin:\" and \"divergentBin:\". Do not show147 or any completed result. All prior waveforms and spectra removed from this challenge panel.",
+  "proportionSpecification": "Gently reduce the whole head including hair only5percent linearly, preserve exact canonical internal face shape and natural neck alignment; preserve body size and pose. No large reduction.",
+  "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 1 images are exact canonical face identities for ensign-demir. Next image approved lab ROOM CONTINUITY ONLY, next image muted COLOR ONLY, LAST target. Preserve current character faces, age, hair, gaze, expressions, wardrobe, poses, camera, props and all separate natural arm/hand chains. Demir visible anatomical left ear must remain BARE; his right-ear comms may be occluded. Gently reduce the whole head including hair only5percent linearly, preserve exact canonical internal face shape and natural neck alignment; preserve body size and pose. No large reduction. Muted sage#6BAA8A screens and aged brass#A89060, natural warm tan skin, charcoal/navy, flat cel shadows. Remove neon mint bloom, glowing hair rims, bright yellowgold metal and glossy3D gradients while preserving local warm lamps. Replace the main monitor with a sparse task plan titled \"CAPTURE COMPARISON\". Header \"Synthetic captures: 512 samples at 256 Hz\". Two rows: \"Samples: abs(A - B) <= 0.05\" and \"FFT magnitudes: abs(A - B) > 5.0\". Below them \"Return first differing bin\". Two unfilled fields \"timeTwin:\" and \"divergentBin:\". Do not show147 or any completed result. All prior waveforms and spectra removed from this challenge panel. Every OTHER display including all wrist screens, small bench readouts, rear screens, circles/radars and spectrograph data surfaces must be inactive dark glass. The physical glass column may retain faint ambient tint but no plotted traces or data bands. Preserve physical buttons and room hardware. Exact short labels with spaces, readable perspective, no invented measured values. Output1536x1024.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/time-frequency5/time-vs-frequency-challenge.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/time-frequency5/time-vs-frequency-challenge.json"
+}

@@ -1,0 +1,72 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "epilogue",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next bridge ROOM reference only, LAST exact target. Preserve exact people, age, face morphology, expression, hairstyle, signature equipment, warm skin, body poses, natural neck alignment and every connected shoulder-elbow-wrist-hand chain. No anatomy or composition changes. Farah lens anatomical LEFT, Demir comms anatomical RIGHT, Nazari and Mirza have NO eyewear. Keep heads at current scale unless a tiny adjustment is explicitly requested. Story action stays dominant. All unmentioned monitors and wrist displays OFF, inactive charcoal glass; no arbitrary graphs, bars or fake code. Use subdued sage on dark glass and aged brass. Remove bright mint/rim neon, broad green or gold wash. Every unused holo emitter dark charcoal, used emitter faint sage with no bright bloom. Preserve exact Demir face, head scale, paper grip, pointing finger and seated chair pose. Main right monitor replaces all waveform cards with \"Sample 7741\" then \"Label unresolved\" and \"Training decision pending\". Beneath are two identical unselected outlined options \"Include\" and \"Exclude with reason\". Footer \"Original capture retained\". No chosen option or completed classification. Paper he holds shows only \"Baseline report\" and \"Settings saved\" in two short readable lines. All other screens, wrist display and unused holo table off. Keep his thoughtful expression and natural anatomy. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/normal-vs-anomalous-epilogue-before.png",
+      "sha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+    "sha256": "49ab32f15766de5fd3201cd25ecf34b66523ad15efb7e1fd65a052545dcd2e91"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002"
+    }
+  ],
+  "panelSpecification": {
+    "state": "review decision pending",
+    "concreteGenerationSpecification": "Preserve exact Demir face, head scale, paper grip, pointing finger and seated chair pose. Main right monitor replaces all waveform cards with \"Sample 7741\" then \"Label unresolved\" and \"Training decision pending\". Beneath are two identical unselected outlined options \"Include\" and \"Exclude with reason\". Footer \"Original capture retained\". No chosen option or completed classification. Paper he holds shows only \"Baseline report\" and \"Settings saved\" in two short readable lines. All other screens, wrist display and unused holo table off. Keep his thoughtful expression and natural anatomy.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "Epilogue and BossBeat 7741"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses, anatomy and moderate stylized scale. No automatic realistic shrink.",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "fa496b457f617483320be5b959b9c06e676ed82cb4ba7feb931e07aa54832830",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-06ba9ca4-cf59-4607-99b5-5e0a10ee0ed9.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-epilogue-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

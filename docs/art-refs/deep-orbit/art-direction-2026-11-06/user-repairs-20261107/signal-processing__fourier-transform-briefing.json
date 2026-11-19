@@ -1,0 +1,173 @@
+{
+  "key": "fourier-transform-briefing",
+  "id": "signal-processing/fourier-transform",
+  "phase": "briefing",
+  "source": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+  "sourceSha256": "f703e7a840e527ee33436adf0400dcd215cb40e3cab4f5e82a966837b338f819",
+  "sourceEvidence": {
+    "mdx": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+    "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+  },
+  "reviewer": "/root/reader_signal",
+  "nativeReview": "1536x1024 current source visually inspected",
+  "gates": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeck": "pass",
+    "readerDirection": "pass",
+    "surfacePerspective": "pass",
+    "palette": "hold",
+    "lessonMeaning": "hold",
+    "storyAction": "pass"
+  },
+  "verdict": "hold",
+  "holdReason": "Decomposition schematic lacks source-specific bin-index/frequency question; incidental random charts and saturated lime.",
+  "preserve": "Keep the engaged two-person explanation.",
+  "prompt": "Use case: precise-object-edit. References: canonical character portraits first are identity authorities; lab plate is ROOM ONLY. Last image is exact edit target. Make one localized correction only. Remove the small green-and-black communicator floating beside Demir's far eye, cheek or neck. His head is turned toward image left and the anatomical right ear is occluded behind his head, so the device is hidden completely. Leave his visible near ear bare and natural. Do not add any device to his face or visible ear. Preserve every other pixel as closely as possible: exact canonical face, hair, expression, neck, pose, hands, arms, furniture, all exact screen text and schematic plots, muted colors, framing. Preserve image1536x1024.",
+  "promptSha256": "cf5977471f619d8f7a14a894cb559576385669f8b7144ea169aa6c62e32ab836",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-350de662-ec40-4705-93be-b1bad4fc5b47.png",
+      "sha256": "fc537500e1ad22e1426250e857dcf7bd3ba1568f24534c33dd19770170593b0f"
+    }
+  ],
+  "alt": "Farah points Demir to the sample rate and window length needed to interpret FFT bin ten.",
+  "method": "built-in imagegen",
+  "status": "published",
+  "history": [
+    {
+      "prompt": "Use case: precise-object-edit. Asset: Deep Orbit signal-processing/fourier-transform-briefing scene,1536x1024 landscape. Image1: dr-farah canonical identity authority; Image2: ensign-demir canonical identity authority; Image3: lab ROOM ONLY master, copy architecture not its incidental graphics or oversaturated lighting; Image4: exact edit target.\nPreserve the lively lesson discussion, Farah with stylus beside the wall display and Demir listening at the bench. Remove anonymous waves and random side graphics. The overnight result creates a question. Main display exact heading Overnight FFT / 257 bins per window. Show one enlarged meaningful list row Bin 10 / Frequency: ? highlighted subtly. Below it a small metadata box Sample rate: 256 Hz / Samples: 512. Beside that a compact formula Frequency = bin x sample rate / samples. Farah points at the metadata rather than an invented answer; Demir raises an intrigued eyebrow, still learning how an index becomes hertz. All labels belong to the wall screen perspective; secondary screens dark. Preserve natural gesture chains. Lower saturated green and gold to canonical muted sage and aged brass.\nIdentity: preserve canonical facial geometry, ages, skin, hairstyle, natural expressions and signature equipment. Keep readable faces in natural three-quarter angles, stable adult head/body proportions. Trace each shoulder through elbow/wrist to one natural five-finger hand; solid furniture contacts. Each screen front faces its actual reader; all text and diagrams follow its physical perspective, never camera-facing overlays. No extra crew, no plants, no fake tiny glyphs. Subordinate unused screens and wrist displays are dark. Muted charcoal, gray, restrained olive, sage interface and aged brass. Warm light remains localized, no yellow wash or electric lime. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Equipment-side check: Demir has one earpiece on anatomical RIGHT ear only. If his visible ear is anatomical LEFT, keep it bare and hide the far-side earpiece completely; never float green hardware on cheek, eye or collar.",
+      "promptSha256": "594251333dbacdf72a1e7dae14f1c722cf0b1f01e2941c264b66da3372140939",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-350de662-ec40-4705-93be-b1bad4fc5b47.png",
+          "sha256": "fc537500e1ad22e1426250e857dcf7bd3ba1568f24534c33dd19770170593b0f"
+        }
+      ]
+    }
+  ],
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3c619452-1f72-4265-89c5-b4111d63e72a.png",
+  "candidateSha256": "f703e7a840e527ee33436adf0400dcd215cb40e3cab4f5e82a966837b338f819",
+  "ownReview": {
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Localized removal fixes floating far-side hardware. Canonical face, source-specific screen values, natural hands and muted room preserved. Actual reader sees front of display. Full-frame native reviewed."
+  },
+  "candidatePath": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3c619452-1f72-4265-89c5-b4111d63e72a.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-350de662-ec40-4705-93be-b1bad4fc5b47.png",
+      "sha256": "fc537500e1ad22e1426250e857dcf7bd3ba1568f24534c33dd19770170593b0f",
+      "role": "canonical identity"
+    }
+  ],
+  "independentReview": {
+    "key": "fourier-transform-briefing",
+    "id": "signal-processing/fourier-transform",
+    "phase": "briefing",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3c619452-1f72-4265-89c5-b4111d63e72a.png",
+    "candidateSha256": "f703e7a840e527ee33436adf0400dcd215cb40e3cab4f5e82a966837b338f819",
+    "verdict": "pass",
+    "reviewer": "/root",
+    "method": "Native complete1536x1024 against canonical portraits and current MDX/exercise",
+    "notes": "Lively shared discussion with natural pointer/open hand and seated chin-rest.257bins for512samples,rate256Hz,index10frequencyquestion and conversion formula exact. Faces/neck/shoulder/furniture coherent; readable working board follows perspective, no fake auxiliaries.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      }
+    ],
+    "alt": "Farah helps Demir interpret bin 10 from the overnight FFT using the capture size and sample rate.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3c619452-1f72-4265-89c5-b4111d63e72a.png",
+  "publishedSource": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform.webp",
+  "webpSha256": "558cd1daeebad27718810d507d9bf96ff77766b4fb9ff16cfb7d6756bfdbdd83",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+    "sourceSha256": "6b0447910ec004e50f4006d9036b528f92efcedd1f14a4f9bd35d94ade79fe0c",
+    "webpSha256": "baeb74bc4bf643311c2eefa2d0c9388e724a960de0fd691da840228dde82ee1f",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e76cf3e5-2cf5-4719-a47a-a3a619a49acf.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_signal",
+    "status": "approved",
+    "candidateSha256": "f703e7a840e527ee33436adf0400dcd215cb40e3cab4f5e82a966837b338f819",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Lively shared discussion with natural pointer/open hand and seated chin-rest.257bins for512samples,rate256Hz,index10frequencyquestion and conversion formula exact. Faces/neck/shoulder/furniture coherent; readable working board follows perspective, no fake auxiliaries."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

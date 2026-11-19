@@ -9,7 +9,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const project = process.argv[2];
 if (!project)
   throw new Error(
-    "Usage: node scripts/build-room-project-preview.mjs <verified project folder>",
+    "Usage: node scripts/build-room-project-preview.mjs <verified project folder> [output.json]",
   );
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const fixture = await readFile(
@@ -72,14 +72,13 @@ const preview = {
   artifactHashes: run.artifactHashes,
   fixtureSourceSha256: digest(fixture),
   reproduce:
-    "node scripts/check-room-project.mjs; then node scripts/build-room-project-preview.mjs <printed project folder>",
+    "Download https://tensorcraft.app/evidence/room-project-v1.zip and extract it. In the exported folder run npm ci --ignore-scripts --no-audit --no-fund, then npm run reproduce. See https://tensorcraft.app/evidence/room-project-v1/README.md for prerequisites and the separate browser check.",
   limitations:
     "Five fixed epochs verify integration. This is a validation example where both policies are wrong, not a quality recommendation, calibrated probability, or learner result.",
 };
-const output = resolve(
-  root,
-  "apps/web/public/assignments/room-project-preview.json",
-);
+const output = process.argv[3]
+  ? resolve(process.argv[3])
+  : resolve(root, "apps/web/public/assignments/room-project-preview.json");
 await writeFile(output, JSON.stringify(preview, null, 2) + "\n");
 console.log(
   `Recorded real validation row ${row.id}; source and artifact hashes checked.`,

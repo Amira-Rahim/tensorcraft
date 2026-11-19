@@ -1,0 +1,236 @@
+{
+  "key": "tensor-shapes-takeaways",
+  "id": "foundations/tensor-shapes",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah stands RIGHT beside labcomparison console, slightly leaning toward monitor LEFT, one hand on mouse and other gently resting on bench, visibly pleased but thoughtful as she checks firstrowdifference. Remove outwardtablet and duplicatewallboard. Exact screen heading \"Same shape [4,3]\". Table headers \"Operation\",\"First row\",\"Meaning\". Rows \"reshape([4,3])\",\"[2,20,5]\",\"Mixed sensors\"; \"transpose()\",\"[2,3,4]\",\"Sensor A\". Footer \"Axis meaning comes from the recording\". She looks at SensorArow. All text/tablelines obey physicalmonitorplane. Canonical Farah anatomy/costume/leftlens, restrained slateandsage lab, inactivebackgroundscreens. Candid task moment, no posing.",
+  "meaning": "Same[4,3]shape butreshape firstrowmixesA,B,C [2,20,5],transpose firstrowA[2,3,4].",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+      "sha256": "0b20dfc16437ad8b6469f2832c76c754bbcfe405a1375716a53a62b7bcf8cdd4",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
+      "sha256": "ff15b88cc32f1dc65f29360df60466ce857def6fdf296e6883895aa05023836a"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1c63a9b8-fb41-4f7f-a255-9fa5ad0fe376.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 900,
+      "top": 150,
+      "width": 360,
+      "height": 360
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 700,
+      "top": 760,
+      "width": 450,
+      "height": 200
+    }
+  ],
+  "candidatePath": "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+  "candidateSha256": "87f192c15470cb940ee9d61955732046b19e94ffaeb64f56f496156a7b882361",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah stands RIGHT beside labcomparison console, slightly leaning toward monitor LEFT, one hand on mouse and other gently resting on bench, visibly pleased but thoughtful as she checks firstrowdifference. Remove outwardtablet and duplicatewallboard. Exact screen heading \"Same shape [4,3]\". Table headers \"Operation\",\"First row\",\"Meaning\". Rows \"reshape([4,3])\",\"[2,20,5]\",\"Mixed sensors\"; \"transpose()\",\"[2,3,4]\",\"Sensor A\". Footer \"Axis meaning comes from the recording\". She looks at SensorArow. All text/tablelines obey physicalmonitorplane. Canonical Farah anatomy/costume/leftlens, restrained slateandsage lab, inactivebackgroundscreens. Candid task moment, no posing.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+          "sha256": "0b20dfc16437ad8b6469f2832c76c754bbcfe405a1375716a53a62b7bcf8cdd4",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1c63a9b8-fb41-4f7f-a255-9fa5ad0fe376.png",
+        "sha256": "87f192c15470cb940ee9d61955732046b19e94ffaeb64f56f496156a7b882361"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Same[4,3]shape butreshape firstrowmixesA,B,C [2,20,5],transpose firstrowA[2,3,4].",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 900,
+        "top": 150,
+        "width": 360,
+        "height": 360
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 700,
+        "top": 760,
+        "width": 450,
+        "height": 200
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
+      "sha256": "ff15b88cc32f1dc65f29360df60466ce857def6fdf296e6883895aa05023836a"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+      "sha256": "0b20dfc16437ad8b6469f2832c76c754bbcfe405a1375716a53a62b7bcf8cdd4",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "tensor-shapes-takeaways",
+    "id": "foundations/tensor-shapes",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1c63a9b8-fb41-4f7f-a255-9fa5ad0fe376.png",
+    "candidateSha256": "87f192c15470cb940ee9d61955732046b19e94ffaeb64f56f496156a7b882361",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T20:29:48.464860+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+        "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
+        "sha256": "ff15b88cc32f1dc65f29360df60466ce857def6fdf296e6883895aa05023836a"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical ages, faces, hair, skin, adult proportions and attire consistent.",
+      "anatomy": "Visible hands and full limb chains, neck and body support plausible. Furniture and device contacts coherent.",
+      "screenPlane": "All displayed content aligned to physical plane.",
+      "readerDirection": "Readers and camera see actual workdisplay front obliquely, or room-facing wall display.",
+      "story": "Candid screen work or cast interaction; no audience-only held placards.",
+      "palette": "Muted charcoal, sage and brass consistent.",
+      "meaning": "Same-shape comparison correct: direct reshape[4,3] first row[2,20,5] mixes sensors while transpose of existing grid gives [2,3,4] sensorA. Axis meaning comes from actual recording, not dimensions alone."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1c63a9b8-fb41-4f7f-a255-9fa5ad0fe376.png",
+  "publishedSource": "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-takeaways.webp",
+  "sourceSha256": "87f192c15470cb940ee9d61955732046b19e94ffaeb64f56f496156a7b882361",
+  "webpSha256": "be5f030e8f7429dd4893bf9890b8bb5cd228099974331f91d0570d7fc0833242",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+    "sourceSha256": "0b20dfc16437ad8b6469f2832c76c754bbcfe405a1375716a53a62b7bcf8cdd4",
+    "webpSha256": "fcd0bd3669328a937a1e05d9d700bdefcc16a9f4806fbcfe2d407b23bad84b29",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-30230342-9b20-4b10-bbcd-1c6a3c12664c.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "87f192c15470cb940ee9d61955732046b19e94ffaeb64f56f496156a7b882361",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical ages, faces, hair, skin, adult proportions and attire consistent.",
+      "anatomy": "Visible hands and full limb chains, neck and body support plausible. Furniture and device contacts coherent.",
+      "screenPlane": "All displayed content aligned to physical plane.",
+      "readerDirection": "Readers and camera see actual workdisplay front obliquely, or room-facing wall display.",
+      "story": "Candid screen work or cast interaction; no audience-only held placards.",
+      "palette": "Muted charcoal, sage and brass consistent.",
+      "meaning": "Same-shape comparison correct: direct reshape[4,3] first row[2,20,5] mixes sensors while transpose of existing grid gives [2,3,4] sensorA. Axis meaning comes from actual recording, not dimensions alone."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+        "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
+        "sha256": "ff15b88cc32f1dc65f29360df60466ce857def6fdf296e6883895aa05023836a"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

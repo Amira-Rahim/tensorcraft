@@ -1,0 +1,188 @@
+{
+  "deep-orbit/advanced-time-series/temporal-attention": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+      "alt": "Demir points to two weighted moments in a signal window on the bridge."
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+      "alt": "Demir adjusts attention weights while the full reading window remains visible."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+      "alt": "Demir adds a position column and checks the separate weights and pooled readings."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+      "alt": "Demir compares complete and clipped captures before trusting their attention summaries."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+      "alt": "Demir records wider windows as Nazari checks the returning pulses arriving early."
+    }
+  },
+  "deep-orbit/optimization-edge/caching-strategies": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/optimization-edge/caching-strategies.webp",
+      "alt": "Demir pauses with his coffee beside repeated signal captures at the dashboard station."
+    }
+  },
+  "deep-orbit/advanced-time-series/beyond-lstm": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+      "alt": "Farah compares three contributions to one attention blend in the lab."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+      "alt": "Demir tests separate keys and values while building the attention calculation."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+      "alt": "Farah and Demir compare forecast errors before trusting the attention model."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/beyond-lstm-epilogue.webp",
+      "alt": "Farah pauses at the lab door as Demir repeats the timing check on the capture."
+    }
+  },
+  "deep-orbit/advanced-time-series/forecasting": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+      "alt": "Farah follows how one prediction becomes the next forecast input."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+      "alt": "Demir compares a rolled forecast with a replay that uses observed readings."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-takeaways.webp",
+      "alt": "Farah shows Mirza how forecast error varies with the prediction horizon."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp",
+      "alt": "Farah compares shrinking pulse intervals while Demir and Nazari question the forecast."
+    }
+  },
+  "deep-orbit/advanced-time-series/kalman-filters": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+      "alt": "Farah adjusts the balance between a prediction and a noisy measurement."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-challenge.webp",
+      "alt": "Demir compares the updated estimate with the latest falling interval measurement."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-takeaways.webp",
+      "alt": "Farah and Demir inspect the remaining lag before adding a trend state."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+      "alt": "Mirza reads Farah\u2019s interval report before ordering backup transmission plans."
+    }
+  },
+  "deep-orbit/advanced-time-series/time-series-ensemble-methods": {
+    "concept": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-concept.webp",
+      "alt": "Farah and Demir compare three model outputs that all contribute to the blend."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-challenge.webp",
+      "alt": "Demir compares equal and weighted forecast blends against their best member."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+      "alt": "Farah checks a shared prediction error that averaging cannot remove."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-epilogue.webp",
+      "alt": "Demir and Nazari compare extrapolations that disagree beyond the observed intervals."
+    }
+  },
+  "deep-orbit/anomaly-detection/normal-vs-anomalous": {
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+      "alt": "Farah and Nazari compare false alarms and misses at an adjustable cutoff."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp",
+      "alt": "Demir checks a reading against the baseline before adding a review flag."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+      "alt": "Nazari compares the current baseline with a candidate that still needs evaluation."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+      "alt": "Demir records the unresolved reading and preserves its original capture for review."
+    }
+  },
+  "deep-orbit/anomaly-detection/autoencoders": {
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+      "alt": "Farah follows a signal through the bottleneck and its approximate reconstruction."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp",
+      "alt": "Demir screens flagged rows before fitting the reconstruction model."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-takeaways.webp",
+      "alt": "Farah and Demir inspect an unfamiliar input that reconstructs unexpectedly well."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+      "alt": "Farah and Nazari review suspect training rows before the next fit."
+    }
+  },
+  "deep-orbit/anomaly-detection/reconstruction-error": {
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+      "alt": "Farah compares the input with its reconstruction before reducing their differences to a score."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+      "alt": "Demir checks reconstruction scores while keeping temporary tensors under control."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+      "alt": "Farah and Demir separate the overall score from the errors contributed by each feature."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+      "alt": "Demir queues ARIA\u2019s requested replay beside the feature-error comparison."
+    }
+  },
+  "deep-orbit/anomaly-detection/threshold-tuning": {
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-concept.webp",
+      "alt": "Farah and Nazari compare capture and pager cutoffs with different costs."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+      "alt": "Demir compares candidate cutoffs and their false alarms and misses."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp",
+      "alt": "Nazari checks the investigation order before changing an alert threshold."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/anomaly-detection/threshold-tuning-epilogue.webp",
+      "alt": "Nazari hands the threshold log to Demir after checking the alert replay."
+    }
+  },
+  "deep-orbit/anomaly-detection/the-anomaly": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+      "alt": "The crew compares archive and live captures while two detectors flag the same pattern."
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+      "alt": "Farah and Demir inspect two detector flags while the amplitude check stays quiet."
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+      "alt": "Demir combines the detector verdicts into a review decision."
+    }
+  }
+}

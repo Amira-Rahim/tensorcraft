@@ -1,0 +1,103 @@
+{
+  "module": "training-loop",
+  "lesson": "backpropagation",
+  "phase": "epilogue",
+  "src": "/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+  "index": 29,
+  "characters": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "prompt": "Strict head-only identity correction. Image1 is canonical Ensign Demir, authoritative facial identity. Any intermediate portrait is another character to preserve. LAST image is scene target. Correct ONLY Demir's face/hair/neck transition. His current pointed narrow nose and long tapering chin are wrong. Turn his head toward camera into a gentle near-frontal three-quarter view, with eye gaze still directed at his current task or companion. Faithfully reproduce image1's compact broad softly squared lower face, SHORT rounded chin, wider rounded nose base with round tip and full nostrils, same nose bridge and eye spacing, distinctive straight eyebrows, sparse freckles and uneven stubble. Keep compact dark forelock and right-anatomical-ear green earpiece. Preserve his current warm smile or concentration through expression alone. This must be the same individual at a new angle, not a generic handsome sharp-faced version. Preserve every other person exactly, especially their already approved face. Preserve exact body, all arms/hands/fingers, neck contact with hands if any, clothing, furniture, equipment, screen graphics, diagrams, lighting, framing and size. No other changes. 1536x1024.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-60ec9701-de6e-49f0-a6e4-0f133edaa651.png"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ff3dc5a9-eebe-4f42-becd-851f28cb7cfb.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-60ec9701-de6e-49f0-a6e4-0f133edaa651.png",
+      "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the authoritative neutral portrait of ensign-demir. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=264): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. ENSIGN-DEMIR (portrait 2, scene head near x=1214): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+      "references": [
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png",
+        "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp"
+      ],
+      "reason": "Peer hold: Demir thin pointed nose and narrowing chin remain; angle does not preserve canonical morphology."
+    }
+  ],
+  "candidate": "/tmp/early-identity-candidates/29.webp",
+  "candidateSha256": "0ee9b98a1dba1417145f78ec7fca40c33b58dfe626852dd301bfe35bbe924fca",
+  "sourceSha256": "57f26368d646a58a280ff546f4ea083ffd4bf099a45498679e5f3fb993a7c4f3",
+  "beforeSha256": "7c5807a725768e3d883eee489f23534d6cf1d0f51556372a95e428f01793bf0c",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-60ec9701-de6e-49f0-a6e4-0f133edaa651.png",
+      "role": "edit target",
+      "sha256": "02ba3c09065119ad3e9fb6983920b49135f0d055ed65a162595d7bf55d9268a0"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 138490,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/backpropagation-epilogue-chief-nazari-correction.png",
+      "crop": {
+        "left": 120,
+        "top": 126,
+        "width": 288,
+        "height": 324
+      }
+    },
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/backpropagation-epilogue-ensign-demir-correction.png",
+      "crop": {
+        "left": 1077,
+        "top": 87,
+        "width": 273,
+        "height": 339
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-60ec9701-de6e-49f0-a6e4-0f133edaa651.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ff3dc5a9-eebe-4f42-becd-851f28cb7cfb.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

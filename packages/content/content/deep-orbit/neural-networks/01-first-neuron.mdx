@@ -61,19 +61,33 @@ working when the inputs and weights change during training.
 
 <LearningObjectives objectives={["Identify a neuron's inputs, weights, and bias", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for sensitivity per unit of input"]} />
 
-## A weighted sum of inputs
+## Every contribution to one score
 
-A neuron multiplies each input by a weight, sums the products, and adds a bias. The `Array.reduce()` expression below computes the same score.
+A neuron multiplies each input by a weight, adds those products, then adds a
+bias. The bias is a constant offset. The result here is one score, before
+an activation function or an alert threshold.
+
+Use the same arithmetic check in the activity and code: inputs
+`[0.5, 0.8, 0.2]`, weights `[0.4, -0.2, 0.6]`, and bias `0.1`.
+These are supplied dimensionless example values. They do not identify a
+measurement from tone A, tone B, or the unknown signal.
+
+Select an input in the activity. Follow its value and matching weight into
+its product, then the running sum. Input 2 contributes `0.8 * -0.2 = -0.16`.
+That lowers the sum. The three products are `0.20`, `-0.16`, and `0.12`,
+which total `0.16`. Add bias `0.1` to get `0.26`.
+
+The `Array.reduce()` expression below computes the same score.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="first-neuron.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// A neuron with 3 inputs
-const inputs = tf.tensor([0.5, 0.8, 0.2]);   // sensor readings
-const weights = tf.tensor([0.4, -0.2, 0.6]);  // hand-picked weights
-const bias = tf.scalar(0.1);                   // constant added to the score
+// The same supplied arithmetic check as the activity.
+const inputs = tf.tensor1d([0.5, 0.8, 0.2]);
+const weights = tf.tensor1d([0.4, -0.2, 0.6]);
+const bias = tf.scalar(0.1);
 
 // The neuron computation: weighted sum + bias
 const output = tf.tidy(() => tf.dot(inputs, weights).add(bias));
@@ -87,29 +101,61 @@ console.log(jsOutput); // approximately 0.26. JS and float32 rounding may differ
 tf.dispose([inputs, weights, bias, output]);`}
 </CodeBlock>
 
-Each weight scales its own input: a positive weight pushes the output up, a negative one pushes against it. The bias adds a constant to the output. If you later compare that output with a threshold, changing the bias moves the decision boundary.
+`tf.dot()` multiplies matching positions and adds the products. For these
+one-dimensional inputs and weights, it returns a scalar tensor with shape
+`[]` and rank `0`. Adding a scalar bias keeps that shape.
 
-## Reading the Weights
+The calculation stays in tensor operations so training can later calculate
+its gradients. `tf.tidy()` releases the temporary dot-product tensor and
+keeps the returned score. Read the score outside the calculation, then
+dispose of the inputs, weights, bias, and output when you finish with them.
+In the challenge, keep the output available for the checks.
 
-This example uses three fixed weights. Module 3 will show how training changes them. Here, one neuron reads amplitude, frequency, and phase. We can trace each input's effect directly. A deeper network has later layers that also affect the result.
+## A weight and its contribution
 
-A weight's sign tells you which way its input moves the score. The amplitude weight is `0.4`, so a higher amplitude raises the score. The frequency weight is `-0.2`, so a higher frequency lowers it. Change `-0.2` to `+0.2` above: the score for the same reading rises from 0.26 to 0.58.
+A weight's sign tells you how this score changes when its input increases.
+The second weight is `-0.2`, so raising input 2 lowers the score. Its
+magnitude tells you how much the score changes for a one-unit change in
+that input. The input's scale defines what one unit means. Change that
+weight to `+0.2` in the activity. Its contribution becomes `+0.16`,
+and the final score rises from `0.26` to `0.58`. The inputs and bias stay
+the same.
 
-A larger weight means the score changes more for each unit of that input. To find the contribution for one reading, multiply input by weight:
+The contribution for one reading is **input times weight**. Input 3 has
+the largest weight, `0.6`, but contributes `0.2 * 0.6 = 0.12`.
+Input 1 contributes `0.5 * 0.4 = 0.20`. A larger weight can still produce
+a smaller contribution when its input is smaller.
 
-- Amplitude: `0.5 * 0.4 = 0.20`.
-- Frequency: `0.8 * -0.2 = -0.16`.
-- Phase: `0.2 * 0.6 = 0.12`.
+The bias shifts the final score by the amount you add. A decision threshold
+is a separate rule that can later compare that score with a cutoff. Neither
+the arithmetic score nor its sign establishes a class label.
 
-Phase has the largest weight, but its contribution of 0.12 is smaller in magnitude than 0.20 and -0.16 because its input is small. All three inputs use the same 0-1 scale, so you can compare their weights as sensitivity per unit. The contribution still depends on the reading.
+<ConceptReference summary="Optional: sensitivity in a larger network">
 
-A weight close to zero means this neuron responds only a little when that input changes by one unit. That does not tell us whether the feature matters elsewhere in the network, or whether it causes the event we want to predict.
+A weight's magnitude describes how much this neuron's score changes for a
+one-unit change in its input. Compare that sensitivity in the input's own
+scale. Different physical units or scaling rules change what one unit means.
+
+A weight near zero makes this neuron respond only a little to a one-unit
+change in that input. Other neurons can still use the feature. Later layers
+and activations also affect a network's final result. A weight alone cannot
+establish whether a feature causes an event.
+
+Training changes the parameters from labeled examples. This lesson checks
+the calculation with supplied weights. Module 3 introduces those updates.
+
+</ConceptReference>
 
 ## Challenge
 
-Help Farah combine the supplied inputs into a score. Your result shows the
-scalar returned by that tensor calculation. This step supplies the weighted
-sum. The next lesson tests what an activation can do to such scores.
+Help Farah write the same calculation as a reusable function. The challenge
+uses separate arithmetic checks, beginning with inputs `[1, 2, 3]`, weights
+`[0.2, 0.8, -0.5]`, and bias `0.1`. That case gives `0.4`. The checks also
+change the values and input length, so calculate from the function's arguments.
+
+Return a scalar tensor and keep the calculation in tensor operations. Your
+result shows the score your function returned. This step performs no training.
+The next lesson tests what an activation does to such scores.
 
 <Exercise slug="implement-neuron" />
 
@@ -139,23 +185,23 @@ sum. The next lesson tests what an activation can do to such scores.
     },
     {
       "kind": "choice",
-      "question": "What do the weights control?",
+      "question": "Input 1 is 0.5 with weight 0.4. Input 3 is 0.2 with weight 0.6. Which has the larger contribution to this score?",
       "options": [
         {
-          "text": "A fixed offset independent of the inputs.",
-          "feedback": "That is the role of the bias."
+          "text": "Input 3, because its weight is larger.",
+          "feedback": "Multiply input by weight. Input 3 contributes 0.12, while input 1 contributes 0.20."
         },
         {
-          "text": "The number of training examples.",
-          "feedback": "Weights control each input’s contribution to the calculation. The dataset keeps the same number of examples."
+          "text": "They contribute the same amount.",
+          "feedback": "The products differ: 0.5 * 0.4 is 0.20, and 0.2 * 0.6 is 0.12."
         },
         {
-          "text": "How much each input contributes to the score.",
-          "feedback": "Each weight scales its corresponding input."
+          "text": "Input 1, because 0.5 * 0.4 is larger than 0.2 * 0.6.",
+          "feedback": "Input 1 contributes 0.20. Input 3 contributes 0.12 despite its larger weight."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Each weight scales its corresponding input."
+      "explanation": "A contribution depends on both the input and its weight. Here input 1 contributes 0.20, which is larger than input 3's 0.12."
     },
     {
       "kind": "choice",
@@ -192,7 +238,7 @@ sum. The next lesson tests what an activation can do to such scores.
 
 <Epilogue>
 
-Farah routes the neuron's output to a spare monitor above the galley coffee machine and feeds in the two calibration tones on a loop. Tone A holds at 0.81, tone B at 0.12: twenty minutes of telemetry without a single crossover. Nazari stops under the monitor on her way off shift and watches it longer than she would admit to.
+Farah returns to the calibration bench and routes its neuron output to a spare monitor above the galley coffee machine. She feeds in the two known calibration tones on a loop. Tone A holds at 0.81, tone B at 0.12: twenty minutes of telemetry without a single crossover. Nazari stops under the monitor on her way off shift and watches it longer than she would admit to.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Three weights and a bias can tell two tones apart. The stream from 7-G is sixty-four channels. How many weights before I trust this thing with my board?

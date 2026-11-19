@@ -30,8 +30,6 @@ const ALLOWED_FILES = new Set([
   "AGENTS.md", // Binding learning-audience directive, 2026-10-16.
   "CLAUDE.md", // Binding learning-audience directive, 2026-10-16.
   "packages/content/__tests__/audience-vocabulary.test.ts", // Documents that directive.
-  "docs/dev-plan.md",
-  "docs/marketing-plan.md",
   "docs/roadmap.md",
   "docs/writing-quality-rubric.md",
   "packages/supabase/migrations/059_rename_fe_identifiers_to_js.sql",

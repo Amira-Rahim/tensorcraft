@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101a24" />
+    <meta
+      name="description"
+      content="Farah stops a suspicious sensor chart aboard Archimedes. Trace its peak, move the readings, and repair the chart in this free playable Deep Orbit scene."
+    />
+    <title>The spike on Farah’s screen | Tensorcraft</title>
+    <link
+      rel="canonical"
+      href="https://tensorcraft-cases.vercel.app/sensor-grouping.html"
+    />
+    <meta
+      property="og:url"
+      content="https://tensorcraft-cases.vercel.app/sensor-grouping.html"
+    />
+    <meta property="og:title" content="Did the ship record that spike?" />
+    <meta
+      property="og:description"
+      content="Farah has stopped the replay. A chart says sensor A spiked. Trace the peak and find out what the recording actually says."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://tensorcraft-cases.vercel.app/media/sensor-grouping-case/og-landscape.webp"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="A chart labelled Sensor A rises from 2 to 20, then falls to 5. Did the ship record that spike?"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://tensorcraft-cases.vercel.app/media/sensor-grouping-case/og-landscape.webp"
+    />
+    <link
+      rel="icon"
+      href="/media/sensor-grouping-case/tensorcraft-avatar.png"
+    />
+    <link rel="preload" as="image" href="/locations/deep-orbit/lab.webp" />
+    <link rel="stylesheet" href="/cases/sensor-grouping.css" />
+    <script defer src="/vendor/tfjs-4.22.0.min.js"></script>
+    <script defer src="/cases/sensor-grouping.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#case">Skip to the case</a>
+    <header class="site-header">
+      <a
+        class="brand"
+        href="https://tensorcraft.app/"
+        aria-label="Tensorcraft home"
+        ><span aria-hidden="true">T_</span>Tensorcraft</a
+      >
+      <a class="world-link" href="#about">Inside Deep Orbit</a>
+    </header>
+    <main id="case">
+      <section class="arrival" aria-labelledby="case-title">
+        <div
+          class="lab-art"
+          role="img"
+          aria-label="The lab aboard Archimedes, with instruments beside a window into space"
+        ></div>
+        <div class="arrival-content">
+          <div class="opening-copy">
+            <p class="scene-location">Archimedes, Lab</p>
+            <h1 id="case-title">Did the ship record that spike?</h1>
+            <p class="story-passage">
+              Farah stops the replay at the sharp peak. Demir’s chart labels the
+              line “Sensor A”. She opens the recording beside it.
+            </p>
+            <div class="dialogue">
+              <img
+                src="/characters/deep-orbit/dr-farah-absorbed.webp"
+                width="72"
+                height="72"
+                alt="Dr. Farah"
+              />
+              <div>
+                <p class="speaker">Dr. Farah</p>
+                <p>“The label says A. Where did the 20 come from?”</p>
+              </div>
+            </div>
+            <a class="text-link" href="#recording">Open the recording</a>
+          </div>
+          <div class="first-console">
+            <div class="console-heading">
+              <div>
+                <span class="console-kicker">Demir’s chart</span>
+                <h2>Sensor A</h2>
+              </div>
+              <span class="paused"
+                ><span aria-hidden="true"></span>Replay paused</span
+              >
+            </div>
+            <div class="chart-wrap">
+              <svg
+                id="opening-chart"
+                viewBox="0 0 600 245"
+                role="group"
+                aria-label="Chart labelled Sensor A. Select a reading to trace its source."
+              ></svg>
+            </div>
+            <p class="chart-instruction" id="trace-prompt">
+              Select a point to find it in the recording.
+            </p>
+            <div class="trace-receipt" id="trace-receipt" aria-live="polite">
+              <span class="receipt-symbol" aria-hidden="true">?</span>
+              <p>The peak reads 20. Select it to find where it came from.</p>
+            </div>
+            <button
+              class="primary console-action"
+              id="trace-next"
+              type="button"
+            >
+              Trace the peak
+            </button>
+          </div>
+        </div>
+        <p class="fiction-note">
+          A playable scene from Deep Orbit. Fictional recording excerpt, sensors
+          A to D at three moments.
+        </p>
+      </section>
+      <section
+        class="investigation section-wrap"
+        id="recording"
+        aria-labelledby="recording-title"
+      >
+        <div class="section-intro">
+          <div>
+            <p class="chapter-label">The recording behind the chart</p>
+            <h2 id="recording-title">
+              Which readings reached<br />Farah’s screen?
+            </h2>
+          </div>
+          <div class="dialogue compact">
+            <img
+              src="/characters/deep-orbit/ensign-demir-focused.webp"
+              width="64"
+              height="64"
+              alt="Ensign Demir"
+              loading="lazy"
+            />
+            <div>
+              <p class="speaker">Ensign Demir</p>
+              <p>“I gave it four rows. I thought that meant one per sensor.”</p>
+            </div>
+          </div>
+        </div>
+        <p class="workbench-intro">
+          The recording header lists sensors A, B, C, D. Each original row holds
+          one moment. Farah’s chart reads the first row as sensor A. Which
+          operation would put one sensor’s readings together?
+        </p>
+        <div class="workbench">
+          <div class="data-deck">
+            <div class="deck-heading">
+              <h3 id="board-title">Original recording</h3>
+              <span class="shape" id="board-shape">3 moments × 4 sensors</span>
+            </div>
+            <div class="sensor-key" aria-label="Sensor colors">
+              <span class="sensor-a">A</span><span class="sensor-b">B</span
+              ><span class="sensor-c">C</span><span class="sensor-d">D</span
+              ><span class="key-help">Select any reading to follow it</span>
+            </div>
+            <div
+              class="token-board"
+              id="token-board"
+              role="group"
+              aria-label="Twelve readings from the supplied recording"
+            ></div>
+            <div class="replay-controls">
+              <label for="replay"
+                >Reading movement
+                <output id="replay-label">Original recording</output></label
+              >
+              <input
+                id="replay"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+                disabled
+                aria-describedby="replay-help"
+              />
+              <div class="replay-ends">
+                <span>Original rows</span
+                ><button
+                  class="quiet-button"
+                  id="replay-again"
+                  type="button"
+                  disabled
+                >
+                  Replay movement</button
+                ><span>New rows</span>
+              </div>
+              <p id="replay-help">
+                Run an operation, then drag the replay to follow each reading.
+              </p>
+            </div>
+            <p class="reading-detail" id="reading-detail" aria-live="polite">
+              Each reading keeps its sensor letter and moment number as it
+              moves.
+            </p>
+            <details class="source-details">
+              <summary>Recording header and original values</summary>
+              <p>
+                Supplied fictional excerpt. Moments 1, 2, 3. Sensor order A, B,
+                C, D. These values have no physical unit attached.
+              </p>
+              <table>
+                <caption>
+                  Original recording
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Moment</th>
+                    <th scope="col">A</th>
+                    <th scope="col">B</th>
+                    <th scope="col">C</th>
+                    <th scope="col">D</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>2</td>
+                    <td>20</td>
+                    <td>5</td>
+                    <td>8</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>3</td>
+                    <td>18</td>
+                    <td>7</td>
+                    <td>8</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>4</td>
+                    <td>16</td>
+                    <td>6</td>
+                    <td>9</td>
+                  </tr>
+                </tbody>
+              </table>
+            </details>
+          </div>
+          <div class="operation-deck">
+            <h3>The chart’s input</h3>
+            <p class="operation-question">
+              Try a change. Watch which readings reach the first row.
+            </p>
+            <div
+              class="operation-options"
+              role="group"
+              aria-label="Choose an operation to run"
+            >
+              <button
+                id="run-reshape"
+                data-operation="reshape"
+                type="button"
+                aria-pressed="false"
+                disabled
+              >
+                <span class="operation-name">Reshape</span
+                ><code>grid.reshape([4, 3])</code
+                ><span>Keep the flat reading order</span>
+              </button>
+              <button
+                id="run-transpose"
+                data-operation="transpose"
+                type="button"
+                aria-pressed="false"
+                disabled
+              >
+                <span class="operation-name">Transpose</span
+                ><code>grid.transpose()</code><span>Swap rows and columns</span>
+              </button>
+            </div>
+            <p class="runtime" id="runtime-status" role="status">
+              Loading the two operations…
+            </p>
+            <div class="live-chart">
+              <div class="live-chart-heading">
+                <h4>Row sent to “Sensor A”</h4>
+                <code id="chart-input">[2, 20, 5]</code>
+              </div>
+              <svg
+                id="result-chart"
+                viewBox="0 0 600 245"
+                role="img"
+                aria-label="Supplied starting chart: 2, 20, 5"
+              ></svg>
+              <p id="chart-note">
+                Supplied starting chart. Run an operation to replace its input.
+              </p>
+            </div>
+          </div>
+        </div>
+        <section
+          class="result"
+          id="result"
+          aria-labelledby="result-heading"
+          hidden
+        >
+          <div class="result-summary">
+            <p class="result-label" id="result-label">Operation result</p>
+            <h3 id="result-heading">What reached the chart</h3>
+            <p
+              class="verdict"
+              id="verdict"
+              role="status"
+              aria-live="polite"
+            ></p>
+            <p id="insight"></p>
+            <a class="text-link" id="crew-next" href="#consequence" hidden
+              >See Farah’s next step</a
+            >
+          </div>
+          <details class="code-details">
+            <summary>The JavaScript that just ran</summary>
+            <pre><code id="executed-code"></code></pre>
+            <p>
+              Both operations return shape [4, 3]. The recording header tells us
+              what the axes mean.
+            </p>
+          </details>
+        </section>
+      </section>
+      <section
+        class="consequence"
+        id="consequence"
+        aria-labelledby="consequence-title"
+        hidden
+      >
+        <div class="section-wrap consequence-inner">
+          <img
+            class="closing-scene"
+            src="/locations/deep-orbit/dashboard-station.webp"
+            width="1536"
+            height="1024"
+            alt="The chart station aboard Archimedes"
+            loading="lazy"
+          />
+          <div class="consequence-copy">
+            <p class="chapter-label">Back in the lab</p>
+            <h2 id="consequence-title">Farah opens the<br />full recording.</h2>
+            <div class="dialogue compact">
+              <img
+                src="/characters/deep-orbit/dr-farah-absorbed.webp"
+                width="64"
+                height="64"
+                alt=""
+              />
+              <div>
+                <p class="speaker">Dr. Farah</p>
+                <p>“Now this line follows A through time.”</p>
+              </div>
+            </div>
+            <p class="story-passage">
+              Farah leaves the three-moment check on screen and opens the full
+              recording. The crew has 64 sensor lines to follow.
+            </p>
+            <a
+              class="primary"
+              id="activity-link"
+              href="https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?start=experiment&amp;utm_source=sensor_case&amp;utm_medium=interactive&amp;utm_campaign=playable-cases-01&amp;utm_content=sensor-grouping"
+              >Continue with the crew</a
+            >
+            <p class="free-note">
+              The first five lessons are free. No account needed.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section
+        class="about section-wrap"
+        id="about"
+        aria-labelledby="about-title"
+      >
+        <div>
+          <p class="chapter-label">Tensorcraft</p>
+          <h2 id="about-title">
+            Machine learning through stories and JavaScript.
+          </h2>
+        </div>
+        <div>
+          <p>
+            This scene introduces a data-grouping task from Deep Orbit. In the
+            full world, you write JavaScript, inspect your results, and help the
+            crew build a system to investigate an unexplained signal.
+          </p>
+          <p>
+            Deep Orbit is Tensorcraft’s first available world. Four more worlds
+            are coming soon.
+          </p>
+          <a
+            class="text-link"
+            id="start-link"
+            href="https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors?utm_source=sensor_case&amp;utm_medium=interactive&amp;utm_campaign=playable-cases-01&amp;utm_content=sensor-grouping"
+            >Start Deep Orbit free</a
+          >
+          <p class="free-note">First 5 lessons free, with no account needed.</p>
+        </div>
+      </section>
+    </main>
+    <footer class="section-wrap">
+      <span>Tensorcraft</span>
+      <p>
+        This playable adaptation uses a supplied fictional recording from Deep
+        Orbit. Grouping data is one part of preparing it for machine learning.
+        The ending illustration is scene artwork.
+      </p>
+      <a href="https://tensorcraft.app/">Explore Tensorcraft</a>
+    </footer>
+    <noscript
+      ><div class="section-wrap">
+        <p>
+          This case uses JavaScript for point tracing and reading movement. The
+          original rows are [2, 20, 5, 8], [3, 18, 7, 8], [4, 16, 6, 9]. The 20
+          belongs to sensor B at moment 1. Transpose gives sensor A the row [2,
+          3, 4].
+        </p>
+      </div></noscript
+    >
+  </body>
+</html>

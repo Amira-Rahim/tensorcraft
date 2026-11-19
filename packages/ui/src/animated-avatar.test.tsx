@@ -76,6 +76,20 @@ describe("AnimatedAvatar", () => {
     expect(screen.queryByTestId("animated-avatar")).not.toBeInTheDocument();
   });
 
+  it("keeps the abstract AI glyph when ARIA's portrait fails", () => {
+    render(
+      <AnimatedAvatar
+        name="ARIA"
+        src="/characters/deep-orbit/aria.webp"
+        isAI
+      />,
+    );
+    fireEvent.error(screen.getByTestId("animated-avatar-base"));
+    const placeholder = screen.getByRole("img", { name: "ARIA" });
+    expect(placeholder).toHaveTextContent("◉");
+    expect(placeholder).not.toHaveTextContent("AR");
+  });
+
   it("carries the inert scanline hook for the host app's playback CSS", () => {
     const { container } = render(<AnimatedAvatar name="Dr. Farah" src={SRC} />);
     const scan = container.querySelector(".tc-avatar-scan");
@@ -88,8 +102,8 @@ describe("AnimatedAvatar", () => {
   it("applies the square avatar frame chrome at the requested size", () => {
     render(<AnimatedAvatar name="Dr. Farah" src={SRC} size={30} />);
     const frame = screen.getByTestId("animated-avatar");
-    expect(frame.style.width).toBe("30px");
-    expect(frame.style.height).toBe("30px");
+    expect(frame.style.width).toBe("var(--tc-avatar-size, 30px)");
+    expect(frame.style.height).toBe("var(--tc-avatar-size, 30px)");
     expect(frame.style.borderRadius).toBe("0px");
   });
 

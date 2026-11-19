@@ -1,0 +1,179 @@
+{
+  "key": "time-vs-frequency-briefing",
+  "id": "signal-processing/time-vs-frequency",
+  "phase": "briefing",
+  "source": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+  "sourceSha256": "08290c2ab367fccc3dfd8b8b7f7f01248740b76f2fc4433ef7c545ff957bb8a9",
+  "sourceEvidence": {
+    "mdx": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+    "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+  },
+  "reviewer": "/root/reader_signal",
+  "nativeReview": "1536x1024 current source visually inspected",
+  "gates": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeck": "pass",
+    "readerDirection": "pass",
+    "surfacePerspective": "pass",
+    "palette": "hold",
+    "lessonMeaning": "hold",
+    "storyAction": "pass"
+  },
+  "verdict": "hold",
+  "holdReason": "Unlabelled repeated waves and donut graphics do not establish archive versus live comparison. Lime screen/tube saturation exceeds muted canon.",
+  "preserve": "Candid stylus explanation and listening pose are useful; preserve.",
+  "prompt": "Use case: precise-object-edit. References: canonical character portraits first are identity authorities; lab plate is ROOM ONLY. Last image is exact edit target. Make one localized correction only. Remove the small green-and-black communicator floating beside Demir's far eye, cheek or neck. His head is turned toward image left and the anatomical right ear is occluded behind his head, so the device is hidden completely. Leave his visible near ear bare and natural. Do not add any device to his face or visible ear. Preserve every other pixel as closely as possible: exact canonical face, hair, expression, neck, pose, hands, arms, furniture, all exact screen text and schematic plots, muted colors, framing. Preserve image1536x1024.",
+  "promptSha256": "cf5977471f619d8f7a14a894cb559576385669f8b7144ea169aa6c62e32ab836",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-974b0773-bcdb-4bf5-9bfb-453547608a9d.png",
+      "sha256": "6f4d4840a83deaa89fb85380709b70669460f69f8d70d9e4f29ec5de0d26eae3"
+    }
+  ],
+  "alt": "Farah compares archive and live traces while Demir searches for a visible difference.",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-b6169a71-76db-41fe-bcc7-ff3d3af80737.png",
+  "ownReview": {
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Localized removal fixes floating far-side hardware. Canonical face, source-specific screen values, natural hands and muted room preserved. Actual reader sees front of display. Full-frame native reviewed."
+  },
+  "candidateSha256": "08290c2ab367fccc3dfd8b8b7f7f01248740b76f2fc4433ef7c545ff957bb8a9",
+  "history": [
+    {
+      "prompt": "Use case: precise-object-edit. Asset: Deep Orbit signal-processing/time-vs-frequency-briefing scene,1536x1024 landscape. Image1: dr-farah canonical identity authority; Image2: ensign-demir canonical identity authority; Image3: lab ROOM ONLY master, copy architecture not its incidental graphics or oversaturated lighting; Image4: exact edit target.\nPreserve this candid lab composition: Farah uses her stylus on the wall display while Demir listens with chin on one hand. Keep their natural hands, eyes on work or each other, room and face identities. Remove every plant and all irrelevant charts. Replace the primary displays with two adjacent time-domain traces of a similar slow swell plus fine irregular variation. Exact panel headings: Archive capture and Live capture. Shared bottom axis label Time; small caption Schematic traces. These traces intentionally look very similar, without a labeled discovery. Farah points between the two traces, curious not triumphant. A small secondary screen reads Compare matching samples. All other screens and wrist displays dark. Muted gray and sage, no lime tube bloom or gold wash.\nIdentity: preserve canonical facial geometry, ages, skin, hairstyle, natural expressions and signature equipment. Keep readable faces in natural three-quarter angles, stable adult head/body proportions. Trace each shoulder through elbow/wrist to one natural five-finger hand; solid furniture contacts. Each screen front faces its actual reader; all text and diagrams follow its physical perspective, never camera-facing overlays. No extra crew, no plants, no fake tiny glyphs. Subordinate unused screens and wrist displays are dark. Muted charcoal, gray, restrained olive, sage interface and aged brass. Warm light remains localized, no yellow wash or electric lime. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "95896d45f6b1d7d874d968882ea4607cdbf1fc79faaebebb62c75b55912c01c9",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-974b0773-bcdb-4bf5-9bfb-453547608a9d.png",
+          "sha256": "6f4d4840a83deaa89fb85380709b70669460f69f8d70d9e4f29ec5de0d26eae3"
+        }
+      ],
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-974b0773-bcdb-4bf5-9bfb-453547608a9d.png",
+      "candidateSha256": "6f4d4840a83deaa89fb85380709b70669460f69f8d70d9e4f29ec5de0d26eae3",
+      "ownReview": {
+        "verdict": "hold",
+        "reason": "Remove visible floating right-ear communicator at cheek/eye/collar; right ear is hidden in this left-side view."
+      }
+    }
+  ],
+  "candidatePath": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-b6169a71-76db-41fe-bcc7-ff3d3af80737.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-974b0773-bcdb-4bf5-9bfb-453547608a9d.png",
+      "sha256": "6f4d4840a83deaa89fb85380709b70669460f69f8d70d9e4f29ec5de0d26eae3",
+      "role": "canonical identity"
+    }
+  ],
+  "independentReview": {
+    "key": "time-vs-frequency-briefing",
+    "id": "signal-processing/time-vs-frequency",
+    "phase": "briefing",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-b6169a71-76db-41fe-bcc7-ff3d3af80737.png",
+    "candidateSha256": "08290c2ab367fccc3dfd8b8b7f7f01248740b76f2fc4433ef7c545ff957bb8a9",
+    "verdict": "pass",
+    "reviewer": "/root",
+    "method": "Native complete1536x1024 against canonical portraits and current MDX/exercise",
+    "notes": "Farah compares schematic archive/live time traces with natural stylus grip as Demir thinks. Faces/equipment and head/neck ordinary, shared visible display plane coherent and all unrelated screens dark. MDX same swell comparison preserved.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+        "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+      }
+    ],
+    "alt": "Farah compares the archive and live traces while Demir considers their matching swell.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-b6169a71-76db-41fe-bcc7-ff3d3af80737.png",
+  "publishedSource": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency.webp",
+  "webpSha256": "91f7c7baf6fbfa22e9503a3e7837b3812114f76379cc258739798506f7be3c85",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+    "sourceSha256": "210cf668c77c0680fddaa5fa58f2c50de2c0c9726a40b70d490d0f6d12187cac",
+    "webpSha256": "5510be64b8de93a55f3a5cd5650eb6f9002210d8fe9803ef455fb7e63a37486b",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-3fd0609c-fdaf-4e8c-a1d6-4ce042ba2cd2.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_signal",
+    "status": "approved",
+    "candidateSha256": "08290c2ab367fccc3dfd8b8b7f7f01248740b76f2fc4433ef7c545ff957bb8a9",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah compares schematic archive/live time traces with natural stylus grip as Demir thinks. Faces/equipment and head/neck ordinary, shared visible display plane coherent and all unrelated screens dark. MDX same swell comparison preserved."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+        "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

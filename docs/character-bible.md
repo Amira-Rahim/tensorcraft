@@ -1,6 +1,6 @@
 # Tensorcraft Character Design Bible
 
-This document is the single source of truth for how the Tensorcraft cast looks, sounds, and is drawn. It exists so that every character stays consistent across lessons, marketing, and the later animation stream, and so that any artist (human or AI) can produce a portrait that fits the ensemble without guessing. The finished cel-shaded art is produced externally from the image-generation prompts collected here. Until that art is commissioned and dropped into the asset directory, the product ships monogram placeholders, so nothing here blocks a build. Treat the prompts as the contract: the art may be regenerated, but it must keep matching the appearance, attire, and palette notes on each sheet.
+This document defines how the Tensorcraft cast looks, sounds, and is drawn across lessons, marketing, and animation. Deep Orbit ships finished cel-shaded portraits and expression variants. Other worlds use placeholders until their art is ready. Every replacement must preserve the appearance, attire, age, and palette on each sheet and use the approved portrait as its identity reference.
 
 ## Shared style token
 
@@ -211,3 +211,26 @@ world-adaptive version is ever wanted back.
 The `isAI` flag still means something: `CharacterAvatar` renders the abstract
 glyph placeholder rather than initials for an AI with no art yet, which is
 what the other worlds' AI characters get until their sheets are written.
+
+### Portrait consistency repair, 2026-11-06
+
+All sixteen human portraits were regenerated with the built-in imagegen tool.
+The set now shares restrained cel shading, consistent adult facial proportions,
+reduced clothing texture, and a near-black background. Approved neutral anchors
+at `docs/art-refs/deep-orbit/<slug>.png` preserve each character's identity.
+The expression pass retains mature facial detail, a blank Mirza chronometer,
+Farah's AR lens, and Demir's earpiece. Nazari's approval stays small, her haunted
+state shows distant unease, Farah's absorbed state shows thought, and Demir's
+focused state shows calm concentration. Exact prompts and selected sources live
+in `docs/art-refs/deep-orbit/2026-11-06-human-portrait-repairs/prompts.json`.
+
+ARIA uses one approved ring shell at `docs/art-refs/deep-orbit/aria-ring.png`.
+The built-in imagegen tool removed the old waveform from that shell.
+`node scripts/art/render-aria.mjs` renders four vector waveform states inside
+the same shell and exports the existing raster asset names. Portrait ingestion
+and the ARIA expression command use that renderer, so a new state cannot redraw
+the surrounding instrument. The four shipped states stay under the 40 KB cap.
+
+The owner also requested visible canonical faces in scene art. Scene production
+now uses these repaired portraits as identity references and follows the
+visible-face rule in `docs/scene-bible.md`.

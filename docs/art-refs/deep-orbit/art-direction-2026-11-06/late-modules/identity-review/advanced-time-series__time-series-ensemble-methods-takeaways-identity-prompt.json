@@ -1,0 +1,40 @@
+{
+  "queueIndex": 20,
+  "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+  "phase": "takeaways",
+  "status": "awaiting-identity-correction",
+  "inputScene": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__time-series-ensemble-methods-takeaways-original.webp",
+  "inputSceneSha256": "8b4ef8f3d6ed70d29b4fc426aedd0c452bd358c6da817c4cfc8bcd65e781757c",
+  "cast": [
+    "farah"
+  ],
+  "faceBoxes": {
+    "farah": [
+      700,
+      80,
+      460,
+      455
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__time-series-ensemble-methods-takeaways-original.webp",
+      "sha256": "8b4ef8f3d6ed70d29b4fc426aedd0c452bd358c6da817c4cfc8bcd65e781757c",
+      "role": "target scene",
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "8b4ef8f3d6ed70d29b4fc426aedd0c452bd358c6da817c4cfc8bcd65e781757c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve. STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral identity of dr-farah. Image 2 is the scene to correct and is NOT an identity authority. dr-farah is the existing person whose head is near 0.61 of image width and 0.30 of image height. Change only heads, hair and neck transitions to make every person unmistakably the SAME INDIVIDUAL as their neutral anchor. Reconstruct the head from the canonical face, rather than lightly retouching the existing incorrect features. A slight head turn toward a three-quarter camera view is allowed so both eyes, nose width and cheek/jaw proportions can be verified. Keep the neck attachment, body pose and appropriate friendly expression. Use a small natural closed-mouth smile if a broad grin distorts the jaw. Keep the canonical broad rounded nose and lower-face width. Preserve exactly the entire room, bodies, all existing arms and hands, uniforms, furniture, teaching displays and graphics, props, colors, lighting direction, composition and image size. FARAH: faithfully reproduce the anchor's mature 38-year-old olive-tan face, facial width, rounded lower cheeks, short rounded chin, nose bridge and rounded tip, restrained almond-shaped eyes and exact spacing, brow shapes, mouth proportions, faint adult eye/smile lines, natural dark hairline and loosely tied wavy hair. Do not slim the face, sharpen the chin, make the nose tiny/upturned, enlarge the eyes, smooth away adult features, or create glamorous flowing hair. Keep the green rectangular AR lens over the same anatomical eye as the anchor. Every face must match its individual portrait without relying on clothes or equipment. No new people, no added arms/hands, no text or decorative symbols. One 1536x1024 scene. Do not modify any screen or plot, even if you think it can be improved.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__time-series-ensemble-methods-takeaways-identity-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+  "originalInputScene": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp"
+}

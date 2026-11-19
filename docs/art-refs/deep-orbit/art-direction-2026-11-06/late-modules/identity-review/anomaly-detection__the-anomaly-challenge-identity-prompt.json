@@ -1,0 +1,40 @@
+{
+  "queueIndex": 40,
+  "key": "deep-orbit/anomaly-detection/the-anomaly",
+  "phase": "challenge",
+  "status": "awaiting-identity-correction",
+  "inputScene": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__the-anomaly-challenge-original.webp",
+  "inputSceneSha256": "3934329229d1bb8355d341c2f6f6c32fc5209751f5bfa75e67e97953849d2fb1",
+  "cast": [
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      310,
+      55,
+      420,
+      460
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__the-anomaly-challenge-original.webp",
+      "sha256": "3934329229d1bb8355d341c2f6f6c32fc5209751f5bfa75e67e97953849d2fb1",
+      "role": "target scene",
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "3934329229d1bb8355d341c2f6f6c32fc5209751f5bfa75e67e97953849d2fb1",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve. STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral identity of ensign-demir. Image 2 is the scene to correct and is NOT an identity authority. ensign-demir is the existing person whose head is near 0.34 of image width and 0.28 of image height. Change only heads, hair and neck transitions to make every person unmistakably the SAME INDIVIDUAL as their neutral anchor. Reconstruct the head from the canonical face, rather than lightly retouching the existing incorrect features. A slight head turn toward a three-quarter camera view is allowed so both eyes, nose width and cheek/jaw proportions can be verified. Keep the neck attachment, body pose and appropriate friendly expression. Use a small natural closed-mouth smile if a broad grin distorts the jaw. Keep the canonical broad rounded nose and lower-face width. Preserve exactly the entire room, bodies, all existing arms and hands, uniforms, furniture, teaching displays and graphics, props, colors, lighting direction, composition and image size. DEMIR: faithfully reproduce the anchor's mid-twenties face proportions, warm light-medium complexion, broad softly squared lower face, short rounded chin, round-ended nose of the same width, distinctive fairly straight eyebrows and exact eye spacing/size, short uneven stubble, sparse freckles, compact tousled hair with the same hairline and front locks, and green round comms earpiece on the same anatomical ear as the anchor. Do not elongate or sharpen the jaw, pinch the nose, increase eye size, create a tall heroic quiff or make a different handsome anime character. Every face must match its individual portrait without relying on clothes or equipment. No new people, no added arms/hands, no text or decorative symbols. One 1536x1024 scene. Do not modify any screen or plot, even if you think it can be improved.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/anomaly-detection__the-anomaly-challenge-identity-prompt.json",
+  "newSource": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+  "originalInputScene": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp"
+}

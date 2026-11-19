@@ -1,0 +1,58 @@
+{
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "detail": "Main right console shows exact aligned table: header 'ReLU probe'; rowlabel 'Input' then fivevalues '-2', '-0.5', '0', '1.5', '3'; rowlabel 'Output' then fivevalues '0','0','0','1.5','3'. One small line 'max(0, x)'. Each input aligns directly above its output. No blank resultpanel or extra bars. Keep Demir leaning naturally onehand onmonitorframe otheronkey; adult neckandspine alignment. All rear displays dark.",
+  "id": "neural-networks/activation-functions",
+  "prompt": "Use case: identity-preserve. Edit the Deep Orbit existing story scene. The first input(s) are immutable canonical character portraits in the listed order. The LAST input is the TARGET scene. Preserve those exact adult faces: age, compact nose, eye spacing, broad cheek/chin morphology, mouth, hair and expression. Preserve camera, character positions, natural head yaw/neck connection, both separate shoulder-arm-hand chains per person, furniture, chair clearance and all room geometry. Keep warm stylized adult comic proportions: apply ONLY a subtle8percent reduction to full heads including hair versus target, keep facial shape and bodies unchanged; no tiny realistic heads. Farah lens anatomical LEFT eye. Demir comms anatomical RIGHT ear only; if visible anatomical-left ear has device, remove it and leave natural bare ear, right device may be occluded. Replace all unrelated background screen plots with plain dark standby glass. Change brightneonmint lights and blooms to muted sage, shinyyellowgold to aged restrained brass; ceiling lamps warm neutral. Purposeful colored hardware buttons stay. No colored left accent bars, no extra people/hands, no arbitrary charts. Main lesson content clear, compact, perspectively integrated. 1536x1024.\nCanonical portrait order: ensign-demir.\nMain right console shows exact aligned table: header 'ReLU probe'; rowlabel 'Input' then fivevalues '-2', '-0.5', '0', '1.5', '3'; rowlabel 'Output' then fivevalues '0','0','0','1.5','3'. One small line 'max(0, x)'. Each input aligns directly above its output. No blank resultpanel or extra bars. Keep Demir leaning naturally onehand onmonitorframe otheronkey; adult neckandspine alignment. All rear displays dark.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__activation-functions-challenge-openai-20261107.png"
+  ],
+  "status": "generated-awaiting-review",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-4ad86b96-6551-4e4f-80cb-3c25f06b62be.png",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-challenge-ensign-demir-proof.png",
+      "sha256": "dd8e0e9ac3ad06cec8b65f1c2882370864a7f9c8a5c7e1efb9ab093fe26a1106",
+      "crop": {
+        "left": 540,
+        "top": 65,
+        "width": 320,
+        "height": 390
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-aa9648ee-72e6-42f0-a5ac-d5ef95472087.png",
+      "priorSha256": "2ff9f8665655bf4b6a50253a13843798d567a8dc6456ca352382c0dc89f22c5a",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-4ad86b96-6551-4e4f-80cb-3c25f06b62be.png",
+      "candidateSha256": "56a54501d49ae4a419282beae2bec3b574317e51a5a83039467de00d9976a5b0"
+    }
+  ],
+  "pathSha256": "56a54501d49ae4a419282beae2bec3b574317e51a5a83039467de00d9976a5b0",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+  ],
+  "screenMeaning": {
+    "section": "Challenge; relu-activation testCode probe",
+    "spec": "Show five input values[-2,-.5,0,1.5,3] aligned with five ReLU outputs[0,0,0,1.5,3]. Negative bars clamp to zero and positive bars retain height; no empty unlabelled output panel.",
+    "currentSource": "art-src/scenes/neural-networks__activation-functions-challenge-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "cast": [
+      "ensign-demir"
+    ]
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

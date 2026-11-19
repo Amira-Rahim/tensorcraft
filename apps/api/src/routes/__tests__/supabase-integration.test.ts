@@ -240,6 +240,7 @@ vi.mock("../../lib/posthog", () => ({
   withPostHogUserContext: (_distinctId: string, fn: () => unknown) => fn(),
   SERVER_EVENTS: {
     PAYMENT_COMPLETED: "payment_completed",
+    PURCHASE_ACCESS_GRANTED: "purchase_access_granted",
     PAYMENT_FAILED: "payment_failed",
     PAYMENT_REFUNDED: "payment_refunded",
     PAYMENT_DISPUTED: "payment_disputed",

@@ -1,0 +1,18 @@
+{
+  "collectedAt": "2026-11-11 09:12:52 UTC",
+  "projectId": 257980,
+  "sourceTool": "cohorts-retrieve",
+  "input": {
+    "id": 221371
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\":221371,\"name\":\"Internal / Test users\",\"description\":\"People who are internal team members or test users. Used for filtering out internal traffic from analytics.\",\"groups\":[],\"deleted\":false,\"filters\":{\"properties\":{\"type\":\"OR\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"$internal_or_test_user\",\"type\":\"person\",\"value\":[true],\"operator\":\"exact\"}]}]}},\"query\":null,\"version\":86,\"pending_version\":86,\"is_calculating\":false,\"created_by\":null,\"created_at\":\"2026-08-26T07:51:21.750905Z\",\"last_calculation\":\"2026-11-10T18:13:07.538292Z\",\"last_backfill_person_properties_at\":null,\"errors_calculating\":0,\"last_error_message\":null,\"count\":0,\"last_import_total_count\":null,\"last_import_unmatched_count\":null,\"is_static\":false,\"cohort_type\":null,\"condition_type\":{\"cohorts\":false,\"lifecycle\":false,\"behavioral\":false,\"person_properties\":true},\"realtime\":null,\"experiment_set\":[],\"_posthogUrl\":\"https://eu.posthog.com/project/257980/cohorts/221371\"}"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

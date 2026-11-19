@@ -33,6 +33,7 @@ describe("CookieConsent", () => {
   });
 
   it("hides banner when consent already stored", () => {
+    mockStorage["tc-cookie-consent-version"] = "2";
     mockStorage["tc-cookie-consent"] = "accepted";
     render(<CookieConsent />);
     expect(screen.queryByText(/accept all/i)).not.toBeInTheDocument();

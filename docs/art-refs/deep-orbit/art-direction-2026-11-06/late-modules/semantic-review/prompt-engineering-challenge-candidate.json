@@ -1,0 +1,155 @@
+{
+  "key": "deep-orbit/llm-integration/prompt-engineering",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-challenge.webp",
+    "sha256": "aecfffbb4da40459cb2dfca08bb1a5af268882ed8003c072f45f0d2dbe2376f1"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/prompt-engineering-challenge-runtime-before.png",
+    "sha256": "7948c0f7bd2a04c2067bb4f4aefbce7a7e609b359e6674b9b791b044db040ef9",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "7948c0f7bd2a04c2067bb4f4aefbce7a7e609b359e6674b9b791b044db040ef9",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/prompt-engineering-challenge-runtime-before.png",
+    "sha256": "7948c0f7bd2a04c2067bb4f4aefbce7a7e609b359e6674b9b791b044db040ef9",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "7948c0f7bd2a04c2067bb4f4aefbce7a7e609b359e6674b9b791b044db040ef9",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/prompt-template.yaml",
+      "sha256": "fbdb47d77bd67d37d411cdf4f8a62058cc96ee9190da893a10dd93751e835987"
+    }
+  ],
+  "panelSpecification": {
+    "state": "challenge",
+    "concreteGenerationSpecification": "Candid Demir in three-quarter profile at the lab keyboard, body and chair aligned toward a compact console. He compares input fields and the reference catalogue with serious focused eyes, fingers in natural typing posture. Both hands rest on controls, no held card. Main screen is a small prompt builder genuinely facing him and viewed from his side. Heading Prompt builder v9. Separate input group: Amplitude1024counts;Frequency73.4Hz;Phase0.23rad. Separate reference group:Natural frequencies5,12,23,47Hz. Lower control Build prompt. Output field Prompt text:pending. Small status Model request:not sent. Do not show a generated response or classification. All values and labels on orderly lines share actual tilted screen perspective. Giant wallboard and extra displays inactive. Exact Demir face, broad adult jaw and round nose tip, right ear comms, full balanced head size, supported torso and two arm-hand chains. Muted dark sage pillar and charcoal, warm brass without yellow wash.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+        "section": "Challenge and testCode supplied signal fixture"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/prompt-template.yaml",
+        "section": "instructions and relevant supplied fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__prompt-engineering-challenge-narrative-stage1-openai-20261107.png",
+      "sha256": "e34cfbd52f7f95f4109832506172d6b51da5880cd90ad6db10715f2283ea18a8",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "e34cfbd52f7f95f4109832506172d6b51da5880cd90ad6db10715f2283ea18a8",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: precise identity-preserving scene correction. Canonical portraits FIRST, room master next only a palette reference, LAST current target. Change ONLY the bright lime background pillar to dark desaturated sage glass with very faint dim lines. Remove broad neon clothing and hair edge rim strokes, replacing with thin low intensity sage. Preserve exact canonical face, head size, expression, gaze, body, hands, fingers, equipment and ALL screen words/numbers/control positions and their correct tilted perspective. Preserve ordinary warm practical lighting; do not darken the faces or shift skin. Canonical identity remains exact, Demir comms anatomical RIGHT ear only, Farah lens anatomical LEFT eye only. One1536x1024 cel-shaded scene.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir assembles version9 from the supplied reading and catalogue, checking that the two sources stay separate before he sends anything.",
+    "fullSpecification": "Candid Demir in three-quarter profile at the lab keyboard, body and chair aligned toward a compact console. He compares input fields and the reference catalogue with serious focused eyes, fingers in natural typing posture. Both hands rest on controls, no held card. Main screen is a small prompt builder genuinely facing him and viewed from his side. Heading Prompt builder v9. Separate input group: Amplitude1024counts;Frequency73.4Hz;Phase0.23rad. Separate reference group:Natural frequencies5,12,23,47Hz. Lower control Build prompt. Output field Prompt text:pending. Small status Model request:not sent. Do not show a generated response or classification. All values and labels on orderly lines share actual tilted screen perspective. Giant wallboard and extra displays inactive. Exact Demir face, broad adult jaw and round nose tip, right ear comms, full balanced head size, supported torso and two arm-hand chains. Muted dark sage pillar and charcoal, warm brass without yellow wash."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidatePath": "art-src/scenes/llm-integration__prompt-engineering-challenge-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/llm-integration__prompt-engineering-challenge-narrative-stage2-openai-20261107.png",
+  "candidateSha256": "8b4378938b63f2b15035a611ad17569b83d17234652378501cc0325253b8af73",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-36d67540-6c72-47d0-8006-0555ae14e063.png",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. Canonical identity portraits are FIRST; room master next is only architecture and palette; LAST original scene supplies cast, not pose. Preserve exact canonical facial morphology and adult ages, hair, equipment. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari has no eyewear. Warm clean cel-shaded adventure-comic illustration, balanced stylized heads without blanket shrink, natural supported anatomy. Candid Demir in three-quarter profile at the lab keyboard, body and chair aligned toward a compact console. He compares input fields and the reference catalogue with serious focused eyes, fingers in natural typing posture. Both hands rest on controls, no held card. Main screen is a small prompt builder genuinely facing him and viewed from his side. Heading Prompt builder v9. Separate input group: Amplitude1024counts;Frequency73.4Hz;Phase0.23rad. Separate reference group:Natural frequencies5,12,23,47Hz. Lower control Build prompt. Output field Prompt text:pending. Small status Model request:not sent. Do not show a generated response or classification. All values and labels on orderly lines share actual tilted screen perspective. Giant wallboard and extra displays inactive. Exact Demir face, broad adult jaw and round nose tip, right ear comms, full balanced head size, supported torso and two arm-hand chains. Muted dark sage pillar and charcoal, warm brass without yellow wash. One1536x1024 scene. Natural word spacing on all labels.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/prompt-engineering-challenge-runtime-before.png",
+          "sha256": "7948c0f7bd2a04c2067bb4f4aefbce7a7e609b359e6674b9b791b044db040ef9",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "7948c0f7bd2a04c2067bb4f4aefbce7a7e609b359e6674b9b791b044db040ef9",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/llm-integration__prompt-engineering-challenge-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "e34cfbd52f7f95f4109832506172d6b51da5880cd90ad6db10715f2283ea18a8",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b4b50cd5-3b30-44c1-81cd-1f9d10c20415.png"
+    }
+  ],
+  "publicationHold": false,
+  "faceBoxes": {
+    "demir": [
+      315,
+      70,
+      425,
+      440
+    ]
+  },
+  "recoveryNote": "Recovered generated output after orchestration save helper failed; exact fullframe visually matched to prepared job before workspace copy.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/prompt-engineering-challenge-identity-proof.jpg",
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "8b4378938b63f2b15035a611ad17569b83d17234652378501cc0325253b8af73",
+    "proofSha256": "c943e548f3535424588a3be348e647244016e14b740cac1fe58b86bb5de9451e",
+    "gates": [
+      "Candid task action and story-tied emotion",
+      "Canonical face morphology and age",
+      "Moderate stylized adult proportions",
+      "Supported head/neck/shoulder and two arm-hand chains",
+      "Muted palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Perspective and reader direction"
+    ],
+    "actionEmotionStory": "Demir assembles version9 from the supplied reading and catalogue, checking that the two sources stay separate before he sends anything."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-36d67540-6c72-47d0-8006-0555ae14e063.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b4b50cd5-3b30-44c1-81cd-1f9d10c20415.png",
+      "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-challenge.webp",
+      "art-src/scenes/llm-integration__prompt-engineering-challenge-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "publishedReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/llm-integration__prompt-engineering-challenge.json",
+  "obsoleteWorkingImageRemoved": "art-src/scenes/llm-integration__prompt-engineering-challenge-narrative-stage2-openai-20261107.png"
+}

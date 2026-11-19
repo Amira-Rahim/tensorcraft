@@ -1,0 +1,116 @@
+{
+  "id": "optimization-edge/quantization",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: engineering room only; image 3: Edit target; replace staging while preserving section meaning.\nScene: A private late-watch ending in engineering. Nazari alone has stayed after the others left. She settles into a chair LEFT at the rig, shoulders lowered, leaning a little toward a LARGE raw-waveform display that fills the RIGHT half. Her eyes follow the next pulse, with quiet absorbed curiosity and a slight unexpected softness at the mouth, not an audience smile. One hand rests naturally palm-down beside a CLOSED notebook; the other rests on the chair arm. Her closed multitool lies on the desk away from her hands. She is no longer writing or measuring. Camera beside the operator shows her canonical mature three-quarter face, age lines, gray streaks and olive work suit. The large display carries only the short title 'Raw signal' and one clear slow pulse waveform with three rounded separated pulses, no exact scale, numbers or classification claim. Small but still clearly legible second line beneath title: 'Engineering rig'. No claim of bridge-console approval. Calm one-lamp light, readable hands and eyes, ordinary proportions and natural chair support. The source beat is her silent watching, not a character portrait beside a screen.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "377298c9d4df4a94b713a5a59fd28ed4c6dede26389053c1d5d1a854e7945f70",
+  "source": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+  "sourceSha256": "547db593ad3d05ca7b4c269f84d26ecf6fcda113e224cac4ed029dd34e037fb4",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "engineering room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+      "sha256": "c25e76f4c6d25ae3fc0a3a9e61d9a6a84b839585db9cce36abd3d3336a71310c",
+      "role": "Edit target; replace staging while preserving section meaning"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    }
+  ],
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with an unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+  "candidateSha256": "547db593ad3d05ca7b4c269f84d26ecf6fcda113e224cac4ed029dd34e037fb4",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-b89247fd-272b-4168-8ed8-620b1a18994a.png",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "547db593ad3d05ca7b4c269f84d26ecf6fcda113e224cac4ed029dd34e037fb4",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      260,
+      200,
+      310,
+      340
+    ],
+    "handCropCoordinatesXYWH": [
+      115,
+      740,
+      830,
+      250
+    ],
+    "additionalHandCropCoordinatesXYWH": null,
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Nazari silently watches three raw pulses at the engineering rig, with closed notebook and idle multitool. Two connected arms rest naturally, with correct fingers on chair and notebook. Canonical face age, gray-streaked hair and thoughtful gaze retained; large simple display carries no invented result or bridge-approval claim."
+  },
+  "generatedSha256": "547db593ad3d05ca7b4c269f84d26ecf6fcda113e224cac4ed029dd34e037fb4",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-epilogue.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-epilogue/candidate.png",
+  "publishedSource": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-epilogue.webp",
+  "webpSha256": "d42f5317a9712544daf9d06245f27ff934a6473d2c4ce4216aca30ba41911ff1",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+    "sourceSha256": "c25e76f4c6d25ae3fc0a3a9e61d9a6a84b839585db9cce36abd3d3336a71310c",
+    "webpSha256": "225911159873771498a71e2ca7d794c75f1c1bdff42012d7345053e2fe8af12e",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9a466925-45b2-4bdb-a5cc-c3b7ee786dfd.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "547db593ad3d05ca7b4c269f84d26ecf6fcda113e224cac4ed029dd34e037fb4",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical portraits compared to enlarged face crop.",
+      "Complete arm chains, thumb sides and prop contact checked.",
+      "Large source-correct display and operator direction checked.",
+      "Natural adult proportions and phase-specific candid action checked."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+        "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-epilogue.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

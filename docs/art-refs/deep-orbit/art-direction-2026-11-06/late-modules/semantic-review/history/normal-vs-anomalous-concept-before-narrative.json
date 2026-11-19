@@ -1,0 +1,77 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "concept",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next bridge ROOM reference only, LAST exact target. Preserve exact people, age, face morphology, expression, hairstyle, signature equipment, warm skin, body poses, natural neck alignment and every connected shoulder-elbow-wrist-hand chain. No anatomy or composition changes. Farah lens anatomical LEFT, Demir comms anatomical RIGHT, Nazari and Mirza have NO eyewear. Keep heads at current scale unless a tiny adjustment is explicitly requested. Story action stays dominant. All unmentioned monitors and wrist displays OFF, inactive charcoal glass; no arbitrary graphs, bars or fake code. Use subdued sage on dark glass and aged brass. Remove bright mint/rim neon, broad green or gold wash. Every unused holo emitter dark charcoal, used emitter faint sage with no bright bloom. Keep Farah adjusting dial with one hand and resting the other on holo frame, Nazari holding tablet toward herself with both hands. Current faces and complete head sizes unchanged. Replace overlapping invented Gaussian curves with three equally sized decision cards, explicitly headed \"Normalized amplitude: 0 to 1\". Left card \"Below 0.07\" and \"Flag\". Center card \"0.07 through 0.97\" and \"Do not flag\". Right card \"Above 0.97\" and \"Flag\". Below cards \"Mean 0.52, std 0.15\" and \"Exact boundaries stay unflagged\". No proportional axis, bell curve or probability claim. Cards are discrete decision regions, not measured distributions. Keep holo dark translucent sage with thin outlines, muted amber flags, no bloom. All other screens off; tablet back remains plain. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/normal-vs-anomalous-concept-before.png",
+      "sha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+    "sha256": "f1903c5e58c5f11bbc2d8aead17a694d03f413a505b63076faf5730135995dd0"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002"
+    }
+  ],
+  "panelSpecification": {
+    "state": "worked mission baseline",
+    "concreteGenerationSpecification": "Keep Farah adjusting dial with one hand and resting the other on holo frame, Nazari holding tablet toward herself with both hands. Current faces and complete head sizes unchanged. Replace overlapping invented Gaussian curves with three equally sized decision cards, explicitly headed \"Normalized amplitude: 0 to 1\". Left card \"Below 0.07\" and \"Flag\". Center card \"0.07 through 0.97\" and \"Do not flag\". Right card \"Above 0.97\" and \"Flag\". Below cards \"Mean 0.52, std 0.15\" and \"Exact boundaries stay unflagged\". No proportional axis, bell curve or probability claim. Cards are discrete decision regions, not measured distributions. Keep holo dark translucent sage with thin outlines, muted amber flags, no bloom. All other screens off; tablet back remains plain.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "A baseline for normal readings"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses, anatomy and moderate stylized scale. No automatic realistic shrink.",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "a9477b5a25d9aa1c0bb108e7b99dc2a9ffa810ecf257bb9d8456eacdf7d6ec91",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-56c140a8-99ff-4fb1-ad05-a429f9cec5a5.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-concept-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

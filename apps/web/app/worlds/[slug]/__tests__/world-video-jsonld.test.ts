@@ -1,7 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { worlds } from "@tensorcraft/worlds";
 import { buildWorldVideoJsonLd } from "../world-video-jsonld";
-import type { WorldTrailer } from "@/lib/world-trailer";
+import { worldTrailer, type WorldTrailer } from "@/lib/world-trailer";
+
+vi.mock("node:fs", () => ({ default: { existsSync: () => true } }));
 
 const trailer: WorldTrailer = {
   poster: "/media/deep-orbit-trailer-poster.webp",
@@ -9,7 +11,7 @@ const trailer: WorldTrailer = {
   durationSeconds: 88,
   durationIso: "PT1M28S",
   durationLabel: "1:28",
-  uploadDate: "2026-08-29",
+  uploadDate: "2026-08-29T14:31:46Z",
 };
 
 describe("buildWorldVideoJsonLd", () => {
@@ -31,6 +33,19 @@ describe("buildWorldVideoJsonLd", () => {
     expect(video.duration).toBe(trailer.durationIso);
     expect(video.uploadDate).toBe(trailer.uploadDate);
     expect(video.description).toContain("88-second");
+  });
+
+  it("publishes the recorded production time with a timezone", () => {
+    const shippedTrailer = worldTrailer("deep-orbit");
+    expect(shippedTrailer).toBeDefined();
+    const publishedVideo = buildWorldVideoJsonLd(
+      worlds["deep-orbit"],
+      shippedTrailer!,
+    );
+    expect(publishedVideo.uploadDate).toBe("2026-08-29T14:31:46Z");
+    expect(new Date(publishedVideo.uploadDate).toISOString()).toBe(
+      "2026-08-29T14:31:46.000Z",
+    );
   });
 
   it("describes the course in plain language with no story hook", () => {

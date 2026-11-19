@@ -1,0 +1,115 @@
+{
+  "id": "optimization-edge/model-profiling",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical ensign-demir identity; image 2: engineering room only; image 3: Edit target; replace staging while preserving section meaning.\nScene: Demir alone in engineering, beginning the first profiling run after losing a capture. He sits LEFT at a workstation with a focused, sober expression, brows gently drawn and lips closed, not grinning. He leans forward only slightly. Near hand operates the mouse; his other hand presses a console start key with a relaxed index finger. No handheld stopwatch, no unnecessary props. A closed notebook lies beside the keyboard. The camera is next to his shoulder but still shows his recognizable three-quarter face and both natural hands. Enlarge the upright working display to occupy most of the RIGHT half and upper space. Exact large text: title 'Profile completed inference'; four spacious rows '1  Warm up'; '2  Start clock; predict'; '3  Await output.data()'; '4  Stop clock; clean up'. Beneath: 'Repeat measured calls'; prominent status 'Baseline pending'. Footer 'Weight storage and layer counts'. No numerical result or victory claim. Keep the engineering tool wall, conduits and old cabinet quiet in background, unused monitors dark.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "0cfca99bb0df652c6990d00ec21c66816a3f01ea7da4ae3ac10b31a2f7c41919",
+  "source": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+  "sourceSha256": "3845d89e9696022169153724431597b8052f9d6a612e7e93ad477535364b6d8f",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "engineering room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+      "sha256": "3833e2915ace804f6ef3be8e59b594ed4b158682d12af15c628df0f71e6613af",
+      "role": "Edit target; replace staging while preserving section meaning"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+    }
+  ],
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with an unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+  "candidateSha256": "3845d89e9696022169153724431597b8052f9d6a612e7e93ad477535364b6d8f",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-d9810bd5-d258-4c68-b001-a46e131756e9.png",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "3845d89e9696022169153724431597b8052f9d6a612e7e93ad477535364b6d8f",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      275,
+      165,
+      305,
+      380
+    ],
+    "handCropCoordinatesXYWH": [
+      370,
+      710,
+      730,
+      245
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir is soberly starting the baseline, one hand on the mouse and the other pressing the start control. Two connected arms, correct index contact and no irrelevant stopwatch. Large exact sequence includes output readback before stopping the clock, cleanup, repeat calls and baseline pending."
+  },
+  "generatedSha256": "3845d89e9696022169153724431597b8052f9d6a612e7e93ad477535364b6d8f",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-challenge.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__model-profiling-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-challenge.webp",
+  "webpSha256": "6b1978cd1cea74c0c816bd93e833d6439b4b60f6ea38f49f8a65b06a185f61ca",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+    "sourceSha256": "3833e2915ace804f6ef3be8e59b594ed4b158682d12af15c628df0f71e6613af",
+    "webpSha256": "746dbc0e9306db22155fb314c6910d0ea449b2097ddff6e4f6c69ce2faeb115c",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-a0fdcb9d-aba1-4b50-a23c-8061d308aadc.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "3845d89e9696022169153724431597b8052f9d6a612e7e93ad477535364b6d8f",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical portraits compared to enlarged face crop.",
+      "Complete arm chains, thumb sides and prop contact checked.",
+      "Large source-correct display and operator direction checked.",
+      "Natural adult proportions and phase-specific candid action checked."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+        "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__model-profiling-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

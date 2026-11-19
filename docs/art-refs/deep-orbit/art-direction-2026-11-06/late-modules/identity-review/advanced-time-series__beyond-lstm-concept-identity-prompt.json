@@ -1,0 +1,40 @@
+{
+  "queueIndex": 6,
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "concept",
+  "status": "awaiting-identity-correction",
+  "inputScene": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__beyond-lstm-concept-original.webp",
+  "inputSceneSha256": "21705ca12cc6bc91b72e758875780e5782ee626703034291a221e47bfd2422cb",
+  "cast": [
+    "farah"
+  ],
+  "faceBoxes": {
+    "farah": [
+      925,
+      40,
+      380,
+      395
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__beyond-lstm-concept-original.webp",
+      "sha256": "21705ca12cc6bc91b72e758875780e5782ee626703034291a221e47bfd2422cb",
+      "role": "target scene",
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "21705ca12cc6bc91b72e758875780e5782ee626703034291a221e47bfd2422cb",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve. STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral identity of dr-farah. Image 2 is the scene to correct and is NOT an identity authority. dr-farah is the existing person whose head is near 0.73 of image width and 0.23 of image height. Change only heads, hair and neck transitions to make every person unmistakably the SAME INDIVIDUAL as their neutral anchor. Retain current head rotation, gaze and appropriate facial expression, using expression alone without changing facial structure. Preserve exactly the entire room, bodies, all existing arms and hands, uniforms, furniture, teaching displays and graphics, props, colors, lighting direction, composition and image size. FARAH: faithfully reproduce the anchor's mature 38-year-old olive-tan face, facial width, rounded lower cheeks, short rounded chin, nose bridge and rounded tip, restrained almond-shaped eyes and exact spacing, brow shapes, mouth proportions, faint adult eye/smile lines, natural dark hairline and loosely tied wavy hair. Do not slim the face, sharpen the chin, make the nose tiny/upturned, enlarge the eyes, smooth away adult features, or create glamorous flowing hair. Keep the green rectangular AR lens over the same anatomical eye as the anchor. Every face must match its individual portrait without relying on clothes or equipment. No new people, no added arms/hands, no text or decorative symbols. One 1536x1024 scene. Do not modify any screen or plot, even if you think it can be improved.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__beyond-lstm-concept-identity-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+  "originalInputScene": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp"
+}

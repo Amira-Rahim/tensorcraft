@@ -1,0 +1,151 @@
+{
+  "id": "signal-processing/fourier-transform",
+  "phase": "epilogue",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical dr-farah identity; image 2: Canonical ensign-demir identity; image 3: lab room only; image 4: Edit target; enlarge teaching display while preserving story action.\nScene: Farah and Demir lean together from RIGHT toward a LARGE LEFT lab work display. Demir braces both hands on the bench, startled with slightly parted lips. Farah's near hand lightly catches his wrist, fingers curling naturally around it, while her other hand supports her on the bench. Her focused surprise follows the unexplained row. Preserve this real discovery contact without merging limbs. Exact title 'Capture check'; large line 'Catalogued: 5 / 12 / 23 / 47 Hz'; distinct highlighted row 'Unexplained bin: 73.5 Hz'; next line 'Magnitude: 12.0'; footer 'Grid: 0.5 Hz'. This is the initial grid reading, do not change to 73.4. One large board fills the unused wall, no small monitor duplicate.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "2c186ff74e29d669bf5a030932b49456c9d39c6704839b5f423a1fb8f8b443ea",
+  "source": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+  "sourceSha256": "fd4215669e350d65e36c7a2be8d4fe526af242c49f3cee4a2011527a238d20df",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical dr-farah identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+      "sha256": "9bf579159ef4d3e25d0869d769b35309d3983897b5d6eb48c7b984d41573c697",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+    "lessonSha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980",
+    "context": "Epilogue: known frequencies are 5, 12, 23 and 47 Hz; a fifth peak appears at 73.5 Hz with magnitude 12 on the initial 0.5 Hz grid. Farah catches Demir's wrist. A later longer window refines its reading to 73.4 Hz, so the depicted initial reading is consistent.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "dr-farah",
+        "path": "docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+  "candidateSha256": "fd4215669e350d65e36c7a2be8d4fe526af242c49f3cee4a2011527a238d20df",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-epilogue.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-62c8dd6f-1fbc-4e09-9ff1-63ec637de81c.png",
+  "generatedSha256": "fd4215669e350d65e36c7a2be8d4fe526af242c49f3cee4a2011527a238d20df",
+  "ownReview": {
+    "reviewedAt": "2026-11-09T07:24:56.551535+00:00",
+    "nativeReviewed": true,
+    "candidateSha256": "fd4215669e350d65e36c7a2be8d4fe526af242c49f3cee4a2011527a238d20df",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": {
+      "ensign-demir": [
+        900,
+        150,
+        250,
+        365
+      ],
+      "dr-farah": [
+        1150,
+        205,
+        300,
+        345
+      ]
+    },
+    "handCropCoordinatesXYWH": [
+      [
+        560,
+        725,
+        940,
+        280
+      ]
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir and Farah react with shared surprise to the unexplained spectral bin, preserving Farah's spontaneous wrist contact. Four hands and both complete arm chains are plausible, with correct thumb sides and desk support. The large display preserves catalogued 5, 12, 23 and 47 Hz, the stage-correct 73.5 Hz unexplained bin, magnitude 12.0 and 0.5 Hz grid. The small unscaled peak graphic supports the named peak rather than adding a numerical result."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fourier-transform-epilogue/candidate.png",
+  "publishedSource": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-epilogue.webp",
+  "webpSha256": "06e0cdffaa98c96864c6ef3460f758d858e58de59bef31bec34ba44428e3481b",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+    "sourceSha256": "9bf579159ef4d3e25d0869d769b35309d3983897b5d6eb48c7b984d41573c697",
+    "webpSha256": "196820c28131be4fe0acecfe5ad9d2fe1b474a5ada411753ac9d34594230f83f",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-b89ba210-1e48-4958-99c0-e7fe35bb84e0.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "fd4215669e350d65e36c7a2be8d4fe526af242c49f3cee4a2011527a238d20df",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

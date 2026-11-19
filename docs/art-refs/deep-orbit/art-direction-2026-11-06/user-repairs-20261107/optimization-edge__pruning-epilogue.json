@@ -1,0 +1,151 @@
+{
+  "id": "optimization-edge/pruning",
+  "phase": "epilogue",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: Canonical ensign-demir identity; image 3: engineering room only; image 4: Edit target; enlarge teaching display while preserving story action.\nScene: Nazari sits RIGHT beside an open ledger with one hand flat on its page and the other on the desk. Demir stands beside her, leaning on the bench with both hands, chastened and listening. Nazari turns her sober questioning eyes toward him. A LARGE upright LEFT display shows exact title 'Pruning replay'; four spacious rows 'Dense file: 85 MB', 'Gzip artifact: 42 MB', 'Accuracy: 94.2% -> 91.8%', 'Experiment: 3 hours'; lower status 'Rejected-class replay: pending'. Preserve this consequence, no celebration or replay-complete claim. Camera beside their shared workstation, recognizable faces, ordinary adult necks.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "8f162eea363713ec6bacd4075d10cb82a986d2154ee056f83b7ee50681de09c7",
+  "source": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+  "sourceSha256": "ec1a263f15c87ecae272919a0b1de764746ed96d9678d1b3d591e78e6f3d9a2a",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "engineering room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+      "sha256": "f027fb9c3dc4a4f47c4c9b5bc64caea25851ff4c9d5c650a624b513166fc69dd",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+    "lessonSha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44",
+    "context": "Epilogue keeps per-class comparison with sign-off, dense file 85 MB, gzip 42 MB, accuracy 94.2 to 91.8 percent and three lost hours. Rejected classifications still require replay.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+  "candidateSha256": "ec1a263f15c87ecae272919a0b1de764746ed96d9678d1b3d591e78e6f3d9a2a",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-epilogue.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-b5338af6-3334-46ee-9a74-2765d32c0000.png",
+  "generatedSha256": "ec1a263f15c87ecae272919a0b1de764746ed96d9678d1b3d591e78e6f3d9a2a",
+  "ownReview": {
+    "reviewedAt": "2026-11-09T06:57:12.325543+00:00",
+    "nativeReviewed": true,
+    "candidateSha256": "ec1a263f15c87ecae272919a0b1de764746ed96d9678d1b3d591e78e6f3d9a2a",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": {
+      "chief-nazari": [
+        610,
+        260,
+        285,
+        325
+      ],
+      "ensign-demir": [
+        1105,
+        110,
+        290,
+        340
+      ]
+    },
+    "handCropCoordinatesXYWH": [
+      [
+        495,
+        760,
+        990,
+        200
+      ]
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Nazari asks a sober question while Demir listens, chastened. Four hands attach to the correct arms and rest naturally on the ledger or desk. The source-correct dense/gzip sizes, accuracy loss and three hours are large and clear, with rejected-class replay still pending."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-epilogue/candidate.png",
+  "publishedSource": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-epilogue.webp",
+  "webpSha256": "6aaca82d5cb96839669a0d1c1c900813c021141a72621f96ff478a0d074f35ac",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+    "sourceSha256": "f027fb9c3dc4a4f47c4c9b5bc64caea25851ff4c9d5c650a624b513166fc69dd",
+    "webpSha256": "65d180186d236fad62633ea6d1eb6f224669403e45848d218f90b5225292d04b",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6aa05cba-f87f-4e36-b91c-1c48addf0f9c.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "ec1a263f15c87ecae272919a0b1de764746ed96d9678d1b3d591e78e6f3d9a2a",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__pruning-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-epilogue.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

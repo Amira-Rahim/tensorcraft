@@ -18,7 +18,7 @@ a documented product decision.
 - `docs/ui-ux-notes.md:275` - "Tensorcraft is dark-mode only. There is no light mode. The
   dark aesthetic is a core brand element."
 - `docs/architecture.md:59`, `docs/prd.md:364` - "Dark mode only."
-- Not present on `docs/v2-polish-backlog.md` or `docs/post-launch-backlog.md`.
+- Not present on [v2-polish-backlog.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/v2-polish-backlog.md) or `docs/post-launch-backlog.md`.
 - Episodic search: no recorded debate - dark-only was the founding aesthetic, never a
   contested decision. Standing user feedback (2026-07-19): ask before big recolors.
 

@@ -1,0 +1,82 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__llms-for-science-briefing/candidate.png",
+  "candidateSha256": "5f17706850f9af2a91f13a1f45b11e75e72577511afdaf669a9e6cd57e293dac",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x/3x face/hand/prop crops, complete shoulder-elbow-wrist tracing and explicit left/right thumb chirality check, direct canonical face comparison, and current lesson source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "root-first-science-farah",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__llms-for-science-briefing/candidate.png",
+      "box": [
+        115,
+        325,
+        410,
+        690
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "root-first-science-notebook",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__llms-for-science-briefing/candidate.png",
+      "box": [
+        290,
+        790,
+        710,
+        980
+      ],
+      "scale": 3
+    },
+    {
+      "i": 0,
+      "name": "root-first-science-nazari",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__llms-for-science-briefing/candidate.png",
+      "box": [
+        1165,
+        145,
+        1505,
+        690
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah has two connected arm chains with one hand resting on each notebook page. Her far left hand correctly places the thumb on the medial near edge; her near right thumb is occluded on the far side. Nazari's folded arms cross coherently, with one hand visible against the opposing sleeve and the other tucked under the upper arm. The pen on the table is straight and continuous.",
+    "displayLegibilityAndSource": "Large physical monitor states 6 hours, 47 days, 12,000 classified events and 1 unclassified, matching the current briefing. Draft > Verify > Approve and the pending claim/review ledger represent the proposed process without inventing results.",
+    "identityExpressionAndStory": "Farah's hopeful conversational smile and Nazari's skeptical raised brow preserve the intended exchange. Both retain canonical face shapes, hair, age and signature equipment.",
+    "palette": "Restrained charcoal, sage and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Display glyphs and borders align to the actual screen plane; the operator can view and use the same front surface.",
+    "largeDisplayRule": "Required teaching information is large and spacious, using the main working monitor and available scene area."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:00:44.515686+00:00"
+}

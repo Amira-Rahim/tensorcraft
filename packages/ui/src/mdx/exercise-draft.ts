@@ -2,6 +2,32 @@
 export const exerciseDraftKey = (slug: string, owner?: string | null) =>
   owner ? `tc-code-${slug}:account:${owner}` : `tc-code-${slug}`;
 
+/** Keep external lesson hints from racing writes to the mutable editor draft. */
+export function markExerciseSolutionViewed(
+  slug: string,
+  owner?: string | null,
+): boolean {
+  try {
+    localStorage.setItem(
+      `${exerciseDraftKey(slug, owner)}:solution-viewed`,
+      "1",
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function hasExerciseSolutionViewed(
+  slug: string,
+  owner?: string | null,
+): boolean {
+  return (
+    localStorage.getItem(`${exerciseDraftKey(slug, owner)}:solution-viewed`) ===
+    "1"
+  );
+}
+
 export interface ExerciseDraft {
   version: 1;
   code: string;

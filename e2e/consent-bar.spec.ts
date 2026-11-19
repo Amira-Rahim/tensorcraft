@@ -48,7 +48,11 @@ function measure(page: Page) {
 
 for (const [name, viewport, cap] of [
   ["desktop", { width: 1440, height: 900 }, 64],
-  ["phone", { width: 390, height: 844 }, 160],
+  // Phone: 73 px of border, padding, gap and buttons plus 19.5 px per line
+  // of copy. Since the account activity sentence (2026-11-11) the copy runs
+  // five lines at 390 px, so the bar is 170.5 px. A sixth line (190 px)
+  // still fails.
+  ["phone", { width: 390, height: 844 }, 176],
 ] as const) {
   test.describe(`consent bar, ${name}`, () => {
     test.use({ viewport, colorScheme: "dark" });

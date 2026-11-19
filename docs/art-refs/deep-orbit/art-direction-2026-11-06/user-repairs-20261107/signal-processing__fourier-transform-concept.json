@@ -1,0 +1,154 @@
+{
+  "key": "fourier-transform-concept",
+  "id": "signal-processing/fourier-transform",
+  "phase": "concept",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "status": "published",
+  "input": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+  "inputSha256": "1840da02f66caa1d1772988ba0d39f71aa0cc763277aa70dc463b070691f895c",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-c5819f90-102a-45d6-9874-41bd347c5f05.png",
+      "sha256": "c67bc14bfee2642121dcde5263e22c20d7d9eb24821a6f78fee3f8e2f87af690"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+      "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+    }
+  ],
+  "screenMeaning": "Fourier concept fft-basics.ts and fft-interpretation.ts: synthetic one-second128 Hz sample rate,128 samples,5 Hz amplitude1.0 gives raw magnitude64;20 Hz amplitude0.3 gives19.2; other bins approximatelyzero. Chart shown as explicit two-tone example, not hull measurements. Exercise dominantfrequency is separate and no task result is invented.",
+  "prompt": "Use case: precise-object-edit. First2 inputs are canonical Farah and Demir faces, third is lab master ROOM ONLY, LAST is target. Change ONLY the lower chart axes/stems/ticks/labels inside the large tilted standing monitor. Preserve the entire room, BOTH people and their faces, pose, hands, clothes, tablet, palette, monitor housing and title/subtitle exactly. The current stems lean too little: they look camera-vertical instead of following the monitor glass. Use this strict perspective blueprint in the1536x1024 target. The glass quadrilateral corners are approximately top-left(1101,280),top-right(1513,162),bottom-right(1358,587),bottom-left(979,552). The following coordinates are derived by one projective transform from a rectangular chart and MUST govern the diagram. Draw x-axis from origin(1029,510) to frequency25 endpoint(1325,517). Draw y-axis from origin(1029,510) to magnitude64 endpoint(1090,372). First stem at frequency5 starts(1072,511), rises RIGHTWARD along the screen plane to(1136,364), label5 Hz and64.0 just above its tip. Second stem at frequency20 starts(1247,515), rises RIGHTWARD to(1269,459), label20 Hz and19.2 above tip. These oblique stems now share the screen's vertical perspective direction. DO NOT draw screen stems parallel to the camera frame or reuse the old stem positions. The stems are thin, two only, first fullheight64, second30percent of that in screen coordinates. Frequency ticks0,5,10,15,20,25 lie at their corresponding projected positions on this new baseline; spacing expands toward the right according to perspective, not equal pixels. Only magnitude ticks0 at origin and64 at y-axis top. No horizontal grid or intermediate magnitude values. Keep heading'Two-tone example' and subtitle'128 samples at 128 Hz' where they are. Put'Frequency (Hz)' below new baseline and'Magnitude' beside tilted y-axis, aligned to the exact same physical plane. Typography, baselines and every line must share the screen projective transform. Keep stylus hand exactly unchanged; extending stylus tip slightly toward first stem is allowed if needed. Nothing outside the chart changes. Muted sage/aged brass; no neon or added diagrams.1536x1024.",
+  "directory": "/tmp/tensorcraft-signal-user-two",
+  "tool": "built-in image_gen",
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-concept.webp"
+  },
+  "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b9b327e9-7f7f-4b9c-815f-1ee08c5e542b.png",
+  "candidate": "/tmp/tensorcraft-signal-user-two/fourier-transform-concept-plane-candidate.png",
+  "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b9b327e9-7f7f-4b9c-815f-1ee08c5e542b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+  "candidateSha256": "c5a29ece14a25c509b239df0335ec1dbf714c8e904a44760ec5c1314475a89f9",
+  "generatedSourceSha256": "c5a29ece14a25c509b239df0335ec1dbf714c8e904a44760ec5c1314475a89f9",
+  "ownReview": {
+    "nativeFullFrame": "pass",
+    "canonicalFaceMorphologyAndAge": "pass",
+    "anatomyAndHandGeometry": "pass",
+    "headNeckShoulderProportions": "pass",
+    "mutedPalette": "pass",
+    "noPlants": "pass",
+    "secondaryDisplaysInactive": "pass",
+    "screenMeaning": "pass",
+    "screenPlane": "pass",
+    "status": "awaiting root independent approval"
+  },
+  "previousCandidate": "/tmp/tensorcraft-signal-user-two/fourier-transform-concept-corrected-candidate.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-c5819f90-102a-45d6-9874-41bd347c5f05.png",
+  "previousPrompt": "Use case: precise-object-edit. FIRST TWO inputs canonical Farah and Demir identity portraits. THIRD approved lab is ROOM ONLY. LAST image is target. Correct ONLY the chart on the large tilted monitor. Keep all characters, faces, bodies, grips, stylus, camera, room and palette unchanged. Current numerical grid is WRONG: the 5 Hz stem labeled64.0 lands near a56 grid line. Simplify and correct the chart. Remove ALL horizontal grid lines and every numeric magnitude-axis tick except0 at origin and64 at the same physical-plane height as the5 Hz stem top. The clean chart has exactly two thin stems: frequency5 at magnitude64.0, frequency20 at magnitude19.2. Second stem is30% of first height measured WITHIN the tilted screen plane. The two stems, axes, title, labels and ALL text form one planar graphic projected into the glass quadrilateral. Stems follow its vertical perspective direction; frequency baseline and numeric labels follow its horizontal perspective direction, never pasted flat toward camera. No horizontal grid. Keep x-axis frequency ticks0,5,10,15,20,25 evenly spaced in plane, with5 Hz stem precisely over5,20 Hz stem precisely over20. The magnitude64 tick must align with top of first stem within that plane; no intermediate8/16/24/32/40/48/56 ticks. Keep exact heading 'Two-tone example', subtitle '128 samples at 128 Hz', axis names 'Frequency (Hz)' and 'Magnitude', stem labels '5 Hz' '64.0' and '20 Hz' '19.2'. Sparse uncluttered chart, physically credible perspective and no ungrounded graphics. Preserve muted sage/aged brass, all anatomy and canonical identities exactly.1536x1024.",
+  "previousReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+      "sha256": "1840da02f66caa1d1772988ba0d39f71aa0cc763277aa70dc463b070691f895c"
+    }
+  ],
+  "reviewEvidence": {
+    "kind": "original-images",
+    "scene": {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b9b327e9-7f7f-4b9c-815f-1ee08c5e542b.png",
+      "sha256": "c5a29ece14a25c509b239df0335ec1dbf714c8e904a44760ec5c1314475a89f9"
+    },
+    "canonicalReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ],
+    "noDerivativeProofCreated": true
+  },
+  "candidatePath": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+  "temporaryCandidatePathAtReview": "/tmp/tensorcraft-signal-user-two/fourier-transform-concept-plane-candidate.png",
+  "publishedSource": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-concept.webp",
+  "sourceSha256": "c5a29ece14a25c509b239df0335ec1dbf714c8e904a44760ec5c1314475a89f9",
+  "webpSha256": "88df3f2758965241611863b525dbc5efa3f6f3857368dede0563bdc5eb1033b0",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+    "sourceSha256": "1840da02f66caa1d1772988ba0d39f71aa0cc763277aa70dc463b070691f895c",
+    "webpSha256": "62784283c6ac45dc245b922f6ea0c7d448d997c011be697a93630357467ac3d1",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-c491e4ed-450d-453b-9d1d-1b2e43ccffb8.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "browser_final",
+    "status": "approved",
+    "candidateSha256": "c5a29ece14a25c509b239df0335ec1dbf714c8e904a44760ec5c1314475a89f9",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "Both canonical faces inspected against originals with adult body and head proportions.",
+      "anatomy": "Stylus grip, hanging hand and both tablet grips connect naturally, feet and furniture clear.",
+      "perspective": "Stem lines and magnitude axis follow the tilted glass vertical direction; axes, ticks and labels remain in the panel plane.",
+      "meaning": "128 samples at128Hz, synthetic5Hz amplitude1 and20Hz amplitude0.3 produce raw magnitudes64 and19.2, matching the lesson example. Other displayed bins zero.",
+      "palette": "Neon pillar dimmed to charcoal/sage; muted brass and grey lab restored.",
+      "story": "Shared spectrum inspection, no outward data tablet or camera-facing pose."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+        "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

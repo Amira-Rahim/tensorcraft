@@ -1,0 +1,55 @@
+{
+  "module": "neural-networks",
+  "lesson": "forward-pass",
+  "phase": "takeaways",
+  "src": "/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+  "index": 18,
+  "characters": [
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=776): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-94c25b8e-a2e3-402b-90b6-ed8d849d9b13.png",
+  "candidate": "/tmp/early-identity-candidates/18.webp",
+  "candidateSha256": "08c6ebbc9459bfb17d27c20a0330039e5a4266ba255ac58bb7fc6df8ec548b28",
+  "sourceSha256": "c22dfd93897e0ce2e36f7caaaa259b817d7e17f18c52910d0c17e425332f6609",
+  "beforeSha256": "57753124d23da1b2de28390ed1d41ea306e3e38d3a70807259596191b90d926e",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+      "role": "edit target",
+      "sha256": "57753124d23da1b2de28390ed1d41ea306e3e38d3a70807259596191b90d926e"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 115750,
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-takeaways-ensign-demir-correction.png",
+      "crop": {
+        "left": 543,
+        "top": 6,
+        "width": 465,
+        "height": 549
+      }
+    }
+  ]
+}

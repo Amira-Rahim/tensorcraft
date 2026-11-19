@@ -23,7 +23,6 @@ import {
   softmax,
   teachingSignal,
   trainingTrace,
-  FIRST_PACKET,
   NORMALIZATION_ROWS,
 } from "./instrument-math";
 const root =
@@ -66,7 +65,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
-        "From your latest run",
+        "From this supplied example run",
       ),
     );
     expect(
@@ -106,7 +105,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
-        "From your latest run",
+        "From this supplied example run",
       ),
     );
   });
@@ -205,7 +204,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
           );
         await waitFor(() =>
           expect(screen.getByRole("status")).toHaveTextContent(
-            "From your latest run",
+            "From this supplied example run",
           ),
         );
       }

@@ -1,0 +1,70 @@
+{
+  "module": "training-loop",
+  "lesson": "evaluating-deep-scan",
+  "phase": "concept",
+  "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+  "index": 31,
+  "characters": [
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=497): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-b93353d8-fe6d-4fc3-893c-abf7ce1552b9.png",
+  "candidate": "/tmp/early-identity-candidates/31.webp",
+  "candidateSha256": "7ee6439d536d7e0bcd9e9dccea7db54d2478c003154d0760e3925eeae57e9579",
+  "sourceSha256": "bde2c2b4b05eea6b1953b62e21bc1cf82406dce81eac7cd9b674c13fcaddbc40",
+  "beforeSha256": "32ce2d732ead62625cdff17b8c46b68e7f07659a1c98f6a6f491250f22abee3e",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "canonical identity",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+      "role": "edit target",
+      "sha256": "32ce2d732ead62625cdff17b8c46b68e7f07659a1c98f6a6f491250f22abee3e"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 147864,
+  "proofs": [
+    {
+      "character": "commander-mirza",
+      "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "referenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-concept-commander-mirza-correction.png",
+      "crop": {
+        "left": 345,
+        "top": 63,
+        "width": 303,
+        "height": 372
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-b93353d8-fe6d-4fc3-893c-abf7ce1552b9.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+      "docs/art-refs/deep-orbit/commander-mirza.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

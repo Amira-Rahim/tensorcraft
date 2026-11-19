@@ -34,6 +34,7 @@ vi.mock("@/lib/review-store-server", () => ({
 vi.mock("./lesson-steps", () => ({ LessonSteps: () => null }));
 import LessonPage from "./page";
 import { LessonSteps } from "./lesson-steps";
+import { FreeModuleNavigation } from "./free-module-navigation";
 
 function findSteps(element: ReactElement): Record<string, unknown> | undefined {
   if (element.type === LessonSteps)
@@ -135,6 +136,38 @@ it("keeps the first experiment free with a guided fallback when preferences are 
   });
   expect(findSteps(page)!.entryStep).toBe(1);
   expect(mocks.purchase).not.toHaveBeenCalled();
+  const children = Children.toArray(
+    (page.props as { children: React.ReactNode }).children,
+  );
+  expect((children.at(-1) as ReactElement).type).toBe(FreeModuleNavigation);
+});
+
+it("uses the public course and lesson as the breadcrumb hierarchy", async () => {
+  mocks.getUser.mockResolvedValue({ data: { user: null } });
+  const page = await LessonPage({
+    params: Promise.resolve({
+      slug: "deep-orbit",
+      module: "foundations",
+      lesson: "tensor-shapes",
+    }),
+  });
+  const script = Children.toArray(
+    (page.props as { children: React.ReactNode }).children,
+  ).find(
+    (child) => isValidElement(child) && child.type === "script",
+  ) as ReactElement<{
+    dangerouslySetInnerHTML: { __html: string };
+  }>;
+  const breadcrumb = JSON.parse(
+    script.props.dangerouslySetInnerHTML.__html,
+  ).find((entry: { "@type": string }) => entry["@type"] === "BreadcrumbList");
+  expect(
+    breadcrumb.itemListElement.map((item: { item: string }) => item.item),
+  ).toEqual([
+    "https://tensorcraft.app",
+    "https://tensorcraft.app/worlds/deep-orbit",
+    "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+  ]);
 });
 
 it("still honors an explicit challenge link for a learner on that route", async () => {

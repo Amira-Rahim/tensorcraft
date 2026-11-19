@@ -1,0 +1,60 @@
+{
+  "key": "why-the-browser-epilogue",
+  "id": "browser-runtimes/why-the-browser",
+  "phase": "epilogue",
+  "cast": [
+    "ensign-demir",
+    "chief-nazari"
+  ],
+  "status": "candidate-awaiting-review",
+  "input": "art-src/scenes/browser-runtimes__why-the-browser-epilogue-openai-20261107.png",
+  "inputSha256": "96d422a6ea34b61a1781bb8812e226e208710417174f25fdf95223a7782be6ea",
+  "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-bbe8c09a-000c-4132-8f6e-ade165f1401b.png",
+  "archivedInputSha256": "96d422a6ea34b61a1781bb8812e226e208710417174f25fdf95223a7782be6ea",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+      "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__why-the-browser-epilogue-openai-20261107.png",
+      "sha256": "96d422a6ea34b61a1781bb8812e226e208710417174f25fdf95223a7782be6ea"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+      "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+    }
+  ],
+  "screenMeaning": "Nazari approves local predictions for86,400 daily readings; Demir starts npm install and console survey.",
+  "screenSpecification": "Replace the center display's generic progress bar with a readable terminal showing npm install on one line and @tensorflow/tfjs on the next, then Downloading runtime... . No percentage, success tick or ready state. The left secondary monitor should show86,400 readings/day above a small live-input trace, an exact story requirement rather than a benchmark. Keep Nazari's tablet facing her as in the target; do not rotate the tablet or hands just to expose writing. Preserve the two full-body figures and old chair exactly.",
+  "proportionSpecification": "Preserve every head and body size exactly, with no proportion changes.",
+  "paletteReference": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+  "prompt": "Precise scene edit for an educational adventure comic. The first 2 images are immutable canonical identity portraits for ensign-demir, chief-nazari. The next image is COLOR STYLE ONLY: muted sage screens, aged brass and natural skin; do not borrow its person, composition, pose or diagram. The LAST image is the target. Preserve the target camera, room, phase action, character identities, age, hair, face geometry, expression, gaze, head angle, costumes, body poses, all continuous arm chains and natural fingers, hands and furniture. Preserve every head and body size exactly, with no proportion changes. Use warm stylized adult comic proportions, consistent recognizable faces, and flat cel shadows. Correct the target palette to muted sage #6BAA8A-family screens and aged brass #A89060-family metal with charcoal/navy room surfaces; natural tan skin, no orange cast, neon mint bloom, luminous green hair outlines, bright yellow-gold metal, or glossy3D gradients. Keep attractive contrast and the direction of warm practical lighting, not blanket gray desaturation. SCREEN CONTENT IS PRECISE: Replace the center display's generic progress bar with a readable terminal showing npm install on one line and @tensorflow/tfjs on the next, then Downloading runtime... . No percentage, success tick or ready state. The left secondary monitor should show86,400 readings/day above a small live-input trace, an exact story requirement rather than a benchmark. Keep Nazari's tablet facing her as in the target; do not rotate the tablet or hands just to expose writing. Preserve the two full-body figures and old chair exactly. All visible labels must be concise, accurately spelled, large enough to read, and integrated naturally into the screen perspective. No extra diagrams, random shapes or fabricated metrics. Preserve distinctive phase composition. Output one1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-epilogue.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-epilogue.json",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-1687af2b-54bd-40a3-951f-d966fe2d2048.png",
+  "candidateSha256": "17a9d356667d5c3ea9a8d2a5a83aea15371e37b28e5091218467558007d4dc13",
+  "generationMethod": "builtin-imagegen",
+  "recoveryNote": "Metadata persistence callback failed after image generation. Recovered exact output by full-frame content and prompt match before any retry.",
+  "ownReview": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "palette": "pass",
+    "screen": "pass",
+    "reason": "Current full frame matches exact lesson-grounded screen content with readable labels. Await independent review."
+  }
+}

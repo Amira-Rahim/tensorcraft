@@ -1,0 +1,21 @@
+{
+  "key": "anomaly-detection/autoencoders",
+  "phase": "challenge",
+  "source": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261106.png",
+  "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp",
+  "tool": "built-in imagegen",
+  "sourceSha256": "d205b7763d76937eaba6dd9b5554bb452db9eb998000ab4f126787d3269a7bdf",
+  "outputSha256": "eee1b57879dc4eeb3a10cecd2616e34fb30aedcffaa214eee6ee590c216574da",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 180580,
+  "webpQuality": 86,
+  "alt": "Demir screens flagged rows before fitting the reconstruction model.",
+  "review": {
+    "status": "accepted",
+    "method": "Visual inspection of full generated image, tracing all visible limbs and furniture boundaries; canonical face comparison; source story review.",
+    "notes": "Demir has one selecting hand and one on controls. No duplicated limbs or furniture penetration. Source rows and held-out selection are distinct, with fit diagram pending."
+  }
+}

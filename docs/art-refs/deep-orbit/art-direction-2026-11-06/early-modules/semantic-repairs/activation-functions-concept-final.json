@@ -1,0 +1,52 @@
+{
+  "id": "neural-networks/activation-functions",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-31f68018-4d2e-4bb7-bb70-fe060d3413ed.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-cf3ade30-c7a0-4f59-9ddf-1d22178f0c0a.png",
+  "prompt": "Use case: precise-object-edit. First 1 inputs are immutable canonical identities dr-farah. Last input is TARGET. Make ONLY specified localized correction. Preserve all faces, head sizes, expressions, hair, head-neck-body alignment, complete arms/hands, clothes, furniture, camera, framing, muted palette and1536x1024size exactly. No proportionchanges, noadditionalgadgets, noextra limbs or text. Fix ONE x-axis label alignment on the ReLU graph. The x-axis tick and label '3' currently sit LEFT of the vertical dashed line from endpoint(3,3). Move that x-axis tick and its '3' label directly under the vertical dashed line from the endpoint, at its intersection with the horizontal x-axis. Remove the old incorrectly positioned tick. Leave exactly ticks -2,0,3, with3directlyunderendpoint. Preserve all other graph geometry, y-axis3, formula, text and Farah entirely.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-cf3ade30-c7a0-4f59-9ddf-1d22178f0c0a.png"
+  ],
+  "status": "generated-awaiting-review",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-concept-dr-farah-proof.png",
+      "sha256": "5e45916f36652c2d73de0a6c6f8ff32bc1c9f363f7ead73be3b51cd84ad2de99",
+      "crop": {
+        "left": 470,
+        "top": 100,
+        "width": 330,
+        "height": 400
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-180421df-7b34-4a4c-8845-f121052f8731.png",
+      "priorSha256": "7a30ab6aeb2f4f17b3cd5caba5777d556e4ceb6379b82be749f54272a8b686b5",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-31f68018-4d2e-4bb7-bb70-fe060d3413ed.png",
+      "candidateSha256": "1233dc0b97640cc212425b47d495912359eeb995d750a34134f18b5ccfcb11db"
+    }
+  ],
+  "pathSha256": "1233dc0b97640cc212425b47d495912359eeb995d750a34134f18b5ccfcb11db",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+  ],
+  "screenMeaning": {
+    "section": "What a Linear Stack Cannot Add",
+    "spec": "ReLU graph with labeled axes input/output and corners(-2,0),(0,0),(3,3), plus max(0,x). Optional verified V-shape relu(x)+relu(-x)=abs(x), clearly separate.",
+    "currentSource": "art-src/scenes/neural-networks__activation-functions-concept-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "cast": [
+      "dr-farah"
+    ]
+  }
+}

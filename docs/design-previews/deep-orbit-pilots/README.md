@@ -38,20 +38,19 @@ Rejected sketch: apply the Foundations bar/matrix panel unchanged to both lesson
 - Takeaways ask for a written explanation before an explicit answer reveal. Revealing an answer is not a pass or course completion.
 - No human learning or commercial validation has occurred. See the learner protocol for the remaining evidence.
 
-## Build and review
+## Retained evidence and current preview
 
-From the repository root:
+The full-course production rollout replaced these runnable prototypes. Their
+HTML, build scripts, bundled runner, and preview styles were retired on
+November 6, 2026. The [frontend-design review](review.md),
+[verification record](verification.json), and screenshots preserve the original
+design findings and their limits.
 
-```sh
-node docs/design-previews/deep-orbit-pilots/build.cjs
-python3 -m http.server 8767 --bind 127.0.0.1
-node docs/design-previews/deep-orbit-pilots/verify.cjs
-```
+For the current lesson renderer, follow the [local review setup](../../review-setup.md)
+and open `/design/deep-orbit` on the development server. Select the lesson,
+section, and viewport there. The [production rollout](../deep-orbit-rollout.md)
+records the implemented course-wide changes.
 
-Open `http://127.0.0.1:8767/docs/design-previews/deep-orbit-pilots/index.html`.
-
-The build derives the shared visual CSS from the existing Foundations prototype, bundles the existing exercise runner, and extracts the original exercises. No production source is changed. The browser runner's vendored-runtime URL is adapted to the repository preview server. Solutions stay in the source YAML and are used by verification, not exposed as a learner-facing answer button.
-
-Review settings and design notes remain behind the footer controls. Drafts and recall notes are local to the browser tab. This pilot does not submit learner activity to analytics or persist course progress.
-
-The [frontend-design review](review.md) records the visual critique, corrections, and limits. The [learner protocol](learner-protocol.md) preserves an optional future research design. Its former rollout gate is superseded; no participant sessions are required for this change.
+The [learner protocol](learner-protocol.md) records the archived research
+proposal. A future study needs current lesson routes and a separately
+commissioned protocol. No participant sessions were required for the rollout.

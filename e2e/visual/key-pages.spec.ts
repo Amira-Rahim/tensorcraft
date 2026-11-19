@@ -1,7 +1,7 @@
 /**
  * Visual regression tests, key unauth-safe pages.
  *
- * Per dev-plan §8k. Desktop viewport (1280×800). Full-page screenshots.
+ * See docs/visual-regression.md. Desktop viewport (1280×800). Full-page screenshots.
  *
  * Baselines live at `e2e/visual/__screenshots__/` (Playwright default).
  * To (re)generate baselines, run the dev server then:
@@ -77,7 +77,7 @@ for (const scheme of ["dark", "light"] as const) {
       await page.addInitScript(() => {
         localStorage.setItem("tc-cookie-consent", "declined");
       });
-      // Desktop viewport matches dev-plan §8k spec.
+      // Desktop viewport matches this suite's baseline dimensions.
       await page.setViewportSize({ width: 1280, height: 800 });
       // Disable animations (ParticleField + BridgeTicker honor this).
       await page.emulateMedia({ reducedMotion: "reduce" });

@@ -1,0 +1,360 @@
+[
+  {
+    "id": "neural-networks/activation-functions",
+    "phase": "briefing",
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-42b58c92-a6e9-4f24-947b-6f8f57adba49.png",
+    "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-dd9de970-75a8-4b52-b620-42e0f836cdbc.png",
+    "prompt": "Use case: precise localized text edit. First two images are canonical Nazari and Demir faces. Last image is exact TARGET. Preserve entire composition, every person and exact facial morphology/expression/head size, natural head neck torso alignment, limbs hands fingers contacts, clothes, chair, lighting, muted sage/brass palette and 1536x1024 dimensions. Change ONLY these two things: On upper left Raw scores screen replace 'Tone A: -0.06' with 'Reading: -0.06' and replace 'Tone B: 1.04' with 'Reading: 1.04'. Preserve heading and both numbers exactly. This source does not assign tone identities. Second, make Demir's wrist screen inactive dark charcoal glass, no green grid or decorative data. All other screens and all faces/body remain exactly unchanged, particularly Threshold:not set and Where is the alert rule. No new text or accessories.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-dd9de970-75a8-4b52-b620-42e0f836cdbc.png"
+    ],
+    "status": "generated-awaiting-review",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-briefing-chief-nazari-proof.png",
+        "sha256": "bd230580152eff2480867f588da010917ff420ac42d5f1300aebe60270763b89",
+        "crop": {
+          "left": 620,
+          "top": 180,
+          "width": 255,
+          "height": 310
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5c9b88da-edb0-4a07-baef-3a2af51db053.png",
+        "priorSha256": "f3bb6eaeaab3cc25af928931872b7427fe79ae3b6b7cfe07c032cefe58ee8df6",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-42b58c92-a6e9-4f24-947b-6f8f57adba49.png",
+        "candidateSha256": "0326682b8c06998f0ddf2758c9592e8dbd65bae48f9820b5260f7586db2c6695"
+      },
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-briefing-ensign-demir-proof.png",
+        "sha256": "ac2f3584832cf3df49c565f23a76b69a78b4ef61a7b56b641cd2fd964bfc2283",
+        "crop": {
+          "left": 1185,
+          "top": 350,
+          "width": 220,
+          "height": 290
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5c9b88da-edb0-4a07-baef-3a2af51db053.png",
+        "priorSha256": "f3bb6eaeaab3cc25af928931872b7427fe79ae3b6b7cfe07c032cefe58ee8df6",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-42b58c92-a6e9-4f24-947b-6f8f57adba49.png",
+        "candidateSha256": "0326682b8c06998f0ddf2758c9592e8dbd65bae48f9820b5260f7586db2c6695"
+      }
+    ],
+    "pathSha256": "0326682b8c06998f0ddf2758c9592e8dbd65bae48f9820b5260f7586db2c6695",
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+    ],
+    "screenMeaning": {
+      "section": "Opening Nazari dialogue; A Score and an Alert Are Different",
+      "spec": "Two raw scores-.06 and1.04, a separate threshold control, and label Where is the alert rule? Do not imply sigmoid selects threshold.",
+      "currentSource": "art-src/scenes/neural-networks__activation-functions-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "chief-nazari",
+        "ensign-demir"
+      ]
+    },
+    "alt": "Nazari asks how two raw scores become an alert while Demir checks the unset threshold.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5c9b88da-edb0-4a07-baef-3a2af51db053.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-42b58c92-a6e9-4f24-947b-6f8f57adba49.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-dd9de970-75a8-4b52-b620-42e0f836cdbc.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions.webp",
+        "art-src/scenes/neural-networks__activation-functions-openai-20261107.png",
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "id": "neural-networks/activation-functions",
+    "phase": "concept",
+    "cast": [
+      "dr-farah"
+    ],
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-31f68018-4d2e-4bb7-bb70-fe060d3413ed.png",
+    "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-cf3ade30-c7a0-4f59-9ddf-1d22178f0c0a.png",
+    "prompt": "Use case: precise-object-edit. First 1 inputs are immutable canonical identities dr-farah. Last input is TARGET. Make ONLY specified localized correction. Preserve all faces, head sizes, expressions, hair, head-neck-body alignment, complete arms/hands, clothes, furniture, camera, framing, muted palette and1536x1024size exactly. No proportionchanges, noadditionalgadgets, noextra limbs or text. Fix ONE x-axis label alignment on the ReLU graph. The x-axis tick and label '3' currently sit LEFT of the vertical dashed line from endpoint(3,3). Move that x-axis tick and its '3' label directly under the vertical dashed line from the endpoint, at its intersection with the horizontal x-axis. Remove the old incorrectly positioned tick. Leave exactly ticks -2,0,3, with3directlyunderendpoint. Preserve all other graph geometry, y-axis3, formula, text and Farah entirely.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-cf3ade30-c7a0-4f59-9ddf-1d22178f0c0a.png"
+    ],
+    "status": "generated-awaiting-review",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "dr-farah",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-concept-dr-farah-proof.png",
+        "sha256": "5e45916f36652c2d73de0a6c6f8ff32bc1c9f363f7ead73be3b51cd84ad2de99",
+        "crop": {
+          "left": 470,
+          "top": 100,
+          "width": 330,
+          "height": 400
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-180421df-7b34-4a4c-8845-f121052f8731.png",
+        "priorSha256": "7a30ab6aeb2f4f17b3cd5caba5777d556e4ceb6379b82be749f54272a8b686b5",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-31f68018-4d2e-4bb7-bb70-fe060d3413ed.png",
+        "candidateSha256": "1233dc0b97640cc212425b47d495912359eeb995d750a34134f18b5ccfcb11db"
+      }
+    ],
+    "pathSha256": "1233dc0b97640cc212425b47d495912359eeb995d750a34134f18b5ccfcb11db",
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+    ],
+    "screenMeaning": {
+      "section": "What a Linear Stack Cannot Add",
+      "spec": "ReLU graph with labeled axes input/output and corners(-2,0),(0,0),(3,3), plus max(0,x). Optional verified V-shape relu(x)+relu(-x)=abs(x), clearly separate.",
+      "currentSource": "art-src/scenes/neural-networks__activation-functions-concept-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "cast": [
+        "dr-farah"
+      ]
+    },
+    "alt": "Farah traces ReLU from zero for negative inputs to the unchanged positive input."
+  },
+  {
+    "id": "neural-networks/activation-functions",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3ded5c76-600a-4c26-b8bd-90cbc374e85e.png",
+    "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-4ad86b96-6551-4e4f-80cb-3c25f06b62be.png",
+    "prompt": "Use case: precise localized display edit. First image exact canonical Demir, second image TARGET. Preserve exact entire image except specified screen corrections. Keep Demir exact head size facial morphology expression natural neck/head/chest alignment, complete two arms hands fingers and their physical keyboard and monitor contact, pose, clothes furniture room perspective subdued sage/brass palette. On MAIN monitor replace title 'ReLU probe' with 'Expected ReLU output'. Preserve exact2row numeric table: Input -2,-0.5,0,1.5,3; Output0,0,0,1.5,3; preserve max(0,x). These are supplied expected values before learner code runs. Turn Demir wristscreen inactive dark glass, with no grid. Turn the two tiny rectangular screens at far upperleft that currently show yellow horizontal lines to inactive charcoal glass; preserve physical hardware buttons around them. Do not change anything else. 1536x1024 cinematic comic illustration.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-4ad86b96-6551-4e4f-80cb-3c25f06b62be.png"
+    ],
+    "status": "generated-awaiting-review",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-challenge-ensign-demir-proof.png",
+        "sha256": "d991c26c7864b1336471cc51dba3c7d8b349f8afee299e3e9034d7ecd33b9fac",
+        "crop": {
+          "left": 540,
+          "top": 65,
+          "width": 320,
+          "height": 390
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-aa9648ee-72e6-42f0-a5ac-d5ef95472087.png",
+        "priorSha256": "2ff9f8665655bf4b6a50253a13843798d567a8dc6456ca352382c0dc89f22c5a",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3ded5c76-600a-4c26-b8bd-90cbc374e85e.png",
+        "candidateSha256": "1b83edb1b1c7d6faca45e825cb625b6f39a49ab04ffaf1dafe7cabf916793e4b"
+      }
+    ],
+    "pathSha256": "1b83edb1b1c7d6faca45e825cb625b6f39a49ab04ffaf1dafe7cabf916793e4b",
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+    ],
+    "screenMeaning": {
+      "section": "Challenge; relu-activation testCode probe",
+      "spec": "Show five input values[-2,-.5,0,1.5,3] aligned with five ReLU outputs[0,0,0,1.5,3]. Negative bars clamp to zero and positive bars retain height; no empty unlabelled output panel.",
+      "currentSource": "art-src/scenes/neural-networks__activation-functions-challenge-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "ensign-demir"
+      ]
+    },
+    "alt": "Demir checks the supplied expected ReLU outputs for five test inputs.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-aa9648ee-72e6-42f0-a5ac-d5ef95472087.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3ded5c76-600a-4c26-b8bd-90cbc374e85e.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-4ad86b96-6551-4e4f-80cb-3c25f06b62be.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+        "art-src/scenes/neural-networks__activation-functions-challenge-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "id": "neural-networks/activation-functions",
+    "phase": "takeaways",
+    "cast": [
+      "chief-nazari",
+      "dr-farah"
+    ],
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+    "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-677a3c10-9475-4723-ace1-ba2c853dacf6.png",
+    "prompt": "Use case: precise-object-edit. First 2 inputs are immutable canonical identities chief-nazari, dr-farah. Last input is TARGET. Make ONLY specified localized correction. Preserve all faces, head sizes, expressions, hair, head-neck-body alignment, complete arms/hands, clothes, furniture, camera, framing, muted palette and1536x1024size exactly. No proportionchanges, noadditionalgadgets, noextra limbs or text. Remove only the invented black rectangular earpiece on Nazari's visible ear on the LEFT side of the image. Nazari has no earpiece in canon: restore natural bare ear matching her canonicalportrait. Do not change her face, headsize, hair, jaw, expression, neck or any other feature. Preserve both screens and every exactnumber, Farah, allfourarms/hands, anatomy andwholecomposition.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-677a3c10-9475-4723-ace1-ba2c853dacf6.png"
+    ],
+    "status": "generated-awaiting-review",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-takeaways-chief-nazari-proof.png",
+        "sha256": "6999d9d22c895e7175e4411eac11656ca292a29f88d032582fd638fe22552ca3",
+        "crop": {
+          "left": 310,
+          "top": 40,
+          "width": 280,
+          "height": 350
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae3a58b3-0b9a-4d0c-b099-cf241aff2f69.png",
+        "priorSha256": "f14b24e47f0c91f5d54e01daaf009b70789a7d24b060b6bea866468d6c337703",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+        "candidateSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e"
+      },
+      {
+        "character": "dr-farah",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-takeaways-dr-farah-proof.png",
+        "sha256": "ad26ab14ab1cf8ea84bf7e69d1de29b6e452f36f95c8267a361b72380f746fe8",
+        "crop": {
+          "left": 1020,
+          "top": 40,
+          "width": 300,
+          "height": 380
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ae3a58b3-0b9a-4d0c-b099-cf241aff2f69.png",
+        "priorSha256": "f14b24e47f0c91f5d54e01daaf009b70789a7d24b060b6bea866468d6c337703",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+        "candidateSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e"
+      }
+    ],
+    "pathSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e",
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+    ],
+    "screenMeaning": {
+      "section": "A Score and an Alert Are Different; LessonRecap",
+      "spec": "Show-.06\u2192sigmoid\u2248.485 and1.04\u2192\u2248.739, threshold.5 as separate dashed line. Label Score range, alert threshold, calibration as three different checks; no80%probability claim.",
+      "currentSource": "art-src/scenes/neural-networks__activation-functions-takeaways-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "cast": [
+        "chief-nazari",
+        "dr-farah"
+      ]
+    },
+    "alt": "Nazari and Farah separate sigmoid scores from the chosen alert threshold."
+  },
+  {
+    "phase": "epilogue",
+    "cast": [
+      "ensign-demir"
+    ],
+    "detail": "Leftmainmonitor header '03:16 alert list' and exactly three rows 'Tone A','Tone B','7741'. Bottom small 'Disagreement recorded'. Neighbor monitor keepsARIA thinringwithhorizontalwaveform and exact text '7741: nominal'. No cause or accuracyverdict. Any separatehandheldscreen unreadableback remainsunchanged. All rear monitors dark. Preserve Demir'sattachedpointingarm andtabletarm, moderateheadandnaturalneck. Reduce neon mint pool to subdued sage.",
+    "id": "neural-networks/activation-functions",
+    "prompt": "Use case: identity-preserve. Edit the Deep Orbit existing story scene. The first input(s) are immutable canonical character portraits in the listed order. The LAST input is the TARGET scene. Preserve those exact adult faces: age, compact nose, eye spacing, broad cheek/chin morphology, mouth, hair and expression. Preserve camera, character positions, natural head yaw/neck connection, both separate shoulder-arm-hand chains per person, furniture, chair clearance and all room geometry. Keep warm stylized adult comic proportions: apply ONLY a subtle8percent reduction to full heads including hair versus target, keep facial shape and bodies unchanged; no tiny realistic heads. Farah lens anatomical LEFT eye. Demir comms anatomical RIGHT ear only; if visible anatomical-left ear has device, remove it and leave natural bare ear, right device may be occluded. Replace all unrelated background screen plots with plain dark standby glass. Change brightneonmint lights and blooms to muted sage, shinyyellowgold to aged restrained brass; ceiling lamps warm neutral. Purposeful colored hardware buttons stay. No colored left accent bars, no extra people/hands, no arbitrary charts. Main lesson content clear, compact, perspectively integrated. 1536x1024.\nCanonical portrait order: ensign-demir.\nLeftmainmonitor header '03:16 alert list' and exactly three rows 'Tone A','Tone B','7741'. Bottom small 'Disagreement recorded'. Neighbor monitor keepsARIA thinringwithhorizontalwaveform and exact text '7741: nominal'. No cause or accuracyverdict. Any separatehandheldscreen unreadableback remainsunchanged. All rear monitors dark. Preserve Demir'sattachedpointingarm andtabletarm, moderateheadandnaturalneck. Reduce neon mint pool to subdued sage.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__activation-functions-epilogue-openai-20261107.png"
+    ],
+    "status": "generated-awaiting-review",
+    "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-29d2626e-b3f2-422e-a7bf-f471ba0d801d.png",
+    "tool": "built-in image_gen",
+    "proofs": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-epilogue-ensign-demir-proof.png",
+        "sha256": "c5e1d090443795b97f745d430e2d81dffc22b5920cf2ca3640ab9e55fff16337",
+        "crop": {
+          "left": 925,
+          "top": 50,
+          "width": 365,
+          "height": 430
+        },
+        "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6b446a25-1958-4994-bc15-6e28eb2a0c04.png",
+        "priorSha256": "9bf805716c3cd0f476241686e1682b09947e4926f5eb382638c9d827e69ae924",
+        "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-29d2626e-b3f2-422e-a7bf-f471ba0d801d.png",
+        "candidateSha256": "e028c71ad135a8c0bfe83649b119faccf1b3f983fbce7a6552deccc43b021f02"
+      }
+    ],
+    "pathSha256": "e028c71ad135a8c0bfe83649b119faccf1b3f983fbce7a6552deccc43b021f02",
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+    ],
+    "screenMeaning": {
+      "section": "Epilogue",
+      "spec": "At0316, neuron alert list contains ToneA,ToneB,7741; separate ARIA panel says7741 nominal. Header Disagreement recorded, cause unresolved. Keep threshold visible as a separate setting without inventing its changed value.",
+      "currentSource": "art-src/scenes/neural-networks__activation-functions-epilogue-openai-20261107.png",
+      "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-epilogue.webp",
+      "canonicalReferences": [
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "cast": [
+        "ensign-demir"
+      ]
+    },
+    "alt": "Demir compares the local alert list with ARIA\u2019s nominal status for sample7741.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6b446a25-1958-4994-bc15-6e28eb2a0c04.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-29d2626e-b3f2-422e-a7bf-f471ba0d801d.png",
+        "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-epilogue.webp",
+        "art-src/scenes/neural-networks__activation-functions-epilogue-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  }
+]

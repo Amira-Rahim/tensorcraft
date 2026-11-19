@@ -140,6 +140,24 @@ solutionCode: |
   const unitRange = tf.tidy(() => scaleFeatures(batch, min, max.sub(min)));
 testCode: |
   describe('Scale the Readings for Farah’s Model', () => {
+    // Capture the submitted batch before the later-reading check disposes it.
+    // An unavailable or malformed batch still receives the existing checks.
+    try {
+      if (batch instanceof tf.Tensor && batch.shape.length === 2 &&
+          batch.shape[0] >= 1 && batch.shape[0] <= 40 && batch.shape[1] === 2) {
+        const inputRows = batch.arraySync();
+        if (inputRows.every(row => row.every(Number.isFinite))) {
+          recordResult({
+            kind: 'table', title: 'Input readings',
+            summary: 'The batch from this run, in its original order. Columns are temperature and signal strength. This practice fixture does not specify physical units.',
+            columns: ['Reading', 'Temperature', 'Signal strength'],
+            rows: inputRows.map((row, i) => [i + 1, ...row]),
+          });
+        }
+      }
+    } catch {
+      // Keep the checks available when the submitted code disposed the batch.
+    }
     const filled = (value, what) => expect(value, what).toBeDefined();
     // Statistics come back as tensors; anything else is not a
     // statistic the batch can broadcast against.

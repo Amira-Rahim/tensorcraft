@@ -1,0 +1,54 @@
+{
+  "queueIndex": 59,
+  "key": "deep-orbit/optimization-edge/webgpu-acceleration",
+  "phase": "briefing",
+  "status": "awaiting-identity-correction",
+  "inputScene": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp",
+  "inputSceneSha256": "e14749369a60e24d4409f1213f9339a10305ce41751e3d24cf085d5f2907e3ab",
+  "cast": [
+    "nazari",
+    "demir"
+  ],
+  "faceBoxes": {
+    "nazari": [
+      135,
+      275,
+      300,
+      330
+    ],
+    "demir": [
+      1135,
+      255,
+      290,
+      340
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/optimization-edge__webgpu-acceleration-identity-stage1-openai-20261107.png",
+      "sha256": "e97339944cef419ea008e2bcadfc4811c43c10bf33abaa3b3521f12ca7cc37d6",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: identity-preserve. First references are canonical neutral crew portraits; LAST image is target scene. Change ONLY Demir on image right. Preserve Nazari exactly. Turn Demir to near-frontal gentle three-quarter camera view while keeping his neck, body, raised-palm gesture, table hand and friendly speaking expression. Reconstruct his exact canonical mid-twenties face: broad lower cheeks, softly squared short jaw, rounded short chin, short broad round-ended nose of the anchor width, same eye/brow spacing, sparse freckles and uneven stubble. His present pointed long nose and tapering chin are wrong. His comms earpiece must move from anatomical LEFT to anatomical RIGHT as in neutral anchor, with the left ear bare. Keep natural gaze toward Nazari, no heroic tall quiff. No other change. Preserve exactly all other faces, people, bodies, arms, hands, uniforms, props, furniture, room, camera, colors and lighting. No added humans or limbs. One1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/optimization-edge__webgpu-acceleration-briefing-identity-repair-prompt.json",
+  "newSource": "art-src/scenes/optimization-edge__webgpu-acceleration-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/optimization-edge__webgpu-acceleration-identity-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/optimization-edge__webgpu-acceleration-briefing-identity-prompt.json",
+      "reason": "Change ONLY Demir on image right. Preserve Nazari exactly. Turn Demir to near-frontal gentle three-quarter camera view while keeping his neck, body, raised-palm gesture, table hand and friendly speaking expression. Reconstruct his exact canonical mid-twenties face: broad lower cheeks, softly squared short jaw, rounded short chin, short broad round-ended nose of the anchor width, same eye/brow spacing, sparse freckles and uneven stubble. His present pointed long nose and tapering chin are wrong. His comms earpiece must move from anatomical LEFT to anatomical RIGHT as in neutral anchor, with the left ear bare. Keep natural gaze toward Nazari, no heroic tall quiff. No other change."
+    }
+  ]
+}

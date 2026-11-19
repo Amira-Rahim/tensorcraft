@@ -126,10 +126,6 @@
   color: var(--tc-muted);
   font-size: 18px;
 }
-.channel-source-arrow {
-  color: var(--tc-primary);
-  line-height: 1;
-}
 .channel-source-value {
   font-family: var(--font-mono);
   font-size: 32px;
@@ -205,6 +201,53 @@
 .channel-sensor-name {
   color: var(--tc-muted);
   font-size: 18px;
+}
+.channel-reading-button {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 14px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.channel-activity .channel-reading:has(.channel-reading-button) {
+  padding: 0;
+}
+.channel-reading-index {
+  color: var(--tc-muted);
+  font-size: 16px;
+}
+.channel-cell-button {
+  position: relative;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.channel-activity [data-selected-reading="true"] {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: -2px;
+  font-weight: 600;
+}
+.channel-activity .channel-reading-button[aria-pressed="true"],
+.channel-activity .channel-cell-button[aria-pressed="true"] {
+  background: transparent;
+  color: inherit;
+}
+.channel-reading-button:focus-visible,
+.channel-cell-button:focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 2px;
 }
 .channel-prediction,
 .channel-comparison-controls {
@@ -341,6 +384,13 @@
   line-height: 1.65;
 }
 @media (width < 40rem) {
+  .channel-table th {
+    padding-inline: 8px;
+    font-size: 18px;
+  }
+  .channel-table thead th:first-child {
+    white-space: nowrap;
+  }
   .channel-activity,
   .channel-activity-controls {
     gap: 32px;

@@ -1,0 +1,55 @@
+{
+  "key": "time-vs-frequency-concept",
+  "id": "signal-processing/time-vs-frequency",
+  "phase": "concept",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+  "status": "prepared",
+  "input": "art-src/scenes/signal-processing__time-vs-frequency-concept-openai-20261107.png",
+  "inputSha256": "f6d619f35d1765140474fb1618e85039c1813984425b8a8a8f03ecf23a8035a5",
+  "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-5e5c67db-bb92-42c4-953b-a561bd48e51b.png",
+  "archivedInputSha256": "f6d619f35d1765140474fb1618e85039c1813984425b8a8a8f03ecf23a8035a5",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+      "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__time-vs-frequency-concept-openai-20261107.png",
+      "sha256": "f6d619f35d1765140474fb1618e85039c1813984425b8a8a8f03ecf23a8035a5"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+      "sha256": "b0842bfde752e5d79288a9a02b140db3957c81da3629e03f7dda3a7d3c643081"
+    }
+  ],
+  "screenMeaning": "The lesson synthetic three-tone example combines5,12,23Hz in time and separates them by magnitude.",
+  "screenSpecification": "On the two halves of the foreground console show the same synthetic example. LEFT title \"TIME VIEW\", label \"Synthetic 3-tone example\" and a composite oscillating schematic trace with horizontal \"Time\", vertical \"Amplitude\". RIGHT title \"FFT MAGNITUDE\", horizontal axis \"Frequency (Hz)\", showing the 0 to30Hz excerpt with exactly THREE narrow peaks at5,12,23Hz in the correct horizontal order and relative positions. Peak heights must DESCEND left to right in ratio4:3:2. Label the peaks \"5 Hz\", \"12 Hz\", \"23 Hz\". Below the console panels one footer \"256 samples at 256 Hz\". These are synthetic lesson tones, not an anomaly finding. No other plot or output.",
+  "proportionSpecification": "Preserve current warm stylized head/body sizes and natural neck alignment exactly. No shrinking.",
+  "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 2 images are exact canonical face identities for dr-farah, ensign-demir. Next image approved lab ROOM CONTINUITY ONLY, next image muted COLOR ONLY, LAST target. Preserve current character faces, age, hair, gaze, expressions, wardrobe, poses, camera, props and all separate natural arm/hand chains. Demir visible anatomical left ear must remain BARE; his right-ear comms may be occluded. Preserve current warm stylized head/body sizes and natural neck alignment exactly. No shrinking. Muted sage#6BAA8A screens and aged brass#A89060, natural warm tan skin, charcoal/navy, flat cel shadows. Remove neon mint bloom, glowing hair rims, bright yellowgold metal and glossy3D gradients while preserving local warm lamps. On the two halves of the foreground console show the same synthetic example. LEFT title \"TIME VIEW\", label \"Synthetic 3-tone example\" and a composite oscillating schematic trace with horizontal \"Time\", vertical \"Amplitude\". RIGHT title \"FFT MAGNITUDE\", horizontal axis \"Frequency (Hz)\", showing the 0 to30Hz excerpt with exactly THREE narrow peaks at5,12,23Hz in the correct horizontal order and relative positions. Peak heights must DESCEND left to right in ratio4:3:2. Label the peaks \"5 Hz\", \"12 Hz\", \"23 Hz\". Below the console panels one footer \"256 samples at 256 Hz\". These are synthetic lesson tones, not an anomaly finding. No other plot or output. Every OTHER display including all wrist screens, small bench readouts, rear screens, circles/radars and spectrograph data surfaces must be inactive dark glass. The physical glass column may retain faint ambient tint but no plotted traces or data bands. Preserve physical buttons and room hardware. Exact short labels with spaces, readable perspective, no invented measured values. Output1536x1024.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/time-frequency5/time-vs-frequency-concept.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/time-frequency5/time-vs-frequency-concept.json",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-607d5c90-add1-4d1e-967f-278bba042450.png",
+  "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-607d5c90-add1-4d1e-967f-278bba042450.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+}

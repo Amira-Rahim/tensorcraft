@@ -139,16 +139,44 @@ You will run a training loop, read its loss history, and stop when validation st
 
 <LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Describe recent training and validation trends and identify questions to investigate"]} />
 
-## Early stopping
+## From batches to an epoch
 
 An **epoch** is one pass over the training rows. A **batch** is the group used
-for one weight update. `model.fit()` repeats forward pass, loss,
-backpropagation and update for you.
+for one weight update. For each batch, `model.fit()` runs the forward pass,
+loss calculation, backpropagation, and optimizer update. After the training
+batches, it measures validation loss without updating weights on those rows.
 
-The visual is an illustrative trace. The challenge supplies a model and 100
-synthetic rows so you can measure your own run. `validationSplit: 0.2` holds
-back the last 20 rows before training. This independent synthetic fixture is
-shuffled in advance. A real time series needs its time or group split first.
+The Challenge supplies a fresh three-input 32/16/1 network with 673 parameters
+and 100 generated rows. This is a separate practice run from the preceding
+120-row, eight-feature, 529-parameter rehearsal. Its three dimensionless
+features and generated calm/flagged labels do not come from the ship's archive.
+The starter interleaves the two groups, then flips six training labels to
+explore noisy supervision. Those labels do not identify sample 7741.
+
+`validationSplit: 0.2` reserves the last 20 rows before any training shuffle.
+Here they contain ten examples from each generated group. Only the first 80
+rows contribute weight updates. For real time-series data, choose a time or
+group split before shuffling training rows.
+
+<CodeBlock language="javascript" title="updates-per-epoch.js">
+{`const trainingRows = 80;
+const batchSize = 32;
+const batchRows = [32, 32, 16];
+const updatesPerEpoch = Math.ceil(trainingRows / batchSize);
+console.log(batchRows, updatesPerEpoch); // [32, 32, 16], 3
+// Validation follows these updates. It makes no weight update.`}
+</CodeBlock>
+
+The final batch can be smaller. At this batch size, 50 completed epochs mean
+150 updates. A 500-epoch budget allows at most 1,500 updates. Early stopping
+can end the run sooner. Other allowed batch sizes, from 8 to 64, change that
+count. Choose them by measuring memory use, throughput, and learning behavior.
+
+## A stopping rule that watches validation
+
+This block continues the supplied Challenge setup, where `model`, `trainX`,
+and `trainY` already exist. `await` gives you the history of this fit. A new
+fit on the same model would continue from its current weights.
 
 <CodeBlock language="typescript" title="watch-validation.ts">
 {`function makeEarlyStopping() {
@@ -166,37 +194,86 @@ const trainingLoss = history.history.loss;
 const validationLoss = history.history.val_loss;`}
 </CodeBlock>
 
-Five epochs without a new best validation loss stop the run, unless the
-500-epoch budget ends first. TFJS 4.22.0 leaves the final weights in place.
-this callback does not restore the best checkpoint. Saving and restoring that
-checkpoint is separate work, described in the reference.
+The callback compares each epoch's validation loss with the lowest value seen
+so far. With `minDelta: 0`, any strictly lower value resets its wait to zero.
+An equal or higher value adds one. Five consecutive non-improvements stop the
+run, unless the epoch budget ends first. Even a drop smaller than 5% counts as
+an improvement for this callback.
 
-Batch size trades memory and throughput against update frequency and
-variability. Smaller batches update more often. Larger ones average more
-examples per update. Compare on the actual model and hardware.
+For validation losses `[1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]`, epoch 2 sets the
+best value. Epochs 3 through 7 add five non-improvements, so the callback stops
+after epoch 7. Falling training loss does not reset that validation wait.
 
-## Reading the training curves
+TensorFlow.js 4.22.0 keeps the final weights. This callback does not restore
+the best checkpoint. Saving and restoring copies of those weights is separate
+work, described in the reference. A valid run may stop before 20 epochs or
+reach all 500. Neither outcome alone proves a training error.
 
-For the challenge's trend rule, compare the last ten losses with the previous
-ten. Fewer than 20 values means `insufficient-history`. Reject unequal arrays
-or non-finite, negative losses before making a comparison.
+## A separate summary of recent trends
 
-<CodeBlock language="typescript" title="compare-two-windows.ts">
-{`const mean = values => values.reduce((sum, x) => sum + x, 0) / values.length;
-const before = mean(losses.slice(-20, -10));
-const recent = mean(losses.slice(-10));
-const improving = recent < before * 0.95 - 1e-12;
-const worsening = recent > before * 1.05 + 1e-12;`}
+Your `diagnose(trainLosses, valLosses)` function summarizes two recent windows
+after the fit. It does not control the callback. Give it copies of the **full**
+training and validation arrays from `history.history`, before any chart
+sampling. Reject inputs that are not arrays, differ in length, or contain
+non-finite or negative numbers. Two valid arrays shorter than 20 entries
+return `insufficient-history`.
+
+The activity starts with the same 50-entry diagnostic fixture used by a grader
+probe. These chosen loss values illustrate the rule. They are separate from
+your measured fit history. The first 30 entries are 20. The next ten are 1.
+The final ten are 0.8 for training and 1.2 for validation. At 50 entries, compare
+epochs 31-40 with 41-50. Older epochs do not belong to either recent window.
+
+<CodeBlock language="javascript" title="compare-two-windows.ts">
+{`const exampleTraining = [
+  ...Array(30).fill(20), ...Array(10).fill(1), ...Array(10).fill(0.8),
+];
+const exampleValidation = [
+  ...Array(30).fill(20), ...Array(10).fill(1), ...Array(10).fill(1.2),
+];
+const windowMeans = values => {
+  const average = rows => rows.reduce((total, value) => total + value, 0) / rows.length;
+  return {
+    previous: average(values.slice(-20, -10)),
+    recent: average(values.slice(-10)),
+  };
+};
+console.log(windowMeans(exampleTraining));   // { previous: 1, recent: 0.8 }
+console.log(windowMeans(exampleValidation)); // { previous: 1, recent: 1.2 }`}
 </CodeBlock>
 
-Apply the rules in this order: validation improving, both worsening, training
-improving while validation worsens, any other validation worsening, otherwise
-plateau. The instructions give their return strings. Exactly 5% stays in the
-flat band. Handle a zero previous mean explicitly: zero to positive is
-worsening. Zero to zero is flat.
+For each curve, a drop greater than 5% is improving and a rise greater than
+5% is worsening. Compare by multiplication, with an absolute tolerance of
+`1e-12`: improving means `recent < previous * 0.95 - 1e-12`, and worsening
+means `recent > previous * 1.05 + 1e-12`. Exactly 5% stays flat. Handle a zero
+previous mean first: zero to positive is worsening, and zero to zero is flat.
+You cannot divide by a zero previous mean.
 
-A widening gap is a reason to investigate data, labels, preprocessing and
-model fit. Neither a stopped run nor one curve shape proves the cause.
+Apply these rules in order:
+
+| Observed recent trends | Return value |
+| --- | --- |
+| Validation improves | `validation-improving` |
+| Both curves worsen | `both-worsening` |
+| Training improves while validation worsens | `train-down-validation-up` |
+| Any other validation worsening | `validation-worsening` |
+| Any remaining combination | `plateau` |
+
+The example above returns `train-down-validation-up`. Change the activity's
+observed epoch count to see which original epochs enter the windows. Its
+boundary cases include a flat 5% change and zero means. These are diagnostic
+fixtures, so their illustrated histories do not claim that the callback
+allowed every displayed epoch to run.
+
+Your result chart shows at most 64 evenly spaced points from the actual fit.
+Each point's label keeps its original 1-based epoch number. It does not contain
+every intermediate value in a long run. The diagnosis uses the full arrays,
+and its result records the original recent windows and their means. A failure
+in your diagnosis still leaves the actual curves available. No extra fit is
+needed to inspect them.
+
+A widening gap is a reason to investigate data, labels, preprocessing, and
+model fit. The curves describe what happened. They do not establish a cause.
 
 <Dialogue speaker="Chief Nazari">
 Ten times the compute and you cannot tell me what it bought. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
@@ -204,7 +281,12 @@ Ten times the compute and you cannot tell me what it bought. That's coming out o
 
 <ConceptReference summary="Reference: full training setup, checkpoints, and optimizer details">
 
-### A complete standalone run
+### A separate standalone comparison
+
+This optional example starts another fresh 673-parameter network. It first
+fits a clean generated fixture for 50 epochs, then builds a separate noisy-label
+model with early stopping. Its random row ordering differs from the interleaved
+Challenge setup. Neither run reuses the preceding lesson's trained model.
 
 In Node.js, `setImmediate(loop)` schedules more work on the next event-loop turn. The callback processes a chunk, checks whether to stop, then schedules another call. Training also repeats work, but you must choose its stopping rule.
 
@@ -213,7 +295,7 @@ In Node.js, `setImmediate(loop)` schedules more work on the next event-loop turn
 <CodeBlock language="typescript" title="training-loop.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Prepare the model (from previous lesson)
+// A separate fresh three-feature practice model
 const model = tf.sequential();
 model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
 model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
@@ -378,9 +460,9 @@ TFJS uses 0.001 by default. Set another rate with `tf.train.adam(lr)`. These adj
 ## Challenge
 
 Give Demir a stopping rule for the supplied hundred-row synthetic run.
-Return its actual fit history and inspect the training and validation
-curves from that run. Keep the callback attached to the fit that produced
-those values. A separate curve cannot explain its weight updates.
+Return its actual fit history, inspect both curves, and apply your diagnosis
+to the full history from that run. Keep the callback attached to the fit that
+produced those values. A separate curve cannot explain its weight updates.
 
 The exercise labels observable trends. A short run can provide too little history for its two-window comparison, and a valid run may use its whole epoch budget. Neither case proves a training error.
 
@@ -464,6 +546,10 @@ The exercise labels observable trends. A short run can provide too little histor
 />
 
 > **DISPATCH archive, field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation score had been falling for six days. Nobody had taken responsibility for reading it. Escalation cost: one pulled release, four weeks. Read your second curve.
+
+The ending returns to the crew's bridge run. Its 102 epochs and 0.081 validation
+loss are fictional story values. Your practice result reports its own measured
+history.
 
 <Epilogue>
 

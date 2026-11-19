@@ -1,0 +1,37 @@
+{
+  "key": "llm-integration/llms-for-science",
+  "phase": "epilogue",
+  "room": "bridge",
+  "refs": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/aria-ring.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "prompt": "Use case: illustration-story. Generate one distinctly staged1536x1024 Deep Orbit epilogue scene. The FIRST 2 references are the authoritative neutral crew portraits, in this order: dr-farah, chief-nazari. The LAST reference defines room materials and architecture only. The intervening reference is ARIA ring shell. Reproduce each exact individual, especially facial morphology and age, not merely clothing. Stage exactly these humans: Dr. Farah, adult woman 38, olive-tan skin, dark loosely tied wavy hair, green AR lens over one eye, slate lab coat and stylus, Chief Nazari, mature woman 48, lined tan face, short practical dark hair with grey streaks, olive engineering coverall and restrained warmth. FARAH must be exactly the reference woman: mature38 olive-tan face, broad rounded nose tip and bridge, full rounded cheeks, short rounded chin, restrained almond eyes with canonical eye spacing and brows, faint adult eye/smile lines, natural dark hairline and loosely tied waves. Same anatomical eye has rectangular green AR lens. Do not make a tiny upturned nose, pointed slim jaw, large glamorous eyes or a younger face. NAZARI must be exactly the reference mature48 woman: weathered tan complexion, broad set jaw and cheeks, compact rounded nose, characteristic thick brows/eye spacing, forehead lines, crowfeet and cheek folds. Short practical dark bob with grey streaks. Keep mature features and restrained warm humor, no de-aging or slim pointed chin. Favor frontal or gentle three-quarter faces with both eyes and full nose width visible; retain natural story gaze. Faces should be large enough to verify, not tiny profiles. Late-watch closer scene. Farah seated at the side console strikes a single unsupported paragraph from a paper draft using one stylus hand, her other hand holding the page steady. Nazari watches with a wry but not cruel expression, both hands holding her ledger. The draft contains only abstract horizontal blocks, one crossed out. ARIA appears on a small separate monitor as her canonical abstract ring. One unsupported invented-instrument claim has been logged; the rest still needs review. No final approval. All human faces are clearly visible, expressive and well lit. Keep the adventure inviting, curious and lightly warm, with restrained humor where appropriate. Each human has exactly two continuous arms and two hands with natural thumbs and fingers. Trace every limb to its shoulder. Separate bodies, sleeves, hands, chairs, rails and tabletop volumes with clear silhouettes and natural contact shadows. Avoid crossed or overlapping limbs where they obscure anatomy. No extra limb, forked forearm, fused fingers, floating hand, duplicated person, body through furniture, black silhouettes, humanoid ARIA, readable words, letters, numerals, watermark or fake code. Displays use simple unlabeled visual marks without invented claims. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Any background display copied from the room master must be simplified to plain dark panels or simple waveform plots. No letter-like glyphs, pseudo-equations, decorative scribbles, astronomical pictures, planets, clouds, crystals or arbitrary science pictograms anywhere on displays.  The ARIA reference defines the instrument ring shell. Show that shell on her screen with a thin horizontal waveform contained fully inside the ring, never extending outside it.",
+  "alt": "Farah removes an invented instrument from the draft and records the error in Nazari\u2019s ledger.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+  "lessonSha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/aria-ring.png",
+      "sha256": "bf4357e131080a4f2a3856b9a0e89fa17a3581a66e30fc75cbb3490e392ed5e3",
+      "role": "ARIA reference"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room master"
+    }
+  ]
+}

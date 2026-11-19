@@ -1,0 +1,214 @@
+{
+  "id": "advanced-time-series__beyond-lstm-takeaways",
+  "lesson": "advanced-time-series/beyond-lstm",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "room": "lab",
+  "src": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+  "alt": "Farah and Demir inspect attention weights while keeping the source of the signal unresolved.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.020918+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: dr-farah, ensign-demir. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Farah stands leaning beside seated Demir as he uses the keyboard and looks up at the large wall. Farah watches his reaction, one relaxed palm explaining and the other braced on the bench. Demir has both hands at his keyboard, pleased but still questioning. Use an over-bench shared-display angle, not a duplicate of the concept shot.\nExact visible display content: Title: \"Read earlier states\". Large flow \"Query + Keys\" to \"Scores\" to \"Softmax\" to \"Value blend\". A separate concise evidence strip \"High weights: Step 4 and Step 78\". Footer: \"Influence in this blend, not proof of cause\". Display no new numeric outcomes.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "cc866ca3a637223ef32731c444214cec1f7d9d07b2d020cafbc33e0eb94bc5ff",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room master",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "d25f0965aa4a551ec27ebc0c6da404cc7affed3ab4db0507b96aa5e442d3665f"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+    "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+  },
+  "sourceSha256": "43623987ae593eb03e3fc2d267196648dbed47b8127ff87528338f491c223545",
+  "sourceEvidence": {
+    "task": "Farah stands leaning beside seated Demir as he uses the keyboard and looks up at the large wall. Farah watches his reaction, one relaxed palm explaining and the other braced on the bench. Demir has both hands at his keyboard, pleased but still questioning. Use an over-bench shared-display angle, not a duplicate of the concept shot.",
+    "visibleDataOperationAndResult": "Title: \"Read earlier states\". Large flow \"Query + Keys\" to \"Scores\" to \"Softmax\" to \"Value blend\". A separate concise evidence strip \"High weights: Step 4 and Step 78\". Footer: \"Influence in this blend, not proof of cause\". Display no new numeric outcomes.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "The process diagram and event labels are unnecessarily small relative to the available unused wall display.",
+        "repairDirection": "Put the flow, Step 4 / Step 78 labels and unresolved-cause status on the large lab wall. Recompose the pair so they can clearly see it without blocking the content."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: dr-farah, ensign-demir. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Farah stands leaning beside seated Demir as he uses the keyboard and looks up at the large wall. Farah watches his reaction, one relaxed palm explaining and the other braced on the bench. Demir has both hands at his keyboard, pleased but still questioning. Use an over-bench shared-display angle, not a duplicate of the concept shot.\nExact visible display content: Title: \"Read earlier states\". Large flow \"Query + Keys\" to \"Scores\" to \"Softmax\" to \"Value blend\". A separate concise evidence strip \"High weights: Step 4 and Step 78\". Footer: \"Influence in this blend, not proof of cause\". Display no new numeric outcomes.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp"
+  },
+  "publicationStatus": "withheld pending independent peer review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-d5dbaed9-dddd-491a-92cb-05a4fb7df1ca.png",
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+  "candidateSha256": "43623987ae593eb03e3fc2d267196648dbed47b8127ff87528338f491c223545",
+  "generatedAt": "2026-11-08T17:53:35.149330+00:00",
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 1060,
+      "top": 190,
+      "width": 255,
+      "height": 260
+    },
+    "ensign-demir": {
+      "left": 850,
+      "top": 300,
+      "width": 250,
+      "height": 280
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 1010,
+      "top": 475,
+      "width": 240,
+      "height": 195
+    },
+    {
+      "left": 595,
+      "top": 795,
+      "width": 850,
+      "height": 130
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T18:26:10.727167+00:00",
+    "candidateSha256": "43623987ae593eb03e3fc2d267196648dbed47b8127ff87528338f491c223545",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "dr-farah",
+        "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 1060,
+          "top": 190,
+          "width": 255,
+          "height": 260
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      },
+      {
+        "character": "ensign-demir",
+        "referencePath": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "candidateCropCoordinates": {
+          "left": 850,
+          "top": 300,
+          "width": 250,
+          "height": 280
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah explains the high-weight steps while Demir pauses at the keyboard to inspect the wall.",
+    "emotion": "Thoughtful interest and restrained encouragement.",
+    "eyeline": "Demir looks at the display; Farah looks toward his reaction.",
+    "narrativeReason": "Attention highlights steps 4 and 78 without establishing causation.",
+    "findings": [
+      "Large upright flow has Query + Keys, Scores, Softmax and Value blend; exact Step 4 and Step 78 and causation limitation remain readable.",
+      "Farah open palm and table brace, Demir two keyboard hands trace to four valid arm chains.",
+      "Distinct standing explanation and seated reaction preserve candid story movement."
+    ]
+  },
+  "owner": "/root/quality_sequence",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__beyond-lstm-takeaways/candidate.png",
+  "publishedSource": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+  "webpSha256": "75c6535c8cd3b563c0a5c26932a8692cbea1b0babf696013dc8b5c4abb0746c1",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+    "sourceSha256": "d25f0965aa4a551ec27ebc0c6da404cc7affed3ab4db0507b96aa5e442d3665f",
+    "webpSha256": "fc2981a5a8e06d9d357d388264e3f4c7645159cebe9c533a0b5ed0c5620ccdaf",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-911093c5-1570-4829-ad68-f60861ce9d28.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_runtime",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "43623987ae593eb03e3fc2d267196648dbed47b8127ff87528338f491c223545",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Large upright flow has Query + Keys, Scores, Softmax and Value blend; exact Step 4 and Step 78 and causation limitation remain readable.",
+      "Farah open palm and table brace, Demir two keyboard hands trace to four valid arm chains.",
+      "Distinct standing explanation and seated reaction preserve candid story movement.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

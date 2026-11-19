@@ -1,0 +1,210 @@
+{
+  "key": "prompt-engineering-epilogue",
+  "id": "llm-integration/prompt-engineering",
+  "phase": "epilogue",
+  "source": "art-src/scenes/llm-integration__prompt-engineering-epilogue-openai-20261107.png",
+  "sourceSha256": "abfcb90bd418086fcb7b91a756d3d9070793d13d52e45a7dd4fb52b545641508",
+  "auditIndex": 69,
+  "auditHold": "Version-comparison story is visible but papers and main screen contain only placeholder bars. Make the shared comparison explicit: v8 versus v9, new normal-frequency reference line, separate-reading tests pending, database access unavailable,4h50remaining. Keep papers oriented toward Demir if readable. Dark incidental charts/wrist and mute pillar.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. First2 canonical Farah/Demir portraits,third lab ROOM ONLY,final exact edit target. Turn ONLY the tiny cropped auxiliary monitor at extreme upper-left edge completely inactive charcoal black. Remove all of its sage bars and markings, preserve bezel. Main Prompt revision display stays exactly unchanged including5,12,23,47Hz and4h50min. Preserve all faces, natural hands, body poses, room, other screens and subdued palette.1536x1024. No other edits.",
+  "promptSha256": "98a7202392889bcf7a488f94cbe59763526d7bbb0731905d89ecf65681b1130c",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-15996177-463e-49ad-881b-8cc6c72256ee.png",
+      "sha256": "23b1c3a61d91f4e6a04d267cd6afe1422e2ee50d2a4e950c9b93f931e342cecd"
+    }
+  ],
+  "alt": "Demir compares prompt versions while Farah prepares tests on separate readings.",
+  "location": "Archimedes, Lab",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9eb20b1b-cbbf-4acb-9340-59ce7d89bf07.png",
+  "candidatePath": "art-src/scenes/llm-integration__prompt-engineering-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9eb20b1b-cbbf-4acb-9340-59ce7d89bf07.png",
+  "candidateSha256": "abfcb90bd418086fcb7b91a756d3d9070793d13d52e45a7dd4fb52b545641508",
+  "ownReview": {
+    "reviewer": "/root/remaining_signal_llm",
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Native inspection: contextual v8/v9 prompt revision, frequency catalogue and pending separate-reading tests; no fabricated results. Natural shared task, appropriate reader directions, physical display perspective, natural hands and proportions, all unrelated monitors dark.",
+    "identityCrops": "pass",
+    "comparisonImagesDeleted": true
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-15996177-463e-49ad-881b-8cc6c72256ee.png",
+      "sha256": "23b1c3a61d91f4e6a04d267cd6afe1422e2ee50d2a4e950c9b93f931e342cecd",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+    }
+  ],
+  "history": [
+    {
+      "prompt": "Use case: precise-object-edit. Image1: dr-farah canonical identity authority. Image2: ensign-demir canonical identity authority. Image3: lab ROOM ONLY master, not incidental UI or oversaturated light. Finalimage: exactedit target.\nRestage version comparison as natural lab work: Demir seated reading a physical monitor at his left, Farah stands nearby leaning one palm on desk with relaxed shortneck, other hand holding a closed source binder against hip. Demir uses mouse with one hand and rests other on a small blank ruled notebook, no camera-facing papers. Both look at monitor with cautious curiosity. Display header Prompt revision, two columns v8 / v9. Row Frequency catalogue: missing / 5, 12, 23, 47 Hz. Below rows Separate-reading tests: pending / Database access: unavailable / Window in: 4 h 50 min. No completed model results or success checkmarks. All perspective matches monitor. Dark auxiliaries and wrist, subdued pillar.\n Farah wears translucent sage AR lens on anatomicalLEFT eye. Never omit it. Demir has one communicator on anatomicalRIGHT ear; when hidden by head do not draw it floating beside eye/cheek. Canonical identity and age from portraits, naturally expressive faces in three-quarter view; normal adult head/body proportions and necks. Two arms per person, trace shoulders to elbows to wrists and exactly one natural five-finger hand each. No hand/furniture penetration. Every display has a physical frame; its front must face its actual readers as well as obliquely visible to camera. Every line, arrow and letter lies in its screen plane. Any notebook is blank faintly ruled, never fake handwriting. No mugshot or posed presentation, no one looks at camera. Warm light localized, muted charcoal/neutralgray/olive, sage #6BAA8A interfaces, aged brass #A89060. Avoid electriclime/yellowwash, no plants. Dark unused screens and wrist displays. Clean bold linework, flat celshading, cohesive Deep Orbit series. 1536x1024 landscape. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-15996177-463e-49ad-881b-8cc6c72256ee.png",
+          "sha256": "23b1c3a61d91f4e6a04d267cd6afe1422e2ee50d2a4e950c9b93f931e342cecd"
+        }
+      ],
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-15996177-463e-49ad-881b-8cc6c72256ee.png",
+      "candidateSha256": "23b1c3a61d91f4e6a04d267cd6afe1422e2ee50d2a4e950c9b93f931e342cecd",
+      "ownReview": {
+        "reviewer": "/root/remaining_signal_llm",
+        "verdict": "hold",
+        "nativeFull": true,
+        "notes": "Main comparison andbody/readerlogic pass, tiny cropped upperleft auxiliary still has arbitrary markings. Turn it off."
+      }
+    }
+  ],
+  "identityCropReview": [
+    {
+      "key": "prompt-engineering-epilogue",
+      "character": "demir",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9eb20b1b-cbbf-4acb-9340-59ce7d89bf07.png",
+      "sourceSha256": "abfcb90bd418086fcb7b91a756d3d9070793d13d52e45a7dd4fb52b545641508",
+      "crop": {
+        "left": 760,
+        "top": 260,
+        "width": 250,
+        "height": 310
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "referenceCrop": {
+        "left": 125,
+        "top": 5,
+        "width": 270,
+        "height": 330
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad brows, round brown eyes, nose bridge and tip, rounded jaw/chin, freckles, light stubble and swept hairline. Side-view foreshortening remains plausible; right-ear communicator is correctly visible or hidden with the pose, never moved to left ear.",
+      "comparisonDeleted": true
+    },
+    {
+      "key": "prompt-engineering-epilogue",
+      "character": "farah",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9eb20b1b-cbbf-4acb-9340-59ce7d89bf07.png",
+      "sourceSha256": "abfcb90bd418086fcb7b91a756d3d9070793d13d52e45a7dd4fb52b545641508",
+      "crop": {
+        "left": 1005,
+        "top": 140,
+        "width": 260,
+        "height": 310
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "referenceCrop": {
+        "left": 115,
+        "top": 5,
+        "width": 290,
+        "height": 335
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad soft cheek/jaw, rounded chin, arched brows, almond eye spacing, nose shape, mouth proportions and mature complexion. Gaze and three-quarter rotation account for apparent width differences; low ponytail and anatomical left-eye AR lens remain consistent.",
+      "comparisonDeleted": true
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-9eb20b1b-cbbf-4acb-9340-59ce7d89bf07.png",
+  "publishedSource": "art-src/scenes/llm-integration__prompt-engineering-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-epilogue.webp",
+  "webpSha256": "4f79a8e2b7fc639787b086c05baf412b9f1cefb6423d8dedb11873b3a919a5e8",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__prompt-engineering-epilogue-openai-20261107.png",
+    "sourceSha256": "43d44cc052ed44ca27a80510f779bf82ecd17a7fff234f78fa86a1d10775ba43",
+    "webpSha256": "c92b48dfc09b3bf9616adffc9811c42b387a90e3df66f29a05237f934e526e6b",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_signal_llm",
+    "status": "approved",
+    "candidateSha256": "abfcb90bd418086fcb7b91a756d3d9070793d13d52e45a7dd4fb52b545641508",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Demir and Farah inspect the v8/v9 prompt change. Missing catalogue becomes5,12,23,47Hz, separate-reading tests remain pending, database access unavailable and window4h50min match current ending. Natural mouse/book/desk hands, ordinary shoulders, fixed faces; all display rows follow the wall plane and auxiliary monitors are dark.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+          "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+        "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__prompt-engineering-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__prompt-engineering-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-epilogue.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

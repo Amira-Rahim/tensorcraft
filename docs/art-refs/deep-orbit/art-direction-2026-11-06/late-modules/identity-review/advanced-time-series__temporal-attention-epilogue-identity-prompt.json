@@ -1,0 +1,52 @@
+{
+  "queueIndex": 4,
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "epilogue",
+  "status": "awaiting-identity-correction",
+  "inputScene": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-epilogue-original.webp",
+  "inputSceneSha256": "00ba68930ffde0f524304663fa5405b949b77f1eefb8836bc122f3335e570c9b",
+  "cast": [
+    "nazari",
+    "demir"
+  ],
+  "faceBoxes": {
+    "nazari": [
+      170,
+      15,
+      290,
+      320
+    ],
+    "demir": [
+      780,
+      180,
+      270,
+      350
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-epilogue-original.webp",
+      "sha256": "00ba68930ffde0f524304663fa5405b949b77f1eefb8836bc122f3335e570c9b",
+      "role": "target scene",
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "00ba68930ffde0f524304663fa5405b949b77f1eefb8836bc122f3335e570c9b",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve. STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral identity of chief-nazari. Image 2 is the authoritative neutral identity of ensign-demir. Image 3 is the scene to correct and is NOT an identity authority. chief-nazari is the existing person whose head is near 0.21 of image width and 0.17 of image height. ensign-demir is the existing person whose head is near 0.60 of image width and 0.35 of image height. Change only heads, hair and neck transitions to make every person unmistakably the SAME INDIVIDUAL as their neutral anchor. Retain current head rotation, gaze and appropriate facial expression, using expression alone without changing facial structure. Preserve exactly the entire room, bodies, all existing arms and hands, uniforms, furniture, teaching displays and graphics, props, colors, lighting direction, composition and image size. NAZARI: faithfully reproduce the anchor's 48-year-old weathered tan face, broad set jaw and rounded chin, nose bridge and tip width, eye spacing and shape, eyebrow geometry, mouth proportions, crow's feet, forehead and cheek lines, dark practical short hair with the same grey streak placement and hairline. Keep mature age and strong lower-face width. Do not narrow the chin, smooth age lines, enlarge eyes, change the nose or turn her into a younger elegant woman. Her restrained warmth is expression only. DEMIR: faithfully reproduce the anchor's mid-twenties face proportions, warm light-medium complexion, broad softly squared lower face, short rounded chin, round-ended nose of the same width, distinctive fairly straight eyebrows and exact eye spacing/size, short uneven stubble, sparse freckles, compact tousled hair with the same hairline and front locks, and green round comms earpiece on the same anatomical ear as the anchor. Do not elongate or sharpen the jaw, pinch the nose, increase eye size, create a tall heroic quiff or make a different handsome anime character. Every face must match its individual portrait without relying on clothes or equipment. No new people, no added arms/hands, no text or decorative symbols. One 1536x1024 scene. Do not modify any screen or plot, even if you think it can be improved.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__temporal-attention-epilogue-identity-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__temporal-attention-epilogue-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+  "originalInputScene": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp"
+}

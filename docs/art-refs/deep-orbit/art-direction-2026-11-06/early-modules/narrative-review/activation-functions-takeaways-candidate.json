@@ -1,0 +1,81 @@
+{
+  "id": "neural-networks/activation-functions",
+  "phase": "takeaways",
+  "currentSource": "art-src/scenes/neural-networks__activation-functions-takeaways-openai-20261107.png",
+  "currentSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e",
+  "reviewedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+  "reviewedSha256": "6439813fe4bd9b4ac8834e6929d27e97d53d7c82ea7df77a80703bac7bfa2b3e",
+  "pendingCandidate": false,
+  "cast": [
+    "chief-nazari",
+    "dr-farah"
+  ],
+  "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/activation-functions-sheet.jpg",
+  "slug": "activation-functions",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-0f52466f-5eea-47b9-acf4-680d0d6c8923.png"
+  ],
+  "prompt": "Use case: identity-preserve precise whole-body pose repair. First2 inputs canonical Farah and Nazari; last TARGET. Keep existing same two characters, facial morphology and mature ages, restrained palette, scene meaning, all EXACT screen text/values and natural perspectives. Farah's current chest points right/back away while her face turns too far back toward Nazari. Rebuild Farah's WHOLE chair, pelvis, chest and both complete shoulder-arm-hand chains into a comfortable open diagonal facing halfway between Nazari and the right console. Show the front of her coat lapels and gray chest neckline, not the back coat panel. Keep her focused glance at Nazari but no more than40degrees yaw relative to chest. Her nearer hand naturally rests on desk edge and farther hand naturally reaches the nearby threshold dial without crossed arms, detached wrists or impossible joints. Seat has enough adult thigh room. Do NOT shrink head or change face identity, no head-only correction. Nazari remains leaning beside the chair with one hand on chair top and the other pointing at converted scores, skeptical raised brow; adjust only her hand-to-chair contact if needed to match corrected chair. They are engaged with each other, never camera-facing. Text must be embedded in each display's actual plane, exact -0.06\u21920.485,1.04\u21920.739,Alert threshold:0.5,Separate decision rule retained. No extra screens/icons/captions. Farah anatomicalLEFT lens, Nazari no ear gadget. Exactly4continuous arms/4hands. Preserve1536x1024 composition and coherent desk, lighting and shadows.",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/activation-functions-takeaways-candidate.json",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b2bf28d9-b7ea-4c68-8df8-c1ec1754b958.png",
+  "tool": "built-in image_gen",
+  "date": "2026-11-07",
+  "status": "pending review",
+  "previousNarrativeCandidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-0f52466f-5eea-47b9-acf4-680d0d6c8923.png",
+  "repairInstruction": "Rebuild whole Farah chair, pelvis, chest and both shoulder-arm-hand chains into open diagonal halfway between Nazari and console; show front coat lapels; head yaw at most40degrees; preserve identities, balanced scale, all exact screens and perspective,4hands.",
+  "pathSha256": "2dccaf23df2deee67b586559f52946e8f064dfd87234b544808d503cf4b48a67",
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/activation-functions-takeaways-chief-nazari-proof.png",
+      "sha256": "a9ccb6128ab9101398c1a09f7cdc21fe867dc05f900a9f4e905caa487f70c2df",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b2bf28d9-b7ea-4c68-8df8-c1ec1754b958.png",
+      "candidateSha256": "2dccaf23df2deee67b586559f52946e8f064dfd87234b544808d503cf4b48a67",
+      "crop": {
+        "left": 430,
+        "top": 60,
+        "width": 285,
+        "height": 300
+      }
+    },
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/activation-functions-takeaways-dr-farah-proof.png",
+      "sha256": "6ddbf66a91f50aae57d4ebf23efc5cd508af724eaf23901afe035885fb94c930",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b2bf28d9-b7ea-4c68-8df8-c1ec1754b958.png",
+      "candidateSha256": "2dccaf23df2deee67b586559f52946e8f064dfd87234b544808d503cf4b48a67",
+      "crop": {
+        "left": 690,
+        "top": 210,
+        "width": 280,
+        "height": 310
+      }
+    }
+  ],
+  "previousStagePrompt": "Use case: identity-preserve narrative restaging. Asset:1536x1024 landscape illustrated story frame for Deep Orbit. Inputs first 2: immutable canonical characters chief-nazari, dr-farah. LAST input: existing scene to restage, maintaining its style, room, factual display content and character identities. User requests a living story scene, not a portrait or explanation poster. Rebuild the WHOLE body pose, furniture and camera as needed, do not rotate only a head. Keep exact canonical facial morphology, age, eyes, compact nose, broad jaw/chin and skin tones even in changed expression/yaw. Farah38 with anatomicalLEFTlens; Nazari48 mature graybob, bare ears. Maintain warm moderate adult stylization and current balanced head scale; do not shrink heads. Muted sage, gray and restrained brass, no neon mint or bright yellow wash. Restage entire scene as a candid disagreement during bridge work. Farah sits at the shared workstation, torso naturally angled toward it, actively turns its threshold control with one hand and braces the other on the console. Nazari leans in from the side, one hand on the chair back, other fingertip indicating the upper converted-score row, looking at Farah with a skeptical raised eyebrow. Farah glances naturally toward Nazari in mid reply, focused not generic smiling. Their faces natural three-quarter, heads aligned to torsos. They are not standing in a row and not presenting anything. Remove the held tablet entirely. Integrate EXACT existing data into one practical workstation screen: 'Sigmoid scores', 'rounded', '-0.06 \u2192 0.485', '1.04 \u2192 0.739'; separate small control area 'Alert threshold: 0.5', 'Separate decision rule'. This is the setting they are checking. Exactly4hands with connected arms. Nazari bare ears, no ear gadget. Show chair/legs/desk clearance naturally. No other characters. No text beyond specified existing task data. No decorative plots, no left accent bars, no em dash, no captions outside the scene, no looking at camera, no frontal card display, no generic lecturer smile. Keep canonical3quarter facial visibility through sensible camera placement, not twisted necks.",
+  "promptProvenance": "Recovered exact whole-body repair prompt from original tool call; actual reference list unchanged and remains canonical2 plus target without room master.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-0f52466f-5eea-47b9-acf4-680d0d6c8923.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a69e331b-b1e8-47c7-a609-3f52ef21d258.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-b2bf28d9-b7ea-4c68-8df8-c1ec1754b958.png",
+      "art-src/scenes/neural-networks__activation-functions-takeaways-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

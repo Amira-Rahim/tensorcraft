@@ -1,0 +1,44 @@
+{
+  "queueIndex": 69,
+  "key": "deep-orbit/llm-integration/rag-for-signals",
+  "phase": "challenge",
+  "status": "awaiting-new-generation",
+  "newGeneration": true,
+  "cast": [
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      778,
+      11,
+      350,
+      451
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__rag-for-signals-challenge-display-stage1-openai-20261107.png",
+      "sha256": "04b52cffd9408664379c90a5fd9c178b6b0ef4619b0dd0dbc769018cb916f8d2",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. First references are canonical neutral crew portraits; LAST image is target scene. Change ONLY the graphics on Demir right-hand display, the one beneath his raised stylus. Keep left display selected waveform records and dim omitted matches. Right display must show a source record card at left, a small highlighted FIELD inside that source card (one horizontal short bar beside one small outlined unit square), linked by one thin line directly to an identical field pair inside a draft claim card at right. Source card has a small waveform and two plain rows; draft claim card has three horizontal prose bars. No intermediate branching pipeline, no repeated waveforms as claim fields. Clear source field plus unit matching, not general waveform similarity. No readable text or numerals. Preserve exactly all other faces, people, bodies, arms, hands, uniforms, props, furniture, room, camera, colors and lighting. No added humans or limbs. One1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/llm-integration__rag-for-signals-challenge-display-repair-prompt.json",
+  "newSource": "art-src/scenes/llm-integration__rag-for-signals-challenge-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-challenge.webp",
+  "alt": "Demir checks cited fields while keeping omitted archive matches visible.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+  "lessonSha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/llm-integration__rag-for-signals-challenge-display-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/llm-integration__rag-for-signals-challenge-prompt.json",
+      "reason": "Change ONLY the graphics on Demir right-hand display, the one beneath his raised stylus. Keep left display selected waveform records and dim omitted matches. Right display must show a source record card at left, a small highlighted FIELD inside that source card (one horizontal short bar beside one small outlined unit square), linked by one thin line directly to an identical field pair inside a draft claim card at right. Source card has a small waveform and two plain rows; draft claim card has three horizontal prose bars. No intermediate branching pipeline, no repeated waveforms as claim fields. Clear source field plus unit matching, not general waveform similarity. No readable text or numerals."
+    }
+  ]
+}

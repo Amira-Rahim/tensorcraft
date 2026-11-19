@@ -98,7 +98,7 @@ interface CharacterAvatarProps {
 ## Documentation
 
 - `docs/character-bible.md` is the deliverable doc.
-- `docs/dev-plan.md`: record (a) real cel-shaded art is pending external production (prompts are in the bible), (b) the other 20 character sheets + theme wiring are gated on those themes launching, (c) character *animation* is a planned follow-up stream that will consume the expression sets.
+- [the product roadmap](../../../ROADMAP.md): record (a) real cel-shaded art is pending external production (prompts are in the bible), (b) the other 20 character sheets + theme wiring are gated on those themes launching, (c) character *animation* is a planned follow-up stream that will consume the expression sets.
 
 ## Risks / open questions
 

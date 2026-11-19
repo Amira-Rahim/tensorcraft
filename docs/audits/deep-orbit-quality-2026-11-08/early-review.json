@@ -1,0 +1,2212 @@
+[
+  {
+    "lesson": "foundations/data-loading",
+    "phase": "briefing",
+    "source": "art-src/scenes/foundations__data-loading-openai-20261107.png",
+    "sourceSha256": "3577cf5c7a158ede51aaa4b8da1f490ebe293e956b75b5760bd91a4301678bdf",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir slumps with his head supported after the allocation failure. The 19,204 of 28,800 readings and about 40 GB match the failed overnight load; a permitted incident lamp motivates the red accent."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "context": "Briefing RangeError passage and raw-capture explanation.",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/data-loading",
+    "phase": "challenge",
+    "source": "art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+    "sourceSha256": "27400b05fb31cd0b7fbf91b2bbf4abec82eae08cb45a4e1dcb063b329c9776ab",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir operates the split viewer with plausible seated support and readable focused gaze. IDs 0 through 11 and 12 through 15 are legible, complete and aligned to the screen plane."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "context": "Challenge and Training and validation periods: 16-row stand-in, earlier 12 training IDs, last four validation IDs.",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/data-loading",
+    "phase": "concept",
+    "source": "art-src/scenes/foundations__data-loading-concept-openai-20261107.png",
+    "sourceSha256": "161bfe31832c5f183925de5a388e96f4a6d0a50eade8a1d2811e3d3f73ecf6ee",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir traces the requested row into feature and label tensors. The raised arm connects naturally and the display correctly maps ID 1 to [100, 1, 0.1] and label [1]."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "context": "Reading samples on demand and readSample solution: features [i * 100, i, i / 10], label i % 2.",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/data-loading",
+    "phase": "epilogue",
+    "source": "art-src/scenes/foundations__data-loading-epilogue-openai-20261107.png",
+    "sourceSha256": "0a25871b236b0b51de0d86228eeb80fd62674b2c15b74e683e43b17d0dffb597",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "A connected raised fist and relieved look support the earned replay completion. The four-minute duration is labeled story and the steady memory trace has a clear archive-row axis."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "context": "Epilogue: 28,800 readings, four-minute fictional rebuild, steady memory and raised fist.",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/data-loading",
+    "phase": "takeaways",
+    "source": "art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+    "sourceSha256": "84c6d4c155fd0636e9a7d0fa80f94fb90957c76698cb907aaf76d93140ff84a9",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir leans over the work surface while reviewing the time split. Hands, wrist contact, screen perspective and the training-only shuffle branch are coherent, with distinct framing from the earlier seated operation."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "context": "Training and validation periods, RecallPrompt and LessonRecap: split by time, shuffle training rows before batch, read on demand, preserve sequential examples.",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/introduction-to-tensors",
+    "phase": "briefing",
+    "source": "art-src/scenes/foundations__introduction-to-tensors-openai-20261107.png",
+    "sourceSha256": "ae4a31d2d1e171655cbbb195fbd127ce9542e46cbc3bc9d1d7643f8a7357a838",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza leans on the rail while Demir studies the selected readings. Faces, contact points and muted bridge palette match the benchmark; all 12 table values match the recording."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+        "context": "Briefing selected A-D at moments 1-3, recording header order and 4,096 failed rules.",
+        "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/introduction-to-tensors",
+    "phase": "challenge",
+    "source": "art-src/scenes/foundations__introduction-to-tensors-challenge-openai-20261107.png",
+    "sourceSha256": "aa8cef558d7e818b54368decc37a40c8760f936fc161ebe5260db531240830ed",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir types at a plausible console with natural seated proportions. The full 12-value array and unfinished reading and shape assignments correctly preserve the challenge state."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+        "context": "Challenge and guidance: create tf.tensor(streamValues), then save reading.shape.",
+        "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/introduction-to-tensors",
+    "phase": "concept",
+    "source": "art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+    "sourceSha256": "b4818e77bd46fe60626a78e669d513648f3ffd34ac589d3ac6cbeab834d02a35",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The closer working view keeps Demir's face and hands readable. Tensor call, [12] shape and archive-header provenance are crisp and consistent with the screen plane."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+        "context": "What the example shows: one axis holding 12 values; order comes from recording header.",
+        "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/introduction-to-tensors",
+    "phase": "epilogue",
+    "source": "art-src/scenes/foundations__introduction-to-tensors-epilogue-openai-20261107.png",
+    "sourceSha256": "77a89d2e985cf6ab9c8a9a29aa841a699c05f12ffc9a881ce8dc3b37f28890ec",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir presses the chart control with coherent posture and an attentive gaze. All labels match the recording. Root cross-review confirmed the lower D panel's local constant-value direction slopes upward on the page: the two 8-valued points are approximately parallel to that direction, with only about 3 px residual deviation, so no clear data-shape defect is established."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+        "context": "Epilogue and briefing data: D is [8, 8, 9], so its first segment must be level in the chart plane.",
+        "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+      },
+      {
+        "path": "art-src/scenes/foundations__introduction-to-tensors-epilogue-openai-20261107.png",
+        "context": "Native plane check: D panel top approximately (138,543) to (451,518), bottom (150,627) to (460,599), D points (218,593), (324,587), (424,562).",
+        "sha256": "77a89d2e985cf6ab9c8a9a29aa841a699c05f12ffc9a881ce8dc3b37f28890ec"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/introduction-to-tensors",
+    "phase": "takeaways",
+    "source": "art-src/scenes/foundations__introduction-to-tensors-takeaways-openai-20261107.png",
+    "sourceSha256": "cb7ca5a6a9ba116101ab371654eb552848f61c01a2ef57fc0bd38530957a4ca6",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir turns naturally toward the grouping table while keeping a hand on the mouse. Supplied grouping, tensor shape and No model trained preserve the lesson's honest result."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+        "context": "LessonRecap and RecallPrompt: shape [12], supplied grouping, no model trained.",
+        "sha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/normalization",
+    "phase": "briefing",
+    "source": "art-src/scenes/foundations__normalization-openai-20261107.png",
+    "sourceSha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 5,
+      "pose": 5,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 5,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The benchmark scene itself retains balanced skin and metal colors, clear three-person eyelines and distinct actions. Mirza supports herself on the rail, Demir types and Farah guides him with a stylus. The four supplied rows are exact."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+        "context": "Scaling each feature: [20,0.2], [22,0.8], [24,0.4], [26,0.6].",
+        "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/normalization",
+    "phase": "challenge",
+    "source": "art-src/scenes/foundations__normalization-challenge-openai-20261107.png",
+    "sourceSha256": "184ab3773c9506f3883caffbf5137bf870af5eead163f7b9d4b41ba4db2db0fc",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir works the console touch surface with both hands grounded. The display preserves all four inputs, fixed weights [0.9,-1.4], bias -0.3, sigmoid and pending scores [4,1]."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+        "context": "The fixed preview neuron and Challenge: supplied model, fit statistics, scale, then predict.",
+        "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/normalization",
+    "phase": "concept",
+    "source": "art-src/scenes/foundations__normalization-concept-openai-20261107.png",
+    "sourceSha256": "8ed4c6dbc305b4efa6228eb09e8f77cb22398a1a9a1ce0236b31d9ee16cf76b9",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir leans toward Farah with a questioning brow while she considers the work. Hands and necks are coherent. The screen's per-column means, rounded standard deviations and first scaled row match the source."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+        "context": "Scaling each feature and reference: mean [23,0.5], std about [2.236,0.224], first scaled row [-1.342,-1.342].",
+        "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/normalization",
+    "phase": "epilogue",
+    "source": "art-src/scenes/foundations__normalization-epilogue-openai-20261107.png",
+    "sourceSha256": "3d238630d01f72e5d8393d89bdae7b89c878ecddcd3541a93130b32106bfe724",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah operates the mouse as Demir bends to inspect the unresolved sample with concern. The chair contact and arm chains read naturally. Screen language keeps the sample's cause unknown and avoids turning a near-boundary score into a discovery."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+        "context": "Epilogue and BossBeat: sample 7741 from eight days ago, preview near boundary, cause unresolved.",
+        "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/normalization",
+    "phase": "takeaways",
+    "source": "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+    "sourceSha256": "8e5f940844250eabfd8c3cce5e0d6be232b6da080af37fbdbd5451dc1eec7eba",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah reviews saved bounds with a grounded mouse grip and calm focused gaze. Exact min-max bounds, reuse instruction, future-value warning and zero-range divisor are readable and follow the monitor perspective."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+        "context": "Min-max scaling and LessonRecap: bounds [20,26] and [0.2,0.8], reuse training statistics, divisor 1 for zero range.",
+        "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-operations",
+    "phase": "briefing",
+    "source": "art-src/scenes/foundations__tensor-operations-openai-20261107.png",
+    "sourceSha256": "b2363ca3fc8880b22b6409367a565ea15315a7d724e12f5e5fd54ee3f0f2c333",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari leans in with an irritated response while Demir rubs his forehead and works the stalled console. Connected arms, plausible pliers grip and the exact 64 versus 1 inner-shape failure make this a strong specific story moment."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+        "context": "Briefing failed [1,64] matMul [1,64], 64 waiting channels.",
+        "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-operations",
+    "phase": "challenge",
+    "source": "art-src/scenes/foundations__tensor-operations-challenge-openai-20261107.png",
+    "sourceSha256": "ffade29afd79d1b4db069e254496c9c2747b08f05d37e64665b4b25db952b725",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir adjusts a console dial while reviewing a pending broadcast test. The three [0,2], [4,6], [8,10] rows, pass2 [2,4] and gain 3 match the exercise case; controls and hand contacts are coherent."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+        "context": "add-tensors.yaml broadcasting test at lines 149-166.",
+        "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml",
+        "context": "add-tensors.yaml broadcasting test at lines 149-166.",
+        "sha256": "b93953d1e7ac07844f3b6862cb345a4fd37f4d89f8ba5430bcbf0ee3146e3c12"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-operations",
+    "phase": "concept",
+    "source": "art-src/scenes/foundations__tensor-operations-concept-openai-20261107.png",
+    "sourceSha256": "b159feed029519c49b14ad1d4e4c397d2e27913aafb5c46d6e05f6bf7eadf1f9",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir traces the worked average while checking Nazari's reaction. His pointing arm and shoulder turn are connected; the [2,10] and [4,8] average [3,9] and gain-2 output [6,18] are exact."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+        "context": "Averaging and amplifying the readings: first worked row.",
+        "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-operations",
+    "phase": "epilogue",
+    "source": "art-src/scenes/foundations__tensor-operations-epilogue-openai-20261107.png",
+    "sourceSha256": "7db46c9493e81a09fe9038f7065724cc033284fb1ed6bb686341f89626d97b54",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari points to the repeated ripple while Demir listens. The display identifies its schematic and four-channel excerpt, preserving the hour and 64-channel source without inventing a numerical signal trace."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+        "context": "Epilogue: repeated coordinated ripple in an hour of combined readings, confirmed on passes 2 and 3.",
+        "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-operations",
+    "phase": "takeaways",
+    "source": "art-src/scenes/foundations__tensor-operations-takeaways-openai-20261107.png",
+    "sourceSha256": "89b48de2b355ab0542d4710f042e806eedee1394755312d4081074083a49b3f9",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The seated exchange is relaxed, with coherent hand contact and readable expressions. The monitor preserves worked first-row values and the mix transpose's axis meanings."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+        "context": "Weighted channel sums and LessonRecap: block.matMul(mix.transpose()), result [readings,banks], mix [banks,channels].",
+        "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-shapes",
+    "phase": "briefing",
+    "source": "art-src/scenes/foundations__tensor-shapes-openai-20261107.png",
+    "sourceSha256": "0efb3be24597880871e8b230e7a7081ee6b3628fa4a953628363ff1eff88a529",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 3,
+      "expression": 4,
+      "displays": 5,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "The exact 12 readings and highlighted A column are crisp. Farah is much smaller and shorter-bodied than the benchmark's active crew framing, with a large head over a compressed torso and legs. The wide lecturer-pointing composition places hardware ahead of the character's act of checking the received header."
+    ],
+    "repairDirection": "Move to a closer three-quarter view of Farah comparing the recording header with the grid, with a naturally supported adult body and a specific attentive reaction. Keep all 12 verified values and A-column emphasis.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+        "context": "Briefing: Farah opens Demir's header and checks which readings make each line.",
+        "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-shapes",
+    "phase": "challenge",
+    "source": "art-src/scenes/foundations__tensor-shapes-challenge-openai-20261107.png",
+    "sourceSha256": "f156cacdeda2804166c36f01e77da992748e5f93d0d56988f002c94a43c7d0e6",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah types with natural seated support and an attentive gaze. The exact list, requested [3,4] and [4,3] shapes, axis meanings and Awaiting code state are clean and appropriately provisional."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+        "context": "Challenge and Farah's plan: same 12 readings, one moment per row then one sensor per row.",
+        "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-shapes",
+    "phase": "concept",
+    "source": "art-src/scenes/foundations__tensor-shapes-concept-openai-20261107.png",
+    "sourceSha256": "674b28a68c2a84293136ff1d4aa0bb624526a160ad7274da7dcd8fb6a401da79",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 3,
+      "displays": 5,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "Both grids are exact and the arm is connected, but the hand-on-hip lecturer pose, smile and upward gaze make the action feel staged. It repeats the briefing and ending's pointer-at-wall treatment rather than showing her checking the rearrangement."
+    ],
+    "repairDirection": "Restage as Farah actively comparing an A-column selection with its transposed row, eyes following her stylus or the change, with a specific checking expression and a different camera/action from briefing and ending.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+        "context": "Farah's plan: transpose gives A [2,3,4] and keeps all sensors' readings together.",
+        "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-shapes",
+    "phase": "epilogue",
+    "source": "art-src/scenes/foundations__tensor-shapes-epilogue-openai-20261107.png",
+    "sourceSha256": "57f25558df9c2f5fcdab49b94b47e9003a92cc46508d080768787577c9867fd5",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 3,
+      "expression": 3,
+      "displays": 5,
+      "composition": 3,
+      "identity": 4,
+      "story": 3
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "The full [450,64] to [64,450] transformation and excerpt values are correct. The ending repeats a small full-body presenter pointing at a static table, with a large head, short torso and generic smile; the repeating-wave discovery and arriving readings in the actual ending are absent."
+    ],
+    "repairDirection": "Use a closer candid view of Farah labeling a live chart while reacting to the repeating waves. Keep the full-recording shape summary and a clearly labeled excerpt if used, with balanced adult proportions and an earned curious expression.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+        "context": "Epilogue: full recording transposed, repeating waves visible, Farah labels lines as the next readings arrive.",
+        "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+      }
+    ]
+  },
+  {
+    "lesson": "foundations/tensor-shapes",
+    "phase": "takeaways",
+    "source": "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+    "sourceSha256": "87f192c15470cb940ee9d61955732046b19e94ffaeb64f56f496156a7b882361",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah leans into a mouse-driven comparison with grounded hands and concentrated eyes. The reshaped first row [2,20,5] versus transposed [2,3,4] gives a crisp, meaningful recall contrast on the actual work surface."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+        "context": "Farah's plan and LessonRecap: equal [4,3] shapes can have different sensor meanings.",
+        "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/activation-functions",
+    "phase": "briefing",
+    "source": "art-src/scenes/neural-networks__activation-functions-openai-20261107.png",
+    "sourceSha256": "0326682b8c06998f0ddf2758c9592e8dbd65bae48f9820b5260f7586db2c6695",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari's pointed tool and questioning expression connect naturally to Demir's attentive turn. The raw scores and unset threshold correctly preserve the opening problem."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+        "context": "Briefing: raw -0.06 and 1.04, alert rule not yet chosen.",
+        "sha256": "ec6d3323ae4f9c19c707957f53edeb3ce651262655a0faaf8b5302290f4c6294"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/activation-functions",
+    "phase": "challenge",
+    "source": "art-src/scenes/neural-networks__activation-functions-challenge-openai-20261107.png",
+    "sourceSha256": "1b83edb1b1c7d6faca45e825cb625b6f39a49ab04ffaf1dafe7cabf916793e4b",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir braces on the monitor and presses a key with connected limbs and plausible contact. The expected-output table is explicitly labeled and maps negatives to zero while preserving positive values."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+        "context": "Challenge and relu-activation.yaml supplied case: [-2,-0.5,0,1.5,3] maps to [0,0,0,1.5,3].",
+        "sha256": "ec6d3323ae4f9c19c707957f53edeb3ce651262655a0faaf8b5302290f4c6294"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml",
+        "context": "Verified fixture input [-2,-0.5,0,1.5,3] and expected ReLU [0,0,0,1.5,3].",
+        "sha256": "524963403124e01b4566987079c24d2e7c516e6823de6b77f08557d43c4f5847"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/activation-functions",
+    "phase": "concept",
+    "source": "art-src/scenes/neural-networks__activation-functions-concept-openai-20261107.png",
+    "sourceSha256": "c75c4d3eacbdc6ec6b60ce688f5a0bb2f7a972a6854d5130b6ad207bd1d94b30",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah follows the ReLU bend with a stylus while using the keyboard. The graph's zero negative branch and positive diagonal correctly meet at zero, with legible axes in the screen plane."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+        "context": "What a Linear Stack Cannot Add: ReLU = max(0,x), negative branch zero and positive branch unchanged.",
+        "sha256": "ec6d3323ae4f9c19c707957f53edeb3ce651262655a0faaf8b5302290f4c6294"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/activation-functions",
+    "phase": "epilogue",
+    "source": "art-src/scenes/neural-networks__activation-functions-epilogue-openai-20261107.png",
+    "sourceSha256": "e028c71ad135a8c0bfe83649b119faccf1b3f983fbce7a6552deccc43b021f02",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir records the discrepancy while pressing the log control and holding a tablet with its viewing side toward him. The 03:16 list and ARIA nominal state preserve the unresolved disagreement."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+        "context": "Epilogue: both reference tones and 7741 trigger the hand-picked neuron; ARIA calls 7741 nominal at 0316.",
+        "sha256": "ec6d3323ae4f9c19c707957f53edeb3ce651262655a0faaf8b5302290f4c6294"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/activation-functions",
+    "phase": "takeaways",
+    "source": "art-src/scenes/neural-networks__activation-functions-takeaways-openai-20261107.png",
+    "sourceSha256": "2dccaf23df2deee67b586559f52946e8f064dfd87234b544808d503cf4b48a67",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari points across the shared work surface while Farah turns toward her with a specific questioning reaction. Shoulder-to-hand paths and chair support remain coherent; the two rounded sigmoid scores and separate 0.5 threshold are exact."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+        "context": "A Score and an Alert Are Different: sigmoid(-0.06) about 0.485, sigmoid(1.04) about 0.739, separate threshold 0.5.",
+        "sha256": "ec6d3323ae4f9c19c707957f53edeb3ce651262655a0faaf8b5302290f4c6294"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/building-a-network",
+    "phase": "briefing",
+    "source": "art-src/scenes/neural-networks__building-a-network-openai-20261107.png",
+    "sourceSha256": "27f5202a6c90dbd2d957746d915984c52d5ba09c6071dac926da4f97051caedb",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza leans forward from a supported chair to select the build, with clear weight through the armrest and console. Her resolved face and exact bridge-network specification give the order a concrete action."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+        "context": "Briefing and complete-network.ts: 3 inputs, 32/16/1 units, ReLU/ReLU/sigmoid, 673 parameters.",
+        "sha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/building-a-network",
+    "phase": "challenge",
+    "source": "art-src/scenes/neural-networks__building-a-network-challenge-openai-20261107.png",
+    "sourceSha256": "b2a510623950208441528a9704690ed8df32ee5ee38296c98536e8e25f47b39b",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir compares two work panels at the keyboard with plausible feet and knee clearance. The 24/12/1 rehearsal copies, 529 parameters, 50 epochs and batch 16 match the exercise; Copy B remains untrained."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+        "context": "Challenge and solution: two rehearsal classifiers, 8 features, 24/12/1, 529 parameters, train only A for 50 epochs with batch 16.",
+        "sha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/building-a-network",
+    "phase": "concept",
+    "source": "art-src/scenes/neural-networks__building-a-network-concept-openai-20261107.png",
+    "sourceSha256": "3a6b6b7b05fe53cfbca7b05f90761c66ec1091bbb31919033104ec545ada6d9a",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza checks the compile step with a natural downward gaze and supported hand. The three operations are distinguished correctly, and the panel explicitly says compilation does not train or reset weights."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+        "context": "Network setup and LessonRecap: build permits predict, compile configures Adam/binaryCrossentropy/accuracy, fit updates weights.",
+        "sha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/building-a-network",
+    "phase": "epilogue",
+    "source": "art-src/scenes/neural-networks__building-a-network-epilogue-openai-20261107.png",
+    "sourceSha256": "29f1dbd80c43df71c29a8dec988e57ee172bc0f1c73fecc40084d1d9b93dab29",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's concerned look at the rank change supports the uncertain ending. Her notebook faces her, pencil contact is plausible, both initial states are saved and no alert-color success is implied."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+        "context": "Epilogue: second initialization changes sample 7741's rank; save both starting states and keep review unresolved.",
+        "sha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/building-a-network",
+    "phase": "takeaways",
+    "source": "art-src/scenes/neural-networks__building-a-network-takeaways-openai-20261107.png",
+    "sourceSha256": "8cff67cabd537e481758c0e436e928b42ec1d78ca7e3159b84a8b8999132e70b",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir and Mirza discuss separate build and fit stages around the table with clear hand contact. The flat display is correctly upside down to the audience and readable from the crew's side."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+        "context": "LessonRecap: prediction after build, training settings at compile, weights updated by fit, unseen data still untested.",
+        "sha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/first-neuron",
+    "phase": "briefing",
+    "source": "art-src/scenes/neural-networks__first-neuron-openai-20261107.png",
+    "sourceSha256": "97d506b4bdcde68799d23878148150b86ad436b26f2e3758b2e50b4d4920f161",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah adjusts the calibration apparatus with a focused face and grounded notebook hand. The screen distinguishes both known tones from Sector 7-G and shows the three inputs feeding a weighted sum without a premature score."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+        "context": "Briefing and A weighted sum of inputs: known tones A/B, unknown 7-G, inputs [0.5,0.8,0.2].",
+        "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/first-neuron",
+    "phase": "challenge",
+    "source": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+    "sourceSha256": "b7811e4e4b117c539412eec1677f6b24699221a01dd78163f235608b25b1f015",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir presses the test key and holds a tablet toward himself while Farah watches the same operation. The expected 0.4 check is labeled as supplied and matches the exercise's inputs, weights and bias."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+        "context": "implement-neuron.yaml: [1,2,3] dot [0.2,0.8,-0.5] + 0.1 = 0.4.",
+        "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml",
+        "context": "Verified supplied input [1,2,3], weights [0.2,0.8,-0.5], bias 0.1 and output 0.4.",
+        "sha256": "76be1567cd573a022279c518761660430454f55285684fba97d4047bf613e45c"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/first-neuron",
+    "phase": "concept",
+    "source": "art-src/scenes/neural-networks__first-neuron-concept-openai-20261107.png",
+    "sourceSha256": "bb678eda0d0f20fd8b7cc5438cb1ca6b9b276e3d95c0f2879c95b51a20c06e3c",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah writes the verified score in a notebook facing her. The three product terms and bias flow into the sum correctly; the pencil contact and natural lean keep the teaching embedded in actual checking."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+        "context": "A weighted sum of inputs: 0.20 - 0.16 + 0.12 + 0.10 = 0.26.",
+        "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/first-neuron",
+    "phase": "epilogue",
+    "source": "art-src/scenes/neural-networks__first-neuron-epilogue-openai-20261107.png",
+    "sourceSha256": "029e4cff2b734e831a33a6f199f5e815e354f46e9f15a2fa9bc7a0b63210d439",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari pauses with a realistically held mug and skeptical attention on the spare galley monitor. Both stable tone values and the 20-minute interval are exact, and the warm light is localized."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+        "context": "Epilogue: tone A 0.81 and tone B 0.12 hold without crossover for twenty minutes.",
+        "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/first-neuron",
+    "phase": "takeaways",
+    "source": "art-src/scenes/neural-networks__first-neuron-takeaways-openai-20261107.png",
+    "sourceSha256": "faf38e7dc0074ece346f81a9d011499685c299d4dc88244c9ce8315dc81d6de5",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah puts the pen away while checking her written sum. The page correctly faces her and the numeric result agrees with the screen; hands and object contact remain plausible."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+        "context": "Reading the Weights and recap: input times weight gives contribution; contributions and bias sum to 0.26.",
+        "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/forward-pass",
+    "phase": "briefing",
+    "source": "art-src/scenes/neural-networks__forward-pass-openai-20261107.png",
+    "sourceSha256": "ca33ad677feb26ba5834020f4682a5e7c5ffa2f698cb408893f900da979963f3",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir thinks through the error while Farah checks beside him, with specific frustrated expressions, grounded feet and coherent chair clearance. The display preserves received [3], adapter [3,1], expected [rows,3] and missing batch axis."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+        "context": "Briefing TFJS 4.22.0 failed demo and input-adapter explanation.",
+        "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/forward-pass",
+    "phase": "challenge",
+    "source": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+    "sourceSha256": "cd43f2b0dd05e3f6b4aec13bb6e0f7edcf6665367396778653a7fa2a46956c0b",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir presses a key while handling the input module beside the console. The practice task is explicitly distinguished from the bridge model: two-feature rows feed three units and request output shape [2,3]; [5,6] still needs a batch axis."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+        "context": "forward-pass.yaml starter and task: [[1,2],[3,4]], three-unit Dense with inputShape [2], single [5,6].",
+        "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+        "context": "Verified input [[1,2],[3,4]], dense 3 units, batch [2,2] to output [2,3] and single [5,6] reshaped [1,2].",
+        "sha256": "16d0d96d4f1cdeee1209f21a273e55bac29d1e398f00771c82a78c087f8cb9a7"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/forward-pass",
+    "phase": "concept",
+    "source": "art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+    "sourceSha256": "7303eef4457a4767dae0fc7982e48fa4dab3b133ade247d227d37526c930b7f2",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir reacts to the repaired layout on his tablet while Farah observes him. The tablet faces its reader, and the shared panel correctly preserves all three values when [3] becomes [1,3]."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+        "context": "Data Flows Forward: [0.5,0.8,0.2].expandDims(0) yields one row with three features.",
+        "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/forward-pass",
+    "phase": "epilogue",
+    "source": "art-src/scenes/neural-networks__forward-pass-epilogue-openai-20261107.png",
+    "sourceSha256": "c71960f58efabb8135d30dcd67f0af193539d128e7f76e0fb838eb9609e1e9ef",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir saves the run with a relaxed, supported seated posture. The displayed 0.49, 0.53 and 0.51 are the narrative run's values and are explicitly identified as random-weight scores needing training."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+        "context": "Epilogue: after-shift run, scores 0.49, 0.53, 0.51 saved before training.",
+        "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/forward-pass",
+    "phase": "takeaways",
+    "source": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+    "sourceSha256": "3184b8de364e015292a28137d3d99b49a3e17312e458b70e9b06eef4dab08aab",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir checks his input on the tablet while using the keyboard. Hands and table contact are clean. The generic [n] to [1,n] rule and [5,6] to [[5,6]] example correctly preserve the values."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+        "context": "LessonRecap and challenge: expandDims(0) adds a leading batch axis without changing feature values.",
+        "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/layers-and-architecture",
+    "phase": "briefing",
+    "source": "art-src/scenes/neural-networks__layers-and-architecture-openai-20261107.png",
+    "sourceSha256": "906b2a87f3317af6df84c6de211ac71fe3d38cffa61736ca8b545e76212d8080",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari studies the proposed bridge stack while adjusting the console, with a skeptical expression and grounded hands. The three inputs, 32/16/1 activations, 673 count and untrained status are exact."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+        "context": "The three-layer network: bridge model 3 -> 32 ReLU -> 16 ReLU -> 1 sigmoid, 673 parameters.",
+        "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/layers-and-architecture",
+    "phase": "challenge",
+    "source": "art-src/scenes/neural-networks__layers-and-architecture-challenge-openai-20261107.png",
+    "sourceSha256": "a633d8f1b56d429c438230b19ad965fa86deff0291922b8c815ac9da14bacdbb",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir places the output-stage card on the board while holding his working tablet toward himself. The target practice model's 4 inputs, 16/8/1 stages and counts 80,136,9 sum correctly to 225."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+        "context": "Challenge and solution: practice stack inputShape [4], 16/8/1, count (4*16+16)+(16*8+8)+(8*1+1).",
+        "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/layers-and-architecture",
+    "phase": "concept",
+    "source": "art-src/scenes/neural-networks__layers-and-architecture-concept-openai-20261107.png",
+    "sourceSha256": "d4228a6150eb7ff3ae1613050fa66b6f5cc03eec6e619c9efa50e3d7670d3852",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari points to the second layer as she writes its cost, with concentrated gaze and plausible pencil contact. The 128,528,17 counts and total 673 are clear and correctly placed on the monitor."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+        "context": "The three-layer network and epilogue: dense parameter count inputs*units+units, second layer 32*16+16 = 528.",
+        "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/layers-and-architecture",
+    "phase": "epilogue",
+    "source": "art-src/scenes/neural-networks__layers-and-architecture-epilogue-openai-20261107.png",
+    "sourceSha256": "452f10cea92aa69b33f2a27ed93581b719a87d3bb5f11525309eeb37249f0939",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir annotates the posted quote while Nazari inspects it with folded arms. The arm chains are coherent and the paper faces both readers. Training remains pending despite the correct 673 total."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+        "context": "Epilogue: model.summary printout taped to engineering board, arithmetic in margin, 128+528+17=673.",
+        "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+      }
+    ]
+  },
+  {
+    "lesson": "neural-networks/layers-and-architecture",
+    "phase": "takeaways",
+    "source": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+    "sourceSha256": "a839dae3c39661c016756e2ac099d4ff91f7bc9b0d2511c93038564bdfd8b135",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari checks the practice-model arithmetic at her desk with a believable pencil grip and tool contact. All sheet text is oriented toward her and the 80+136+9 calculation is correct."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+        "context": "Challenge and parameter-count formula: 4-input practice model totals 225.",
+        "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/backpropagation",
+    "phase": "briefing",
+    "source": "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+    "sourceSha256": "52a26ecb60431c10a7e15aa514f56b8d8ee6ce64a4dc8bddabc853f85a08f565",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir supports his tired head while waiting at the mouse; the expression, chair and hand contact fit the slow repeated run. The 500/673 progress, 20 seconds and 673 extra forward passes match the opening."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "context": "Briefing: at 20 seconds parameter 500 of 673, one nudge per extra forward run.",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/backpropagation",
+    "phase": "challenge",
+    "source": "art-src/scenes/training-loop__backpropagation-challenge-openai-20261107.png",
+    "sourceSha256": "693f3a1460055b74eda776ccbb8b6c39ccb37b40352519aede6f5343f7bdb0b6",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir starts the comparison while holding his tablet toward himself. Both result fields are pending, and the numerical nudge is the supplied 0.001, avoiding fabricated challenge results."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "context": "Challenge and solution: three-variable loss, automatic versus numerical gradients, nudge 0.001.",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/backpropagation",
+    "phase": "concept",
+    "source": "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+    "sourceSha256": "1d4a663511e8f828ff28b60e42862ef118ee076a8a1630a8468a712b0d0ce536",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir annotates the backward direction with his notebook open toward him. The schematic separates forward loss and backward gradients and explicitly keeps weights unchanged; marks are legible within the board plane."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "context": "Working Backwards and sample network: forward through ReLU to logits and BCE loss, backward chain rule, separate optimizer updates.",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/backpropagation",
+    "phase": "epilogue",
+    "source": "art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+    "sourceSha256": "7e7af8158a7a76c58ff4896148e58fb020acead508d9c081f04ae91f2545b1d5",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari's crossed-arm response and Demir's sheepish neck rub form a specific exchange after the timing run. The stopwatch is present, both story durations are exact, and the display explicitly labels them story timings."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "context": "Epilogue: one forward plus backward 120 ms, numerical 27 s, all 673 gradients; fictional timing disclaimer.",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/backpropagation",
+    "phase": "takeaways",
+    "source": "art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+    "sourceSha256": "2bab66c9f2212e152d87ab3255dd763f22d08022a6ed038a89eb3c5fb406fb66",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari operates the trackball while checking the three distinct stages. Coherent hands, restrained lighting and exact forward/backward/optimizer responsibilities match the benchmark."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "context": "RecallPrompt and LessonRecap: compute loss, compute gradients, then apply optimizer updates, reuse forward work.",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/evaluating-deep-scan",
+    "phase": "briefing",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+    "sourceSha256": "0c32b0e8c532ae4aa0313baae567073e49cf91ad20a8ba370c3bceacd7834b3a",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza requests evaluation through the trackball with a serious, focused gaze. The fixture is explicitly synthetic, 100 training and 43 held-out rows are correct, and results remain pending."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "context": "The mistakes behind the score and Challenge: 100 synthetic training rows, 43 evaluation rows, no result target.",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/evaluating-deep-scan",
+    "phase": "challenge",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+    "sourceSha256": "df5d9a6e8f73a9039b320a000067bc3f6c2095a355989d3df04d1e09c854bc8d",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir starts the run while checking Mirza's reaction. The tablet faces him, hands are connected, and 30 epochs with batch 16 apply only to training while held-out results remain pending."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "context": "Training and held-out evaluation and Challenge: fit training pair for 30 epochs, batch 16, separately evaluate 43 rows.",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/evaluating-deep-scan",
+    "phase": "concept",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+    "sourceSha256": "000be3b028e8921d0fcf7d5128d3c41dab4aeb5d7cc12289b6a286fea7dbdd9a",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza selects a case card while checking the supplied crew confusion matrix. Matrix axis labels and all four counts are correct; the three misses remain prominent alongside 94% accuracy."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "context": "Crew's 50-row example: TP23, FN3, FP0, TN24, (23+24)/50 = 94%.",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/evaluating-deep-scan",
+    "phase": "epilogue",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-epilogue-openai-20261107.png",
+    "sourceSha256": "b3e8df81e81b2490d450019b069787b154ab4d93b12d2d0d66624ab8bb6c3066",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah returns to an archived card with a restrained questioning look. The card faces her, the console preserves sample 7741's 0.518 score, and the calibration check stays pending."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "context": "Epilogue: signal 3 is sample 7741 at 0.518; sensor and calibration check remains unresolved.",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/evaluating-deep-scan",
+    "phase": "takeaways",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-takeaways-openai-20261107.png",
+    "sourceSha256": "c60f2de9db919c37ae0f93f2858384ee1b8a5677becfc9ca2d2dfc4a3db7baf3",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza's open-hand question and Farah's attentive lean connect to the displayed gap example. The 95% versus 60% example is labeled, and the investigation list correctly avoids diagnosing overfitting from the gap alone."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "context": "Reference and RecallPrompt: 95/60 gap calls for checking data, labels, preprocessing and a baseline.",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/gradient-descent",
+    "phase": "briefing",
+    "source": "art-src/scenes/training-loop__gradient-descent-openai-20261107.png",
+    "sourceSha256": "8eda03ee846ec57e820f6b36bb3f555e07bd8d38297c890060c474495961ca7f",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari rests a hand on her tool while considering the unanswered update questions. Her skeptical face and the still-empty checklist fit the starting problem, with 673 parameters accurately stated."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "context": "Briefing: choose which of 673 parameters change, in what direction and by how much.",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/gradient-descent",
+    "phase": "challenge",
+    "source": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png",
+    "sourceSha256": "17893b0c56248fdf5999b0d4b08c29c165cf5bf70230eb3e2988a5ad5b4684df",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir runs the expected first-step check with a grounded button press and clipboard facing him. The w-squared curve, w5 to w4 direction and 5 - 0.1*10 = 4 calculation agree."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "context": "Challenge solution: initial weight 5, loss w squared, gradient 10, learning rate 0.1, new weight 4.",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/gradient-descent",
+    "phase": "concept",
+    "source": "art-src/scenes/training-loop__gradient-descent-concept-openai-20261107.png",
+    "sourceSha256": "a2c1d2f8c36553e173f60a3224e4dc624becc6f6b45edd9ed2a933a23afca775",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari adjusts a dial while reading the illustrative calculation. Loss (x-3)^2, start 0, gradient -6 and rate 0.1 correctly yield next x 0.6; the example is explicitly labeled."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "context": "Gradient descent updates first loop step: x0 -> x0.6 at rate 0.1.",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/gradient-descent",
+    "phase": "epilogue",
+    "source": "art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+    "sourceSha256": "cabcdfdd9f0b77d3b4cd36dc1b3d974bd8cb40fdde859b0c61cc68a95a4b9166",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir points out his one changed parameter while Nazari responds skeptically. ARIA remains a waveform logging the run. The one updated and 672 untouched parameters preserve the ending's limitation."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "context": "Epilogue: one weight updated, 672 still initialized, ARIA begins logging each gradient step.",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/gradient-descent",
+    "phase": "takeaways",
+    "source": "art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+    "sourceSha256": "bf8e9c7e9ab82459601ddf7908d92a044a2d45b50bf66419363b0bd5d6a04a93",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir changes the rate dial while Nazari watches the divergence comparison. Hand contact is plausible and the two numeric traces are exact for (x-3)^2, with no claim that all losses share this threshold."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+        "context": "Gradient descent updates: rate 0.1 trace 0,0.6,1.08,1.464; rate 1.5 trace 0,9,-9,27.",
+        "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/loss-functions",
+    "phase": "briefing",
+    "source": "art-src/scenes/training-loop__loss-functions-openai-20261107.png",
+    "sourceSha256": "bf214dec22583f2cd597147bec6d5c49253fe6572681253cc8d749b471abce05",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah reaches for her stylus while considering the first prediction. The 0.52 prediction, label 1 and 0.48 error are crisp and faithful; her mild skeptical smile stays connected to the open question."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "context": "Briefing and Prediction error: prediction 0.52, label 1, difference 0.48.",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/loss-functions",
+    "phase": "challenge",
+    "source": "art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+    "sourceSha256": "aceca1966b0a8fdbe8796a453ec921bac121d22a32cfe65f718a5852f7598b3a",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir runs the supplied comparison as Farah watches. The wall rail clearly distinguishes open sigmoid markers from filled label-1 markers for logits +3 and -3, and losses stay pending."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "context": "Challenge and mse-loss.yaml confident-correct versus confident-wrong fixtures, first label 1.",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+        "context": "Verified confident-correct and confident-wrong logit fixtures +3 and -3 with first label 1.",
+        "sha256": "6992cb41c1b8bc28b5a5cc7d1e40eebde6f5fbe95a89fc0a766dc86608fdc7f9"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/loss-functions",
+    "phase": "concept",
+    "source": "art-src/scenes/training-loop__loss-functions-concept-openai-20261107.png",
+    "sourceSha256": "1544790c4aa05f7e7d1a765b385a78389afa8def99dbb02d9ac4683e9c84174a",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah writes the squared error with a natural connected stylus hand and follows the work. The exact 0.2304 calculation and batch-averaging note are meaningful and aligned to the board."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "context": "Prediction error: (1-0.52)^2 = 0.2304, MSE averages squared errors across examples.",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/loss-functions",
+    "phase": "epilogue",
+    "source": "art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png",
+    "sourceSha256": "c8674dc268cb0734c443dcc517576f2775c85e7a2b358052565e93f93680a53e",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah writes on the same side of the glass that she reads, while Demir leans on the bench and watches. The constant-0.5 baseline is 0.6931 and the class-frequency and separate-test baselines remain pending."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "context": "Epilogue: BCE for always 0.5 is about 0.6931; leave space for training class-frequency baseline and held-out score.",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/loss-functions",
+    "phase": "takeaways",
+    "source": "art-src/scenes/training-loop__loss-functions-takeaways-openai-20261107.png",
+    "sourceSha256": "4f987eff812d753108cb38260620c8d79db319edf8654d0fef9a10ca80cdf9ea",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah reacts while adjusting the test apparatus. Hands and supported pose read naturally. The derivative comparison names the output logit and correctly shows about -0.0196 versus -0.99 with the earlier-layer caveat."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "context": "DerivationDrawer: y1,p0.01 gives MSE+sigmoid logit gradient -0.019602 and BCE+sigmoid -0.99.",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/training-loop",
+    "phase": "briefing",
+    "source": "art-src/scenes/training-loop__training-loop-openai-20261107.png",
+    "sourceSha256": "116c67f522cf6d9ad0d04ed9991e3e48abdf162353ff7ad231c614fdbc97f690",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 5,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir pauses with his mug and looks toward the fifth completed epoch with earned interest. His grip and braced hand are coherent. The fictional log reproduces all five losses and the 0.6931 constant-prediction baseline exactly."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+        "context": "Opening fictional log: epochs 1-5 have loss 0.7402, 0.7256, 0.7113, 0.6989, 0.6861; fifth falls below the preceding lesson's 0.6931 baseline.",
+        "sha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/training-loop",
+    "phase": "challenge",
+    "source": "art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+    "sourceSha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari watches Demir operate the console, with a distinct raised-brow assessment against his tentative focus. Both have adult proportions and solid contact. Example losses remain illustrative, and five unfilled patience boxes leave the stopping task open."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+        "context": "Challenge supplies a hundred-row synthetic run, validation monitoring, patience 5 and a comparison of recent loss trends. Curves cannot diagnose causes alone.",
+        "sha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
+        "context": "Verified callback monitors val_loss with patience 5 and minDelta 0; illustrative curve labels leave actual history to the learner's run.",
+        "sha256": "fe23465490441ee5d7ab69c0514bbd386621873873e2821f836318bd0824a74a"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/training-loop",
+    "phase": "concept",
+    "source": "art-src/scenes/training-loop__training-loop-concept-openai-20261107.png",
+    "sourceSha256": "d1d73bfad6b63c6bef02752b5202ac5ab2c26af4a9ecd85d3806af8cef820191",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir adjusts a knob while studying the widening train-validation gap. His fingers wrap the control coherently and his other hand rests on a notebook. Both named curves and the instruction to investigate are crisp, with no unsupported cause claimed."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+        "context": "Reading the training curves: falling training loss and rising validation loss describe a trend; investigate data, labels, preprocessing and model fit.",
+        "sha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/training-loop",
+    "phase": "epilogue",
+    "source": "art-src/scenes/training-loop__training-loop-epilogue-openai-20261107.png",
+    "sourceSha256": "ce802fe4eef847a795a90723747549b2f0a0f566edbba8a038ccd4d195b6f487",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 5,
+      "pose": 5,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir physically tapes the paired curves to the console, with believable wrist, tape and paper contact and a quiet relieved expression. The fictional rerun states epoch 102, validation loss 0.081 and five epochs without a new best; the printed curves are explicitly illustrative."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+        "context": "Epilogue: rerun stops at epoch 102 with validation loss 0.081 after five epochs without a new best; Demir tapes both curves above his console.",
+        "sha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246"
+      }
+    ]
+  },
+  {
+    "lesson": "training-loop/training-loop",
+    "phase": "takeaways",
+    "source": "art-src/scenes/training-loop__training-loop-takeaways-openai-20261107.png",
+    "sourceSha256": "03d3217861df12f8e1155a1b21b380225e5f626ebd471a98bd6cf645888eb86c",
+    "method": "Fresh original image at native resolution, compared with all four benchmark originals and canonical portraits; current lesson source read.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 5,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir leans forward and scrubs the control with a focused furrowed expression, distinct from the earlier mug pause and taped-curve outcome. The screen separates falling training and rising validation examples and says Cause unconfirmed, val_loss and Patience: 5."
+    ],
+    "repairDirection": null,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+        "context": "Recall and recap: monitor val_loss, patience 5, minDelta 0; train-down and validation-up needs investigation rather than a claimed cause.",
+        "sha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246"
+      }
+    ]
+  }
+]

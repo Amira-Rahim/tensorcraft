@@ -1,0 +1,267 @@
+{
+  "deep-orbit/neural-networks/activation-functions": {
+    "concept": {
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+      "alt": "Farah tests the ReLU zero-output branch at the bridge workstation.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+      "alt": "Demir checks the supplied expected ReLU outputs for five test inputs.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-epilogue.webp",
+      "alt": "Demir compares the neuron's alert for archive 7741 with ARIA's nominal reading on a large bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions.webp",
+      "alt": "Nazari asks how two raw scores become an alert while Demir checks the unset threshold."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp",
+      "alt": "Farah adjusts the alert threshold as Nazari questions the converted scores.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/neural-networks/building-a-network": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network.webp",
+      "alt": "Mirza checks the bridge classifier before compiling it."
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-concept.webp",
+      "alt": "Mirza reviews how building, compiling and fitting a model differ on a clear bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-challenge.webp",
+      "alt": "Demir prepares trained and untrained network runs on a large bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp",
+      "alt": "Demir and Mirza check the network's training stages on the shared console.",
+      "location": "Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-epilogue.webp",
+      "alt": "Farah notes the next test after Sample7741 changes rank.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/neural-networks/first-neuron": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron.webp",
+      "alt": "Farah adjusts the calibration selector while checking known tones against the unknown reading."
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-concept.webp",
+      "alt": "Farah writes the neuron's score in her notebook beside the calculation screen.",
+      "location": "Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-takeaways.webp",
+      "alt": "Farah checks the neuron's weighted sum in her notebook beside a score of 0.26.",
+      "location": "Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+      "alt": "Nazari watches the known calibration-tone scores stay at 0.81 and 0.12 over twenty minutes.",
+      "location": "Galley, Spare Monitor"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+      "alt": "Demir tests a single neuron while Farah watches the calculation on a large lab display.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/neural-networks/forward-pass": {
+    "concept": {
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+      "alt": "Demir adds a batch axis while Farah checks the tensor shapes on a large bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+      "alt": "Demir loads a data cartridge and starts the forward-pass practice task at the bridge console.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+      "alt": "Demir checks how adding a batch axis preserves the reading's values.",
+      "location": "Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp",
+      "alt": "Demir saves the untrained model scores after fixing the missing batch axis.",
+      "location": "Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass.webp",
+      "alt": "Demir studies the shape error while Farah leans in to inspect the missing batch axis."
+    }
+  },
+  "deep-orbit/neural-networks/layers-and-architecture": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture.webp",
+      "alt": "Nazari inspects the untrained bridge model and its parameter count at her engineering console."
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp",
+      "alt": "Nazari checks a layer count beside the model display.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+      "alt": "Demir assembles the target16/8/1practice stack with four inputs and225expected parameters.",
+      "location": "Archimedes, Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+      "alt": "Nazari checks her practice-model parameter count while making notes at the engineering desk.",
+      "location": "Archimedes, Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-epilogue.webp",
+      "alt": "Demir records the673parameter bridge model while Nazari waits for training.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/training-loop/backpropagation": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/training-loop/backpropagation.webp",
+      "alt": "Demir waits for slow numeric gradients as a large engineering display shows 500 of 673 parameters checked.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-concept.webp",
+      "alt": "Demir traces gradients backward through the network while ARIA listens from the side display.",
+      "location": "Archimedes, Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp",
+      "alt": "Nazari verifies the forward, backward and optimizer stages at her engineering console.",
+      "location": "Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+      "alt": "Nazari folds her arms as Demir reacts sheepishly to the difference between the two gradient timing runs.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-challenge.webp",
+      "alt": "Demir prepares to compare automatic differentiation with numerical gradient estimates at the engineering console.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/training-loop/evaluating-deep-scan": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+      "alt": "Mirza starts an evaluation of 43 held-out rows at the bridge console.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+      "alt": "Mirza sorts a test-case card while reviewing three missed anomalies in the crew's confusion matrix.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp",
+      "alt": "Mirza and Farah inspect a training-versus-test accuracy gap and discuss what to investigate.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+      "alt": "Mirza watches Demir start a held-out evaluation, with training and evaluation data clearly separated on screen.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+      "alt": "Farah checks archive 7741's score while the bridge display marks calibration as pending.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/training-loop/gradient-descent": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent.webp",
+      "alt": "Nazari weighs how to adjust 673 parameters on a large engineering display.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-concept.webp",
+      "alt": "Nazari adjusts a control to inspect the first descent step from zero to 0.6.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+      "alt": "Demir starts the single-weight exercise beside a graph showing the expected descent from 5 to 4.",
+      "location": "Archimedes, Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp",
+      "alt": "Demir adjusts a rate control while Nazari checks two quadratic descent traces.",
+      "location": "Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp",
+      "alt": "Demir selects the next parameter as Nazari notes the 672 still unchanged and ARIA logs each step.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/training-loop/loss-functions": {
+    "concept": {
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-concept.webp",
+      "alt": "Farah checks the squared error of the first prediction on the lab board.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp",
+      "alt": "Farah adjusts a lab control while comparing the two loss gradients.",
+      "location": "Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp",
+      "alt": "Farah records the constant-prediction baseline on the lab glass while Demir considers the remaining checks.",
+      "location": "Archimedes, Lab"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/training-loop/loss-functions.webp",
+      "alt": "Farah studies the first prediction and asks how to score its error.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+      "alt": "Demir prepares the supplied loss comparison while Farah watches the two labeled probability rails.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/training-loop/training-loop": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/training-loop/training-loop.webp",
+      "alt": "Demir pauses with his mug as the fifth training epoch beats the constant-prediction loss baseline.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/training-loop/training-loop-concept.webp",
+      "alt": "Demir examines a widening gap between illustrative training and validation loss curves.",
+      "location": "Archimedes, Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/training-loop/training-loop-takeaways.webp",
+      "alt": "Demir compares falling training loss with rising validation loss at the console.",
+      "location": "Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/training-loop/training-loop-epilogue.webp",
+      "alt": "Demir tapes training and validation curves beside the stopped training run in engineering.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/training-loop/training-loop-challenge.webp",
+      "alt": "Demir pauses the training run as Nazari watches the loss comparison, with his tablet docked beside the controls.",
+      "location": "Archimedes, Engineering"
+    }
+  }
+}

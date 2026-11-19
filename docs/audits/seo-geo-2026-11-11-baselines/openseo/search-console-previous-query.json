@@ -1,0 +1,51 @@
+{
+  "collectedAt": "2026-11-11 09:23:55 UTC",
+  "sourceTool": "get_search_console_performance",
+  "request": {
+    "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+    "startDate": "2026-09-14",
+    "endDate": "2026-10-11",
+    "dataState": "final",
+    "type": "web",
+    "rowLimit": 1000,
+    "dimensions": [
+      "query"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "siteUrl": "sc-domain:tensorcraft.app",
+    "startDate": "2026-09-14",
+    "endDate": "2026-10-11",
+    "dimensions": [
+      "query"
+    ],
+    "rowCount": 2,
+    "rows": [
+      {
+        "keys": [
+          "deep orbit"
+        ],
+        "clicks": 0,
+        "impressions": 24,
+        "ctr": 0,
+        "position": 7.9
+      },
+      {
+        "keys": [
+          "tensorcraft"
+        ],
+        "clicks": 0,
+        "impressions": 7,
+        "ctr": 0,
+        "position": 1.4
+      }
+    ],
+    "hasMore": false,
+    "meta": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/search-performance"
+    },
+    "resultId": "497b84fe-206b-4514-87b8-a85ef4d68eb1"
+  }
+}

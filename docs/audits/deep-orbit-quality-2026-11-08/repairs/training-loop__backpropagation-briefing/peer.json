@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:26:12.185465+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__backpropagation-briefing/candidate.png",
+  "candidateSha256": "df7c6f6656b30008682fedaa61604c9b76ddb8e4296f83fe22a0c8f18ac59d02",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+      "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-training-loop__backpropagation-briefing-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__backpropagation-briefing/candidate.png",
+      "rect": [
+        285,
+        315,
+        325,
+        370
+      ]
+    },
+    {
+      "name": "peer-training-loop__backpropagation-briefing-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__backpropagation-briefing/candidate.png",
+      "rect": [
+        510,
+        815,
+        270,
+        130
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The large display matches the fictional mission snapshot: 500 of 673 parameters, 20 seconds elapsed, still running, 673 extra forward passes; timing is explicitly fictional.",
+    "Demir's supported temple, weary expression and relaxed mouse hand read naturally. Two complete arm chains, correct visible thumb sides and canonical face pass native close inspection."
+  ],
+  "repairDirection": "None."
+}

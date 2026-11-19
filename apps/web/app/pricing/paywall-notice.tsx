@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { isLaunched } from "@tensorcraft/shared";
 import { EVENTS, track } from "@/lib/analytics-events";
+import { useAnalyticsReady } from "@/lib/analytics-ready";
 
 /**
  * Headless funnel instrumentation for the paywall redirect on /pricing.
@@ -23,7 +24,7 @@ import { EVENTS, track } from "@/lib/analytics-events";
  * keeps an arbitrary or stale `locked` value, and a coming-soon world that
  * has nothing to unlock, out of the funnel numbers.
  *
- * Fires `paywall_hit` (dev-plan §4c). That event was specced but never
+ * Fires `paywall_hit`. That event was specced but never
  * actually fired: its only call site was <LessonPaywall>, which the lesson
  * route stopped rendering when it moved to redirect-based enforcement, so
  * the funnel's most important stage recorded nothing. This mounts at
@@ -39,9 +40,10 @@ export function PaywallNotice() {
   const locked = searchParams.get("locked");
   const gatedModule = searchParams.get("module");
   const isValidLocked = !!locked && isLaunched(locked);
+  const ready = useAnalyticsReady();
 
   useEffect(() => {
-    if (!isValidLocked) return;
+    if (!ready || !isValidLocked) return;
     track(EVENTS.PAYWALL_HIT, {
       worldId: locked ?? undefined,
       moduleId: gatedModule ?? "unknown",
@@ -50,7 +52,10 @@ export function PaywallNotice() {
       source: "paywall",
       worldId: locked ?? undefined,
     });
+  }, [ready, isValidLocked, locked, gatedModule]);
 
+  useEffect(() => {
+    if (!isValidLocked) return;
     // Tag the buyer in Kit so retention sequence B can reach someone who ran
     // out of free content and didn't buy. Dedupe correctness (only record
     // "tagged" when Kit actually tagged) lives in tagKitEventOnce - getting

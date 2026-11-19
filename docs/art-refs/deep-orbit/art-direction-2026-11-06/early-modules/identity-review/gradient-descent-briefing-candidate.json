@@ -1,0 +1,70 @@
+{
+  "module": "training-loop",
+  "lesson": "gradient-descent",
+  "phase": "briefing",
+  "src": "/scenes/deep-orbit/training-loop/gradient-descent.webp",
+  "index": 35,
+  "characters": [
+    "chief-nazari"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=347): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face. One explicit additional technical correction overrides the preserve-display instruction: on the large descent-curve monitor, make every circular step marker the SAME DIAMETER, about 16 pixels at output size, maintaining all existing center positions and the same narrowing spacing toward the bottom. The step markers must not shrink. Preserve the curve, dotted path and all other display content.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5a5ad103-482e-49df-92bf-ff9a837e5d76.png",
+  "candidate": "/tmp/early-identity-candidates/35.webp",
+  "candidateSha256": "2422720f13c812b8a0c565239cdb4f4b9710cbd38bae0bfc140faf4c74237401",
+  "sourceSha256": "28c183d533d025c6ef9bbbcc81d7700ea3d6af0f2c789b6c9880168297344043",
+  "beforeSha256": "0f83f05e69806a5b01aeace2c335e72c1c6a0f3c8d68654a58a14f4752af3058",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent.webp",
+      "role": "edit target",
+      "sha256": "0f83f05e69806a5b01aeace2c335e72c1c6a0f3c8d68654a58a14f4752af3058"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 161028,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/gradient-descent-briefing-chief-nazari-correction.png",
+      "crop": {
+        "left": 201,
+        "top": 168,
+        "width": 291,
+        "height": 345
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5a5ad103-482e-49df-92bf-ff9a837e5d76.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent.webp",
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

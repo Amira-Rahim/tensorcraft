@@ -1,0 +1,31 @@
+{
+  "module": "training-loop",
+  "lesson": "training-loop",
+  "phase": "challenge",
+  "room": "engineering",
+  "cast": [
+    "ensign-demir",
+    "chief-nazari"
+  ],
+  "moment": "Demir sets a stopping control at the engineering console while Nazari stands to the side watching with a restrained encouraging look. His right hand selects a small pause control and his left holds a plain run-log tablet. Nazari's hands stay relaxed and separated from his. One main screen shows two clear training and validation traces and a small five-segment patience strip, no exact score, no promise of best-weight restoration. Cooperative troubleshooting, warm faces, clear console edges.",
+  "alt": "Demir sets the validation stopping rule while Nazari checks the two curves.",
+  "location": "Archimedes, Engineering",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit training-loop/training-loop, challenge section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 2 are canonical character identity references; the final image is the engineering set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal; Chief Nazari, woman aged 48 with mature facial lines, weathered tan skin, short dark hair streaked with gray, olive engineering coverall. Scene: Demir sets a stopping control at the engineering console while Nazari stands to the side watching with a restrained encouraging look. His right hand selects a small pause control and his left holds a plain run-log tablet. Nazari's hands stay relaxed and separated from his. One main screen shows two clear training and validation traces and a small five-segment patience strip, no exact score, no promise of best-weight restoration. Cooperative troubleshooting, warm faces, clear console edges. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 2 humans, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers, correctness ticks, pass/fail stamps or glowing approval lights. No planet or crystal icons in data cells. Keep exact data and code in the lesson interface, not the illustration.\nTargeted correction after QA: Use case: precise-object-edit. Change ONLY the two wavy graphs above the five-segment strip on the large right console display. These must be LOSS HISTORY graphs, not signal waveforms. Upper panel: one smooth line begins high at the left, curves downward, then becomes almost flat near the bottom right. Lower panel: one smooth line begins high at the left, decreases, then flattens with a tiny uptick at the right. Use a simple horizontal baseline and vertical left axis in each panel, no labels or numbers, no oscillations. Preserve the five-segment strip exactly (five cells, four lit and one dark), the pause button, both characters' exact faces, four arms and hands, devices, poses, room and lighting.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f690072b-8807-4ba9-b0af-c8217e4155b1.png",
+  "source": "art-src/scenes/training-loop__training-loop-challenge-openai-20261106.png",
+  "src": "/scenes/deep-orbit/training-loop/training-loop-challenge.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir has a slate hand and a pause-control hand; Nazari's two hands hang naturally, all four arms separate.",
+    "furniture": "Hands interact with papers or controls above intact console surfaces; torsos do not intersect furniture.",
+    "identity": "Demir's warm skin, stubble, tousled brown hair and green devices are consistent; Nazari is mature with gray-streaked hair.",
+    "story": "Corrected displays show decreasing loss histories and a plateau, not signal oscillations. Five patience cells are visible, four lit and one dark; no best-weight restoration claim.",
+    "tone": "Small satisfied smiles and attentive checking keep success modest and warm.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

@@ -85,7 +85,22 @@ Give the dashboard a startup path that can recover when a preferred backend fail
 
 <LearningObjectives objectives={["Explain how WebGPU compute differs from running tensor operations through WebGL shaders", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU, WebGL, and WASM on the same inference workload", "Try the available backends and report when none can start"]} />
 
-## WebGPU Backend
+## The ordered startup trace
+
+The required exercise supplies a controlled runtime. It does not probe your GPU. Its mixed-outcome case starts with this ordered preference list:
+
+| Attempt | Supplied result | Next action |
+| --- | --- | --- |
+| `webgpu` | Resolves `false` | Try the next preference |
+| `webgl` | Throws | Catch that attempt and continue |
+| `wasm` | Resolves `true` | Stop trying backends |
+| Readiness | Resolves | Return `wasm` |
+
+Iterate the preference array in its supplied order. A failed attempt can return `false` or throw. After the attempts, await `ready()` exactly once. If every attempt fails, await readiness and return `getBackend()` for the runtime's existing fallback. If readiness rejects, propagate that failure. Reading an old backend name immediately after an unsuccessful attempt does not prove startup completed.
+
+Change the activity's preference order, success position, and readiness outcome. Follow the call trace and returned value. No outcome establishes hardware support or a speed ranking.
+
+## The separate application setup
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -145,9 +160,11 @@ console.log('Using backend:', backend);
 // model card keeps the two on separate lines.`}
 </CodeBlock>
 
+The application example above checks readiness while trying its own fixed fallback order. The exercise instead requires one readiness call after its ordered selection. Keep those contracts separate when inspecting the captured call trace.
+
 Check the returned value as well as errors. In TFJS 4.22, a registered backend can fail to start and resolve false. Requesting a backend you never registered throws. A reported backend name after a failed attempt does not prove it can run operations.
 
-The example checks readiness, tries CPU last, and throws if nothing starts. The exercise tests this selection logic with a controlled runtime. The downloadable lab tests real backends and predictions.
+The application setup checks readiness, tries CPU last, and throws if nothing starts. The exercise uses its own one-readiness selection contract with a controlled runtime. The downloadable lab tests real backends and predictions.
 
 <Dialogue speaker="Dr. Farah">
 A Worker runs JavaScript on a separate thread with its own global context. WebGPU sends work to GPU compute pipelines. Those are different choices, and a program can use both. TF.js handles the shaders here. We still have to measure device support, transfer costs and completed inference.
@@ -235,6 +252,8 @@ Try the backends in the supplied order. Check whether each attempt returns true,
 The result records each attempted backend and the one your selector accepts. This is a controlled failure rehearsal, so it verifies the fallback path. Use the runtime lab to check your device’s GPU support. The runtime lab runs real predictions and timings on available backends.
 
 <Exercise slug="gpu-backend" />
+
+Read your returned backend beside the actual ordered calls. Find the first successful attempt, confirm that no later preference ran, and locate the single readiness call. An all-failed trace explains the retained fallback. A rejected readiness call explains why startup must reject even if an earlier attempt succeeded. Measure completed predictions on a real device separately.
 
 <RecallPrompt
   question="Why might WebGPU help, and how would you check whether it does?"

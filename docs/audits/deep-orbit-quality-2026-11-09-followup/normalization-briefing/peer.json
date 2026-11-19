@@ -1,0 +1,154 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+  "candidateSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh native original, new 2x faces and all visible hands/props, enlarged full arm chains, canonical comparison, current lesson/exercise and independent 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "Canonical identity: commander-mirza",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-face-commander-mirza",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        130,
+        70,
+        360,
+        350
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-face-ensign-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        385,
+        285,
+        635,
+        625
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-face-dr-farah",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        630,
+        185,
+        870,
+        485
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-hands-0",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        25,
+        520,
+        195,
+        680
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-hands-1",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        710,
+        650,
+        890,
+        775
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-hands-2",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        885,
+        755,
+        1075,
+        845
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-hands-3",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        380,
+        825,
+        810,
+        990
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-briefing-arm-chains",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/candidate.png",
+      "box": [
+        265,
+        470,
+        1061,
+        1001
+      ],
+      "scale": 1
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's two typing arms connect through visible elbows and wrists, with coherent key contact and correct thumb sides. Farah's right hand holds a continuous straight stylus in a natural grip; her left palm rests on the notebook. Mirza's visible right arm and rail grip are coherent; her far arm is naturally occluded behind Demir/chair rather than drawn as a crossed limb.",
+    "identityExpressionAndStory": "All three canonical faces remain recognizable with correct age and adult proportions. Farah explains to Demir, Demir follows the display, and Mirza watches attentively.",
+    "displayLegibilityAndSource": "Temperature and signal-strength pairs 20/0.2, 22/0.8, 24/0.4 and 26/0.6 match the supplied training readings. The scale-each-feature title and raw-input table remain legible at 768 x 512.",
+    "perspectiveAndOperator": "Bezel, glass, column divisions, row rules and type share a frontal rectangular plane. The monitor is physically mounted behind the keyboard on the workstation, with crew and camera on its readable front side.",
+    "largeDisplayRule": "Main raw-input table has large clear text and no clipped teaching content.",
+    "palette": "Muted sage, brass and charcoal retain the Deep Orbit palette."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:02:02.795682+00:00"
+}

@@ -91,7 +91,40 @@ Farah needs a reply the reporting pipeline can read. You will parse the API resp
 
 <LearningObjectives objectives={["Use an LLM to draft analysis that a person can check", "Parse an untrusted reply, validate its required fields and reject invalid output", "Draft with an LLM, review and correct its claims, then approve only what the evidence supports"]} />
 
-## Drafting with an LLM
+## From reply text to checked fields
+
+Start with the reply the exercise's callback supplies:
+
+<CodeBlock language="javascript" title="reply-boundary.js">
+{`const reply = 'Assessment follows.\\n{"classification":"anomaly","confidence":0.95,"reasoning":"High amplitude"}';
+const objectText = reply.slice(reply.indexOf('{'), reply.lastIndexOf('}') + 1);
+const fields = JSON.parse(objectText);
+console.log(fields.classification, fields.confidence, fields.reasoning);`}
+</CodeBlock>
+
+This example follows the exercise's narrow contract: one JSON object, with
+no other braces in the surrounding text. First locate the complete object.
+Then let `JSON.parse` reject malformed JSON. Parsing alone does not establish
+that the fields match your reporting interface.
+
+| Required field | Accepted values | Examples to reject |
+| --- | --- | --- |
+| `classification` | `noise`, `anomaly`, or `unknown` | Missing field or `alien` |
+| `confidence` | Finite number from 0 through 1 | `"0.95"`, `null`, or 1.2 |
+| `reasoning` | String with a non-whitespace character | Missing field or `"   "` |
+
+Numeric zero passes. A truthiness check would reject it incorrectly. Accept
+extra fields while checking these three by name. If any check fails, throw
+before returning an analysis to the next stage. For general model replies,
+use a defined structured-output contract and parser rather than assuming
+that an arbitrary brace-delimited passage is the intended object.
+
+The activity lets you inspect that boundary one field at a time. Its valid
+`anomaly` reply is a supplied test answer, including when a test prompt names
+7741. It provides no evidence for that reading's correct label. The client
+accepts structure. Farah still checks each claim against sources.
+
+## The separate HTTP adapter
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -163,7 +196,7 @@ The onboard language component and its bundle sizes belong to the fictional miss
 
 </ConceptReference>
 
-## The Human-AI Workflow
+## The review after parsing
 
 <CodeBlock language="typescript" title="workflow.ts">
 {`// Farah's report review:
@@ -223,6 +256,12 @@ The API returns plain text, even if your client uses TypeScript. Parse one reply
 Inspect the fields your client returns. They are ready for the reporting code to read, but Farah still has to check the reasoning against the measurements. The exercise supplies an API reply. It does not call a language model.
 
 <Exercise slug="llm-client" />
+
+Read **The reply your client accepted** as your function's returned fields.
+Compare each value with the supplied reply, then separate the schema check
+from evidence review. A number in `reasoning` does not prove the named
+measurement exists. Rejected replies should stop this client path rather
+than become a plausible-looking report with missing fields.
 
 <RecallPrompt
   question="Which workflow supports more trustworthy factual reports?"

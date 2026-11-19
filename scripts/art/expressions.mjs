@@ -35,9 +35,12 @@ const CAST = {
     hold:
       "She is 52: keep the clear crow's feet at the outer eyes, the faint " +
       "lines from nose to mouth, and the silver at her temples exactly as " +
-      "in the reference. Keep the brass chronometer at her chest.",
+      "in the reference. Keep the brass chronometer at her chest, with its " +
+      "face a blank unmarked ivory disk, no hands, ticks or numerals.",
     states: {
-      resolved: "jaw set, giving an order, decisive, mouth closed",
+      resolved:
+        "jaw gently set, giving an order, steady decisive gaze, level brows " +
+        "and closed mouth, composed authority",
       concerned: "brow drawn, eyes lowered to a readout, worried focus",
       approving: "the smallest warm half-smile, quietly pleased",
     },
@@ -46,11 +49,13 @@ const CAST = {
     hold:
       "She is 38 with faint smile lines at the eyes. Keep the faint " +
       "augmented-reality lens glowing green over one eye, which must remain " +
-      "visible in every variant, and keep her slate-grey lab jacket collar.",
+      "visible in every variant, and keep her slate-grey lab jacket collar. " +
+      "Preserve her adult cheek and jaw proportions and medium-sized eyes.",
     states: {
       delighted: "wide-eyed open grin, the delight of a discovery landing",
       absorbed:
-        "eyes unfocused and looking past the viewer, thinking hard, not sad",
+        "gaze just past the viewer, brows mostly level, mouth resting flat " +
+        "with a trace of a knowing smile, absorbed in thought",
       shaken:
         "awe and unease together, lips slightly parted, unsettled but composed",
     },
@@ -62,21 +67,24 @@ const CAST = {
     states: {
       skeptical: "one brow raised, unconvinced, mouth set flat",
       "grudging-respect":
-        "chin dipped in a small reluctant nod, mouth flat but eyes softened, " +
-        "approval she will not say aloud, definitely not sadness",
+        "closed nearly flat mouth, the tiniest upward corner, softened eyes " +
+        "and slightly relaxed brows, restrained earned approval",
       haunted:
-        "outwardly composed with only a faint distant flicker behind the " +
-        "eyes, jaw tight, absolutely no tears and no crying",
+        "outwardly composed, gaze slightly past the viewer, relaxed brow, " +
+        "closed level mouth and slightly tight jaw, quietly withdrawn",
     },
   },
   "ensign-demir": {
     hold:
       "He is in his mid twenties with light uneven stubble. Keep the glowing " +
-      "comms earpiece and the green underlight on his face.",
+      "comms earpiece and the green underlight on his face. Preserve the " +
+      "plain upper-chest crop with his terminal entirely off-screen.",
     states: {
       overwhelmed: "wide eyes, eyebrows up, slightly lost and out of his depth",
       breakthrough: "delighted grin, the moment a concept clicks",
-      focused: "calm and locked on a problem, brows level, mouth closed",
+      focused:
+        "calm competence, level relaxed brows, steady gaze, slightly narrower " +
+        "eyes and closed resting mouth, no scowl or knitted brows",
     },
   },
   // ARIA is a glyph, not a person: her "expressions" are the shape of the
@@ -123,6 +131,14 @@ const slugs = process.argv.slice(2).length
   : Object.keys(CAST);
 
 for (const slug of slugs) {
+  // The approved ring stays fixed. Render its vector waveform states locally.
+  if (slug === "aria") {
+    execFileSync("node", ["scripts/art/render-aria.mjs"], {
+      cwd: ROOT,
+      stdio: "inherit",
+    });
+    continue;
+  }
   const entry = CAST[slug];
   if (!entry) {
     console.error(`unknown slug '${slug}'`);

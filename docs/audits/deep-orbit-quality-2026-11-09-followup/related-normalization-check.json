@@ -1,0 +1,169 @@
+[
+  {
+    "lesson": "foundations/normalization",
+    "phase": "briefing",
+    "source": "art-src/scenes/foundations__normalization-openai-20261107.png",
+    "sourceSha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+    "runtimeSha256": "33a2166b366647e3a77034af4fd824c8cc3bc335b18e818ed17b09d31d000526",
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T13:57:17.006633+00:00",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "scope": "Narrow screen front-side and physical-plane review. This does not renew the full artwork approval.",
+    "method": "Viewed the complete native source and an unmodified display crop. Checked the glass quadrilateral, horizontal and vertical content families, and crew position relative to the visible screen front. Briefing line positions were sampled from native green pixels using Sharp.",
+    "screenFrontSide": "The visible glass faces the crew. No character reads through the rear of the monitor.",
+    "temporaryCropsRemoved": true,
+    "verdict": "repair-required",
+    "displayCropRectXYWH": [
+      1035,
+      135,
+      500,
+      650
+    ],
+    "glassCornersApproxXY": {
+      "topLeft": [
+        1128,
+        301
+      ],
+      "topRight": [
+        1510,
+        192
+      ],
+      "bottomRight": [
+        1448,
+        750
+      ],
+      "bottomLeft": [
+        1069,
+        676
+      ]
+    },
+    "interiorFamilyReview": {
+      "horizontalFamily": "Table rows become flatter than the physical glass horizontal family at the same vertical position. The error remains visible in a native display crop.",
+      "verticalFamily": "The table columns lean with the monitor generally. The confirmed defect is the horizontal-family mismatch.",
+      "nativePixelSamples": {
+        "xSamples": [
+          1140,
+          1420
+        ],
+        "glassTopY": [
+          297.5,
+          218.0
+        ],
+        "glassBottomY": [
+          689.5,
+          744.0
+        ],
+        "tableTopY": [
+          370.5,
+          324.0
+        ],
+        "headerSeparatorY": [
+          418.5,
+          394.0
+        ],
+        "firstDataRowSeparatorY": [
+          466.5,
+          459.5
+        ],
+        "middleRowSeparatorY": [
+          516.0,
+          520.0
+        ],
+        "tableBottomY": [
+          614.0,
+          642.5
+        ]
+      },
+      "glassHorizontalVanishingPointApproxXY": [
+        320.9,
+        530.1
+      ],
+      "comparison": "The first data-row separator starts at y466.5 at x1140. A line through the glass vanishing point would reach about y444.8 at x1420. Its actual y459.5 is about 14.7 pixels lower. The header separator is about 13.6 pixels lower at the right sample than that same plane predicts. This exceeds the one-to-two-pixel stroke thickness."
+    },
+    "findings": [
+      "The table grid and labels use a flatter projection than the strongly angled physical glass. The displayed table does not fully share the screen plane."
+    ],
+    "repairDirection": "Preserve the source values and crew action. Reproject all table edges, text baselines and footer to one glass plane, or swivel the whole physical monitor to a frontal rectangle and align every interior element to it."
+  },
+  {
+    "lesson": "foundations/normalization",
+    "phase": "takeaways",
+    "source": "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+    "sourceSha256": "8e5f940844250eabfd8c3cce5e0d6be232b6da080af37fbdbd5451dc1eec7eba",
+    "runtimePath": "apps/web/public/scenes/deep-orbit/foundations/normalization-takeaways.webp",
+    "runtimeSha256": "c9251772c31eff377601c6e1ed3a9ba44c7b2bf9c58f9bb73f303585d6b639f4",
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T13:57:17.006633+00:00",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "scope": "Narrow screen front-side and physical-plane review. This does not renew the full artwork approval.",
+    "method": "Viewed the complete native source and an unmodified display crop. Checked the glass quadrilateral, horizontal and vertical content families, and crew position relative to the visible screen front. Briefing line positions were sampled from native green pixels using Sharp.",
+    "screenFrontSide": "The visible glass faces the crew. No character reads through the rear of the monitor.",
+    "temporaryCropsRemoved": true,
+    "verdict": "no-definite-defect-found",
+    "displayCropRectXYWH": [
+      135,
+      295,
+      465,
+      495
+    ],
+    "glassCornersApproxXY": {
+      "topLeft": [
+        147,
+        305
+      ],
+      "topRight": [
+        507,
+        356
+      ],
+      "bottomRight": [
+        585,
+        716
+      ],
+      "bottomLeft": [
+        252,
+        779
+      ]
+    },
+    "interiorFamilyReview": {
+      "horizontalFamily": "The glass top and upper table rows descend to the right. Lower rows flatten and then rise to the right, matching the glass horizontal family. The formula, reuse line and lower notes follow the same progression.",
+      "verticalFamily": "Table columns and screen sides share the visible rightward lean. No camera-flat table is pasted across a separately angled screen.",
+      "nativePixelSamples": {
+        "xSamples": [
+          235,
+          475
+        ],
+        "tableTopY": [
+          393.0,
+          412.5
+        ],
+        "headerSeparatorY": [
+          442.0,
+          453.0
+        ],
+        "firstDataRowSeparatorY": [
+          496.0,
+          496.5
+        ],
+        "tableBottomY": [
+          549.0,
+          539.0
+        ]
+      },
+      "assessment": "Observed table edges track the glass family closely. Small deviations of a few pixels remain within the drawn border and corner-estimation tolerance, without the briefing scene horizontal-family error."
+    },
+    "findings": [],
+    "repairDirection": null,
+    "limits": [
+      "This conclusion is limited to the screen front-side and physical plane. It is not a new full anatomy, identity or lesson-quality approval."
+    ]
+  }
+]

@@ -1,0 +1,1398 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T14:25:19.279722+00:00",
+  "scope": "Read-only provenance, schema and followup image cleanup audit. No artwork visual re-review and no shared ledger edits.",
+  "expectedJobs": 12,
+  "jobCount": 12,
+  "publishedCount": 12,
+  "passCount": 12,
+  "jsonRecordsParsed": 35,
+  "schemaErrors": [],
+  "obsoleteProjectImages": [],
+  "activeCandidateImages": [],
+  "jobs": [
+    {
+      "job": "caching-strategies-takeaways",
+      "lesson": "optimization-edge/caching-strategies",
+      "phase": "takeaways",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/job.json",
+      "jobRecordSha256": "8c0f199339fa5e5536b2764bccf87cc1dc8962deede5c7a5fcf270cbcfefc79c",
+      "status": "published",
+      "promptSha256": "cec18117caaa2039017a3994c073a684d6e4770ee45cf1d40b58e1499b43d445",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/actualReferences/0",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/1",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+          "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-3a7503f8-3312-45ed-8e43-b64b3d35ee2e.png",
+          "sha256": "99cfe3ba21b59d8dd46946d2cf1eb074602aa25b0f4f9a3d3051f0d95ebd9fb5",
+          "hashMatches": true,
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/rejected-v1.png"
+        },
+        {
+          "jsonPath": "/attempts/0/actualReferences/0",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/actualReferences/1",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+          "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/actualReferences/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8290c0c-8b03-45c2-941e-c04944f0332b.png",
+          "sha256": "51e2843d3c56043acb83a780f57d305ced61d24a3447e08b21bf4c9d75e8984c",
+          "hashMatches": true,
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/source.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+          "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+          "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+          "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-c33cebaa-c887-43d3-8ea6-60b611d30f89.png",
+          "expectedSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+          "actualSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+          "expectedSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+          "actualSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+          "expectedSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+          "actualSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies-takeaways.webp",
+          "expectedSha256": "8972d37c599d4c9f5b21f0e7d09303f0c126d3497926aba65a822610cc977d0f",
+          "actualSha256": "8972d37c599d4c9f5b21f0e7d09303f0c126d3497926aba65a822610cc977d0f",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/optimization-edge__caching-strategies-takeaways.json",
+        "sha256": "77838d34ae0f599f8d4aa32c1cfc63391c3e17fc85be027831a18a335ea8da60",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "ci-cd-pipeline-briefing",
+      "lesson": "capstone/ci-cd-pipeline",
+      "phase": "briefing",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/job.json",
+      "jobRecordSha256": "5608d4a5c7c7b117212b922758680c4cd7e898f05b5d5f41c3e9f10208cf84c4",
+      "status": "published",
+      "promptSha256": "64bbfb4c037c63dd93e139f8f556f1db9d5d2e4bc28baada94e14d8b14869dcb",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/actualReferences/0",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/1",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/2",
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dc35bdcb-13a9-4b4d-8d73-7431ba7a32c3.png",
+          "sha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/actualReferences/0",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/actualReferences/1",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/actualReferences/2",
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/actualReferences/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dc35bdcb-13a9-4b4d-8d73-7431ba7a32c3.png",
+          "sha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+          "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-3adbf0c8-0c01-42a9-9788-3a5db709dad8.png",
+          "expectedSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+          "actualSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+          "expectedSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+          "actualSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+          "expectedSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+          "actualSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline.webp",
+          "expectedSha256": "9a23ab09659dc463c94a584e146a3c4319364eaadc3cfd3c450956c8ea34f737",
+          "actualSha256": "9a23ab09659dc463c94a584e146a3c4319364eaadc3cfd3c450956c8ea34f737",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/capstone__ci-cd-pipeline-briefing.json",
+        "sha256": "1f9485e8fa0c6fe6bf10079c804eaea01a507c4d7cd9baac378b12762051062d",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "forward-pass-challenge",
+      "lesson": "neural-networks/forward-pass",
+      "phase": "challenge",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/job.json",
+      "jobRecordSha256": "66bd61bd5dfd8d1bcfe7b8f562cbb2bd52a1f842a19a843a093c39560539fa1d",
+      "status": "published",
+      "promptSha256": "f85f996560396d8cba38a4571037f259403edb5e83c0a44f1cbfa94d5a4863f9",
+      "generationArgumentsComparisons": {
+        "generationArgs": {
+          "promptMatches": true,
+          "resolvedReferenceOrderMatches": true
+        },
+        "generationArgsAtGeneration": {
+          "promptMatches": true
+        }
+      },
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/references/0",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-6632011f-cae7-4bf7-b601-27484c5ec53d.png",
+          "sha256": "a6a7097e952cfe0682e8404501d11321de6617851c845df8b02435b25cef272f",
+          "hashMatches": true,
+          "pathAtGeneration": "docs/audits/deep-orbit-quality-2026-11-09-followup/forward-pass-challenge/rejected-v1.png"
+        },
+        {
+          "jsonPath": "/attempts/0/references/0",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ea9183c5-b602-4cea-a9ed-6f9ed34edeb0.png",
+          "sha256": "cd43f2b0dd05e3f6b4aec13bb6e0f7edcf6665367396778653a7fa2a46956c0b",
+          "hashMatches": true,
+          "pathAtGeneration": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+          "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+          "sha256": "16d0d96d4f1cdeee1209f21a273e55bac29d1e398f00771c82a78c087f8cb9a7",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-4291ee29-c2f7-4dd4-9058-4ecb587a0bfb.png",
+          "expectedSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+          "actualSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+          "expectedSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+          "actualSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+          "expectedSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+          "actualSha256": "7b58878caa76a4dfdd494b4c7b149b860ba1daaed9eeec8dd134d7a6f3477a9d",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+          "expectedSha256": "ecfd883b68c3111cc87f5d2f4ccd41509c01be94604f0d167fe67031345a700f",
+          "actualSha256": "ecfd883b68c3111cc87f5d2f4ccd41509c01be94604f0d167fe67031345a700f",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/neural-networks__forward-pass-challenge.json",
+        "sha256": "57b33d03a83f86e5b2a8491731c0eac6a74d2f88e7710f2412b28372f4c28ee2",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "gradient-descent-challenge",
+      "lesson": "training-loop/gradient-descent",
+      "phase": "challenge",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/job.json",
+      "jobRecordSha256": "b3970969301b3969286424ac298c3fe5a0815eab476404d63fa61fe74460787c",
+      "status": "published",
+      "promptSha256": "f8f84cc06b1af299e35124233e1d43295520dd3078fb81d035049c3b255254bf",
+      "generationArgumentsComparisons": {
+        "generationArgs": {
+          "promptMatches": true,
+          "resolvedReferenceOrderMatches": true
+        },
+        "generationArgsAtGeneration": {
+          "promptMatches": true
+        }
+      },
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/references/0",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ec21585c-7e27-4319-b464-baa73b38a12d.png",
+          "sha256": "b23684761d533394aa71d93d2582f844d3b643f94d1b29d86537434703fe98bc",
+          "hashMatches": true,
+          "pathAtGeneration": "docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/rejected-v1.png"
+        },
+        {
+          "jsonPath": "/attempts/0/references/0",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-37be0ede-0782-42e9-abc1-3adc0e9d366a.png",
+          "sha256": "17893b0c56248fdf5999b0d4b08c29c165cf5bf70230eb3e2988a5ad5b4684df",
+          "hashMatches": true,
+          "pathAtGeneration": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+          "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+          "sha256": "1ff5952eb7da68d094f13533c6a1720674167fde98749ac548d1013b29518253",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-38ca819e-ed65-4afb-82a9-6ea37ee55177.png",
+          "expectedSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+          "actualSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png",
+          "expectedSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+          "actualSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png",
+          "expectedSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+          "actualSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+          "expectedSha256": "5fb60150f39ca924c1728d262f9d4d513bb10bbaa7330a0b2992da0ba374ff10",
+          "actualSha256": "5fb60150f39ca924c1728d262f9d4d513bb10bbaa7330a0b2992da0ba374ff10",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/training-loop__gradient-descent-challenge.json",
+        "sha256": "57298165b7207db90df7b9d80c1ef90e3f52717ae9a5842dc08cc7c2a9cc0765",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "layers-and-architecture-takeaways",
+      "lesson": "neural-networks/layers-and-architecture",
+      "phase": "takeaways",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/layers-and-architecture-takeaways/job.json",
+      "jobRecordSha256": "9cde28b5944b1f71d495a965f311faa08825db668cd22408bce3167072e9aa36",
+      "status": "published",
+      "promptSha256": "5ed731a8cd9dfc9b112c2480683004d3418a1cd9d211bf0b60825b8ae9955509",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/references/0",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d7d7023f-dc54-4d3e-a97f-d6dbe322daf3.png",
+          "sha256": "e3333b0640933f90f723c108aa6ba5dc4487442516a2db34aa8a6bd65b7e45b6",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/0",
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d7d7023f-dc54-4d3e-a97f-d6dbe322daf3.png",
+          "sha256": "e3333b0640933f90f723c108aa6ba5dc4487442516a2db34aa8a6bd65b7e45b6",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+          "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
+          "sha256": "9b3b4d1756293a028b60b873cd9c1fd4f4f9b839659d21b12ef88596bdcd6e8e",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-b409e8fc-e923-498f-8e50-36e5a1ee1e6c.png",
+          "expectedSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+          "actualSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+          "expectedSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+          "actualSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+          "expectedSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+          "actualSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+          "expectedSha256": "879bfe83332ff350c3b887038b5132cb758527af08fddce438fb6028b284a5e0",
+          "actualSha256": "879bfe83332ff350c3b887038b5132cb758527af08fddce438fb6028b284a5e0",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/neural-networks__layers-and-architecture-takeaways.json",
+        "sha256": "ffdb02292fce01e2b440363d0e3d273097c041c2c15a0d03fe3a174581ed532a",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "normalization-briefing",
+      "lesson": "foundations/normalization",
+      "phase": "briefing",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/job.json",
+      "jobRecordSha256": "39090d42857a96669c336faa789fd9d46bcf3cb25dc7547f3b3666dacf4ed2e9",
+      "status": "published",
+      "promptSha256": "5fcf344523d86c2633039b22adae793abbc822cd82e9a2eb7f10fc93d8417110",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "canonical",
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/actualReferences/0",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/1",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/2",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/3",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/4",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4e9e5f24-f134-4318-81c6-9b9d484c73c5.png",
+          "sha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+          "hashMatches": true,
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/source.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+          "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+          "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-905c777c-d6a4-4258-ab54-1e8765128b95.png",
+          "expectedSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+          "actualSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/foundations__normalization-openai-20261107.png",
+          "expectedSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+          "actualSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/foundations__normalization-openai-20261107.png",
+          "expectedSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+          "actualSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+          "expectedSha256": "5cd5da0b218f23d6546871f5f37e451b04f0cbb27f6c4859c294cbcaf4c21812",
+          "actualSha256": "5cd5da0b218f23d6546871f5f37e451b04f0cbb27f6c4859c294cbcaf4c21812",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/foundations__normalization-briefing.json",
+        "sha256": "87a37274aa8597d0574fe7ed5d0586aac043fc9fd41f84f3bfee927af2cce1d1",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "normalization-challenge",
+      "lesson": "foundations/normalization",
+      "phase": "challenge",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-challenge/job.json",
+      "jobRecordSha256": "8fc63d67d6e9005dbebe97a6511206b4690fb23370767f0a045fe60b77bb953b",
+      "status": "published",
+      "promptSha256": "75dfba303f175c9e0ca3a879ef6befd1eb16c6aabf5149551f81d1e411dd07ef",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/actualReferences/0",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/1",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-bca26cd9-6f85-4b0e-aea6-d463396f79d3.png",
+          "sha256": "184ab3773c9506f3883caffbf5137bf870af5eead163f7b9d4b41ba4db2db0fc",
+          "hashMatches": true,
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-challenge-openai-20261107.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+          "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+          "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-34dddd95-8e8f-4d17-ba32-9f6387e4c122.png",
+          "expectedSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+          "actualSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/foundations__normalization-challenge-openai-20261107.png",
+          "expectedSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+          "actualSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/foundations__normalization-challenge-openai-20261107.png",
+          "expectedSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+          "actualSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/foundations/normalization-challenge.webp",
+          "expectedSha256": "26eedebf3623d96ab02157221838dfb5d36ac6fc7662b901d74ddc786465e9a1",
+          "actualSha256": "26eedebf3623d96ab02157221838dfb5d36ac6fc7662b901d74ddc786465e9a1",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/foundations__normalization-challenge.json",
+        "sha256": "a460cf64bdf1d8ff2355afc462016a24822885c3cc432f5c39e82a0a9845a3ee",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "normalization-concept",
+      "lesson": "foundations/normalization",
+      "phase": "concept",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/job.json",
+      "jobRecordSha256": "637ee907152db19b82f5a04f9587cc2deeff0040ea90a9a26521464a9df9972c",
+      "status": "published",
+      "promptSha256": "22e982f8e59f9f1abed1dd20ed4da0497d68d2d9eb77c124562c9e9cf6b35d92",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/actualReferences/0",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/1",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/2",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-05ef7d50-4657-46b5-86d9-263011c057be.png",
+          "sha256": "0a4cf651ec1b47a83555c0f323e6af75267794fee16516463217380a4c917fcc",
+          "hashMatches": true,
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/rejected-v1.png"
+        },
+        {
+          "jsonPath": "/attempts/0/references/0",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/1",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/2",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-5127d719-f0d7-4721-8b7a-4230eb53b573.png",
+          "sha256": "8ed4c6dbc305b4efa6228eb09e8f77cb22398a1a9a1ce0236b31d9ee16cf76b9",
+          "hashMatches": true,
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-concept-openai-20261107.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+          "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+          "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-102bb961-7c2d-43fc-993a-1e33d6d181d8.png",
+          "expectedSha256": "f6bf3c8681997352e818c8b1689019c8e5df418a1ba3670bb4eaf43cb5b76f2f",
+          "actualSha256": "f6bf3c8681997352e818c8b1689019c8e5df418a1ba3670bb4eaf43cb5b76f2f",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/foundations__normalization-concept-openai-20261107.png",
+          "expectedSha256": "f6bf3c8681997352e818c8b1689019c8e5df418a1ba3670bb4eaf43cb5b76f2f",
+          "actualSha256": "f6bf3c8681997352e818c8b1689019c8e5df418a1ba3670bb4eaf43cb5b76f2f",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/foundations__normalization-concept-openai-20261107.png",
+          "expectedSha256": "f6bf3c8681997352e818c8b1689019c8e5df418a1ba3670bb4eaf43cb5b76f2f",
+          "actualSha256": "f6bf3c8681997352e818c8b1689019c8e5df418a1ba3670bb4eaf43cb5b76f2f",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/foundations/normalization-concept.webp",
+          "expectedSha256": "69798f7bcc67b0908b03e529b5b21825a1c806cd0cb259e21d9ef9791265ff27",
+          "actualSha256": "69798f7bcc67b0908b03e529b5b21825a1c806cd0cb259e21d9ef9791265ff27",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/foundations__normalization-concept.json",
+        "sha256": "4f80a910141f50abd9093b6a4d304eea3d2f7034890dd0cc1b5d6af5d16d6e2c",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "normalization-epilogue",
+      "lesson": "foundations/normalization",
+      "phase": "epilogue",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-epilogue/job.json",
+      "jobRecordSha256": "823b336c6a47d38afdb2fcd239aa7a45af229262af614387cf32149220cf37be",
+      "status": "published",
+      "promptSha256": "d01a0be6946c98430a7b25a31fb46ff98055253783f65b7650d796313d23baf6",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/actualReferences/0",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/1",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/2",
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/actualReferences/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-cff8f8d5-5d19-4cd9-a8de-30bde583570e.png",
+          "sha256": "3d238630d01f72e5d8393d89bdae7b89c878ecddcd3541a93130b32106bfe724",
+          "hashMatches": true,
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__normalization-epilogue-openai-20261107.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+          "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+          "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-f297da27-71e1-4a8a-8d60-5a4b71374e07.png",
+          "expectedSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+          "actualSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/foundations__normalization-epilogue-openai-20261107.png",
+          "expectedSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+          "actualSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/foundations__normalization-epilogue-openai-20261107.png",
+          "expectedSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+          "actualSha256": "9d42a1be1f285f999f01666cf958181e6b25777ea88c21a35b7b435bbcfaf329",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/foundations/normalization-epilogue.webp",
+          "expectedSha256": "56ebe63c713a52e581662893aa3535f01be01dccd3cd0499ed859c9c42558c67",
+          "actualSha256": "56ebe63c713a52e581662893aa3535f01be01dccd3cd0499ed859c9c42558c67",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/foundations__normalization-epilogue.json",
+        "sha256": "fb67edd9cd892c164f35b4bd375bc71032dd50a7fb71a56bbbad979ca2835383",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "sliding-windows-concept",
+      "lesson": "recurrent-networks/sliding-windows",
+      "phase": "concept",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/sliding-windows-concept/job.json",
+      "jobRecordSha256": "adb1fe3b61733447a3cb68f36b103a0df1c9e6da00adab86367f9d3d211f4d6b",
+      "status": "published",
+      "promptSha256": "8e8ddd6f6991252fe5b9782fed968d2f88caf1955e928ecf46f8e8fccd157506",
+      "generationArgumentsComparisons": {
+        "generationArgs": {
+          "promptMatches": true,
+          "resolvedReferenceOrderMatches": true
+        },
+        "generationArgsAtGeneration": {
+          "promptMatches": true
+        }
+      },
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/references/0",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/1",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/2",
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-14cc18db-6d39-41ec-80ed-f4e7532baed6.png",
+          "sha256": "950767e373ec12d5f3451ac16f26418da31a0b54c675784930bac3fa6e3b2ee3",
+          "hashMatches": true,
+          "pathAtGeneration": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+          "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f",
+          "hashMatches": true
+        },
+        {
+          "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+          "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ecb2252a-4964-416b-a925-de65b713e196.png",
+          "expectedSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+          "actualSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+          "expectedSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+          "actualSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+          "expectedSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+          "actualSha256": "1cebec554786144636c384a2e76003de225a355e4442e3e7f8c9b4ccd9f5940a",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-concept.webp",
+          "expectedSha256": "4c3d5a4e784f21ecfef1e7b1f567f2a48699c640fd47fcb80e1acd4d48646714",
+          "actualSha256": "4c3d5a4e784f21ecfef1e7b1f567f2a48699c640fd47fcb80e1acd4d48646714",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/recurrent-networks__sliding-windows-concept.json",
+        "sha256": "baac8b69d5466f75b75c5b72df8b20ab1812ec2e4f0313d78942376830c97fe7",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "spectrograms-concept",
+      "lesson": "signal-processing/spectrograms",
+      "phase": "concept",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/job.json",
+      "jobRecordSha256": "c0664da6897df4c9c77f06969b48eb5800243f62e053976e33a1e4ad0d8f941a",
+      "status": "published",
+      "promptSha256": "efbfaaf8b2716cff60c1b309cdeec2f679f10290fdab55bb8986343c0f30ac96",
+      "generationArgumentsComparisons": {},
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/references/0",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-94514817-ceff-49a9-89df-bb8a2297f38f.png",
+          "sha256": "4fce6ab92cd3489423b11908036162e4173c09ba124a4e8d45f9be9718c53530",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/0",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-73e74977-fc54-484f-84d8-379ec3a27f76.png",
+          "sha256": "6503b841e320d0f060137609baf2a4a57030035be69c955a4f305b5a3d268285",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/1/references/0",
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/1/references/1",
+          "path": "docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/1/references/2",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-94514817-ceff-49a9-89df-bb8a2297f38f.png",
+          "sha256": "4fce6ab92cd3489423b11908036162e4173c09ba124a4e8d45f9be9718c53530",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-057d715c-4220-46a3-82d2-c3555e0e1283.png",
+          "expectedSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+          "actualSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+          "expectedSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+          "actualSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+          "expectedSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+          "actualSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-concept.webp",
+          "expectedSha256": "55cd03c759041a352b9bfd0386fe47feae1caa050ac8ba7e4a41cc644b50b21b",
+          "actualSha256": "55cd03c759041a352b9bfd0386fe47feae1caa050ac8ba7e4a41cc644b50b21b",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/signal-processing__spectrograms-concept.json",
+        "sha256": "72372256c86f842a101c46723bf5cc91498d45edbe2d3e4b909382e0af1f5a64",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    },
+    {
+      "job": "system-architecture-briefing",
+      "lesson": "capstone/system-architecture",
+      "phase": "briefing",
+      "jobPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/job.json",
+      "jobRecordSha256": "d438f46e414812ea5dbb05e5e716a99fa6d352f98a935485afaf7a28a91a3e6f",
+      "status": "published",
+      "promptSha256": "a8d34b695013bf11886248ea086214e5322f9f20e47ba1b5003f64d102d04544",
+      "generationArgumentsComparisons": {
+        "generationArgs": {
+          "promptMatches": true,
+          "resolvedReferenceOrderMatches": true
+        },
+        "generationArgsAtGeneration": {
+          "promptMatches": true
+        }
+      },
+      "canonicalFirstReferenceOrder": true,
+      "referenceRoles": [
+        "canonical",
+        "canonical",
+        "room",
+        "target"
+      ],
+      "referenceChecks": [
+        {
+          "jsonPath": "/references/0",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/1",
+          "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/2",
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/references/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-7e4b4734-c824-45d0-9b34-3a8cbaef35ec.png",
+          "sha256": "3dd8d2760ed66775634900600a5000dd1e65c3e7b1d79ffcfe5f58f8ffd4ac1c",
+          "hashMatches": true,
+          "pathAtGeneration": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/rejected-v1.png"
+        },
+        {
+          "jsonPath": "/attempts/0/references/0",
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/1",
+          "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/2",
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "hashMatches": true,
+          "pathAtGeneration": null
+        },
+        {
+          "jsonPath": "/attempts/0/references/3",
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-23d90566-66f8-46ff-b843-c4bb488fe250.png",
+          "sha256": "bcdb011e04fc66a814694d17e3524852c4568a6c3052f2b6430fd07a603152de",
+          "hashMatches": true,
+          "pathAtGeneration": "art-src/scenes/capstone__system-architecture-openai-20261107.png"
+        }
+      ],
+      "sourceChecks": [
+        {
+          "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+          "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6",
+          "hashMatches": true
+        }
+      ],
+      "assetChecks": {
+        "generatedPath": {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-a9c5cad9-b6f6-48a4-9a37-bab383b7969f.png",
+          "expectedSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+          "actualSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+          "hashMatches": true
+        },
+        "candidatePath": {
+          "path": "art-src/scenes/capstone__system-architecture-openai-20261107.png",
+          "expectedSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+          "actualSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+          "hashMatches": true
+        },
+        "publishedSource": {
+          "path": "art-src/scenes/capstone__system-architecture-openai-20261107.png",
+          "expectedSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+          "actualSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+          "hashMatches": true
+        },
+        "publishedRuntime": {
+          "path": "apps/web/public/scenes/deep-orbit/capstone/system-architecture.webp",
+          "expectedSha256": "8fbfb3b46c347cf45a7dab235c7cd9b8f89c27aeb59aa53769848a52b525090c",
+          "actualSha256": "8fbfb3b46c347cf45a7dab235c7cd9b8f89c27aeb59aa53769848a52b525090c",
+          "hashMatches": true
+        }
+      },
+      "reviewChecks": {
+        "ownPassExactHash": true,
+        "peerPassExactHash": true,
+        "peerReviewer": "/root/quality_early"
+      },
+      "publicationMetadataComplete": true,
+      "publishedRecordCheck": {
+        "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/capstone__system-architecture-briefing.json",
+        "sha256": "2f867b8b9533ac081dc855f5319417b1944dfb900ef5e2ff7c50148643cd3812",
+        "issues": []
+      },
+      "verdict": "PASS",
+      "issues": [],
+      "pending": []
+    }
+  ],
+  "unresolvedIssues": [],
+  "pendingJobs": [],
+  "verdict": "PASS"
+}

@@ -1,0 +1,67 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-7fcd4518-5f34-4b20-bb9c-43a3805ffa1f.png",
+  "candidateSha256": "8ac40e7d2d8462a121b1966f340bea27053d19672753d9f2f3cb55819621d103",
+  "verdict": "PASS",
+  "method": "Fresh native original plus magnified arm/hand and face crops; compared with both canonical portraits and current lesson epilogue.",
+  "nativeReviewed": true,
+  "checks": {
+    "shoulderElbowWristChains": "PASS: Farah has two separate continuous arm chains to trackball and resting desk hand. Demir has one arm over chair and one descending to notebook; partial occlusion by Farah is plausible.",
+    "thumbsFingersAndGrip": "PASS: Chair hand has separated relaxed fingers and thumb; notebook hand supports the lower edge with a plausible partially occluded grip. Farah palms, visible fingertips and thumbs follow their own wrist directions and surfaces; no extra or fused digit evident at 2x inspection.",
+    "propContinuity": "PASS: Trackball sits in its bezel, notebook remains a single closed volume, and chair contacts and table clearance are coherent.",
+    "canonicalFaces": "PASS: Farah retains face contour, brows, nose, mouth, complexion and AR lens; Demir retains tapered jaw, freckles, brows, nose, hairline and headset through the respective sideways glances.",
+    "displayReadability": "PASS under new criterion: One large main display uses the available right third of the frame from upper edge to desk. The five short status lines have strong size and hierarchy, large open spacing and no competing rear-wall lesson panel. All text is readable at native size.",
+    "displayTechnicalAndPerspective": "PASS: Sample 7741, anomaly score 0.518, unknown label, review queued and one-hour steady tensor count match the epilogue. Text and borders share the glass plane.",
+    "operatorDirection": "PASS: Farah faces and looks toward the front of her display. Camera sits beside the operator; Demir looks toward Farah.",
+    "storyAndProportions": "PASS: Farah routes the uncertain sample, Demir reacts with a questioning half-smile. Adult head/torso proportions, relaxed shoulders and short natural necks.",
+    "palette": "PASS: Muted charcoal, brass and sage, controlled warm facial light."
+  },
+  "cropCoordinates": {
+    "demirArms": [
+      60,
+      265,
+      770,
+      845
+    ],
+    "farahArms": [
+      150,
+      590,
+      890,
+      1024
+    ],
+    "combinedFaces": [
+      255,
+      45,
+      700,
+      650
+    ],
+    "farahFace": [
+      300,
+      393,
+      521,
+      622
+    ],
+    "demirFace": [
+      458,
+      123,
+      636,
+      336
+    ]
+  },
+  "cropScale": 2,
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "lines": "333-345"
+  },
+  "temporaryCropsRemoved": true
+}

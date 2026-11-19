@@ -54,8 +54,21 @@ testCode: |
       expect(loss.shape, 'A loss is one number for the whole batch, so its shape is the empty list. A shape with a row count in it means your code still needs to average the per-row errors.').toEqual([]);
     });
     it('mseLoss squares the differences before it averages them', () => {
-      const loss = mseLoss(tf.tensor([3.0, -0.5, 2.0, 1.0]), tf.tensor([2.5, 0.0, 2.1, 1.3]));
+      const labels = tf.tensor([3.0, -0.5, 2.0, 1.0]);
+      const predictions = tf.tensor([2.5, 0.0, 2.1, 1.3]);
+      const suppliedLabels = Array.from(labels.dataSync());
+      const suppliedPredictions = Array.from(predictions.dataSync());
+      const loss = mseLoss(labels, predictions);
       expect(loss, 'mseLoss returned nothing, so there is no number to check.').toBeDefined();
+      const returned = loss.dataSync()[0];
+      if (loss.shape.length === 0 && Number.isFinite(returned)) {
+        recordResult({
+          kind: 'table', title: 'Inputs and your returned MSE',
+          summary: 'The supplied four-row squared-error probe and the batch loss your function returned. The same returned batch value repeats on every row. These are arithmetic test inputs, not ship measurements.',
+          columns: ['Position', 'Label', 'Prediction', 'Returned batch MSE'],
+          rows: suppliedLabels.map((label, i) => [i + 1, label, suppliedPredictions[i], returned]),
+        });
+      }
       expect(loss.dataSync()[0], 'The squares come first, then the mean. Averaging the raw differences lets a positive miss cancel a negative one, which is the reason the squares are there at all.').toBeCloseTo(0.15, 2);
     });
     it('mseLoss reads the pair it is handed, including one the lesson never shows', () => {
@@ -70,20 +83,39 @@ testCode: |
       expect(loss.dataSync()[0], 'A logit of 0 is the fifty-fifty prediction, and the loss of a fifty-fifty guess is a number you can work out on paper. Anything else here means your code treated the second argument as a probability and applied sigmoid again.').toBeCloseTo(0.6931, 3);
     });
     it('bceLoss tracks its inputs: confident and right scores far below confident and wrong', () => {
-      const rightLoss = bceLoss(tf.tensor([1, 0]), tf.tensor([3, -3]));
-      const wrongLoss = bceLoss(tf.tensor([1, 0]), tf.tensor([-3, 3]));
+      const rightLabels = tf.tensor([1, 0]);
+      const wrongLabels = tf.tensor([1, 0]);
+      const rightLogits = tf.tensor([3, -3]);
+      const wrongLogits = tf.tensor([-3, 3]);
+      const suppliedRightLabels = Array.from(rightLabels.dataSync());
+      const suppliedWrongLabels = Array.from(wrongLabels.dataSync());
+      const suppliedRight = Array.from(rightLogits.dataSync());
+      const suppliedWrong = Array.from(wrongLogits.dataSync());
+      const rightLoss = bceLoss(rightLabels, rightLogits);
+      const wrongLoss = bceLoss(wrongLabels, wrongLogits);
       expect(rightLoss, 'bceLoss returned nothing on the confident-and-right pair.').toBeDefined();
       expect(wrongLoss, 'bceLoss returned nothing on the confident-and-wrong pair.').toBeDefined();
       const right = rightLoss.dataSync()[0];
       const wrong = wrongLoss.dataSync()[0];
+      if (rightLoss.shape.length === 0 && wrongLoss.shape.length === 0 && Number.isFinite(right) && Number.isFinite(wrong)) {
+        recordResult({
+          kind: 'table', title: 'Farah\'s loss comparison',
+          summary: 'Your binary cross-entropy on the two supplied logit test cases. Both use the same labels. The confident wrong case should cost more.',
+          columns: ['Test case', 'Loss'],
+          rows: [['Confident and correct', right], ['Confident and wrong', wrong]],
+        });
+        recordResult({
+          kind: 'table', title: 'Logits used for your loss comparison',
+          summary: 'The labels and raw logits passed to your loss function in the two comparison calls. These supplied binary test cases are separate from the ship recording.',
+          columns: ['Test case', 'Position', 'Label', 'Logit'],
+          rows: [
+            ...suppliedRightLabels.map((label, i) => ['Confident and correct', i + 1, label, suppliedRight[i]]),
+            ...suppliedWrongLabels.map((label, i) => ['Confident and wrong', i + 1, label, suppliedWrong[i]]),
+          ],
+        });
+      }
       expect(right, 'Confident correct predictions should produce a loss close to zero.').toBeLessThan(0.1);
       expect(wrong, 'Confident wrong predictions should produce a large binary cross-entropy loss. Pass the raw logits to the loss function.').toBeGreaterThan(3);
-      recordResult({
-        kind: 'table', title: 'Farah\'s loss comparison',
-        summary: 'Your binary cross-entropy on the two supplied logit test cases. Both use the same labels. The confident wrong case should cost more.',
-        columns: ['Test case', 'Loss'],
-        rows: [['Confident and correct', right], ['Confident and wrong', wrong]],
-      });
     });
     it('MSE and binary cross-entropy return their expected losses for the same inputs', () => {
       const labels = tf.tensor([1, 0, 1, 0, 1]);

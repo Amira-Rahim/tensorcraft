@@ -1,0 +1,129 @@
+{
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "briefing",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, strictly preserve identity. The first reference images are the canonical human faces. The LAST image is the edit target. Make only the requested teaching-display corrections. Preserve every person exactly: full face morphology, head scale, hair, gaze, expression, accessories, torso, neck, shoulders, continuous arms/hands, fingers, clothing, chair pose. Preserve the same muted room, materials, lighting and composition. No new people, props or decorative graphics. One full final 1536x1024 scene only. On the large 80-step window timeline, change ONLY the right endpoint numeral from 80 to 79. On BOTH small desktop screens below it, change the right endpoint numeral from 80 to 79 too. Keep each title 80-step window unchanged, because 80 steps are indexed 0 through 79. Preserve all other main and right screen labels and values, especially 4: precursor ripple, LSTM forecast 0134:55, Observed 0131:27, 208 s early, Attention test pending. On Demir wrist terminal replace the arbitrary green waveform and bars with the brief verified text 208 s, no other chart. Preserve Farah exact distinct shoulder-arm construction and Demir exact lean and natural bare visible left ear. Do not change their anatomy or face size.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/advanced-time-series__beyond-lstm-briefing-semantics-stage1-openai-20261107.png",
+      "sha256": "15bfc960d5e6f4f12db08f7712cb2308dcdc70f926e69d8cdcfbc4f97925008d",
+      "role": "target scene with approved body construction",
+      "originalPath": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__beyond-lstm-briefing-semantics-stage1-openai-20261107.png",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "15bfc960d5e6f4f12db08f7712cb2308dcdc70f926e69d8cdcfbc4f97925008d",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+    "sha256": "5b2783e03624a58e174df3a4ccab00d29d3a7782c7ebed5f083582aa86482088"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c"
+    }
+  ],
+  "panelSpecification": {
+    "state": "problem",
+    "panels": [
+      "Main board: an 80-step event timeline with step 4 highlighted as precursor ripple, a late event marker and the annotation LSTM timing miss. Use event markers rather than inventing measured amplitudes.",
+      "Side timing panel: predicted 0134:55, observed 0131:27, early by 208 s. Preserve Farah pointing at the early event and both corrected shoulder chains."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+  },
+  "bodyConstraints": "Farah corrected distinct shoulder origins and two arm chains; Demir bare visible anatomical left ear.",
+  "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+  "candidateSha256": "a9e7ae6140c3ff662fdc32e364c3b87721f19254fe4225000cb1bdb16c4ecc53",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-73a14735-b92b-478d-8687-3163777c11b0.png",
+  "ownReview": "Fullframe and canonical proofs pass. Main and both minor80-step axes index0..79, source forecast0134:55 vsobserved0131:27 yields208seconds early. Farah has distinct shoulders and2connected arms. Demir bare visible left ear and leaning pose preserved.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-briefing-identity-proof.jpg",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit lesson scene, 1536x1024 adventure-comic illustration. The first input(s) are immutable canonical face identity references. The LAST input is the exact scene to edit. Preserve the same people, same facial morphology and story moment. Keep the entire current scene composition, Farah's latest repaired whole torso and BOTH distinct shoulder-arm-hand chains exactly: her anatomical right shoulder at viewer-left connects visibly to her raised pointing arm; her anatomical left shoulder at viewer-right connects to her resting hand on the rail. Keep Demir's whole forward-leaning body, hand support, face and bare visible anatomical LEFT ear exactly. His canonical right-ear comms can remain hidden. Change the teaching displays as follows. Main board becomes a clean horizontal event-timing diagram headed \"80-step window\". Place a small event marker at step 4 near the left, exactly where her stylus points; label \"4: precursor ripple\". Place a later amplitude-spike marker near the far right, label \"late spike\". Use a thin timeline with sparse ticks and endpoint \"80\", not a fabricated raw waveform. Below it a compact timing comparison reads \"LSTM forecast 0134:55\", \"Observed 0131:27\", \"208 s early\". These are the briefing's supplied mission facts. The right background chart becomes a simple panel \"Attention test pending\" without plotted results. The other readable small displays echo the 80-step timing strip or are dark inactive screens. No unrelated histogram, wave, gauge or decorative numeric bars. Farah's complete head is just slightly oversized: reduce her whole head to about90 percent of its current linear width and height, maintaining every facial shape, hairstyle, gaze and expression. Rejoin the neck naturally; keep her body and both arms the same size. Do not change Demir's head size. Preserve subdued sage, brass and charcoal palette and natural skin. No larger proportion changes. Output one final full scene only, no before/after collage, no caption outside the art, no new characters or props.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/beyond-lstm-briefing-before.png",
+          "sha256": "8e0b3db4755545f57af42525bf0a331450333b3b7579ce55afcf3564126462cf",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "8e0b3db4755545f57af42525bf0a331450333b3b7579ce55afcf3564126462cf",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-briefing-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "15bfc960d5e6f4f12db08f7712cb2308dcdc70f926e69d8cdcfbc4f97925008d",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0e337329-4ee8-4295-9731-200e75ff380e.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/beyond-lstm-briefing-identity-proof.jpg",
+      "status": "candidate-needs-screen-detail-check"
+    }
+  ],
+  "requestedDisplayCorrections": "On the large 80-step window timeline, change ONLY the right endpoint numeral from 80 to 79. On BOTH small desktop screens below it, change the right endpoint numeral from 80 to 79 too. Keep each title 80-step window unchanged, because 80 steps are indexed 0 through 79. Preserve all other main and right screen labels and values, especially 4: precursor ripple, LSTM forecast 0134:55, Observed 0131:27, 208 s early, Attention test pending. On Demir wrist terminal replace the arbitrary green waveform and bars with the brief verified text 208 s, no other chart. Preserve Farah exact distinct shoulder-arm construction and Demir exact lean and natural bare visible left ear. Do not change their anatomy or face size.",
+  "independentReview": {
+    "reviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "a9e7ae6140c3ff662fdc32e364c3b87721f19254fe4225000cb1bdb16c4ecc53",
+    "proofSha256": "89bc399936a41cd02784507589d4a57f432659b27a7c9dbf4335b328dc22927f",
+    "notes": "Fullframe and canonical proofs pass. Main and both minor80-step axes index0..79, source forecast0134:55 vsobserved0131:27 yields208seconds early. Farah has distinct shoulders and2connected arms. Demir bare visible left ear and leaning pose preserved.",
+    "scope": "fresh canonical face proof, complete frame, proportions, anatomy, palette, every prominent screen and current source values"
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__beyond-lstm-briefing-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+  "publishedOutputSha256": "8cd2f750e877bbe202e07601266d13167e0262b5dc04b4820167564f37ca34b1",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 200626
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-0e337329-4ee8-4295-9731-200e75ff380e.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-73a14735-b92b-478d-8687-3163777c11b0.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+      "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

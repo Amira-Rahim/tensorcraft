@@ -65,6 +65,10 @@ test("mobile glossary opens beside the term and returns focus on Escape", async 
   });
   await page.goto(lesson);
   const term = page.locator("button[data-glossary-term]:visible").first();
+  await term.evaluate(async (el) => {
+    await document.fonts.ready;
+    el.scrollIntoView({ block: "center", behavior: "instant" });
+  });
   await term.click();
   const definition = page.getByRole("note");
   await expect(definition).toBeVisible();
@@ -72,8 +76,18 @@ test("mobile glossary opens beside the term and returns focus on Escape", async 
   expect(box.x).toBeGreaterThanOrEqual(16);
   expect(box.x + box.width).toBeLessThanOrEqual(375);
   const termBox = (await term.boundingBox())!;
-  expect(box.y).toBeGreaterThanOrEqual(termBox.y + termBox.height);
-  expect(box.y + box.height).toBeLessThanOrEqual(844);
+  expect(box.y).toBeCloseTo(termBox.y + termBox.height + 8, 0);
+
+  // Scrolling the term to the bottom leaves no room below it.
+  await term.evaluate((el) =>
+    el.scrollIntoView({ block: "end", behavior: "instant" }),
+  );
+  await expect(async () => {
+    const trigger = (await term.boundingBox())!;
+    const note = (await definition.boundingBox())!;
+    expect(trigger.y + trigger.height).toBeGreaterThan(844 - 16);
+    expect(note.y + note.height).toBeCloseTo(844 - 16, 0);
+  }).toPass();
   await page.keyboard.press("Escape");
   await expect(definition).not.toBeVisible();
   await expect(term).toBeFocused();

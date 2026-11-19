@@ -1,13 +1,18 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { initPostHog, isInitialized } from "../../lib/posthog";
 import { EVENTS, track } from "../../lib/analytics-events";
 import { hasAnalyticsConsent, onConsentChange } from "../../lib/consent";
+import { AnalyticsReadyContext } from "../../lib/analytics-ready";
 
-function AnalyticsInner() {
+function AnalyticsInner({
+  onReadyChange,
+}: {
+  onReadyChange: (ready: boolean) => void;
+}) {
   const initialized = useRef(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,10 +34,34 @@ function AnalyticsInner() {
   // runs), so $pageview matches every other event.
   const lastPageviewUrl = useRef<string | null>(null);
   const capturePageview = useCallback((path: string, query: string) => {
+    if (!hasAnalyticsConsent() || !isInitialized()) return;
     const url = query ? `${path}?${query}` : path;
     if (lastPageviewUrl.current === url) return;
     lastPageviewUrl.current = url;
     posthog.capture("$pageview");
+  }, []);
+
+  const session = useRef<{ id: string; startedAt: number } | null>(null);
+  const startSession = useCallback(() => {
+    if (
+      session.current ||
+      !hasAnalyticsConsent() ||
+      !isInitialized() ||
+      document.visibilityState === "hidden"
+    )
+      return;
+    const id = crypto.randomUUID();
+    session.current = { id, startedAt: Date.now() };
+    track(EVENTS.SESSION_STARTED, { sessionId: id });
+  }, []);
+  const endSession = useCallback(() => {
+    const current = session.current;
+    session.current = null;
+    if (!current || !hasAnalyticsConsent() || !isInitialized()) return;
+    track(EVENTS.SESSION_ENDED, {
+      sessionId: current.id,
+      durationMs: Date.now() - current.startedAt,
+    });
   }, []);
 
   // Initialize PostHog (EU instance via lib/posthog, no-op without key).
@@ -45,6 +74,10 @@ function AnalyticsInner() {
   useEffect(() => {
     return onConsentChange(() => {
       if (!hasAnalyticsConsent()) {
+        // Discard the observed interval. Withdrawal must not emit an event.
+        session.current = null;
+        lastPageviewUrl.current = null;
+        onReadyChange(false);
         if (isInitialized()) posthog.opt_out_capturing();
         return;
       }
@@ -57,6 +90,9 @@ function AnalyticsInner() {
         if (posthog.has_opted_out_capturing()) {
           posthog.opt_in_capturing({ captureEventName: false });
         }
+        onReadyChange(true);
+        startSession();
+        capturePageview(pathnameRef.current, searchParamsRef.current);
         return;
       }
 
@@ -66,6 +102,8 @@ function AnalyticsInner() {
       // consent_granted below is the opt-in metric; the SDK's own $opt_in
       // event would only duplicate it.
       posthog.opt_in_capturing({ captureEventName: false });
+      onReadyChange(true);
+      startSession();
 
       // Opt-in numerator, once per browser, at the first moment consent
       // makes capture possible. The decline side deliberately emits
@@ -85,7 +123,7 @@ function AnalyticsInner() {
       // page consent was granted on would never be counted.
       capturePageview(pathnameRef.current, searchParamsRef.current);
     });
-  }, [capturePageview]);
+  }, [capturePageview, onReadyChange, startSession]);
 
   // Capture page views on route changes
   useEffect(() => {
@@ -93,55 +131,37 @@ function AnalyticsInner() {
     capturePageview(pathname, searchParams?.toString() ?? "");
   }, [pathname, searchParams, capturePageview]);
 
-  // Session lifecycle, fires `session_started` on mount and `session_ended`
-  // on tab hide / navigation away. The `sessionId` correlates the two halves
-  // in PostHog without any server state. PostHog no-ops when not initialized,
-  // so these fire only after consent + key are available.
+  // Observe visible intervals after consent. A return from a hidden tab starts
+  // a new interval. Nothing before consent or after withdrawal is replayed.
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const sessionId =
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `sess-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const startedAt = Date.now();
-    let ended = false;
-
-    track(EVENTS.SESSION_STARTED, { sessionId });
-
-    const end = () => {
-      if (ended) return;
-      ended = true;
-      track(EVENTS.SESSION_ENDED, {
-        sessionId,
-        durationMs: Date.now() - startedAt,
-      });
-    };
-
     const onVisibility = () => {
-      if (document.visibilityState === "hidden") end();
+      if (document.visibilityState === "hidden") endSession();
+      else startSession();
     };
 
-    window.addEventListener("beforeunload", end);
+    window.addEventListener("beforeunload", endSession);
+    window.addEventListener("pageshow", onVisibility);
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      window.removeEventListener("beforeunload", end);
+      window.removeEventListener("beforeunload", endSession);
+      window.removeEventListener("pageshow", onVisibility);
       document.removeEventListener("visibilitychange", onVisibility);
-      end();
+      endSession();
     };
-  }, []);
+  }, [endSession, startSession]);
 
   return null;
 }
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = useState(false);
   return (
-    <>
+    <AnalyticsReadyContext.Provider value={ready}>
       <Suspense fallback={null}>
-        <AnalyticsInner />
+        <AnalyticsInner onReadyChange={setReady} />
       </Suspense>
       {children}
-    </>
+    </AnalyticsReadyContext.Provider>
   );
 }

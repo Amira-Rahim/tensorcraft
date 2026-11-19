@@ -1,0 +1,530 @@
+{
+  "id": "capstone__system-architecture-briefing",
+  "lesson": "capstone/system-architecture",
+  "phase": "briefing",
+  "owner": "/root/quality_sequence",
+  "status": "published",
+  "tool": "built-in image_gen",
+  "preparedAt": "2026-11-09T13:48:56.715320+00:00",
+  "priorApproval": {
+    "status": "reopened by user",
+    "source": "art-src/scenes/capstone__system-architecture-openai-20261107.png",
+    "sourceSha256": "bcdb011e04fc66a814694d17e3524852c4568a6c3052f2b6430fd07a603152de",
+    "reason": "Demir pointer-arm chain crosses behind Mirza and the upper-arm/elbow/forearm connection is corrupted. The prior original approval is withdrawn for this defect."
+  },
+  "cast": [
+    "ensign-demir",
+    "commander-mirza"
+  ],
+  "room": "Bridge",
+  "prompt": "Use case: precise-object-edit with identity preservation.\nMake one narrow correction to reference image 4. Output one 1536x1024 finished illustration.\n\nReferences in exact order: image 1 is Demir's canonical identity, image 2 is Mirza's canonical identity, image 3 is the Bridge room master, and image 4 is the already repaired composition to edit.\n\nPRESERVE the entire left side and character staging from image 4: identical Demir face, hair, expression, seated body, two visible arm chains, keyboard hand, mouse hand, desk and chair. Preserve Mirza's face, serious reaction, posture, two notebook grips, uniform and notebook. Preserve the lighting, colors and Bridge background.\n\nChange only the large monitor assembly on the right and the alignment of its contents. Swivel its mount so the WHOLE PHYSICAL FRONT PANEL is completely frontal and exactly parallel to the camera sensor. The monitor front bezel and glass are true rectangles. Top and bottom edges are level horizontal lines. Left and right edges are exactly vertical. Opposite edges are parallel. Nothing on the front panel is trapezoidal or obliquely tilted. Use approximately x=805 to 1515 and y=130 to 750 for the rectangular front, with generous inner margins. Show a plausible swivel pedestal or stand beneath it that supports this frontal orientation.\n\nThe glass, bezel, title, title rule, five diagram boxes, arrows, footer rule and all text must now share this one front-facing rectangular plane. Every horizontal box edge and every text baseline is exactly level. Every vertical box edge is exactly vertical. Keep the five component labels large, crisp and readable at 768x512. Keep room materials and screen glow consistent.\n\nExact display text:\n\"Mission pipeline\"\n\"Preprocessor\"\n\"FFT extractor\"\n\"Classifier\"\n\"Anomaly detector\"\n\"Reporter\"\n\"Pulse interval: 47.0 s\"\n\nExactly five component boxes and the same source-correct topology: Preprocessor connects to FFT extractor. FFT extractor branches to Classifier above and Anomaly detector below. Both parallel branches separately converge into Reporter. Clear arrowheads, no shortcuts, no extra components. Title and pulse interval stay outside the component boxes. Do not add completion status or new text.\n\nPreserve every repaired hand and face from image 4. No pointer or new gesture. The only correction is the monitor's frontal geometry and its matching diagram plane.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "a8d34b695013bf11886248ea086214e5322f9f20e47ba1b5003f64d102d04544",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity: Ensign Demir"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity: Commander Mirza"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room master: Bridge"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-7e4b4734-c824-45d0-9b34-3a8cbaef35ec.png",
+      "sha256": "3dd8d2760ed66775634900600a5000dd1e65c3e7b1d79ffcfe5f58f8ffd4ac1c",
+      "role": "edit target: peer-rejected candidate 1, poses preserved",
+      "pathAtGeneration": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/rejected-v1.png",
+      "resolutionNote": "The obsolete project copy was removed after publication. The original builtin generated file retains the exact bytes."
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6",
+      "facts": [
+        "Briefing pulse interval is 47.0 seconds.",
+        "Registry lists preprocessor, fft-extractor, classifier, anomaly-detector and reporter.",
+        "Classifier and anomaly-detector both depend on fft-extractor. Reporter depends on both classifier and anomaly-detector.",
+        "The branched architecture remains proposed work, distinct from the linear exercise runner."
+      ]
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nMake one narrow correction to reference image 4. Output one 1536x1024 finished illustration.\n\nReferences in exact order: image 1 is Demir's canonical identity, image 2 is Mirza's canonical identity, image 3 is the Bridge room master, and image 4 is the already repaired composition to edit.\n\nPRESERVE the entire left side and character staging from image 4: identical Demir face, hair, expression, seated body, two visible arm chains, keyboard hand, mouse hand, desk and chair. Preserve Mirza's face, serious reaction, posture, two notebook grips, uniform and notebook. Preserve the lighting, colors and Bridge background.\n\nChange only the large monitor assembly on the right and the alignment of its contents. Swivel its mount so the WHOLE PHYSICAL FRONT PANEL is completely frontal and exactly parallel to the camera sensor. The monitor front bezel and glass are true rectangles. Top and bottom edges are level horizontal lines. Left and right edges are exactly vertical. Opposite edges are parallel. Nothing on the front panel is trapezoidal or obliquely tilted. Use approximately x=805 to 1515 and y=130 to 750 for the rectangular front, with generous inner margins. Show a plausible swivel pedestal or stand beneath it that supports this frontal orientation.\n\nThe glass, bezel, title, title rule, five diagram boxes, arrows, footer rule and all text must now share this one front-facing rectangular plane. Every horizontal box edge and every text baseline is exactly level. Every vertical box edge is exactly vertical. Keep the five component labels large, crisp and readable at 768x512. Keep room materials and screen glow consistent.\n\nExact display text:\n\"Mission pipeline\"\n\"Preprocessor\"\n\"FFT extractor\"\n\"Classifier\"\n\"Anomaly detector\"\n\"Reporter\"\n\"Pulse interval: 47.0 s\"\n\nExactly five component boxes and the same source-correct topology: Preprocessor connects to FFT extractor. FFT extractor branches to Classifier above and Anomaly detector below. Both parallel branches separately converge into Reporter. Clear arrowheads, no shortcuts, no extra components. Title and pulse interval stay outside the component boxes. Do not add completion status or new text.\n\nPreserve every repaired hand and face from image 4. No pointer or new gesture. The only correction is the monitor's frontal geometry and its matching diagram plane.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-7e4b4734-c824-45d0-9b34-3a8cbaef35ec.png"
+    ],
+    "transparent_background": false
+  },
+  "candidatePath": "art-src/scenes/capstone__system-architecture-openai-20261107.png",
+  "publicationStatus": "not published",
+  "publication": {
+    "alt": "Demir opens the mission architecture while Mirza studies the five connected components and 47.0-second interval.",
+    "location": "Archimedes, Bridge",
+    "action": "Demir operates the keyboard and mouse while Mirza reviews the shared architecture display.",
+    "emotion": "Demir is attentive and questioning. Mirza weighs the shrinking interval with restrained concern.",
+    "eyeline": "Both characters look toward the shared working display.",
+    "checks": [
+      "Two separate visible Demir shoulder-elbow-wrist chains.",
+      "Mirza arms remain clear of Demir and his chair.",
+      "Five component boxes with the correct two-branch dependency topology.",
+      "Pulse interval 47.0s and all main labels readable at 768x512.",
+      "Physical monitor, glass, labels and arrows share a frontal rectangular plane."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-a9c5cad9-b6f6-48a4-9a37-bab383b7969f.png",
+  "generatedAt": "2026-11-09T13:51:00.664795+00:00",
+  "candidateSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+  "ownReview": {
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T13:51:37.053652+00:00",
+    "candidateSha256": "046cd58627d6b82cd6ceedc625876aa93893395a936f532537c165719b84af4e",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "handCropsReviewedAt2x": true,
+    "faceCropsReviewedAt2x": true,
+    "canonicalPortraitsCompared": true,
+    "preview768Reviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "checks": {
+      "armChains": "Demir near right shoulder runs through a visible bent elbow to the mouse wrist. His far left shoulder runs down his own upper arm to a visible elbow and keyboard forearm. Both working arms remain in front of his torso and clear of Mirza. The old raised pointer chain is absent.",
+      "handsAndContact": "Two diagnostic Demir crops show separate keyboard and mouse fingers with ordinary contact and aligned wrists. Mirza uses two compact notebook grips. Occluded thumb portions are consistent with these grips and are not treated as missing fingers.",
+      "identity": "Demir retains the canonical freckled face, swept hair, nose shape, stubble and ear device. Mirza retains the canonical mature broad facial structure, complexion, short silver-templed hair and age lines. Both were compared to the supplied neutral portraits.",
+      "storyAction": "Demir operates the architecture view with a questioning brow. Mirza holds a closed notebook and watches the display with a serious expression. Their gaze remains on the work.",
+      "displayTopology": "Exactly five boxes: Preprocessor connects to FFT extractor. FFT extractor branches to Classifier and Anomaly detector. Both branches converge on Reporter. No shortcut bypasses the parallel pair.",
+      "displayReadability": "Mission pipeline, every component name and Pulse interval: 47.0 s remain readable at 768x512. Exactly five component boxes preserve the two parallel branches and their Reporter merge. No key text is clipped.",
+      "physicalLayout": "Desk, chair, hands, notebook and monitor have coherent contact. Adult head and torso proportions fit the medium framing.",
+      "displayPerspective": "The main monitor front bezel, glass border, title divider, diagram boxes and footer divider now use the same frontal rectangular plane. Horizontal edges are level and vertical edges are parallel. A two-post pedestal supports the monitor. The former oblique glass with flatter contents is absent.",
+      "posePreservation": "Fresh native and 2x comparisons retain the peer-accepted character poses from attempt 1. Both Demir shoulder-elbow-wrist chains remain in front of his own torso, with his right hand at the mouse and left at the keyboard. Mirza keeps both compact notebook grips."
+    },
+    "findings": [],
+    "limits": [
+      "This is the candidate creator review. Independent peer review and publication remain pending.",
+      "The 768x512 check uses the uncompressed candidate preview. Review the final WebP separately after publication."
+    ],
+    "attempt": 2,
+    "method": "Fresh native candidate review, six new 2x face/hand crops, canonical comparison, complete arm tracing, frontal display-plane inspection and new 768x512 full-frame preview.",
+    "displayGeometry": {
+      "coordinateSystem": "Approximate native image pixels, excluding rounded corner arcs and stroke thickness",
+      "glassTop": [
+        [
+          847,
+          203
+        ],
+        [
+          1471,
+          203
+        ]
+      ],
+      "glassBottom": [
+        [
+          847,
+          668
+        ],
+        [
+          1471,
+          668
+        ]
+      ],
+      "glassLeft": [
+        [
+          836,
+          215
+        ],
+        [
+          836,
+          656
+        ]
+      ],
+      "glassRight": [
+        [
+          1483,
+          215
+        ],
+        [
+          1483,
+          656
+        ]
+      ],
+      "titleDivider": [
+        [
+          856,
+          296
+        ],
+        [
+          1463,
+          296
+        ]
+      ],
+      "footerDivider": [
+        [
+          856,
+          580
+        ],
+        [
+          1463,
+          580
+        ]
+      ],
+      "classifierTop": [
+        [
+          1180,
+          337
+        ],
+        [
+          1291,
+          337
+        ]
+      ],
+      "anomalyTop": [
+        [
+          1180,
+          460
+        ],
+        [
+          1291,
+          460
+        ]
+      ],
+      "assessment": "The physical and content horizontal families now remain level across the front plane."
+    }
+  },
+  "candidateDimensions": [
+    1536,
+    1024
+  ],
+  "diagnosticReview": {
+    "crops": [
+      {
+        "name": "demir-mouse-hand",
+        "kind": "hand",
+        "rect": [
+          300,
+          860,
+          230,
+          135
+        ],
+        "scale": 2
+      },
+      {
+        "name": "demir-keyboard-hand",
+        "kind": "hand",
+        "rect": [
+          560,
+          815,
+          205,
+          105
+        ],
+        "scale": 2
+      },
+      {
+        "name": "mirza-right-hand",
+        "kind": "hand",
+        "rect": [
+          415,
+          620,
+          125,
+          100
+        ],
+        "scale": 2
+      },
+      {
+        "name": "mirza-left-hand",
+        "kind": "hand",
+        "rect": [
+          535,
+          615,
+          105,
+          100
+        ],
+        "scale": 2
+      },
+      {
+        "name": "demir-face",
+        "kind": "face",
+        "rect": [
+          200,
+          340,
+          170,
+          215
+        ],
+        "scale": 2
+      },
+      {
+        "name": "mirza-face",
+        "kind": "face",
+        "rect": [
+          365,
+          175,
+          175,
+          210
+        ],
+        "scale": 2
+      }
+    ],
+    "fullFramePreview": {
+      "dimensions": [
+        768,
+        512
+      ]
+    },
+    "temporaryFilesRemoved": true
+  },
+  "faceCropCoordinates": [
+    {
+      "name": "demir-face",
+      "kind": "face",
+      "rect": [
+        200,
+        340,
+        170,
+        215
+      ],
+      "scale": 2
+    },
+    {
+      "name": "mirza-face",
+      "kind": "face",
+      "rect": [
+        365,
+        175,
+        175,
+        210
+      ],
+      "scale": 2
+    }
+  ],
+  "handCropCoordinates": [
+    {
+      "name": "demir-mouse-hand",
+      "kind": "hand",
+      "rect": [
+        300,
+        860,
+        230,
+        135
+      ],
+      "scale": 2
+    },
+    {
+      "name": "demir-keyboard-hand",
+      "kind": "hand",
+      "rect": [
+        560,
+        815,
+        205,
+        105
+      ],
+      "scale": 2
+    },
+    {
+      "name": "mirza-right-hand",
+      "kind": "hand",
+      "rect": [
+        415,
+        620,
+        125,
+        100
+      ],
+      "scale": 2
+    },
+    {
+      "name": "mirza-left-hand",
+      "kind": "hand",
+      "rect": [
+        535,
+        615,
+        105,
+        100
+      ],
+      "scale": 2
+    }
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-7e4b4734-c824-45d0-9b34-3a8cbaef35ec.png",
+      "candidateSha256": "3dd8d2760ed66775634900600a5000dd1e65c3e7b1d79ffcfe5f58f8ffd4ac1c",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-7e4b4734-c824-45d0-9b34-3a8cbaef35ec.png",
+      "prompt": "Use case: identity-preserve.\nAsset type: one finished 1536x1024 landscape story illustration for the System Architecture briefing in Tensorcraft's Deep Orbit course.\n\nReference roles, in this exact order:\n1. Ensign Demir's canonical neutral portrait is the identity authority for Demir.\n2. Commander Mirza's canonical neutral portrait is the identity authority for Mirza.\n3. The Bridge master is the room and materials reference.\n4. The existing briefing is the edit target. Preserve its warm green/brass palette, two-character briefing, large readable Mission pipeline display, correct diagram and 47.0 s. Rebuild the complete character staging and arm poses.\n\nScene: on the Archimedes Bridge, Demir has just opened the proposed five-component architecture on a large shared upright monitor. He sits at a normal desk console, operating a keyboard with his left hand and a mouse with his right hand. Both hands, wrists, forearms, elbows and shoulders must be plainly traceable in front of his own torso. Give the two forearms separate unobstructed silhouettes. Remove the pointer entirely. His elbows must not disappear behind Mirza. Let him lean slightly forward, showing engaged concentration and a small questioning lift of the brow while looking toward the shared diagram.\n\nMirza stands beside him with a clear gap from his arms and chair. She holds a closed plain notebook naturally against her lower torso with both hands, elbows resting beside her own body. Her arms never reach around Demir, never cross his silhouette and never pass behind his working arms. Her restrained, serious reaction to the shrinking pulse interval is visible in her raised inner brow, attentive eyes and slightly pressed mouth. She looks at the diagram and 47.0 s, not at the audience. Keep natural adult body/head proportions, supported seating and clearance under the desk. Both faces must be recognizable three-quarter views with readable light. Preserve Demir's facial width, jaw, nose, brown eyes, freckles, stubble, swept hair and left-ear device from portrait 1. Preserve Mirza's mature dark complexion, broad facial structure, nose, short silver-templed hair, age lines and charcoal/gold command uniform with a plain round chronometer from portrait 2.\n\nComposition: candid medium-wide view beside the operators. Use the right half and available upper space for the large working monitor, with faces and all four hands clearly visible in the remaining space. The display faces the crew and is also readable from the camera. Keep all diagram text on the same perspective plane with generous margins, large crisp lettering readable at 768x512. Background bridge controls remain quiet and subordinate. No unnecessary small text.\n\nDisplay text, exactly:\n\"Mission pipeline\"\n\"Preprocessor\"\n\"FFT extractor\"\n\"Classifier\"\n\"Anomaly detector\"\n\"Reporter\"\n\"Pulse interval: 47.0 s\"\n\nExactly five component boxes. Preprocessor connects to FFT extractor. FFT extractor branches into two distinct parallel boxes: Classifier above and Anomaly detector below. Both branches separately converge into Reporter. Use clear arrowheads and generous spacing, with no direct shortcut and no extra sixth component. The title and pulse interval are plain heading/footer text, not component boxes. This is a proposed architecture, so do not add success checks, completed status or invented results.\n\nHands and objects: ordinary relaxed keyboard and mouse contacts, simple closed-notebook grips, five plausible digits per hand, normal thumb sides, aligned wrists and unbroken shoulder-elbow-wrist chains. No pointer, pen, open-palm gesture, crossing arms, duplicated limbs or hidden reconstruction of an elbow. Preserve the warm room atmosphere and specific interaction.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "d4c52c090c8ad557da42bbc73a3fbc30ce6df88c445c34b3b300d98b31856f07",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity: Ensign Demir"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "role": "canonical identity: Commander Mirza"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room master: Bridge"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-23d90566-66f8-46ff-b843-c4bb488fe250.png",
+          "sha256": "bcdb011e04fc66a814694d17e3524852c4568a6c3052f2b6430fd07a603152de",
+          "role": "edit target: original briefing with rejected arm chain",
+          "pathAtGeneration": "art-src/scenes/capstone__system-architecture-openai-20261107.png"
+        }
+      ],
+      "generationArgs": {
+        "prompt": "Use case: identity-preserve.\nAsset type: one finished 1536x1024 landscape story illustration for the System Architecture briefing in Tensorcraft's Deep Orbit course.\n\nReference roles, in this exact order:\n1. Ensign Demir's canonical neutral portrait is the identity authority for Demir.\n2. Commander Mirza's canonical neutral portrait is the identity authority for Mirza.\n3. The Bridge master is the room and materials reference.\n4. The existing briefing is the edit target. Preserve its warm green/brass palette, two-character briefing, large readable Mission pipeline display, correct diagram and 47.0 s. Rebuild the complete character staging and arm poses.\n\nScene: on the Archimedes Bridge, Demir has just opened the proposed five-component architecture on a large shared upright monitor. He sits at a normal desk console, operating a keyboard with his left hand and a mouse with his right hand. Both hands, wrists, forearms, elbows and shoulders must be plainly traceable in front of his own torso. Give the two forearms separate unobstructed silhouettes. Remove the pointer entirely. His elbows must not disappear behind Mirza. Let him lean slightly forward, showing engaged concentration and a small questioning lift of the brow while looking toward the shared diagram.\n\nMirza stands beside him with a clear gap from his arms and chair. She holds a closed plain notebook naturally against her lower torso with both hands, elbows resting beside her own body. Her arms never reach around Demir, never cross his silhouette and never pass behind his working arms. Her restrained, serious reaction to the shrinking pulse interval is visible in her raised inner brow, attentive eyes and slightly pressed mouth. She looks at the diagram and 47.0 s, not at the audience. Keep natural adult body/head proportions, supported seating and clearance under the desk. Both faces must be recognizable three-quarter views with readable light. Preserve Demir's facial width, jaw, nose, brown eyes, freckles, stubble, swept hair and left-ear device from portrait 1. Preserve Mirza's mature dark complexion, broad facial structure, nose, short silver-templed hair, age lines and charcoal/gold command uniform with a plain round chronometer from portrait 2.\n\nComposition: candid medium-wide view beside the operators. Use the right half and available upper space for the large working monitor, with faces and all four hands clearly visible in the remaining space. The display faces the crew and is also readable from the camera. Keep all diagram text on the same perspective plane with generous margins, large crisp lettering readable at 768x512. Background bridge controls remain quiet and subordinate. No unnecessary small text.\n\nDisplay text, exactly:\n\"Mission pipeline\"\n\"Preprocessor\"\n\"FFT extractor\"\n\"Classifier\"\n\"Anomaly detector\"\n\"Reporter\"\n\"Pulse interval: 47.0 s\"\n\nExactly five component boxes. Preprocessor connects to FFT extractor. FFT extractor branches into two distinct parallel boxes: Classifier above and Anomaly detector below. Both branches separately converge into Reporter. Use clear arrowheads and generous spacing, with no direct shortcut and no extra sixth component. The title and pulse interval are plain heading/footer text, not component boxes. This is a proposed architecture, so do not add success checks, completed status or invented results.\n\nHands and objects: ordinary relaxed keyboard and mouse contacts, simple closed-notebook grips, five plausible digits per hand, normal thumb sides, aligned wrists and unbroken shoulder-elbow-wrist chains. No pointer, pen, open-palm gesture, crossing arms, duplicated limbs or hidden reconstruction of an elbow. Preserve the warm room atmosphere and specific interaction.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-23d90566-66f8-46ff-b843-c4bb488fe250.png"
+        ],
+        "transparent_background": false
+      },
+      "ownReview": {
+        "reviewer": "/root/quality_sequence",
+        "reviewedAt": "2026-11-09T13:45:20.683818+00:00",
+        "candidateSha256": "3dd8d2760ed66775634900600a5000dd1e65c3e7b1d79ffcfe5f58f8ffd4ac1c",
+        "verdict": "PASS for independent peer review",
+        "nativeReviewed": true,
+        "handCropsReviewedAt2x": true,
+        "faceCropsReviewedAt2x": true,
+        "canonicalPortraitsCompared": true,
+        "preview768Reviewed": true,
+        "dimensions": [
+          1536,
+          1024
+        ],
+        "reviewDimensions": [
+          768,
+          512
+        ],
+        "checks": {
+          "armChains": "Demir near right shoulder runs through a visible bent elbow to the mouse wrist. His far left shoulder runs down his own upper arm to a visible elbow and keyboard forearm. Both working arms remain in front of his torso and clear of Mirza. The old raised pointer chain is absent.",
+          "handsAndContact": "Two diagnostic Demir crops show separate keyboard and mouse fingers with ordinary contact and aligned wrists. Mirza uses two compact notebook grips. Occluded thumb portions are consistent with these grips and are not treated as missing fingers.",
+          "identity": "Demir retains the canonical freckled face, swept hair, nose shape, stubble and ear device. Mirza retains the canonical mature broad facial structure, complexion, short silver-templed hair and age lines. Both were compared to the supplied neutral portraits.",
+          "storyAction": "Demir operates the architecture view with a questioning brow. Mirza holds a closed notebook and watches the display with a serious expression. Their gaze remains on the work.",
+          "displayTopology": "Exactly five boxes: Preprocessor connects to FFT extractor. FFT extractor branches to Classifier and Anomaly detector. Both branches converge on Reporter. No shortcut bypasses the parallel pair.",
+          "displayReadability": "Mission pipeline, all five component names and Pulse interval: 47.0 s remain readable at 768x512. The monitor text and lines follow its physical plane, and no key text is clipped.",
+          "physicalLayout": "Desk, chair, hands, notebook and monitor have coherent contact. Adult head and torso proportions fit the medium framing."
+        },
+        "findings": [],
+        "limits": [
+          "This is the candidate creator review. Independent peer review and publication remain pending.",
+          "The 768x512 check uses the uncompressed candidate preview. Review the final WebP separately after publication."
+        ]
+      },
+      "peerReviewPath": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/peer-v1.json",
+      "peerVerdict": "FAIL",
+      "rejectionReason": [
+        "The original crossed pointer-arm defect is resolved. A remaining mismatch between the angled glass and flatter diagram content prevents approval under the strict follow-up display criterion."
+      ],
+      "displayGeometryEvidence": {
+        "coordinateSystem": "Native 1536 x 1024 image, approximate endpoints",
+        "glassTop": [
+          [
+            846,
+            220
+          ],
+          [
+            1460,
+            150
+          ]
+        ],
+        "glassBottom": [
+          [
+            846,
+            680
+          ],
+          [
+            1460,
+            706
+          ]
+        ],
+        "titleDivider": [
+          [
+            855,
+            306
+          ],
+          [
+            1455,
+            272
+          ]
+        ],
+        "footerDivider": [
+          [
+            855,
+            594
+          ],
+          [
+            1455,
+            607
+          ]
+        ],
+        "classifierBoxTop": [
+          [
+            1150,
+            340
+          ],
+          [
+            1264,
+            337
+          ]
+        ],
+        "anomalyBoxTop": [
+          [
+            1150,
+            466
+          ],
+          [
+            1265,
+            466
+          ]
+        ],
+        "interpretation": "The screen boundary horizontal family converges near the left of the frame at y around 555. The diagram box tops instead remain near-horizontal, and the title rule rises about 34 px rather than roughly 50 px expected at its vertical position."
+      },
+      "retainUntil": "Revision peer review and publication, then remove the rejected working image.",
+      "candidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/rejected-v1.png",
+      "generationArgsAtGeneration": {
+        "prompt": "Use case: identity-preserve.\nAsset type: one finished 1536x1024 landscape story illustration for the System Architecture briefing in Tensorcraft's Deep Orbit course.\n\nReference roles, in this exact order:\n1. Ensign Demir's canonical neutral portrait is the identity authority for Demir.\n2. Commander Mirza's canonical neutral portrait is the identity authority for Mirza.\n3. The Bridge master is the room and materials reference.\n4. The existing briefing is the edit target. Preserve its warm green/brass palette, two-character briefing, large readable Mission pipeline display, correct diagram and 47.0 s. Rebuild the complete character staging and arm poses.\n\nScene: on the Archimedes Bridge, Demir has just opened the proposed five-component architecture on a large shared upright monitor. He sits at a normal desk console, operating a keyboard with his left hand and a mouse with his right hand. Both hands, wrists, forearms, elbows and shoulders must be plainly traceable in front of his own torso. Give the two forearms separate unobstructed silhouettes. Remove the pointer entirely. His elbows must not disappear behind Mirza. Let him lean slightly forward, showing engaged concentration and a small questioning lift of the brow while looking toward the shared diagram.\n\nMirza stands beside him with a clear gap from his arms and chair. She holds a closed plain notebook naturally against her lower torso with both hands, elbows resting beside her own body. Her arms never reach around Demir, never cross his silhouette and never pass behind his working arms. Her restrained, serious reaction to the shrinking pulse interval is visible in her raised inner brow, attentive eyes and slightly pressed mouth. She looks at the diagram and 47.0 s, not at the audience. Keep natural adult body/head proportions, supported seating and clearance under the desk. Both faces must be recognizable three-quarter views with readable light. Preserve Demir's facial width, jaw, nose, brown eyes, freckles, stubble, swept hair and left-ear device from portrait 1. Preserve Mirza's mature dark complexion, broad facial structure, nose, short silver-templed hair, age lines and charcoal/gold command uniform with a plain round chronometer from portrait 2.\n\nComposition: candid medium-wide view beside the operators. Use the right half and available upper space for the large working monitor, with faces and all four hands clearly visible in the remaining space. The display faces the crew and is also readable from the camera. Keep all diagram text on the same perspective plane with generous margins, large crisp lettering readable at 768x512. Background bridge controls remain quiet and subordinate. No unnecessary small text.\n\nDisplay text, exactly:\n\"Mission pipeline\"\n\"Preprocessor\"\n\"FFT extractor\"\n\"Classifier\"\n\"Anomaly detector\"\n\"Reporter\"\n\"Pulse interval: 47.0 s\"\n\nExactly five component boxes. Preprocessor connects to FFT extractor. FFT extractor branches into two distinct parallel boxes: Classifier above and Anomaly detector below. Both branches separately converge into Reporter. Use clear arrowheads and generous spacing, with no direct shortcut and no extra sixth component. The title and pulse interval are plain heading/footer text, not component boxes. This is a proposed architecture, so do not add success checks, completed status or invented results.\n\nHands and objects: ordinary relaxed keyboard and mouse contacts, simple closed-notebook grips, five plausible digits per hand, normal thumb sides, aligned wrists and unbroken shoulder-elbow-wrist chains. No pointer, pen, open-palm gesture, crossing arms, duplicated limbs or hidden reconstruction of an elbow. Preserve the warm room atmosphere and specific interaction.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-openai-20261107.png"
+        ],
+        "transparent_background": false
+      }
+    }
+  ],
+  "attempt": 2,
+  "publishedSource": "art-src/scenes/capstone__system-architecture-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture.webp",
+  "publishedWebpSha256": "8fbfb3b46c347cf45a7dab235c7cd9b8f89c27aeb59aa53769848a52b525090c",
+  "generationArgsAtGeneration": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nMake one narrow correction to reference image 4. Output one 1536x1024 finished illustration.\n\nReferences in exact order: image 1 is Demir's canonical identity, image 2 is Mirza's canonical identity, image 3 is the Bridge room master, and image 4 is the already repaired composition to edit.\n\nPRESERVE the entire left side and character staging from image 4: identical Demir face, hair, expression, seated body, two visible arm chains, keyboard hand, mouse hand, desk and chair. Preserve Mirza's face, serious reaction, posture, two notebook grips, uniform and notebook. Preserve the lighting, colors and Bridge background.\n\nChange only the large monitor assembly on the right and the alignment of its contents. Swivel its mount so the WHOLE PHYSICAL FRONT PANEL is completely frontal and exactly parallel to the camera sensor. The monitor front bezel and glass are true rectangles. Top and bottom edges are level horizontal lines. Left and right edges are exactly vertical. Opposite edges are parallel. Nothing on the front panel is trapezoidal or obliquely tilted. Use approximately x=805 to 1515 and y=130 to 750 for the rectangular front, with generous inner margins. Show a plausible swivel pedestal or stand beneath it that supports this frontal orientation.\n\nThe glass, bezel, title, title rule, five diagram boxes, arrows, footer rule and all text must now share this one front-facing rectangular plane. Every horizontal box edge and every text baseline is exactly level. Every vertical box edge is exactly vertical. Keep the five component labels large, crisp and readable at 768x512. Keep room materials and screen glow consistent.\n\nExact display text:\n\"Mission pipeline\"\n\"Preprocessor\"\n\"FFT extractor\"\n\"Classifier\"\n\"Anomaly detector\"\n\"Reporter\"\n\"Pulse interval: 47.0 s\"\n\nExactly five component boxes and the same source-correct topology: Preprocessor connects to FFT extractor. FFT extractor branches to Classifier above and Anomaly detector below. Both parallel branches separately converge into Reporter. Clear arrowheads, no shortcuts, no extra components. Title and pulse interval stay outside the component boxes. Do not add completion status or new text.\n\nPreserve every repaired hand and face from image 4. No pointer or new gesture. The only correction is the monitor's frontal geometry and its matching diagram plane.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/system-architecture-briefing/rejected-v1.png"
+    ],
+    "transparent_background": false
+  }
+}

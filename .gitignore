@@ -7,6 +7,9 @@ dist/
 .turbo/
 *.tsbuildinfo
 
+# Local generated media, previews, and review artifacts
+/output/
+
 # Environment
 .env
 .env.local
@@ -14,6 +17,14 @@ dist/
 .env.production
 .env.development
 .dev.vars
+.env.*
+!.env.example
+!.env.*.example
+
+# Isolated reviewer runtime and local Supabase CLI state
+/.review/
+/supabase/.temp/
+/supabase/.branches/
 
 # OS
 .DS_Store

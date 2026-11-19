@@ -39,6 +39,12 @@ import { createRequire } from "node:module";
 import { randomBytes } from "node:crypto";
 import { createArtifactCollector } from "../packages/ui/src/mdx/exercise-artifacts.mjs";
 import { FIT_RECORDING_SOURCE } from "../packages/ui/src/mdx/exercise-fit-recording.mjs";
+import { EVALUATION_CAPTURE_SOURCE } from "../packages/shared/src/evaluation-capture-source.mjs";
+import {
+  EVALUATION_FIXTURE,
+  EVALUATION_CONTEXT_KEYS,
+  EVALUATION_ROLES,
+} from "../packages/shared/src/evaluation-result.mjs";
 import { SHAPE_RECORDING_SOURCE } from "../packages/ui/src/mdx/exercise-shape-recording.mjs";
 
 // Resolve `@tensorflow/tfjs` from the workspace `packages/ui` package, since
@@ -53,6 +59,14 @@ const _require = createRequire(
 );
 const realTf = _require("@tensorflow/tfjs");
 const fitRecorder = new Function(`return ${FIT_RECORDING_SOURCE}`)()(realTf);
+const captureEvaluation = new Function(`return ${EVALUATION_CAPTURE_SOURCE}`)()(
+  realTf,
+  fitRecorder,
+  EVALUATION_FIXTURE,
+  EVALUATION_ROLES,
+  EVALUATION_CONTEXT_KEYS,
+  createArtifactCollector,
+);
 const shapeRecorder = new Function(`return ${SHAPE_RECORDING_SOURCE}`)()(
   realTf,
 );
@@ -335,6 +349,7 @@ function spiedTf(base) {
       if (prop === "__calls")
         return Object.freeze(Object.assign(Object.create(null), calls));
       if (prop === "__fits") return fitRecorder.read();
+      if (prop === "__fitStatus") return fitRecorder.status();
       if (prop === "__shapeOf") return shapeRecorder.read;
       const v = target[prop];
       if (SPIED_ENTRY_POINTS.has(prop) && typeof v === "function") {
@@ -2177,6 +2192,9 @@ async function runSolutionTests(userCode, testCode) {
   const artifactCollector = createArtifactCollector();
   const context = {
     recordResult: artifactCollector.record,
+    captureEvaluation(input) {
+      return captureEvaluation(input, artifactCollector.read);
+    },
     console: {
       log: () => {},
       warn: () => {},

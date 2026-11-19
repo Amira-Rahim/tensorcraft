@@ -1,0 +1,35 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+  "candidateSha256": "99cfe3ba21b59d8dd46946d2cf1eb074602aa25b0f4f9a3d3051f0d95ebd9fb5",
+  "verdict": "FAIL",
+  "nativeReviewed": true,
+  "preview768Reviewed": false,
+  "method": "Native candidate and magnified keyboard/mug crops reviewed, then explicit current user rejection received from root. This is a rejection record, not a completed approval review.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "The near keyboard arm is the right arm. The shortest near-side digit can be interpreted as a little finger with an occluded far thumb, so a definite missing-digit claim was not established. Nevertheless the user explicitly rejected the new hands as weird, and the repair retains an ambiguous near-original silhouette. Mug contact appears coherent.",
+    "userAcceptance": "FAIL: root relayed the user's explicit rejection of current hash 99cfe3ba for weird hands. No PASS is permitted for this candidate.",
+    "display": "Native cache-handover and rounding-probe labels retain the current lesson meaning."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 3,
+    "expression": 4,
+    "displays": 4,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "Explicit user rejection: current candidate still has weird hands. The next repair must make the hand pose unambiguous instead of relying on an arguable occlusion interpretation."
+  ],
+  "repairDirection": "Recompose the action: put the mug on the desk and use relaxed separate desk/mouse hands with clearly traceable arms and ordinary contact. Preserve identity and source-correct cache display.",
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:06:33.188855+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "collectedAt": "2026-11-11 09:47:37 UTC",
+  "input": {
+    "series": [
+      {
+        "kind": "EventsNode",
+        "event": "analytics_ingestion_check",
+        "math": "total"
+      }
+    ],
+    "dateRange": {
+      "date_from": "2026-11-11",
+      "date_to": "2026-11-11"
+    },
+    "filterTestAccounts": false,
+    "trendsFilter": {
+      "display": "ActionsTable"
+    }
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Date range|Aggregated value for analytics_ingestion_check\n2026-11-11 00:00:00+00:00 to 2026-11-11 23:59:59+00:00|1"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

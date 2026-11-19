@@ -244,11 +244,9 @@ describe("LessonContent, visible challenge scene", () => {
 
     const narrative = screen.getByTestId("mission-handoff");
     const image = screen.getByRole("img", {
-      name: "Farah examines the sensor readings.",
+      name: "Farah prepares the twelve readings for moment rows and sensor rows at the lab console.",
     });
-    const caption = screen.getByText(
-      "Inside the science lab on the spaceship Archimedes.",
-    );
+    const caption = screen.getByText("Lab");
     expect(narrative).toBeVisible();
     expect(narrative.compareDocumentPosition(image)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
@@ -258,7 +256,7 @@ describe("LessonContent, visible challenge scene", () => {
     );
     expect(image).toHaveAttribute(
       "src",
-      "/scenes/deep-orbit/foundations/tensor-shapes.webp",
+      "/scenes/deep-orbit/foundations/tensor-shapes-challenge.webp",
     );
   });
 

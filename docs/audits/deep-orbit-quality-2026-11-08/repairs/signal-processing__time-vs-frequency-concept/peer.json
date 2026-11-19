@@ -1,0 +1,96 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-concept/candidate.png",
+  "candidateSha256": "58dfece5a829e474d3a6f57ef24f2811d33b2cfada00ddc50198f2a25aae78de",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original review, 2x face and hand crops, complete shoulder-elbow-wrist chain and thumb-side check, canonical portrait comparison, and current lesson plus relevant exercise verification.",
+  "canonicalFaceReferences": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 7,
+      "name": "runtime-final-7-face-dr-farah",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-concept/candidate.png",
+      "box": [
+        920,
+        320,
+        1155,
+        605
+      ],
+      "scale": 2
+    },
+    {
+      "i": 7,
+      "name": "runtime-final-7-face-ensign-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-concept/candidate.png",
+      "box": [
+        1145,
+        220,
+        1370,
+        510
+      ],
+      "scale": 2
+    },
+    {
+      "i": 7,
+      "name": "runtime-final-7-hands-0",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-concept/candidate.png",
+      "box": [
+        500,
+        780,
+        1075,
+        895
+      ],
+      "scale": 2
+    },
+    {
+      "i": 7,
+      "name": "runtime-final-7-hands-1",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__time-vs-frequency-concept/candidate.png",
+      "box": [
+        1180,
+        795,
+        1520,
+        950
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sha256": "abda71b06a234d38479f6d18c104b64068b15ad5ac957acd14b8159a5fe1bee5"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah's right arm reaches the mouse, with its medial thumb on the near edge; her left hand rests beside the keyboard. Demir's two fists brace independently against the bench, with correctly opposed thumbs and continuous wrists and forearms. No prop or surface contact floats.",
+    "displayLegibilityAndSource": "The enlarged three-tone example clearly states 256 samples at 256 Hz and the frequency/amplitude pairs 5 Hz/0.8, 12 Hz/0.6 and 23 Hz/0.4. The time-domain curve is explicitly schematic. The full table remains readable beside the operators.",
+    "identityExpressionAndStory": "Farah speaks while working the mouse and Demir leans in to follow her explanation. Faces, adult proportions and engaged eyelines match their canonical identities.",
+    "palette": "Muted Deep Orbit olive, charcoal, brass and controlled green light retain the benchmark palette.",
+    "perspectiveAndOperator": "Upright board and physical console are consistently oriented toward the operator; text follows the flat display surface.",
+    "largeDisplayRule": "The main lesson content occupies a large readable board in available wall space rather than a small console below unused wall."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 5,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:43:12.637832+00:00"
+}

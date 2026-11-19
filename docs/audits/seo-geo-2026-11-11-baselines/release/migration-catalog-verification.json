@@ -1,0 +1,107 @@
+{
+  "checkedAt": "2026-11-11T11:02:52.094Z",
+  "mode": "read-only transaction, rolled back",
+  "migration": 67,
+  "migrationSha256": "457a7b607a252d15d99d852570676d0586d3000417c9c6de8a3b7069b3f669c3",
+  "transport": {
+    "encrypted": true,
+    "authorized": true
+  },
+  "ledger": [
+    {
+      "version": 67,
+      "name": "analytics_consent"
+    }
+  ],
+  "columns": [
+    {
+      "column_name": "user_id",
+      "data_type": "uuid",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "column_name": "granted",
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "column_default": "false"
+    },
+    {
+      "column_name": "revision",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": "0"
+    },
+    {
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    }
+  ],
+  "table": {
+    "relrowsecurity": true,
+    "owner": "postgres"
+  },
+  "constraints": [
+    {
+      "contype": "c",
+      "definition": "CHECK ((revision >= 0))"
+    },
+    {
+      "contype": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "contype": "p",
+      "definition": "PRIMARY KEY (user_id)"
+    }
+  ],
+  "policies": [
+    {
+      "policyname": "analytics_consents_read_own",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "(user_id = auth.uid())",
+      "with_check": null
+    }
+  ],
+  "tablePrivileges": {
+    "own_read": true,
+    "direct_write": false,
+    "anon_access": false,
+    "server_read": true
+  },
+  "functionContract": {
+    "prosecdef": true,
+    "proconfig": [
+      "search_path=\"\""
+    ],
+    "owner": "postgres",
+    "authenticated_execute": true,
+    "anon_execute": false,
+    "service_execute": false
+  },
+  "checks": {
+    "tlsVerified": true,
+    "migrationRecorded": true,
+    "columnsMatch": true,
+    "rowLevelSecurityEnabled": true,
+    "primaryKeyCorrect": true,
+    "cascadingForeignKeyCorrect": true,
+    "revisionConstraintCorrect": true,
+    "onlyOwnReadPolicy": true,
+    "tablePermissionsCorrect": true,
+    "functionSecurityDefiner": true,
+    "functionEmptySearchPath": true,
+    "functionPermissionsCorrect": true,
+    "functionOwnerMatchesTable": true,
+    "functionBodyMatchesLocalMigration": true,
+    "noImplicitGrants": true
+  },
+  "allChecksPassed": true,
+  "credentialsRetained": false,
+  "customerWrites": false,
+  "validationNote": "The PostgreSQL name[] policy-role column arrived as array text. Its exact value {authenticated} matches the required singleton role.",
+  "validatedAt": "2026-11-11T11:03:18.591938+00:00"
+}

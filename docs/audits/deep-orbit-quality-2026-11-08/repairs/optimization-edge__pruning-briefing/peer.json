@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-briefing/candidate.png",
+  "candidateSha256": "46346565e1499d5315d60a5c8939bc9f62c73232a7c75f707660be793cb0a31a",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x or 3x face/hand/prop crops, full shoulder-elbow-wrist chains traced in original, direct canonical portrait comparison, and current lesson source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 3,
+      "name": "runtime-next-pruning-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-briefing/candidate.png",
+      "box": [
+        615,
+        735,
+        1340,
+        995
+      ],
+      "scale": 2
+    },
+    {
+      "i": 3,
+      "name": "runtime-next-pruning-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__pruning-briefing/candidate.png",
+      "box": [
+        1060,
+        210,
+        1360,
+        610
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's two attached arm chains end in a coherent mouse grip and a flat hand on the open notebook. Mouse thumb is on the inner side, finger tips contact the buttons, and notebook fingers overlap naturally without penetrating the page.",
+    "displayLegibilityAndSource": "The wall display states Directive 44-C / FOR REVIEW, half the weights within 0.001 of zero, current dense file 85 MB, and three unchecked assumptions with Verification pending. Current briefing explicitly supplies those numbers and asks learners to challenge prediction, storage and per-class recall assumptions.",
+    "identityExpressionAndStory": "Demir's furrowed brow and doubtful mouth fit an unsigned directive. Freckles, stubble, brown hair and earpiece retain his identity, with a compact adult neck and natural proportions.",
+    "palette": "Muted sage, charcoal and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Main glyphs and borders follow the physical display plane. The characters can see the same readable face of the display.",
+    "largeDisplayRule": "Essential lesson information uses the available wall area in large, clear type."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T06:47:10.503422+00:00"
+}

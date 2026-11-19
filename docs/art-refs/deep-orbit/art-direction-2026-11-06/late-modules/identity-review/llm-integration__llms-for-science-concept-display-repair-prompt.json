@@ -1,0 +1,56 @@
+{
+  "queueIndex": 60,
+  "key": "deep-orbit/llm-integration/llms-for-science",
+  "phase": "concept",
+  "status": "awaiting-new-generation",
+  "newGeneration": true,
+  "cast": [
+    "farah",
+    "nazari"
+  ],
+  "faceBoxes": {
+    "farah": [
+      350,
+      172,
+      290,
+      342
+    ],
+    "nazari": [
+      979,
+      25,
+      280,
+      340
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__llms-for-science-concept-display-stage1-openai-20261107.png",
+      "sha256": "9525e53e55bea626e106c9cf2e4487bfe4c5f648919cb673fa6fe544aa86ddda",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. First two images are the canonical Farah and Nazari portraits, last image is target scene. Change ONLY graphics on the foreground tablet, separate paper under Farah hand, and right three-panel display. Preserve every pixel of all people, faces, hair, arms, hands, bodies, chair, furniture, room, lighting, camera and composition. Replace the invented instrument diagram in the tablet with five simple horizontal text bars representing a draft report, no words or glyphs. Replace the diagram on the paper under her hand with a simple waveform and three small sample dots as source measurement printout. In the right display keep three panel frames and change first to five horizontal draft text bars, keep center waveform, change third to five horizontal corrected report text bars with the existing EMPTY approval circle. No instruments, machine schematics or new pictograms. This illustrates report drafting checked against measured source data, still awaiting human approval. All faces are already verified, do not modify them. Exactly1536x1024.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/llm-integration__llms-for-science-concept-display-repair-prompt.json",
+  "newSource": "art-src/scenes/llm-integration__llms-for-science-concept-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science-concept.webp",
+  "alt": "Farah compares a generated draft with measurements while Nazari keeps the review ledger.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+  "lessonSha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/llm-integration__llms-for-science-concept-display-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/llm-integration__llms-for-science-concept-prompt.json",
+      "reason": "Face/body match, but display invented an instrument diagram instead of draft report and source data."
+    }
+  ]
+}

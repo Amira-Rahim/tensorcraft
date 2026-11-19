@@ -1,0 +1,119 @@
+{
+  "id": "signal-processing/fourier-transform",
+  "phase": "challenge",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical ensign-demir identity; image 2: lab room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Demir stands RIGHT at the lab console, one index finger pressing the control and the other hand supporting a tablet against his lower torso with a natural grip. He studies the LARGE LEFT upright work display with concentrated eyes, not the audience. Replace the narrow display with a wide clear board occupying the wall. Exact title 'Synthetic capture'; subtitle '128 samples at 128 Hz'; three large rows '1  Skip bin 0', '2  Find largest magnitude', '3  Convert bin to Hz'; a large separate formula 'Frequency = bin x sample rate / samples'; footer 'Result: pending'. No toy output added, no tiny lower cropped formula. Natural adult shoulders and hands.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "0b6583a73cace482ccc6eecc56dabd580391bae968de829bf6a5c06d1f501b40",
+  "source": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+  "sourceSha256": "2ceb83d1fb2d5fb4db52a48f7e9f1f99ef715c01a8f5721f94d0139317fcc708",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "lab room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+      "sha256": "2ceb83d1fb2d5fb4db52a48f7e9f1f99ef715c01a8f5721f94d0139317fcc708",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+    "lessonSha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980",
+    "context": "Challenge and exercises/compute-fft.yaml: the synthetic first fixture has 128 samples at 128 Hz. Skip DC bin 0, select the largest magnitude and convert the winning index to Hz; the scene appropriately keeps the result pending.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+  "candidateSha256": "7b2a57fe9bfdfaea27e573ea6e95481148d64a85b5681aca80a7f5bf6613eddb",
+  "publication": {
+    "alt": "Demir prepares to find the strongest non-DC FFT bin and convert its index to hertz.",
+    "location": "lab",
+    "action": "Demir prepares to find the strongest non-DC FFT bin and convert its index to hertz.",
+    "emotion": "Attentive concentration before running the calculation.",
+    "eyeline": "Characters see and use the same readable display surface.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-aa2cd2e9-ab55-40cc-b091-0e85471f7fde.png",
+  "generatedSha256": "7b2a57fe9bfdfaea27e573ea6e95481148d64a85b5681aca80a7f5bf6613eddb",
+  "ownReview": {
+    "reviewedAt": "2026-11-09T06:57:12.336085+00:00",
+    "nativeReviewed": true,
+    "candidateSha256": "7b2a57fe9bfdfaea27e573ea6e95481148d64a85b5681aca80a7f5bf6613eddb",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": {
+      "ensign-demir": [
+        1160,
+        160,
+        265,
+        355
+      ]
+    },
+    "handCropCoordinatesXYWH": [
+      [
+        740,
+        795,
+        205,
+        155
+      ],
+      [
+        1150,
+        730,
+        220,
+        180
+      ]
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir presses a control with one index finger and holds a tablet with the other hand. Both arms and grips are natural; canonical face and eyeline pass. The large board correctly shows the synthetic 128-sample, 128 Hz task, skip bin 0, largest magnitude, frequency conversion and pending result."
+  },
+  "publishedSource": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-challenge.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/signal-processing__fourier-transform-challenge/candidate.png",
+      "sha256": "7b2a57fe9bfdfaea27e573ea6e95481148d64a85b5681aca80a7f5bf6613eddb",
+      "bytes": 2093872,
+      "retainedEquivalent": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

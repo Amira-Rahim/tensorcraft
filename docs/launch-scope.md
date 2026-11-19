@@ -2,7 +2,7 @@
 
 **Decided 2026-05-05.** Supersedes the prior "all 5 worlds simultaneously"
 plan recorded throughout `docs/prd.md`, `docs/architecture.md`, and
-`docs/dev-plan.md`. Where those documents conflict with this one, this
+[the earlier development plan](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md). Where those documents conflict with this one, this
 document is the source of truth.
 
 ## What ships at V1

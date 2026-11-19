@@ -117,7 +117,16 @@ testCode: |
       // parameters.
       const log = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];
       const kf = new SimpleKalman(73.1, 0.1, 1.0);
-      const estimates = log.slice(1).map((m) => kf.update(m));
+      const estimates = [];
+      const updates = [];
+      for (let i = 1; i < log.length; i++) {
+        const priorEstimate = kf.estimate, priorVariance = kf.variance;
+        const predictedVariance = priorVariance + 0.1;
+        const referenceGain = predictedVariance / (predictedVariance + 1);
+        const returned = kf.update(log[i]);
+        estimates.push(returned);
+        updates.push([i + 1, log[i], priorEstimate, priorVariance, predictedVariance, referenceGain, returned, kf.variance]);
+      }
       const final = estimates[estimates.length - 1];
       expect(
         final,
@@ -137,6 +146,12 @@ testCode: |
         xLabel: 'Day in this log', yLabel: 'Pulse interval (seconds)',
         labels: estimates.map((_, i) => String(i + 2)),
         series: [{ name: 'Recorded interval', values: log.slice(1) }, { name: 'Your filter estimate', values: estimates }],
+      });
+      recordResult({
+        kind: 'table', title: 'Uncertainty beside your filter updates',
+        summary: 'Days 2 through 8 from the same actual filter run. Day 1 initializes the filter. Prior and stored states come from your filter. Predicted variance and gain are reference calculations using Q=0.1 and R=1, separate from the unobserved local operations inside update.',
+        columns: ['Day', 'Observed interval (s)', 'Prior estimate (s)', 'Prior variance', 'Reference predicted variance', 'Reference gain', 'Your returned estimate (s)', 'Your stored variance'],
+        rows: updates,
       });
     });
     it('calculates gain and variance for different filter parameters', () => {

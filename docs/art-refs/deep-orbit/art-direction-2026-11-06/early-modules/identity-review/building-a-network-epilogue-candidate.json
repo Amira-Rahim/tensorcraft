@@ -1,0 +1,36 @@
+{
+  "module": "neural-networks",
+  "lesson": "building-a-network",
+  "phase": "epilogue",
+  "src": "/scenes/deep-orbit/neural-networks/building-a-network-epilogue.webp",
+  "index": 9,
+  "characters": [
+    "dr-farah"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=642): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-epilogue.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-86e139ce-1417-4794-b15b-e52eb40d3942.png",
+  "candidate": "/tmp/early-identity-candidates/9.webp",
+  "candidateSha256": "45dc9470b3001dfe94294afafc880e69b7816de8d718fec34c9b3a388bce9921",
+  "sourceSha256": "f6319107142328ccd3fc7c89c5859754ea26bc6bbbca4c7465353dbf179640d1",
+  "beforeSha256": "ad430e413b4ccd8e07e565207a3344d37910f741ef8c025f0434d022b4a3283f",
+  "bytes": 141418,
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-epilogue-dr-farah-correction.png",
+      "crop": {
+        "left": 447,
+        "top": 33,
+        "width": 390,
+        "height": 423
+      }
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "id": "llm-integration__report-generation-concept",
+  "lesson": "llm-integration/report-generation",
+  "phase": "concept",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah.\nStory action: Farah checks the Executive Summary against its source counts. Expression: Thoughtful, methodical curiosity.\nFarah seated at right reviewing an open source folder on the counter, pages facing her. One hand turns a single page, the other rests flat on the opposite page. Her gaze has lifted naturally to ONE large upright physical display at left, filling the previously blank wall. Exact title Executive Summary. Large source-count table: Total 12,001; Normal 11,847; Anomalous 153; Unclassified 1. Footer rows Review: pending and Approve before assembly. No false approved checkmarks. Avoid tiny side monitor and repetitive duplicate screen.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "da37fcbcd391bcc9fde7ecbadbc45ea5169963dcaa98ea0a5ba94dfffeb63dc3",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room architecture only",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "5ddf154b252c22fe6df5348eea8978338b498560b089d8cff68aab3541558426"
+    }
+  ],
+  "sourceSha256": "76b60c63c4350d0196b054cb14f31d25b8ced446543aa5764169eca7563ae55c",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+    "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+  },
+  "source": "art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.342022+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah.\nStory action: Farah checks the Executive Summary against its source counts. Expression: Thoughtful, methodical curiosity.\nFarah seated at right reviewing an open source folder on the counter, pages facing her. One hand turns a single page, the other rests flat on the opposite page. Her gaze has lifted naturally to ONE large upright physical display at left, filling the previously blank wall. Exact title Executive Summary. Large source-count table: Total 12,001; Normal 11,847; Anomalous 153; Unclassified 1. Footer rows Review: pending and Approve before assembly. No false approved checkmarks. Avoid tiny side monitor and repetitive duplicate screen.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-concept.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-84978296-471a-4365-8174-846943169202.png",
+  "candidatePath": "art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png",
+  "candidateSha256": "76b60c63c4350d0196b054cb14f31d25b8ced446543aa5764169eca7563ae55c",
+  "generatedAt": "2026-11-08T19:40:46.073488+00:00",
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        945,
+        120,
+        360,
+        430
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__report-generation-concept-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        700,
+        675,
+        620,
+        275
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__report-generation-concept-hands0.png",
+      "removedAfterReview": true
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.709632+00:00",
+    "candidateSha256": "76b60c63c4350d0196b054cb14f31d25b8ced446543aa5764169eca7563ae55c",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-concept/candidate.png",
+  "publishedSource": "art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-concept.webp",
+  "webpSha256": "6e8d09e32d8a7b866af113893d89ddcb460a9717b00933b8182ac081df58eb0b",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png",
+    "sourceSha256": "5ddf154b252c22fe6df5348eea8978338b498560b089d8cff68aab3541558426",
+    "webpSha256": "b44fec20324d880f6584c6a0e42ad8d750491817e2a8cdfaa310b7e090797bd3",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-f1741ff7-ffd0-4362-b8c1-09cd6f86d342.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "76b60c63c4350d0196b054cb14f31d25b8ced446543aa5764169eca7563ae55c",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+        "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__report-generation-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root",
+  "temporaryDiagnosticCropsRemoved": true
+}

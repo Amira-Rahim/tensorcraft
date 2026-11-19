@@ -1,0 +1,554 @@
+[
+  {
+    "id": "browser-runtimes__inference-pipeline-challenge",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-challenge.webp",
+    "runtimeSha256": "47c5329adebe94c120acd1576c084dc6fbf3c3c5db86938a3c89b86e1a087883",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.598551+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Raw 512 / 21 / pi/2 inputs, synchronous tf.tidy, training-contract scaling, [1,3] prediction and pending class are readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__inference-pipeline-epilogue",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-epilogue.webp",
+    "runtimeSha256": "02781655be1f6b1dfe49d6fb481c72c4e2e1cf00fca4a76de376cbcee60efd5c",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.599061+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Archive replay, sample 7741, anomaly score 0.518, unknown label, queued review and one-hour steady tensor count remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__model-loading-epilogue",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/model-loading-epilogue.webp",
+    "runtimeSha256": "41ac771f8b49dea8bba44f4ee66ab359be0ab84f81522972c6e0ea34b9fb9e3a",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.599334+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Three percentage points apart, retrained v2, cached v1 and cached-version check remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__onnx-runtime-web-briefing",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web.webp",
+    "runtimeSha256": "249cb0df34cfa43456d9e7f713fbcb004ee6e7e6916960f50126d05d1dc8f552",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.599442+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "TFJS / ONNX WASM, shared [0.42,0.66,0.31] input, first usable prediction, 20 warmups, 200 calls and pending results remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__onnx-runtime-web-takeaways",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-takeaways.webp",
+    "runtimeSha256": "fb75aa301e6536de276b60ae00b7ed8f49181bfdfedd64b4755b0685ecba2e57",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.599798+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Target-device comparison, same weights/input/batch, output agreement, warm median/P95, first usable prediction and pending states remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__tensorflow-js-setup-concept",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-concept.webp",
+    "runtimeSha256": "4a76a438f5f214fb331a701f27adcdd96d99508c50ebc3116fb5f11b6f3b87e6",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.600104+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "npm install @tensorflow/tfjs, import, await tf.ready(), tf.getBackend() and tf.version.tfjs remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__tensorflow-js-setup-takeaways",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-takeaways.webp",
+    "runtimeSha256": "1082ddc2dd203e501f47972e818fbdf708a0be8a66dc6a5c31ebcc40d5783b0b",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.600400+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "256 x 256 matMul, start timer, await C.data(), stop timer and output-readback requirement remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__transformers-js-concept",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js-concept.webp",
+    "runtimeSha256": "ea8317c8c5062824d9a0e22e1344c6f5efe2cf305e0f27222e733a6487c029f9",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.600712+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Report, preprocess, ONNX model, label and score flow plus weights/tokenizer/runtime assets remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__why-the-browser-briefing",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser.webp",
+    "runtimeSha256": "2ca733f8e6e74c18f6efefdfa82ee3e9f4f1a8a7a2e7a079bfc92528af9775cc",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.600852+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Awaiting local runtime, local input/model/verdict plan, unavailable compute-bay link and schematic label remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__why-the-browser-concept",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-concept.webp",
+    "runtimeSha256": "49449eb2a2a30fd0bde504ca0c4aa22809a087a65eea8782e01e5f2a9d832649",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.601188+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Browser and server prediction paths, device/compute-bay labels, request/prediction directions and offline cache requirement remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "browser-runtimes__why-the-browser-takeaways",
+    "runtime": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-takeaways.webp",
+    "runtimeSha256": "eb9e764095c57a3c76956d15e5e4e7e059412616972e0b6091c96d1d104903ca",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.601491+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Offline inference, input/local model/output, cached app/runtime/model and download/memory/compute budget remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "optimization-edge__model-profiling-challenge",
+    "runtime": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-challenge.webp",
+    "runtimeSha256": "6b1978cd1cea74c0c816bd93e833d6439b4b60f6ea38f49f8a65b06a185f61ca",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.601788+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Warmup, timed prediction, awaited output.data(), cleanup, repeated calls, pending baseline and storage/layer-count labels remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "optimization-edge__model-profiling-takeaways",
+    "runtime": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-takeaways.webp",
+    "runtimeSha256": "f7a725f6a21cd22048e216fb6421c551ed3a2c124bfa35d8a0f16c33dd3e85f8",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.602088+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "The three separate checks for storage, completed prediction time and peak runtime memory, plus same-workload requirement, remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "optimization-edge__pruning-briefing",
+    "runtime": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning.webp",
+    "runtimeSha256": "43953b5160a3c844d5b2ffc200d7567c39e53f718fb4472550b7cd60b8761df3",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.602202+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Directive 44-C, 0.001 threshold, 85 MB dense file, three verification questions and pending status remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "optimization-edge__pruning-epilogue",
+    "runtime": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-epilogue.webp",
+    "runtimeSha256": "6aaca82d5cb96839669a0d1c1c900813c021141a72621f96ff478a0d074f35ac",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.602483+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "85 MB dense file, 42 MB gzip artifact, 94.2% to 91.8% accuracy, three hours and pending rejected-class replay remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "optimization-edge__quantization-briefing",
+    "runtime": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization.webp",
+    "runtimeSha256": "c1d45a154670071a047bfdf7d23cfaefbefbe0761d352b182e68957d68a9b86e",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.602590+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "85 million weights, float32 4-byte/340 MB row, uint8 1-byte/85 MB row, decoding and pending decision measurement remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "optimization-edge__quantization-epilogue",
+    "runtime": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization-epilogue.webp",
+    "runtimeSha256": "d42f5317a9712544daf9d06245f27ff934a6473d2c4ce4216aca30ba41911ff1",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.602883+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Raw signal and engineering-rig labels remain readable, with the three raw pulses clearly visible. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "signal-processing__fft-as-features-challenge",
+    "runtime": "apps/web/public/scenes/deep-orbit/signal-processing/fft-as-features-challenge.webp",
+    "runtimeSha256": "b4d4d9aa0dfed6ae0436820b53fa8876bd596fb7ebe71450cc8241d565f4bf4d",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.603188+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "The corrected FFT magnitudes by bin heading, bin indices 13-20, 64 samples at 256 Hz, 50-82 Hz band and pending output remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "signal-processing__fourier-transform-challenge",
+    "runtime": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-challenge.webp",
+    "runtimeSha256": "0311dff5c7317a3fff03d52ca5da0682d1e4c36a203e147d1c9194ac322dd007",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.603488+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "The 128-sample/128 Hz setup, skip-bin-zero and largest-magnitude steps, frequency formula and pending result remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "signal-processing__fourier-transform-epilogue",
+    "runtime": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform-epilogue.webp",
+    "runtimeSha256": "06e0cdffaa98c96864c6ef3460f758d858e58de59bef31bec34ba44428e3481b",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.603775+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Catalogued 5/12/23/47 Hz, unexplained 73.5 Hz bin, magnitude 12.0 and 0.5 Hz grid remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "signal-processing__spectrograms-challenge",
+    "runtime": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-challenge.webp",
+    "runtimeSha256": "0f7e536f945e17ecb764dd3670b0e7dcab4231d4cdfd7c690ad90b8cd6eb20be",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.604039+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "256 samples at 256 Hz, 40 Hz burst at 0.25-0.50 s, four frame starts, pending magnitudes, window 64, hop 64 and no taper remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "signal-processing__spectrograms-epilogue",
+    "runtime": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-epilogue.webp",
+    "runtimeSha256": "ca2fc9a1d2ed393e18b16c092e66918e6a3495a7154ef971aefba81843d68c4c",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.605507+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "Intermittent-tone schematic, 73.4 Hz frequency and about 73.4 s interval, timing-check status and ARIA reference-copy request remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "signal-processing__time-vs-frequency-challenge",
+    "runtime": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency-challenge.webp",
+    "runtimeSha256": "d3c8708307a4b94223bb6a6fd028aaed656e0a84fbc440f59eaa51a0bd03d143",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.605833+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "512 samples at 256 Hz, schematic baseline/suspect comparison, 0.05 sample tolerance, 5.0 FFT threshold and both pending fields remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  },
+  {
+    "id": "signal-processing__time-vs-frequency-concept",
+    "runtime": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency-concept.webp",
+    "runtimeSha256": "f98fe6966843342c984ac446c6f0e6a6b4fb3e4049d4e439b33fa96a9944c588",
+    "runtimeDimensions": {
+      "width": 1536,
+      "height": 1024
+    },
+    "previewDimensions": {
+      "width": 768,
+      "height": 512
+    },
+    "reviewer": "/root/quality_runtime",
+    "reviewedAt": "2026-11-09T08:21:14.606898+00:00",
+    "method": "Viewed the current published WebP resized to exactly 768 x 512 with Sharp, then displayed the standalone diagnostic PNG at original preview size. No crop, compositing, enhancement or generative edit.",
+    "previewReviewed": true,
+    "keyTextReadable": true,
+    "keyTextClipped": false,
+    "compressionFailureObserved": false,
+    "verdict": "PASS",
+    "findings": "256 samples at 256 Hz, schematic time trace and all three frequency/amplitude pairs 5/0.8, 12/0.6 and 23/0.4 remain readable. No key text is clipped or obscured by compression.",
+    "temporaryPreviewRemoved": true
+  }
+]

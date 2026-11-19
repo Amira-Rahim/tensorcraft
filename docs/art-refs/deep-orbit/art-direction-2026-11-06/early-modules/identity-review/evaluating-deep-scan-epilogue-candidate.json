@@ -1,0 +1,70 @@
+{
+  "module": "training-loop",
+  "lesson": "evaluating-deep-scan",
+  "phase": "epilogue",
+  "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+  "index": 34,
+  "characters": [
+    "dr-farah"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=858): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-494e8798-7336-49fe-a666-6c5d5ff0ecb4.png",
+  "candidate": "/tmp/early-identity-candidates/34.webp",
+  "candidateSha256": "b5b4c91845d82a3f5a6727123a13bc8573c389b383a577a42c80d2255b722b1f",
+  "sourceSha256": "03d134908f99a06a24a6cec69dfdb057aa97b84e85303d9c57da03e6b1d65440",
+  "beforeSha256": "42238f7cab87f0db51af935540fb4dc706c48c0718f017c8cff2f6ba2858ca51",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+      "role": "edit target",
+      "sha256": "42238f7cab87f0db51af935540fb4dc706c48c0718f017c8cff2f6ba2858ca51"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 118814,
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-epilogue-dr-farah-correction.png",
+      "crop": {
+        "left": 639,
+        "top": 24,
+        "width": 438,
+        "height": 486
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-494e8798-7336-49fe-a666-6c5d5ff0ecb4.png",
+      "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

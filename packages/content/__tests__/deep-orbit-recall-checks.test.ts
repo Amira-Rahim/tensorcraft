@@ -54,9 +54,37 @@ describe("Deep Orbit checked recall coverage", () => {
         `${source.moduleId}/${source.slug}`,
       ).toEqual(source.prompts);
     }
+    // The checked cell-update prompt adds one item after both original LSTM prompts.
     expect(
       sources.reduce((count, source) => count + source.prompts.length, 0),
-    ).toBe(83);
+    ).toBe(84);
+  });
+  it("preserves the original LSTM recall indices when adding a checked cell update", () => {
+    const prompts = sources.find(
+      (source) =>
+        source.moduleId === "recurrent-networks" &&
+        source.slug === "lstm-gates",
+    )!.prompts;
+    expect(prompts.map(({ index, question }) => ({ index, question }))).toEqual(
+      [
+        {
+          index: 0,
+          question:
+            "How does an LSTM forget gate differ from expiring a stored value after a fixed time?",
+        },
+        {
+          index: 1,
+          question:
+            "If the LSTM’s state resets between windows, what does it keep from training?",
+        },
+        {
+          index: 2,
+          question:
+            "A cell starts at 4. Its forget gate is 1, its input gate is 0, and its output gate is 0. The candidate is nonzero.",
+        },
+      ],
+    );
+    expect(prompts[2]!.checks).toHaveLength(2);
   });
   it("has a valid correct answer and actionable feedback for every checked part", () => {
     for (const source of sources)

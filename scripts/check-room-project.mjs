@@ -11,6 +11,10 @@ import { join } from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { chromium, expect } from "@playwright/test";
+const args = process.argv.slice(2);
+if (args.some((arg) => arg !== "--node-only"))
+  throw new Error("Usage: node scripts/check-room-project.mjs [--node-only]");
+const nodeOnly = args.includes("--node-only");
 const root = fileURLToPath(new URL("..", import.meta.url));
 const scratch = await mkdtemp(join(tmpdir(), "tensorcraft-room-project-"));
 execFileSync("unzip", [
@@ -61,6 +65,29 @@ expect(() => validatePlan(leakage, rows)).toThrow(/training row IDs/);
 expect(
   metrics([1, 1, 0, 0], [1, 0, 1, 0], { falsePositive: 3, falseNegative: 7 }),
 ).toMatchObject({ tp: 1, fp: 1, tn: 1, fn: 1, totalErrorCost: 10 });
+if (nodeOnly) {
+  const weights = join(project, "model/weights.bin");
+  const original = await readFile(weights);
+  const corrupt = Buffer.from(original);
+  corrupt[0] ^= 1;
+  try {
+    await writeFile(weights, corrupt);
+    let rejected = false;
+    try {
+      run("run", "check");
+    } catch (error) {
+      rejected = String(error.stderr).includes("Artifact changed");
+    }
+    expect(rejected).toBe(true);
+  } finally {
+    await writeFile(weights, original);
+  }
+  console.log(
+    "Passed Node checks: clean install, real fit/export/reload, paired evaluation, overlap/leakage guards and corrupt-artifact rejection.",
+  );
+  console.log("Browser parity and interaction checks were not run.");
+  process.exit(0);
+}
 const { createProjectServer } = await import(
   pathToFileURL(join(project, "serve.mjs"))
 );

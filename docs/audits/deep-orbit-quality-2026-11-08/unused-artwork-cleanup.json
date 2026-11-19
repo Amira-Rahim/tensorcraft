@@ -1,0 +1,412 @@
+{
+  "createdAt": "2026-11-09T08:01:00.742102+00:00",
+  "reviewer": "/root/quality_sequence",
+  "authority": "Parent authorized exactly eight confirmed redundant or diagnostic files after read-only audit.",
+  "status": "complete",
+  "removed": [
+    {
+      "path": "art-src/masters/bridge-fal-2026-08-09T17-48-42-1.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "bytes": 654532,
+      "reason": "Exact duplicate. Retained original has the same SHA-256.",
+      "retainedOriginals": [
+        {
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "bytes": 654532
+        }
+      ],
+      "retainedEvidenceScope": "Exact equivalent"
+    },
+    {
+      "path": "art-src/masters/lab-fal-2026-08-09T17-49-11-1.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "bytes": 676407,
+      "reason": "Exact duplicate. Retained original has the same SHA-256.",
+      "retainedOriginals": [
+        {
+          "path": "docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "bytes": 676407
+        }
+      ],
+      "retainedEvidenceScope": "Exact equivalent"
+    },
+    {
+      "path": "art-src/masters/engineering-fal-2026-08-09T17-49-41-1.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "bytes": 663845,
+      "reason": "Exact duplicate. Retained original has the same SHA-256.",
+      "retainedOriginals": [
+        {
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "bytes": 663845
+        }
+      ],
+      "retainedEvidenceScope": "Exact equivalent"
+    },
+    {
+      "path": "art-src/tour-video/stills/exterior-1.png",
+      "sha256": "4a4dda30e547d05acac4f8a43b3aab5d39b45c866d2f87b45d09f22f31d1588c",
+      "bytes": 396372,
+      "reason": "Exact duplicate. Retained original has the same SHA-256.",
+      "retainedOriginals": [
+        {
+          "path": "art-src/tour-video/stills/exterior-pick.png",
+          "sha256": "4a4dda30e547d05acac4f8a43b3aab5d39b45c866d2f87b45d09f22f31d1588c",
+          "bytes": 396372
+        }
+      ],
+      "retainedEvidenceScope": "Exact equivalent"
+    },
+    {
+      "path": "docs/audits/character-visual-design-2026-11-06/all-expressions.jpg",
+      "sha256": "7d54cf74a7829cc0ade53965dc456c1bfd832cd83ecde62240daa9d8fabc0941",
+      "bytes": 340909,
+      "reason": "Obsolete diagnostic comparison image removed under the scene bible cleanup rule. Current original evidence remains available.",
+      "retainedOriginals": [
+        {
+          "path": "art-src/expressions/chief-nazari-grudging-respect-openai-20261106.png",
+          "sha256": "e4326393cb9914e36f1f4c8b7e51fd0d23115c50535c79129276bf973170b0ec",
+          "bytes": 1596196
+        },
+        {
+          "path": "art-src/expressions/chief-nazari-haunted-openai-20261106.png",
+          "sha256": "a8af22d75e98b345204ebf82f3d2912b185d76aa1aa16d5ebcae719f5f5180bd",
+          "bytes": 1745985
+        },
+        {
+          "path": "art-src/expressions/chief-nazari-skeptical-openai-20261106.png",
+          "sha256": "8eba0f257f92e77b99a4b1b9947890f0fa3e8fdcb17d29a7ccb3055342971451",
+          "bytes": 1659921
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-approving-openai-20261106.png",
+          "sha256": "93e0b5c2f3ad71921c998c57c93bc4a1db67324a9c424c4d537a17939e02628f",
+          "bytes": 1642021
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-concerned-openai-20261106.png",
+          "sha256": "2def6b7c00fe919e4d0e67aa49900efb30657c8aae3df422fc6ee1a268d56428",
+          "bytes": 1750831
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-resolved-openai-20261106.png",
+          "sha256": "0268ba640313bb613a989e3ab3ff513b5619d63c0372eed5036c20518fad90f8",
+          "bytes": 1713549
+        },
+        {
+          "path": "art-src/expressions/dr-farah-absorbed-openai-20261106.png",
+          "sha256": "35cef5785665a72b81f468156dbad5e05acc214c1279dee755706c7dadbe8b35",
+          "bytes": 1549967
+        },
+        {
+          "path": "art-src/expressions/dr-farah-delighted-openai-20261106.png",
+          "sha256": "ed1ec619171441c7bfc70c1fa21da28ff92bbab79df6dff193a05062c2d64a17",
+          "bytes": 1700589
+        },
+        {
+          "path": "art-src/expressions/dr-farah-shaken-openai-20261106.png",
+          "sha256": "ec58a91e187e4be979ae8721bcaeb8b224dfdfaac4e9d23d8e65c89350a83702",
+          "bytes": 1733774
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-breakthrough-openai-20261106.png",
+          "sha256": "2cd6a116fe767d8984d4c4e7318f75c4e0d4e512c95e24346c7f23fb40e82bbd",
+          "bytes": 1552599
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-focused-openai-20261106.png",
+          "sha256": "bad3a50fcd22418567877261b6d4aad66333a053b49db4ec9ecc540af479d4f1",
+          "bytes": 1517967
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-overwhelmed-openai-20261106.png",
+          "sha256": "2437f99def958ff702fe70058729f0a2b308864e6deb7f2e78fba433d2a6c86d",
+          "bytes": 1693538
+        },
+        {
+          "path": "art-src/neutrals/chief-nazari-openai-20261106.png",
+          "sha256": "f0ea4fc2d2e12b44b93afb1560e7649b640b6ac067d33a047b9f35ec0025e4e5",
+          "bytes": 1545698
+        },
+        {
+          "path": "art-src/neutrals/commander-mirza-openai-20261106.png",
+          "sha256": "985e3293e8ecb8e84e59a9fc6af0250d646c176bcc08ce277076e11c0c0e90cf",
+          "bytes": 1523686
+        },
+        {
+          "path": "art-src/neutrals/dr-farah-openai-20261106.png",
+          "sha256": "06d32a2b151bd2b0f03114c15f70b6f7fa11f64870fde8338c3a8111d18fb579",
+          "bytes": 1542816
+        },
+        {
+          "path": "art-src/neutrals/ensign-demir-openai-20261106.png",
+          "sha256": "eeed584a12d9ff3d2f5bc7e87e2bce6a9be6dbfd4920a9875ce553abfdf9c7d3",
+          "bytes": 1478861
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/aria-ring.png",
+          "sha256": "bf4357e131080a4f2a3856b9a0e89fa17a3581a66e30fc75cbb3490e392ed5e3",
+          "bytes": 317275
+        }
+      ],
+      "retainedEvidenceScope": "Current approved originals. The obsolete diagnostic image depicted an earlier revision."
+    },
+    {
+      "path": "docs/audits/character-visual-design-2026-11-06/expressions-at-44px.png",
+      "sha256": "b365b8f5f2a82038fb1aa922b3680be483f81c4ccae4f0c588b4da5351930b51",
+      "bytes": 72690,
+      "reason": "Obsolete diagnostic comparison image removed under the scene bible cleanup rule. Current original evidence remains available.",
+      "retainedOriginals": [
+        {
+          "path": "art-src/expressions/chief-nazari-grudging-respect-openai-20261106.png",
+          "sha256": "e4326393cb9914e36f1f4c8b7e51fd0d23115c50535c79129276bf973170b0ec",
+          "bytes": 1596196
+        },
+        {
+          "path": "art-src/expressions/chief-nazari-haunted-openai-20261106.png",
+          "sha256": "a8af22d75e98b345204ebf82f3d2912b185d76aa1aa16d5ebcae719f5f5180bd",
+          "bytes": 1745985
+        },
+        {
+          "path": "art-src/expressions/chief-nazari-skeptical-openai-20261106.png",
+          "sha256": "8eba0f257f92e77b99a4b1b9947890f0fa3e8fdcb17d29a7ccb3055342971451",
+          "bytes": 1659921
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-approving-openai-20261106.png",
+          "sha256": "93e0b5c2f3ad71921c998c57c93bc4a1db67324a9c424c4d537a17939e02628f",
+          "bytes": 1642021
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-concerned-openai-20261106.png",
+          "sha256": "2def6b7c00fe919e4d0e67aa49900efb30657c8aae3df422fc6ee1a268d56428",
+          "bytes": 1750831
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-resolved-openai-20261106.png",
+          "sha256": "0268ba640313bb613a989e3ab3ff513b5619d63c0372eed5036c20518fad90f8",
+          "bytes": 1713549
+        },
+        {
+          "path": "art-src/expressions/dr-farah-absorbed-openai-20261106.png",
+          "sha256": "35cef5785665a72b81f468156dbad5e05acc214c1279dee755706c7dadbe8b35",
+          "bytes": 1549967
+        },
+        {
+          "path": "art-src/expressions/dr-farah-delighted-openai-20261106.png",
+          "sha256": "ed1ec619171441c7bfc70c1fa21da28ff92bbab79df6dff193a05062c2d64a17",
+          "bytes": 1700589
+        },
+        {
+          "path": "art-src/expressions/dr-farah-shaken-openai-20261106.png",
+          "sha256": "ec58a91e187e4be979ae8721bcaeb8b224dfdfaac4e9d23d8e65c89350a83702",
+          "bytes": 1733774
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-breakthrough-openai-20261106.png",
+          "sha256": "2cd6a116fe767d8984d4c4e7318f75c4e0d4e512c95e24346c7f23fb40e82bbd",
+          "bytes": 1552599
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-focused-openai-20261106.png",
+          "sha256": "bad3a50fcd22418567877261b6d4aad66333a053b49db4ec9ecc540af479d4f1",
+          "bytes": 1517967
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-overwhelmed-openai-20261106.png",
+          "sha256": "2437f99def958ff702fe70058729f0a2b308864e6deb7f2e78fba433d2a6c86d",
+          "bytes": 1693538
+        },
+        {
+          "path": "art-src/neutrals/chief-nazari-openai-20261106.png",
+          "sha256": "f0ea4fc2d2e12b44b93afb1560e7649b640b6ac067d33a047b9f35ec0025e4e5",
+          "bytes": 1545698
+        },
+        {
+          "path": "art-src/neutrals/commander-mirza-openai-20261106.png",
+          "sha256": "985e3293e8ecb8e84e59a9fc6af0250d646c176bcc08ce277076e11c0c0e90cf",
+          "bytes": 1523686
+        },
+        {
+          "path": "art-src/neutrals/dr-farah-openai-20261106.png",
+          "sha256": "06d32a2b151bd2b0f03114c15f70b6f7fa11f64870fde8338c3a8111d18fb579",
+          "bytes": 1542816
+        },
+        {
+          "path": "art-src/neutrals/ensign-demir-openai-20261106.png",
+          "sha256": "eeed584a12d9ff3d2f5bc7e87e2bce6a9be6dbfd4920a9875ce553abfdf9c7d3",
+          "bytes": 1478861
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/aria-ring.png",
+          "sha256": "bf4357e131080a4f2a3856b9a0e89fa17a3581a66e30fc75cbb3490e392ed5e3",
+          "bytes": 317275
+        }
+      ],
+      "retainedEvidenceScope": "Current approved originals. The obsolete diagnostic image depicted an earlier revision."
+    },
+    {
+      "path": "docs/audits/character-visual-design-2026-11-06/expressions-at-88px.png",
+      "sha256": "9852df1a341fda4cd2f9824f9870562e9c0b4eab85bc7393f604b219ca947de6",
+      "bytes": 251264,
+      "reason": "Obsolete diagnostic comparison image removed under the scene bible cleanup rule. Current original evidence remains available.",
+      "retainedOriginals": [
+        {
+          "path": "art-src/expressions/chief-nazari-grudging-respect-openai-20261106.png",
+          "sha256": "e4326393cb9914e36f1f4c8b7e51fd0d23115c50535c79129276bf973170b0ec",
+          "bytes": 1596196
+        },
+        {
+          "path": "art-src/expressions/chief-nazari-haunted-openai-20261106.png",
+          "sha256": "a8af22d75e98b345204ebf82f3d2912b185d76aa1aa16d5ebcae719f5f5180bd",
+          "bytes": 1745985
+        },
+        {
+          "path": "art-src/expressions/chief-nazari-skeptical-openai-20261106.png",
+          "sha256": "8eba0f257f92e77b99a4b1b9947890f0fa3e8fdcb17d29a7ccb3055342971451",
+          "bytes": 1659921
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-approving-openai-20261106.png",
+          "sha256": "93e0b5c2f3ad71921c998c57c93bc4a1db67324a9c424c4d537a17939e02628f",
+          "bytes": 1642021
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-concerned-openai-20261106.png",
+          "sha256": "2def6b7c00fe919e4d0e67aa49900efb30657c8aae3df422fc6ee1a268d56428",
+          "bytes": 1750831
+        },
+        {
+          "path": "art-src/expressions/commander-mirza-resolved-openai-20261106.png",
+          "sha256": "0268ba640313bb613a989e3ab3ff513b5619d63c0372eed5036c20518fad90f8",
+          "bytes": 1713549
+        },
+        {
+          "path": "art-src/expressions/dr-farah-absorbed-openai-20261106.png",
+          "sha256": "35cef5785665a72b81f468156dbad5e05acc214c1279dee755706c7dadbe8b35",
+          "bytes": 1549967
+        },
+        {
+          "path": "art-src/expressions/dr-farah-delighted-openai-20261106.png",
+          "sha256": "ed1ec619171441c7bfc70c1fa21da28ff92bbab79df6dff193a05062c2d64a17",
+          "bytes": 1700589
+        },
+        {
+          "path": "art-src/expressions/dr-farah-shaken-openai-20261106.png",
+          "sha256": "ec58a91e187e4be979ae8721bcaeb8b224dfdfaac4e9d23d8e65c89350a83702",
+          "bytes": 1733774
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-breakthrough-openai-20261106.png",
+          "sha256": "2cd6a116fe767d8984d4c4e7318f75c4e0d4e512c95e24346c7f23fb40e82bbd",
+          "bytes": 1552599
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-focused-openai-20261106.png",
+          "sha256": "bad3a50fcd22418567877261b6d4aad66333a053b49db4ec9ecc540af479d4f1",
+          "bytes": 1517967
+        },
+        {
+          "path": "art-src/expressions/ensign-demir-overwhelmed-openai-20261106.png",
+          "sha256": "2437f99def958ff702fe70058729f0a2b308864e6deb7f2e78fba433d2a6c86d",
+          "bytes": 1693538
+        },
+        {
+          "path": "art-src/neutrals/chief-nazari-openai-20261106.png",
+          "sha256": "f0ea4fc2d2e12b44b93afb1560e7649b640b6ac067d33a047b9f35ec0025e4e5",
+          "bytes": 1545698
+        },
+        {
+          "path": "art-src/neutrals/commander-mirza-openai-20261106.png",
+          "sha256": "985e3293e8ecb8e84e59a9fc6af0250d646c176bcc08ce277076e11c0c0e90cf",
+          "bytes": 1523686
+        },
+        {
+          "path": "art-src/neutrals/dr-farah-openai-20261106.png",
+          "sha256": "06d32a2b151bd2b0f03114c15f70b6f7fa11f64870fde8338c3a8111d18fb579",
+          "bytes": 1542816
+        },
+        {
+          "path": "art-src/neutrals/ensign-demir-openai-20261106.png",
+          "sha256": "eeed584a12d9ff3d2f5bc7e87e2bce6a9be6dbfd4920a9875ce553abfdf9c7d3",
+          "bytes": 1478861
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/aria-ring.png",
+          "sha256": "bf4357e131080a4f2a3856b9a0e89fa17a3581a66e30fc75cbb3490e392ed5e3",
+          "bytes": 317275
+        }
+      ],
+      "retainedEvidenceScope": "Current approved originals. The obsolete diagnostic image depicted an earlier revision."
+    },
+    {
+      "path": "docs/audits/character-visual-design-2026-11-06/face-visible-preview.jpg",
+      "sha256": "ca56cd06143c6eed17fe9e1fe1ccc6742896a904f3c5d12abbdc3b19802ca5ce",
+      "bytes": 398780,
+      "reason": "Obsolete diagnostic comparison image removed under the scene bible cleanup rule. Current original evidence remains available.",
+      "retainedOriginals": [
+        {
+          "path": "art-src/scenes/neural-networks__building-a-network-openai-20261107.png",
+          "sha256": "27f5202a6c90dbd2d957746d915984c52d5ba09c6071dac926da4f97051caedb",
+          "bytes": 2163363
+        },
+        {
+          "path": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+          "sha256": "f703e7a840e527ee33436adf0400dcd215cb40e3cab4f5e82a966837b338f819",
+          "bytes": 2183322
+        },
+        {
+          "path": "art-src/scenes/foundations__normalization-openai-20261107.png",
+          "sha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+          "bytes": 2254472
+        },
+        {
+          "path": "art-src/scenes/capstone__launch-epilogue-openai-20261107.png",
+          "sha256": "8ee812b9af0f07dc4194775cb57701c0be42ba0c5dea1a83993bcd5904f4b4cf",
+          "bytes": 2058310
+        }
+      ],
+      "retainedEvidenceScope": "Current approved originals. The obsolete diagnostic image depicted an earlier revision."
+    }
+  ],
+  "removedFileCount": 8,
+  "reclaimedBytes": 3454799,
+  "updatedDocuments": [
+    "docs/audits/character-visual-design-2026-11-06.md",
+    "docs/audits/character-visual-repairs-2026-11-06.md"
+  ],
+  "preservedUncertainAlternatives": [
+    {
+      "path": "art-src/tour-video/stills/exterior-2.png",
+      "sha256": "9fc2211eb2acdeac43ebf62b0c96df5a16df613accfa6478eea3dfb6d6434949"
+    },
+    {
+      "path": "art-src/tour-video/stills/exterior-3.png",
+      "sha256": "82b57eb1c2e84bc36a0e22ce3b1981e86db423dddd240716319652125802be2e"
+    }
+  ],
+  "scopeNotes": [
+    "Current repair candidates, scene sources, runtime images and approval ledgers are outside this cleanup.",
+    "All 41 documented reference PNGs remain.",
+    "Historical lineage strings remain as provenance. Removed duplicate paths are mapped to retained originals in this record."
+  ],
+  "verification": {
+    "allEightSelectedFilesRemoved": true,
+    "retainedOriginalsUnchanged": true,
+    "duplicateHashesVerifiedBeforeDeletion": 4,
+    "uncertainAlternativesUnchanged": true,
+    "updatedMarkdownMissingLinks": [],
+    "noEmDashInEditedDocuments": true,
+    "scenesAndApprovalLedgersMutatedByThisCleanup": false,
+    "activeSceneSourceAndRuntimePairsCheckedAfterCleanup": 280,
+    "activeSceneHashMismatches": [],
+    "supportingAssetsCheckedAfterCleanup": 41,
+    "missingActivePathsAfterCleanup": [],
+    "documentedReferencePngsRetained": 41,
+    "gitDiffWhitespaceCheck": "PASS"
+  },
+  "completedAt": "2026-11-09T08:01:00.765165+00:00"
+}

@@ -1,0 +1,1666 @@
+{
+  "reviewDate": "2026-11-07",
+  "scope": "All 43 selected outputs owned by scene_anatomy_gate, including 41 already published files and two unpublished The Anomaly phases. 65 human faces compared against canonical portrait crops. Discarded generation candidates are not product assets and were not re-audited.",
+  "method": "Manually located native-resolution head crops; each shown directly beside canonical anchor, 310x350 contain scaling with no stretching. All 11 proof sheets reviewed. Clothing and accessories are not treated as a substitute for facial morphology. Perspective/expression ambiguities are marked moderate.",
+  "releaseDecision": "All selected outputs withheld from merge fragment until strict identity review passes. Original scene files and PNGs are untouched. Removal from fragment does not undo earlier parent merges; parent must remove or quarantine already merged routes.",
+  "previousGateCorrection": "Earlier anatomy QA correctly found and fixed limb defects but was too permissive about identity. Prior claims of canonical identity are superseded by this review.",
+  "entries": [
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "briefing",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-original.webp",
+      "status": "withheld-identity",
+      "sha256": "10b4bfcd005c2547a65f893452fa9db15e828e85317a7d887b4c7cc55a97f093",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "The jaw ends in a sharper narrow chin; nose is narrower with a pointed tip rather than the canonical broad rounded tip; brow angles are more severe. Hair sweep and earpiece are mirrored relative to the canonical anchor.",
+          "confidence": "high",
+          "crop": [
+            980,
+            90,
+            330,
+            370
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-00.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+        "sourceSha256": "305a4ec570ca24e4d6c192a4b64e50608bd927c887e425b88f44a85914d4117f",
+        "outputSha256": "f15c9639514d8483e77e201974d7b25d9c8b976f698ece5d9785cadf4575c76a"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "10b4bfcd005c2547a65f893452fa9db15e828e85317a7d887b4c7cc55a97f093",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "b7046c32223c912e66f53230cad2bf7ed19d35890a6837206be7fb4522302c8a",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Nose bridge is lengthened and tip narrowed; chin and lower cheek taper are sharper; eyes are larger relative to the midface. Hair has a taller, more segmented quiff. Warm complexion and stubble remain but do not establish identity.",
+          "confidence": "high",
+          "crop": [
+            390,
+            55,
+            370,
+            455
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-00.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__temporal-attention-concept-openai-20261107.png",
+        "sourceSha256": "68ae31a9b5659a36440ad8a26be933ea6cbe1ec2fbc74c59d060df2ee45d15ba",
+        "outputSha256": "18901f6d5240c68345d23b07b172b4e0386505dfd4fca44cae362a2cf255bf19"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "b7046c32223c912e66f53230cad2bf7ed19d35890a6837206be7fb4522302c8a",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "6ada8491a991c2c6a587fff4599fcfa8d4f4abc5f987de068ef3e92f72dd3a7c",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Downward head angle explains some foreshortening, but the eyes are more enlarged, the nose tip smaller and jaw more pointed than the anchor. Hair volume is increased. Needs face correction rather than passing on outfit.",
+          "confidence": "high",
+          "crop": [
+            470,
+            10,
+            405,
+            460
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-00.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+        "sourceSha256": "7dea27ac189272f45b4f153ffe16e32ceb7d7088a6a1cf9b7d93c8f6018e737a",
+        "outputSha256": "2a863f4fdb115aeda235e678e8dd1e4038a7fa764e38c85497ef8215eed39d18"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "6ada8491a991c2c6a587fff4599fcfa8d4f4abc5f987de068ef3e92f72dd3a7c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "ca27425a7b6983ccb7db9f832ae6bf9290010bdf41c46c16369fc4a3be80d0e6",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Face is longer with a narrow protruding nose, deeper angular jaw contour and a taller spiked hair silhouette. Eye openings and brow arcs depart from the anchor beyond the looking-up expression.",
+          "confidence": "high",
+          "crop": [
+            170,
+            80,
+            300,
+            400
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-00.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-openai-20261107.png",
+        "sourceSha256": "fcf64c28b294115501f8539b3619200c7dc630f5e60ad480519f95a4344a441c",
+        "outputSha256": "948a5528d8c13520ddbae53e267f853486e58707ec2a0a3e84befc3b4b6c2557"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "ca27425a7b6983ccb7db9f832ae6bf9290010bdf41c46c16369fc4a3be80d0e6",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/temporal-attention",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "00ba68930ffde0f524304663fa5405b949b77f1eefb8836bc122f3335e570c9b",
+      "faces": [
+        {
+          "character": "nazari",
+          "evidence": "Nose is lengthened and narrowed, chin more angular and face slimmer. Canonical broad set jaw is reduced; cheek and lower-eye age lines are softened. Hair has a fuller swept volume.",
+          "confidence": "high",
+          "crop": [
+            170,
+            15,
+            290,
+            320
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-00.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Round eye openings are enlarged, nose is pinched, chin shortened and cheek shape rounder. The smile is allowed, but the underlying midface proportions and tall side-swept quiff differ.",
+          "confidence": "high",
+          "crop": [
+            780,
+            180,
+            270,
+            350
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-00.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__temporal-attention-epilogue-openai-20261107.png",
+        "sourceSha256": "e831bcb50f88be4c390218570f8da216b526faa03ba27ab8bcdffce04855a821",
+        "outputSha256": "8c1e4a2467eb94618e731691d277e1379cd61aa16ac45b326bc3f5123f2e6302"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "00ba68930ffde0f524304663fa5405b949b77f1eefb8836bc122f3335e570c9b",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/optimization-edge/caching-strategies",
+      "phase": "briefing",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/optimization-edge__caching-strategies-original.webp",
+      "status": "withheld-identity",
+      "sha256": "67ce186e524be2ee97b64bbe110ac603cf6bab5695c03dd8a82b6f1700270d23",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Longer narrower nose, more squared projecting jaw and larger chin than the neutral anchor; eyes are more narrow horizontally. Earpiece is a larger circular disk and hair rises into a higher quiff. Anatomy repair did not lock the face.",
+          "confidence": "high",
+          "crop": [
+            160,
+            165,
+            315,
+            390
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-01.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/optimization-edge__caching-strategies-openai-20261107.png",
+        "sourceSha256": "f0136bc1880a4a06837da5cd62607bc566f87b5044187af85f584166fd94fac0",
+        "outputSha256": "4b2d6e192b58ed628dd80162c565b9051692a8a774ed25d610b197db16d3ad8d"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "67ce186e524be2ee97b64bbe110ac603cf6bab5695c03dd8a82b6f1700270d23",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__beyond-lstm-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "21705ca12cc6bc91b72e758875780e5782ee626703034291a221e47bfd2422cb",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Lower face narrows into a pointed chin; nose is much smaller and upturned, and eye corners are lifted with heavier lashes. Cheek and eye lines are reduced, giving a younger face; hair is puffier. Lens is retained but is not an identity match.",
+          "confidence": "high",
+          "crop": [
+            925,
+            40,
+            380,
+            395
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-01.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+        "sourceSha256": "e5a76ad14a1a74c720a1792a79f9eaae7a6649028ae55d7d0fdecb9445ec0347",
+        "outputSha256": "2698bfc69a62b4ef22d84f19570bc03288b409bcdc055f2607de6f9219d33e92"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "21705ca12cc6bc91b72e758875780e5782ee626703034291a221e47bfd2422cb",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__beyond-lstm-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "9caa17f29723aaaaabfe1c39180de840b197ae79cf951723fddaf757c017c855",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Narrow pointed nose and chin, more triangular jaw, longer cheek plane and higher quiff. Eyes are larger and brows more sharply arched than the canonical round alert face.",
+          "confidence": "high",
+          "crop": [
+            850,
+            115,
+            375,
+            405
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-01.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+        "sourceSha256": "b7ac30834a92b9bf28085b32b91ad47c413f1829e0144e9ffd3db66c20d544c2",
+        "outputSha256": "16423d000acf7fe1ae2fe5b84d71eb9b6f990e73f584c5aa486a241430bab6ba"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "9caa17f29723aaaaabfe1c39180de840b197ae79cf951723fddaf757c017c855",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__beyond-lstm-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "95244842977222f28b9648b83b9056aa2b0b0621ec8be06001f4326253ccf579",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Smaller upturned nose, more pointed chin and more upswept eyes; smooth cheeks reduce the mature adult read. Hair forms larger puffed waves.",
+          "confidence": "high",
+          "crop": [
+            300,
+            95,
+            340,
+            355
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-01.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Face is stretched vertically with a slimmer angular jaw and long narrow nose. Brow and eye shapes become more slanted; stubble pattern differs.",
+          "confidence": "high",
+          "crop": [
+            910,
+            60,
+            330,
+            355
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-01.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+        "sourceSha256": "d846504106f57cd97cf2c783318ce88a36ae000ebb41e9937ec46aafd6546345",
+        "outputSha256": "0100203aa047a14f0f85652fe678a359f9f29b52cee855c8755f8c1b959de84c"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "95244842977222f28b9648b83b9056aa2b0b0621ec8be06001f4326253ccf579",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/beyond-lstm",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__beyond-lstm-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "41aac613e49ee886e940c751bac5a6e955c7f03b4a3df5c7880d2dc1309d7f2a",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Broader cheek area and larger round eyes accompany a short narrow nose and more squared chin. The head turn is substantial, so confidence is moderate, but proportions do not securely match.",
+          "confidence": "moderate",
+          "crop": [
+            785,
+            320,
+            265,
+            295
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-01.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "farah",
+          "evidence": "Small upturned nose and tapered heart-shaped lower face; much smoother eye and cheek contours. Hair volume and loose strand shapes differ from the anchor. Distance limits certainty but warrants withholding.",
+          "confidence": "moderate",
+          "crop": [
+            1205,
+            125,
+            235,
+            260
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-02.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-openai-20261107.png",
+        "sourceSha256": "9d3aeae40704cf7c39271d7a52b476d72eaadbc84765f0a260df8a1c9c996151",
+        "outputSha256": "0c13d8384bdb55a03df26e136eeaef41295e865630118154e7322e63abd103b3"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "41aac613e49ee886e940c751bac5a6e955c7f03b4a3df5c7880d2dc1309d7f2a",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__forecasting-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "3e94eca20caa496cd3acf87fa24ff226029c553c014981b0ab90c81d121d984c",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Nose tip is smaller and lifted, jaw is slimmer and chin more pointed. Eyes are narrower almond shapes with stronger wings, and adult eye lines are substantially reduced.",
+          "confidence": "high",
+          "crop": [
+            200,
+            90,
+            420,
+            430
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-02.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+        "sourceSha256": "5714f0e29ace586dcd0bb055d6bc254e4d2e2c1297809033d2c4be2e55df0c30",
+        "outputSha256": "94dd900299254e924ce09618aa6d45262a49ca3ea35163ae5771705b69d43e2a"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "3e94eca20caa496cd3acf87fa24ff226029c553c014981b0ab90c81d121d984c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__forecasting-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "02bdaf602a61e74c8b7e403a9a9b480ad1063cb933ec1c022778f2db75373f59",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Nose and chin are narrowed and jaw made angular; eyebrow forms are heavily arched with sharper endpoints. Hair is a substantially taller swept quiff. Pose alone does not account for these shape changes.",
+          "confidence": "high",
+          "crop": [
+            310,
+            40,
+            405,
+            470
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-02.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+        "sourceSha256": "bbf4975747fd4b4ab8b7b7cd5f8b876e59eec2ae6cf28c6a8d2a9eaba5596c8d",
+        "outputSha256": "77abb16aa9970c55be74d50931624c26627216db0ac9f6cfde5adc02395b829d"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "02bdaf602a61e74c8b7e403a9a9b480ad1063cb933ec1c022778f2db75373f59",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__forecasting-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "63051a723bb38d3b140959cc61fb8c919a51a44cb63133a79fbf5ea24d123e65",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Long slender nose with a small tip, narrow jaw/chin and emphasized upper eyelashes. Cheeks are smoother and younger than the canonical portrait.",
+          "confidence": "high",
+          "crop": [
+            300,
+            65,
+            365,
+            385
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-02.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "mirza",
+          "evidence": "Hair, complexion and age markers largely carry through. Possible narrower lower face and nose; oblique angle prevents a firm mismatch finding. Hold for stricter root comparison, not a definite changed identity.",
+          "confidence": "moderate",
+          "crop": [
+            890,
+            45,
+            310,
+            350
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-02.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__forecasting-takeaways-openai-20261107.png",
+        "sourceSha256": "ae2e557d5e47ad4e7dc3f945c53cdfe11c5791e7c285591a2be0e1ab4845534d",
+        "outputSha256": "3b6fa3db8df8398b6f2a04c9ba4faa4065bc1a59b21b7729d5d1c54d1d826dc3"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "63051a723bb38d3b140959cc61fb8c919a51a44cb63133a79fbf5ea24d123e65",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/forecasting",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__forecasting-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "30ffc7a23b42378570f0d14bd724f0268ea185fc56bdfe81f00c53e608dda34e",
+      "faces": [
+        {
+          "character": "nazari",
+          "evidence": "Slimmer lower face, longer narrow nose and larger stylized eye shapes, with reduced under-eye and cheek lines. Hair sweep is fuller.",
+          "confidence": "high",
+          "crop": [
+            110,
+            90,
+            270,
+            280
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-02.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Enlarged eye openings, narrow pointed nose, elongated lower face and higher spiky quiff differ from the reference.",
+          "confidence": "high",
+          "crop": [
+            465,
+            90,
+            230,
+            280
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-03.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "farah",
+          "evidence": "Small lifted nose, tapered chin and smoother young cheeks; eyes and lashes are more stylized and upward slanting.",
+          "confidence": "high",
+          "crop": [
+            800,
+            300,
+            290,
+            325
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-03.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+        "sourceSha256": "9b659909b7d5742fe2620c5825617afe1adb697acd2f8af8db94c93fd3666863",
+        "outputSha256": "afc00c6dd9876353e40cd1e1ce830a68d31a440bf8e1a9b0c5a9bb0d592875e9"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "30ffc7a23b42378570f0d14bd724f0268ea185fc56bdfe81f00c53e608dda34e",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__kalman-filters-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "2baf91f8237152050217fe1d66978aeb0a6165c66261aab9bd2084c0fc109809",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Nose is pinched and upturned, mouth-to-chin distance shortened and jaw sharply tapered. Larger bright eyes plus smoother cheeks make the face younger than 38.",
+          "confidence": "high",
+          "crop": [
+            965,
+            50,
+            375,
+            410
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-03.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__kalman-filters-concept-openai-20261107.png",
+        "sourceSha256": "ed526903617444ba9c9290669028e85132a8e4cdefd9580dbe0ed70fc14b978b",
+        "outputSha256": "967809409731bf95fe82784f6c20ff424425dcf402921604f67ef362bd813815"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "2baf91f8237152050217fe1d66978aeb0a6165c66261aab9bd2084c0fc109809",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__kalman-filters-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "f85ef3ad09ea0c716a536a93f9e0373ea7394958b89d05b72477654903f2398c",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Nose tip is small and narrow, cheek-to-chin contour sharper, and eye openings enlarged. Hair sweep rises higher and changes direction through the crown.",
+          "confidence": "high",
+          "crop": [
+            1010,
+            90,
+            285,
+            330
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-03.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__kalman-filters-challenge-openai-20261107.png",
+        "sourceSha256": "b41df33f458084bae8bbb5ebb4aed8502dd8dfb84225e81b9de49147a122de15",
+        "outputSha256": "f40d770d145e339da17236984491c8b12e918071b363b0c9338de98c21ee3f5e"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "f85ef3ad09ea0c716a536a93f9e0373ea7394958b89d05b72477654903f2398c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__kalman-filters-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "28dd1b1beec53b7bd9a0b1d3e42975207b68fca4c5b3aef994289a0635f8a0de",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Slender lifted nose and pointed lower face replace the broader adult nose/jaw; eye corners and lash silhouette are more upswept, with fewer fine lines.",
+          "confidence": "high",
+          "crop": [
+            230,
+            95,
+            375,
+            410
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-03.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Long narrow nose, sharper chin, more slanted almond eye openings and higher swooping hair. The warm look is appropriate but shape is not locked.",
+          "confidence": "high",
+          "crop": [
+            950,
+            100,
+            350,
+            390
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-03.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-openai-20261107.png",
+        "sourceSha256": "ba2175f64d8af6618a1424beab64ee79fac0937c2ac78f0e2a5eb2219357d758",
+        "outputSha256": "131084a8e975f1768439ed76a5a6c830e5f6fed448b59b430916c6f7c232abbf"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "28dd1b1beec53b7bd9a0b1d3e42975207b68fca4c5b3aef994289a0635f8a0de",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/kalman-filters",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__kalman-filters-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "efdb7295e41ac0488790db8bae10302e6e1e7373ae4e6d2a1a9ac96a730c9223",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Narrower eye openings, smaller lifted nose, slimmer chin and smoother cheeks; hair is voluminous rather than the anchor\u2019s flatter structured waves.",
+          "confidence": "high",
+          "crop": [
+            225,
+            10,
+            345,
+            360
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-04.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "mirza",
+          "evidence": "Strong likeness retained in nose width, lips, silver temples and mature lines. A slightly broader forehead and narrower chin may be viewing angle. Secondary face requires root confirmation, not a definite failure.",
+          "confidence": "moderate",
+          "crop": [
+            830,
+            160,
+            280,
+            355
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-04.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png",
+        "sourceSha256": "b113307a5ef46cf23dd52eea88438392b6ead8b089f49d9243abd4def183ab65",
+        "outputSha256": "f51c19f242ed2818919584663ea98f452dec0e490640a537cf63c67814aa02b2"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "efdb7295e41ac0488790db8bae10302e6e1e7373ae4e6d2a1a9ac96a730c9223",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__time-series-ensemble-methods-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "af2ba1348d0ec2bbd96ca353065380bbbb9e8a175bb2a2ab43a6be03ba8d58f1",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Tiny lifted nose and pointed chin with larger lifted eyes and smoother cheeks; face reads younger and more stylized than the anchor.",
+          "confidence": "high",
+          "crop": [
+            220,
+            110,
+            340,
+            360
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-04.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Lower face is long and narrow with pointed chin, a smaller upturned nose and large arched eye openings. Hair silhouette is taller and more spiky.",
+          "confidence": "high",
+          "crop": [
+            935,
+            70,
+            300,
+            345
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-04.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-concept-openai-20261107.png",
+        "sourceSha256": "8c6afafc9f330d073ed9354e0830f47e2d26842156c99a3c2fe61fa17a3717be",
+        "outputSha256": "2c34d46037922d5168cc873c7506108444a28fc2d785152dea3b45c60c2d3b19"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "af2ba1348d0ec2bbd96ca353065380bbbb9e8a175bb2a2ab43a6be03ba8d58f1",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__time-series-ensemble-methods-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "943f617ac525250e0401bafe2c2ea112fe89bf46e686ccf3f0a0ca04d9faec6c",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Eye openings are enlarged relative to midface; bridge is long, tip narrow and chin sharply tapered. Tall flowing quiff differs from reference even allowing the downward angle.",
+          "confidence": "high",
+          "crop": [
+            430,
+            35,
+            430,
+            455
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-04.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-challenge-openai-20261107.png",
+        "sourceSha256": "7b749a8b720be3b27c21e71109ac59a00a5ebc4a8367418831f3117feb0e456d",
+        "outputSha256": "a5c255013c0bcc5fef76be94a2831523c06a47a9cd0b55a5aae19a6f3f210c49"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "943f617ac525250e0401bafe2c2ea112fe89bf46e686ccf3f0a0ca04d9faec6c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__time-series-ensemble-methods-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "8b4ef8f3d6ed70d29b4fc426aedd0c452bd358c6da817c4cfc8bcd65e781757c",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Nose tip is smaller and lifted; chin is narrower and cheek outline more angular. Eyes become narrow, heavily winged almonds. Skin remains warm but adult eye lines are reduced.",
+          "confidence": "high",
+          "crop": [
+            700,
+            80,
+            460,
+            455
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-04.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+        "sourceSha256": "784339c1ec33aaac48253bc5a261a67ce470b823b8097bcc02693c1106bbf634",
+        "outputSha256": "a5872fc7be7307cf75e31ece6676f88b936f48cfc52a3eee7ec21adb2ff9336c"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "8b4ef8f3d6ed70d29b4fc426aedd0c452bd358c6da817c4cfc8bcd65e781757c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/advanced-time-series/time-series-ensemble-methods",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__time-series-ensemble-methods-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "2cf31888cc271e9c0c77dbd7a173426fc08b1672055c24fb17f60a12c6861106",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Long thin nose, narrow angular jaw, enlarged eyes and high spiky hair. The side-looking expression is appropriate but underlying geometry drifts.",
+          "confidence": "high",
+          "crop": [
+            310,
+            95,
+            275,
+            315
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-05.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "nazari",
+          "evidence": "Broad jaw becomes slimmer and more angular; nose is narrower and mouth shape fuller. Age lines remain but cheeks and eyes are smoother than the anchor.",
+          "confidence": "high",
+          "crop": [
+            865,
+            125,
+            285,
+            320
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-05.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-epilogue-openai-20261107.png",
+        "sourceSha256": "ca1fa55cb5aeb13bb2c511f9044e7688c8c09d2594ad7145e3534fb8e00c09bb",
+        "outputSha256": "c6bb7e2cdb688909a8734b5764a8f55b8415ba311f84cd00cec68479461c2b7a"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "2cf31888cc271e9c0c77dbd7a173426fc08b1672055c24fb17f60a12c6861106",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__normal-vs-anomalous-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "332068f2a39ef2c8540981e29b66e20c187206851c3fd848580fe3112f699980",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "More pointed chin and tiny upturned nose; lifted eyes with pronounced lashes and smoother younger cheeks.",
+          "confidence": "high",
+          "crop": [
+            205,
+            120,
+            350,
+            355
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-05.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "nazari",
+          "evidence": "Narrower nose and chin, stronger swept brow arcs and enlarged hair volume. Canonical mature detail remains, so this is moderate morphology drift rather than a new age group.",
+          "confidence": "high",
+          "crop": [
+            1060,
+            70,
+            320,
+            340
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-05.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+        "sourceSha256": "5269b4567bae34be9d7b607b90b150cd790d0e7539805e6744c2a27b8cf73f05",
+        "outputSha256": "f1903c5e58c5f11bbc2d8aead17a694d03f413a505b63076faf5730135995dd0"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "332068f2a39ef2c8540981e29b66e20c187206851c3fd848580fe3112f699980",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__normal-vs-anomalous-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "3747926b55e80ef38103dc55a9d9d335b0991ad03c5e762892f568ddc7de83f1",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Long narrow nose and sharper V-shaped lower face; enlarged round eyes and a tall quiff. Jaw and stubble distribution no longer follow the anchor.",
+          "confidence": "high",
+          "crop": [
+            740,
+            40,
+            330,
+            410
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-05.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+        "sourceSha256": "463ff3d48fb6ba4cb550e0e82ca599ac4723623fb193787c24bf1429663c6481",
+        "outputSha256": "6a686d029d39254e8db0fa81a2128d7cc6e51cf2a64293f894c7784d07c4a8d7"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "3747926b55e80ef38103dc55a9d9d335b0991ad03c5e762892f568ddc7de83f1",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__normal-vs-anomalous-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "b1855de0d277156e5c5217768a34cdf8d9e1a5dbc8add768bf48e7db30a35a22",
+      "faces": [
+        {
+          "character": "nazari",
+          "evidence": "The mature identity is fairly close. Nose bridge/tip are more upturned and lower jaw is narrower; eyebrow/eye contours are more stylized. Some changes may follow head tilt and expression. Withheld as a moderate-confidence consistency concern, not a definite different person.",
+          "confidence": "moderate",
+          "crop": [
+            590,
+            0,
+            355,
+            385
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-05.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+        "sourceSha256": "351ef2b13ecafc4e9d564e160c2cbe157fa6a794c0110ac382c459acf13182e8",
+        "outputSha256": "11fede63507d43606f09364b2303d4d013ecdfc5b83f90a3be1ff2b03da16b69"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "b1855de0d277156e5c5217768a34cdf8d9e1a5dbc8add768bf48e7db30a35a22",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__normal-vs-anomalous-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "f216e7656599ba17d3ec73943e5cd6b504502b3f2045e314ba203c11140af7bd",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Elongated narrow nose and slimmer pointed chin; eyes are larger and brows more curved. The high flowing quiff substantially changes the head silhouette.",
+          "confidence": "high",
+          "crop": [
+            350,
+            100,
+            340,
+            410
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-06.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+        "sourceSha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+        "outputSha256": "49ab32f15766de5fd3201cd25ecf34b66523ad15efb7e1fd65a052545dcd2e91"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "f216e7656599ba17d3ec73943e5cd6b504502b3f2045e314ba203c11140af7bd",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__autoencoders-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "51c66f22ba12a52fd08b631b61b76d071ef5f17efcc059a1d21e9363a2f70f8c",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Much larger eye openings, a small upturned nose and strongly pointed jaw/chin. Smooth cheek and eye contours create a younger face despite retained AR lens.",
+          "confidence": "high",
+          "crop": [
+            710,
+            0,
+            485,
+            480
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-06.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+        "sourceSha256": "457e323312ebd166d1ca2847d02fc8b4078e379ed9e5640424c23c46f85f77f4",
+        "outputSha256": "b1bba199ba459762c63112e3d5c3fd50bdf6dccada7839fdf239ff28e1fb934c"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "51c66f22ba12a52fd08b631b61b76d071ef5f17efcc059a1d21e9363a2f70f8c",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__autoencoders-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "eee1b57879dc4eeb3a10cecd2616e34fb30aedcffaa214eee6ee590c216574da",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Nose and jaw become narrow/pointed, eyes enlarged and hair higher. Earpiece is on the opposite screen side from the canonical anchor; hair sweep also changes.",
+          "confidence": "high",
+          "crop": [
+            875,
+            30,
+            355,
+            415
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-06.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+        "sourceSha256": "b550e9c060a1b0247362a312eea10480c8d3f547a98238b08e0bf80440c7bf1e",
+        "outputSha256": "ac22980a8cdda2321f237304f07dbc53ce5a9debbe92e128f9c261920f742cbc"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "eee1b57879dc4eeb3a10cecd2616e34fb30aedcffaa214eee6ee590c216574da",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__autoencoders-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "6aab607c15fefa3f16f37dcdf8fc58ac0d7a65e410e6dd85863c8d5612e8dca2",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Nose tip is small and lifted, chin tapered and eyes more upswept, with reduced adult lines.",
+          "confidence": "high",
+          "crop": [
+            160,
+            145,
+            340,
+            350
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-06.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "The nose is narrower and longer, jaw more triangular, eyes enlarged, and hair lifted into a higher sweep. Smiling alone does not explain proportion changes.",
+          "confidence": "high",
+          "crop": [
+            1040,
+            135,
+            295,
+            355
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-06.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__autoencoders-takeaways-openai-20261107.png",
+        "sourceSha256": "c6df67e9de10789f637bc7ac1f58a8b9729951499c40d15b52c847119054e511",
+        "outputSha256": "e8e406903f38f4d258ed3e7ace6823fa168bd84f1c3eb6006a9479b20f073274"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "6aab607c15fefa3f16f37dcdf8fc58ac0d7a65e410e6dd85863c8d5612e8dca2",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/autoencoders",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__autoencoders-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "a36c88cf7a4bf42bd126e7d7d30e89bbf4aa3272f59c051e61bd27c1ae6d57af",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Slender nose, tapered chin and more winged eye silhouette; reduced mature facial lines and enlarged hair waves.",
+          "confidence": "high",
+          "crop": [
+            610,
+            275,
+            330,
+            350
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-06.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "nazari",
+          "evidence": "Narrower chin and nose, slimmer cheek planes and more stylized eye shape. Age lines remain but their distribution is softened.",
+          "confidence": "high",
+          "crop": [
+            1050,
+            125,
+            310,
+            340
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-07.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+        "sourceSha256": "ac6f3d948bd9df83ed1891ca417fcbee9ffaaef49889c90ec07096032b470349",
+        "outputSha256": "f01d6f6eae0ba42a5ff8d215f8de6ee848dfe1c0b448075f70e0ec5131819aa5"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "a36c88cf7a4bf42bd126e7d7d30e89bbf4aa3272f59c051e61bd27c1ae6d57af",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__reconstruction-error-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "41eb67485276eda6a6a0c7c6fe35b2816153caaf7206558a5d982e158465c9f7",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Nose is noticeably small and lifted, jaw is more pointed, and eye-to-face proportion larger. Upward angle accounts for some change but not the younger smooth facial design.",
+          "confidence": "high",
+          "crop": [
+            875,
+            105,
+            420,
+            405
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-07.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+        "sourceSha256": "f5dfa2a530a0b62ad78c0e6437b2130b1cc4ae661a42b4efdcaf0ff4b98744b7",
+        "outputSha256": "7ae843a6186946d054d5401dfd235df8de0182fa61631149e89d8dea9f7e95fb"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "41eb67485276eda6a6a0c7c6fe35b2816153caaf7206558a5d982e158465c9f7",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__reconstruction-error-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "6258d0d509343e9a7a1721d881ece3217433abd3247e452f23f95df468835aec",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Nose bridge is long and narrow with a small tip; jaw is more angular and eyes more enlarged. Hair rises into a taller separated quiff.",
+          "confidence": "high",
+          "crop": [
+            905,
+            110,
+            360,
+            425
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-07.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+        "sourceSha256": "f659ba50ad2482a6ffde9cab10769010a4cce36cfec143acf12b7aedebfb875e",
+        "outputSha256": "a3f091cd2416ae4429535c728174211d5117d6196af8166172986426d499d231"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "6258d0d509343e9a7a1721d881ece3217433abd3247e452f23f95df468835aec",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__reconstruction-error-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "a861d89f8faf257eb05c75328a07baffd84c902aab36a9b22660f61bca0bb346",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Narrow tapered lower face, small upturned nose, exaggerated upper lashes and smoother cheek area.",
+          "confidence": "high",
+          "crop": [
+            315,
+            75,
+            400,
+            420
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-07.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Longer narrow nose, pointed chin, enlarged dark eyes and reshaped high quiff. No secure canonical match despite correct earpiece and freckles.",
+          "confidence": "high",
+          "crop": [
+            925,
+            45,
+            365,
+            435
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-07.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+        "sourceSha256": "c1e878b5deab565c773b94231b9a8f21465af3cc769ccc318e2b9e79321e1b90",
+        "outputSha256": "0e2d0a1cd0c18c5de8a5a660d93418c99afb56ac215c4977adaf9c527477b1d8"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "a861d89f8faf257eb05c75328a07baffd84c902aab36a9b22660f61bca0bb346",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/reconstruction-error",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__reconstruction-error-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "02906cda5599d172f831b416ed1434f74f915b608ec26d4c5e298db2d4c5c43d",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Long angular lower face with pointed nose/chin, bigger rounded eyes and tall spikes. Low native face resolution limits detail, so correction should preserve scene and use close canonical face reference.",
+          "confidence": "high",
+          "crop": [
+            205,
+            135,
+            250,
+            290
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-07.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-openai-20261107.png",
+        "sourceSha256": "1d1024108276c2e158b216c37f0af171a52e591fc136c7a527acd7daf49870f9",
+        "outputSha256": "a3bb41238713eb0365da6de4c51a3d3327dbebd67a9426e906f6f71afd35b649"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "02906cda5599d172f831b416ed1434f74f915b608ec26d4c5e298db2d4c5c43d",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "concept",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__threshold-tuning-concept-original.webp",
+      "status": "withheld-identity",
+      "sha256": "d195d24baf01397ef42d26f1fd5c26a238641a0b75b9f4c5f347342ca9128674",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Narrower jaw and raised small nose, with lifted eye corners and smoother younger cheeks.",
+          "confidence": "high",
+          "crop": [
+            285,
+            85,
+            350,
+            350
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-08.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "nazari",
+          "evidence": "Nose and jaw are narrower and mouth fuller; eyes are more almond-shaped. Mature lines survive, giving moderate rather than severe concern.",
+          "confidence": "high",
+          "crop": [
+            925,
+            35,
+            350,
+            370
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-08.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-concept.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+        "sourceSha256": "8c34d7e976ac75a46afa22e046fc7d2062627ec2c85b5e1aabec1ca4513ab17f",
+        "outputSha256": "e3dea1206f0e7d00126afcd9331832cb1c74cc253dc7c0c911735b86272571fd"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "d195d24baf01397ef42d26f1fd5c26a238641a0b75b9f4c5f347342ca9128674",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__threshold-tuning-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "8e0f60ed3b2cde6234955edc2bc590d8eb8391e4ad186b6a4ab12ceacdfceff8",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Nose length/width ratio increases, chin sharpens and forehead-to-eye relationship changes beneath a taller quiff. Eye openings are larger than the anchor.",
+          "confidence": "high",
+          "crop": [
+            350,
+            25,
+            450,
+            495
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-08.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+        "sourceSha256": "e8a46e9662664249148912f48500faf046d4315bb99edacb6c91173937c11844",
+        "outputSha256": "731607d4ad0a940c14946cab4dcef010b4999d87c3090bad9aa01089f09d1ca4"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "8e0f60ed3b2cde6234955edc2bc590d8eb8391e4ad186b6a4ab12ceacdfceff8",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "takeaways",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__threshold-tuning-takeaways-original.webp",
+      "status": "withheld-identity",
+      "sha256": "6b863f9f5fcff4ec19c868c841a42a8ca65afb345990f761fb376671033b40c5",
+      "faces": [
+        {
+          "character": "nazari",
+          "evidence": "Fairly close age, hair and features. Lower face is narrower, chin more pointed and nose longer, while eyes have a more lifted outlined shape. Tilt may contribute; hold for consistency confirmation rather than claiming severe drift.",
+          "confidence": "moderate",
+          "crop": [
+            260,
+            65,
+            350,
+            390
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-08.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+        "sourceSha256": "b29a3fb9feaef6832627d99322f7b3e87b4d60379b67a4ef57f9522777baa7f7",
+        "outputSha256": "4c9d441d977be5acee1426ccb4b25c05559f5704577948cd912048b8278fa2da"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "6b863f9f5fcff4ec19c868c841a42a8ca65afb345990f761fb376671033b40c5",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/threshold-tuning",
+      "phase": "epilogue",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__threshold-tuning-epilogue-original.webp",
+      "status": "withheld-identity",
+      "sha256": "56daac0aa506addbb4d4a288f052c00f54e71d8187e2de8df76b50ac97070acb",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Long protruding nose and a squared projecting chin; eyes are enlarged and quiff is higher.",
+          "confidence": "high",
+          "crop": [
+            180,
+            75,
+            300,
+            330
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-08.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "nazari",
+          "evidence": "Lower face narrows and nose becomes more upturned; cheek lines soften and mouth appears fuller. Strong general likeness but facial geometry not fixed.",
+          "confidence": "high",
+          "crop": [
+            1085,
+            105,
+            285,
+            315
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-08.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-epilogue.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+        "sourceSha256": "03f71e1523b1cbb57bef59e0779265965af3cecc84f13a0b7f0742ecea2c63cb",
+        "outputSha256": "396db9ff59d292c26462baf9b42827c5c550d215ef8308d8c65aac9f208621a3"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "56daac0aa506addbb4d4a288f052c00f54e71d8187e2de8df76b50ac97070acb",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "briefing",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__the-anomaly-original.webp",
+      "status": "withheld-identity",
+      "sha256": "44c57039cdf02016dfe8da1e0cc4ceb7893925878036bebcb7445b18df233aa9",
+      "faces": [
+        {
+          "character": "nazari",
+          "evidence": "Slimmer face with narrow nose and more pointed chin; younger smooth cheek treatment and more waved hair silhouette.",
+          "confidence": "high",
+          "crop": [
+            130,
+            155,
+            250,
+            285
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-09.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "farah",
+          "evidence": "Enlarged round eye shapes, a tiny pointed nose and narrow chin. The face reads younger and more cartoon-exaggerated than the anchor.",
+          "confidence": "high",
+          "crop": [
+            445,
+            390,
+            235,
+            260
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-09.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "mirza",
+          "evidence": "Silver hair, broad nose, lips and mature brow largely match. Face is small in frame; possible narrow jaw cannot be resolved confidently. Root should confirm in targeted identity pass.",
+          "confidence": "moderate",
+          "crop": [
+            815,
+            130,
+            185,
+            215
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-09.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Large eyes and narrow long nose/jaw with a pronounced high quiff. Strong stylization alters underlying facial proportions.",
+          "confidence": "high",
+          "crop": [
+            1160,
+            345,
+            235,
+            265
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-09.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+        "sourceSha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+        "outputSha256": "6d727b9bc84b52f81828d1d47717ee4cf2ef6b3102e444c4614405518e1f0226"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "44c57039cdf02016dfe8da1e0cc4ceb7893925878036bebcb7445b18df233aa9",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "concept",
+      "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+      "status": "withheld-identity",
+      "sha256": "fd424f5c0418c530dc588f91e3e4265de72e44cda8e803f589ded9a65991215e",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Very narrow jaw/chin and small pointed nose; upper eye shapes heavily upswept. Younger smooth face, with expanded hair waves.",
+          "confidence": "high",
+          "crop": [
+            305,
+            65,
+            330,
+            335
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-09.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "demir",
+          "evidence": "Pointed narrow jaw, small nose tip, enlarged eyes and taller quiff. Canonical proportions not retained.",
+          "confidence": "high",
+          "crop": [
+            960,
+            55,
+            270,
+            315
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-09.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+        "sourceSha256": "782dd49d517655e1b42dd48262704476730d2465e1d4855f0cd7b69f5f118cf1",
+        "outputSha256": "065a0ec1f583fa5c1bd6a71a3622e95246fe3b54eafa9c28d1271a9d762662c4"
+      }
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "challenge",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/anomaly-detection__the-anomaly-challenge-original.webp",
+      "status": "withheld-identity",
+      "sha256": "3934329229d1bb8355d341c2f6f6c32fc5209751f5bfa75e67e97953849d2fb1",
+      "faces": [
+        {
+          "character": "demir",
+          "evidence": "Nose and chin are narrow and elongated; eyebrow angles sharpen and eye openings grow. High spiky quiff differs. Playful concentration is appropriate but face geometry must match.",
+          "confidence": "high",
+          "crop": [
+            310,
+            55,
+            420,
+            460
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-10.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "originalPath": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-challenge.webp",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+        "sourceSha256": "f10be46a498a4aab96b36dbdc74b60dc63f2594a62b16bfeff3fae5ed88e1742",
+        "outputSha256": "e66f419119ce45525a2f42dba5128f36856f5c2bae5d78a44da383c16c6e093a"
+      },
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "3934329229d1bb8355d341c2f6f6c32fc5209751f5bfa75e67e97953849d2fb1",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "takeaways",
+      "path": "art-src/scenes/anomaly-detection__the-anomaly-takeaways-openai-20261106.png",
+      "unpublished": true,
+      "status": "withheld-identity",
+      "sha256": "e78000a5e23741d600411883988c07923d4139e4bade627e295913a1da3c0435",
+      "faces": [
+        {
+          "character": "farah",
+          "evidence": "Smaller upturned nose, narrower chin, smoother younger cheeks and more winged eye shape.",
+          "confidence": "high",
+          "crop": [
+            215,
+            65,
+            370,
+            375
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-10.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "nazari",
+          "evidence": "Narrower nose and jaw, fuller mouth, more stylized eye shape and broader hair volume. Mature age survives; moderate consistency concern.",
+          "confidence": "high",
+          "crop": [
+            930,
+            65,
+            355,
+            390
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-10.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__the-anomaly-takeaways-openai-20261107.png",
+        "sourceSha256": "6bae09f9fd63c3d18958f817304790249ed2766b21c52321d17efc4a36b2c7a1",
+        "outputSha256": "f214cd48c698a269b49c67ad17bdf4fa1ccfb45a920114d650994cfe2decff04"
+      }
+    },
+    {
+      "key": "deep-orbit/anomaly-detection/the-anomaly",
+      "phase": "epilogue",
+      "path": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261106.png",
+      "unpublished": true,
+      "status": "withheld-identity",
+      "sha256": "b90ec841c996a371be4d17e599d2d81476780f1c53071049011e644ae70e1b4e",
+      "faces": [
+        {
+          "character": "nazari",
+          "evidence": "Narrower jaw/chin and more upturned nose, with lifted eyes and a fuller hair silhouette; age markers remain.",
+          "confidence": "high",
+          "crop": [
+            115,
+            60,
+            300,
+            335
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-10.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        },
+        {
+          "character": "farah",
+          "evidence": "More pointed chin, small lifted nose and larger eye openings, with reduced fine lines and more voluminous hair. Upward gaze does not justify redesign.",
+          "confidence": "high",
+          "crop": [
+            695,
+            275,
+            335,
+            350
+          ],
+          "proofSheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/face-proof-10.jpg",
+          "fix": "Use a canonical-face-first targeted identity edit. Preserve pose, expression, face illumination, anatomy, room, props and scene evidence; match nose width/tip, jaw/chin silhouette, eye and brow geometry, hairline, complexion, age markers and equipment side. Recheck side-by-side crops before publication."
+        }
+      ],
+      "additionalStoryFault": "Both screen traces show grouped near-equal pulse bursts, not the distinctive increasing Fibonacci relative gaps. After identity is fixed, repair screen only to matching 1,1,2,3,5,8,13 relative gaps without letters or numerical labels.",
+      "resolution": {
+        "status": "identity-approved",
+        "source": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+        "sourceSha256": "858d0a2540475e095216dfa835daa7db671df9b0e3e7b63dd9141a37d57aaa6d",
+        "outputSha256": "b2a742fd927350702ba66aac4632aa785e8ebba277b83139e60b5a0fd1b016da"
+      }
+    }
+  ],
+  "currentStatus": "resolved",
+  "supersededBy": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-approved.json",
+  "resolutionDate": "2026-11-07",
+  "resolutionNote": "The original failure findings remain historical evidence. Every entry now has a separately reviewed replacement in identity-approved.json. Beyond LSTM epilogue also received a user-requested whole-body pose correction after its first face approval."
+}

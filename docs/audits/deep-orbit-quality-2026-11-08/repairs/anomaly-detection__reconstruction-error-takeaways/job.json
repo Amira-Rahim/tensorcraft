@@ -1,0 +1,180 @@
+{
+  "id": "anomaly-detection__reconstruction-error-takeaways",
+  "lesson": "anomaly-detection/reconstruction-error",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "room": "lab",
+  "src": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+  "alt": "Farah and Demir inspect a counterexample where an unusual input reconstructs perfectly.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.058900+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: dr-farah, ensign-demir. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Farah and Demir sit together checking the counterexample. Demir has just paused typing and looks sideways at Farah with a dawning skeptical expression, his hands naturally on the keyboard and desk. Farah looks back with a knowing restrained smile, both hands relaxed on the bench. Move all upside-down flat tabletop evidence to large upright lab wall. Remove held pens.\nExact visible display content: Title \"Constructed mapping\". Two very large clear rows: \"[1000, 0] rebuilt [1000, 0]   MSE 0\" and \"[0, 0.2] rebuilt [0, 0]   MSE 0.02\". Footer \"Low error can miss an anomaly\". Mark the first zero in amber. No implication that high reconstruction error is always anomaly or that this is a mission measurement.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "d80fef6dfefcc72b102dbbceab631a8e8d1ecefa1fef221e071709b479f70696",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room master",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+    "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+  },
+  "sourceSha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c",
+  "sourceEvidence": {
+    "task": "Farah and Demir sit together checking the counterexample. Demir has just paused typing and looks sideways at Farah with a dawning skeptical expression, his hands naturally on the keyboard and desk. Farah looks back with a knowing restrained smile, both hands relaxed on the bench. Move all upside-down flat tabletop evidence to large upright lab wall. Remove held pens.",
+    "visibleDataOperationAndResult": "Title \"Constructed mapping\". Two very large clear rows: \"[1000, 0] rebuilt [1000, 0]   MSE 0\" and \"[0, 0.2] rebuilt [0, 0]   MSE 0.02\". Footer \"Low error can miss an anomaly\". Mark the first zero in amber. No implication that high reconstruction error is always anomaly or that this is a mission measurement.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Essential low-error counterexample requires rotation to read while the large wall is blank.",
+        "repairDirection": "Move exact [1000,0] rebuilt [1000,0] MSE 0 and [0,.2] rebuilt [0,0] MSE .02 plus limitation to large upright wall."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: dr-farah, ensign-demir. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Farah and Demir sit together checking the counterexample. Demir has just paused typing and looks sideways at Farah with a dawning skeptical expression, his hands naturally on the keyboard and desk. Farah looks back with a knowing restrained smile, both hands relaxed on the bench. Move all upside-down flat tabletop evidence to large upright lab wall. Remove held pens.\nExact visible display content: Title \"Constructed mapping\". Two very large clear rows: \"[1000, 0] rebuilt [1000, 0]   MSE 0\" and \"[0, 0.2] rebuilt [0, 0]   MSE 0.02\". Footer \"Low error can miss an anomaly\". Mark the first zero in amber. No implication that high reconstruction error is always anomaly or that this is a mission measurement.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah and Demir inspect a counterexample where an unusual input reconstructs perfectly.",
+    "location": "Archimedes, Lab",
+    "action": "Farah discusses the constructed counterexample while Demir pauses at the keyboard.",
+    "emotion": "Farah is gently explanatory; Demir shows thoughtful doubt.",
+    "eyeline": "They exchange a glance beneath the clear example panel.",
+    "checks": [
+      "The large display correctly shows [1000, 0] reconstructed exactly with MSE 0 and [0, 0.2] rebuilt as [0, 0] with MSE 0.02.",
+      "Four natural arm chains, relaxed overlapping resting hands, keyboard contact and canonical faces pass close inspection.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ]
+  },
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-91804f05-a4e5-4f84-9a1d-303cb65cd341.png",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+  "candidateSha256": "62e2ddc0b78088dd6bf11ad52eea32c20b8f2f87f750b3eada51a8d21960bc3e",
+  "generatedAt": "2026-11-08T19:01:02.353186+00:00",
+  "owner": "/root/quality_sequence",
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 170,
+      "top": 380,
+      "width": 295,
+      "height": 300
+    },
+    "ensign-demir": {
+      "left": 1040,
+      "top": 365,
+      "width": 260,
+      "height": 320
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 260,
+      "top": 875,
+      "width": 255,
+      "height": 135
+    },
+    {
+      "left": 970,
+      "top": 825,
+      "width": 410,
+      "height": 165
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T19:18:53.243193+00:00",
+    "candidateSha256": "62e2ddc0b78088dd6bf11ad52eea32c20b8f2f87f750b3eada51a8d21960bc3e",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "dr-farah",
+        "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 170,
+          "top": 380,
+          "width": 295,
+          "height": 300
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      },
+      {
+        "character": "ensign-demir",
+        "referencePath": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "candidateCropCoordinates": {
+          "left": 1040,
+          "top": 365,
+          "width": 260,
+          "height": 320
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah discusses the constructed counterexample while Demir pauses at the keyboard.",
+    "emotion": "Farah is gently explanatory; Demir shows thoughtful doubt.",
+    "eyeline": "They exchange a glance beneath the clear example panel.",
+    "narrativeReason": "The constructed mapping demonstrates why low reconstruction error alone cannot rule out an anomaly.",
+    "findings": [
+      "The large display correctly shows [1000, 0] reconstructed exactly with MSE 0 and [0, 0.2] rebuilt as [0, 0] with MSE 0.02.",
+      "Four natural arm chains, relaxed overlapping resting hands, keyboard contact and canonical faces pass close inspection."
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    }
+  ],
+  "publishedSource": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp"
+}

@@ -1,0 +1,10 @@
+{
+  "mode": "built-in image_gen",
+  "intent": "precise-object-edit",
+  "input": "apps/web/public/characters/deep-orbit/aria.webp (pre-repair neutral)",
+  "prompt": "Use case: precise-object-edit. Asset: Deep Orbit AI portrait instrument shell for a web app. Input image 1 is the edit target and the exact approved outer-ring identity. Remove ONLY the luminous white oscilloscope waveform from inside the innermost gold ring. Fill that vacated interior with smooth near-black #1C1C1C, matching the image background. Keep every outer gold ring, tick mark, geometric facet, green lower rim, glow, position, framing, scale, and lighting pixel-faithful to image 1. Keep the thin inner ring intact. No waveform, horizontal baseline, face, text, numerals, lettering, or extra detail inside the circle. The output is a single centered square image, not a contact sheet. The finished shell will receive precise SVG waveform states in application code so its geometry must stay identical in every state.",
+  "shell": "docs/art-refs/deep-orbit/aria-ring.png",
+  "waveformRenderer": "scripts/art/render-aria.mjs",
+  "output": "apps/web/public/characters/deep-orbit/aria[-state].webp",
+  "notes": "One edited ring shell supplies all four static raster states. The renderer draws only the waveform paths so state generation cannot redraw ring geometry."
+}

@@ -290,10 +290,10 @@ it("preserves source sensor identity for duplicate readings through both layouts
   click("Run reshape");
   let table = within(screen.getByTestId("channel-result")).getByRole("table");
   expect(
-    [...table.querySelectorAll('[data-sensor="D"]')].map((cell) =>
-      cell.textContent?.trim(),
+    [...table.querySelectorAll('[data-sensor="D"]')].map(
+      (cell) => cell.querySelector(".font-mono")?.textContent,
     ),
-  ).toEqual(["8D", "8D", "9D"]);
+  ).toEqual(["8", "8", "9"]);
   fireEvent.change(screen.getByLabelText("Follow a sensor"), {
     target: { value: "1" },
   });
@@ -319,8 +319,87 @@ it("preserves source sensor identity for duplicate readings through both layouts
     ),
   ).toBe(true);
   expect(
-    [...sensorD.querySelectorAll("td")].map((cell) => cell.textContent?.trim()),
-  ).toEqual(["8D", "8D", "9D"]);
+    [...sensorD.querySelectorAll("td")].map(
+      (cell) => cell.querySelector(".font-mono")?.textContent,
+    ),
+  ).toEqual(["8", "8", "9"]);
+});
+
+it("links the header, flat list, grids, and chart by source position, including equal readings", () => {
+  render(<ChannelLayoutExperiment />);
+  const notes = screen.getByRole("complementary", {
+    name: "Selected readings from Demir’s recording",
+  });
+  fireEvent.click(
+    within(notes).getByRole("button", { name: "fourth reading Sensor D 8" }),
+  );
+  expect(
+    screen.queryByRole("button", { name: /flat index/ }),
+  ).not.toBeInTheDocument();
+  expect(record().firstPrediction).toBeNull();
+  expect(record().predictionHelp).toBe(false);
+  click("Build the table");
+  expect(screen.getByLabelText("Follow a sensor")).toHaveValue("3");
+  expect(screen.getByTestId("reading-position")).toHaveTextContent(
+    "index 3 in the flat list, row 0 and column 3",
+  );
+  click("Run reshape");
+
+  const result = screen.getByTestId("channel-result");
+  fireEvent.click(
+    within(result).getByRole("button", { name: /Time 2, flat index 7/ }),
+  );
+  expect(screen.getByTestId("reading-position")).toHaveTextContent(
+    "Sensor D recorded 8 at Time 2",
+  );
+  expect(screen.getByTestId("reading-position")).toHaveTextContent(
+    "index 7 in the flat list, row 1 and column 3",
+  );
+  expect(screen.getByTestId("transformed-reading-position")).toHaveTextContent(
+    "row 2, column 1",
+  );
+  expect(screen.getByRole("img")).toHaveAccessibleName(
+    /Selected reading: 8 at Time 2/,
+  );
+  for (const table of screen.getAllByRole("table")) {
+    expect(
+      table.querySelector('[data-selected-reading="true"]'),
+    ).toHaveAttribute("data-source-index", "7");
+  }
+  const flat = screen.getByRole("list", {
+    name: "Twelve readings in recording order",
+  });
+  expect(flat.querySelector('[data-selected-reading="true"]')).toHaveAttribute(
+    "data-source-index",
+    "7",
+  );
+
+  click("Run transpose");
+  expect(screen.getByTestId("transformed-reading-position")).toHaveTextContent(
+    "row 3, column 1",
+  );
+  fireEvent.click(
+    within(result).getByRole("button", { name: /Time 1, flat index 3/ }),
+  );
+  expect(screen.getByTestId("reading-position")).toHaveTextContent(
+    "Sensor D recorded 8 at Time 1",
+  );
+  expect(screen.getByTestId("transformed-reading-position")).toHaveTextContent(
+    "row 3, column 0",
+  );
+
+  fireEvent.click(
+    within(flat).getByRole("button", { name: /Sensor B 18 Index 5/ }),
+  );
+  expect(screen.getByLabelText("Follow a sensor")).toHaveValue("1");
+  expect(
+    within(notes).getByRole("button", { name: "second reading Sensor B 20" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByTestId("reading-position")).toHaveTextContent(
+    "Sensor B recorded 18 at Time 2",
+  );
+  expect(record().firstPrediction).toBeNull();
+  expect(record().predictionHelp).toBe(true);
 });
 
 it("does not treat older activity work as a prediction on the revised task", () => {

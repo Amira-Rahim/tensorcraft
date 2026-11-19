@@ -1,0 +1,61 @@
+{
+  "version": "room-training-reference-v1",
+  "kind": "supplied-maintainer-reference",
+  "verifiedOn": "2026-11-14",
+  "source": "https://doi.org/10.24432/C5X01N",
+  "sourceHashes": {
+    "/demos/room-training.mjs": "77b36f5780e7a8f5ebf845830d2430d35f5cc68145bdc5e52964df749209c3d9",
+    "/assignments/room-occupancy-v1/preprocessing.mjs": "ecd10d7e8c48d9a941089bf0ef34f3320b9a6185d30c6961d724ce2871d3d8ce",
+    "/assignments/room-occupancy-v1/evaluation.mjs": "4a36cc49c0d7c843852ec626e08a1f429c8778c1b5ac5511d09710d6d35c5d25",
+    "/assignments/room-occupancy-v1/data.json": "6c1885aad2b29fceaaad3a509f95290af7b6542901cbd9d2229b1b76df9011f0"
+  },
+  "runtimeVersion": "4.22.0",
+  "backend": "cpu",
+  "epochs": 5,
+  "counts": {
+    "train": 1200,
+    "validation": 400,
+    "reserved": 456
+  },
+  "periods": {
+    "train": {
+      "from": "2015-02-02 14:19:00",
+      "to": "2015-02-12 10:30:00"
+    },
+    "validation": {
+      "from": "2015-02-12 10:40:00",
+      "to": "2015-02-15 05:10:00"
+    },
+    "reserved": {
+      "from": "2015-02-15 05:19:59",
+      "to": "2015-02-18 09:10:00"
+    }
+  },
+  "costs": {
+    "falsePositive": 1,
+    "falseNegative": 4
+  },
+  "baselineMetrics": {
+    "tp": 61,
+    "fp": 36,
+    "tn": 303,
+    "fn": 0,
+    "count": 400,
+    "accuracy": 0.91,
+    "precision": 0.6288659793814433,
+    "recall": 1,
+    "totalErrorCost": 36
+  },
+  "modelMetrics": {
+    "tp": 60,
+    "fp": 20,
+    "tn": 319,
+    "fn": 1,
+    "count": 400,
+    "accuracy": 0.9475,
+    "precision": 0.75,
+    "recall": 0.9836065573770492,
+    "totalErrorCost": 24
+  },
+  "limitations": "Supplied maintainer results on 400 validation readings from one room. The final 456 readings are unused. This is not a learner outcome or an independent final test. Scores are not calibrated probabilities."
+}

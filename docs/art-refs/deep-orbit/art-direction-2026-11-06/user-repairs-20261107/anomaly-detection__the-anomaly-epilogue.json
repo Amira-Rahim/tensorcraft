@@ -1,0 +1,133 @@
+{
+  "key": "deep-orbit/anomaly-detection/the-anomaly",
+  "phase": "epilogue",
+  "index": 44,
+  "cast": [
+    "dr-farah",
+    "chief-nazari"
+  ],
+  "prompt": "Use case: identity-preserve. Replace this Deep Orbit lesson scene,1536x1024. The first reference portraits are strict canonical identities, preserve facial morphology, age, complexion, nose, brow, eyes, mouth, hair, signature equipment. Next reference is the room master for ROOM ARCHITECTURE ONLY, not its old screens or bright colors. Last reference is the edit target to restage. Normal balanced stylized adult heads, short relaxed necks and ordinary shoulders. Exactly two coherent arm chains per person, natural five-finger hands and wrists, convincing contact with solid objects. Characters look at their task or each other with candid curiosity, dry amusement or modest delight, never camera posing or holding information out for the viewer. Every legible display faces its actual operator, with camera beside operator seeing that same front. All text, axes, rules and graphs are projected together onto physical screen plane, not independently pasted upright. Restrained sage #6BAA8A and aged brass #A89060 against charcoal/navy, natural skin and soft practical lights. All incidental screens and wrist displays inactive dark charcoal. Hologram table inactive charcoal; dim lab tube olive-sage. No neon outlining, no fake graphs, arbitrary symbols, invented results or furniture intersections. Farah seated at bridge desk left rerunning timing on a different machine, one hand naturally on keyboard, other resting beside pencil, raised eyebrow of recognition. Nazari stands beside right with one hand on desk and other holding a closed notebook at her hip, dry thoughtful glance at Farah. Shared physical display on right/front visible to both and same-side camera. Exact compact comparison: title \"Independent replay\"; \"Fresh copy, different machine\"; \"Relative gaps: 1, 1, 2, 3, 5, 8, 13\"; \"Calibration correlation: 0.9987\"; footer \"Independent instrument: pending\". Optional two small hypothesis labels \"Calibration leak?\" and \"External pattern?\" only if readable without clutter. No fabricated waveform widths or seconds axes. Data copy on different machine is not independent instrument proof. No other bright screens. Coherent desk contacts and canonicalfaces. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx"
+  ],
+  "location": "Archimedes, Bridge",
+  "alt": "Farah repeats the timing check as Nazari compares it with calibration and calls for an independent instrument.",
+  "tool": "built-in image_gen",
+  "replacesSha256": "858d0a2540475e095216dfa835daa7db671df9b0e3e7b63dd9141a37d57aaa6d",
+  "candidatePath": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-5056-73d0-b51c-24bc29e1d898/exec-fee67084-cbca-4908-b1f2-a0bd1ebe7ab7.png",
+  "candidateSha256": "695d8c93bb1b6a487ab9c25a74e6913257469731f29546f158492486b3e67400",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+      "sha256": "858d0a2540475e095216dfa835daa7db671df9b0e3e7b63dd9141a37d57aaa6d",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+    }
+  ],
+  "ownQA": {
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "inspection": "Native1536x1024 plus temporary face crops side by side with canonical original portraits, current MDX and exercise facts verified",
+    "notes": "Farah reruns fresh data while Nazari holds a closed notebook and questions calibration. Relative gaps1,1,2,3,5,8,13 and correlation0.9987 exact. Fresh copy/different machine is distinguished from independent instrument still pending. Hypotheses stay questions. Shared monitor front and perspective coherent, natural keyboard/desk/book hands, canonical facial structure and normal necks; muted bridge palette and dark auxiliaries.",
+    "faceCropCoordinates": [
+      [
+        "dr-farah",
+        [
+          740,
+          290,
+          1040,
+          650
+        ]
+      ],
+      [
+        "chief-nazari",
+        [
+          165,
+          65,
+          445,
+          435
+        ]
+      ]
+    ],
+    "temporaryCropsRemoved": true
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-5056-73d0-b51c-24bc29e1d898/exec-fee67084-cbca-4908-b1f2-a0bd1ebe7ab7.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-epilogue.webp",
+  "sourceSha256": "695d8c93bb1b6a487ab9c25a74e6913257469731f29546f158492486b3e67400",
+  "webpSha256": "8b30813d1913879bc6670e7bb872f4ff7b31ed89d7f16860cda168725f3e514c",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+    "sourceSha256": "858d0a2540475e095216dfa835daa7db671df9b0e3e7b63dd9141a37d57aaa6d",
+    "webpSha256": "b2a742fd927350702ba66aac4632aa785e8ebba277b83139e60b5a0fd1b016da",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_late",
+    "status": "approved",
+    "candidateSha256": "695d8c93bb1b6a487ab9c25a74e6913257469731f29546f158492486b3e67400",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah reruns fresh data while Nazari holds a closed notebook and questions calibration. Relative gaps1,1,2,3,5,8,13 and correlation0.9987 exact. Fresh copy/different machine is distinguished from independent instrument still pending. Hypotheses stay questions. Shared monitor front and perspective coherent, natural keyboard/desk/book hands, canonical facial structure and normal necks; muted bridge palette and dark auxiliaries.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+          "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-epilogue.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

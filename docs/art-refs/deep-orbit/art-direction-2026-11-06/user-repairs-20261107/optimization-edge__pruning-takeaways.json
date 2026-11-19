@@ -1,0 +1,262 @@
+{
+  "key": "pruning-takeaways",
+  "id": "optimization-edge/pruning",
+  "phase": "takeaways",
+  "cast": [
+    "chief-nazari"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ee53c60c-c77d-4114-9e6a-483101939ba5.png",
+  "prompt": "Use case: identity-preserve. Make exactly one small text correction to the last reference image. First reference is canonical Nazari identity, second is Engineering master for room only, last is exact target. Preserve the entire illustration, composition, monitor, diagram, face, hair, costume, anatomy, hands, furniture, muted palette, lighting and perspective. Replace the caption \"Same shape, zero slots retained\" with exactly \"Same shape, all slots retained\". Keep the new caption fully in the same physical screen plane, with the same converging baseline, font, color, size and position. Do not change any other words or image elements. The two grids keep all10 outlinedslots and6zeros in the after grid. Output1536x1024.",
+  "meaning": "Dense magnitude pruning keeps shapes and slots. Equal slot grids explain60percent zeroing without removing dense slots. Compressed bytes/per-class performance require measurements.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ee53c60c-c77d-4114-9e6a-483101939ba5.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ee53c60c-c77d-4114-9e6a-483101939ba5.png",
+      "sha256": "c128d23de83ec9d5cb41231a09d055b8a0a70e35950b48b31ff71bace2a08c90",
+      "role": "exact edit target, prior generated candidate"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-75aefc72-f1ba-4015-a1cd-fef3b32c91f6.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 1040,
+      "top": 130,
+      "width": 360,
+      "height": 410
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 420,
+      "top": 780,
+      "width": 940,
+      "height": 220
+    }
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+  "candidateSha256": "8076b2008af28ed96d958b8ea13ca403d4718594eaaa23086988a4003093c1b1",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit illustrated narrative scene,1536x1024 landscape. Canonical portrait reference(s) first control actual identity, mature age, face morphology, eyes/nose/jaw, hairstyle and signature costume. Following room master is ENGINEERING ROOM ARCHITECTURE ONLY, not its charts or coloring. Final reference is exact edit target. Clean restrained cel shading, muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, subtle practical light, no lime neon or glossy rendering. Adults with balanced stylized proportions; natural supported neck and shoulder connection; two plausible arms and five-finger hands per person. A candid episode of real work with visible faces, engaged eyes, modest emotion and meaningful actions. No camera gaze, no held-out cards or lecture pose. Screens face operators. Camera beside them on same FRONT side sees display obliquely. Every letter, row, border and diagram projects into actual surface plane with coherent vanishing directions. Unrelated background screens inactive dark glass, no random waveforms. Only exact specified content on active display, no extra metrics, success checkmarks, or decorative graphs. Nazari seated RIGHT beside console, gently pushed back in chair, one hand on chair arm, other on desk beside closed binder. She looks LEFT at display with wry raised eyebrow, recognizing storage catch. Remove raised cards. Screen heading \"Dense pruning\". Two equal-size 2 by 5 grids, first labeled \"Before\", second \"After\". Before has10 outlined filled cells; After keeps exact same10 outlined slots but six cells contain numeral0, four remain filled. Label \"Same shape, zero slots retained\". Footer \"Measure compressed bytes and per-class errors\". Visual explanation of dense representation, not performance result. Sage cells, charcoal zero slots, clear unchanged outlines. Grids/text follow monitor perspective. Natural seated position, amused knowing expression.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+          "sha256": "22992886d9444e0d4f045dfaab6dcc3f8b6263f71072abe4ad192f184157ae13",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ee53c60c-c77d-4114-9e6a-483101939ba5.png",
+        "sha256": "c128d23de83ec9d5cb41231a09d055b8a0a70e35950b48b31ff71bace2a08c90"
+      }
+    },
+    {
+      "prompt": "Use case: identity-preserve. Make exactly one small text correction to the last reference image. First reference is canonical Nazari identity, second is Engineering master for room only, last is exact target. Preserve the entire illustration, composition, monitor, diagram, face, hair, costume, anatomy, hands, furniture, muted palette, lighting and perspective. Replace the caption \"Same shape, zero slots retained\" with exactly \"Same shape, all slots retained\". Keep the new caption fully in the same physical screen plane, with the same converging baseline, font, color, size and position. Do not change any other words or image elements. The two grids keep all10 outlinedslots and6zeros in the after grid. Output1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ee53c60c-c77d-4114-9e6a-483101939ba5.png",
+          "sha256": "c128d23de83ec9d5cb41231a09d055b8a0a70e35950b48b31ff71bace2a08c90",
+          "role": "exact edit target, prior generated candidate"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-75aefc72-f1ba-4015-a1cd-fef3b32c91f6.png",
+        "sha256": "8076b2008af28ed96d958b8ea13ca403d4718594eaaa23086988a4003093c1b1"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Dense magnitude pruning keeps shapes and slots. Equal slot grids explain60percent zeroing without removing dense slots. Compressed bytes/per-class performance require measurements.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 1040,
+        "top": 130,
+        "width": 360,
+        "height": 410
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 420,
+        "top": 780,
+        "width": 940,
+        "height": 220
+      }
+    ]
+  },
+  "originalActiveSource": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+  "peerFeedback": "Caption ambiguous; clarify all dense slots retained.",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-ee53c60c-c77d-4114-9e6a-483101939ba5.png",
+      "sha256": "c128d23de83ec9d5cb41231a09d055b8a0a70e35950b48b31ff71bace2a08c90",
+      "role": "exact edit target, prior generated candidate"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "pruning-takeaways",
+    "id": "optimization-edge/pruning",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-75aefc72-f1ba-4015-a1cd-fef3b32c91f6.png",
+    "candidateSha256": "8076b2008af28ed96d958b8ea13ca403d4718594eaaa23086988a4003093c1b1",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T20:29:48.452583+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+        "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical ages, faces, hair, skin, adult proportions and attire consistent.",
+      "anatomy": "Visible hands and full limb chains, neck and body support plausible. Furniture and device contacts coherent.",
+      "screenPlane": "All displayed content aligned to physical plane.",
+      "readerDirection": "Readers and camera see actual workdisplay front obliquely, or room-facing wall display.",
+      "story": "Candid screen work or cast interaction; no audience-only held placards.",
+      "palette": "Muted charcoal, sage and brass consistent.",
+      "meaning": "Corrected caption now says Same shape, all slots retained. Two 2x5 grids keep all ten slots, six become numeric zeros. Dense pruning semantics and compressed-byte/per-class checks match source. Prior caption hold resolved."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-75aefc72-f1ba-4015-a1cd-fef3b32c91f6.png",
+  "publishedSource": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-takeaways.webp",
+  "sourceSha256": "8076b2008af28ed96d958b8ea13ca403d4718594eaaa23086988a4003093c1b1",
+  "webpSha256": "1929304f51c0874e71e305edb2f14d2d55690764a72a2571edf1909dba523fc7",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+    "sourceSha256": "22992886d9444e0d4f045dfaab6dcc3f8b6263f71072abe4ad192f184157ae13",
+    "webpSha256": "839fcdc58fc5ac8a4234bbe750c8384091d5d9df8b78c5d4d5e281b5a54eeb23",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e653a85f-ea55-4181-ac3c-a971c5be6a22.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "8076b2008af28ed96d958b8ea13ca403d4718594eaaa23086988a4003093c1b1",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical ages, faces, hair, skin, adult proportions and attire consistent.",
+      "anatomy": "Visible hands and full limb chains, neck and body support plausible. Furniture and device contacts coherent.",
+      "screenPlane": "All displayed content aligned to physical plane.",
+      "readerDirection": "Readers and camera see actual workdisplay front obliquely, or room-facing wall display.",
+      "story": "Candid screen work or cast interaction; no audience-only held placards.",
+      "palette": "Muted charcoal, sage and brass consistent.",
+      "meaning": "Corrected caption now says Same shape, all slots retained. Two 2x5 grids keep all ten slots, six become numeric zeros. Dense pruning semantics and compressed-byte/per-class checks match source. Prior caption hold resolved."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+        "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

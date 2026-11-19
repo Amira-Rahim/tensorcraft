@@ -1,0 +1,240 @@
+{
+  "key": "lstm-gates-challenge",
+  "id": "recurrent-networks/lstm-gates",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a51eed4e-a43d-4889-a7fe-adec29223f41.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+    "sha256": "fc5ebec562d2aa786326319e7b7e61a90c7e643a36033e47baaf1e686c8dc70b"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir sits LEFT at engineering desk typing with both hands, shoulders naturally aligned to keyboard. Face visible threequarter profile, looking at work screen RIGHT with a small intrigued smile and concentrated raised brow. Remove held card entirely. Screen heading \"One-unit LSTM check\". A four-column kernel strip labelled \"0 Input\", \"1 Forget\", \"2 Candidate\", \"3 Output\". Below \"Read matching kernel columns\", \"Use sigmoid gates\", \"Compare hidden states\". Footer \"Checks pending\" and \"returnSequences: true\". Camera beside his shoulder on same lit side of monitor. No result values or completed success claims. Body naturally supported by chair, no large twists.",
+  "meaning": "Challenge builds one-unit LSTM with sigmoid gates, packed columns input/forget/candidate/output, returnSequences true, compares hidden states to library. Checks pending.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a51eed4e-a43d-4889-a7fe-adec29223f41.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a51eed4e-a43d-4889-a7fe-adec29223f41.png",
+      "sha256": "ae78301228ce931192b9f622dc4685031f67aaaa725c7102026ae9bc2c666070",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-63cf62ac-2314-4e48-9fd6-468f3ed6cded.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 420,
+      "top": 80,
+      "width": 340,
+      "height": 440
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 590,
+      "top": 750,
+      "width": 410,
+      "height": 190
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+  "candidateSha256": "da0f6c80fc7352e0152886554af45f846a6d6a6291a2c5dd75abd77d7286f062",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir sits LEFT at engineering desk typing with both hands, shoulders naturally aligned to keyboard. Face visible threequarter profile, looking at work screen RIGHT with a small intrigued smile and concentrated raised brow. Remove held card entirely. Screen heading \"One-unit LSTM check\". A four-column kernel strip labelled \"0 Input\", \"1 Forget\", \"2 Candidate\", \"3 Output\". Below \"Read matching kernel columns\", \"Use sigmoid gates\", \"Compare hidden states\". Footer \"Checks pending\" and \"returnSequences: true\". Camera beside his shoulder on same lit side of monitor. No result values or completed success claims. Body naturally supported by chair, no large twists.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a51eed4e-a43d-4889-a7fe-adec29223f41.png",
+          "sha256": "ae78301228ce931192b9f622dc4685031f67aaaa725c7102026ae9bc2c666070",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-63cf62ac-2314-4e48-9fd6-468f3ed6cded.png",
+        "sha256": "da0f6c80fc7352e0152886554af45f846a6d6a6291a2c5dd75abd77d7286f062"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Challenge builds one-unit LSTM with sigmoid gates, packed columns input/forget/candidate/output, returnSequences true, compares hidden states to library. Checks pending.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 420,
+        "top": 80,
+        "width": 340,
+        "height": 440
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 590,
+        "top": 750,
+        "width": 410,
+        "height": 190
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a51eed4e-a43d-4889-a7fe-adec29223f41.png",
+      "sha256": "ae78301228ce931192b9f622dc4685031f67aaaa725c7102026ae9bc2c666070",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "lstm-gates-challenge",
+    "id": "recurrent-networks/lstm-gates",
+    "phase": "challenge",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-63cf62ac-2314-4e48-9fd6-468f3ed6cded.png",
+    "candidateSha256": "da0f6c80fc7352e0152886554af45f846a6d6a6291a2c5dd75abd77d7286f062",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T21:40:55.885356+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+        "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Hands, full arm chains, head/neck and physical furniture/device contacts coherent.",
+      "screenPlane": "Text/graphics follow physical screen perspective.",
+      "readerDirection": "Characters can see actual front from operator side; no outward-only card.",
+      "story": "Candid task action and character response connected to lesson.",
+      "palette": "Muted charcoal, sage and aged brass, localized warm light.",
+      "meaning": "Actual build-lstm contract requires one unit, sigmoid recurrent activation, returnSequences true, matching hidden states, and kernel column order INPUT/FORGET/CANDIDATE/OUTPUT at0/1/2/3. Screen checks pending preserves challenge state. Demir types naturally."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-challenge.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-63cf62ac-2314-4e48-9fd6-468f3ed6cded.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-challenge.webp",
+  "sourceSha256": "da0f6c80fc7352e0152886554af45f846a6d6a6291a2c5dd75abd77d7286f062",
+  "webpSha256": "b822b6481d0266fda27cc0522993d48030d81eb66236734b410e8b5cbd1adcfe",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+    "sourceSha256": "fc5ebec562d2aa786326319e7b7e61a90c7e643a36033e47baaf1e686c8dc70b",
+    "webpSha256": "e22bd3edf1e1e3d3c2ad106c6db8fd3dc528ecfb4b11ab1d448e59e8cb6244dc",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-c1b0afcb-5657-4d76-b4ea-82b366098654.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "da0f6c80fc7352e0152886554af45f846a6d6a6291a2c5dd75abd77d7286f062",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Hands, full arm chains, head/neck and physical furniture/device contacts coherent.",
+      "screenPlane": "Text/graphics follow physical screen perspective.",
+      "readerDirection": "Characters can see actual front from operator side; no outward-only card.",
+      "story": "Candid task action and character response connected to lesson.",
+      "palette": "Muted charcoal, sage and aged brass, localized warm light.",
+      "meaning": "Actual build-lstm contract requires one unit, sigmoid recurrent activation, returnSequences true, matching hidden states, and kernel column order INPUT/FORGET/CANDIDATE/OUTPUT at0/1/2/3. Screen checks pending preserves challenge state. Demir types naturally."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+        "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

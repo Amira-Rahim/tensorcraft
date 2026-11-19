@@ -1,0 +1,29 @@
+{
+  "module": "training-loop",
+  "lesson": "evaluating-deep-scan",
+  "phase": "concept",
+  "room": "bridge",
+  "cast": [
+    "commander-mirza"
+  ],
+  "moment": "Mirza stands beside the bridge holo table, holding two visibly separate small archive trays of blank signal cards, one in each hand at waist height. A compact display shows a simple two-by-two evaluation grid with unequal groups of dots, including a few unresolved amber outlined dots. Her expression is attentive and warmly exacting. The separate test examples are the visual idea. No all-green verdict or fleet-release stamp, no text. Both arms and trays clear of the holo table.",
+  "alt": "Mirza keeps the evaluation readings separate while inspecting the kinds of mistakes.",
+  "location": "Archimedes, Bridge",
+  "references": [
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit training-loop/evaluating-deep-scan, concept section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the bridge set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Commander Mirza, Black woman aged 52 with dark brown skin, close-cropped natural hair silvered at temples, mature facial lines, charcoal command uniform and a plain blank brass chronometer. Scene: Mirza stands beside the bridge holo table, holding two visibly separate small archive trays of blank signal cards, one in each hand at waist height. A compact display shows a simple two-by-two evaluation grid with unequal groups of dots, including a few unresolved amber outlined dots. Her expression is attentive and warmly exacting. The separate test examples are the visual idea. No all-green verdict or fleet-release stamp, no text. Both arms and trays clear of the holo table. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers, correctness ticks, pass/fail stamps or glowing approval lights. No planet or crystal icons in data cells. Keep exact data and code in the lesson interface, not the illustration.\nTargeted correction after QA: Use case: precise-object-edit. Change ONLY the two-by-two holographic evaluation grid at lower right. Remove every dot and circle inside its four cells. Keep exactly four equally sized cells. Fill the upper-left and lower-right cells with a quiet translucent green tint. Fill the upper-right and lower-left cells with a faint muted amber tint, less bright than the green cells. The result is a simple qualitative four-cell evaluation matrix without sample counts, numbers, symbols or checkmarks. Preserve the grid border, holo table, Mirza's exact face, hair, uniform, blank chronometer, two arms, two tray-holding hands, both trays and cards, bridge and lighting unchanged.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-6f93de08-d1e8-4c36-9e9e-844b39e987e1.png",
+  "source": "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261106.png",
+  "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Mirza supports one tray with each of two attached hands, with clear natural finger contact.",
+    "furniture": "Bodies remain outside holo table and consoles; objects sit or are held with clear physical support.",
+    "identity": "Mirza retains dark skin, silver temples and brass uniform details; Farah has olive-tan skin, dark loose tied hair and green lens; Demir retains brown hair and green devices.",
+    "story": "Separate example trays and a four-cell qualitative evaluation matrix communicate separation and error types without invented counts. No release stamp.",
+    "tone": "Warm thoughtful smiles and modest curiosity, without panic or exaggerated triumph.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

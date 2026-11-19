@@ -1,0 +1,108 @@
+{
+  "key": "model-profiling-briefing",
+  "id": "optimization-edge/model-profiling",
+  "phase": "briefing",
+  "owner": "late-modules",
+  "location": "Archimedes, Engineering",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. Correct this Deep Orbit story artwork at1536x1024. First reference portraits are exact facial identity authorities: preserve face shape, nose, brow, eyes, jaw, age, complexion, hair and uniform. Next room master is architecture ONLY; its random graphics must not be copied. Last image is edit target. Natural adult stylized proportions, ordinary shoulder width and short relaxed necks. Two coherent arms/hands per human, plausible wrists and five fingers, grounded contact. Keep characters in a candid task moment, visible recognizable three-quarter faces, looking at work or colleague, never camera. Information faces its actual operator, camera shares that same side. Every letter and diagram shares the physical screen plane and vanishing directions. Muted sage, charcoal/navy and aged brass, natural skin, modest practical light; no electric green, cyan or orange flood. Unused auxiliary screens AND wrist display are inactive dark glass, no random waves, grids, rings, microtext. No plants. Preserve the two-person incident conversation and engineering room in target. Nazari left points naturally toward the replay while holding her tablet inward, Demir right leans on rail with separate relaxed forearms listening soberly. Do not exaggerate grief. Simplify background into ONE large diagnostic incident screen, plus small ARIA screen with correctly labelled abstract waveform. Remove the invented free-memory graph and decorative charts. Main screen exact concise rows: \"Dashboard incident replay\", \"RAM capacity: 512 MB\", \"02:47:26   Loading 340 MB build\", \"02:49:06   Free RAM: 0 MB\", \"Capture lost\". These are fictional story log entries, use small \"Mission log\" heading. Clear generous hierarchy, all text follows screen perspective. ARIA side screen exact \"ARIA\" and one restrained voice waveform, no face. All other panels black, no indicators pretending to be data. Keep the single red status lamp muted, not flooding faces. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-openai-20261107.png"
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-openai-20261107.png",
+      "sha256": "1ed0cca1cacf417c4b08789b2255d63de0950bfae666cf47508c2544ca7bbfb2",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+    }
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__model-profiling-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a8022e31-e502-45d4-8e0f-cb7ae4640230.png",
+  "candidateSha256": "cca546ba1d40802fd5eefc459918a2172f3f5f6ff44e0e88678fce9ee423eab4",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "status": "pass-awaiting-peer",
+    "reviewer": "/root",
+    "method": "Native full-frame review against current MDX and canonical portraits",
+    "notes": "Canonical recognizable faces and ordinary proportions; full plausible hand chains, natural candid reaction, current lesson facts exact; all text on coherent screen plane, actual readers on its front side, auxiliary displays dark."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a8022e31-e502-45d4-8e0f-cb7ae4640230.png",
+  "publishedSource": "art-src/scenes/optimization-edge__model-profiling-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling.webp",
+  "sourceSha256": "cca546ba1d40802fd5eefc459918a2172f3f5f6ff44e0e88678fce9ee423eab4",
+  "webpSha256": "97963327b761781bee93a89de68a7d0fe49e1e829a2c96a1bf43fa746c895886",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__model-profiling-openai-20261107.png",
+    "sourceSha256": "1ed0cca1cacf417c4b08789b2255d63de0950bfae666cf47508c2544ca7bbfb2",
+    "webpSha256": "6bc677c17d539375d01a36870b8b3d6ef2355e097cb69311ea755263d3d2c03b",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "cca546ba1d40802fd5eefc459918a2172f3f5f6ff44e0e88678fce9ee423eab4",
+    "method": "Native1536x1024 visual review against canonical portraits and current MDX, with shoulder-to-hand, gaze, screen-plane, reader-direction and display-meaning checks",
+    "checks": {
+      "combinedNativeReview": "Mission log explicitly identifies the fictional replay. 512 MB RAM, 340 MB loading at 02:47:26, zero RAM at 02:49:06 and lost capture match current story. ARIA waveform is labelled. Nazari points with a coherent arm and natural hand while supporting an inward-facing tablet; Demir rests crossed forearms on the rail without intersections. Canonical facial shape and age retained. Screen rows follow nearly frontal plane; both crew are on readable side. Muted palette, inactive secondary panels, sober but engaged exchange.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+          "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+        "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__model-profiling-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__model-profiling-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

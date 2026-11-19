@@ -4,14 +4,14 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { ArtifactCell, ExerciseArtifact } from "./exercise-artifacts.mjs";
 
 const COLORS = [
-  "#6baa8a",
-  "#85b4ce",
-  "#c1a678",
-  "#c58d9b",
-  "#a39dcc",
-  "#ce9b72",
-  "#8ebdb6",
-  "#b3b795",
+  "var(--tc-primary, currentColor)",
+  "var(--tc-tier-structural, currentColor)",
+  "var(--tc-accent, currentColor)",
+  "var(--tc-axis-evaluation, currentColor)",
+  "var(--tc-axis-js-integration, currentColor)",
+  "var(--tc-streak, currentColor)",
+  "var(--tc-success, currentColor)",
+  "var(--tc-muted, currentColor)",
 ];
 const display = (value: ArtifactCell) =>
   typeof value === "number"
@@ -36,7 +36,12 @@ function DataTable({
       aria-label={`${title}: result data`}
       tabIndex={0}
     >
-      <table className="w-full text-left text-base leading-relaxed">
+      <table
+        className="text-left text-base leading-relaxed"
+        // Narrative tables use fixed columns. Exact run values need their
+        // natural widths inside this keyboard-accessible scrolling region.
+        style={{ tableLayout: "auto", width: "max-content", minWidth: "100%" }}
+      >
         <thead>
           <tr>
             {columns.map((c, i) => (
@@ -71,8 +76,12 @@ function DataTable({
 
 function SeriesOutput({
   artifact,
+  selection,
+  onSelect,
 }: {
   artifact: Extract<ExerciseArtifact, { kind: "series" }>;
+  selection?: number | null;
+  onSelect?: (seriesIndex: number | null) => void;
 }) {
   const id = useId();
   const frame = useRef<HTMLDivElement>(null);
@@ -86,7 +95,12 @@ function SeriesOutput({
     observer.observe(frame.current);
     return () => observer.disconnect();
   }, []);
-  const [selected, setSelected] = useState<number | null>(null);
+  const [localSelection, setLocalSelection] = useState<number | null>(null);
+  const selected = selection === undefined ? localSelection : selection;
+  function select(seriesIndex: number | null) {
+    if (selection === undefined) setLocalSelection(seriesIndex);
+    onSelect?.(seriesIndex);
+  }
   const shown = artifact.series.filter(
     (_, i) => selected === null || selected === i,
   );
@@ -106,10 +120,16 @@ function SeriesOutput({
           { value: min / 2 + max / 2, position: 140 },
           { value: min, position: 224 },
         ];
+  // Keep the sign and leading decimals inside the viewport, including when
+  // a captured loss series uses more digits than a narrow card can spare.
+  const left = Math.max(
+    60,
+    ...ticks.map((tick) => display(tick.value).length * 9 + 16),
+  );
   const x = (i: number) =>
     artifact.labels.length === 1
       ? width / 2
-      : 60 + (i * (width - 90)) / (artifact.labels.length - 1);
+      : left + (i * (width - left - 30)) / (artifact.labels.length - 1);
   const y = (v: number) =>
     min === max ? 140 : 224 - ((v / scale - low) / (high - low)) * 168;
   return (
@@ -123,7 +143,7 @@ function SeriesOutput({
           type="button"
           data-selected={selected === null}
           aria-pressed={selected === null}
-          onClick={() => setSelected(null)}
+          onClick={() => select(null)}
           className="px-4 py-2 border border-border rounded data-[selected=true]:bg-surface-hover data-[selected=true]:font-bold focus-visible:outline focus-visible:outline-2"
         >
           All series
@@ -134,7 +154,7 @@ function SeriesOutput({
             type="button"
             data-selected={selected === i}
             aria-pressed={selected === i}
-            onClick={() => setSelected(i)}
+            onClick={() => select(i)}
             className="px-4 py-2 border border-border rounded data-[selected=true]:bg-surface-hover data-[selected=true]:font-bold focus-visible:outline focus-visible:outline-2"
           >
             <span aria-hidden="true" style={{ color: COLORS[i] }}>
@@ -159,7 +179,7 @@ function SeriesOutput({
           {ticks.map((tick, i) => (
             <g key={i}>
               <line
-                x1="60"
+                x1={left}
                 x2={width - 30}
                 y1={tick.position}
                 y2={tick.position}
@@ -167,7 +187,8 @@ function SeriesOutput({
                 opacity=".15"
               />
               <text
-                x="50"
+                data-exercise-y-tick
+                x={left - 10}
                 y={tick.position + 5}
                 textAnchor="end"
                 fill="currentColor"
@@ -177,13 +198,18 @@ function SeriesOutput({
               </text>
             </g>
           ))}
-          <text x="60" y="20" fill="currentColor" fontSize="16">
+          <text x="8" y="20" fill="currentColor" fontSize="16">
             {artifact.yLabel}
           </text>
           {shown.map((series) => {
             const index = artifact.series.indexOf(series);
             return (
-              <g key={index} fill={COLORS[index]} stroke={COLORS[index]}>
+              <g
+                key={index}
+                data-exercise-series={index}
+                fill={COLORS[index]}
+                stroke={COLORS[index]}
+              >
                 <polyline
                   fill="none"
                   strokeWidth="3"
@@ -260,12 +286,18 @@ export function ExerciseOutput({
   complete,
   staleMessage = "Your code has changed. Run it again to update these results.",
   outputLabel = "Output from your code",
+  statusMessage,
+  seriesSelection,
+  onSeriesSelect,
 }: {
   artifacts: ExerciseArtifact[];
   stale: boolean;
   complete: boolean;
   staleMessage?: string;
   outputLabel?: string;
+  statusMessage?: string;
+  seriesSelection?: { artifactIndex: number; seriesIndex: number | null };
+  onSeriesSelect?: (artifactIndex: number, seriesIndex: number | null) => void;
 }) {
   if (!artifacts.length) return null;
   return (
@@ -279,11 +311,12 @@ export function ExerciseOutput({
       >
         {stale
           ? staleMessage
-          : complete
-            ? "From your latest run"
-            : "From your latest run. Some checks still need attention."}
+          : (statusMessage ??
+            (complete
+              ? "From your latest run"
+              : "From your latest run. Some checks still need attention."))}
       </p>
-      <div className={stale ? "opacity-60" : ""}>
+      <div>
         {artifacts.map((artifact, i) => (
           <div key={i} className={i ? "mt-8 pt-8 border-t border-border" : ""}>
             <h3
@@ -307,6 +340,12 @@ export function ExerciseOutput({
               <SeriesOutput
                 key={JSON.stringify(artifact)}
                 artifact={artifact}
+                selection={
+                  seriesSelection?.artifactIndex === i
+                    ? seriesSelection.seriesIndex
+                    : undefined
+                }
+                onSelect={(seriesIndex) => onSeriesSelect?.(i, seriesIndex)}
               />
             ) : (
               <pre className="whitespace-pre-wrap break-words text-base leading-relaxed font-sans">

@@ -1,0 +1,29 @@
+{
+  "module": "neural-networks",
+  "lesson": "layers-and-architecture",
+  "phase": "challenge",
+  "room": "engineering",
+  "cast": [
+    "ensign-demir"
+  ],
+  "moment": "Demir stands at the engineering board and carefully arranges three small magnetic rectangular layer cards into a left-to-right chain. His right hand holds one card just off the board, his left hand supports a plain calculation tablet. The cards show different small groups of dots, symbolic rather than exact numerical architecture. He has an engaged, slightly playful expression as he checks the fit. The workbench ends beside him, never through his hips. No circuit repairs, no live success marks.",
+  "alt": "Demir checks how the layer stages connect before counting their parameters.",
+  "location": "Archimedes, Engineering",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit neural-networks/layers-and-architecture, challenge section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the engineering set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal. Scene: Demir stands at the engineering board and carefully arranges three small magnetic rectangular layer cards into a left-to-right chain. His right hand holds one card just off the board, his left hand supports a plain calculation tablet. The cards show different small groups of dots, symbolic rather than exact numerical architecture. He has an engaged, slightly playful expression as he checks the fit. The workbench ends beside him, never through his hips. No circuit repairs, no live success marks. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish from the master reference. Background screens contain only sparse plain lines or simple waveforms. No invented letters, decorative scientific symbols, planets or crystals inside data tiles.\nTargeted correction after QA: Use case: precise-object-edit. Change ONLY the three small magnetic layer cards on the board. Remove every black dice-like dot from all three cards. Each card should instead carry one single simple filled green rectangular block, with the first block widest, second medium width, third narrow. Keep cards, magnets, connectors, Demir's card-gripping hand, all his anatomy and face, tablet, room, perspective and light exactly unchanged. The cards represent stages abstractly, not fake counts of neurons. No lettering or numerals.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-54469ec8-4e42-4220-8b43-1568c9e57552.png",
+  "source": "art-src/scenes/neural-networks__layers-and-architecture-challenge-openai-20261106.png",
+  "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir has one card-gripping hand and one tablet hand. Both attach naturally.",
+    "furniture": "Character stands clearly in the aisle, separate from board, rail and console.",
+    "identity": "Canonical mature Nazari or young-adult Demir appearance and signature gear retained.",
+    "story": "Removed dice-like node counts. Three cards carry abstract stage blocks without fake unit counts.",
+    "tone": "Practical curiosity and earned restrained satisfaction.",
+    "method": "Built-in imagegen. Full generated frame visually inspected; technical display corrected where noted."
+  }
+}

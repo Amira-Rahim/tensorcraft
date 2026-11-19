@@ -1,0 +1,899 @@
+[
+  {
+    "id": "advanced-time-series/beyond-lstm",
+    "asset": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+    "lessonFile": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "An unexpectedly early pulse sends Farah and Demir back to the beginning of a long recording. They investigate whether the recurrent model retained an early precursor; the later weighting is evidence to investigate, not a causal proof.",
+    "intendedEmotion": "Curious detective work, a small missed detail becoming interesting, and shared determination after a forecasting surprise.",
+    "observed": "Farah occupies the near left of the lab and points her stylus at a small circled disturbance near the beginning of a long waveform. Demir leans in from the right, with a hand on the chair and his wrist display visible. Both faces are exposed and attentive, with more worry than amusement. The later pulse is conspicuously larger and is also ringed. Brass equipment, green instruments and the rear column give the lab a consistent material identity. The drawing has readable hands and no obvious extra limb. Farah retains her lens, tied hair and lab coat; Demir retains his youthful face, earpiece and slate uniform.",
+    "strengths": [
+      "The different sizes of precursor and later event make the act of looking back visible without a paragraph of explanation.",
+      "The two characters look toward the evidence together, so this is a shared investigation rather than a detached diagram.",
+      "Illuminated faces and close blocking work much better than silhouette crew; mature Farah and young Demir remain distinct."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The clue most relevant to the scene is also the smallest visual element.",
+        "evidence": "The first circled ripple is tiny beside the later burst and broad screen; at a narrow card width the late event wins immediately.",
+        "fix": "Enlarge the first ripple through a modest inset or a stronger local highlight, preserving the real difference in event amplitude."
+      },
+      {
+        "severity": "low",
+        "finding": "The expressions could convey more discovery and less generalized anxiety.",
+        "evidence": "Both brows are tense even though the action is a patient examination rather than an immediate failure. This is an interpretive tone concern, not a facial-identity error.",
+        "fix": "Give Farah a small recognizing smile and Demir a lifted, curious brow while keeping attention on the anomaly."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Make spotting the early detail feel like finding a hidden clue together. A tiny recognition exchanged between the two is enough; do not turn the missed prediction into a gag.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Preserve the composition, cast, room and two-event relation. Improve the local clue hierarchy and mutual recognition. Avoid a literal causal arrow or a solved-source expression.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "acceptable",
+      "judgement": "The same lab investigation still suits the epilogue in which the interval changes from 73.4 to 73.1 and Farah requests timestamp checks. It does not show that numerical discovery, but reuse does not reverse the beat. A separate raster is unnecessary."
+    },
+    "inspected": true
+  },
+  {
+    "id": "advanced-time-series/temporal-attention",
+    "asset": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+    "lessonFile": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Demir identifies two high-attention regions separated in the recording and shares the useful time relation. The lesson subsequently exposes the cost of an undersized capture window and lost data.",
+    "intendedEmotion": "Pleasure in noticing a pattern, followed later by a practical reminder that a clever display does not replace careful capture.",
+    "observed": "Demir is shown alone on the right with an open, pleased expression and a pointing hand. The large central display pairs a waveform with two warm highlighted regions on a heat strip. An arch and a horizontal interval marker connect those regions. His face is bright, the earpiece and wrist unit are present, and his posture reads as discovery rather than timid obedience. The surrounding lab stays subordinate. At reduced scale the two hotspots remain much easier to read than the fine waveform details.",
+    "strengths": [
+      "This is one of the clearest positive character moments in the assigned set: Demir is allowed to enjoy understanding something.",
+      "Two hotspots and a long separation express the temporal-attention idea efficiently.",
+      "A solo discovery changes the rhythm from repeated mentor-and-student conversations."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The arch can be read as a causal connection rather than a measured separation.",
+        "evidence": "The large curved connector visually binds the early and late events; the lesson explicitly treats high weights as an inspection lead. No arrowhead or literal causal label is visible, so this remains an ambiguity.",
+        "fix": "If the display is revised, use an unmistakable timeline bracket with separate hotspot markers rather than a dramatic trajectory between events."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Retain the pleased recognition and confident pointing. This is a useful benchmark for lighthearted science without making the data into a joke.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep the asset. Any future screen polish should preserve the spacious two-hotspot reading and Demir's independent agency.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "Optional only: a compact, code-rendered comparison of a full capture and its missing tail would explain the consequence more effectively than another crew-and-waveform painting. No additional raster is a priority.",
+    "epilogueReuse": {
+      "status": "mixed",
+      "judgement": "The pleased briefing image is reused beside the epilogue about clipped captures and Nazari's six hours of lost work. That weakens the consequence, although it need not justify another illustration. Prefer an in-section capture-window result or a careful text placement before commissioning another scene."
+    },
+    "inspected": true
+  },
+  {
+    "id": "advanced-time-series/forecasting",
+    "asset": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting.webp",
+    "lessonFile": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Farah distinguishes an apparent pattern from an explanation of its origin while Mirza asks what observation could distinguish possibilities. The task compares feedback rollout with replay using observed inputs; the epilogue reports another pulse arriving early.",
+    "intendedEmotion": "Inviting speculation disciplined by curiosity, with command interested in the next observation rather than demanding certainty.",
+    "observed": "Farah sits at the left of the holo table, smiling slightly and speaking with an open hand while her stylus follows the start of a future-looking curve. Mirza stands beyond the rail on the right, visibly attentive and warm. The display is dominated by an oscillating centerline inside a widening green fan. Faces, the chronometer, lens and uniform differences are readable. The warm lab or bridge lighting makes this a welcoming conversation instead of a threatening war-room scene.",
+    "strengths": [
+      "Farah and Mirza have a believable exchange between scientific curiosity and practical decision-making.",
+      "The visible smiles and open gesture satisfy the desired approachable tone while leaving room for uncertainty.",
+      "The widening fan makes the idea of an uncertain future readable immediately."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The forecast fan suggests a quantified interval that this lesson does not calculate.",
+        "evidence": "The visibly bounded shaded cone resembles a forecast interval. The complete MDX explicitly says the MAE comparison is not an interval and that coverage requires separate held-out calibration. This is a suggestive illustration, not fabricated numeric evidence, but the visual promise is stronger than the task.",
+        "fix": "Use distinct observed-history, feedback-rollout and observed-input replay paths, or make the alternatives visibly exploratory without a calibrated-looking envelope."
+      },
+      {
+        "severity": "low",
+        "finding": "The two forecasting strategies that motivate the learner's work are absent from the image.",
+        "evidence": "One dominant centerline and its fan communicate generic prediction more than the contrast between using previous predictions and receiving real next observations.",
+        "fix": "Give the two paths a clear shared starting point and different subsequent inputs without adding tiny labels to the raster."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Keep the warm, interested exchange. Let Farah invite Mirza to compare two possibilities, with a playful openness to being surprised rather than a triumphant prediction.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Retain both people and their readable expressions. Replace only the main conceptual screen language with two understandable future paths. Do not add a definitive destination, alien source or guaranteed confidence band.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "mixed",
+      "judgement": "The shared forecasting discussion can support the later early-arrival report, but the hopeful fan does not capture the shrinking gaps and Nazari's question about zero. Prefer one stronger ensemble epilogue later in this module over new art for both adjacent forecasting endings."
+    },
+    "inspected": true
+  },
+  {
+    "id": "advanced-time-series/kalman-filters",
+    "asset": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+    "lessonFile": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Farah and Demir compare noisy declining interval measurements with an estimate that smooths the fluctuations but lags the drift. The exercise returns estimates and variance so that the crew can see the tradeoff rather than simply celebrate a smooth line.",
+    "intendedEmotion": "A satisfying practical investigation, with comfort in working together and curiosity about what a smoother line can hide.",
+    "observed": "Demir sits on the left, hand near chin and an open conversational gesture, while Farah stands or leans on the right with her stylus. Both have small smiles. Their large green chart carries a noisy descending series with dot markers and a smooth orange curve below most of that series, converging near the right. The faces are unusually friendly for a technical discussion, the lab coat, lens, earpiece and wrist unit are visible, and the instrument-filled lab remains coherent. The line relationship reads clearly even when the minor equipment does not.",
+    "strengths": [
+      "The interaction has warmth and ease; this is science as an enjoyable shared puzzle.",
+      "The two differently colored traces are easy to distinguish at card size.",
+      "Character ages and accessories remain consistent with the canonical portraits, without faceless dramatic lighting."
+    ],
+    "issues": [
+      {
+        "severity": "high",
+        "finding": "The apparent smoother leads the falling measurements instead of showing the lag central to this lesson.",
+        "evidence": "The orange curve lies below the predominantly declining measured trace. The MDX explicitly describes the one-state estimate as lagging the decline; a lagging level would generally remain above later falling measurements after following that history. The picture has no legend, so the orange identity is inferred, but its smooth shape makes that reading very likely.",
+        "fix": "Redraw the conceptual smoother so that it trails the decline above the recent measurements. A small exact excerpt can be rendered in code if it is intended as numerical evidence; the illustration itself does not need every daily sample."
+      },
+      {
+        "severity": "low",
+        "finding": "A very clean smooth line may be read as recovered ground truth.",
+        "evidence": "The art offers only the noisy trace and a visually privileged smooth orange alternative; the lesson says the true interval is not directly observed.",
+        "fix": "Preserve visible residual fluctuation or an estimation cue, and avoid a target/bullseye treatment that declares the orange path correct."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Preserve both smiles. The charming moment should be noticing what the smooth line misses, not celebrating that noise has magically disappeared.",
+    "decision": "refine",
+    "priority": "P1",
+    "artDirection": "Keep the people, room and lighting. Correct the relationship of the two traces, and let Farah point at a place where smoothness and lag disagree. Do not require generated lettering or an exact data table.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "Lower-priority epilogue option: a close view of Mirza folding the estimate printout into her jacket while Farah watches, with the written time unreadable. This would convey a private decision, not another dramatic hologram, and must not invent the time or reveal a cause.",
+    "epilogueReuse": {
+      "status": "mixed",
+      "judgement": "The epilogue moves to Mirza privately marking a time and ordering contingency plans. Reusing a cheerful lab discussion misses that command decision and its privacy. A new raster is defensible, but lower priority than the quantization and architecture character beats; the existing art can remain at briefing without adding another ominous bridge meeting."
+    },
+    "inspected": true
+  },
+  {
+    "id": "advanced-time-series/time-series-ensemble-methods",
+    "asset": "apps/web/public/scenes/deep-orbit/advanced-time-series/time-series-ensemble-methods.webp",
+    "lessonFile": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Demir wants to combine three models; Farah helps him see that they must predict the same target and that shared errors survive averaging. The ending changes the emotional register when three extrapolations reach zero on different dates.",
+    "intendedEmotion": "An enthusiastic collaborative idea, followed by intrigued uncertainty rather than a premature countdown to a known event.",
+    "observed": "Farah at left and Demir at right face each other around a vertical display, both smiling, with Demir pointing. Four stacked panels show a smooth undulation, a jagged trace, several bell-shaped bumps, and a lower set of overlaid curves. The people are close enough for expressions to survive mobile reduction. Farah's green lens and gray coat, and Demir's earpiece and wrist terminal, are clear. The stacked screen occupies more area than the background machinery, giving this frame a legible central action.",
+    "strengths": [
+      "The exchanged smiles give Demir's proposal real enthusiasm and make Farah feel like a collaborator.",
+      "A stack of contributions leading toward a result is an efficient conceptual introduction.",
+      "Readable faces and an uncomplicated silhouette structure make this more engaging than a distant meeting."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The visual inputs appear to be different kinds of quantity rather than three predictions of the same target.",
+        "evidence": "A jagged time trace, smooth wave and separate bell-shaped bumps are stacked above an output with multiple curves. The lesson stresses matching units, times and prediction targets. These are unlabeled fictional graphics, so this is a conceptual ambiguity rather than a false measured result.",
+        "fix": "Put the three predictions on visibly comparable axes and use one clear blended result while leaving small disagreements evident."
+      },
+      {
+        "severity": "low",
+        "finding": "The joyful blend scene cannot carry the full emotional turn of the ending.",
+        "evidence": "The epilogue is about divergent dates, an overprecise display and Demir revising the word countdown to extrapolation. None of those hesitations are visible in the happy mixing tableau.",
+        "fix": "Keep this as the upbeat proposal; add a distinct ending only if the module receives one new scene."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep the pleasure of a good idea being improved by a colleague. Show three imperfect opinions being compared, with room for a mildly amused correction of overconfidence.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Preserve the warm faces and two-person composition. Make the screen's three same-target contributions and one blend more coherent without pretending the ensemble has independent evidence or guaranteed accuracy.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "P2 new epilogue: Demir and Farah compare three extrapolations that cross a baseline at visibly different positions, with ARIA's fixed-ring waveform nearby. Demir pauses before labeling it a countdown; Farah's small, curious smile keeps uncertainty inviting. The new frame belongs after the task, never before the learner has seen the evidence. No crash, apocalypse or definitive arrival imagery.",
+    "epilogueReuse": {
+      "status": "poor",
+      "judgement": "Reusing this cheerful blend briefing for the zero-extrapolation epilogue flattens a real story turn. This is the strongest additional epilogue opportunity in this module, preferable to separate images for both forecasting and Kalman endings."
+    },
+    "inspected": true
+  },
+  {
+    "id": "llm-integration/llms-for-science",
+    "asset": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science.webp",
+    "lessonFile": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "An exhausted crew has a report deadline, so Farah proposes using a language model for a draft while Nazari accounts for the time required to check inventions. The ending exposes a fabricated instrument claim.",
+    "intendedEmotion": "An appealing new tool meeting dry, practical skepticism; wit comes from the difference between quick prose and slow verification.",
+    "observed": "Farah sits left of the table with an active stylus gesture and a lively, slightly smiling face. Nazari stands at right with folded arms and a skeptical, mature expression; the olive coverall and belt tools distinguish the engineer clearly. Floating page-like panels occupy the center beneath a broad circular display, while an empty command chair and green bridge instruments fill the background. The faces remain visible and individualized. The spacious central gap helps the document motif but also makes the encounter feel more formal than the spoken bargain.",
+    "strengths": [
+      "Farah's enthusiasm and Nazari's resistance are genuinely different reactions, which creates character comedy without caricature.",
+      "The page motif makes this a writing problem rather than another signal-classification display.",
+      "Nazari's gray streak, weathered face and practical outfit retain the established age and role."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The deadline and verification-cost bargain are not made tangible.",
+        "evidence": "The picture has floating documents and a general ring, but no obvious ledger or action that connects Nazari's skepticism to the cost of checking them.",
+        "fix": "Put the engineer's open ledger or a marked draft where the stylus gesture lands, making the exchange about one questionable claim."
+      },
+      {
+        "severity": "low",
+        "finding": "Static folded arms could accumulate into a one-note Nazari across the sequence.",
+        "evidence": "This particular skeptical pose suits the opening, but similar severe engineering poses recur. The concern is the series pattern rather than an error in this frame.",
+        "fix": "Keep the skepticism here and vary the later quantization or WebGPU reaction toward curiosity and earned respect."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Use the human bargain as the joke: Farah has a promising draft and Nazari already has the checking ledger ready. No eye-rolling contempt or silly hallucinated creature is needed.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Keep this personality contrast and readable faces. A small shared prop or handoff will supply the missing deadline-and-review specificity; a full regeneration is unnecessary.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "acceptable",
+      "judgement": "The draft-versus-skeptic pairing remains apt when the fabricated instrument appears in the epilogue. Its reuse does not falsely show a verified outcome. A separate failure illustration would overlap the much stronger existing RAG epilogue."
+    },
+    "inspected": true
+  },
+  {
+    "id": "llm-integration/prompt-engineering",
+    "asset": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering.webp",
+    "lessonFile": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Farah deliberately asks Demir to review her unsuccessful prompt. The learner identifies missing task, context, role and output structure, and later sees that clearer instructions still do not establish factual truth.",
+    "intendedEmotion": "A generous reversal of expertise: the junior crewmember gets to help the scientist, making review collaborative and pleasantly human.",
+    "observed": "Demir sits on the left with his chin near one hand, smiling up toward Farah. Farah stands on the right with a broad explanatory gesture and stylus aimed at a large board. A sparse group of panels at left connects to four orderly panels at right. Their faces and canon accessories are clearly lit. The board's simple before-and-after structure survives reduction, but the scene reads immediately as a teacher presenting to a listening student.",
+    "strengths": [
+      "The four organized components and sparse earlier draft give a useful visual before-and-after.",
+      "Both people look comfortable, so review is not portrayed as humiliation.",
+      "Clean anatomy, readable faces and simple board shapes give this good basic craft."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The staging reverses the intended peer-review action.",
+        "evidence": "Farah is standing, presenting and pointing; Demir is seated and receiving the explanation. In the complete opening Farah brings her own prompt for Demir to diagnose.",
+        "fix": "Give Demir the active annotation or pointing gesture. Farah should be listening to the correction, perhaps with a small amused acknowledgment of the omitted context."
+      },
+      {
+        "severity": "medium",
+        "finding": "The composition repeats the nearby RAG teaching pose.",
+        "evidence": "The seated chin-in-hand Demir and standing, pointing Farah arrangement appears again in this short module. It weakens the sense of new work even when the diagrams change.",
+        "fix": "Use a side-by-side review at a shared draft, or place Farah seated with Demir standing briefly to demonstrate the missing piece."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "The delightful part is Farah being willing to be corrected. Show mutual amusement at a small omission and Demir's growing confidence, not the scientist giving another perfect lecture.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the four-part prompt comparison but change the human blocking and agency. Faces must remain visible; do not solve the repetition by turning both characters into backs or shadows.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "acceptable",
+      "judgement": "A corrected collaborative-review frame also works for the later prompt iteration and remaining reliability limit. No separate ending image is needed, provided the art does not use all-green validation stamps as proof of truth."
+    },
+    "inspected": true
+  },
+  {
+    "id": "llm-integration/rag-for-signals",
+    "asset": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals.webp",
+    "lessonFile": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+    "section": "Briefing",
+    "storyBeat": "The crew adds retrieval so a report starts from the right archive records. The learner must inspect match counts, truncation and generated claims; access to evidence does not force faithful generation.",
+    "intendedEmotion": "The pleasant practicality of finding the right drawer, with a real investigative task still ahead.",
+    "observed": "Demir sits left of the central display, chin near a hand and a friendly expression. Farah stands right with her stylus extended toward a six-row archive-like panel. Two rows are strongly highlighted and flow toward a much larger arrow and a framed output panel. The familiar lens, tied hair, young earpiece-wearing Demir and warm green-and-brass setting are all legible. The large arrow is more visually dominant than either person's interaction with the actual records.",
+    "strengths": [
+      "Retrieval before generation is visible through selected rows, a transfer direction and a distinct output area.",
+      "The faces are inviting and readable, with no return to shadow figures.",
+      "The briefing does not expose the later fourteen-versus-seventeen failure."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The frame repeats the passive-student lesson pose instead of showing retrieval as active checking.",
+        "evidence": "Demir again rests his chin while Farah supplies the action, immediately after a prompt-engineering scene with almost identical roles.",
+        "fix": "Have Demir select or compare an archive record while Farah checks its source, so each person performs a complementary part of retrieval."
+      },
+      {
+        "severity": "low",
+        "finding": "The giant arrow overstates an effortless transformation from evidence to answer.",
+        "evidence": "The output panel follows a broad uncomplicated arrow, although the story and exercise emphasize counts, truncation and verifying the generated claim.",
+        "fix": "Reduce the arrow and reserve a visible small check or comparison step between selected rows and the draft. Keep it diagrammatic rather than adding unreadable tiny text."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Make retrieval feel like finding a useful clue together. Demir can have the satisfying small discovery while Farah notices a limitation, preserving both warmth and uncertainty.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Retain the clear archive-to-draft organization but rebalance visual weight toward the people choosing evidence. Avoid depicting the output as automatically approved.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "separate-epilogue",
+      "judgement": "This lesson already has a dedicated consequence image. Preserve that separation because the retrieval proposal and later count mismatch are different emotional and technical beats."
+    },
+    "inspected": true
+  },
+  {
+    "id": "llm-integration/rag-for-signals-epilogue",
+    "asset": "apps/web/public/scenes/deep-orbit/llm-integration/rag-for-signals-epilogue.webp",
+    "lessonFile": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+    "section": "Epilogue / Consequence",
+    "storyBeat": "The bridge demo fails when a draft reports seventeen records after retrieving fourteen. Nazari catches the discrepancy, accounts for the lost checking time and quietly acknowledges an earlier error of her own.",
+    "intendedEmotion": "A memorable, mildly embarrassing catch that rewards checking and allows dry humor without ridiculing Demir.",
+    "observed": "Demir sits on the left with an open, fairly cheerful face, while Nazari stands on the right pointing toward the mismatch and keeping the other hand at her hip. The top display has fourteen green marks arranged in two rows; the lower display has seventeen marks, with the extra tail picked out in warm color. The mature engineer's severe concentration contrasts with the younger crewmember's smile. The discrepancy is concrete and unusually specific compared with the collection's many generic curves.",
+    "strengths": [
+      "The visible fourteen-versus-seventeen mismatch represents the actual failure rather than a vague red warning.",
+      "The extra warm-colored items help identify the problem without relying on generated lettering.",
+      "A separate image after the exercise preserves the surprise and gives the checking work a consequence."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "Demir looks more pleased than caught out.",
+        "evidence": "His smile reads as a successful demo while Nazari points at a demonstrably larger output count. The narrative moment is a costly correction.",
+        "fix": "Change the smile into a sheepish dawning recognition, with a paused hand or slightly lowered shoulders. Keep the exchange kind rather than punitive."
+      },
+      {
+        "severity": "low",
+        "finding": "The mismatch takes counting to decode at narrow widths.",
+        "evidence": "The two arrays contain many small marks and the bottom includes three extra elements. The highlighted tail helps, but the human drama is easier to read than the exact discrepancy on a phone.",
+        "fix": "Link the matching groups or separate the three additional marks more clearly while preserving the real counts."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "A dry raised eyebrow from Nazari and Demir's small, rueful realization would make the mistake memorable and lighthearted. Do not make Nazari cruel or turn the failed claim into slapstick.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Preserve the count comparison and cast. Adjust only expression, the pause in the action and grouping clarity. This is a useful story-specific image and should remain.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "dedicated-ending",
+      "judgement": "The dedicated image earns its place. It expresses a concrete post-task discovery that the friendly archive briefing cannot show."
+    },
+    "inspected": true
+  },
+  {
+    "id": "llm-integration/report-generation",
+    "asset": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation.webp",
+    "lessonFile": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Farah breaks a long report into six reviewable sections. The release must include only approved sections; the ending sends five and explicitly withholds Hypotheses after unsupported claims are found.",
+    "intendedEmotion": "Cozy, careful authorship and the satisfaction of a defensible report, with room for an amused skeptical look at an unearned explanation.",
+    "observed": "Farah fills the right foreground, smiling thoughtfully with one hand at her chin and her stylus over an open notebook. A warm brass desk lamp, small scientific apparatus and a green instrument column make this one of the collection's most lived-in workspaces. The dominant screen has six section cards, each ending in a bright checkmark. Several additional checks appear in the notebook. Her face, lab coat, green lens and tied hair are clear; the image is attractive and approachable.",
+    "strengths": [
+      "The tactile notebook, lamp and small instruments give the scene warmth and a sense of someone enjoying careful work.",
+      "Farah has a clear face and an individual, relaxed expression rather than generic crisis acting.",
+      "Six visually distinct report sections accurately establish the structural idea."
+    ],
+    "issues": [
+      {
+        "severity": "high",
+        "finding": "All six sections are visibly approved, contradicting the release decision that defines this lesson.",
+        "evidence": "Every large section card ends with a green check. The MDX lines 232-242 explicitly send five approved sections and withhold Hypotheses. At briefing, validation is still the work to do; at consequence, the sixth remains withheld.",
+        "fix": "At briefing use pending review states and one actively inspected claim. If one frame must serve both locations, make the sixth visibly unresolved rather than approved; a dedicated ending could show five sent and one held."
+      },
+      {
+        "severity": "medium",
+        "finding": "The completed, satisfied pose removes the question the learner is supposed to resolve.",
+        "evidence": "Farah appears to admire a finished all-green checklist rather than evaluate evidence. The technical issue is not whether six headings exist but which claims can be released.",
+        "fix": "Have the stylus hover over a dubious claim or source comparison while keeping her expression warmly curious."
+      }
+    ],
+    "soulFit": "weak",
+    "delight": "strong",
+    "delightDirection": "Keep the cozy desk and Farah's enjoyment. Give the charm a specific action: she spots an overconfident claim, pauses, and treats the draft as something to inspect rather than admire.",
+    "decision": "refine",
+    "priority": "P1",
+    "artDirection": "Preserve the environment and visible portrait. Rebuild the review states so that the art never promises six approved sections. Prefer a calm active review moment over a red-alert correction.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "Optional P3 epilogue only after correcting the briefing: five document cards leave toward the relay while one remains in Farah's review tray. That is an earned omission, not a failure explosion. A new raster is not necessary if the existing frame is made appropriately unresolved.",
+    "epilogueReuse": {
+      "status": "poor",
+      "judgement": "The same all-approved image is wrong for both briefing and ending. One carefully designed unresolved-review image could serve both; this is a correction priority before adding another asset."
+    },
+    "inspected": true
+  },
+  {
+    "id": "llm-integration/multi-model-systems",
+    "asset": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems.webp",
+    "lessonFile": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Three specialized models contribute measured results for the same capture and a reporting component can summarize them. The exercise preserves an unsupported explanation as a draft for human review while a measured alert can be sent separately.",
+    "intendedEmotion": "Quiet ownership and satisfaction in getting several tools to cooperate, with a little nighttime solitude rather than a triumphal claim that automation understands everything.",
+    "observed": "Demir works alone on the right in a dim bridge, chin near one hand and a small focused smile. Four glowing panels form a serial left-to-right chain containing a waveform, a compressed or hourglass-like symbol, a loop-like model symbol and a page. The scene is calm, his face remains visible, and his familiar earpiece and wrist terminal distinguish him from a generic operator. The relative quiet and independent work suit his growing competence, although the pose repeats other contemplative frames.",
+    "strengths": [
+      "The solo watch gives the sequence breathing room and grants Demir ownership.",
+      "The report-page endpoint distinguishes this from a simple signal display.",
+      "Dark surroundings support the late-watch mood without hiding the person."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The unbroken serial chain obscures separate model inputs and the report-review gate.",
+        "evidence": "The illustration routes everything through one sequence of four glowing boxes. The complete lesson requires each specialized model's own input contract and separates measured alert publication from generated draft review.",
+        "fix": "Show three model contributions from a shared capture into a measured-result area, with the draft in a separate outlined review panel. Do not imply every model consumes the prior model's output."
+      },
+      {
+        "severity": "low",
+        "finding": "Another chin-in-hand pose makes independent work feel passive.",
+        "evidence": "Demir has the same contemplation shorthand used in prompt engineering, RAG and pruning, despite actually constructing and inspecting a pipeline.",
+        "fix": "Give him a small active gesture selecting a gate or comparing a result, with his other hand relaxed at the console."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Let Demir enjoy a modest success: the measured alert arrives while the draft patiently waits its turn. The visual wit can live in this orderly separation, not in a humanized model.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Preserve the solo night-watch mood and readable face. Clarify branching and the pending draft; avoid a guaranteed all-green end-to-end answer.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "acceptable",
+      "judgement": "The independent-watch image can support the overnight successful measured alert, provided the generated explanation is shown waiting for review. Mirza's coffee-and-speed request is a small character beat that does not require another raster."
+    },
+    "inspected": true
+  },
+  {
+    "id": "optimization-edge/model-profiling",
+    "asset": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling.webp",
+    "lessonFile": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "The model and telemetry workload have exceeded the bridge computer's memory, losing a capture and the relay window. Nazari and Demir inspect the failure; ARIA later salvages a small partial record without pretending the lost capture was recovered.",
+    "intendedEmotion": "An earned sober setback and practical solidarity, with human care visible beneath the engineering work.",
+    "observed": "Nazari stands on the left indicating a diagnostic display with a trace that drops to zero and a visibly interrupted image. Demir leans on the right-side rail, looking concerned. A red warning light and warm work lamps distinguish the incident from ordinary lab work. An ARIA waveform inside a ring remains on a nearby instrument screen. Both human faces are legible, the engineer's age and tools remain clear, and the working bay has a plausible industrial identity.",
+    "strengths": [
+      "This image depicts a concrete failure instead of relying entirely on angry expressions.",
+      "The concern is earned by an unrecoverable capture and lost time, so seriousness here supports rather than violates the desired overall tone.",
+      "The visible ARIA instrument quietly keeps the third participant in the room without making her humanoid."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The focus stays on damage rather than the working relationship that gets the crew through it.",
+        "evidence": "Nazari points and Demir worries; there is little visible acknowledgment between them. This is a tonal opportunity, not a reason to erase the setback.",
+        "fix": "If revised, let Nazari angle the tablet or body toward Demir as an invitation to help, preserving seriousness without blame."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "weak",
+    "delightDirection": "Do not paste smiles onto the lost-capture moment. Warmth here should come from shared work and a non-accusatory posture; later images should supply the release and curiosity.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep the failure image, its clear faces and its specific diagnostics. Retain the distinction between a stopped capture and any later partial salvage. No flames, explosions or exaggerated danger are needed.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "Optional secondary epilogue: a tiny recovered packet on an otherwise empty capture display beside ARIA's familiar waveform, with Demir noticing it. The fragment must remain visibly partial. Prefer the later fallback-box scene if only one ARIA character image is commissioned.",
+    "epilogueReuse": {
+      "status": "mixed",
+      "judgement": "Reusing the incident scene for ARIA's small salvaged-record ending misses a quiet act of care. The text can still carry it, and another ARIA ending in system architecture is the stronger single addition if scope is limited."
+    },
+    "inspected": true
+  },
+  {
+    "id": "optimization-edge/quantization",
+    "asset": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization.webp",
+    "lessonFile": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Nazari proposes storing weights at lower precision and asks which predictions change after decoding. The engineering load test later passes, while bridge verification remains open; then Nazari pauses to look at the raw signal and calls it patient.",
+    "intendedEmotion": "Practical optimism, curiosity about tradeoffs, and eventually a rare, quiet moment of wonder from the skeptical engineer.",
+    "observed": "Demir stands left with a friendly expression while Nazari occupies the center beside a large engineering display. Four stacked blocks shrink toward one, a histogram becomes coarse levels, and a row of class-like symbols sits to the right with one less prominent. Nazari's hand and tool direct attention to the graphic; the face is still severe. The ceiling and machinery take substantial space, but both people remain recognizable, properly clothed and visibly lit.",
+    "strengths": [
+      "The four-to-one storage metaphor is immediately understandable and broadly suits float32 versus uint8.",
+      "Coarse levels distinguish quantization from simply deleting material.",
+      "Demir brings some warmth while Nazari retains the engineer's evaluative stance."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The display can imply fewer weights or a lost class instead of reduced storage precision.",
+        "evidence": "Four full blocks become one, and one class-like marker is dimmer. The task preserves tensor shapes and checks prediction disagreements; disagreement is not by itself accuracy loss. These are conceptual graphics, so the risk is interpretation rather than a false measurement.",
+        "fix": "Keep equal weight counts in two matched grids with different encoding widths, and make before/after classes a pending comparison rather than a visibly discarded class."
+      },
+      {
+        "severity": "low",
+        "finding": "Nazari's pose remains entirely stern at a promising experimental moment.",
+        "evidence": "The centered engineer has a fixed evaluative brow and hip-level stance while Demir smiles. This fits scrutiny but misses an opportunity for curiosity after the crash.",
+        "fix": "Use a slightly raised eyebrow and a more open gesture toward the small encoded result; save full relaxation for the epilogue."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "The charming point is a practical engineer finding an elegant saving, then noticing the signal itself. Keep the experiment cautious but let interest appear in the face and body.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Preserve the clear storage reduction concept, room and identities. Make equal parameter count and pending comparison clearer. Do not imply integer compute speed, removed model classes or completed bridge certification.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "P2 new epilogue: after the engineering load test, Nazari remains at the raw-signal display with the multitool set down and the ledger temporarily closed. Show a few patient pulses reflected gently in the mature face, with an almost imperceptible softening of the brow. Keep bridge verification unsigned off-screen or clearly separate. This earned, quiet discovery adds warmth without inventing a joke or a new event.",
+    "epilogueReuse": {
+      "status": "poor",
+      "judgement": "The briefing's reduction diagram cannot express Nazari staying behind to watch the raw pulse and finding it patient. This is one of the strongest missing character epilogues in the assigned set."
+    },
+    "inspected": true
+  },
+  {
+    "id": "optimization-edge/pruning",
+    "asset": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning.webp",
+    "lessonFile": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Demir must review Directive 44-C before signing it. Its assumptions that small weights do nothing, dense slots can disappear, and accuracy is unchanged all need challenge; the later over-pruning experiment costs three hours.",
+    "intendedEmotion": "The appealing moment of catching a tempting shortcut before signing, followed by honest responsibility for an experiment that goes too far.",
+    "observed": "Demir is alone at the right foreground, with one hand at his chin and the other holding a stylus near a tablet. A very large histogram spikes around the center, and a branching tree-like structure in the upper right loses or dims branches; related branches appear on the tablet. His face is clear and thoughtful, with the correct youthful stubble, hair, earpiece and slate uniform. The engineering bay is consistent but the body language feels like contemplation rather than an active review.",
+    "strengths": [
+      "The histogram is relevant to the magnitude-based decision and creates a clear technical focus.",
+      "A solo scene suits Demir being asked to exercise judgment without a mentor supplying the answer.",
+      "The face remains visible and characterful despite a dim room."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "A shrinking branch diagram reinforces the specific tree-shaking analogy the lesson warns against.",
+        "evidence": "The visible tree suggests removed branches, while MDX lines 183-215 stress unstructured zeros with unchanged tensor shapes and dense storage. It is not an exact data claim, but it selects the wrong physical metaphor for the central misconception.",
+        "fix": "Use the same rectangular weight grid before and after, with selected entries dimmed to zero but all slots retained. Add a small output disagreement cue rather than literally removing branches."
+      },
+      {
+        "severity": "medium",
+        "finding": "The directive-review story is missing from the action.",
+        "evidence": "No clear sign-off or disputed assertion is visible; Demir simply studies generic pruning graphics in another chin-in-hand pose.",
+        "fix": "Put a review sheet or tablet under the poised stylus, with the signature area untouched while Demir points back to the unchanged grid."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "weak",
+    "delightDirection": "The scene can have a small, knowing pause: Demir catches that a beautifully simple proposal is missing something. A lifted eyebrow and hovering pen are more engaging than grim concentration.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the independent character and industrial room but replace the tree-removal metaphor and introduce an active review gesture. Do not present sparse zeros as a guaranteed smaller dense model or the experiment as already approved.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "mixed",
+      "judgement": "The quiet review image can remain near the ending, but it does not show the three-hour cost or Nazari's ledger. Correcting the briefing misconception is more valuable than adding another cost-accounting image."
+    },
+    "inspected": true
+  },
+  {
+    "id": "optimization-edge/caching-strategies",
+    "asset": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies.webp",
+    "lessonFile": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Demir spots repeated work and proposes caching, then has to correct an inflated timing claim and design keys, versions and expiry carefully. The later private ARIA log distinguishes performance evidence from model quality.",
+    "intendedEmotion": "A relaxed, clever-seeming shortcut that invites the learner to inspect the catch; playful confidence without claiming that reuse solves every problem.",
+    "observed": "Demir reclines at the left of a warm console alcove holding a steaming mug. His expression is lightly amused and comfortable, and his bright face, earpiece and wrist display remain recognizable. Two large monitors repeat the same waveform, with one region highlighted. Smaller gauges and bars sit below. The mug, chair and asymmetric pose give the room the feeling of a place where someone actually spends a watch, rather than a stage built solely for a lecture.",
+    "strengths": [
+      "This is the strongest lighthearted break in the assigned optimization sequence.",
+      "Repeated waveforms communicate repeated work quickly without exact timing claims.",
+      "A relaxed human habit gives Demir personality and contrasts well with the preceding failure and review scenes.",
+      "The composition remains readable at small scale because the mug, face and duplicated screens have simple silhouettes."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The comfortable pose could be read as a completed performance victory before the measurements are corrected.",
+        "evidence": "Demir is already reclining, and the lower instrument bars imply activity without clarifying what has been measured. No literal number proves a false gain, so this is only a timing ambiguity.",
+        "fix": "Keep the expression closer to a promising idea than a victory grin, and preserve the lesson's correction immediately beside the artwork."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep the mug, warmth and small amused smile. They make a technical optimization feel like a human discovery. The narrative can gently puncture the first timing assumption without punishing the character.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Retain this asset as a tonal anchor. If diagrams are touched later, show repeated captures finding the same cached entry while keeping expiry and version checks pending; do not clutter the relaxed scene.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "acceptable",
+      "judgement": "The quiet late-watch setting can also accompany ARIA's private log. It is not a literal illustration of that text, but it does not contradict it and provides welcome breathing room. No new scene is necessary."
+    },
+    "inspected": true
+  },
+  {
+    "id": "optimization-edge/webgpu-acceleration",
+    "asset": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration.webp",
+    "lessonFile": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "The crew tries the actual available backend and measures completed inference rather than trusting queued work or guaranteed GPU speed. A later successful rehearsal earns Nazari's respect and a rare closure of the ledger.",
+    "intendedEmotion": "Energetic practical experimentation, followed by earned shared satisfaction and growing trust.",
+    "observed": "Nazari stands left and Demir right with open conversational gestures and more animated faces than in the crash scene. A large central hologram transforms triangular geometry into a square compute grid, with a falling step-like chart above it. A tool touches the table area at the lower left with small yellow spark-like marks nearby. The two visible faces and the broad shared gesture make this feel lively; the engineering room remains grounded in pipes, rails and machinery.",
+    "strengths": [
+      "The reciprocal gestures create genuine conversation instead of another one-way instruction pose.",
+      "Demir's smile and Nazari's engaged expression let the relationship progress toward respect.",
+      "Large grid shapes remain legible and produce an energetic composition."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The descending chart implies a speed result before a benchmark establishes one.",
+        "evidence": "The curve visibly falls alongside the GPU-like transition. The lesson makes backend availability, completed readback and measured performance conditional. The art has no exact number, but its success coding is premature at briefing.",
+        "fix": "Show two comparable workload paths awaiting completed timing, or keep the curve neutral until the actual rehearsal outcome."
+      },
+      {
+        "severity": "low",
+        "finding": "The geometry transformation and tool sparks can suggest hardware repair rather than selecting and measuring a runtime backend.",
+        "evidence": "Triangles turn into squares while a tool makes yellow motion or spark marks on the console. Neither physical conversion nor a repair is the lesson's work.",
+        "fix": "Use a clear workload-to-compute-grid comparison and set the tool down; let Nazari's gesture communicate lively skepticism instead of unexplained sparks."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Keep the animated exchange and let the eventual good result earn a restrained shared smile. Nazari can be pleasantly surprised without becoming exuberant or abandoning standards.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Preserve the warmth, faces and bilateral movement. Clarify a fair pending comparison for briefing; avoid a promised speedup, destructive spark or hardware transformation.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "acceptable",
+      "judgement": "The upbeat exchange is especially suitable for the later successful rehearsal and earned praise. If the briefing is made less conclusive, the same frame can serve both with no separate epilogue needed."
+    },
+    "inspected": true
+  },
+  {
+    "id": "capstone/system-architecture",
+    "asset": "apps/web/public/scenes/deep-orbit/capstone/system-architecture.webp",
+    "lessonFile": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Mirza asks the crew to assemble the mission system, and Demir now explains the architecture. The learner builds a linear runner while the full manifest still requires branches. After the briefing ARIA notices the small rule-based fallback box reserved for her.",
+    "intendedEmotion": "Confident synthesis and a sense of having grown into the work, followed by affectionate, dry ambiguity around ARIA's smaller role.",
+    "observed": "Mirza stands at the left behind the rail, open hand directed toward Demir, who stands right and actively points at the central diagram. Five tower-like boxes and repeated chevrons form a serial progression. Both faces are clear; Mirza looks attentive and authoritative without being severe, and Demir stands as an owner of the work. The central arrangement resembles a row of physical computer towers rather than software stages sharing a constrained bridge target.",
+    "strengths": [
+      "The role progression is visible: Mirza listens while Demir explains.",
+      "Open gestures and a warm command expression make culmination feel encouraging.",
+      "The image avoids the repeated seated-student pose and keeps both identities clear."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The five physical-looking towers imply a different deployment architecture.",
+        "evidence": "Repeated server-like housings and chevrons read as several machines, while the lesson is constrained by one bridge console and distinguishes a simple chain from the full branching manifest.",
+        "fix": "Draw logical software stages on one console, with the classifier/anomaly branch and report join visible, and clearly separate the linear runner excerpt."
+      },
+      {
+        "severity": "low",
+        "finding": "The architecture lacks the small fallback that carries the ending's emotional point.",
+        "evidence": "The five large stages occupy the center; no small, legible secondary ARIA path is apparent. The epilogue specifically turns on the smaller box.",
+        "fix": "Reserve a modest secondary path in the architecture, then emphasize it only in the epilogue rather than explaining the whole joke in the briefing."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Keep Demir's confidence and Mirza's interested listening. The distinctive lighthearted beat is the tiny but deliberately retained ARIA box, treated with affection and restraint rather than a cartoon face.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Preserve the two-person command briefing and visible faces. Replace machine-like towers with honest logical stages and a branch/join. Keep ARIA's fallback secondary so the ending still has something to notice.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "P2 new epilogue: the bridge after the briefing, the large architecture still visible but composed around one small fallback box and ARIA's canonical fixed-ring waveform. The people who have left must remain absent. A warm pool of light and a small pause in the waveform can make her dry line, still a box, feel gently funny and touching without inventing eyes or a humanoid body.",
+    "epilogueReuse": {
+      "status": "poor",
+      "judgement": "The bright Mirza-and-Demir briefing is reused after Mirza and Nazari have left and ARIA privately examines the fallback box. It misses both the changed cast and the quiet emotional focus. This is a high-value selective new epilogue."
+    },
+    "inspected": true
+  },
+  {
+    "id": "capstone/ci-cd-pipeline",
+    "asset": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline.webp",
+    "lessonFile": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Nazari discovers that green checks described the old model while the deployment manifest points to a newer artifact. The release-ID join has dropped identity, so the learner must bind evaluations to the exact bytes independently of quality gates.",
+    "intendedEmotion": "An alert detective catch and the satisfying realization that a green status needs a precise object, not generalized dread of deployment.",
+    "observed": "Nazari is prominent near the center, leaning into the investigation with a tool or hand near her chin. Demir stands behind to the left, arms folded and mostly listening. The top-right display contains many green checked nodes arranged in rows that merge into a large storage cylinder. The engineer's mature face is clearly rendered, the gray streak and olive workwear remain consistent, and the bay is visually coherent. The dominant message at a glance is a completed, approved pipeline into storage.",
+    "strengths": [
+      "Nazari actively investigates instead of simply scolding, which suits her competence.",
+      "The many green checks establish the deceptive premise that the dashboard appears healthy.",
+      "Readable expressions and a close engineer foreground give this more human focus than an abstract CI chart."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The image omits the artifact mismatch that makes the apparently green pipeline dangerous.",
+        "evidence": "Every visible branch converges cleanly into one object. No second artifact, broken identity association or mismatched fingerprint is apparent, although that is the opening problem and the purpose of the task.",
+        "fix": "Show two distinct artifact-pattern swatches: the checked evaluation belongs to one while the manifest selects the other. Keep the checks green; the problem is their association, not failed tests."
+      },
+      {
+        "severity": "medium",
+        "finding": "The human interaction is static at a moment that could reward recognition.",
+        "evidence": "Demir folds his arms behind the engineer while Nazari studies the screen. The picture lacks the instant of one person noticing what the other missed.",
+        "fix": "Have Demir point to the mismatched artifact marker as Nazari pauses with an acknowledging raised eyebrow, keeping her the rigorous reviewer."
+      }
+    ],
+    "soulFit": "weak",
+    "delight": "weak",
+    "delightDirection": "Make the mismatch a small visual detective joke: all the green checks are real, but their luggage tag belongs to the other case. Use actual artifact swatches rather than literal cartoon luggage if that would leave the established world.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Retain the green-check premise and Nazari's central competence. Add the two-artifact comparison and a clear wrong association. Do not replace the story with a generic red failure banner or imply hashes measure prediction quality.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "mixed",
+      "judgement": "The initial green pipeline can be reused after the identity gate is corrected only if the artifact binding is made visible. Once the screen communicates that distinction, another triumphant green-check epilogue would be redundant."
+    },
+    "inspected": true
+  },
+  {
+    "id": "capstone/monitoring",
+    "asset": "apps/web/public/scenes/deep-orbit/capstone/monitoring.webp",
+    "lessonFile": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Demir instruments the deployed model and distinguishes observable score, latency and input-distribution changes from accuracy, which needs labels. The later monitoring catch connects a changed frequency feature to the larger mystery without identifying its cause.",
+    "intendedEmotion": "Hands-on curiosity and attentiveness to a living system, with the pleasure of noticing something worth investigating.",
+    "observed": "Demir fills the left foreground physically plugging or holding several thick cables into a beige port box. His concentrated face, earpiece and wrist terminal are brightly visible. Behind him are declining and rising traces, offset distribution curves and several waveform panels. ARIA is correctly represented on the right as a waveform in a brass ring. The engineering bay is convincing and the hands are purposeful, but the literal cable work dominates every other element.",
+    "strengths": [
+      "The close active pose is a valuable compositional change from people standing around a hologram.",
+      "ARIA's non-humanoid presence and the layered monitoring panels place the system in an inhabited room.",
+      "Demir is readable, capable and visibly working rather than silhouetted."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The main action turns software instrumentation into a hardware cabling job.",
+        "evidence": "Both foreground hands attend physical connectors, and the largest object is the port box. The full lesson concerns collecting and interpreting model-monitoring metrics; no rewiring event motivates the scene.",
+        "fix": "Replace the central action with Demir attaching a software probe, aligning live monitoring panels, or comparing a changed trace through a handheld diagnostic. Keep the active close framing."
+      },
+      {
+        "severity": "medium",
+        "finding": "The panels look like simultaneous broad degradation rather than a focused monitoring question.",
+        "evidence": "A falling curve, rising band and shifted distributions all compete behind the cable work. The ending reports a specific feature change with classifier confidence still high; monitoring does not directly reveal live accuracy.",
+        "fix": "Choose one primary changed input feature and one stable contextual metric. Do not label a score or drift trace as accuracy without outcomes."
+      }
+    ],
+    "soulFit": "weak",
+    "delight": "mixed",
+    "delightDirection": "The fun should come from Demir catching an unexpected detail and exchanging a questioning glance with ARIA's impassive waveform. Preserve tactile activity through a diagnostic device rather than making the character immobile at a desk.",
+    "decision": "replace",
+    "priority": "P2",
+    "artDirection": "Regenerate the focal action with the canonical Demir and ARIA reference, maintaining the industrial room and bright face. Use software observation as the visible task; no real-world cable repair. A compact curious expression is better than a crisis grimace.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "poor",
+      "judgement": "The cable-plugging image cannot express the later frequency discovery and shared monitoring interpretation. A corrected primary scene that centers a changed trace could serve both; fix this before considering a separate ending."
+    },
+    "inspected": true
+  },
+  {
+    "id": "capstone/documentation",
+    "asset": "apps/web/public/scenes/deep-orbit/capstone/documentation.webp",
+    "lessonFile": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+    "section": "Briefing; reused in Consequence",
+    "storyBeat": "Farah asks whether someone else could operate the system while Demir is off watch. The model card and runbook must preserve evidence and clear thresholds; ARIA later exposes an imprecise word with dry literalism.",
+    "intendedEmotion": "The satisfying handover of hard-won knowledge and friendly scrutiny from colleagues who expect the work to be usable.",
+    "observed": "Demir sits on the left writing among several open paper binders. Farah stands on the right holding her stylus, arms partly folded, smiling while he looks toward her. The visible pages contain structured diagrams and flowchart-like blocks, and a lighter board behind them displays document cards and scientific imagery. The tactile paper, clear faces and warm light make the work inviting. Demir still has the familiar young features and devices; Farah retains the lens and scientist silhouette.",
+    "strengths": [
+      "The binders and paper give the late course a grounded change from large floating green screens.",
+      "Both people look comfortable, making documentation feel like shared craft rather than administrative punishment.",
+      "The handover theme is plausible even without legible prose on every page."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The blocking still casts Farah as supervising a pupil rather than testing a colleague's handover.",
+        "evidence": "Farah stands over seated, writing Demir while he seeks her attention. By this point his arc is ownership, and the opening question is whether another operator can use the documentation.",
+        "fix": "Let Farah actually follow an open runbook step herself while Demir waits beside her, relaxed enough to let the document carry the explanation."
+      },
+      {
+        "severity": "low",
+        "finding": "The central action is generic writing rather than use by a new operator.",
+        "evidence": "Several binders communicate documentation volume but do not show a threshold or operating decision being located.",
+        "fix": "Give one clear page or flowchart prominence and direct Farah's stylus to the decision she needs to find."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Preserve the warm, tactile workbench feeling. The small delight is watching someone else successfully use what Demir wrote, followed by ARIA's precise objection to a vague word.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Keep the paper-based composition and bright faces. Reassign the action so Farah tests and Demir supports. Do not add reams of generated pseudo-text or imply a pretty binder proves complete documentation.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "acceptable",
+      "judgement": "The collaborative document review can also support ARIA's request for a precise threshold. A dedicated ARIA proofreading image would duplicate the stronger architecture fallback opportunity, so do not add one by default."
+    },
+    "inspected": true
+  },
+  {
+    "id": "capstone/launch",
+    "asset": "apps/web/public/scenes/deep-orbit/capstone/launch.webp",
+    "lessonFile": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+    "section": "Briefing",
+    "storyBeat": "Mirza authorizes the launch after the crew's accumulated checks. The recorded release uses one console as a hot canary, compares thirty verdicts with the shadow model and expands only after that check; alternative policies are simulations, not additional deployments.",
+    "intendedEmotion": "Earned anticipation and trust at the threshold of a real result, with a spark of adventure instead of another grim command meeting.",
+    "observed": "Nazari stands at the left rail, Mirza is central behind the command chair, and Demir is at the right console with a finger at a green deploy control. A large glowing dome of pulse rings and an arc occupies the middle of the bridge. All three faces are exposed and distinct. Demir has a slight smile, Nazari remains severe, and Mirza looks or gestures away from the immediate button action. The central chair and broad hologram consume space that could connect the three people more directly.",
+    "strengths": [
+      "The canonical cast and readable faces make the launch a crew event, not an anonymous hand pressing a button.",
+      "Demir visibly owns the final console action, which pays off his growth.",
+      "The pulse ring gives the scene a live window and anticipatory energy without revealing the final harmonic match."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The shared decision is weakened by disconnected gaze and gesture.",
+        "evidence": "Mirza's hand points away from Demir's console and the three figures do not converge clearly on one final check. The empty central chair and dome compete with the actual human handover.",
+        "fix": "Bring Mirza's attention to Demir and the small canary console; give Nazari a restrained acknowledging look or ready rollback hand rather than another fixed scowl."
+      },
+      {
+        "severity": "low",
+        "finding": "The button contact looks like execution while the alternate text describes a hovering hand.",
+        "evidence": "Demir's fingertip appears at the control rather than distinctly paused above it. The source opens with authorization, so this is not a major plot contradiction, but the intended anticipatory moment is less clear.",
+        "fix": "Choose one clear instant: fingertip visibly hovering during the decision, or an unmistakable one-console canary activation after authorization."
+      },
+      {
+        "severity": "low",
+        "finding": "The canary scope is not visually distinguishable from a fleet-wide launch.",
+        "evidence": "The surrounding green bridge equipment and giant global-looking pulse dome do not isolate one test console.",
+        "fix": "Highlight one console or one small deployment tile while the remaining stations keep a different neutral state; avoid implying that all consoles changed at once."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Give the crew a small shared ready moment: Demir's confident breath, Mirza's warm authorization and Nazari's minimal nod. This is earned optimism after work, not confetti or a premature celebration.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Retain the three canonical people, pulse-window motif and bridge. Tighten blocking around the one-console canary. Preserve a visible pause and no spoilers about the source, ratios or final log.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "None. The existing frame can carry this beat after any specified refinement.",
+    "epilogueReuse": {
+      "status": "separate-epilogue",
+      "judgement": "A separate finale image already exists and is necessary. The launch authorization and the unexplained matching harmonics should remain visually distinct."
+    },
+    "inspected": true
+  },
+  {
+    "id": "capstone/launch-epilogue",
+    "asset": "apps/web/public/scenes/deep-orbit/capstone/launch-epilogue.webp",
+    "lessonFile": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+    "section": "Epilogue / Consequence",
+    "storyBeat": "The crew sees the incoming signal match the Archimedes' own calibration harmonics. Nazari rechecks the log, Farah considers possibilities, ARIA states the timing contradiction and her own anomaly, and Mirza orders transmission. The source remains unexplained and the final operator_note:none must remain the last narrative beat.",
+    "intendedEmotion": "Wonder shared by people the learner now knows, with warmth and a troubling unanswered question. This is an earned serious reveal, not a horror tableau or an alien-contact confirmation.",
+    "observed": "Farah sits at left looking up with an open, curious face. Mirza stands centrally with an open palm, Nazari concentrates on a tablet in front, and Demir turns from the right console with a small smile. Several wall displays repeat smooth sine-like curves; another shows a rising correlation-like curve. At far right, ARIA's screen contains a multi-lobed green spirograph with no horizontal waveform or fixed brass ring. Large empty foreground chair backs occupy much of the lower image. The four human identities are recognizable and individually expressive, but the ensemble attention is scattered.",
+    "strengths": [
+      "All four human characters finally share a frame with readable faces and distinct reactions.",
+      "Nazari checking the tablet is an excellent literal match to the repeated calibration check.",
+      "Farah's curiosity and Demir's gentle smile retain humanity rather than turning the finale into grim horror."
+    ],
+    "issues": [
+      {
+        "severity": "high",
+        "finding": "ARIA loses her established visual identity at the moment her own experience matters most.",
+        "evidence": "The far-right display is an oscillating multi-lobed loop. In the canonical design and the monitoring frame, ARIA is a waveform held inside a fixed geometric or brass ring.",
+        "fix": "Restore the approved fixed-ring waveform instrument, with a subtly unusual waveform if the story requires her elevated reconstruction error. Do not add eyes, a mouth or a human avatar."
+      },
+      {
+        "severity": "medium",
+        "finding": "Repeated generic sine waves do not communicate the specific matching-harmonics discovery.",
+        "evidence": "The wall repeats smooth curves, but there is no clear pair showing received sequence versus ship calibration, nor a visual reason for Nazari's incredulity. The picture should remain conceptual, yet the matching relationship is the reveal's core.",
+        "fix": "Give one paired comparison of the same distinctive sub-pulse pattern priority, linked to a ship-calibration cue and a separate received-signal cue. Keep the origin unresolved and avoid invented numerical precision."
+      },
+      {
+        "severity": "medium",
+        "finding": "The composition dilutes the shared moment with foreground furniture and disconnected eyelines.",
+        "evidence": "Two large empty chair backs fill the bottom, while the crew look toward different off-frame targets and the generic wall charts dominate the upper half.",
+        "fix": "Move closer to the people and one shared comparison, keeping Nazari's tablet check as a counterpoint. Let Farah and Demir exchange a small astonished recognition while Mirza takes in the evidence."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Build around delighted, questioning awe rather than four frightened faces. Nazari can retain the serious recheck; Farah and Demir can share the thrill of an impossible-looking pattern; Mirza's calm keeps the crew together.",
+    "decision": "refine",
+    "priority": "P1",
+    "artDirection": "First retain the recognizable four-person cast and Nazari's excellent calibration recheck. Correct the right-side ARIA screen to the fixed-ring waveform and give one paired received-signal/ship-calibration pattern priority. A tighter crop and modest gaze adjustments can reduce the empty-chair foreground. These targeted edits solve the hard identity defect without requiring a new composition. Recompose only if the shared discovery still reads weakly after those changes. Preserve the bright green-and-brass bridge, distinct reactions and unresolved origin. Do not depict an alien, a faster-than-light reply, an identified source, a catastrophe, or anything after the final automated log line.",
+    "deletionRationale": "Do not delete this shipped story slot. Its narrative function is useful; any replaced file should be retired only after its replacement is wired and verified.",
+    "newArtOpportunity": "No additional post-finale artwork. Improve this existing ending slot first. A full recomposition is an optional art-direction escalation, not technically required to fix ARIA. Any subsequent celebration, empty-ship aftermath or resolved-source image would risk overriding the final operator_note:none and the intentionally unanswered story.",
+    "epilogueReuse": {
+      "status": "dedicated-ending",
+      "judgement": "Keep this dedicated ending image and its useful four-person cast. The required correction is ARIA's canonical identity; stronger paired-harmonics emphasis and a tighter human focus are creative refinements. A full replacement is optional only if those targeted edits cannot establish the shared discovery. Do not add a coda after the story's last line."
+    },
+    "inspected": true
+  }
+]

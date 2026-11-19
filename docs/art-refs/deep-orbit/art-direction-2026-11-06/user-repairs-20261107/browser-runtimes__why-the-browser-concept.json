@@ -1,0 +1,121 @@
+{
+  "id": "browser-runtimes/why-the-browser",
+  "phase": "concept",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: Canonical ensign-demir identity; image 3: bridge room only; image 4: Edit target; replace staging while preserving section meaning.\nScene: A different closer bridge view from the briefing. Demir stands on RIGHT, leaning forward to toggle a console connection control with one hand; his other hand rests on the desk. Nazari sits farther RIGHT and slightly behind him, chin tilted toward the display, one hand on a trackball while the other lies relaxed near a closed notebook. They are testing which path depends on the compute-bay link. Demir has a small questioning frown; Nazari studies the local-assets row with a precise, knowing half-smile. No idle tablets or presenter pointing. Large work display fills the LEFT half from near upper frame to workbench, readable to both, camera beside them. Exact display title 'Prediction paths'. Upper diagram 'Browser' with 'Input' -> 'Local model' -> 'Output'. Lower diagram 'Server' with box 'Device', a right arrow labeled 'Request' to box 'Compute bay', and a left arrow labeled 'Prediction' returning to 'Device'. A separate large lower band reads 'Offline: cache app + runtime + model'. A subtle interrupted-link icon belongs only to the server request path, no fabricated success status. Keep all lettering spacious and in the same display plane.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "abb1fdcf9ede3f1243eb20454b280541d74174aa3a1b3e12013876f870623418",
+  "source": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+  "sourceSha256": "b36c52f567d4e48272568abf9d7e42ee584d3f09935f04d3bcac59f50b583ff4",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "bridge room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+      "sha256": "fc741b33d987aa56c2eaf74864d58cbae4ccb6b543042734f6e5953b6076bb6d",
+      "role": "Edit target; replace staging while preserving section meaning"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    }
+  ],
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with an unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+  "candidateSha256": "b36c52f567d4e48272568abf9d7e42ee584d3f09935f04d3bcac59f50b583ff4",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-96ef1fe9-dbcb-41dc-aa87-4020365ce7b6.png",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "b36c52f567d4e48272568abf9d7e42ee584d3f09935f04d3bcac59f50b583ff4",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      815,
+      155,
+      640,
+      400
+    ],
+    "handCropCoordinatesXYWH": [
+      540,
+      730,
+      860,
+      250
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Demir actively toggles the link while Nazari studies the large shared prediction paths. All four hands attach and contact their controls or desk. Correct request/return arrow directions and separate offline assets band, with no fabricated server success."
+  },
+  "generatedSha256": "b36c52f567d4e48272568abf9d7e42ee584d3f09935f04d3bcac59f50b583ff4",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-concept.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-concept/candidate.png",
+  "publishedSource": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-concept.webp",
+  "webpSha256": "49449eb2a2a30fd0bde504ca0c4aa22809a087a65eea8782e01e5f2a9d832649",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+    "sourceSha256": "fc741b33d987aa56c2eaf74864d58cbae4ccb6b543042734f6e5953b6076bb6d",
+    "webpSha256": "a3330ccb22198b6987c34d35aaa361ad372d6a1218b3f5cb37fecc47f5a48588",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-5734a7ad-f727-4ff2-a02c-64add06d19c0.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "b36c52f567d4e48272568abf9d7e42ee584d3f09935f04d3bcac59f50b583ff4",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical portraits compared to enlarged face crop.",
+      "Complete arm chains, thumb sides and prop contact checked.",
+      "Large source-correct display and operator direction checked.",
+      "Natural adult proportions and phase-specific candid action checked."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+        "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/browser-runtimes__why-the-browser-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser-concept.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

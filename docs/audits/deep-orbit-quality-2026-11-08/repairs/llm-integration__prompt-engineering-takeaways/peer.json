@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__prompt-engineering-takeaways/candidate.png",
+  "candidateSha256": "46c001ee9bf8474fa7653808483518aa4894c25120e11fb1b51a990c08a4642e",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist tracing with explicit left/right thumb chirality, direct canonical portrait comparison, and current source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 4,
+      "name": "root-rest-prompttake-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__prompt-engineering-takeaways/candidate.png",
+      "box": [
+        960,
+        130,
+        1400,
+        530
+      ],
+      "scale": 2
+    },
+    {
+      "i": 4,
+      "name": "root-rest-prompttake-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__prompt-engineering-takeaways/candidate.png",
+      "box": [
+        480,
+        745,
+        1220,
+        970
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah's far right arm leads to a mouse grip with the right thumb correctly on the near medial edge when fingers point left. Her near left hand rests on the open book, thumb hidden on the far side. Both complete chains and contacts remain coherent.",
+    "displayLegibilityAndSource": "Large Reply review board separates syntax, required fields and evidence, all pending, with Check before accepting. This matches the lesson's distinction between requesting JSON, validating its fields and verifying its claims.",
+    "identityExpressionAndStory": "Farah's intent side gaze and quiet concentrated expression fit review work. Profile face, overlay, hair and adult body balance remain canonical.",
+    "palette": "Restrained charcoal, sage and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Text and rules share their actual display plane; the operator can see the same front surface.",
+    "largeDisplayRule": "Essential lesson information is large, clear and spacious across the main available working display."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:30:45.433981+00:00"
+}

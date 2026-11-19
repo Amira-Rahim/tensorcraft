@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 /**
  * The one path no other suite exercises end-to-end: a learner clicking
@@ -52,6 +53,12 @@ test.describe("Exercise run in the real browser worker", () => {
     await expect(results).toBeVisible({ timeout: 90_000 });
     await expect(results).not.toContainText("All tests passed!");
     await expect(page.getByTestId("challenge-passed-banner")).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Inspect result", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("region", { name: "Explanation of your captured result" }),
+    ).toHaveCount(0);
 
     // 2. Complete only the two blanks; keep the supplied readback and cleanup.
     const editor = page.locator(".cm-content").first();
@@ -75,6 +82,28 @@ test.describe("Exercise run in the real browser worker", () => {
       timeout: 90_000,
     });
 
+    const inspection = page.getByRole("region", {
+      name: "Explanation of your captured result",
+    });
+    await expect(inspection).toBeVisible();
+    await inspection
+      .getByRole("combobox", { name: "Sensor", exact: true })
+      .selectOption("3");
+    await inspection
+      .getByRole("combobox", { name: "Selected moment", exact: true })
+      .selectOption("1");
+    await expect(
+      inspection.getByText("Index in supplied flat list").locator(".."),
+    ).toContainText("7");
+    await expect(
+      inspection
+        .getByRole("status")
+        .filter({ hasText: "Sensor D at selected moment 2" }),
+    ).toContainText("run reports 8");
+    await expect(
+      inspection.getByRole("button", { name: "Sensor D", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
+
     // 3. The canonical solution still passes independently.
     await editor.click();
     await page.keyboard.press(
@@ -89,6 +118,15 @@ test.describe("Exercise run in the real browser worker", () => {
     await expect(results).toContainText("All tests passed!", {
       timeout: 90_000,
     });
+    await expect(
+      inspection.getByRole("combobox", { name: "Sensor", exact: true }),
+    ).toHaveValue("0");
+    await expect(
+      inspection.getByRole("combobox", {
+        name: "Selected moment",
+        exact: true,
+      }),
+    ).toHaveValue("0");
     // The verdict on the current code belongs to the results panel above and
     // its live region. The banner reports the saved completion and carries
     // the way forward, because it outlives later edits to the code (content
@@ -121,6 +159,16 @@ test.describe("Exercise run in the real browser worker", () => {
     expect(
       Math.abs(editorFrameBox.y - (briefBox.y + briefBox.height)),
     ).toBeLessThanOrEqual(1);
+    await inspection.screenshot({
+      path: testInfo.outputPath("captured-result-desktop.png"),
+    });
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .include('[aria-label="Explanation of your captured result"]')
+          .analyze()
+      ).violations,
+    ).toEqual([]);
     await page.screenshot({
       path: testInfo.outputPath("challenge-passed-desktop.png"),
       fullPage: true,
@@ -130,11 +178,38 @@ test.describe("Exercise run in the real browser worker", () => {
     await expect(editor).toBeVisible();
     await expect(page.getByTestId("exercise-brief")).toBeVisible();
     await expect(page.getByTestId("challenge-passed-banner")).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(390);
+    await inspection.screenshot({
+      path: testInfo.outputPath("captured-result-phone.png"),
+    });
     await page.screenshot({
       path: testInfo.outputPath("challenge-passed-phone.png"),
       fullPage: true,
       style: "nextjs-portal { display: none !important; }",
     });
+
+    await editor.click();
+    await page.keyboard.press(
+      process.platform === "darwin" ? "Meta+a" : "Control+a",
+    );
+    await page.keyboard.insertText(
+      SOLUTION + "\n// Edited after the captured run.",
+    );
+    await expect(inspection).toContainText(
+      "This explanation belongs to the submitted code.",
+    );
+    await expect(inspection).toContainText(
+      "Your code has changed. Run it again to update these results.",
+    );
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .include('[aria-label="Explanation of your captured result"]')
+          .analyze()
+      ).violations,
+    ).toEqual([]);
   });
 });
 

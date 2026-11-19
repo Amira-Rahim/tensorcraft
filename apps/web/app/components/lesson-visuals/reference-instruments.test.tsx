@@ -8,7 +8,6 @@ import {
   detectorVoteExample,
   magnitudeSpectrum,
   screening,
-  softmax,
   teachingSignal,
 } from "./instrument-math";
 
@@ -61,71 +60,95 @@ describe("audited optional reference instruments", () => {
     expect(generated).toBeCloseTo(weight - 0.3 * 2 * (weight - 3), 12);
   });
 
-  it("adds position to temporal reference scores and pools original values", () => {
+  it("selects the actual temporal reference stages and pools the original two features", () => {
     reference("temporal-attention");
-    fireEvent.change(screen.getByRole("slider", { name: "Scalar query" }), {
-      target: { value: "0" },
+    const attach = screen.getByRole("button", {
+      name: /Attach normalized position/,
     });
-    const position = screen.getByRole("slider", {
-      name: "Reference position weight",
-    });
-    const keys = [-1, -0.4, 0.2, 0.7, 1.2],
-      values = [2, 7, 3, 8, 4];
-    for (const coefficient of [-2, 2]) {
-      fireEvent.change(position, { target: { value: String(coefficient) } });
+    const score = screen.getByRole("button", { name: /Score and normalize/ });
+    const pool = screen.getByRole("button", { name: /Pool original features/ });
+    expect(attach).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByRole("status", { name: "Reference result" }),
+    ).toHaveTextContent("One row uses position zero");
+    const attachCode = code();
+    fireEvent.click(score);
+    expect(attach).toHaveAttribute("aria-pressed", "false");
+    expect(score).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByRole("status", { name: "Reference result" }),
+    ).toHaveTextContent("supplied scorer is [1, 0, 0.5]");
+    const scoreCode = code();
+    fireEvent.click(pool);
+    expect(pool).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByRole("status", { name: "Reference result" }),
+    ).toHaveTextContent("Keep a one-feature summary as [1]");
+    const poolCode = code();
+    const before = tf.memory().numTensors;
+    const actual = tf.tidy(() => {
+      const sequence = tf.tensor2d([
+        [0, 4],
+        [0.25, 2],
+        [0.5, 0],
+      ]);
+      const positions = tf.linspace(0, 1, 3).reshape([3, 1]);
+      const scorer = tf.tensor2d([[1], [0], [0.5]]);
       const result = new Function(
-        "keys",
-        "values",
-        "softmax",
-        "sum",
-        `${code()}\nreturn { context, weights };`,
-      )(keys, values, softmax, (a: number[]) => a.reduce((s, v) => s + v, 0));
-      const maximum = result.weights.indexOf(Math.max(...result.weights));
-      expect(maximum).toBe(coefficient > 0 ? 4 : 0);
-      const expected = tf.tidy(
-        () =>
-          tf
-            .softmax(tf.tensor1d(keys.map((_, t) => (coefficient * t) / 4)))
-            .mul(tf.tensor1d(values))
-            .sum()
-            .dataSync()[0],
-      );
-      expect(result.context).toBeCloseTo(expected!, 6);
-    }
+        "tf",
+        "sequence",
+        "positions",
+        "scorer",
+        "T",
+        `${attachCode}\n${scoreCode}\n${poolCode}\nreturn summary;`,
+      )(tf, sequence, positions, scorer, 3) as tf.Tensor;
+      expect(result.shape).toEqual([2]);
+      return Array.from(result.dataSync());
+    });
+    expect(actual[0]).toBeCloseTo(0.3300396, 6);
+    expect(actual[1]).toBeCloseTo(1.3596866, 6);
+    expect(tf.memory().numTensors).toBe(before);
   });
 
-  it("uses true detector inputs and changes votes independently", () => {
+  it("selects the actual detector reference stages and distinguishes supplied evidence from computed moments", () => {
     reference("the-anomaly");
+    const baseline = screen.getByRole("button", {
+      name: /Compute window baseline/,
+    });
+    const cutoffs = screen.getByRole("button", {
+      name: /Compare separate cutoffs/,
+    });
+    const count = screen.getByRole("button", { name: /Count votes/ });
     const status = screen.getByRole("status", { name: "Reference result" });
-    expect(status).toHaveTextContent("2 of 3 votes: alert selected");
-    fireEvent.change(
-      screen.getByRole("slider", {
-        name: "Autoencoder error in this reference",
-      }),
-      { target: { value: "0.1" } },
-    );
-    expect(status).toHaveTextContent("1 of 3 votes: no alert selected");
-    fireEvent.change(
-      screen.getByRole("slider", {
-        name: "Forecast amplitude in this reference",
-      }),
-      { target: { value: "0.5" } },
-    );
-    expect(status).toHaveTextContent("0 of 3 votes: no alert selected");
-    fireEvent.change(
-      screen.getByRole("slider", { name: "Amplitude in this reference" }),
-      { target: { value: "0.9" } },
-    );
-    fireEvent.change(
-      screen.getByRole("slider", {
-        name: "Forecast amplitude in this reference",
-      }),
-      { target: { value: "0.9" } },
-    );
-    expect(status).toHaveTextContent("1 of 3 votes: no alert selected");
+    expect(baseline).toHaveAttribute("aria-pressed", "true");
     expect(status).toHaveTextContent(
-      "supplies fixed autoencoder error and forecast values",
+      "this supplied window, not the eleven-day archive baseline",
     );
+    const baselineCode = code();
+    fireEvent.click(cutoffs);
+    expect(baseline).toHaveAttribute("aria-pressed", "false");
+    expect(cutoffs).toHaveAttribute("aria-pressed", "true");
+    expect(status).toHaveTextContent("Reconstruction receives error 6.2");
+    expect(status).toHaveTextContent(
+      "supplied amplitude forecast misses by 0.3",
+    );
+    expect(status).toHaveTextContent("different units");
+    const cutoffCode = code();
+    fireEvent.click(count);
+    expect(count).toHaveAttribute("aria-pressed", "true");
+    expect(status).toHaveTextContent("no finite z-score");
+    const countCode = code();
+    const before = tf.memory().numTensors;
+    const actual = tf.tidy(() => {
+      const windowTensor = tf.tensor1d(DETECTOR_BASELINE);
+      return new Function(
+        "tf",
+        "windowTensor",
+        `${baselineCode}\nconst forecast = 0.2, actual = 0.5, forecastCutoff = 0.1;\n${cutoffCode}\nconst z = (actual - moments.mean.dataSync()[0]) / Math.sqrt(moments.variance.dataSync()[0]);\nconst flags = [Math.abs(z) > 3, 6.2 > 1, forecastFlag];\n${countCode}\nreturn { flags, alert };`,
+      )(tf, windowTensor) as { flags: boolean[]; alert: boolean };
+    });
+    expect(actual).toEqual({ flags: [false, true, true], alert: true });
+    expect(tf.memory().numTensors).toBe(before);
   });
 
   it("matches the shared detector baseline to real population moments", () => {

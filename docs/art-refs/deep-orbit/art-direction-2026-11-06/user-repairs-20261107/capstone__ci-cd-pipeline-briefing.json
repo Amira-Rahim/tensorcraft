@@ -1,0 +1,230 @@
+{
+  "lesson": "capstone/ci-cd-pipeline",
+  "id": "capstone/ci-cd-pipeline",
+  "phase": "briefing",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: precise-object-edit. Correct ONLY the large monitor geometry in the LAST reference. First two references are fixed canonical Nazari and Demir identities. Third is engineering architecture only. Last image is the current scene to edit. Preserve every foreground person, pose, hand, expression, face, uniform, desk, railing, trackball and lighting. Preserve the existing text exactly. 1536x1024.\nThe monitor must be a TRUE FRONT ELEVATION, its flat physical glass plane precisely parallel to the camera sensor. Replace the skewed outer frame AND glass opening with a fully rectangular horizontal/vertical monitor. All four outer corners visible. The top and bottom edges must be absolutely level horizontal, both vertical edges absolutely vertical. No rise toward the right, no trapezoid, no sloping title, no italicized perspective. Use a straight rectangular bezel with small symmetric rounded corners. Keep the swivel mount below to make this physical orientation plausible. The monitor remains at the upper right beside Nazari, on the same side of the workstation that she can see.\nWithin this same front-elevation rectangle, every text baseline is horizontal; table dividers are exactly horizontal or vertical; all margins are even. Exact large title: 'Release mismatch'. ONE two-row, two-column table. Row1: 'Candidate' and 'New release'. Row2: 'Evaluation' and 'Previous release'. Below: 'Old report: passed'. Bottom amber outlined warning strip: 'Pairing must match'. No additional text, symbols or panels. Keep readable large type and generous margins. Make the flat front-elevation monitor physically sit on its swivel base within this cinematic engineering scene. Do not tilt the monitor or graphics to follow the sloping railing. Do not invent perspective for any of these rectangular screen elements. Keep the current charcoal, muted sage and aged brass palette.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "64bbfb4c037c63dd93e139f8f556f1db9d5d2e4bc28baada94e14d8b14869dcb",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "Canonical Nazari identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical Demir identity",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "Engineering room architecture only",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dc35bdcb-13a9-4b4d-8d73-7431ba7a32c3.png",
+      "role": "Exact edit target: first revised monitor, still geometrically inconsistent",
+      "sha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40"
+    }
+  ],
+  "source": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+  "sourceSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+    }
+  ],
+  "reopenedReason": "User rejected inconsistent screen and content perspective after prior review. Rebuild monitor mounting and one coherent display plane.",
+  "publication": {
+    "date": "2026-11-09",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-3adbf0c8-0c01-42a9-9788-3a5db709dad8.png",
+  "candidatePath": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+  "candidateSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+  "attempts": [
+    {
+      "prompt": "Use case: precise-object-edit. Edit the last reference into a 1536x1024 Deep Orbit scene. The first two images are canonical Nazari and Demir facial identities. Third is engineering architecture only. Last is the target image. Preserve the target foreground characters exactly: Nazari working the trackball with a skeptical searching expression, Demir leaning forward sheepishly, their faces, proportions, hands, clothing, rail, desk and restrained natural colors. Preserve readable specific emotion and their task-directed gazes. Exactly two connected arms and ordinary hands per person.\nREBUILD ONLY THE LARGE RIGHT DISPLAY AND ITS MOUNTING. The current steep trapezoid has mismatched text perspective. Replace it with a physically plausible broad upright monitor mounted on a short swivel bracket over the console, turned toward Nazari and almost square to the camera. It fills the same upper-right region. Use a very mild single perspective, nearly rectangular, with ALL four corners fully visible inside the image. The physical glass, bezel, typography, every table edge, cell baseline, horizontal separator and footer must share one flat plane and the same vanishing direction. Do not paste front-facing cards onto a differently angled frame. Avoid steep diagonal edges, warped lettering, decorative strokes, curved joins, tiny panels and glow haze. Give the glass generous margins and readable short large text. This is a crew workstation display, naturally facing Nazari's working position, not an overlay or a poster. Keep the display clear of her face.\nExact display layout: a large title 'Release mismatch'. Below it ONE simple two-column table with two spacious rows, labels on left and values on right. Row one: 'Candidate' | 'New release'. Row two: 'Evaluation' | 'Previous release'. Below the table one modest sage status line 'Old report: passed'. At bottom one spacious muted amber warning band 'Pairing must match'. Table rules, type and status band are all in the glass plane. No arrows, merge connectors, document icons or giant green check. This comparison is about a new model accidentally paired with an old evaluation, not approval of the new release. Do not add a new tested result, invented hash or code. Keep small peripheral screens dark and the physical desk controls intact. Preserve warm brass with muted sage and charcoal, no oversaturated lime or orange wash.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "d47b505b4ec876b33bbb003a5d208ccf5c0dadf7943f8a3a77487d6dd9a19e0b",
+      "actualReferences": [
+        {
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "Canonical Nazari identity",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "Canonical Demir identity",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "role": "Engineering room architecture only",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dc35bdcb-13a9-4b4d-8d73-7431ba7a32c3.png",
+          "role": "Exact edit target: first revised monitor, still geometrically inconsistent",
+          "sha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40"
+        }
+      ],
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dc35bdcb-13a9-4b4d-8d73-7431ba7a32c3.png",
+      "candidateSha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40",
+      "ownReview": {
+        "reviewer": "/root",
+        "verdict": "PASS",
+        "candidateSha256": "47aba170d0a644e2eba0e1616ceba52d25898887269860dca243634f1faf9c40",
+        "nativeReviewed": true,
+        "canonicalFacesCompared": true,
+        "fullArmChainsReviewed": true,
+        "displayOperatorDirectionReviewed": true,
+        "displayPlaneReviewed": true,
+        "reviewDimensions": [
+          768,
+          512
+        ],
+        "magnifiedCrops": [
+          {
+            "name": "faces",
+            "box": [
+              200,
+              160,
+              570,
+              390
+            ],
+            "scale": 2
+          },
+          {
+            "name": "demir-hands",
+            "box": [
+              30,
+              815,
+              275,
+              165
+            ],
+            "scale": 2
+          },
+          {
+            "name": "nazari-resting",
+            "box": [
+              475,
+              905,
+              190,
+              112
+            ],
+            "scale": 2
+          },
+          {
+            "name": "nazari-trackball",
+            "box": [
+              950,
+              810,
+              205,
+              120
+            ],
+            "scale": 2
+          }
+        ],
+        "findings": [
+          "Swivel mounting produces one mild display plane. Table boundaries and type follow the glass without the old steep frame mismatch.",
+          "New candidate and previous evaluation are separated as records. Old passing report does not imply candidate approval.",
+          "Canonical facial structure and task reactions preserved. Rail grips, supported palm and trackball contact remain coherent.",
+          "Key text remains readable at 768 x 512."
+        ],
+        "temporaryCropsRemoved": true
+      },
+      "reviewCorrection": "Independent review rejected remaining frame/content vanishing-direction mismatch. Own PASS withdrawn."
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "verdict": "PASS",
+    "candidateSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+    "nativeReviewed": true,
+    "canonicalFacesCompared": true,
+    "fullArmChainsReviewed": true,
+    "displayOperatorDirectionReviewed": true,
+    "displayPlaneReviewed": true,
+    "reviewDimensions": [
+      768,
+      512
+    ],
+    "magnifiedCrops": [
+      {
+        "name": "faces",
+        "box": [
+          200,
+          160,
+          570,
+          390
+        ],
+        "scale": 2
+      },
+      {
+        "name": "hands",
+        "box": [
+          30,
+          810,
+          1125,
+          210
+        ],
+        "scale": 2
+      }
+    ],
+    "findings": [
+      "Physical glass and bezel are now frontal rectangular planes with level upper and lower boundaries.",
+      "The title rule, table borders, cell baselines and warning band are horizontal and mutually aligned.",
+      "Both crew remain on the visible side of the raised shared display.",
+      "Four hand contacts remain anatomically connected and plausible. Canonical faces retain the same reactions.",
+      "Exact lesson comparison is clearly readable at 768 x 512."
+    ],
+    "temporaryCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/ci-cd-pipeline-briefing/candidate.png",
+  "publishedSource": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline.webp",
+  "webpSha256": "9a23ab09659dc463c94a584e146a3c4319364eaadc3cfd3c450956c8ea34f737",
+  "webpQuality": 78,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+    "sourceSha256": "b604e472ad2cd73f56ce08f82cd6835e83144fcff33c6ec17d72c5a3e4e00b46",
+    "webpSha256": "97210e6d1a69ece38a74d0aa2e24b5e17a5d59a19267ad141d5da9b00febe086",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-584bad33-804a-4394-a75c-c9c198f82368.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "5eb5d727fdcea5896b19957f0b824388e44d380a847b8f29d0b4e367807062fe",
+    "method": "Reopened after user correction. Exact current candidate independently inspected for screen plane and operator direction, canonical faces, full arm chains and magnified hands, plus 768px readability. Adjacent peer.json records the decision.",
+    "checks": [
+      "One physical display plane and coherent perspective",
+      "Display faces operator",
+      "Exact source-grounded release comparison",
+      "Canonical faces and connected natural hands",
+      "Native and magnified review followed by independent review"
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+        "sha256": "d58645782d7ac6f2a455f271936432610311237c37c0657e6b13b1641757a30b"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

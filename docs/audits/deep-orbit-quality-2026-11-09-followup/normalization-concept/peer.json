@@ -1,0 +1,164 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/candidate.png",
+  "candidateSha256": "f6bf3c8681997352e818c8b1689019c8e5df418a1ba3670bb4eaf43cb5b76f2f",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh native v2 image, new 2x hand and face crops, full arm-chain tracing, enlarged display, canonical portraits, current MDX/exercise and independent 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 1,
+      "name": "followup-normalization-concept-v2-face-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/candidate.png",
+      "box": [
+        207,
+        32,
+        455,
+        330
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-normalization-concept-v2-face-farah",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/candidate.png",
+      "box": [
+        400,
+        287,
+        687,
+        610
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-normalization-concept-v2-demir-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/candidate.png",
+      "box": [
+        15,
+        505,
+        364,
+        962
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-normalization-concept-v2-farah-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/candidate.png",
+      "box": [
+        447,
+        800,
+        929,
+        1014
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "followup-normalization-concept-v2-display",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-concept/candidate.png",
+      "box": [
+        850,
+        237,
+        1518,
+        755
+      ],
+      "scale": 1
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah's right arm leads to a natural mouse hand with four visible fingers and an occluded far-side thumb; her left hand rests beside the keyboard with the medial thumb visible. Demir's chair grip and hanging hand connect naturally to his own shoulders. No crossed or duplicated limb.",
+    "identityExpressionAndStory": "Farah explains with an engaged expression while Demir watches. Both canonical faces and adult proportions remain intact.",
+    "displayLegibilityAndSource": "Means 23 and 0.5, rounded standard deviations 2.236 and 0.224, z = (x - mean) / std, and [20,0.2] to [-1.342,-1.342] remain correct and readable at 768 x 512.",
+    "perspectiveAndOperator": "PASS: the physical glass, bezel, table rules and text baselines now share one frontal rectangular plane. The swivel pedestal sits behind the keyboard and mouse on the desktop, and Farah plus Demir remain on the readable front side.",
+    "largeDisplayRule": "Main content occupies a large working monitor and remains readable without clipped teaching text at 768 x 512.",
+    "palette": "Muted charcoal, sage and brass remain consistent with Deep Orbit."
+  },
+  "measuredGeometry": {
+    "coordinateSystem": "Approximate native 1536 x 1024 coordinates",
+    "glassTop": [
+      [
+        890,
+        280
+      ],
+      [
+        1482,
+        280
+      ]
+    ],
+    "glassBottom": [
+      [
+        890,
+        704
+      ],
+      [
+        1482,
+        704
+      ]
+    ],
+    "tableTop": [
+      [
+        905,
+        359
+      ],
+      [
+        1467,
+        359
+      ]
+    ],
+    "tableBottom": [
+      [
+        905,
+        503
+      ],
+      [
+        1467,
+        503
+      ]
+    ],
+    "interpretation": "Physical perimeter, table rules and baselines now use a consistent frontal plane."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "repairDirection": null,
+  "temporaryCropsRemoved": true,
+  "resolvedFindings": [
+    {
+      "previousCandidateSha256": "0a4cf651ec1b47a83555c0f323e6af75267794fee16516463217380a4c917fcc",
+      "resolution": "Table and monitor now share a frontal rectangular plane, correcting the different vanishing families."
+    }
+  ],
+  "reviewedAt": "2026-11-09T13:57:26.711018+00:00"
+}

@@ -1,0 +1,52 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-08T19:08:49.782304+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__beyond-lstm-concept/candidate.png",
+  "candidateSha256": "080c283cb54796e50a79627efb6b8ca94894f68d5deb9bb2ed22cc58a908a132",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original inspection and enlarged canonical-face plus hand crops; current lesson source facts checked. Traced shoulder-elbow-wrist-hand chains, thumb sides, prop continuity, operator direction and display surface perspective.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+    "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 1040,
+      "top": 155,
+      "width": 365,
+      "height": 390
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 510,
+      "top": 790,
+      "width": 835,
+      "height": 145
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The illustrative source scores and rounded softmax weights are exact, large and readable. The flow reaches Blend Values and the sum-to-one note without overstating causal relevance.",
+    "Both arm chains are coherent; the mouse grip and notebook hand have natural thumb positions and surface contact. Farah looks toward the work with canonical face/visor structure."
+  ],
+  "repairDirection": "None."
+}

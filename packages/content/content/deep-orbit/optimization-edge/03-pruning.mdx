@@ -125,7 +125,7 @@ Help Demir review the directive. It assumes that near-zero weights do nothing, t
 Tree-shaking. Webpack drops the exports nothing imports. We drop the weights nothing needs. The bundle gets smaller and nobody notices the difference. That's my sign-off draft, anyway.
 </Dialogue>
 
-Before signing, test Demir's claim. The example below starts with eight weights and sets the four smallest to zero. Check whether the output stays the same.
+Before signing, test Demir's claim against predictions. The required experiment uses the supplied classifier. The separate eight-weight proposal below illustrates why zeroing small values needs that check.
 
 Give Demir the per-class results his sign-off is missing. Set different shares of the weights to zero and check which kinds of signals the classifier starts missing.
 
@@ -133,9 +133,23 @@ The mission's classifier distinguishes pulsar, quasar, noise, interference, and 
 
 <LearningObjectives objectives={["Distinguish magnitude pruning from behavior-preserving dead-code removal", "Implement magnitude-based pruning with a configurable sparsity level", "Measure what each pruning level costs, one class at a time", "Compare the stored weight file with the compressed download"]} />
 
+## The cutoff and its class-level cost
+
+The required experiment uses a supplied eleven-input, twelve-hidden-unit, five-class classifier. Pool the magnitudes of its two kernels, containing 132 and 60 weights, before selecting a cutoff. Biases stay outside that pool. The activity displays the first twelve positions of the first kernel and the checked reference results for the whole model.
+
+For requested sparsity `s`, sort all 192 magnitudes and select position `floor(192 * s)`. Zero weights strictly below that cutoff. Keep ties at the cutoff, so the achieved zero fraction can differ from the request. Level zero preserves the weights. Level one zeroes every kernel position.
+
+Read recall as `correct / support` for each class. The supplied labeled set contains forty synthetic captures per class. Its unpruned anomaly recall is `39 / 40`. At requested sparsities 0.3, 0.6, and 0.8, the checked reference keeps 38, 28, and zero of those forty anomaly cases correct. These are model measurements on an authored fixture, separate from the fictional mission's six anomalies.
+
+A class absent from another labeled set has zero support and `null` recall. Zero would falsely claim that the model missed known examples. Check every class: full pruning can leave biases that always choose one class and give it perfect recall while failing the others.
+
+Clone the original weights once. Start every level from those originals, and restore them in `finally`, including if a prediction fails. Comparing a second level against already-pruned weights would answer a different question.
+
 ## Demir’s pruning proposal
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="The eight-weight proposal and its fictional mission table">
 
 <CodeBlock language="typescript" title="pruning.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -192,6 +206,8 @@ Anomalies make up only 0.3 percent of this evaluation set. Losing every correct 
 
 Compare recall for each class to see what the total hides. An evaluation set with equal class counts would also give a different overall result. The exercise asks you to report per-class recall: for each true class, the share of its readings the model labels correctly.
 
+</ConceptReference>
+
 <StoryPassage>
 
 Demir sees a tempting trade. At 80 percent sparsity, he expects a download near 25 MB. Overall accuracy falls by only two tenths of a point compared with 60 percent sparsity. He approves the change without checking recall for each class. Before dinner, he sends the build to staging without running the replay suite.
@@ -228,6 +244,8 @@ Ranking only by magnitude ignores both curvature and interactions. Test this pra
 
 ## Combined Optimization
 
+<ConceptReference summary="Combining sparse values with quantized storage">
+
 <CodeBlock language="typescript" title="combined.ts">
 {`// Fictional mission table. Reproduce byte and prediction measurements
 // with an actual artifact before making a deployment decision.
@@ -262,6 +280,8 @@ console.log('Actual load peaks include backend buffers and the whole page.');
 console.log('Measure peak memory on the dashboard before approving a build.');`}
 </CodeBlock>
 
+</ConceptReference>
+
 <DerivationDrawer summary="Another way to compress a matrix: low-rank approximation">
 A matrix may have an accurate low-rank approximation. For `W = U Sigma V^T`, keeping the largest k singular values gives the best rank-k approximation in Frobenius and spectral norm. The omitted singular values determine matrix approximation error. Task accuracy still needs evaluation.
 
@@ -274,6 +294,8 @@ LoRA uses low-rank matrices for a different purpose: it trains an update while f
 
 A weight's effect also depends on the activation it multiplies and the rest of the network. For example, you can rescale a ReLU unit and its outgoing weight together without changing the function:
 
+<ConceptReference summary="A separate weight-rescaling counterexample">
+
 <CodeBlock language="javascript" title="weight-rescaling.js">
 {`const relu = (x) => Math.max(0, x);
 const originalOutput = (x) => 2 * relu(x);
@@ -281,6 +303,8 @@ const rescaledOutput = (x) => 2000 * relu(0.001 * x);
 // Same output for every x, despite a much smaller incoming weight.
 // Removing that 0.001 weight would remove the entire unit's contribution.`}
 </CodeBlock>
+
+</ConceptReference>
 
 Small magnitude gives us a practical ranking rule. We still need to measure what happens when we remove those connections. The rare-class failures above justify measuring each class. They do not reveal which weights represent rare patterns.
 
@@ -293,6 +317,8 @@ At sparsity 1, this exercise removes every kernel weight. An interior cutoff can
 The resulting curves let Demir compare each class before signing off a pruning level. The supplied comparison uses 40 synthetic examples per class, so it can expose uneven damage without the mission archive's class imbalance. Its results do not reproduce the fictional 91.8% score or choose a release threshold for the crew.
 
 <Exercise slug="prune-weights" />
+
+Select a sparsity and follow the achieved zeros and each class's recall together. The captured curves report aggregates, so they cannot identify which individual capture changed. Check a zero-support class as unavailable, and confirm that your caller-owned model still has its original weights after success or failure.
 
 <RecallPrompt
   question="Why can zeroing 60% of weights leave an uncompressed dense weight file the same size?"

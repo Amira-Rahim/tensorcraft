@@ -1,0 +1,63 @@
+{
+  "key": "why-the-browser-takeaways",
+  "id": "browser-runtimes/why-the-browser",
+  "phase": "takeaways",
+  "cast": [
+    "chief-nazari"
+  ],
+  "status": "prepared-peripheral-repair",
+  "input": "art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+  "inputSha256": "9a1a65471281cd832e7f52f5c445edcacedd8290c1ac79bc96661483d8a7dc4f",
+  "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-fb01bd02-74f6-400c-8a4a-d4cfe6ba77cf.png",
+  "archivedInputSha256": "9a1a65471281cd832e7f52f5c445edcacedd8290c1ac79bc96661483d8a7dc4f",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+      "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__why-the-browser-takeaways-openai-20261107.png",
+      "sha256": "9a1a65471281cd832e7f52f5c445edcacedd8290c1ac79bc96661483d8a7dc4f"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+      "sha256": "a3a4b30714d9b5db360bacf4bbd129c814087dd872be5297dd466e0cb7cec196"
+    }
+  ],
+  "screenMeaning": "Local inference saves per-prediction network trips but needs app/runtime/model downloads, memory and device compute.",
+  "screenSpecification": "Replace generic tablet bars with one clear local-inference summary. Top line OFFLINE ASSETS, below three small named assets APP + RUNTIME + MODEL with a cache enclosure. Below, a device outline encloses INPUT -> MODEL -> VERDICT, labeled LOCAL. A short bottom row names costs DOWNLOAD | MEMORY | COMPUTE. No percent progress, invented capacity meter, universal speed claim or privacy guarantee. Background screens may show small dim live-capture traces but must not compete with the tablet.",
+  "proportionSpecification": "Nazari's head is a clear large-head case: reduce the COMPLETE head only by approximately10percent linearly, aiming90percent of its current width/height, not75percent. Keep exact internal canonical face proportions, age, expression, gray hair and gaze. Join the neck naturally without making it long or thin. Preserve body, shoulders, tablet and both hands at their original sizes.",
+  "paletteReference": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+  "prompt": "Use case: precise-object-edit. First 1 images are canonical identity portraits. LAST image is the target. Make a narrow background-screen correction only. Replace every secondary monitor containing an unrelated waveform, generic bars or decorative scientific diagram with inactive dark charcoal glass in its same physical frame. Preserve the main meaningful lesson display. Inactive monitors have no trace, icon, text or data. Physical console buttons and the real wall clock are room props and remain. Do not alter wrist accessories, characters, face geometry, age, hair, expression, gaze, head/body scale, poses, continuous arm chains, fingers, costumes, furniture, camera, composition or the approved muted sage and aged brass palette. Preserve every readable word and connection on the main handheld tablet exactly unchanged. This main screen is correct. Keep all labels precisely spelled and readable, no invented metrics, no success marks. Output one 1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-takeaways.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/first-six-repairs/why-the-browser-takeaways.json",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-efffdbf1-a62d-48ba-9677-3da3f8bd4d96.png",
+  "candidateSha256": "d466fb0022f9b51fee03eb8111cce1bd4ce78b9ceb3c56e22722db5f09045d8c",
+  "generationMethod": "builtin-imagegen",
+  "recoveryNote": "Metadata persistence callback failed after image generation. Recovered exact output by full-frame content and prompt match before any retry.",
+  "ownReview": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "palette": "pass",
+    "screen": "pass",
+    "reason": "Current full frame matches exact lesson-grounded screen content with readable labels. Await independent review."
+  },
+  "revision": 2,
+  "inputCandidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-efffdbf1-a62d-48ba-9677-3da3f8bd4d96.png",
+  "inputCandidateSha256": "d466fb0022f9b51fee03eb8111cce1bd4ce78b9ceb3c56e22722db5f09045d8c",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-efffdbf1-a62d-48ba-9677-3da3f8bd4d96.png"
+  ],
+  "revisionReason": "Root reviewed main panels, palette, proportion and anatomy PASS. Requires every secondary screen to be semantically grounded or inactive."
+}

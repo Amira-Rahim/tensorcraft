@@ -1,0 +1,192 @@
+{
+  "key": "windowing-and-overlap-challenge",
+  "id": "signal-processing/windowing-and-overlap",
+  "phase": "challenge",
+  "source": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+  "sourceSha256": "f13b8616233e738ccf5a6d3fced25f9501be1325b939d1c3744d3b85b1626632",
+  "sourceEvidence": {
+    "mdx": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+    "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+  },
+  "reviewer": "/root/reader_signal",
+  "nativeReview": "1536x1024 current source visually inspected",
+  "gates": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeck": "pass",
+    "readerDirection": "pass",
+    "surfacePerspective": "pass",
+    "palette": "hold",
+    "lessonMeaning": "hold",
+    "storyAction": "pass"
+  },
+  "verdict": "hold",
+  "holdReason": "Unlabelled leakage plots lack Hann/exercise meaning; neon/gold.",
+  "preserve": "Good Nazari/Demir interaction and natural typing; preserve.",
+  "prompt": "Use case: precise-object-edit. Reference1 Ensign Demir canonical portrait, reference2 Chief Nazari portrait, reference3 lab ROOM ONLY, lastimage exactedit target. Remove the invented glasses/monocle/AR device from Chief Nazari completely. She is the older gray-haired woman on image right holding a tablet. Both her eyes must be unobstructed bare eyes matching her canonical identity. Preserve her face age expression and eyebrow shape. Preserve every other pixel: Demir, all hands/pose, tabletscreenback, main Hann display exact wording numbers128samples10.5cycles and pending tasks, all colors and room geometry. Output1536x1024. No other edits.",
+  "promptSha256": "1aa19605a48d8dc840dc65d1e71e376a0ed944fc428b0d05fc0d7dd187be6126",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-451ebe1b-e8cd-420d-a22a-480141fb881f.png",
+      "sha256": "fe823e02a18a6f7c272e8bab2b28c940c5691887ce5577ff495845017703f2dd"
+    }
+  ],
+  "alt": "Demir checks the pending Hann-window steps with Nazari before comparing far-bin magnitudes.",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-e698c1a8-8642-42dc-94fb-4e9bd0a34a3a.png",
+  "candidateSha256": "f13b8616233e738ccf5a6d3fced25f9501be1325b939d1c3744d3b85b1626632",
+  "ownReview": {
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Removed invented Nazari monocle. Native identity, natural hands, reader side, source exact128sample10.5cycleHann fixture and pendingtasks all pass. Correct approximate1 maximum for even128 samples."
+  },
+  "history": [
+    {
+      "prompt": "Use case: precise-object-edit. Asset: Deep Orbit signal-processing/windowing-and-overlap-challenge scene,1536x1024 landscape. Image1: ensign-demir canonical identity authority; Image2: chief-nazari canonical identity authority; Image3: lab ROOM ONLY master, copy architecture not its incidental graphics or oversaturated lighting; Image4: exact edit target.\nPreserve the candid exchange: Demir at keyboard looks toward Nazari beside him, she holds tablet with back toward viewer and looks back. Keep plausible arms, hands, chair and adult proportions. Main task monitor exact heading Symmetric Hann test / 128 samples / 10.5 cycles. Show one smooth symmetric taper arch labelled Hann weights, both endpoints clearly0 and centre near1, no extra axis ticks. Task status rows Build weights: pending / Apply elementwise: pending / Compare far-bin magnitudes: pending. Footer Outside 3 bins from rounded tone bin. No completed reduction factor or success. Remove meaningless two spectra and unrelated side monitors; dark unused wrist display. Neutral charcoal, soft sage and aged brass.\nIdentity: preserve canonical facial geometry, ages, skin, hairstyle, natural expressions and signature equipment. Keep readable faces in natural three-quarter angles, stable adult head/body proportions. Trace each shoulder through elbow/wrist to one natural five-finger hand; solid furniture contacts. Each screen front faces its actual reader; all text and diagrams follow its physical perspective, never camera-facing overlays. No extra crew, no plants, no fake tiny glyphs. Subordinate unused screens and wrist displays are dark. Muted charcoal, gray, restrained olive, sage interface and aged brass. Warm light remains localized, no yellow wash or electric lime. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Equipment-side check: Demir has one earpiece on anatomical RIGHT ear only. If his visible ear is anatomical LEFT, keep it bare and hide the far-side earpiece completely; never float green hardware on cheek, eye or collar. Farah's canonical translucent green AR lens must remain on her anatomical left eye, never omit it. Demir's one communicator stays on his anatomical right ear, hidden when occluded.",
+      "promptSha256": "e53e72fc7a827e15a8225dec090646caf71751139886dac4c20bbda0adb98d75",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-451ebe1b-e8cd-420d-a22a-480141fb881f.png",
+          "sha256": "fe823e02a18a6f7c272e8bab2b28c940c5691887ce5577ff495845017703f2dd"
+        }
+      ],
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-451ebe1b-e8cd-420d-a22a-480141fb881f.png",
+      "candidateSha256": "fe823e02a18a6f7c272e8bab2b28c940c5691887ce5577ff495845017703f2dd",
+      "ownReview": {
+        "verdict": "hold",
+        "nativeFull": true,
+        "notes": "Nazari gained an invented AR monocle. Remove it; other visual and source gates pass."
+      }
+    }
+  ],
+  "candidatePath": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-e698c1a8-8642-42dc-94fb-4e9bd0a34a3a.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+      "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-451ebe1b-e8cd-420d-a22a-480141fb881f.png",
+      "sha256": "fe823e02a18a6f7c272e8bab2b28c940c5691887ce5577ff495845017703f2dd",
+      "role": "canonical identity"
+    }
+  ],
+  "independentReview": {
+    "key": "windowing-and-overlap-challenge",
+    "id": "signal-processing/windowing-and-overlap",
+    "phase": "challenge",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-e698c1a8-8642-42dc-94fb-4e9bd0a34a3a.png",
+    "candidateSha256": "f13b8616233e738ccf5a6d3fced25f9501be1325b939d1c3744d3b85b1626632",
+    "verdict": "pass",
+    "reviewer": "/root",
+    "method": "Native complete1536x1024 against canonical portraits and current MDX/exercise",
+    "notes": "Nazari has no invented lens; canonical face and folded inwardtabletgrip correct. Demir supports both hands on keyboard and addresses her, ordinary shoulders/head. SymmetricHann128samples10.5cycles, zeroends, approximate1peak and pendingsteps match currentexercise. Source-specific far-bin measure, coherent panelperspective and mutedpalette.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+        "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+        "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+      }
+    ],
+    "alt": "Demir and Nazari prepare a symmetric Hann test before comparing the far-bin magnitudes.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-e698c1a8-8642-42dc-94fb-4e9bd0a34a3a.png",
+  "publishedSource": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap-challenge.webp",
+  "webpSha256": "8abf97bf7d62947835a746c5ba567036b5899bedddc5e073fa529304b7a8f9cd",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+    "sourceSha256": "385e72b4e51fc9b55115a73f06fb3cf408ff8d12201a31bf27b66019d029da52",
+    "webpSha256": "9bfbf4c37be50326d6b9f49369994a5f1b2ff8abecfeb864a803975cf603f784",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-fdb013b3-1c35-4fea-8842-534ca488c2e9.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_signal",
+    "status": "approved",
+    "candidateSha256": "f13b8616233e738ccf5a6d3fced25f9501be1325b939d1c3744d3b85b1626632",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Nazari has no invented lens; canonical face and folded inwardtabletgrip correct. Demir supports both hands on keyboard and addresses her, ordinary shoulders/head. SymmetricHann128samples10.5cycles, zeroends, approximate1peak and pendingsteps match currentexercise. Source-specific far-bin measure, coherent panelperspective and mutedpalette."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+        "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+        "sha256": "b727c481e54f9fd7c9a863eb7b9ec585d0bdfc2724f58e5c0f44bdc1bc63fc74"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap-challenge.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

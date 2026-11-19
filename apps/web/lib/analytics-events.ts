@@ -2,7 +2,8 @@
  * Analytics Event Taxonomy, canonical, type-safe registry of every
  * product event fired from the Tensorcraft web client.
  *
- * Source of truth: `docs/dev-plan.md` Appendix B + PRD 4.7.
+ * This registry defines client event names and payloads. Verification steps
+ * live in `docs/analytics-verification.md`.
  *
  * Design rules:
  *  - Event names are `snake_case` (PostHog convention).
@@ -59,7 +60,7 @@ export const EVENTS = {
   FREE_LESSON_CTA_CLICKED: "free_lesson_cta_clicked",
   // Added 2026-08-25 with the /learn trailer hero: measures whether the
   // trailer earns its slot (loop = ambient hero playback began; full = the
-  // visitor chose the 90-second cut).
+  // visitor opened the introduction lightbox).
   TRAILER_PLAYED: "learn_trailer_played",
   // Added 2026-08-29 with the world-page trailer band. A separate event
   // from learn_trailer_played (different film, different surface) so the
@@ -82,7 +83,7 @@ export const EVENTS = {
   ONBOARDING_COMPLETED: "onboarding_completed",
 
   // Story pacing. The content-QA rule ">40% skip triggers narrative redesign"
-  // (post-launch-backlog §2, dev-plan §10c risk #1) was uncomputable until
+  // (docs/post-launch-backlog.md §2) was uncomputable until
   // this event existed. 2026-09-04: `via` added because the 2026-08-23
   // skip-preference change made the metric structurally biased low - the
   // remembered preference auto-skipped every later scene with no event, and
@@ -232,8 +233,10 @@ export interface EventProperties {
   };
 
   [EVENTS.PRICING_PAGE_VIEWED]: {
-    /** How the user arrived at /pricing (direct, paywall redirect, etc.) */
+    /** Legacy entry labels. Do not interpret these as acquisition channels. */
     source?: "direct" | "paywall" | "dashboard" | "landing" | "upgrade_cta";
+    /** Current page context, separate from the SDK's external attribution. */
+    entryContext?: "standard" | "locked_lesson" | "checkout_cancelled";
     /** Populated when the user was redirected from a locked world. */
     lockedWorldId?: string;
   };
@@ -247,6 +250,7 @@ export interface EventProperties {
     worldIds?: string[];
     price?: number;
   };
+  /** Reserved server event. The API owns the current settlement payload. */
   [EVENTS.PAYMENT_COMPLETED]: {
     planId: string;
     worldIds: string[];
@@ -275,13 +279,26 @@ export interface EventProperties {
   };
   [EVENTS.FREE_LESSON_CTA_CLICKED]: {
     /**
-     * Placement of the clicked free-lesson CTA. Extend the union when
-     * landing/pricing adopt the tracker.
+     * Placement of the clicked free-lesson CTA. Landing and pricing adopted
+     * the tracker 2026-11-02 so the funnel can compare entry points.
      */
-    source: "learn_hero" | "learn_footer" | "world_trailer_endcard";
+    source:
+      | "learn_hero"
+      | "learn_footer"
+      | "world_trailer_endcard"
+      | "landing_hero"
+      | "landing_intro"
+      | "landing_footer"
+      | "pricing_footer"
+      | "compare"
+      | "guide";
+    guideSlug?: string;
+    /** Canonical lesson URL, without experiment-entry query parameters. */
+    targetLesson?: string;
+    placement?: "activity" | "source";
   };
   [EVENTS.TRAILER_PLAYED]: {
-    /** loop = silent hero loop began; full = the lightbox 90s cut opened. */
+    /** loop = silent hero loop began; full = introduction lightbox opened. */
     mode: "loop" | "full";
   };
   [EVENTS.WORLD_TRAILER_PLAYED]: {
@@ -302,9 +319,8 @@ export interface EventProperties {
     method: "magic_link";
   };
   /**
-   * Closes the funnel opened by SIGNUP_STARTED. `method` comes from Supabase
-   * `app_metadata.provider`, so it is whatever actually established the
-   * session rather than what the user first clicked.
+   * Reserved for verified account creation. SIGNED_IN establishes a session,
+   * so the browser session listener does not emit this event.
    */
   [EVENTS.SIGNUP_COMPLETED]: {
     method: string;
@@ -412,7 +428,7 @@ export interface EventProperties {
     lessonSlug: string;
     moduleId: string;
     worldId: string;
-    /** ISO week label (used as utm_campaign). */
+    /** Digest week label, recorded as content context. */
     weekIso?: string;
   };
 }

@@ -100,14 +100,40 @@ testCode: |
       // match the probes above, because every one of them zeroes the two
       // features it does not read. This one records what predict received.
       let seen = null;
+      let observedOutput = null;
       const spy = {
         predict: (input) => {
           seen = { shape: input.shape.slice(), values: Array.from(input.dataSync()) };
-          return probe.predict(input);
+          const output = probe.predict(input);
+          observedOutput = output.dataSync()[0];
+          return output;
         },
       };
-      const r = verdict(spy, { amplitude: 512, frequency: 21, phase: Math.PI / 2 });
+      const signal = { amplitude: 512, frequency: 21, phase: Math.PI / 2 };
+      const raw = [signal.amplitude, signal.frequency, signal.phase];
+      const limits = [[0, 2048], [0, 63], [-Math.PI, Math.PI]];
+      const r = verdict(spy, signal);
       expect(seen, 'Call model.predict so the answer comes from the supplied model.').not.toBe(null);
+      if (seen.values.length === 3 && seen.values.every(Number.isFinite) && Number.isFinite(observedOutput) && typeof r.class === 'string' && typeof r.confidence === 'number' && Number.isFinite(r.confidence)) {
+        recordResult({
+          kind: 'table', title: 'Raw fields and input values from your handler',
+          summary: 'The supplied diagnostic reading copied before your call, the ranges requested by the exercise, and the actual tensor values observed at model.predict. The ranges are a supplied reference. Legacy frequency means zero-crossing count. Legacy phase is the supplied sample-pair angle, not FFT phase.',
+          columns: ['Feature key', 'Raw input', 'Reference min', 'Reference max', 'Observed scaled input'],
+          rows: ['amplitude', 'frequency', 'phase'].map((key, i) => [key, raw[i], limits[i][0], limits[i][1], seen.values[i]]),
+        });
+        recordResult({
+          kind: 'table', title: 'The probe output and your returned decision',
+          summary: 'The actual output from the supplied amplitude-echo test model, paired with the class and selected-class score your handler returned. This probe checks preprocessing and decision logic, not accuracy.',
+          columns: ['Observed model output', 'Returned class', 'Selected class score'],
+          rows: [[observedOutput, r.class, r.confidence]],
+        });
+        recordResult({
+          kind: 'table', title: 'What your handler sent to the model',
+          summary: 'The observed input tensor and returned decision from this diagnostic call. Evaluating DEEP SCAN accuracy requires separate labeled data.',
+          columns: ['Amplitude scaled', 'Zero-crossing count scaled', 'Phase scaled', 'Returned class', 'Selected class score'],
+          rows: [[...seen.values, r.class, r.confidence]],
+        });
+      }
       expect(seen.shape, 'One reading is one row of three features.').toEqual([1, 3]);
       const order = 'The network learned these three features in the order RANGES declares them. This runtime accepts swapped features with the same shape, but the changed meanings can produce wrong answers.';
       expect(seen.values[0], order).toBeCloseTo(0.25, 4);      // 512 / 2048
@@ -116,12 +142,6 @@ testCode: |
       // probe reads amplitude alone, so p is 0.25: noise, reported at 1 - p
       expect(r.class, 'This probe reads amplitude alone, and 512 of 2048 counts normalizes to 0.25, so the verdict is noise. An anomaly here means the three features reached the model in another order.').toBe('noise');
       expect(r.confidence, 'This probe reads amplitude alone, so p is 0.25. The verdict is noise and the confidence in that verdict is 0.75. Reporting 0.25 hands back the raw sigmoid instead.').toBeCloseTo(0.75, 4);
-      recordResult({
-        kind: 'table', title: 'What your handler sent to the model',
-        summary: 'The test model echoes the normalized values your handler sends it. This checks input preparation. Evaluating DEEP SCAN accuracy requires separate labeled data.',
-        columns: ['Amplitude scaled', 'Zero-crossing count scaled', 'Phase scaled', 'Returned class', 'Selected class score'],
-        rows: [[...seen.values, r.class, r.confidence]],
-      });
     });
     it('leaves no tensors behind (tf.tidy is doing its job)', () => {
       const before = tf.memory().numTensors;

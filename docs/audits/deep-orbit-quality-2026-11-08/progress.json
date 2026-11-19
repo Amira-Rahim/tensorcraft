@@ -1,0 +1,66 @@
+{
+  "status": "historical-audit-with-completed-followup",
+  "completedAt": "2026-11-09T08:28:56.634406+00:00",
+  "sceneCount": 280,
+  "lessonCount": 56,
+  "supportingCount": 41,
+  "nativeBaselineReviewed": 280,
+  "focusedHandPropDisplayReviewed": 280,
+  "publishedSceneReplacements": 75,
+  "retainedScenes": 205,
+  "publishedSupportingReplacements": 1,
+  "retainedSupportingAssets": 40,
+  "independentlyReviewedReplacements": 76,
+  "replacementsReviewedAtRuntimeSize": 76,
+  "removedTemporaryProjectCandidates": 78,
+  "removedRedundantAssets": 8,
+  "redundantBytesRemoved": 3454799,
+  "uniqueSceneHashes": 280,
+  "completeFiveSectionLessons": 56,
+  "unresolvedFindings": 0,
+  "technicalValidationComplete": true,
+  "replacementsByModule": {
+    "advanced-time-series": 13,
+    "anomaly-detection": 9,
+    "browser-runtimes": 11,
+    "capstone": 1,
+    "foundations": 6,
+    "llm-integration": 12,
+    "neural-networks": 5,
+    "optimization-edge": 6,
+    "recurrent-networks": 1,
+    "signal-processing": 7,
+    "training-loop": 4
+  },
+  "reviewLimits": "Original whole-library approval missed later user-reported defects. Twelve scenes now have new exact-file review records. The original pass counts below are historical and do not represent a fresh whole-library guarantee.",
+  "reopenedScenes": [
+    {
+      "lesson": "capstone/ci-cd-pipeline",
+      "phase": "briefing",
+      "issue": "Display contents and bezel do not share a convincing plane."
+    },
+    {
+      "lesson": "capstone/system-architecture",
+      "phase": "briefing",
+      "issue": "Pointer arm crosses behind Mirza, with unclear shoulder connection and grip."
+    },
+    {
+      "lesson": "foundations/normalization",
+      "phase": "challenge",
+      "issue": "Screen orientation and operator position are physically unconvincing."
+    },
+    {
+      "lesson": "foundations/normalization",
+      "phase": "concept",
+      "issue": "Screen orientation and content projection are physically unconvincing."
+    },
+    {
+      "lesson": "foundations/normalization",
+      "phase": "epilogue",
+      "issue": "Visible screen face points away from Farah, who is operating it."
+    }
+  ],
+  "followup": "docs/audits/deep-orbit-quality-2026-11-09-followup/progress.json",
+  "reopenedSceneCount": 12,
+  "followupResolvedSceneCount": 12
+}

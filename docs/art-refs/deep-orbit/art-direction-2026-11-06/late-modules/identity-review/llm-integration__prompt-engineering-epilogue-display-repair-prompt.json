@@ -1,0 +1,56 @@
+{
+  "queueIndex": 67,
+  "key": "deep-orbit/llm-integration/prompt-engineering",
+  "phase": "epilogue",
+  "status": "awaiting-new-generation",
+  "newGeneration": true,
+  "cast": [
+    "farah",
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      758,
+      266,
+      250,
+      310
+    ],
+    "farah": [
+      1082,
+      124,
+      275,
+      310
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__prompt-engineering-epilogue-display-stage1-openai-20261107.png",
+      "sha256": "afa0e307f5e626ce40fa32979030bf4027c32c8f86317168a3f42a84a40ea169",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. First references are canonical neutral crew portraits; LAST image is target scene. Change ONLY large background display graphics. It must show two simple prompt pages at left (each rectangle contains three horizontal text bars), and a separate dim archive stack at right (three stacked thin record rectangles). Draw two thin links from the two prompt pages toward the archive, both links visibly interrupted by a large gap before reaching it. No other connected branches, waveforms or extra panels in this display. The meaning is both prompts still lack database access, not a successful connected pipeline. No text, numerals or labels. Preserve exactly all other faces, people, bodies, arms, hands, uniforms, props, furniture, room, camera, colors and lighting. No added humans or limbs. One1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/llm-integration__prompt-engineering-epilogue-display-repair-prompt.json",
+  "newSource": "art-src/scenes/llm-integration__prompt-engineering-epilogue-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering-epilogue.webp",
+  "alt": "Demir and Farah compare prompt revisions, then notice the archive still is not connected.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+  "lessonSha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/llm-integration__prompt-engineering-epilogue-display-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/llm-integration__prompt-engineering-epilogue-prompt.json",
+      "reason": "Change ONLY large background display graphics. It must show two simple prompt pages at left (each rectangle contains three horizontal text bars), and a separate dim archive stack at right (three stacked thin record rectangles). Draw two thin links from the two prompt pages toward the archive, both links visibly interrupted by a large gap before reaching it. No other connected branches, waveforms or extra panels in this display. The meaning is both prompts still lack database access, not a successful connected pipeline. No text, numerals or labels."
+    }
+  ]
+}

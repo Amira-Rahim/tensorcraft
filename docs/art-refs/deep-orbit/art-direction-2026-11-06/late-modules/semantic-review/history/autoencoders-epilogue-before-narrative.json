@@ -1,0 +1,73 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "epilogue",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next LAB room reference only, LAST exact target. Preserve exact people, adult ages, facial morphology, expressions, hairstyle, signature equipment, natural warm skin, body poses, every connected shoulder-elbow-wrist-hand chain, grips, neck alignment, chairs and contacts. Farah lens anatomical LEFT eye, Demir comms anatomical RIGHT ear, Nazari has NO eyewear. Keep story action dominant. Every unmentioned monitor and wrist display OFF, plain charcoal glass. No arbitrary graph, wave, code, bars or meters. Keep restrained sage, aged brass and charcoal. Remove neon mint rims and broad yellow/gold wash. The tall glass LAB PILLAR must become dark muted sage with thin dim grey internal bands, never glowing lime. Natural warm lamp light. Preserve Farah stylus hand, paper grip, whole seated torso/chair alignment and Nazari standing with tablet back toward viewer. Farah head is slightly heavy: adjust complete head at most 5 percent smaller, preserve morphology and natural short neck. Nazari head unchanged. Main board shows concise mission findings, arranged in separate panels with no graphs: heading \"Mission review\", left \"Error: 1.4x baseline\" and \"Below this run cutoff\"; right \"412 suspect rows / 28,800\" and \"Activity near 73.4 Hz\"; bottom \"Second run: 0115\". Foreground tablet Farah points at reads \"Review training rows\" and \"Cause unresolved\". Her paper remains blank reverse side. No fabricated cutoff or loss curve. This is a fictional story finding, not the synthetic exercise output. All other displays off. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/autoencoders-epilogue-before.png",
+      "sha256": "ac6f3d948bd9df83ed1891ca417fcbee9ffaaef49889c90ec07096032b470349",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "ac6f3d948bd9df83ed1891ca417fcbee9ffaaef49889c90ec07096032b470349",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+    "sha256": "f01d6f6eae0ba42a5ff8d215f8de6ee848dfe1c0b448075f70e0ec5131819aa5"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "fictional mission miss",
+    "concreteGenerationSpecification": "Preserve Farah stylus hand, paper grip, whole seated torso/chair alignment and Nazari standing with tablet back toward viewer. Farah head is slightly heavy: adjust complete head at most 5 percent smaller, preserve morphology and natural short neck. Nazari head unchanged. Main board shows concise mission findings, arranged in separate panels with no graphs: heading \"Mission review\", left \"Error: 1.4x baseline\" and \"Below this run cutoff\"; right \"412 suspect rows / 28,800\" and \"Activity near 73.4 Hz\"; bottom \"Second run: 0115\". Foreground tablet Farah points at reads \"Review training rows\" and \"Cause unresolved\". Her paper remains blank reverse side. No fabricated cutoff or loss curve. This is a fictional story finding, not the synthetic exercise output. All other displays off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Epilogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses and connected anatomy. Only concept and epilogue Farah receive at most5 percent head adjustment after native review. Other heads unchanged.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-epilogue-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "333c1e31c9b4acba49ee68295f197fcd050bcc74a5b354e396504492b5dfa7bf",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-3029e518-29d6-4818-8f62-4b262c7b54f1.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-epilogue-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

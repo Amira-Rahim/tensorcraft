@@ -1,0 +1,25 @@
+{
+  "mode": "built-in image_gen",
+  "date": "2026-11-06",
+  "scenes": [
+    {
+      "id": "foundations/normalization",
+      "assetId": "foundations/normalization",
+      "source": "art-src/scenes/foundations__normalization-openai-20261106.png",
+      "output": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+      "prompt": "Use case: precise-object-edit. Preserve this finished image exactly, including all faces, people, poses, room, lighting, the four left input strips, four separate connectors, all four right output row frames, and the brass-yellow ringed sample marker. Change ONLY the vertical amplitude of the THIRD and FOURTH output waveforms on the right half of the tabletop hologram. Increase their vertical excursions so each of all FOUR right-hand output waveforms uses about the same peak-to-peak height, approximately twenty to twenty-four pixels in the1536 by1024 image. The third row's fast fine oscillations need about twice their current vertical amplitude. The fourth row's gentle ripples need about three times their current vertical amplitude. Keep their same waveform shapes, timing, horizontal extent, baseline and row position. Their peaks and troughs must stay inside their own row frame. Leave the first and second output traces unchanged. Do not merge rows or connectors. Do not change anything else. No text, labels, letters, numerals or watermark. Output one finished landscape image only.",
+      "basePrompt": "Use case: precise-object-edit. Asset: a single1536 by1024 cel-shaded Deep Orbit scene. Keep this finished illustration exactly unchanged except the output graph region in the right half of the tabletop hologram. Preserve all three canonical human faces, hair, uniforms, poses, hands, room, console displays, lighting and camera. Preserve the four input signal strips on the left exactly as they are, in their current top-to-bottom order. Preserve the separate brass-yellow ringed diamond sample marker and its stem at the same location. Scientific correction: normalization scales each feed independently; it does not merge four sensor feeds into one signal. Remove the current convergence junction and the single long output waveform. Replace them with exactly FOUR SEPARATE STACKED OUTPUT STRIPS on the right half, approximately aligned at image y780, y830, y880 and y930. Each strip contains its own distinct waveform. The top trace retains the first input's irregular pointed pulses, second retains its slower rolling pattern, third retains its dense fast oscillations, fourth retains its gentle ripples. Render these four output traces at comparable small visual amplitude while preserving their distinct shapes and order. Draw exactly one smooth connector from each left input to its corresponding right output row: first-to-first, second-to-second, third-to-third, fourth-to-fourth. The connector lines must stay separate and must never converge, cross or share a node. Add subtle thin rectangular row frames to make the four separate outputs unambiguous. Keep all four rows wholly inside the tabletop hologram with no overlap of people or furniture. Keep the ringed sample marker as a separate overlay, not a junction that combines rows. Preserve the original green and brass palette, clean linework and flat cel shading. No text, labels, letters, numerals, logos or watermark. Produce one image only.",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b242-e8b8-7dc3-a473-d08dd8fc2df3/exec-e2ec8da7-5457-4cc7-a332-695a4cbf1369.png",
+      "reference": {
+        "removedInput": "normalization-openai-face-20261106.png",
+        "sha256": "519d35861a7fd7dc03bbb505229c253d5c96936e761e9790f485b6d7dd3bc613",
+        "reason": "The earlier normalization candidate was superseded by the four-trace refinement. The approved PNG uses the canonical source path."
+      },
+      "refinementReference": "/Users/amira.salah/.codex/generated_images/01a1b242-e8b8-7dc3-a473-d08dd8fc2df3/exec-9ff4d159-a1f2-47cb-9f2e-4566b1e328ff.png",
+      "review": "Verified four separate input feeds map one-to-one to four separate stacked output traces with comparable amplitude and distinct patterns. All three canonical faces, poses, room and separate ringed marker preserved.",
+      "status": "approved",
+      "bytes": 188636,
+      "quality": 82
+    }
+  ]
+}

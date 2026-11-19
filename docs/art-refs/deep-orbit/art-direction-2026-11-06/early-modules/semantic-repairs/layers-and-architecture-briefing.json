@@ -1,0 +1,51 @@
+{
+  "id": "neural-networks/layers-and-architecture",
+  "phase": "briefing",
+  "cast": [
+    "chief-nazari"
+  ],
+  "prompt": "Use case: identity-preserve. Edit the Deep Orbit existing story scene. The first input(s) are immutable canonical character portraits in the listed order. The LAST input is the TARGET scene. Preserve those exact adult faces: age, compact nose, eye spacing, broad cheek/chin morphology, mouth, hair and expression. Preserve camera, character positions, natural head yaw/neck connection, both separate shoulder-arm-hand chains per person, furniture, chair clearance and all room geometry. Keep warm stylized adult comic proportions: apply ONLY a subtle8percent reduction to full heads including hair versus target, keep facial shape and bodies unchanged; no tiny realistic heads. Farah lens anatomical LEFT eye. Demir comms anatomical RIGHT ear only; if visible anatomical-left ear has device, remove it and leave natural bare ear, right device may be occluded. Replace all unrelated background screen plots with plain dark standby glass. Change brightneonmint lights and blooms to muted sage, shinyyellowgold to aged restrained brass; ceiling lamps warm neutral. Purposeful colored hardware buttons stay. No colored left accent bars, no extra people/hands, no arbitrary charts. Main lesson content clear, compact, perspectively integrated. 1536x1024.\nCanonical portrait order: chief-nazari.\nMain upper holo displays exactly input box '3 inputs' feeding three sequential blocks '32 ReLU', '16 ReLU', '1 sigmoid'. Heading 'Bridge model'. Footer '673 parameters' and 'Not trained'. Remove arbitrary bar chart and trianglebadge. Nazari crossed arms/multitool pose preserved. All incidental monitors dark.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__layers-and-architecture-openai-20261107.png"
+  ],
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+  ],
+  "status": "generated-awaiting-review",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ef3bb680-3f15-4a5e-9669-3b628ed70008.png",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/layers-and-architecture-briefing-chief-nazari-proof.png",
+      "sha256": "e7c0fd793d9132b59f86071dbe837fa676260564ec061acaa90777383d2aeada",
+      "crop": {
+        "left": 890,
+        "top": 260,
+        "width": 240,
+        "height": 310
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-f26f50af-0554-4df1-8d73-89742a4c6555.png",
+      "priorSha256": "bc916e62aaa63b4d79a7037fc502ff661a4eef3b09f67031573255a48f51ef2a",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ef3bb680-3f15-4a5e-9669-3b628ed70008.png",
+      "candidateSha256": "589008d5a56ff5eb3a98406803c1c3b879eebc954c9760da9d6e9f68a7177e1b"
+    }
+  ],
+  "pathSha256": "589008d5a56ff5eb3a98406803c1c3b879eebc954c9760da9d6e9f68a7177e1b",
+  "screenMeaning": {
+    "section": "Opening dialogue; The three-layer network",
+    "spec": "Nazari's engineering quote shows Bridge inputs3→32→16→1, parameter budget673, status not trained. Contrast old96/32/1 quote3521 as rejected oversized configuration only if space permits.",
+    "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "cast": [
+      "chief-nazari"
+    ]
+  }
+}

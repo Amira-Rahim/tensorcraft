@@ -1,0 +1,61 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:11:39.592465+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__building-a-network-concept/candidate.png",
+  "candidateSha256": "687748ae9770d6c1730e9c6e6b489ddc1549558a3bc8dd670c609d43cb9072e4",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+      "sha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "Canonical identity: commander-mirza",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-neural-networks__building-a-network-concept-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__building-a-network-concept/candidate.png",
+      "rect": [
+        1160,
+        245,
+        240,
+        280
+      ]
+    },
+    {
+      "name": "peer-neural-networks__building-a-network-concept-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__building-a-network-concept/candidate.png",
+      "rect": [
+        625,
+        730,
+        210,
+        105
+      ]
+    },
+    {
+      "name": "peer-neural-networks__building-a-network-concept-2",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__building-a-network-concept/candidate.png",
+      "rect": [
+        1115,
+        825,
+        170,
+        130
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "Large operator-facing screen accurately separates building and prediction availability, compile configuration and fit updates. The adam, binaryCrossentropy and accuracy options match the lesson.",
+    "Mirza retains her mature canonical facial shape and uniform details. Both arms and the trackball and folder grips are connected, with natural wrists and plausible five-digit anatomy."
+  ],
+  "repairDirection": "None."
+}

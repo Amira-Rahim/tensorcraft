@@ -1,0 +1,179 @@
+{
+  "key": "report-generation-takeaways",
+  "id": "llm-integration/report-generation",
+  "phase": "takeaways",
+  "source": "art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+  "sourceSha256": "82a80d27334cc17debcbf0213fb43c5510e3033b76095120f6e90155acad652f",
+  "auditIndex": 78,
+  "auditHold": "Farah and Nazari pose like a portrait; Nazari holds a tablet screen outward and gestures a pencil toward its back. Generic sine/jagged cards and a floating connector are unrelated to report consistency. Full restage: they inspect approved sections against source evidence at a shared operator-facing display, check omissions and final consistency, natural hands and attentive eyelines.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Image1: dr-farah canonical identity authority. Image2: chief-nazari canonical identity authority. Image3: lab ROOM ONLY master, not incidental UI or oversaturated light. Finalimage: exactedit target.\nFull restage candid final consistency review. Farah seatedleft studies a large shared physical desktop monitor to right, Nazari stands slightly behind her beside screen with one hand holding closed sourcebinder naturally to side and other stylus at screen line. Both frontfaces visiblethreequarter and lookat task, Farah thoughtful, Nazari practical raisedbrow. Farah hand on keyboard and other restingdesk, twohands only each. Monitor exact header Assembled report review. Rows Approved sections in order / Name withheld headings / Check conflicting claims / Check missing context. Small status Final review pending. No fake paperbars, floating connector or graphs. This is workflow rather than a premature sent result. Darkauxiliaryscreens,pillar dimsage.\n Farah wears translucent sage AR lens on anatomicalLEFT eye. Never omit it. Nazari has NO glasses or AR lens, both eyes bare. Canonical identity and age from portraits, naturally expressive faces in three-quarter view; normal adult head/body proportions and necks. Two arms per person, trace shoulders to elbows to wrists and exactly one natural five-finger hand each. No hand/furniture penetration. Every display has a physical frame; its front must face its actual readers as well as obliquely visible to camera. Every line, arrow and letter lies in its screen plane. Any notebook is blank faintly ruled, never fake handwriting. No mugshot or posed presentation, no one looks at camera. Warm light localized, muted charcoal/neutralgray/olive, sage #6BAA8A interfaces, aged brass #A89060. Avoid electriclime/yellowwash, no plants. Dark unused screens and wrist displays. Clean bold linework, flat celshading, cohesive Deep Orbit series. 1536x1024 landscape. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "126b8366bb47692bdda2c809843b15c5786cd1a061916b32abbe3f4d6ee72352",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+      "sha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b"
+    }
+  ],
+  "alt": "Farah and Nazari check the assembled report for conflicting claims and missing context.",
+  "location": "Archimedes, Lab",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-33188efb-bce9-45ec-8bba-a0e5b41e0fc7.png",
+  "candidatePath": "art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-33188efb-bce9-45ec-8bba-a0e5b41e0fc7.png",
+  "candidateSha256": "82a80d27334cc17debcbf0213fb43c5510e3033b76095120f6e90155acad652f",
+  "ownReview": {
+    "reviewer": "/root/remaining_signal_llm",
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Native inspection: Farah and Nazari perform assembled report review, fields remain pending. Concrete checklist matches lesson. Four natural visible hands, short necks, identity details, coherent physical screen perspective and dark background monitors.",
+    "identityCrops": "pass",
+    "comparisonImagesDeleted": true
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+      "sha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+    }
+  ],
+  "identityCropReview": [
+    {
+      "key": "report-generation-takeaways",
+      "character": "farah",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-33188efb-bce9-45ec-8bba-a0e5b41e0fc7.png",
+      "sourceSha256": "82a80d27334cc17debcbf0213fb43c5510e3033b76095120f6e90155acad652f",
+      "crop": {
+        "left": 195,
+        "top": 190,
+        "width": 320,
+        "height": 390
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "referenceCrop": {
+        "left": 115,
+        "top": 5,
+        "width": 290,
+        "height": 335
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved broad soft cheek/jaw, rounded chin, arched brows, almond eye spacing, nose shape, mouth proportions and mature complexion. Gaze and three-quarter rotation account for apparent width differences; low ponytail and anatomical left-eye AR lens remain consistent.",
+      "comparisonDeleted": true
+    },
+    {
+      "key": "report-generation-takeaways",
+      "character": "nazari",
+      "source": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-33188efb-bce9-45ec-8bba-a0e5b41e0fc7.png",
+      "sourceSha256": "82a80d27334cc17debcbf0213fb43c5510e3033b76095120f6e90155acad652f",
+      "crop": {
+        "left": 500,
+        "top": 30,
+        "width": 285,
+        "height": 340
+      },
+      "reference": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "referenceCrop": {
+        "left": 125,
+        "top": 0,
+        "width": 265,
+        "height": 300
+      },
+      "verdict": "pass",
+      "reviewer": "/root/remaining_signal_llm",
+      "notes": "Crop comparison: preserved angular mature cheek/jaw structure, narrow mouth, deep-set eyes, arched brows, nose tip, freckles and age creases. Gray-streaked bob and age remain consistent through expression and viewpoint.",
+      "comparisonDeleted": true
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-873e-7ce1-89c8-bcb4def261a1/exec-33188efb-bce9-45ec-8bba-a0e5b41e0fc7.png",
+  "publishedSource": "art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-takeaways.webp",
+  "webpSha256": "c9f81d493cd0fcae3636a4bbeebea38084ccb05c250c46440c7570af298c300e",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+    "sourceSha256": "e6f02368a9c020ee6f1c949da77c546b38ef039b6138697cc68418e17369593b",
+    "webpSha256": "3fa3bff06af21aa703822c2045c6031fcdac2e7346da2e399e1f0aee0c4cc88e",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_signal_llm",
+    "status": "approved",
+    "candidateSha256": "82a80d27334cc17debcbf0213fb43c5510e3033b76095120f6e90155acad652f",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah and Nazari review the assembled report at their shared monitor. Approved sections, withheld headings, conflicting claims and missing context match source, final review pending. Four natural hands with coherent typing/stylus/binder/desk contact, canonical faces and ordinary necks; screen follows its physical plane.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+          "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+        "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__report-generation-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/report-generation-takeaways.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

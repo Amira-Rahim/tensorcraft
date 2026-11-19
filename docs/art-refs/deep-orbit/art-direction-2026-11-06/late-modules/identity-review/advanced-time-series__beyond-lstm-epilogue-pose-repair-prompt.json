@@ -1,0 +1,54 @@
+{
+  "queueIndex": 9,
+  "key": "deep-orbit/advanced-time-series/beyond-lstm",
+  "phase": "epilogue",
+  "status": "withheld-pose",
+  "inputScene": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-pose-stage1-openai-20261107.png",
+  "inputSceneSha256": "836ce18382beb9cc8902d0ac0a5a3bd47a9a8e730d186afaae6d7da51291ead6",
+  "cast": [
+    "demir",
+    "farah"
+  ],
+  "faceBoxes": {
+    "demir": [
+      735,
+      300,
+      305,
+      310
+    ],
+    "farah": [
+      1203,
+      135,
+      220,
+      250
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-pose-stage1-openai-20261107.png",
+      "sha256": "836ce18382beb9cc8902d0ac0a5a3bd47a9a8e730d186afaae6d7da51291ead6",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: identity-preserve and precise-object-edit. Image 1 is the exact canonical identity of Ensign Demir. Image 2 is the exact canonical identity of Dr. Farah. Image 3 is the edit target. Correct ONLY the physically impossible pose of seated Demir and his chair. His current back faces us toward the console while his head turns almost completely backward. SWIVEL HIS WHOLE CHAIR, HIPS, TORSO AND SHOULDERS toward Farah at the doorway on image right. Demir must now sit sideways to the desk, chest front visible in a natural three-quarter view facing diagonally toward image right. Show the front zipper of his junior uniform. Align his pelvis, ribcage, shoulders, neck and head in the same direction, with only a small comfortable head turn to look up toward Farah. Preserve his exact face morphology, short broad round-ended nose, softly squared broad lower face, eye spacing, freckles, uneven stubble, compact hair and RIGHT-ear green comms unit from Image 1. Preserve his current gentle attentive expression. Move the chair back BEHIND his back naturally with the swivel, so it does not cover the front of his chest or pass through his body. His near forearm may rest naturally along the near desk edge beside the existing waveform printout with wrist terminal visible, while the other hand rests naturally on his lap or chair armrest. Both hands must connect through natural wrists, elbows, upper arms and shoulders. No hand reaching backward to the old control position. Exactly two arms and two hands. Keep Dr. Farah COMPLETELY unchanged: exact face, head, hair, pose, limbs, hands, stylus, coat and doorway. Preserve every wall-display waveform, spacing gap and plot exactly, including the two DIFFERENT gap widths in the two comparison rows. Preserve both paper waveform rows and their distinct gaps exactly. Preserve all other displays, furniture, mug, desk, lighting, camera, room architecture and colors. Only redraw Demir seated body/pose and chair as required. No text, labels, new numbers, added objects or people. One 1536x1024 illustration.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__beyond-lstm-epilogue-pose-repair-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm-epilogue.webp",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-pose-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__beyond-lstm-epilogue-identity-prompt.json",
+      "reason": "User rejected seated body facing console with head twisted back toward Farah. Previous face approval did not establish valid full-body pose."
+    }
+  ]
+}

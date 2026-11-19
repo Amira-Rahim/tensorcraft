@@ -1,0 +1,133 @@
+{
+  "key": "deep-orbit/anomaly-detection/the-anomaly",
+  "phase": "concept",
+  "index": 41,
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. Replace this Deep Orbit lesson scene,1536x1024. The first reference portraits are strict canonical identities, preserve facial morphology, age, complexion, nose, brow, eyes, mouth, hair, signature equipment. Next reference is the room master for ROOM ARCHITECTURE ONLY, not its old screens or bright colors. Last reference is the edit target to restage. Normal balanced stylized adult heads, short relaxed necks and ordinary shoulders. Exactly two coherent arm chains per person, natural five-finger hands and wrists, convincing contact with solid objects. Characters look at their task or each other with candid curiosity, dry amusement or modest delight, never camera posing or holding information out for the viewer. Every legible display faces its actual operator, with camera beside operator seeing that same front. All text, axes, rules and graphs are projected together onto physical screen plane, not independently pasted upright. Restrained sage #6BAA8A and aged brass #A89060 against charcoal/navy, natural skin and soft practical lights. All incidental screens and wrist displays inactive dark charcoal. Hologram table inactive charcoal; dim lab tube olive-sage. No neon outlining, no fake graphs, arbitrary symbols, invented results or furniture intersections. Farah and Demir together at the bridge shared physical workstation, Farah seated left one hand onkeyboard other restedbyclosednotebook, Demir right slightly leans in onehand ondesk other lowered atside. Both react to two failed checks with curious thoughtful expressions, not fear; a small exchanged glance. Monitor on their left-front within both sightlines, camera beside them sees its front. Exact informative table title \"Same capture, three checks\"; row \"Amplitude: quiet\"; row \"Autoencoder: 6.2 > 1.0\"; row \"LSTM: 0.041 > 0.01\"; footer \"2 votes of 3: investigate\" and \"Cause: unknown\". No probability claim or made-upwaveforms. Turn old holographictable inactive charcoal and every other display off. Canonicalfaces and naturalhands. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx"
+  ],
+  "location": "Archimedes, Bridge",
+  "alt": "Farah and Demir compare three checks on one capture, with two flags prompting an investigation.",
+  "tool": "built-in image_gen",
+  "replacesSha256": "782dd49d517655e1b42dd48262704476730d2465e1d4855f0cd7b69f5f118cf1",
+  "candidatePath": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-5056-73d0-b51c-24bc29e1d898/exec-af52e5a3-8efc-4775-84a1-e56dad81850a.png",
+  "candidateSha256": "d8c19185fe9b71d1556bb08db8c18909767ad0fc2c154f3304b7f66619a95437",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+      "sha256": "782dd49d517655e1b42dd48262704476730d2465e1d4855f0cd7b69f5f118cf1",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+    }
+  ],
+  "ownQA": {
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "inspection": "Native1536x1024 plus temporary face crops side by side with canonical original portraits, current MDX and exercise facts verified",
+    "notes": "Farah and Demir exchange a thoughtful look over the same capture. Quiet amplitude,autoencoder6.2>1.0,LSTM0.041>0.01 and2-of-3 investigate match fictional mission scores. Cause remains unknown and vote is not called probability. Screen faces both on same viewing side, all rows follow physical plane. Natural keyboard/book/desk hands, short necks, ordinary shoulders, canonical faces; all background displays inactive.",
+    "faceCropCoordinates": [
+      [
+        "dr-farah",
+        [
+          470,
+          250,
+          760,
+          580
+        ]
+      ],
+      [
+        "ensign-demir",
+        [
+          950,
+          100,
+          1220,
+          440
+        ]
+      ]
+    ],
+    "temporaryCropsRemoved": true
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-5056-73d0-b51c-24bc29e1d898/exec-af52e5a3-8efc-4775-84a1-e56dad81850a.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+  "sourceSha256": "d8c19185fe9b71d1556bb08db8c18909767ad0fc2c154f3304b7f66619a95437",
+  "webpSha256": "028d2c7298f5a11d9f57c3ad2f789b54237199d1305f068b6683487cac09809c",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+    "sourceSha256": "782dd49d517655e1b42dd48262704476730d2465e1d4855f0cd7b69f5f118cf1",
+    "webpSha256": "065a0ec1f583fa5c1bd6a71a3622e95246fe3b54eafa9c28d1271a9d762662c4",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_late",
+    "status": "approved",
+    "candidateSha256": "d8c19185fe9b71d1556bb08db8c18909767ad0fc2c154f3304b7f66619a95437",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah and Demir exchange a thoughtful look over the same capture. Quiet amplitude,autoencoder6.2>1.0,LSTM0.041>0.01 and2-of-3 investigate match fictional mission scores. Cause remains unknown and vote is not called probability. Screen faces both on same viewing side, all rows follow physical plane. Natural keyboard/book/desk hands, short necks, ordinary shoulders, canonical faces; all background displays inactive.",
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+          "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

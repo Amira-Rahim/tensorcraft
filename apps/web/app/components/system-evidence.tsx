@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { SystemEvidenceStage } from "@/lib/system-evidence";
 import {
@@ -12,6 +13,7 @@ export function SystemEvidence(props: {
   stages: SystemEvidenceStage[];
   unavailable: boolean;
   entitled?: boolean;
+  stageResults?: Partial<Record<SystemEvidenceStage["id"], ReactNode>>;
 }) {
   return (
     <LearningActivityScope userId={props.userId}>
@@ -24,11 +26,13 @@ function EvidenceBody({
   stages,
   unavailable,
   entitled = true,
+  stageResults,
 }: {
   userId: string;
   stages: SystemEvidenceStage[];
   unavailable: boolean;
   entitled?: boolean;
+  stageResults?: Partial<Record<SystemEvidenceStage["id"], ReactNode>>;
 }) {
   const current = useActivityUser(),
     router = useRouter();
@@ -100,6 +104,8 @@ function EvidenceBody({
                 {stage.next.label}
               </Link>
             </p>
+            {stageResults?.[stage.id]}
+            <h3 className="my-3 font-medium">Practice and review records</h3>
             <ul className="space-y-4">
               {[...stage.due, ...stage.work].map((item, i) => (
                 <li key={`${item.href}:${i}`}>

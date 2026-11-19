@@ -1,0 +1,1416 @@
+{
+  "date": "2026-11-07",
+  "authority": "Owner requires fixed faces in all images. Parent approved portrait-first head-only repair workflow for all 50 owned images.",
+  "method": "Every scene inspected in overview and close face crops beside authoritative neutral portraits. Facial geometry, eye/brow/nose/mouth proportions, jaw/chin, complexion, age and hairline evaluated separately from costume and equipment. Pose and lighting differences are not automatic failures. No biometric identity scoring is claimed.",
+  "summary": {
+    "scenes": 50,
+    "new": 38,
+    "retained": 12,
+    "withheldMorphologyOrUncertainty": 43,
+    "closerToCanon": 7,
+    "publicationWithheldPendingCorrection": 0,
+    "identityApproved": 50
+  },
+  "records": [
+    {
+      "module": "neural-networks",
+      "lesson": "activation-functions",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari's lower face and nose are more angular; Demir has a long narrow profile and extended squared chin. Existing retained art also drifts from the neutral anchors.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 627,
+            "y": 183,
+            "width": 261,
+            "height": 306
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 1167,
+            "y": 339,
+            "width": 273,
+            "height": 273
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-face-comparison.png",
+      "reviewedWebpSha256": "ff8a54968fc6c350c3fe14e4a95ed847d38ef064c999b7f4d9a1cbc780ad40c2",
+      "approvedWebpSha256": "191eb34de95e8a7715460ec9a4373467671b23f2a28a0e29a6007298af1a04dc"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "activation-functions",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's jaw narrows to a small point, her nose lengthens, and her eyes become elongated sideways shapes. An open smile should not require those structure changes.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 444,
+            "y": 102,
+            "width": 369,
+            "height": 426
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-face-comparison.png",
+      "reviewedWebpSha256": "f559c0902de2241dc77ae486be0042f1daf2559d95719bb88fb4cbfb29332bfa",
+      "approvedWebpSha256": "68cfc7dd89486c9fce9524a342bbacd25e88315fce4d74b26d792d85aa44af3c"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "activation-functions",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir has a narrower pointed nose, longer lower face and enlarged swept-up quiff. These differences remain beyond the downward gaze and head angle.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 528,
+            "y": 54,
+            "width": 339,
+            "height": 417
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-face-comparison.png",
+      "reviewedWebpSha256": "ea3d0a1b9be35dad14497d47943fb6fa73934b22a1d2480b65427d6aa1d1e396",
+      "approvedWebpSha256": "e49ca8c60b512fdb8be28ca10986d807a200bf1d9a4435b575170ed7eae91da1"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "activation-functions",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's face is slim and sharply tapered, with a longer bridge and stretched smile. Nazari also has a more angular jaw and narrow nose than the anchor.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 309,
+            "y": 54,
+            "width": 270,
+            "height": 318
+          }
+        },
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 999,
+            "y": 66,
+            "width": 327,
+            "height": 369
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-face-comparison.png",
+      "reviewedWebpSha256": "6851ede3833aef6a02972097264db197a7404f418cc297a4efc8e2d384a443d4",
+      "approvedWebpSha256": "68a5e136aa534427d17c171075cc7162eeaf0cfc952d65cae80d42ca547ad99e"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "activation-functions",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/neural-networks/activation-functions-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's nose-to-chin region is elongated, chin is pointed, nose tip narrow, and hair mass taller. Same uniform, stubble and earpiece are insufficient.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 891,
+            "y": 39,
+            "width": 369,
+            "height": 471
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-face-comparison.png",
+      "reviewedWebpSha256": "2f779cc83dc26e121743a765119b210e3d2916da305ac6416bdb1dad3e21fe84",
+      "approvedWebpSha256": "dee78f96841f37b78ebdb25983e27bd789785184e352404ac6b039a237791968"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "building-a-network",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "REVIEWED_CLOSE_TO_CANON",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Mirza retains a broad nose, full lips, mature eye folds and forehead, close cropped silver-templed hair and broad rounded lower face through the turn.",
+      "characters": [
+        {
+          "character": "commander-mirza",
+          "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "crop": {
+            "x": 300,
+            "y": 27,
+            "width": 345,
+            "height": 405
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-face-comparison.png",
+      "reviewedWebpSha256": "e3615ff622bfd465324e09bf9fa10df1a4671ff9878c80a2259bbfb76564c28c",
+      "approvedWebpSha256": "f41adebe2a08f2bb0e5754683908b716ea44afd581cb1bda4f00352b8347a05a"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "building-a-network",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Mirza's chin and lower face become narrower and more pointed; eye and cheek shapes read younger/softer. Mature marks and silver temples alone are insufficient.",
+      "characters": [
+        {
+          "character": "commander-mirza",
+          "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "crop": {
+            "x": 234,
+            "y": 63,
+            "width": 273,
+            "height": 351
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-face-comparison.png",
+      "reviewedWebpSha256": "cd65596643731665f0fdf7a6dc657621abf1951357d937f47287d26a664cedf1",
+      "approvedWebpSha256": "e71d1ad9ed46a1520433844f8c9dd7e142d1d9cfb4cec613bae2a57b90f6bffe"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "building-a-network",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's jaw is elongated and angular, nose narrower and hair mass oversized compared with the compact canonical head.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 246,
+            "y": 30,
+            "width": 387,
+            "height": 471
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-face-comparison.png",
+      "reviewedWebpSha256": "712b058ae0e9dd811617e3eeef455bb446da2e07fcaa271772683dddd03dda0f",
+      "approvedWebpSha256": "23aabe2939b3d1ac061b4400cc82e18eec7e2f80650ba0798e912a232e9c0b9d"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "building-a-network",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's nose and lower face lengthen with a much taller quiff. Mirza's lower face also tapers more than the broad rounded canonical shape.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 321,
+            "y": 48,
+            "width": 330,
+            "height": 417
+          }
+        },
+        {
+          "character": "commander-mirza",
+          "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "crop": {
+            "x": 933,
+            "y": 54,
+            "width": 306,
+            "height": 411
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-face-comparison.png",
+      "reviewedWebpSha256": "d008082c22d6b6e4092919234c64d5641482bab103c345464f8e8b91b98929f1",
+      "approvedWebpSha256": "4b2ba3a7dcf7ffd9ac98b881f79c302496eeb500139886a3c4122f291847edf9"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "building-a-network",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/neural-networks/building-a-network-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah has a narrow pointed nose, flatter cheek plane and more tapered lower face, with a longer side-swept hair mass. Lens and palette remain consistent.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 447,
+            "y": 33,
+            "width": 390,
+            "height": 423
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-face-comparison.png",
+      "reviewedWebpSha256": "ad430e413b4ccd8e07e565207a3344d37910f741ef8c025f0434d022b4a3283f",
+      "approvedWebpSha256": "45dc9470b3001dfe94294afafc880e69b7816de8d718fec34c9b3a388bce9921"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "first-neuron",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's nose bridge is narrower and longer, eyes more slanted, and lower cheek/chin outline more tapered than the neutral portrait. Equipment and color match do not resolve the facial mismatch.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 726,
+            "y": 264,
+            "width": 300,
+            "height": 336
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-face-comparison.png",
+      "reviewedWebpSha256": "7f66543782b43c9c2d3bb51de41c6a60cbf64d1a92c502f6abbaf00b4e3986da",
+      "approvedWebpSha256": "7e247de9112b512facb977e4177178ff998b2114b1d265fde525497a339466af"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "first-neuron",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah has a long narrow bridge and tip, slim lower cheeks and pointed chin. The canonical face has a compact round-ended nose and fuller rounded lower face.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 948,
+            "y": 90,
+            "width": 339,
+            "height": 390
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-face-comparison.png",
+      "reviewedWebpSha256": "78c8626734f65fbabb214d5d932812dd14f99a5e3a4cb5c8fe9e14bc69e07c36",
+      "approvedWebpSha256": "4b5556995d6d8a5d9f615600f77bc4effa29b8f5bf56b99601fcc05f30250903"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "first-neuron",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's chin is sharpened and eyes narrowed; Demir's lower face and nose length grow, with a taller swept-up hair mass. Both need individual facial corrections.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 540,
+            "y": 165,
+            "width": 324,
+            "height": 405
+          }
+        },
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 990,
+            "y": 15,
+            "width": 345,
+            "height": 405
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-face-comparison.png",
+      "reviewedWebpSha256": "bf3c46b00566a526145cc9de74c403ac4f5faa10e872e84f323601513c160b74",
+      "approvedWebpSha256": "5e0480394cc832d64f674db1ddf190192e106de5c3be7e75677c6cf1f8ddc061"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "first-neuron",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's brows and eyes are more slanted, nose bridge elongated and chin narrower. The lens and tied hair are consistent but do not establish the same person.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 873,
+            "y": 33,
+            "width": 408,
+            "height": 456
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-face-comparison.png",
+      "reviewedWebpSha256": "2d625776f665b678833331c37f20c1c29262626a37884b74560b8901421787ad",
+      "approvedWebpSha256": "594e351f9d54e7585ddf51dbea424b0b9b91581b597c1dcbfa8e56f770fa1099"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "first-neuron",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari's strong profile uses a long straight nose and very angular jaw. The frontal anchor cannot positively establish this profile as the same facial structure; withhold pending a portrait-anchored correction.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 966,
+            "y": 177,
+            "width": 267,
+            "height": 315
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-face-comparison.png",
+      "reviewedWebpSha256": "64a220b6e4783b9d7ff8644624aa1c810c99b6f484a50f81cd3fcf9103820c6c",
+      "approvedWebpSha256": "84531a1aa0b05802ad6df8287087796de4599832434c68994a3aa2b08cdbc901"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "forward-pass",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Retained Demir has a sharp extended profile and large spiked hair mass; Farah has a narrow long bridge, thin lower face and pointed chin. Both need the neutral anchors restored.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 774,
+            "y": 453,
+            "width": 246,
+            "height": 273
+          }
+        },
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 1068,
+            "y": 129,
+            "width": 273,
+            "height": 309
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-face-comparison.png",
+      "reviewedWebpSha256": "dc10e650c87ac176fd635c07cfc1815d63a7a337e55c15e2e7a7d29c7df288ca",
+      "approvedWebpSha256": "35bd14489410563605a3c6a38746077bf5f654cc04597696a950766243fde1dd"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "forward-pass",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's nose and lower-face proportions lengthen and slim. Demir has increased hair mass, a narrower chin and changed nose-to-mouth proportions.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 135,
+            "y": 147,
+            "width": 309,
+            "height": 390
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 675,
+            "y": 72,
+            "width": 309,
+            "height": 405
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-face-comparison.png",
+      "reviewedWebpSha256": "c29c9f8c52726c3bc8cbd741413fc9e52246b61fa3f59b35aa686a8453d18a7e",
+      "approvedWebpSha256": "494563c980984edbba46544880147d89887b91d91ce099550ccd1d395f0c642d"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "forward-pass",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's lower face is elongated and wedge-shaped, with a narrow pointed nose and enlarged swept-up hair. These are structural changes rather than expression.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 300,
+            "y": 6,
+            "width": 468,
+            "height": 513
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-face-comparison.png",
+      "reviewedWebpSha256": "5ad2f4700e672f67cf7cec6894a872dc8e55c6b4fb03aec284bec5e35b2e007a",
+      "approvedWebpSha256": "7fa85165344148422048d3bc89d99f3fdf893b662326a988a6e842b81459cdc0"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "forward-pass",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir is closer here, but the lower face tapers more sharply and the nose and hair mass differ enough to require correction under the fixed-identity contract.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 543,
+            "y": 6,
+            "width": 465,
+            "height": 549
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-face-comparison.png",
+      "reviewedWebpSha256": "57753124d23da1b2de28390ed1d41ea306e3e38d3a70807259596191b90d926e",
+      "approvedWebpSha256": "08c6ebbc9459bfb17d27c20a0330039e5a4266ba255ac58bb7fc6df8ec548b28"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "forward-pass",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's nose-to-chin region is substantially longer, chin narrower and hair taller than canon. The side gaze does not account for all changes.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 900,
+            "y": 6,
+            "width": 336,
+            "height": 438
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/forward-pass-face-comparison.png",
+      "reviewedWebpSha256": "c0e413152d3313fbe2c1b686a5c24d7c10d389789c0285c139ab0947ded5a31f",
+      "approvedWebpSha256": "999075b1bdc0b7a99e5def481aae31baa741e4cc8d1d8c4769da50915fe54cbe"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "layers-and-architecture",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "REVIEWED_CLOSE_TO_CANON",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari retains the broad compact nose, mature eye folds, firm rounded chin, cheek proportions and gray-streaked hairline. The mild turn does not materially change facial structure.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 864,
+            "y": 240,
+            "width": 300,
+            "height": 315
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/layers-and-architecture-face-comparison.png",
+      "reviewedWebpSha256": "dcdd31db5fce1e89251b06cc92459ae9a5d77f3486faca935c9ede03c4466b70",
+      "approvedWebpSha256": "af062ba17742b27c6f7b9f85bb64eeb4e78244956115952997fb4a45c46759cd"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "layers-and-architecture",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari's nose bridge and lower face lengthen, cheek plane becomes flatter and chin more angular. Age lines survive but individual facial shape is less certain.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 366,
+            "y": 165,
+            "width": 327,
+            "height": 375
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/layers-and-architecture-face-comparison.png",
+      "reviewedWebpSha256": "0cbef480f7a6acc081d8b9c2862e264bcea7f7007eaaff2fdf0377983f525eb0",
+      "approvedWebpSha256": "8508ae3bd372d06f0df6416b3793ba9a5794c7319a594447b6e46105bdc64bf3"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "layers-and-architecture",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's eye spacing is close, but his nose tip becomes sharper and hairline/quiff expand. Lower-face shape is insufficiently stable for the stricter same-person gate.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 762,
+            "y": 117,
+            "width": 312,
+            "height": 378
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/layers-and-architecture-face-comparison.png",
+      "reviewedWebpSha256": "d357fda4abf8771cd77e67b6db7281c286858727ffed76c5f679058957ac6af4",
+      "approvedWebpSha256": "e36a3638c775578abf3fec6e6e8370a9278cd8affc470f1fb5b86a4d180a4d03"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "layers-and-architecture",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "REVIEWED_CLOSE_TO_CANON",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari retains a compact broad nose, mature eye folds and mouth proportions, rounded chin and recognizable gray-streaked hairline through the head turn.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 852,
+            "y": 81,
+            "width": 291,
+            "height": 357
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/layers-and-architecture-face-comparison.png",
+      "reviewedWebpSha256": "553d072754830368ef63596174a84ff397e73f9118d0153df99b358b9db1546e",
+      "approvedWebpSha256": "8f2865a6edaae2d041e7e7d4b0b5c576ee234bf20f770578f8080a98435d3547"
+    },
+    {
+      "module": "neural-networks",
+      "lesson": "layers-and-architecture",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir has a long narrow profile and pointed chin; Nazari's nose and jaw are more elongated. Neither is cleared by costume continuity.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 153,
+            "y": 105,
+            "width": 312,
+            "height": 390
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 771,
+            "y": 90,
+            "width": 360,
+            "height": 426
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/layers-and-architecture-face-comparison.png",
+      "reviewedWebpSha256": "0abc2e7da7d13f0e046f715ae504d8a44d7ff1d4cca142304a454f11ebded258",
+      "approvedWebpSha256": "f31383eeefd4e9b2ee45633569027c7879622a9537faf0b5d7a703e96baf8531"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "backpropagation",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/training-loop/backpropagation.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Retained Demir has a long thin nose, elongated sharply tapered chin and changed hair silhouette. Fatigue explains expression, not altered structure.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 417,
+            "y": 420,
+            "width": 300,
+            "height": 318
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/backpropagation-face-comparison.png",
+      "reviewedWebpSha256": "b926b99b670accff944f10426b941968e1c87108c909adfe1e8e069df0fed207",
+      "approvedWebpSha256": "a9529141f2405227883716bce5bae7c1529c4e72d38feb32e8e67d5df44750aa"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "backpropagation",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's nose, chin and lower jaw lengthen markedly and his hair mass expands. Open-mouth delight should preserve his compact neutral face.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 246,
+            "y": 195,
+            "width": 279,
+            "height": 339
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/backpropagation-face-comparison.png",
+      "reviewedWebpSha256": "095f5e4082c7f3e96631572d40bf42151ce7a3b1ce05248c78857f00c2eb80d8",
+      "approvedWebpSha256": "0d3ecbc7c9a3d2cd795444164ac9921a46af927f7a804dcc85aceeaea86aadf8"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "backpropagation",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's face is long and tapered, nose bridge narrow and chin sharper. The downward head pose alone does not establish a canonical match.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 738,
+            "y": 102,
+            "width": 315,
+            "height": 357
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/backpropagation-face-comparison.png",
+      "reviewedWebpSha256": "0ec3e3b0a61d5d5a187d5685864d9f6bfc9f54613b8956252b8c611766746e8f",
+      "approvedWebpSha256": "25b7b183b3f0b6c0491446b81be6a7909168a035b1d2eeebaee20bd47a06a78d"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "backpropagation",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "REVIEWED_CLOSE_TO_CANON",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari retains the compact broad nose, mature crow's feet/cheek folds, full restrained mouth and firm rounded chin. The face remains recognizable without uniform cues.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 468,
+            "y": 42,
+            "width": 336,
+            "height": 381
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/backpropagation-face-comparison.png",
+      "reviewedWebpSha256": "50981e0b9cd80fcf3b49fa83c4f1fbe46451018e489ea589b07d49e0a389b90a",
+      "approvedWebpSha256": "dff04c0466345bfd4d506a425f7537a5349fa5393c25c804b90632880295e405"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "backpropagation",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir has changed mouth/chin proportions and a larger swept hair silhouette. Nazari's long narrow nose and angular lower face also require correction.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 120,
+            "y": 126,
+            "width": 288,
+            "height": 324
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 1077,
+            "y": 87,
+            "width": 273,
+            "height": 339
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/backpropagation-face-comparison.png",
+      "reviewedWebpSha256": "7c5807a725768e3d883eee489f23534d6cf1d0f51556372a95e428f01793bf0c",
+      "approvedWebpSha256": "0ee9b98a1dba1417145f78ec7fca40c33b58dfe626852dd301bfe35bbe924fca"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "evaluating-deep-scan",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "REVIEWED_CLOSE_TO_CANON",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Mirza retains her broad nose, mature eye folds and forehead lines, full lips, rounded lower face and close silver-templed hair.",
+      "characters": [
+        {
+          "character": "commander-mirza",
+          "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "crop": {
+            "x": 474,
+            "y": 66,
+            "width": 261,
+            "height": 327
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-face-comparison.png",
+      "reviewedWebpSha256": "c8dc87b5e21fb98d67428927315927b3586b3a966ea0260190fabd2b09d22963",
+      "approvedWebpSha256": "9c10120ac2faa5b6ee58df5a119fedfe400eab6173e616659998ae4123419830"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "evaluating-deep-scan",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "REVIEWED_CLOSE_TO_CANON",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Mirza preserves broad nose and full lips, mature eye/forehead detail, cheek width and rounded jaw while tilting her head. Identity cues extend beyond uniform and hair.",
+      "characters": [
+        {
+          "character": "commander-mirza",
+          "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "crop": {
+            "x": 345,
+            "y": 63,
+            "width": 303,
+            "height": 372
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-face-comparison.png",
+      "reviewedWebpSha256": "32ce2d732ead62625cdff17b8c46b68e7f07659a1c98f6a6f491250f22abee3e",
+      "approvedWebpSha256": "7ee6439d536d7e0bcd9e9dccea7db54d2478c003154d0760e3925eeae57e9579"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "evaluating-deep-scan",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Mirza is comparatively close, but Demir's lower face is tapered and nose elongated with oversized hair. Scene remains withheld until both faces meet the gate.",
+      "characters": [
+        {
+          "character": "commander-mirza",
+          "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "crop": {
+            "x": 183,
+            "y": 54,
+            "width": 267,
+            "height": 351
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 816,
+            "y": 165,
+            "width": 282,
+            "height": 369
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-face-comparison.png",
+      "reviewedWebpSha256": "8ebae6d6974a42bd98138f582ed13e3ce8fae6a4b68fc5e25ecf2366d8cb26a0",
+      "approvedWebpSha256": "4668ef5f48d4aac16970a0d90e5e3aa6ea0f45f2ec7e2bdef9b3ecd56016c804"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "evaluating-deep-scan",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's long pointed nose and flatter narrow cheek/jaw structure drift. Mirza is closer, but that cannot clear the whole two-character scene.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 132,
+            "y": 96,
+            "width": 318,
+            "height": 348
+          }
+        },
+        {
+          "character": "commander-mirza",
+          "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+          "crop": {
+            "x": 639,
+            "y": 69,
+            "width": 258,
+            "height": 330
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-face-comparison.png",
+      "reviewedWebpSha256": "65949ee4454a09c6c6f192767623a434c911680a19298d31a65b05cf9cedf075",
+      "approvedWebpSha256": "d8637f9310ae8b3443b9aa45a55f92ba055754b038d47080de91ff7ad245f1c8"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "evaluating-deep-scan",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah has narrowed eyes, sharper chin, slim lower cheeks and a changed nose bridge, reading younger and more generic than the mature neutral anchor.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 639,
+            "y": 24,
+            "width": 438,
+            "height": 486
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/evaluating-deep-scan-face-comparison.png",
+      "reviewedWebpSha256": "42238f7cab87f0db51af935540fb4dc706c48c0718f017c8cff2f6ba2858ca51",
+      "approvedWebpSha256": "b5b4c91845d82a3f5a6727123a13bc8573c389b383a577a42c80d2255b722b1f"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "gradient-descent",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari's retained nose is longer and sharper, eyes narrower and jaw more angular. Her gray hair and lines match the role but not securely the same face.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 201,
+            "y": 168,
+            "width": 291,
+            "height": 345
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/gradient-descent-face-comparison.png",
+      "reviewedWebpSha256": "0f83f05e69806a5b01aeace2c335e72c1c6a0f3c8d68654a58a14f4752af3058",
+      "approvedWebpSha256": "2422720f13c812b8a0c565239cdb4f4b9710cbd38bae0bfc140faf4c74237401"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "gradient-descent",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "REVIEWED_CLOSE_TO_CANON",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Nazari retains broad compact nose, mature eye and cheek folds, firm rounded chin and recognizable mouth/brow proportions. Head tilt is consistent with the anchor.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 882,
+            "y": 96,
+            "width": 315,
+            "height": 384
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/gradient-descent-face-comparison.png",
+      "reviewedWebpSha256": "838e57de44c673d6e803bcc47a214cfd3b894682cab3e9f8cd816a3143f2746c",
+      "approvedWebpSha256": "81966bec12d1ff8bd6908955249d97d9dd3c299a0b556453f9a4979f9cbdbf10"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "gradient-descent",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's nose-to-chin region and pointed nose lengthen; jaw narrows and quiff grows. His expression can vary without these shape changes.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 366,
+            "y": 117,
+            "width": 375,
+            "height": 450
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/gradient-descent-face-comparison.png",
+      "reviewedWebpSha256": "cd015c2d8340b6ba00e4ba40788b77c381102a3c4561d9f291a44a7720f3155d",
+      "approvedWebpSha256": "0fbaf737ad858ca93a6f4d2b41af0b34acbd68961f3f56e5909461d38b8ef3ad"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "gradient-descent",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's long nose and tapered chin differ from canon. Nazari also has a narrow extended nose and sharper jaw despite retained age marks.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 333,
+            "y": 99,
+            "width": 342,
+            "height": 396
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 900,
+            "y": 12,
+            "width": 360,
+            "height": 456
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/gradient-descent-face-comparison.png",
+      "reviewedWebpSha256": "b9d32ed4a74d7437a7865a7e80a4d19dba5eef3d8c2adc37f9acb7db3c19ce92",
+      "approvedWebpSha256": "899bf06b7331f446e9271bdf2254bcfa50a6d5e13c3647dec8c073e996f7febb"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "gradient-descent",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's narrow long face and larger quiff drift; Nazari's lower face is slimmer and nose more pointed. Both remain recognizable by props but not securely by facial structure.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 807,
+            "y": 129,
+            "width": 291,
+            "height": 351
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 348,
+            "y": 186,
+            "width": 291,
+            "height": 381
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/gradient-descent-face-comparison.png",
+      "reviewedWebpSha256": "56078ae81cf419b40cec6fa4e68f73e1837e5d71e32c767efb1d650d742ed0bf",
+      "approvedWebpSha256": "4227adb5999a4a2fcc04a65bd07f2ca381c9e645a3fbd6ffa7aa1aa3c87920f3"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "loss-functions",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/training-loop/loss-functions.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's retained face is slim, pointed and younger, with a longer narrow nose and reduced adult cheek/eye detail.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 849,
+            "y": 351,
+            "width": 390,
+            "height": 363
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-face-comparison.png",
+      "reviewedWebpSha256": "33f55c069afb1be63c2d4a871c5931f4facd4704f6bc0e4b1e629f547d4cdcaa",
+      "approvedWebpSha256": "1f63979738457a4891aef9a299e994bd61ddc9ca934a034bbe2b5b582e19d9f2"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "loss-functions",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's long narrow nose, stretched lower face and sharp chin differ from the compact nose and full rounded lower cheeks in the neutral anchor.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 993,
+            "y": 123,
+            "width": 339,
+            "height": 375
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-face-comparison.png",
+      "reviewedWebpSha256": "9e985320168e57b795fdebc90cd5cc2376853ef9ea31fb253706e6a2073285b1",
+      "approvedWebpSha256": "5c0fa2ca022f98847b7b94db5777fbd004b56f2d45eda899cc1d5d3ebba7ddd8"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "loss-functions",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir is comparatively close, but Farah's chin and lower cheeks remain slim and the nose bridge is longer. Scene approval is withheld because every depicted face must match.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 348,
+            "y": 312,
+            "width": 312,
+            "height": 393
+          }
+        },
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 1065,
+            "y": 201,
+            "width": 363,
+            "height": 405
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-face-comparison.png",
+      "reviewedWebpSha256": "50cf2ac16d08f879f835c6007eea2d4dbd6d7b70f3432981c71d0a3bede31fc8",
+      "approvedWebpSha256": "7d991a3fbb0a5741f11b10cc25ad88c2d0a029c0b72b403182a56d8932ca9108"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "loss-functions",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Farah's eyes become narrow slanted shapes, her nose longer and mouth/chin proportions sharper. The overall face reads younger than the anchor.",
+      "characters": [
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 900,
+            "y": 30,
+            "width": 408,
+            "height": 444
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-face-comparison.png",
+      "reviewedWebpSha256": "94bd99b64470325f756609e29d51477dc85496e6fa099568d0ceb9a19fca7d32",
+      "approvedWebpSha256": "9e19f456ddad6a3676e81f27ebb2e1a9d1e65e3d4c7ed1701ba50a3ee6a1ffb8"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "loss-functions",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "The retained Farah has a longer nose and narrower lower face; Demir has a squared extended lower jaw and taller hair. Both need anchor-based correction.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 378,
+            "y": 315,
+            "width": 216,
+            "height": 282
+          }
+        },
+        {
+          "character": "dr-farah",
+          "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+          "crop": {
+            "x": 957,
+            "y": 282,
+            "width": 282,
+            "height": 330
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/loss-functions-face-comparison.png",
+      "reviewedWebpSha256": "55371f964042210f145a26a1aa4de3ee6479952fb9455f4027658e0132685f6a",
+      "approvedWebpSha256": "5f21b3c8cd62c0ca2f188d12048b87d38944be4dd03e434517d1c6b91a20c4f1"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "training-loop",
+      "phase": "briefing",
+      "src": "/scenes/deep-orbit/training-loop/training-loop.webp",
+      "newlyGenerated": false,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Retained Demir has a strongly squared extended chin and enlarged upright hair mass; the canonical lower face is shorter and rounded.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 876,
+            "y": 288,
+            "width": 201,
+            "height": 255
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/training-loop-face-comparison.png",
+      "reviewedWebpSha256": "c54d6369eed3294099009a9ef307b36b2a361bae669bb1d38d738d72864e551f",
+      "approvedWebpSha256": "f8909397821e11622a8b08aaefadee05acad1ef3e7a08f3ade83bf65946cf6e9"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "training-loop",
+      "phase": "concept",
+      "src": "/scenes/deep-orbit/training-loop/training-loop-concept.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's lower jaw and nose are longer and more angular than canon, with increased quiff volume and a more elongated head.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 285,
+            "y": 129,
+            "width": 321,
+            "height": 417
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/training-loop-face-comparison.png",
+      "reviewedWebpSha256": "6fd42e55dc1dd2754c76d8f0d26861eedbbbda9ff3b3ae5c9f6d51dfe279fe8c",
+      "approvedWebpSha256": "54c4d071c17f85c7c51bf5a84f446f994c3fa74b095ada9a7c39000292b33759"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "training-loop",
+      "phase": "challenge",
+      "src": "/scenes/deep-orbit/training-loop/training-loop-challenge.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's chin and nose become sharply tapered; Nazari's nose and cheek plane also narrow. Both need shape restoration, not just matching accessories.",
+      "characters": [
+        {
+          "character": "chief-nazari",
+          "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "crop": {
+            "x": 144,
+            "y": 51,
+            "width": 282,
+            "height": 345
+          }
+        },
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 771,
+            "y": 165,
+            "width": 297,
+            "height": 381
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/training-loop-face-comparison.png",
+      "reviewedWebpSha256": "fc7d8e899b889c32563ea950043c19a22d1aa14ce7ae503c59cef6de00754bc1",
+      "approvedWebpSha256": "71c01b90dca0d2358101feb09484a3c62624be0e05dc05c1b77b7a427397f1e5"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "training-loop",
+      "phase": "takeaways",
+      "src": "/scenes/deep-orbit/training-loop/training-loop-takeaways.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "This is one of the closer Demir images, but chin taper, nose length and hair volume still differ. Withheld conservatively under the strict identity contract.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 648,
+            "y": 21,
+            "width": 363,
+            "height": 459
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/training-loop-face-comparison.png",
+      "reviewedWebpSha256": "cc3f11e8d809dbd4cf8e2b513e5680c0dfa01431ddec490344901f61c63ad706",
+      "approvedWebpSha256": "fc07be8fcc9364a13d751b422dbe1514753e7a12b40dc67e84b5be7836318c37"
+    },
+    {
+      "module": "training-loop",
+      "lesson": "training-loop",
+      "phase": "epilogue",
+      "src": "/scenes/deep-orbit/training-loop/training-loop-epilogue.webp",
+      "newlyGenerated": true,
+      "reviewStatus": "WITHHELD",
+      "publicationStatus": "IDENTITY_APPROVED",
+      "finding": "Demir's chin projects as a long angular lower jaw and nose is extended, with enlarged swept hair. The canonical proportions are rounder and more compact.",
+      "characters": [
+        {
+          "character": "ensign-demir",
+          "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "crop": {
+            "x": 387,
+            "y": 66,
+            "width": 378,
+            "height": 465
+          }
+        }
+      ],
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/training-loop-face-comparison.png",
+      "reviewedWebpSha256": "d9a3e9f8a04f8182d17e369a9c73eea6c73035e05c7afc77eee63d882afb1ada",
+      "approvedWebpSha256": "cd236bd76da68f10889a616b03b3fda616b483fb7057969abfe6cca7a93345ee"
+    }
+  ]
+}

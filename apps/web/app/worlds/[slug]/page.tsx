@@ -36,10 +36,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const world = worlds[slug];
   if (!world) return {};
+  const title = isComingSoon(slug)
+    ? `${world.displayName}: Coming Soon, Tensorcraft`
+    : `${world.displayName}: Machine Learning in JavaScript, Tensorcraft`;
   return {
-    title: isComingSoon(slug)
-      ? `${world.displayName}: Coming Soon, Tensorcraft`
-      : `${world.displayName}: Module Map, Tensorcraft`,
+    title,
     // Search snippets reach strangers with no framing, so they state what
     // the course is rather than opening on the story (owner bar 2026-08-16;
     // ruled 2026-08-20: the coming-soon PAGES keep their story copy, their
@@ -54,14 +55,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "website",
       url: `https://tensorcraft.app/worlds/${slug}`,
-      title: `${world.displayName}, Tensorcraft`,
+      title,
       images: [
         `/api/og?title=${encodeURIComponent(world.displayName)}&world=${slug}&subtitle=${encodeURIComponent(world.specialization)}`,
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${world.displayName}, Tensorcraft`,
+      title,
       images: [
         `/api/og?title=${encodeURIComponent(world.displayName)}&world=${slug}&subtitle=${encodeURIComponent(world.specialization)}`,
       ],
@@ -369,9 +370,9 @@ export default async function WorldDetailPage({ params }: Props) {
           className="text-base md:text-xl"
           style={{ color: "var(--tc-muted)" }}
         >
-          Build, evaluate, and run a signal classifier in JavaScript.{" "}
-          {worldModules.length} modules take you from tensors to a model running
-          in the browser.
+          Learn machine learning through JavaScript and TensorFlow.js. Build,
+          evaluate, and run a signal classifier as you follow the crew&apos;s
+          investigation.
         </p>
 
         <div className="flex gap-8 md:gap-12 mt-6">
@@ -464,6 +465,53 @@ export default async function WorldDetailPage({ params }: Props) {
 
       {/* Module List */}
       <div className="relative z-10 max-w-6xl mx-auto px-8 pt-10 pb-20">
+        {!hasPurchased && (
+          <section
+            aria-labelledby="course-syllabus-title"
+            className="mb-8 max-w-3xl space-y-4 leading-relaxed text-text"
+          >
+            <h2
+              id="course-syllabus-title"
+              className="font-mono text-2xl font-bold"
+            >
+              Course syllabus
+            </h2>
+            <p>
+              Start with JavaScript functions, arrays, objects, modules and
+              async code. The course covers ML foundations through intermediate
+              and advanced topics.
+            </p>
+            <p>
+              Training and evaluation use TensorFlow.js. Runtime lessons also
+              introduce ONNX Runtime Web, Transformers.js and WebGPU. Some
+              exercises use controlled simulations, with separate downloadable
+              labs for real runtimes.
+            </p>
+            <p>
+              Browse all{" "}
+              {moduleMapItems.reduce((n, mod) => n + mod.totalLessons, 0)}{" "}
+              lesson titles across {worldModules.length} modules below. Allow
+              about {Math.round(totalMinutes / 60)} hours for lessons and
+              exercises. The independent project has a separate estimate of 4–8
+              hours. These are our estimates.
+            </p>
+            <p>
+              The first module is free. The full course costs $
+              {PRICING.single.price}
+              {PRICING.single.price < PRICING.single.regularPrice
+                ? ` at the introductory price. The regular price is $${PRICING.single.regularPrice}.`
+                : "."}{" "}
+              One payment gives lifetime access to Deep Orbit. See{" "}
+              <Link
+                href="/pricing"
+                className="min-h-11 inline-flex items-center text-primary underline underline-offset-4"
+              >
+                pricing and access terms
+              </Link>
+              .
+            </p>
+          </section>
+        )}
         {!user && moduleMapItems[0] && (
           <GuestModuleBanner
             worldSlug={slug}

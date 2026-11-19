@@ -1,0 +1,79 @@
+{
+  "id": "neural-networks/activation-functions",
+  "phase": "briefing",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-42b58c92-a6e9-4f24-947b-6f8f57adba49.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-dd9de970-75a8-4b52-b620-42e0f836cdbc.png",
+  "prompt": "Use case: precise localized text edit. First two images are canonical Nazari and Demir faces. Last image is exact TARGET. Preserve entire composition, every person and exact facial morphology/expression/head size, natural head neck torso alignment, limbs hands fingers contacts, clothes, chair, lighting, muted sage/brass palette and 1536x1024 dimensions. Change ONLY these two things: On upper left Raw scores screen replace 'Tone A: -0.06' with 'Reading: -0.06' and replace 'Tone B: 1.04' with 'Reading: 1.04'. Preserve heading and both numbers exactly. This source does not assign tone identities. Second, make Demir's wrist screen inactive dark charcoal glass, no green grid or decorative data. All other screens and all faces/body remain exactly unchanged, particularly Threshold:not set and Where is the alert rule. No new text or accessories.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-dd9de970-75a8-4b52-b620-42e0f836cdbc.png"
+  ],
+  "status": "generated-awaiting-review",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-briefing-chief-nazari-proof.png",
+      "sha256": "bd230580152eff2480867f588da010917ff420ac42d5f1300aebe60270763b89",
+      "crop": {
+        "left": 620,
+        "top": 180,
+        "width": 255,
+        "height": 310
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "canonicalSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5c9b88da-edb0-4a07-baef-3a2af51db053.png",
+      "priorSha256": "f3bb6eaeaab3cc25af928931872b7427fe79ae3b6b7cfe07c032cefe58ee8df6",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-42b58c92-a6e9-4f24-947b-6f8f57adba49.png",
+      "candidateSha256": "0326682b8c06998f0ddf2758c9592e8dbd65bae48f9820b5260f7586db2c6695"
+    },
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-briefing-ensign-demir-proof.png",
+      "sha256": "ac2f3584832cf3df49c565f23a76b69a78b4ef61a7b56b641cd2fd964bfc2283",
+      "crop": {
+        "left": 1185,
+        "top": 350,
+        "width": 220,
+        "height": 290
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-5c9b88da-edb0-4a07-baef-3a2af51db053.png",
+      "priorSha256": "f3bb6eaeaab3cc25af928931872b7427fe79ae3b6b7cfe07c032cefe58ee8df6",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-42b58c92-a6e9-4f24-947b-6f8f57adba49.png",
+      "candidateSha256": "0326682b8c06998f0ddf2758c9592e8dbd65bae48f9820b5260f7586db2c6695"
+    }
+  ],
+  "pathSha256": "0326682b8c06998f0ddf2758c9592e8dbd65bae48f9820b5260f7586db2c6695",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+  ],
+  "screenMeaning": {
+    "section": "Opening Nazari dialogue; A Score and an Alert Are Different",
+    "spec": "Two raw scores-.06 and1.04, a separate threshold control, and label Where is the alert rule? Do not imply sigmoid selects threshold.",
+    "currentSource": "art-src/scenes/neural-networks__activation-functions-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ]
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

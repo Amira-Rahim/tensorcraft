@@ -5,6 +5,10 @@ instructions: |
   Add one dense layer with 3 units and `inputShape: [2]`. Keep its default
   linear activation and random starting weights.
 
+  The supplied rows are diagnostic inputs with two feature slots. They have
+  no physical units or capture provenance. This nine-parameter model is
+  separate from the bridge classifier's three-input 32/16/1 architecture.
+
   1. Write `forward(batch)`. Call `model.predict()` once for the whole batch
      and return its output tensor. Set `prediction = forward(input)`.
      The tests use batches with different row counts and check the result
@@ -57,8 +61,8 @@ testCode: |
     const firstLayer = () => {
       expect(
         model.layers.length,
-        'The model has no layers yet. It needs one dense layer, told how many features a single reading carries.',
-      ).toBeGreaterThanOrEqual(1);
+        'The model must contain exactly one dense layer. Add its three units when the stack is empty, and remove any extra layers.',
+      ).toBe(1);
       return model.layers[0];
     };
     const forwardFn = () => {
@@ -109,6 +113,14 @@ testCode: |
         summary: 'Actual outputs from your two-feature, three-unit exercise model. Its random starting weights do not establish prediction accuracy.',
         columns: ['Reading', 'Input 1', 'Input 2', 'Unit 1', 'Unit 2', 'Unit 3'],
         rows: input.arraySync().map((row, i) => [i + 1, ...row, ...Array.from(actual).slice(i * 3, i * 3 + 3)]),
+      });
+      const kernelRows = weights[0].arraySync();
+      const bias = Array.from(weights[1].dataSync());
+      recordResult({
+        kind: 'table', title: 'Weights used for this forward pass',
+        summary: 'Kernel and bias captured from the same two-input, three-unit linear diagnostic model used to check the captured outputs. These values belong to this run and are separate from the activity\'s fixed reference.',
+        columns: ['Parameter', 'Unit 1', 'Unit 2', 'Unit 3'],
+        rows: [['Input 1', ...kernelRows[0]], ['Input 2', ...kernelRows[1]], ['Bias', ...bias]],
       });
     });
     it('one predict call processes the whole batch, for different row counts', () => {

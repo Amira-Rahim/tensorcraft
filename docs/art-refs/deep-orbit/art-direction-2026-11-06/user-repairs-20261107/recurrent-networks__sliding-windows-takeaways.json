@@ -1,0 +1,329 @@
+{
+  "key": "sliding-windows-takeaways",
+  "id": "recurrent-networks/sliding-windows",
+  "phase": "takeaways",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-d5fd9ca6-4bf8-4c2d-af0c-2bcf8bdead9c.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+    "sha256": "8cb0359284a3e8a61f7f3f4ffea57cacd11613164f42bb7934daec21bd4f7d85"
+  },
+  "prompt": "Use case: identity-preserve tiny local text correction. First reference canonicalDemir, secondreference bridge ROOM ONLY, finalreference exact image target. Change ONLY the small line immediately beneath \"80-reading window\": replace \"5 extra readings for contêxt\" with exact plain text \"5 more readings\". Use same pale cream font style, size, alignment and screen perspective. No accent marks. Preserve every other word, the0and74ticks, upper75readingsminimum bracket, no lowerbracket, Demir exactface/hands/body/posture, allcolors, screengeometry, bridgeenvironment and1536x1024framing. Do not add or move anything.",
+  "meaning": "Slidingwindows:events74stepsapart require75readings includingbothendpoints;80windowincludescontext; chronologicalsplitbeforewindowing.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-d5fd9ca6-4bf8-4c2d-af0c-2bcf8bdead9c.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-d5fd9ca6-4bf8-4c2d-af0c-2bcf8bdead9c.png",
+      "sha256": "16d8dfb03e126a02cc8a4adbc1dc62b1efb17664e21774080a1a2670bc35d080",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-057582f0-cfd9-4dee-ab53-ea0fff0e7eab.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 285,
+      "top": 145,
+      "width": 260,
+      "height": 335
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 235,
+      "top": 780,
+      "width": 220,
+      "height": 130
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 525,
+      "top": 775,
+      "width": 205,
+      "height": 85
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+  "candidateSha256": "16311080dd681b740f5e2a9f08ebebcc3078e3d2f577f668eae12be7519b5d34",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir stands LEFT at bridge alcove, leaning toward a waist-height control desk, one hand adjusting trackball and other resting on desk. Cheerful focused expression as he inspects which window contains both events. Remove transparent held panel. Large upright display RIGHT faces him and camera samefrontside. Heading \"Include both endpoints\". Diagram is a single timeaxis with exact endpoint labels \"0\" and \"74\", both endpoints under one bracket labelled \"75 readings minimum\". Beneath another longer bracket labelled \"80-reading window\" with note \"Adds context\". Footer \"Split by time before windowing\". No invented waveforms or classificationresults. Display is not transparent. Same charcoalbridge,mutedsage,agedbrass,facesandhandsnatural. Make endpoint and brackets coherent within same screenplane.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+          "sha256": "8cb0359284a3e8a61f7f3f4ffea57cacd11613164f42bb7934daec21bd4f7d85",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-442be48a-150d-4926-ba16-b9ce6b657b8f.png",
+        "sha256": "e52cd5e8c8464db12218dce80217636b26de252002ce92bd5f4afbe7ba6903e4"
+      }
+    },
+    {
+      "prompt": "Use case: identity-preserve targeted local diagram correction. First reference canonical Demir, second bridge master ROOM ARCHITECTURE ONLY, last reference exact target. Keep entire image, face, body, hands, trackball, lighting, palette and every text label unchanged. ONLY correct the horizontal length and position of the LOWER bracket labelled \"80-reading window\". The upper 75-reading bracket runs from the0 tick at roughly x874 to the74 tick at x1318. On that same linear axis scale, the lower80-reading bracket must START directly beneath the0 tick, not earlier. It must END just5 reading steps beyond74, around x1348, only30pixels past upper bracket right end. Thus lower span depicts indices0 through79, about1.068times upper0to74 span. Remove the existing too-wide lowerbracket whose left end starts around824 and right end1386. Redraw lowerbracket at the same vertical level aroundy492, leftendx874, rightendx1348, following physical screen perspective. Keep original upper bracket, timeaxis,0and74ticks and all lettering exactly. Native1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6adff5e4-8e72-4cd3-b0ba-32243db1a6b0.png",
+          "sha256": "4e02f82b74d6683127fa1cd5c12e886edc9c9edcb5c86f1420bbe63b386e32c6",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6adff5e4-8e72-4cd3-b0ba-32243db1a6b0.png",
+        "sha256": "4e02f82b74d6683127fa1cd5c12e886edc9c9edcb5c86f1420bbe63b386e32c6"
+      },
+      "review": "Rejected: lower bracket remains approximately3% too long despite first correction."
+    },
+    {
+      "prompt": "Use case: identity-preserve, tiny local edit. First reference canonical Demir, second bridge ROOM ARCHITECTURE ONLY, last image exact target. Preserve every pixel outside the lower diagram annotation as closely as possible. DELETE the green LOWER horizontal bracket that sits below the0-to74timeaxis. Do not replace that bracket with another bracket or any geometric span. Keep the upper cream bracket labelled75readingsminimum and the timeaxis with0and74 exactly as they are. Retain line \"80-reading window\". Replace line \"Adds context\" with exact text \"5 extra readings for context\", matching its existing font, palecream color, physical screen perspective and center alignment. Thus there is only ONE bracket in the whole screen, the upper75reading bracket; the80reading information is given in words without a diagram to scale. No other edits. Preserve face, hands, character posture, muted palette and framing1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6adff5e4-8e72-4cd3-b0ba-32243db1a6b0.png",
+          "sha256": "4e02f82b74d6683127fa1cd5c12e886edc9c9edcb5c86f1420bbe63b386e32c6",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-d5fd9ca6-4bf8-4c2d-af0c-2bcf8bdead9c.png",
+        "sha256": "16d8dfb03e126a02cc8a4adbc1dc62b1efb17664e21774080a1a2670bc35d080"
+      }
+    },
+    {
+      "prompt": "Use case: identity-preserve tiny local text correction. First reference canonicalDemir, secondreference bridge ROOM ONLY, finalreference exact image target. Change ONLY the small line immediately beneath \"80-reading window\": replace \"5 extra readings for contêxt\" with exact plain text \"5 more readings\". Use same pale cream font style, size, alignment and screen perspective. No accent marks. Preserve every other word, the0and74ticks, upper75readingsminimum bracket, no lowerbracket, Demir exactface/hands/body/posture, allcolors, screengeometry, bridgeenvironment and1536x1024framing. Do not add or move anything.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-d5fd9ca6-4bf8-4c2d-af0c-2bcf8bdead9c.png",
+          "sha256": "16d8dfb03e126a02cc8a4adbc1dc62b1efb17664e21774080a1a2670bc35d080",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-057582f0-cfd9-4dee-ab53-ea0fff0e7eab.png",
+        "sha256": "16311080dd681b740f5e2a9f08ebebcc3078e3d2f577f668eae12be7519b5d34"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Slidingwindows:events74stepsapart require75readings includingbothendpoints;80windowincludescontext; chronologicalsplitbeforewindowing.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 285,
+        "top": 145,
+        "width": 260,
+        "height": 335
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 235,
+        "top": 780,
+        "width": 220,
+        "height": 130
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 525,
+        "top": 775,
+        "width": 205,
+        "height": 85
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-d5fd9ca6-4bf8-4c2d-af0c-2bcf8bdead9c.png",
+      "sha256": "16d8dfb03e126a02cc8a4adbc1dc62b1efb17664e21774080a1a2670bc35d080",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "sliding-windows-takeaways",
+    "id": "recurrent-networks/sliding-windows",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-057582f0-cfd9-4dee-ab53-ea0fff0e7eab.png",
+    "candidateSha256": "16311080dd681b740f5e2a9f08ebebcc3078e3d2f577f668eae12be7519b5d34",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-08T10:45:28.425796+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+        "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Corrected full native reviewed. Indices0..74 span75 readings; unscaled lower note80-reading window and5 more readings is exactly correct. Removed false geometric comparison and malformed context glyph. Face/pose/hands and main axis preserved."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-057582f0-cfd9-4dee-ab53-ea0fff0e7eab.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-takeaways.webp",
+  "sourceSha256": "16311080dd681b740f5e2a9f08ebebcc3078e3d2f577f668eae12be7519b5d34",
+  "webpSha256": "6cd9908bc410245c5f0cd64750701ef8ba4db7086dbb69a99d828e61b4ce3432",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+    "sourceSha256": "8cb0359284a3e8a61f7f3f4ffea57cacd11613164f42bb7934daec21bd4f7d85",
+    "webpSha256": "914031189e9097e1eadb9404ca2e65778ec602c4becdb00fb8777bb53c9cab8d",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-bae16ae8-4a56-444d-bdac-9ba3ba9c5847.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "16311080dd681b740f5e2a9f08ebebcc3078e3d2f577f668eae12be7519b5d34",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Corrected full native reviewed. Indices0..74 span75 readings; unscaled lower note80-reading window and5 more readings is exactly correct. Removed false geometric comparison and malformed context glyph. Face/pose/hands and main axis preserved."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+        "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-takeaways.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

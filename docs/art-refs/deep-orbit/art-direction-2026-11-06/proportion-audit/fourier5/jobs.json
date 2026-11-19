@@ -1,0 +1,257 @@
+[
+  {
+    "key": "fourier-transform-briefing",
+    "id": "signal-processing/fourier-transform",
+    "phase": "briefing",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "prepared",
+    "input": "art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+    "inputSha256": "6b0447910ec004e50f4006d9036b528f92efcedd1f14a4f9bd35d94ade79fe0c",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e76cf3e5-2cf5-4719-a47a-a3a619a49acf.png",
+    "archivedInputSha256": "6b0447910ec004e50f4006d9036b528f92efcedd1f14a4f9bd35d94ade79fe0c",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-openai-20261107.png",
+        "sha256": "6b0447910ec004e50f4006d9036b528f92efcedd1f14a4f9bd35d94ade79fe0c"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+        "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+      }
+    ],
+    "screenMeaning": "Read the overnight512-sample FFT as257 bins and relate peak index to frequency using metadata.",
+    "screenSpecification": "Replace the large three-wave decomposition with a clear panel titled \"OVERNIGHT FFT\". One flow \"512 samples\" -> \"rfft\" -> \"257 bins\". Below show \"Sample rate: 256 Hz\" and \"Peak index: 10\". A separate pending field \"Frequency:\" stays unfilled. Footer \"Hz = bin x sample rate / N\". Do not show73.4Hz before the discovery. Every secondary display off.",
+    "proportionSpecification": "Preserve current balanced stylized head/body sizes exactly, no shrinking.",
+    "prompt": "Use case: identity-preserve educational adventure-comic edit. First 2 images exact canonical faces for dr-farah, ensign-demir. Next lab ROOM ONLY, next muted COLOR ONLY, LAST target. Preserve current identities, age, hair, expressions, gaze, poses, propcontacts, natural head/neck/shoulders and separately attached arm/hand chains. Farah ARlens on her anatomicalLEFT eye remains visible. Demir visible anatomicalLEFT ear bare, right comms may be hidden. Preserve current balanced stylized head/body sizes exactly, no shrinking. Muted sage#6BAA8A screens, agedbrass#A89060, natural warmtan skin, charcoal/navy, flatcelshade. Remove neonmint bloom, fluorescenthairrims and glossy yellowgold highlights. Preserve warm practical lamps. Replace the large three-wave decomposition with a clear panel titled \"OVERNIGHT FFT\". One flow \"512 samples\" -> \"rfft\" -> \"257 bins\". Below show \"Sample rate: 256 Hz\" and \"Peak index: 10\". A separate pending field \"Frequency:\" stays unfilled. Footer \"Hz = bin x sample rate / N\". Do not show73.4Hz before the discovery. Every secondary display off. Every OTHER screen, all wristdisplays, tinybenchreadouts and radar/dial screens inactive darkglass. Spectrograph glasscolumn retains faint tint only, no glowing datatraces/bands. Physical knobs/buttons remain. Use exact shortlabels withnormal spaces, clear screenperspective, no invented data. One1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-briefing.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-briefing.json"
+  },
+  {
+    "key": "fourier-transform-concept",
+    "id": "signal-processing/fourier-transform",
+    "phase": "concept",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "prepared",
+    "input": "art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+    "inputSha256": "1840da02f66caa1d1772988ba0d39f71aa0cc763277aa70dc463b070691f895c",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-c491e4ed-450d-453b-9d1d-1b2e43ccffb8.png",
+    "archivedInputSha256": "1840da02f66caa1d1772988ba0d39f71aa0cc763277aa70dc463b070691f895c",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-concept-openai-20261107.png",
+        "sha256": "1840da02f66caa1d1772988ba0d39f71aa0cc763277aa70dc463b070691f895c"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+        "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+      }
+    ],
+    "screenMeaning": "The128-sample128Hz synthetic example has5Hz magnitude64 and20Hz magnitude19.2.",
+    "screenSpecification": "Foreground teaching screen title \"SYNTHETIC TWO-TONE EXAMPLE\". A sparse spectrum has horizontal axis \"Frequency (Hz)\" from0 to64 and vertical \"Raw FFT magnitude\". Exactly two narrow visible peaks:5Hz tall64.0 and20Hz shorter19.2, the second30percent of firstheight. Labels \"5 Hz: 64.0\" and \"20 Hz: 19.2\". No other nonzero peaks. Footer \"128 samples at 128 Hz\". Demir tablet shows only \"5 Hz + 20 Hz\", with no separate graph. Preserve Farah stylus pointing toward firstpeak region, both natural hands and full stance.",
+    "proportionSpecification": "Preserve current balanced stylized head/body sizes exactly, no shrinking.",
+    "prompt": "Use case: identity-preserve educational adventure-comic edit. First 2 images exact canonical faces for dr-farah, ensign-demir. Next lab ROOM ONLY, next muted COLOR ONLY, LAST target. Preserve current identities, age, hair, expressions, gaze, poses, propcontacts, natural head/neck/shoulders and separately attached arm/hand chains. Farah ARlens on her anatomicalLEFT eye remains visible. Demir visible anatomicalLEFT ear bare, right comms may be hidden. Preserve current balanced stylized head/body sizes exactly, no shrinking. Muted sage#6BAA8A screens, agedbrass#A89060, natural warmtan skin, charcoal/navy, flatcelshade. Remove neonmint bloom, fluorescenthairrims and glossy yellowgold highlights. Preserve warm practical lamps. Foreground teaching screen title \"SYNTHETIC TWO-TONE EXAMPLE\". A sparse spectrum has horizontal axis \"Frequency (Hz)\" from0 to64 and vertical \"Raw FFT magnitude\". Exactly two narrow visible peaks:5Hz tall64.0 and20Hz shorter19.2, the second30percent of firstheight. Labels \"5 Hz: 64.0\" and \"20 Hz: 19.2\". No other nonzero peaks. Footer \"128 samples at 128 Hz\". Demir tablet shows only \"5 Hz + 20 Hz\", with no separate graph. Preserve Farah stylus pointing toward firstpeak region, both natural hands and full stance. Every OTHER screen, all wristdisplays, tinybenchreadouts and radar/dial screens inactive darkglass. Spectrograph glasscolumn retains faint tint only, no glowing datatraces/bands. Physical knobs/buttons remain. Use exact shortlabels withnormal spaces, clear screenperspective, no invented data. One1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-concept.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-concept.json"
+  },
+  {
+    "key": "fourier-transform-challenge",
+    "id": "signal-processing/fourier-transform",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "prepared",
+    "input": "art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+    "inputSha256": "e02b62bd1c03c8decbf60de2a7672a39813dc911a45e1d3c2fe65e6f1168c5a7",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e5d334ff-7d66-404a-9f87-fdbd12e7b7c1.png",
+    "archivedInputSha256": "e02b62bd1c03c8decbf60de2a7672a39813dc911a45e1d3c2fe65e6f1168c5a7",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-challenge-openai-20261107.png",
+        "sha256": "e02b62bd1c03c8decbf60de2a7672a39813dc911a45e1d3c2fe65e6f1168c5a7"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+        "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+      }
+    ],
+    "screenMeaning": "Find strongest non-DC computed FFT bin then convert toHz, keeping lowest eligible index in ties.",
+    "screenSpecification": "Replace the generic histogram with a compact task plan on the tall console: title \"DOMINANT FREQUENCY\". Three ordered lines \"rfft -> magnitudes\", \"Skip bin 0\", \"Largest remaining magnitude\". Then \"Hz = bin x sample rate / N\". Footer \"Tie: lowest eligible bin\". One unfilled field \"Frequency:\". No answer, spectrum or successstate. Demir tabletback stays blank. Lower radar and wristdisplay off.",
+    "proportionSpecification": "Preserve current balanced stylized head/body sizes exactly, no shrinking.",
+    "prompt": "Use case: identity-preserve educational adventure-comic edit. First 1 images exact canonical faces for ensign-demir. Next lab ROOM ONLY, next muted COLOR ONLY, LAST target. Preserve current identities, age, hair, expressions, gaze, poses, propcontacts, natural head/neck/shoulders and separately attached arm/hand chains. Farah ARlens on her anatomicalLEFT eye remains visible. Demir visible anatomicalLEFT ear bare, right comms may be hidden. Preserve current balanced stylized head/body sizes exactly, no shrinking. Muted sage#6BAA8A screens, agedbrass#A89060, natural warmtan skin, charcoal/navy, flatcelshade. Remove neonmint bloom, fluorescenthairrims and glossy yellowgold highlights. Preserve warm practical lamps. Replace the generic histogram with a compact task plan on the tall console: title \"DOMINANT FREQUENCY\". Three ordered lines \"rfft -> magnitudes\", \"Skip bin 0\", \"Largest remaining magnitude\". Then \"Hz = bin x sample rate / N\". Footer \"Tie: lowest eligible bin\". One unfilled field \"Frequency:\". No answer, spectrum or successstate. Demir tabletback stays blank. Lower radar and wristdisplay off. Every OTHER screen, all wristdisplays, tinybenchreadouts and radar/dial screens inactive darkglass. Spectrograph glasscolumn retains faint tint only, no glowing datatraces/bands. Physical knobs/buttons remain. Use exact shortlabels withnormal spaces, clear screenperspective, no invented data. One1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-challenge.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-challenge.json"
+  },
+  {
+    "key": "fourier-transform-takeaways",
+    "id": "signal-processing/fourier-transform",
+    "phase": "takeaways",
+    "cast": [
+      "dr-farah"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "prepared",
+    "input": "art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+    "inputSha256": "bfcfe1645443f77f589745d982390a6c278e7a07767914d40b10c7a0750d4201",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-234ec25e-ba92-40af-a9fd-a0e1aa9c2c43.png",
+    "archivedInputSha256": "bfcfe1645443f77f589745d982390a6c278e7a07767914d40b10c7a0750d4201",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-takeaways-openai-20261107.png",
+        "sha256": "bfcfe1645443f77f589745d982390a6c278e7a07767914d40b10c7a0750d4201"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+        "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+      }
+    ],
+    "screenMeaning": "Bin spacing and Nyquist depend on sample rate and capture length; no learned basis.",
+    "screenSpecification": "Main screen title \"READING FFT BINS\". Three exact equations on separate lines: \"Bin Hz = k x Fs / N\", \"Bin spacing = Fs / N\", \"Nyquist = Fs / 2\". Bottom example \"N = 128, Fs = 128 Hz\", then \"Bin 20 = 20 Hz; Nyquist = 64 Hz\". These summarize the current synthetic example. All other displays off. Preserve Farah knob grip and tucked tablet.",
+    "proportionSpecification": "Preserve current balanced stylized head/body sizes exactly, no shrinking.",
+    "prompt": "Use case: identity-preserve educational adventure-comic edit. First 1 images exact canonical faces for dr-farah. Next lab ROOM ONLY, next muted COLOR ONLY, LAST target. Preserve current identities, age, hair, expressions, gaze, poses, propcontacts, natural head/neck/shoulders and separately attached arm/hand chains. Farah ARlens on her anatomicalLEFT eye remains visible. Demir visible anatomicalLEFT ear bare, right comms may be hidden. Preserve current balanced stylized head/body sizes exactly, no shrinking. Muted sage#6BAA8A screens, agedbrass#A89060, natural warmtan skin, charcoal/navy, flatcelshade. Remove neonmint bloom, fluorescenthairrims and glossy yellowgold highlights. Preserve warm practical lamps. Main screen title \"READING FFT BINS\". Three exact equations on separate lines: \"Bin Hz = k x Fs / N\", \"Bin spacing = Fs / N\", \"Nyquist = Fs / 2\". Bottom example \"N = 128, Fs = 128 Hz\", then \"Bin 20 = 20 Hz; Nyquist = 64 Hz\". These summarize the current synthetic example. All other displays off. Preserve Farah knob grip and tucked tablet. Every OTHER screen, all wristdisplays, tinybenchreadouts and radar/dial screens inactive darkglass. Spectrograph glasscolumn retains faint tint only, no glowing datatraces/bands. Physical knobs/buttons remain. Use exact shortlabels withnormal spaces, clear screenperspective, no invented data. One1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-takeaways.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-takeaways.json"
+  },
+  {
+    "key": "fourier-transform-epilogue",
+    "id": "signal-processing/fourier-transform",
+    "phase": "epilogue",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "prepared",
+    "input": "art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+    "inputSha256": "178d3450804dd603539bbaf059b0aca07ef37464f6ef147360675d7cf6b4f4e8",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-d65dcc95-57a5-4113-ae01-37f8985e5536.png",
+    "archivedInputSha256": "178d3450804dd603539bbaf059b0aca07ef37464f6ef147360675d7cf6b4f4e8",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+        "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__fourier-transform-epilogue-openai-20261107.png",
+        "sha256": "178d3450804dd603539bbaf059b0aca07ef37464f6ef147360675d7cf6b4f4e8"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+        "sha256": "b64e9b1f2ba86b4828e4120c901634bec7a6ed0d51da9093fbd3a2a8f0016980"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+        "sha256": "225a861a1eb0dec794e144b1b104a445928947ba069a9c0372b33da0e25a287e"
+      }
+    ],
+    "screenMeaning": "Farah locates fifth noncatalogued73.5Hz bin at magnitude12 and later longerwindow resolves73.375Hz displayed73.4Hz.",
+    "screenSpecification": "Foreground tablet title \"OVERNIGHT SPECTRUM\". Show a schematic spectrum excerpt with exactly five narrow peaks, left-to-right labeled5,12,23,47,73.5 Hz. Horizontal axis \"Frequency (Hz)\", range0 to80. Heights descend strongly with labels not needed forfirstfour. Fifth smallpeak under Farah pointingfinger has callout \"73.5 Hz, magnitude 12.0\". Footnote \"512 samples, 256 Hz\". On the rear wall show only a text follow-up log \"LONGER WINDOW\", \"2048 samples at 256 Hz\", \"Bin spacing: 0.125 Hz\", \"73.375 Hz -> 73.4 Hz displayed\". Preserve exact wristcatch interaction and both fivefingerhands. No extra waveform or radar. This is story discovery, not proof of a physicalsource.",
+    "proportionSpecification": "Gently reduce Farah wholehead includinghair only5percent while keeping canonical internal face geometry and neckalignment. Demir unchanged. No large shrink.",
+    "prompt": "Use case: identity-preserve educational adventure-comic edit. First 2 images exact canonical faces for dr-farah, ensign-demir. Next lab ROOM ONLY, next muted COLOR ONLY, LAST target. Preserve current identities, age, hair, expressions, gaze, poses, propcontacts, natural head/neck/shoulders and separately attached arm/hand chains. Farah ARlens on her anatomicalLEFT eye remains visible. Demir visible anatomicalLEFT ear bare, right comms may be hidden. Gently reduce Farah wholehead includinghair only5percent while keeping canonical internal face geometry and neckalignment. Demir unchanged. No large shrink. Muted sage#6BAA8A screens, agedbrass#A89060, natural warmtan skin, charcoal/navy, flatcelshade. Remove neonmint bloom, fluorescenthairrims and glossy yellowgold highlights. Preserve warm practical lamps. Foreground tablet title \"OVERNIGHT SPECTRUM\". Show a schematic spectrum excerpt with exactly five narrow peaks, left-to-right labeled5,12,23,47,73.5 Hz. Horizontal axis \"Frequency (Hz)\", range0 to80. Heights descend strongly with labels not needed forfirstfour. Fifth smallpeak under Farah pointingfinger has callout \"73.5 Hz, magnitude 12.0\". Footnote \"512 samples, 256 Hz\". On the rear wall show only a text follow-up log \"LONGER WINDOW\", \"2048 samples at 256 Hz\", \"Bin spacing: 0.125 Hz\", \"73.375 Hz -> 73.4 Hz displayed\". Preserve exact wristcatch interaction and both fivefingerhands. No extra waveform or radar. This is story discovery, not proof of a physicalsource. Every OTHER screen, all wristdisplays, tinybenchreadouts and radar/dial screens inactive darkglass. Spectrograph glasscolumn retains faint tint only, no glowing datatraces/bands. Physical knobs/buttons remain. Use exact shortlabels withnormal spaces, clear screenperspective, no invented data. One1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-epilogue.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/fourier5/fourier-transform-epilogue.json"
+  }
+]

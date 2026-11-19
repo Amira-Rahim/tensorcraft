@@ -1,0 +1,256 @@
+{
+  "key": "deep-orbit/anomaly-detection/the-anomaly",
+  "phase": "briefing",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+    "sha256": "6d727b9bc84b52f81828d1d47717ee4cf2ef6b3102e444c4614405518e1f0226"
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/the-anomaly-briefing-runtime-before.png",
+    "sha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/the-anomaly-briefing-runtime-before.png",
+    "sha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+      "sha256": "94c81b2cb9d5f6208d954ba7d81ba81999dbecbb34345fb5cabc5731343c6de3",
+      "matchesCandidateMetadata": true
+    }
+  ],
+  "panelSpecification": {
+    "state": "briefing",
+    "concreteGenerationSpecification": "Restage all FOUR canonical crew in a candid tense bridge investigation with distinct roles, not a front-facing line. Farah seated at a compact angled main work console points a stylus to the reconstruction row, eyebrows drawn. Demir seated adjacent saves the capture on a small control, eyes intent on it. Nazari stands at one side with a lowered tablet whose back faces camera and questions Farah with skeptical gaze. Mirza leans one hand on the rail behind and turns three-quarter toward Farah with a firm questioning expression, other hand relaxed. All four faces naturally visible, no direct camera gaze, no broad smiles, eight anatomically connected arms with clear shoulder origins and believable supports. Main monitor faces Farah/Demir and shows two-column status comparison headed Archive7741 and Live capture, with rows Amplitude:quiet/quiet; Autoencoder:flag/flag; LSTM:flag/flag; Votes:2/2. A small side monitor near Demir shows Live capture,73.4Hz,Reconstruction:12x highest normal,Raw capture retained,Cause unresolved. No arbitrary waveforms, bars or lesson poster. Screens physically angled for the working crew, text baselines and grids share each screen plane. Camera near the crew side of consoles, never make them read a reversed screen. Other monitors and holo emitter inactive. Moderate warm stylized adult proportions, restrained sage and brass, no fluorescent green rims.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "section": "Opening replay and RecallPrompt"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+        "section": "instructions and sample7741 probe"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": null
+  },
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/the-anomaly-briefing-runtime-before.png",
+      "sha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve narrative restaging. Inputs first canonical portraits, LAST original scene for bridge architecture and palette. Rebuild candid story staging while preserving exact canonical face morphology, ages, hair, noses/jaws/eyes and equipment. Farah lens anatomical LEFT eye, Demir circular comms anatomical RIGHT ear; Nazari/Mirza no eyewear. Moderate stylized adult head/body balance, no tiny heads, clean cel-shaded adventure comic. Restage all FOUR canonical crew in a candid tense bridge investigation with distinct roles, not a front-facing line. Farah seated at a compact angled main work console points a stylus to the reconstruction row, eyebrows drawn. Demir seated adjacent saves the capture on a small control, eyes intent on it. Nazari stands at one side with a lowered tablet whose back faces camera and questions Farah with skeptical gaze. Mirza leans one hand on the rail behind and turns three-quarter toward Farah with a firm questioning expression, other hand relaxed. All four faces naturally visible, no direct camera gaze, no broad smiles, eight anatomically connected arms with clear shoulder origins and believable supports. Main monitor faces Farah/Demir and shows two-column status comparison headed Archive7741 and Live capture, with rows Amplitude:quiet/quiet; Autoencoder:flag/flag; LSTM:flag/flag; Votes:2/2. A small side monitor near Demir shows Live capture,73.4Hz,Reconstruction:12x highest normal,Raw capture retained,Cause unresolved. No arbitrary waveforms, bars or lesson poster. Screens physically angled for the working crew, text baselines and grids share each screen plane. Camera near the crew side of consoles, never make them read a reversed screen. Other monitors and holo emitter inactive. Moderate warm stylized adult proportions, restrained sage and brass, no fluorescent green rims. One full1536x1024 image, all text has natural word spacing.",
+  "narrativeSpecification": {
+    "actionEmotionStory": "The live replay interrupts the bridge: Farah identifies the two failed checks, Nazari demands independent calibration evidence, and Mirza questions them while Demir preserves the capture.",
+    "fullSpecification": "Restage all FOUR canonical crew in a candid tense bridge investigation with distinct roles, not a front-facing line. Farah seated at a compact angled main work console points a stylus to the reconstruction row, eyebrows drawn. Demir seated adjacent saves the capture on a small control, eyes intent on it. Nazari stands at one side with a lowered tablet whose back faces camera and questions Farah with skeptical gaze. Mirza leans one hand on the rail behind and turns three-quarter toward Farah with a firm questioning expression, other hand relaxed. All four faces naturally visible, no direct camera gaze, no broad smiles, eight anatomically connected arms with clear shoulder origins and believable supports. Main monitor faces Farah/Demir and shows two-column status comparison headed Archive7741 and Live capture, with rows Amplitude:quiet/quiet; Autoencoder:flag/flag; LSTM:flag/flag; Votes:2/2. A small side monitor near Demir shows Live capture,73.4Hz,Reconstruction:12x highest normal,Raw capture retained,Cause unresolved. No arbitrary waveforms, bars or lesson poster. Screens physically angled for the working crew, text baselines and grids share each screen plane. Camera near the crew side of consoles, never make them read a reversed screen. Other monitors and holo emitter inactive. Moderate warm stylized adult proportions, restrained sage and brass, no fluorescent green rims."
+  },
+  "narrativeVisualReview": "approved",
+  "candidatePath": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+  "nextCandidatePath": "art-src/scenes/anomaly-detection__the-anomaly-briefing-narrative-stage1-openai-20261107.png",
+  "toolConstraintNote": "Four canonical cast anchors plus target fill five-reference tool limit. Room master omitted; target supplies architectural context.",
+  "candidateSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-655bafa5-0f01-460b-afcc-25c084834729.png",
+  "faceBoxes": {
+    "nazari": [
+      80,
+      85,
+      250,
+      290
+    ],
+    "farah": [
+      425,
+      410,
+      280,
+      305
+    ],
+    "mirza": [
+      850,
+      140,
+      190,
+      230
+    ],
+    "demir": [
+      1180,
+      325,
+      265,
+      305
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/the-anomaly-briefing-identity-proof.jpg",
+  "combinedVisualReview": "approved",
+  "publicationHold": false,
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+    "proofSha256": "578097e84a524e68f9268f33392c6e27cd37f27e2ce2344ea6222bc79ad1be9a",
+    "gates": [
+      "Candid task action and story-tied emotion",
+      "Canonical face morphology and age",
+      "Moderate stylized adult proportions",
+      "Supported head/neck/shoulder and two arm-hand chains",
+      "Muted palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Perspective and reader direction"
+    ],
+    "actionEmotionStory": "The live replay interrupts the bridge: Farah identifies the two failed checks, Nazari demands independent calibration evidence, and Mirza questions them while Demir preserves the capture."
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-655bafa5-0f01-460b-afcc-25c084834729.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+      "art-src/scenes/anomaly-detection__the-anomaly-briefing-narrative-stage1-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "independentPeerReview": {
+    "index": 29,
+    "key": "deep-orbit/anomaly-detection/the-anomaly",
+    "phase": "briefing",
+    "path": "art-src/scenes/anomaly-detection__the-anomaly-briefing-narrative-stage1-openai-20261107.png",
+    "metadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/the-anomaly-briefing-candidate.json",
+    "candidateSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+    "readerDirection": "pass",
+    "rationale": "No impossible outward-facing reading or writing detected in the temporary full-scene screen.",
+    "inspection": "Native1536x1024 active/candidate comparison with current MDX or relevant section/exercise grounding and canonical cast comparison",
+    "currentFileSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+    "publicationAuthorized": false,
+    "hashStillMatches": true,
+    "activeSource": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+    "activeSha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+    "ledgerSha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+    "peerStatus": "pass",
+    "peerRationale": "Crew compares archive7741 with live73.4Hz capture: two flags each, live reconstruction12x highestnormal, rawcapture retained and cause unresolved. Expressive shared investigation replaces generic waveforms. Correct two arm chains per person, normal necks and source-supported uncertainty.",
+    "currentSourceHashes": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+        "sha256": "94c81b2cb9d5f6208d954ba7d81ba81999dbecbb34345fb5cabc5731343c6de3",
+        "matchesCandidateMetadata": true
+      }
+    ],
+    "gates": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    }
+  },
+  "temporaryCandidatePathAtReview": "art-src/scenes/anomaly-detection__the-anomaly-briefing-narrative-stage1-openai-20261107.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+  "sourceSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+  "webpSha256": "0d503ff73b0ab1ea660cf83388b5204bfd87c34b09e9bfe8ea4e4af75c2eec65",
+  "webpQuality": 80,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+    "sourceSha256": "70945c6e0ab900601c479936db5e84a5c19b9ee40778da300655f8a71f640ca0",
+    "webpSha256": "6d727b9bc84b52f81828d1d47717ee4cf2ef6b3102e444c4614405518e1f0226",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+    "method": "Native1536x1024 active/candidate comparison with current MDX or relevant section/exercise grounding and canonical cast comparison",
+    "checks": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+        "sha256": "94c81b2cb9d5f6208d954ba7d81ba81999dbecbb34345fb5cabc5731343c6de3",
+        "matchesCandidateMetadata": true
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

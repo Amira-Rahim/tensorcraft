@@ -16,9 +16,8 @@ const PLATE_SRC = heroPlateSrc("deep-orbit");
 /**
  * Decoration stack for the /learn hero: the bridge location plate as the
  * ground, the orbit scene as the reflection on the glass, and the
- * reading-column scrim banking ink behind the copy. Layering is the
- * five-worlds flagship band's (five-worlds-section.tsx); the copy itself
- * stays server JSX in page.tsx, this island is decoration only.
+ * reading-column scrim behind the copy. The copy stays server JSX in
+ * page.tsx. This island contains only decoration.
  *
  * SceneCanvas instead of OrbitCanvas because a page hero has no hover to
  * ignite it: `intensity` sets the resting brightness (coming-soon-scene.tsx

@@ -1,0 +1,168 @@
+{
+  "id": "late-saved-fix-32",
+  "index": 32,
+  "key": "deep-orbit/anomaly-detection/threshold-tuning",
+  "phase": "epilogue",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__threshold-tuning-epilogue-narrative-stage1-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+    "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+    "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml"
+  ],
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Reference1 canonical ensign-demir, Reference2 canonical chief-nazari. Reference3 is bridge ROOM ONLY / architecture only. Final reference is EDIT TARGET. Make only these targeted background corrections: turn every small graphical data display on the far left wall, including the panel with green and amber horizontal data rows, to inactive dark charcoal. Preserve physical pushbuttons and task display. The main replay monitor with cutoff1.0,14 earlier alerts,12quiet,2stillflagged and Next watch log must stay exactly unchanged. Preserve all faces, hands, notebook handover, arm continuity, anatomy, pose, colors and perspective. Landscape1536x1024. Preserve cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic framing, near-black space, subdued sage #6BAA8A and aged brass #A89060, not photorealistic.",
+  "priorCandidateSha256": "6d52ab3b808fbc8a469c2cc2fb33e68d295f3a4f195349e092714703b941bc10",
+  "reason": "Next-watch log handover is coherent, exact fourteen-alert replay/cutoff1.0/twelvequiet/twostillflagged all source-supported. Left auxiliary screens retain meaningless green/amber graphical bars; blank them before publication. Moderate main scene palette otherwise passes.",
+  "candidatePath": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+  "candidateSha256": "1f134f37950956f0524892e4349d3fc52dea98f63af59755e4ae33d9d4bcfcb2",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__threshold-tuning-epilogue-narrative-stage1-openai-20261107.png",
+      "sha256": "6d52ab3b808fbc8a469c2cc2fb33e68d295f3a4f195349e092714703b941bc10",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+      "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+      "sha256": "bbe8d4768261461bf9f5f17e66e6ab981f6ef455ca8caa6a2c2c16ca3d17ddd9"
+    }
+  ],
+  "ownerQa": {
+    "status": "pass",
+    "reviewer": "/root/reader_late",
+    "inspection": "Native fullframe comparison with prior candidate, current source labels and canonical portrait morphology.",
+    "correction": "Far-left auxiliary graphical bars replaced by inactive charcoal. Replay/cutoff1.0/12quiet/2flagged text and coherent handover with two natural hands per character preserved.",
+    "gates": [
+      "identity",
+      "head-neck-proportions",
+      "two connected arms/hands",
+      "reader direction",
+      "screen perspective",
+      "source-grounded information",
+      "muted palette",
+      "task-directed narrative"
+    ],
+    "publication": "Pending root independent peer review"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+      "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+      "sha256": "bbe8d4768261461bf9f5f17e66e6ab981f6ef455ca8caa6a2c2c16ca3d17ddd9"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-3ee5ae16-c518-4c55-8a97-2d06d25a45df.png",
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-3ee5ae16-c518-4c55-8a97-2d06d25a45df.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-epilogue.webp",
+  "sourceSha256": "1f134f37950956f0524892e4349d3fc52dea98f63af59755e4ae33d9d4bcfcb2",
+  "webpSha256": "61df735b8dc386e9b2b33b07c0ef34445932b66dc30504cbc9da05ba95b3dfb5",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+    "sourceSha256": "03f71e1523b1cbb57bef59e0779265965af3cecc84f13a0b7f0742ecea2c63cb",
+    "webpSha256": "396db9ff59d292c26462baf9b42827c5c550d215ef8308d8c65aac9f208621a3",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_late",
+    "status": "approved",
+    "candidateSha256": "1f134f37950956f0524892e4349d3fc52dea98f63af59755e4ae33d9d4bcfcb2",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsBodyAndFurniture": "pass",
+      "headNeckAndShoulders": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "screenMeaning": {
+        "status": "pass",
+        "reviewer": "/root/reader_late",
+        "inspection": "Native fullframe comparison with prior candidate, current source labels and canonical portrait morphology.",
+        "correction": "Far-left auxiliary graphical bars replaced by inactive charcoal. Replay/cutoff1.0/12quiet/2flagged text and coherent handover with two natural hands per character preserved.",
+        "gates": [
+          "identity",
+          "head-neck-proportions",
+          "two connected arms/hands",
+          "reader direction",
+          "screen perspective",
+          "source-grounded information",
+          "muted palette",
+          "task-directed narrative"
+        ],
+        "publication": "Pending root independent peer review"
+      }
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+        "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+        "sha256": "bbe8d4768261461bf9f5f17e66e6ab981f6ef455ca8caa6a2c2c16ca3d17ddd9"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-epilogue.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-epilogue.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

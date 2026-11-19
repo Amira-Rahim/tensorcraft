@@ -50,6 +50,7 @@ export function ChannelLayoutExperiment() {
   const [ready, setReady] = useState(false);
   const [saved, setSaved] = useState(false);
   const [notice, setNotice] = useState("");
+  const [selectedMoment, setSelectedMoment] = useState(0);
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(storageKey);
@@ -79,6 +80,12 @@ export function ChannelLayoutExperiment() {
     ? transformPacket(WORKED_PACKET, draft.operation)
     : null;
   const expected = channelValues(WORKED_PACKET, draft.channel);
+  const selectedIndex =
+    selectedMoment * WORKED_EXCERPT.sensorIds.length + draft.channel;
+  function selectReading(moment: number, channel: number) {
+    setSelectedMoment(moment);
+    setDraft((current) => ({ ...current, channel }));
+  }
   const checkedTransfer = draft.checkResult
     ? checkChannelTransfer(draft.checkOperation, draft.checkValues)
     : null;
@@ -159,6 +166,12 @@ export function ChannelLayoutExperiment() {
           firstReadings={
             draft.mode === "worked" ? WORKED_PACKET[0] : CHECK_PACKET[0]
           }
+          selectedSensor={draft.mode === "worked" ? draft.channel : undefined}
+          onSelectSensor={
+            draft.mode === "worked"
+              ? (channel) => selectReading(0, channel)
+              : undefined
+          }
         />
       </header>
       <fieldset disabled={!ready} className="channel-activity-controls">
@@ -178,7 +191,10 @@ export function ChannelLayoutExperiment() {
                 <code>[12]</code>. Shape tells us the size of each axis. A list
                 has one axis. A grid has two: one for rows and one for columns.
               </p>
-              <FlatReadings />
+              <FlatReadings
+                selectedIndex={draft.tableBuilt ? selectedIndex : undefined}
+                onSelect={draft.tableBuilt ? selectReading : undefined}
+              />
               <p>
                 This selection lists the sensors in order: A, B, C, D. Each
                 group of four readings belongs to one moment. Put each group in
@@ -274,7 +290,27 @@ export function ChannelLayoutExperiment() {
                     packet={WORKED_PACKET}
                     caption="Readings taken at the same time share a row. Shape [3, 4]"
                     channel={draft.channel}
+                    selectedIndex={selectedIndex}
+                    onSelect={selectReading}
                   />
+                  <p
+                    role="status"
+                    className="channel-result-note"
+                    data-testid="reading-position"
+                  >
+                    Sensor {sensorName(draft.channel)} recorded{" "}
+                    {WORKED_PACKET[selectedMoment][draft.channel]} at Time{" "}
+                    {selectedMoment + 1}. That reading is at index{" "}
+                    {selectedIndex} in the flat list, row {selectedMoment} and
+                    column {draft.channel} in the grid. These indexes start at
+                    0. Select a reading in either view to follow its position.
+                  </p>
+                  <pre
+                    tabIndex={0}
+                    aria-label="Read the selected value in both layouts"
+                  >
+                    <code>{`flat.arraySync()[${selectedIndex}]; // ${WORKED_PACKET[selectedMoment][draft.channel]}\ngrid.arraySync()[${selectedMoment}][${draft.channel}]; // ${WORKED_PACKET[selectedMoment][draft.channel]}`}</code>
+                  </pre>
                   <pre tabIndex={0} aria-label="Reshape the flat readings">
                     <code>{`const grid = flat.reshape([3, 4]);\nconst step1 = grid.arraySync()[1]; // [3, 18, 7, 8]`}</code>
                   </pre>
@@ -354,7 +390,30 @@ export function ChannelLayoutExperiment() {
                       caption={`After ${draft.operation}. Shape [4, 3]`}
                       channel={draft.channel}
                       operation={draft.operation}
+                      selectedIndex={selectedIndex}
+                      onSelect={selectReading}
                     />
+                    <p
+                      className="channel-detail"
+                      data-testid="transformed-reading-position"
+                    >
+                      The selected reading,{" "}
+                      {WORKED_PACKET[selectedMoment][draft.channel]}, is now at
+                      row{" "}
+                      {draft.operation === "transpose"
+                        ? draft.channel
+                        : Math.floor(
+                            selectedIndex / WORKED_EXCERPT.momentCount,
+                          )}
+                      , column{" "}
+                      {draft.operation === "transpose"
+                        ? selectedMoment
+                        : selectedIndex % WORKED_EXCERPT.momentCount}
+                      .{" "}
+                      {draft.operation === "transpose"
+                        ? `Sensor ${sensorName(draft.channel)} has its own row.`
+                        : `The chart takes row index ${draft.channel} for sensor ${sensorName(draft.channel)}. Reshape groups by flat-list order and can put this sensor’s readings in other rows.`}
+                    </p>
                     <p role="status" className="channel-result-note">
                       Row at index {draft.channel}: [
                       {output[draft.channel].join(", ")}].{" "}
@@ -366,6 +425,7 @@ export function ChannelLayoutExperiment() {
                       expected={expected}
                       actual={output[draft.channel]}
                       channel={draft.channel}
+                      selectedMoment={selectedMoment}
                     />
                     <pre
                       tabIndex={0}
@@ -595,7 +655,8 @@ export function ChannelLayoutExperiment() {
           <button
             type="button"
             className={button}
-            onClick={() =>
+            onClick={() => {
+              setSelectedMoment(0);
               update({
                 channel: 0,
                 operation: null,
@@ -605,8 +666,8 @@ export function ChannelLayoutExperiment() {
                 checkOperation: null,
                 checkValues: "",
                 checkResult: null,
-              })
-            }
+              });
+            }}
           >
             Reset the controls
           </button>
@@ -645,11 +706,16 @@ function sensorName(channel: number) {
 function RecordingNotes({
   excerpt,
   firstReadings,
+  selectedSensor: controlledSensor,
+  onSelectSensor,
 }: {
   excerpt: RecordingExcerpt;
   firstReadings: readonly number[];
+  selectedSensor?: number;
+  onSelectSensor?: (sensor: number) => void;
 }) {
-  const [selectedSensor, setSelectedSensor] = useState(0);
+  const [localSensor, setLocalSensor] = useState(0);
+  const selectedSensor = controlledSensor ?? localSensor;
   const positions = ["first", "second", "third", "fourth"];
   return (
     <aside
@@ -685,7 +751,7 @@ function RecordingNotes({
                 type="button"
                 className="channel-source-sensor"
                 aria-pressed={selectedSensor === index}
-                onClick={() => setSelectedSensor(index)}
+                onClick={() => (onSelectSensor ?? setLocalSensor)(index)}
               >
                 <span className="channel-source-position">
                   {positions[index]} reading
@@ -693,9 +759,6 @@ function RecordingNotes({
                 {/* The spaces keep the name's words apart; the grid layout
                     ignores them. */}
                 <strong>Sensor {sensor}</strong>{" "}
-                <span className="channel-source-arrow" aria-hidden="true">
-                  ↓
-                </span>{" "}
                 <span className="channel-source-value">
                   {firstReadings[index]}
                 </span>
@@ -725,7 +788,13 @@ const sensorStyles = [
   "bg-surface",
 ];
 
-function FlatReadings() {
+function FlatReadings({
+  selectedIndex,
+  onSelect,
+}: {
+  selectedIndex?: number;
+  onSelect?: (moment: number, channel: number) => void;
+}) {
   return (
     <figure className="channel-recording">
       <figcaption>Demir’s selected readings, in recording order.</figcaption>
@@ -743,11 +812,33 @@ function FlatReadings() {
             <li
               key={index}
               className={`channel-reading border border-border ${sensorStyles[index % 4]}`}
+              data-source-index={index}
+              data-selected-reading={selectedIndex === index || undefined}
             >
-              <span className="channel-sensor-name">
-                {sensorName(index % 4)}
-              </span>
-              <span>{value}</span>
+              {onSelect ? (
+                <button
+                  type="button"
+                  className="channel-reading-button"
+                  aria-pressed={selectedIndex === index}
+                  onClick={() => onSelect(Math.floor(index / 4), index % 4)}
+                >
+                  <span className="channel-sensor-name">
+                    Sensor {sensorName(index % 4)}
+                  </span>{" "}
+                  <span>{value}</span>{" "}
+                  <span className="channel-reading-index">Index {index}</span>
+                  <span className="sr-only">
+                    , Time {Math.floor(index / 4) + 1}
+                  </span>
+                </button>
+              ) : (
+                <>
+                  <span className="channel-sensor-name">
+                    {sensorName(index % 4)}
+                  </span>
+                  <span>{value}</span>
+                </>
+              )}
             </li>
           ))}
         </ol>
@@ -761,11 +852,15 @@ function PacketTable({
   caption,
   channel,
   operation,
+  selectedIndex,
+  onSelect,
 }: {
   packet: number[][];
   caption: string;
   channel: number;
   operation?: LayoutOperation;
+  selectedIndex?: number;
+  onSelect?: (moment: number, channel: number) => void;
 }) {
   const transposed = operation === "transpose";
   return (
@@ -809,12 +904,12 @@ function PacketTable({
                       ? r
                       : (r * packet[0].length + c) % WORKED_PACKET[0].length;
                   const selected = origin === channel;
-                  return (
-                    <td
-                      key={c}
-                      className={`border border-border px-1 py-3 text-center !text-lg sm:!text-[22px] ${sensorStyles[origin]} ${selected ? "font-semibold text-text" : "text-text-muted"}`}
-                      data-sensor={sensorName(origin)}
-                    >
+                  const sourceIndex = transposed
+                    ? c * packet.length + r
+                    : r * packet[0].length + c;
+                  const selectedReading = sourceIndex === selectedIndex;
+                  const reading = (
+                    <>
                       <span className="font-mono">{value}</span>
                       {operation && (
                         <span
@@ -824,7 +919,43 @@ function PacketTable({
                           {sensorName(origin)}
                         </span>
                       )}
-                      {selected && (
+                    </>
+                  );
+                  return (
+                    <td
+                      key={c}
+                      className={`border border-border px-1 py-3 text-center !text-lg sm:!text-[22px] ${sensorStyles[origin]} ${selected ? "font-semibold text-text" : "text-text-muted"}`}
+                      data-sensor={sensorName(origin)}
+                      data-source-index={sourceIndex}
+                      data-selected-reading={selectedReading || undefined}
+                    >
+                      {onSelect ? (
+                        <button
+                          type="button"
+                          className="channel-cell-button"
+                          aria-pressed={selectedReading}
+                          onClick={() =>
+                            onSelect(
+                              Math.floor(
+                                sourceIndex / WORKED_EXCERPT.sensorIds.length,
+                              ),
+                              origin,
+                            )
+                          }
+                        >
+                          {reading}
+                          <span className="sr-only">
+                            , sensor {sensorName(origin)}, Time{" "}
+                            {Math.floor(
+                              sourceIndex / WORKED_EXCERPT.sensorIds.length,
+                            ) + 1}
+                            , flat index {sourceIndex}
+                          </span>
+                        </button>
+                      ) : (
+                        reading
+                      )}
+                      {selected && !onSelect && (
                         <span className="sr-only">, selected sensor</span>
                       )}
                     </td>
@@ -843,10 +974,12 @@ function Trace({
   expected,
   actual,
   channel,
+  selectedMoment,
 }: {
   expected: number[];
   actual: number[];
   channel: number;
+  selectedMoment: number;
 }) {
   // Keep the same scale while the learner switches sensors or operations.
   const minimum = Math.min(0, ...WORKED_PACKET.flat());
@@ -862,7 +995,7 @@ function Trace({
         viewBox="0 0 600 225"
         className="block w-full"
         role="img"
-        aria-label={`Sensor ${sensorName(channel)} over time: ${expected.join(", ")}. Row at index ${channel} after your operation: ${actual.join(", ")}.`}
+        aria-label={`Sensor ${sensorName(channel)} over time: ${expected.join(", ")}. Row at index ${channel} after your operation: ${actual.join(", ")}. Selected reading: ${expected[selectedMoment]} at Time ${selectedMoment + 1}.`}
       >
         <path
           d="M70 25V175H550"
@@ -887,6 +1020,15 @@ function Trace({
           fill="none"
           stroke="var(--tc-accent)"
           strokeWidth="4"
+        />
+        <circle
+          cx={x(selectedMoment)}
+          cy={y(expected[selectedMoment])}
+          r="8"
+          fill="var(--tc-accent)"
+          stroke="currentColor"
+          strokeWidth="2"
+          data-testid="selected-reading-point"
         />
         <polyline
           points={points(actual)}

@@ -1,0 +1,58 @@
+{
+  "id": "neural-networks/activation-functions",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3ded5c76-600a-4c26-b8bd-90cbc374e85e.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-4ad86b96-6551-4e4f-80cb-3c25f06b62be.png",
+  "prompt": "Use case: precise localized display edit. First image exact canonical Demir, second image TARGET. Preserve exact entire image except specified screen corrections. Keep Demir exact head size facial morphology expression natural neck/head/chest alignment, complete two arms hands fingers and their physical keyboard and monitor contact, pose, clothes furniture room perspective subdued sage/brass palette. On MAIN monitor replace title 'ReLU probe' with 'Expected ReLU output'. Preserve exact2row numeric table: Input -2,-0.5,0,1.5,3; Output0,0,0,1.5,3; preserve max(0,x). These are supplied expected values before learner code runs. Turn Demir wristscreen inactive dark glass, with no grid. Turn the two tiny rectangular screens at far upperleft that currently show yellow horizontal lines to inactive charcoal glass; preserve physical hardware buttons around them. Do not change anything else. 1536x1024 cinematic comic illustration.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-4ad86b96-6551-4e4f-80cb-3c25f06b62be.png"
+  ],
+  "status": "generated-awaiting-review",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/activation-functions-challenge-ensign-demir-proof.png",
+      "sha256": "d991c26c7864b1336471cc51dba3c7d8b349f8afee299e3e9034d7ecd33b9fac",
+      "crop": {
+        "left": 540,
+        "top": 65,
+        "width": 320,
+        "height": 390
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-aa9648ee-72e6-42f0-a5ac-d5ef95472087.png",
+      "priorSha256": "2ff9f8665655bf4b6a50253a13843798d567a8dc6456ca352382c0dc89f22c5a",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3ded5c76-600a-4c26-b8bd-90cbc374e85e.png",
+      "candidateSha256": "1b83edb1b1c7d6faca45e825cb625b6f39a49ab04ffaf1dafe7cabf916793e4b"
+    }
+  ],
+  "pathSha256": "1b83edb1b1c7d6faca45e825cb625b6f39a49ab04ffaf1dafe7cabf916793e4b",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+  ],
+  "screenMeaning": {
+    "section": "Challenge; relu-activation testCode probe",
+    "spec": "Show five input values[-2,-.5,0,1.5,3] aligned with five ReLU outputs[0,0,0,1.5,3]. Negative bars clamp to zero and positive bars retain height; no empty unlabelled output panel.",
+    "currentSource": "art-src/scenes/neural-networks__activation-functions-challenge-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "cast": [
+      "ensign-demir"
+    ]
+  },
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

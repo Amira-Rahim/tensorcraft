@@ -3,11 +3,55 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { lessons } from "@tensorcraft/content";
 import { LessonConceptWorkbench, LessonMissionScene } from "./lesson-workbench";
 import { LESSON_INVESTIGATIONS } from "./lesson-investigations";
+import { LESSON_SCENE_ART } from "@/lib/lesson-scene-art";
+import { LessonChallengeScene } from "@/app/worlds/[slug]/[module]/[lesson]/lesson-challenge-scene";
 
 afterEach(cleanup);
 const orbit = lessons.filter((lesson) => lesson.worldId === "deep-orbit");
 
 describe("the rendered workbench for every Deep Orbit lesson", () => {
+  it("renders different approved compositions in Concept and Challenge", () => {
+    const lesson = orbit.find((entry) => entry.slug === "tensor-shapes")!;
+    const key = `deep-orbit/${lesson.moduleId}/${lesson.slug}`;
+    const previous = LESSON_SCENE_ART[key];
+    LESSON_SCENE_ART[key] = {
+      ...previous,
+      concept: {
+        src: `/scenes/${key}-concept.webp`,
+        alt: "Farah separates the sensor rows.",
+      },
+      challenge: {
+        src: `/scenes/${key}-challenge.webp`,
+        alt: "Demir checks his grouping at the console.",
+      },
+    };
+    try {
+      const concept = render(
+        <LessonConceptWorkbench
+          lesson={lesson}
+          worldSlug="deep-orbit"
+          moduleSlug={lesson.moduleId}
+        />,
+      );
+      expect(
+        screen.getByAltText("Farah separates the sensor rows."),
+      ).toHaveAttribute("src", `/scenes/${key}-concept.webp`);
+      concept.unmount();
+      render(
+        <LessonChallengeScene
+          lesson={lesson}
+          worldSlug="deep-orbit"
+          moduleSlug={lesson.moduleId}
+        />,
+      );
+      expect(
+        screen.getByAltText("Demir checks his grouping at the console."),
+      ).toHaveAttribute("src", `/scenes/${key}-challenge.webp`);
+    } finally {
+      LESSON_SCENE_ART[key] = previous!;
+    }
+  });
+
   it.each(orbit)(
     "$slug has independently labelled controls and keeps its scene before its activity",
     (lesson) => {

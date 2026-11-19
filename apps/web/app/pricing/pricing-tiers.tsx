@@ -286,9 +286,19 @@ export function PricingTiers() {
               </span>
             )}
             <div className="mb-4">
+              {PRICING.single.price < PRICING.single.regularPrice && (
+                <p className="mb-2 text-xs font-mono text-primary">
+                  Introductory price
+                </p>
+              )}
               <span className="block text-4xl md:text-6xl font-bold leading-none text-text-primary font-mono">
                 ${PRICING.single.price}
               </span>
+              {PRICING.single.price < PRICING.single.regularPrice && (
+                <p className="mt-2 text-sm font-mono text-text-muted">
+                  Regular price ${PRICING.single.regularPrice}
+                </p>
+              )}
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
                 one world, lifetime access
               </p>

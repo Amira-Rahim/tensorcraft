@@ -1,0 +1,76 @@
+{
+  "index": 7,
+  "module": "optimization-edge",
+  "lesson": "quantization",
+  "phase": "epilogue",
+  "room": "engineering",
+  "characters": [
+    "chief-nazari"
+  ],
+  "aria": false,
+  "alt": "Nazari stays behind to watch the raw pulses, with her ledger closed and multitool set down.",
+  "scene": "An earned quiet character moment after the engineering load test. Nazari alone in the warm engineering bay, standing relaxed beside a raw-signal monitor, her face clearly near-frontal while her eyes glance toward the signal. Her mature brow softens into curiosity and a tiny almost-smile. One hand rests lightly on the bench, other hangs relaxed, both fully visible. Her multitool lies on the bench beside a closed ledger. Monitor shows a clean raw waveform with three separated pulses, no compression diagram, no certification badge, no numbers. Keep bridge-console verification unclaimed. Warm amber work lamp on her face, green reflection only as accent; peaceful wonder and a patient signal, not ominous darkness.",
+  "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. An earned quiet character moment after the engineering load test. Nazari alone in the warm engineering bay, standing relaxed beside a raw-signal monitor, her face clearly near-frontal while her eyes glance toward the signal. Her mature brow softens into curiosity and a tiny almost-smile. One hand rests lightly on the bench, other hangs relaxed, both fully visible. Her multitool lies on the bench beside a closed ledger. Monitor shows a clean raw waveform with three separated pulses, no compression diagram, no certification badge, no numbers. Keep bridge-console verification unclaimed. Warm amber work lamp on her face, green reflection only as accent; peaceful wonder and a patient signal, not ominous darkness. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "src": "/scenes/deep-orbit/optimization-edge/quantization-epilogue.webp",
+  "source": "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+  "location": "Archimedes, Engineering",
+  "status": "generated-awaiting-review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9a466925-45b2-4bdb-a5cc-c3b7ee786dfd.png",
+  "candidate": "/tmp/optimization-candidates/7.webp",
+  "candidateSha256": "225911159873771498a71e2ca7d794c75f1c1bdff42012d7345053e2fe8af12e",
+  "sourceSha256": "c25e76f4c6d25ae3fc0a3a9e61d9a6a84b839585db9cce36abd3d3336a71310c",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "room reference",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 146116,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/quantization-epilogue-chief-nazari-proof.png",
+      "crop": {
+        "left": 485,
+        "top": 45,
+        "width": 295,
+        "height": 335
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-9a466925-45b2-4bdb-a5cc-c3b7ee786dfd.png",
+      "art-src/scenes/optimization-edge__quantization-epilogue-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

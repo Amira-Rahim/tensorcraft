@@ -1,0 +1,306 @@
+{
+  "key": "lstm-gates-epilogue",
+  "id": "recurrent-networks/lstm-gates",
+  "phase": "epilogue",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-38a2e796-e5ca-48fe-bb9a-af515f0a1751.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+    "sha256": "ff2e87bd104643a48bda107f301d35dcb2e7b0b208ff96642d00725720b4869e"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah and Demir have just finished the archive replay and paused at ARIA silence. Demir seated RIGHT at workstation, one hand on mouse, other rests on desk, turns his head gently toward Farah with surprised amused eyebrow. Farah stands beside him LEFT, leans one palm naturally on bench and other hand relaxed at side, looks toward ARIA speaker display with affectionate wry smile. No held tablet or cards. Shared monitor LEFT foreground faces both crew and camera; exact heading \"Fictional mission replay\", rows \"Train: first day\", \"Replay: next 10 days\", \"80-step windows\", \"Pulses detected 72 hours later\", \"Fresh state per window\", \"Trained weights retained\". Small separate ARIA display on right shows simple ring containing flat line, \"ARIA\" and \"4 seconds silent\". The pause is warm and playful, not solemn. Faces visible but no camera gaze.",
+  "meaning": "Story fictional replay detects pulses72hourslater afterfirstdaytraining; next10daysreplay; windowsfreshstate withtrainedweights; ARIApauses4seconds.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-38a2e796-e5ca-48fe-bb9a-af515f0a1751.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-38a2e796-e5ca-48fe-bb9a-af515f0a1751.png",
+      "sha256": "85cb6676a90e30c4e9b632f3d53fc19f1b6772bad9329606c57027611269240a",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6bb2fef4-9672-40a0-bec2-ee1323792a05.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 410,
+      "top": 270,
+      "width": 240,
+      "height": 290
+    },
+    {
+      "kind": "face",
+      "index": 1,
+      "left": 910,
+      "top": 335,
+      "width": 220,
+      "height": 290
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 320,
+      "top": 850,
+      "width": 180,
+      "height": 110
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 680,
+      "top": 825,
+      "width": 60,
+      "height": 170
+    },
+    {
+      "kind": "hands",
+      "index": 2,
+      "left": 980,
+      "top": 805,
+      "width": 480,
+      "height": 150
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+  "candidateSha256": "bed5ca3b204431e5354c00ca8ac76a0d0e6f1dd60fd5ac349956deb3539d34b9",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah and Demir have just finished the archive replay and paused at ARIA silence. Demir seated RIGHT at workstation, one hand on mouse, other rests on desk, turns his head gently toward Farah with surprised amused eyebrow. Farah stands beside him LEFT, leans one palm naturally on bench and other hand relaxed at side, looks toward ARIA speaker display with affectionate wry smile. No held tablet or cards. Shared monitor LEFT foreground faces both crew and camera; exact heading \"Fictional mission replay\", rows \"Train: first day\", \"Replay: next 10 days\", \"80-step windows\", \"Pulses detected 72 hours later\", \"Fresh state per window\", \"Trained weights retained\". Small separate ARIA display on right shows simple ring containing flat line, \"ARIA\" and \"4 seconds silent\". The pause is warm and playful, not solemn. Faces visible but no camera gaze.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-38a2e796-e5ca-48fe-bb9a-af515f0a1751.png",
+          "sha256": "85cb6676a90e30c4e9b632f3d53fc19f1b6772bad9329606c57027611269240a",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6bb2fef4-9672-40a0-bec2-ee1323792a05.png",
+        "sha256": "bed5ca3b204431e5354c00ca8ac76a0d0e6f1dd60fd5ac349956deb3539d34b9"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Story fictional replay detects pulses72hourslater afterfirstdaytraining; next10daysreplay; windowsfreshstate withtrainedweights; ARIApauses4seconds.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 410,
+        "top": 270,
+        "width": 240,
+        "height": 290
+      },
+      {
+        "kind": "face",
+        "index": 1,
+        "left": 910,
+        "top": 335,
+        "width": 220,
+        "height": 290
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 320,
+        "top": 850,
+        "width": 180,
+        "height": 110
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 680,
+        "top": 825,
+        "width": 60,
+        "height": 170
+      },
+      {
+        "kind": "hands",
+        "index": 2,
+        "left": 980,
+        "top": 805,
+        "width": 480,
+        "height": 150
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-38a2e796-e5ca-48fe-bb9a-af515f0a1751.png",
+      "sha256": "85cb6676a90e30c4e9b632f3d53fc19f1b6772bad9329606c57027611269240a",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "lstm-gates-epilogue",
+    "id": "recurrent-networks/lstm-gates",
+    "phase": "epilogue",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6bb2fef4-9672-40a0-bec2-ee1323792a05.png",
+    "candidateSha256": "bed5ca3b204431e5354c00ca8ac76a0d0e6f1dd60fd5ac349956deb3539d34b9",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T21:40:55.887387+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+        "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Hands, full arm chains, head/neck and physical furniture/device contacts coherent.",
+      "screenPlane": "Text/graphics follow physical screen perspective.",
+      "readerDirection": "Characters can see actual front from operator side; no outward-only card.",
+      "story": "Candid task action and character response connected to lesson.",
+      "palette": "Muted charcoal, sage and aged brass, localized warm light.",
+      "meaning": "Current fictional epilogue trains first day, replays next ten, detects pulses72hours beyond training in80-step windows with fresh state and retained trained weights. ARIA pause four seconds accurate. Separate display marks replay fictional; faces/hands and cast reaction are coherent."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-epilogue.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-6bb2fef4-9672-40a0-bec2-ee1323792a05.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-epilogue.webp",
+  "sourceSha256": "bed5ca3b204431e5354c00ca8ac76a0d0e6f1dd60fd5ac349956deb3539d34b9",
+  "webpSha256": "7b2613e1c2ff7e5dde3565af9b2102c26ab2f0b9bccb522b9612110842aa7841",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+    "sourceSha256": "ff2e87bd104643a48bda107f301d35dcb2e7b0b208ff96642d00725720b4869e",
+    "webpSha256": "cedef848757c96789bff559a146d708c0c6fcafa9228df111f9b482a1990917a",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cab53e49-e9f9-49da-9446-a1a303aa04b4.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "bed5ca3b204431e5354c00ca8ac76a0d0e6f1dd60fd5ac349956deb3539d34b9",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical faces, adult proportions and wardrobe consistent.",
+      "anatomy": "Hands, full arm chains, head/neck and physical furniture/device contacts coherent.",
+      "screenPlane": "Text/graphics follow physical screen perspective.",
+      "readerDirection": "Characters can see actual front from operator side; no outward-only card.",
+      "story": "Candid task action and character response connected to lesson.",
+      "palette": "Muted charcoal, sage and aged brass, localized warm light.",
+      "meaning": "Current fictional epilogue trains first day, replays next ten, detects pulses72hours beyond training in80-step windows with fresh state and retained trained weights. ARIA pause four seconds accurate. Separate display marks replay fictional; faces/hands and cast reaction are coherent."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+        "sha256": "df0509a7e697dac9692f09b299e5ec78ced808aa00feeab264a274e450f6ecec"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-epilogue.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

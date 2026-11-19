@@ -10,20 +10,19 @@ exports[`CookieConsent snapshots > matches snapshot when visible 1`] = `
   <div
     class="mx-auto flex w-full max-w-7xl flex-col gap-3 px-5 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between md:gap-6 md:px-12"
   >
-    <p
+    <div
       class="text-xs font-mono leading-relaxed text-text-muted"
     >
-      Essential cookies keep you signed in and remember your world choice. Analytics (PostHog, Vercel Analytics) runs only if you accept. See our
-       
-      <a
-        class="text-primary rounded-none underline underline-offset-2 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-        href="/privacy"
-      >
-        Privacy Policy
-      </a>
-       
-      for details.
-    </p>
+      <p>
+        Essential cookies keep you signed in and remember your world choice. Analytics (PostHog, Vercel Analytics) runs only if you accept. When signed in, this includes account activity such as purchases and code exports.
+        <a
+          class="ml-1 text-primary rounded-none underline underline-offset-2 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          href="/privacy"
+        >
+          Privacy Policy
+        </a>
+      </p>
+    </div>
     <div
       class="flex shrink-0 flex-wrap items-center gap-3"
     >

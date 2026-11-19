@@ -1,0 +1,60 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:26:12.178734+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__first-neuron-challenge/candidate.png",
+  "candidateSha256": "5d1d942986f713f360ec161ddabf88a7267457eb36333dc6cea7ed710eb2e675",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+      "sha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml",
+      "sha256": "76be1567cd573a022279c518761660430454f55285684fba97d4047bf613e45c"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-neural-networks__first-neuron-challenge-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__first-neuron-challenge/candidate.png",
+      "rect": [
+        940,
+        170,
+        530,
+        465
+      ]
+    },
+    {
+      "name": "peer-neural-networks__first-neuron-challenge-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__first-neuron-challenge/candidate.png",
+      "rect": [
+        575,
+        535,
+        935,
+        415
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The large main display correctly presents the supplied arithmetic check: [1, 2, 3], weights [0.2, 0.8, -0.5], bias 0.1, dot plus bias, scalar shape [] and expected 0.4.",
+    "All four arms are traceable. Demir's key press and tablet grip, Farah's chair and notebook contacts, and both canonical faces pass close inspection."
+  ],
+  "repairDirection": "None."
+}

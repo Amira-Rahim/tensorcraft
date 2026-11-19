@@ -1,4 +1,4 @@
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -27,11 +27,16 @@ function builtLessons(): { module: string; slug: string }[] {
     if (!existsSync(modDir)) continue;
     for (const file of readdirSync(modDir)) {
       if (!file.endsWith(".mdx")) continue;
-      // Files are `NN-slug.mdx`; the plate is named by slug alone.
-      out.push({
-        module: mod,
-        slug: file.replace(/^\d+-/, "").replace(/\.mdx$/, ""),
-      });
+      // Runtime URLs use frontmatter slugs, which can differ from filenames.
+      const source = readFileSync(join(modDir, file), "utf8");
+      const frontmatter = source.match(
+        /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/,
+      )?.[1];
+      const slug = frontmatter?.match(
+        /^slug:\s*["']?([a-z0-9-]+)["']?\s*$/m,
+      )?.[1];
+      if (!slug) throw new Error(`${mod}/${file}: missing frontmatter slug`);
+      out.push({ module: mod, slug });
     }
   }
   return out;

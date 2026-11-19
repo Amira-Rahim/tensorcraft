@@ -1,0 +1,24 @@
+{
+  "module": "neural-networks",
+  "lesson": "forward-pass",
+  "phase": "epilogue",
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit, neural-networks/forward-pass, epilogue. Generate one new 1536x1024 landscape composition. Reference image 1 is the canonical identity of Ensign Demir; reference image 2 is the Archimedes bridge set, not a composition to copy. After shift change, Demir runs the repaired network demo ALONE. Warm quiet satisfaction and a small relaxed smile, competent rather than exhausted. Three-quarter camera close enough to recognize his warmly lit face, tousled brown hair, light stubble, slate junior uniform, green earpiece and wrist terminal. He stands in the open aisle beside a waist-high console, clearly outside its solid edges. Exactly two arms: right hand rests naturally on the keyboard, left hand holds a slim plain run-log card close to his chest. Console display has three simple horizontal score bars clustered near halfway, without checkmarks, alert colors or claims of correctness. Random initial scores are provisional. In the background a simple three-stage row of rectangular blocks is connected, expressing a repaired input connection. Single focal display, uncluttered bridge, warm brass trim, dark starfield, no other crew. Readable hands, plausible attached fingers, no extra arms or hands, no fused furniture, no body passing through console or chair, no floating objects, no ghost people. No text, letters, numbers, logos or watermark. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-dfe1ca63-0a83-4f15-9068-e2b174795cc6.png",
+  "source": "art-src/scenes/neural-networks__forward-pass-epilogue-openai-20261106.png",
+  "src": "/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp",
+  "alt": "Demir reruns the repaired network alone, saving its provisional scores with a quiet smile.",
+  "location": "Archimedes, Bridge",
+  "qa": {
+    "approved": true,
+    "anatomy": "Two attached arms and two coherent hands. No spare limbs.",
+    "furniture": "Demir stands beside the console, with clear solid edges and natural hand contact.",
+    "identity": "Canonical Demir face, tousled hair, stubble, green earpiece and wrist terminal retained.",
+    "story": "Demir alone after shift change. Three scores remain near midpoint without approval marks.",
+    "tone": "Warm quiet competence, relaxed smile.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "retrievedOn": "2026-11-11",
+  "source": "OpenSEO connected tool",
+  "tool": "get_google_analytics_organic_overview",
+  "arguments": {
+    "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+    "startDate": "2026-10-12",
+    "endDate": "2026-11-08",
+    "trend": "daily"
+  },
+  "result": {
+    "status": "error",
+    "error": {
+      "code": "ga4_not_connected",
+      "message": "Google Analytics is not connected for this project.",
+      "retryAfterSeconds": null,
+      "actionUrl": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/settings/integrations"
+    },
+    "meta": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44"
+    }
+  },
+  "creditsUsed": 0
+}

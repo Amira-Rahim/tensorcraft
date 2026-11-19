@@ -1,0 +1,144 @@
+{
+  "key": "system-architecture-challenge",
+  "auditIndex": 10,
+  "id": "capstone/system-architecture",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+    "sha256": "8434529ed3182677fc57c28ffc914b50c27df1f6d2bbcc05f6d77eebba7b1f80"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; Farah lens stays over anatomical LEFT eye. Nazari and Mirza have no monocle or earpiece. Only exact named cast. Demir seated at bridge workbench, leaning forward to read the console with a focused hopeful smile. Both hands naturally typing on keyboard, feet supported and normal knees belowdesk. Monitor at RIGHT faces him and camera. Title \"Pipeline rehearsal\". Three stages as a simple left-to-right flow \"Validate input\" then \"Await process\" then \"Pass result onward\". Footer \"Invalid input: stop and name the stage\". Smallstatus \"Eight-sample diagnostic: pending\". No successcheck, no modelaccuracyclaim. Preserve canonical face and muted room.",
+  "meaning": "Pipelineexercisevalidatesbeforeprocessing,awaitseach stage,throws exactstage name;8samplediagnosticnotfullclassifier.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+      "sha256": "8434529ed3182677fc57c28ffc914b50c27df1f6d2bbcc05f6d77eebba7b1f80",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-63845ab2-7011-4014-ab5d-3d785d14c955.png",
+  "candidatePath": "art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+  "candidateSha256": "d7e7ffd66d9b028adcfc8726db5ba0618d68b99b721f1d21085a63d72c69e1cb",
+  "ownReview": {
+    "reviewer": "/root/remaining_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "method": "Native full frame compared with canonical portraits and current MDX",
+    "notes": "Demir types thoughtfully at sharedfront console. Eight-samplediagnosticpending,validate-await-passchain andinvalidstop/name rulematchMDX. Natural keyboardhands, balancedshortneck, canonicalface, alltextanddiagramfollowmonitorplane, unusedscreensdark."
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+      "sha256": "8434529ed3182677fc57c28ffc914b50c27df1f6d2bbcc05f6d77eebba7b1f80",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-63845ab2-7011-4014-ab5d-3d785d14c955.png",
+  "publishedSource": "art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-challenge.webp",
+  "sourceSha256": "d7e7ffd66d9b028adcfc8726db5ba0618d68b99b721f1d21085a63d72c69e1cb",
+  "webpSha256": "a2e69f2c977ac2cff95c67a4a12784a96b019451f022cc692bd9a68317ecdb85",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+    "sourceSha256": "8434529ed3182677fc57c28ffc914b50c27df1f6d2bbcc05f6d77eebba7b1f80",
+    "webpSha256": "d510ba827e18edaa8664a8785f131a89f63af9ae4ac14c9fefde0685bf0b0824",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4cb543db-bdea-4c00-ad93-dc5bfa4209d3.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root/remaining_root_opt",
+    "status": "approved",
+    "candidateSha256": "d7e7ffd66d9b028adcfc8726db5ba0618d68b99b721f1d21085a63d72c69e1cb",
+    "method": "Independent native full-frame visual inspection, comparison with canonical character portraits, current MDX and exercise source verification. Screen plane, anatomy, palette, reader direction and story action checked. Face crops compared beside neutral canonical portraits.",
+    "checks": {
+      "combinedNativeReview": "Demir types the pending eight-sample diagnostic, so no exercise answer is fabricated. Validate input, await process, pass result onward and stage-named stop condition match the source exercise. Both keyboard hands and seated support are coherent. Canonical face and adult proportions, readable screen front and aligned content, dark auxiliary displays.",
+      "independentPeerRecord": "/tmp/rootopt-recovered-peer.json",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+          "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+          "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+        "sha256": "b338736c65b7961c1865a5872abad34026a9491c07e6c6bab02226390e1158b6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+        "sha256": "d594edc9edf5e3b2e22b068c4d9b970f7d1c8f8749e70068b872b5b0bd536eaf"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/system-architecture-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-challenge.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

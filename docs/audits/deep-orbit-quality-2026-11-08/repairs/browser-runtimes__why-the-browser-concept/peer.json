@@ -1,0 +1,74 @@
+{
+  "reviewer": "quality_early",
+  "reviewedAt": "2026-11-08T19:21:29.404222+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-concept/candidate.png",
+  "candidateSha256": "b36c52f567d4e48272568abf9d7e42ee584d3f09935f04d3bcac59f50b583ff4",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x or 3x face/hand/prop crops, full shoulder-elbow-wrist chains traced in original, direct canonical portrait comparison, current lesson and relevant exercise source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": "rt3face",
+      "k": 3,
+      "box": [
+        815,
+        155,
+        1455,
+        555
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-concept/candidate.png"
+    },
+    {
+      "i": "rt3hands",
+      "k": 3,
+      "box": [
+        540,
+        730,
+        1400,
+        980
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-concept/candidate.png"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "All four shoulder-elbow-wrist chains are coherent. Demir's switch pinch and desk brace, and Nazari's trackball and desk hands, have correct thumb placement and physical contact.",
+    "displayLegibilityAndSource": "The local input-model-output path and server request/return arrows are correct. Offline caching includes app, runtime and model; the broken link is explicit.",
+    "identityExpressionAndStory": "The actual link-control action and questioning gaze keep the scene specific.",
+    "palette": "Muted sage, charcoal and aged brass with warm skin and restrained lighting.",
+    "perspectiveAndOperator": "Readable physical display fronts with consistent text plane and plausible operator orientation.",
+    "largeDisplayRule": "Essential lesson information is large and clear, using the available scene space rather than a tiny rear console."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true
+}

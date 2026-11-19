@@ -1,10 +1,9 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  // `/certificates/` is intentionally NOT disallowed, share pages are
-  // public, JSON-LD-decorated `EducationalOccupationalCredential` records
-  // that should be crawlable for SEO. Admin + auth + dashboard surfaces
-  // are gated so they never enter the index.
+  // Crawlers must reach HTML pages to read their noindex metadata.
+  // Authentication and purchase checks control access to private content.
+  // robots.txt controls crawling and cannot guarantee removal from an index.
   return {
     rules: {
       userAgent: "*",
@@ -16,14 +15,7 @@ export default function robots(): MetadataRoute.Robots {
       // share card sitewide would render imageless. More specific Allow rules
       // win over broader Disallow rules in Google's and Bing's matchers.
       allow: ["/", "/api/og"],
-      disallow: [
-        "/api/",
-        "/auth/",
-        "/onboarding",
-        "/settings",
-        "/dashboard",
-        "/admin",
-      ],
+      disallow: ["/api/"],
     },
     sitemap: "https://tensorcraft.app/sitemap.xml",
   };

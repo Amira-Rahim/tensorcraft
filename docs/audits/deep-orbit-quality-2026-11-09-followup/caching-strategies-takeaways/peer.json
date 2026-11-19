@@ -1,0 +1,94 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+  "candidateSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Independent fresh native, complete arm chains at native and 1.4x, individual hands at 2x, canonical face comparison, 1.25x displays, current MDX and standalone 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "name": "caching-v2-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+      "box": [
+        330,
+        50,
+        710,
+        490
+      ]
+    },
+    {
+      "name": "caching-v2-chain",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+      "box": [
+        100,
+        420,
+        900,
+        980
+      ],
+      "scale": 1.4
+    },
+    {
+      "name": "caching-v2-mouse",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+      "box": [
+        640,
+        680,
+        900,
+        820
+      ]
+    },
+    {
+      "name": "caching-v2-rest",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+      "box": [
+        530,
+        825,
+        890,
+        985
+      ]
+    },
+    {
+      "name": "caching-v2-screen",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+      "box": [
+        740,
+        280,
+        1536,
+        790
+      ],
+      "scale": 1.25
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+    }
+  ],
+  "checks": {
+    "anatomyContact": "Near right shoulder, elbow, forearm and relaxed wrist form a continuous supported chain. Four distinct fingers descend naturally over the desk; the far-side thumb is occluded by the hand. Far left shoulder remains behind the torso, with visible elbow-to-wrist chain to the mouse. Near-side left thumb and two leading fingers articulate around the mouse with other digits naturally overlapped. No fused limb, added joint, detached finger or misplaced thumb is visible. The upright mug has an empty continuous handle and desk contact, avoiding the rejected grip.",
+    "identityExpression": "Demir retains canonical hair silhouette, freckles, stubble, adult facial proportions and focused screen-directed gaze. The relaxed pause is candid and task-specific.",
+    "displayContent": "The three cache handover checks match the current lesson. The 0.499 and 0.501 input rows both become 0.50 at two decimals. The caution that one key can hide different decisions preserves the boundary-probe meaning.",
+    "perspectiveOperator": "Both displays sit in a coherent angled physical plane with upper rules rising right, near-horizon rules level and lower rules falling right. Text and grids follow the same family. Demir sits on their front viewing side. No independent tilted overlay is present.",
+    "largeDisplayRule": "Both substantial screens use their full visible area; all main labels and numbers remain readable at 768 x 512 without clipping.",
+    "palette": "Muted slate, sage and warm amber remain consistent."
+  },
+  "scores": {
+    "colorLight": 5,
+    "movementAnatomyContact": 4,
+    "expressionGaze": 5,
+    "identityProportions": 5,
+    "displayContentLegibilityPerspective": 4,
+    "compositionStoryAction": 5
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:13:31.527242+00:00"
+}

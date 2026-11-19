@@ -1,0 +1,129 @@
+{
+  "id": "optimization-edge/model-profiling",
+  "phase": "takeaways",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: engineering room only; image 3: Edit target; enlarge teaching display while preserving story action.\nScene: Nazari sits LEFT at the engineering rig, one hand on the mouse and the other laid naturally on a closed binder. Her face is thoughtful and sober. She studies a LARGE upright RIGHT display, with camera beside her. Exact title 'Baseline: three separate checks'; three spacious numbered rows '1  Weight storage', '2  Completed prediction time', '3  Peak runtime memory'; footer 'Same workload before and after'. No numbers, no successful memory check invented. The display fills available upper wall; tools and pipes stay quiet background.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "9b0ad34767b65cca092cef4fb2be2d143b16522ce643f46de024ddcba0a796be",
+  "source": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+  "sourceSha256": "725d62304b187c12d830b890edcab0da1a8ded27d18f43065e2b1aedbba5e621",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "engineering room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+      "sha256": "63bde52309240120075a14f8081e52911bcba4146bb2185726c8e597d2af7750",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+    "lessonSha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5",
+    "context": "Recall separates weight parameter storage from time and peak runtime memory and requires the same workload before and after.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+  "candidateSha256": "725d62304b187c12d830b890edcab0da1a8ded27d18f43065e2b1aedbba5e621",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-takeaways.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-b3f87528-646b-402c-b709-ce5671245a95.png",
+  "generatedSha256": "725d62304b187c12d830b890edcab0da1a8ded27d18f43065e2b1aedbba5e621",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "725d62304b187c12d830b890edcab0da1a8ded27d18f43065e2b1aedbba5e621",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      200,
+      165,
+      330,
+      365
+    ],
+    "handCropCoordinatesXYWH": [
+      225,
+      775,
+      715,
+      210
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Nazari studies three separate checks with one mouse hand and one binder hand. Both connected wrists and grips are natural. Mature face and thoughtful gaze retained. Large metric labels and same-workload qualifier are exact, with no invented performance result."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__model-profiling-takeaways/candidate.png",
+  "publishedSource": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-takeaways.webp",
+  "webpSha256": "f7a725f6a21cd22048e216fb6421c551ed3a2c124bfa35d8a0f16c33dd3e85f8",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+    "sourceSha256": "63bde52309240120075a14f8081e52911bcba4146bb2185726c8e597d2af7750",
+    "webpSha256": "f32acc0dd694281869f3116316a0f7a891e6d37a009ddfc8e7937e2496b56972",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-af1d1308-bf63-4ef5-b6a2-92813d1b2a02.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "725d62304b187c12d830b890edcab0da1a8ded27d18f43065e2b1aedbba5e621",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+        "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__model-profiling-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

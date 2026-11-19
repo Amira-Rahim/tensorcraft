@@ -14,6 +14,12 @@ import {
   type ExerciseArtifact,
 } from "./exercise-artifacts.mjs";
 import { FIT_RECORDING_SOURCE } from "./exercise-fit-recording.mjs";
+import {
+  EVALUATION_CAPTURE_SOURCE,
+  EVALUATION_FIXTURE,
+  EVALUATION_CONTEXT_KEYS,
+  EVALUATION_ROLES,
+} from "@tensorcraft/shared";
 import { SHAPE_RECORDING_SOURCE } from "./exercise-shape-recording.mjs";
 
 export interface TestResult {
@@ -30,6 +36,8 @@ export interface ConsoleEntry {
 }
 
 export interface TestRunOutcome {
+  runtimeVersion?: string;
+  backend?: string;
   artifacts?: ExerciseArtifact[];
   results: TestResult[];
   logs: ConsoleEntry[];
@@ -1181,6 +1189,8 @@ function buildFullCode(userCode: string, testCode: string): string {
 const WORKER_BODY = `
   var createFitRecorder = ${FIT_RECORDING_SOURCE};
   var fitRecorder;
+  var createEvaluationCapture = ${EVALUATION_CAPTURE_SOURCE};
+  var evaluationCapture;
   var createShapeRecorder = ${SHAPE_RECORDING_SOURCE};
   var shapeRecorder;
 (function() {
@@ -1278,9 +1288,18 @@ const WORKER_BODY = `
   // timeout and produced "Timed out after 10 seconds" for code that never ran.
   // Resolution (not rejection) is what matters here - a failed load is
   // reported through the normal error path when the run is attempted.
+  function runtimeMetadata() {
+    var tf = globalThis.tf;
+    try {
+      return {
+        runtimeVersion: tf && tf.version && tf.version.tfjs,
+        backend: tf && typeof tf.getBackend === 'function' ? tf.getBackend() : undefined,
+      };
+    } catch (e) { return {}; }
+  }
   try {
     Promise.resolve(tfReady).then(function () {
-      post({ ready: true });
+      post(Object.assign({ ready: true }, runtimeMetadata()));
     }, function () {});
   } catch (e) {}
 
@@ -1293,6 +1312,7 @@ const WORKER_BODY = `
     var tf = globalThis.tf;
     if (!tf) return;
     if (!fitRecorder) fitRecorder = createFitRecorder(tf);
+    if (!evaluationCapture) evaluationCapture = createEvaluationCapture(tf, fitRecorder, ${JSON.stringify(EVALUATION_FIXTURE)}, ${JSON.stringify(EVALUATION_ROLES)}, ${JSON.stringify(EVALUATION_CONTEXT_KEYS)}, ${ARTIFACT_COLLECTOR_SOURCE});
     if (!shapeRecorder) shapeRecorder = createShapeRecorder(tf);
 
     // Part of the call spy above: tensor METHODS (a.add(b), x.matMul(w),
@@ -1621,6 +1641,7 @@ const WORKER_BODY = `
                 // (round 7b, 2026-09-14). Same rule as the validator.
                 if (prop === '__calls') return Object.freeze(Object.assign(Object.create(null), calls));
                 if (prop === '__fits') return fitRecorder ? fitRecorder.read() : Object.freeze([]);
+                if (prop === '__fitStatus') return fitRecorder.status();
                 if (prop === '__shapeOf') return shapeRecorder.read;
                 if (stubs[prop]) return stubs[prop];
                 var v = target[prop];
@@ -1643,18 +1664,21 @@ const WORKER_BODY = `
             })
           : globalThis.tf;
         var artifactCollector = (${ARTIFACT_COLLECTOR_SOURCE})();
-        var fn = new Function('console', 'tf', 'recordResult', code);
-        var results = await fn(capturedConsole, tfProxy, artifactCollector.record);
-        post({ ok: true, results: results, logs: logs, artifacts: artifactCollector.read() });
+        var captureForRun = function(input) {
+          return evaluationCapture(input, artifactCollector.read);
+        };
+        var fn = new Function('console', 'tf', 'recordResult', 'captureEvaluation', code);
+        var results = await fn(capturedConsole, tfProxy, artifactCollector.record, captureForRun);
+        post(Object.assign({ ok: true, results: results, logs: logs, artifacts: artifactCollector.read() }, runtimeMetadata()));
       } catch (err) {
-        post({ ok: false, error: (err && err.message) || String(err), logs: logs });
+        post(Object.assign({ ok: false, error: (err && err.message) || String(err), logs: logs }, runtimeMetadata()));
       }
     })();
   });
 })();
 `;
 
-type WorkerReply =
+type WorkerReply = { runtimeVersion?: string; backend?: string } & (
   | {
       ok: true;
       results: TestResult[];
@@ -1671,7 +1695,8 @@ type WorkerReply =
   // starts, false once the last fit in flight has settled. Carries no
   // results either: the host reads it only when the execution budget
   // expires, to word the timeout (see startTimer).
-  | { fit: boolean };
+  | { fit: boolean }
+);
 
 /**
  * Budget for loading the runtime, separate from the per-run execution budget.
@@ -1750,6 +1775,7 @@ export async function parseAndRunTestsWith(
         },
       ],
       logs: [],
+      errored: true,
     };
   }
 
@@ -1758,13 +1784,14 @@ export async function parseAndRunTestsWith(
     // Set by the worker's { fit } signals: a recorded model.fit is still
     // running. Only the timeout wording reads it.
     let trainingInFlight = false;
+    const runtime: { runtimeVersion?: string; backend?: string } = {};
     const finish = (outcome: TestRunOutcome) => {
       if (settled) return;
       settled = true;
       if (timer !== undefined) clearTimeout(timer);
       clearTimeout(loadTimer);
       Promise.resolve(handle.terminate()).catch(() => {});
-      resolve(outcome);
+      resolve({ ...runtime, ...outcome });
     };
 
     // The timeout budget is for the learner's CODE, not for fetching the
@@ -1821,6 +1848,12 @@ export async function parseAndRunTestsWith(
     }, RUNTIME_LOAD_TIMEOUT_MS);
 
     handle.onReply((reply) => {
+      // Only retain bounded runtime identifiers, never arbitrary worker data.
+      for (const key of ["runtimeVersion", "backend"] as const) {
+        const value = reply[key];
+        if (typeof value === "string" && value.length <= 80)
+          runtime[key] = value;
+      }
       // Runtime is up: stop the load budget and start the execution budget.
       // `in` rather than a cast so TypeScript narrows the union properly.
       if ("ready" in reply) {

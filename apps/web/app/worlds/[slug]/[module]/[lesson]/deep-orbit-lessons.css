@@ -20,40 +20,44 @@
   font-size: 22px;
   line-height: 1.65;
 }
-.lesson-page.deep-orbit-lesson .lesson-prose p,
-.lesson-page.deep-orbit-lesson .lesson-prose li {
-  font-size: var(--lesson-body-size);
-  line-height: 1.65;
-}
-.lesson-page.deep-orbit-lesson .lesson-prose h2,
-.lesson-page.deep-orbit-lesson .lesson-workbench > h2 {
-  color: var(--tc-text);
-  font-size: var(--lesson-section-title-size);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
-}
-/* Match subsection roles across prose and activities. Component layouts keep
-   ownership of their margins; larger activity titles retain their own level. */
-.lesson-page.deep-orbit-lesson .lesson-prose h3,
-.lesson-page.deep-orbit-lesson .lesson-workbench .lesson-goals > h3,
-.lesson-page.deep-orbit-lesson .tensor-investigation-purpose > h3,
-.lesson-page.deep-orbit-lesson .tensor-investigation-console > h3,
-.lesson-page.deep-orbit-lesson .orbit-investigation-header > h3,
-.lesson-page.deep-orbit-lesson [data-exercise-output-title] {
-  color: var(--tc-text);
-  font-size: var(--lesson-subsection-title-size);
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: normal;
-}
-.lesson-page.deep-orbit-lesson .lesson-prose h2 {
-  margin-top: 40px;
-  margin-bottom: 20px;
-}
-.lesson-page.deep-orbit-lesson .lesson-prose h3 {
-  margin-top: 32px;
-  margin-bottom: 16px;
+/* Reading defaults retain the course scale while authored result and activity
+   utilities own their typography and spacing. Keep them below utilities. */
+@layer components {
+  .lesson-page.deep-orbit-lesson .lesson-prose p,
+  .lesson-page.deep-orbit-lesson .lesson-prose li {
+    font-size: var(--lesson-body-size);
+    line-height: 1.65;
+  }
+  .lesson-page.deep-orbit-lesson .lesson-prose h2,
+  .lesson-page.deep-orbit-lesson .lesson-workbench > h2 {
+    color: var(--tc-text);
+    font-size: var(--lesson-section-title-size);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+  /* Match subsection roles across prose and activities. Component layouts keep
+     ownership of their margins; larger activity titles retain their own level. */
+  .lesson-page.deep-orbit-lesson .lesson-prose h3,
+  .lesson-page.deep-orbit-lesson .lesson-workbench .lesson-goals > h3,
+  .lesson-page.deep-orbit-lesson .tensor-investigation-purpose > h3,
+  .lesson-page.deep-orbit-lesson .tensor-investigation-console > h3,
+  .lesson-page.deep-orbit-lesson .orbit-investigation-header > h3,
+  .lesson-page.deep-orbit-lesson [data-exercise-output-title] {
+    color: var(--tc-text);
+    font-size: var(--lesson-subsection-title-size);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: normal;
+  }
+  .lesson-page.deep-orbit-lesson .lesson-prose h2 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  .lesson-page.deep-orbit-lesson .lesson-prose h3 {
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
 }
 .lesson-page.deep-orbit-lesson .lesson-prose :not(pre) > code {
   font-size: 0.95em;

@@ -1,6 +1,6 @@
 # A+ Confirmed - Final Re-audit 2026-04-28
 
-This is the **third re-audit** of content quality. Closes the A+ launch sprint. All P0 from prior re-audit fixed. P2 polish backlog moved to [docs/v2-polish-backlog.md](../v2-polish-backlog.md).
+This is the **third re-audit** of content quality. Closes the A+ launch sprint. All P0 from prior re-audit fixed. P2 polish backlog moved to [docs/v2-polish-backlog.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/v2-polish-backlog.md).
 
 ## Sprint timeline
 
@@ -62,7 +62,7 @@ Math floor canonical. Real-TFJS exercises actually run. Bridges admit where they
 - **/bridges JSON-LD extended** - `itemListElement` now covers all 50 bridges (was 25).
 - **Studio-one β-VAE shipped** - replaced deterministic dense AE artifact at `apps/web/public/models/studio-one-v1/` (and 3 alias dirs) with proper β-VAE: Conv2D(8) → Conv2D(16) → Flatten → μ-head + logVar-head → reparameterization sample → Dense → Reshape → Conv2DTranspose(8) → Conv2DTranspose(3 sigmoid). Custom training loop with reconstruction MSE + 0.5·KL term. Registered `ReparamLayer` class for save/load round-trip. Verified via `tf.loadLayersModel` - all lesson-mentioned layers present in artifact, no more AE/VAE deception.
 
-**Still deferred to V2** (see [docs/v2-polish-backlog.md](../v2-polish-backlog.md)):
+**Still deferred to V2** (see [docs/v2-polish-backlog.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/v2-polish-backlog.md)):
 
 - Story-voice Phase 4 spot-check editorial pass (~3.5h, taste call)
 - Studio-one real-data training - architecture is now correct β-VAE but synthetic uniform-noise inputs cause posterior collapse. Retrain on tiny CelebA subset for face-shaped reconstructions (~3h).

@@ -1,0 +1,165 @@
+{
+  "id": "foundations/normalization",
+  "phase": "briefing",
+  "owner": "/root/quality_runtime",
+  "status": "published",
+  "preparedAt": "2026-11-09T13:58:27.677177+00:00",
+  "tool": "built-in image_gen",
+  "useCase": "precise-object-edit",
+  "source": "art-src/scenes/foundations__normalization-openai-20261107.png",
+  "sourceSha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+  "sourceArchive": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4e9e5f24-f134-4318-81c6-9b9d484c73c5.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Deep Orbit lesson illustration, 1536 x 1024. Edit the LAST reference image. The first three references are canonical identity authorities for Commander Mirza, Dr. Farah and Ensign Demir, in that order. The fourth reference is bridge architecture only. Preserve the last image almost exactly: same three people, same positions, canonical facial structure and age, expressions, eye directions, bodies, costumes, hand poses, straight stylus, keyboard typing, closed notebook, bridge, colors and lighting. Do not add a person or prop. No change to anatomy or staging.\n\nCorrect ONLY the large monitor at the right and its mounting bracket. The current table does not share the glass perspective. Swivel this complete physical monitor to an exact frontal elevation on its existing desktop mount. The physical bronze bezel, dark glass and the complete screen interface must ALL be a true vertical rectangle, viewed with the camera sensor parallel to the glass. Top and bottom bezel edges exactly horizontal; both side edges exactly vertical. No trapezoid, tilt, skew or separate perspective for contents. Keep the monitor fully in frame with a small margin at right. Keep it within the current monitor's approximate space, on the same desk, a plausible large workstation display, not a wall panel. The swivel mount accounts for its changed direction. All three crew members remain LEFT of the screen and IN FRONT of its glass, with keyboard and hands on its actual viewing side. Their eye lines continue to make sense. Never put an operator behind the display.\n\nInside that same frontal glass, draw a crisp large straight table using available width. Every grid rule and text baseline exactly horizontal, every column boundary vertical, consistent with the physical rectangle. High legibility at 768 x 512. Heading exactly: \"Scale each feature\". Two columns exactly: \"Temperature\" and \"Signal strength\". Four data rows exactly: 20 and 0.2; 22 and 0.8; 24 and 0.4; 26 and 0.6. Footer exactly: \"Four supplied training readings\". These are raw supplied readings. No new data or other panels. Preserve the calm dark sage interface, brass bezel and stylized cel-shaded linework. Change only the monitor, its support if necessary, and the screen projection. Keep the crew's working action, identities, proportions, natural hands and established colors unchanged.",
+  "promptSha256": "5fcf344523d86c2633039b22adae793abbc822cd82e9a2eb7f10fc93d8417110",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "Canonical identity: commander-mirza",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "Bridge room architecture only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4e9e5f24-f134-4318-81c6-9b9d484c73c5.png",
+      "role": "Exact current source edit target; preserve crew and correct only the physical monitor and its contents",
+      "sha256": "f0dfd871e0297d504fb72071743256525803b933e8ef8d6cb6fad6bda38464fc",
+      "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/source.png"
+    }
+  ],
+  "sourceEvidence": "The briefing orders scaling before the deep scan. The current lesson identifies four supplied training readings with temperature and signal-strength columns: [20,0.2], [22,0.8], [24,0.4], [26,0.6]. The briefing image shows those raw inputs before scaling.",
+  "userDefect": "Cross-scene screen geometry rule: physical glass horizontal vanishing point near (321,530), but table rules differ from that projection by about 14 to 15 source pixels.",
+  "defectEvidence": "docs/audits/deep-orbit-quality-2026-11-09-followup/related-normalization-check.json",
+  "publication": {
+    "alt": "Demir prepares four readings while Farah explains scaling and Mirza follows their shared display.",
+    "location": "Archimedes, Bridge",
+    "action": "Demir types the supplied readings while Farah explains with a lowered stylus and Mirza watches.",
+    "emotion": "Focused preparation, warm explanation and calm command attention.",
+    "eyeline": "Demir studies the monitor front; Farah looks toward Demir while explaining; Mirza follows the shared work.",
+    "checks": [
+      "Canonical Mirza, Farah and Demir facial structure and age.",
+      "Crew remains on the viewing side of the physical monitor.",
+      "Physical bezel, glass, table, lettering and rules share one frontal plane.",
+      "Raw source values retained, readable at 768 x 512.",
+      "Coherent hand contact with keyboard, stylus, closed book and railing."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-905c777c-d6a4-4258-ab54-1e8765128b95.png",
+  "generatedSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+  "candidatePath": "art-src/scenes/foundations__normalization-openai-20261107.png",
+  "candidateSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+  "ownReview": {
+    "reviewer": "/root/quality_runtime",
+    "candidateSha256": "cb51b3702afc75054eea9ae369dd0f2396b51a9a7189dfb5c6811efaa2b635ad",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "method": "Native full image, 2x canonical face and hand/prop crops, 2x display crop, standalone 768 x 512 preview, current lesson and exercise facts.",
+    "faceAndHandMagnification": 2,
+    "canonicalIdentityCompared": true,
+    "runtimeSize": [
+      768,
+      512
+    ],
+    "runtimeSizeVerdict": "PASS",
+    "findings": [
+      "The complete monitor, bronze frame, glass, table rules and lettering now share the same frontal rectangular plane.",
+      "All three crew remain on the glass front side. Demir types, Farah explains with a lowered straight stylus, and Mirza rests a hand naturally on the rail.",
+      "Canonical faces retain age and proportions. Mirza has one naturally occluded far arm; visible hand chains and all prop contacts are coherent.",
+      "All four raw temperature and signal-strength pairs match the current lesson and remain readable at 768 x 512. No new data or conclusions."
+    ],
+    "scores": {
+      "colorLight": 5,
+      "movementAnatomyContact": 5,
+      "expressionGaze": 5,
+      "identityProportions": 5,
+      "displayContentLegibilityPerspective": 5,
+      "compositionStoryAction": 5
+    },
+    "diagnosticCropCoordinatesXYWH": {
+      "faces": {
+        "commander-mirza": [
+          130,
+          70,
+          230,
+          280
+        ],
+        "ensign-demir": [
+          385,
+          285,
+          250,
+          340
+        ],
+        "dr-farah": [
+          630,
+          185,
+          240,
+          300
+        ]
+      },
+      "hands": [
+        [
+          25,
+          520,
+          170,
+          160
+        ],
+        [
+          710,
+          650,
+          180,
+          125
+        ],
+        [
+          885,
+          755,
+          190,
+          90
+        ],
+        [
+          380,
+          825,
+          430,
+          165
+        ]
+      ],
+      "display": [
+        950,
+        220,
+        580,
+        525
+      ]
+    },
+    "temporaryCropsDeleted": true,
+    "reviewedAt": "2026-11-09T14:00:50.171993+00:00"
+  },
+  "publishedSource": "art-src/scenes/foundations__normalization-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+  "publishedWebpSha256": "5cd5da0b218f23d6546871f5f37e451b04f0cbb27f6c4859c294cbcaf4c21812",
+  "sourceArchiveAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-briefing/source.png"
+}

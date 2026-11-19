@@ -79,7 +79,7 @@ describe("Nav", () => {
       "/dashboard/project",
     );
     expect(screen.queryByRole("link", { name: "Pricing" })).toBeNull();
-    expect(screen.queryByRole("link", { name: "Blog" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Guides" })).toBeNull();
     expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveClass(
       "text-primary",
     );
@@ -87,8 +87,12 @@ describe("Nav", () => {
       "text-primary",
     );
   });
-  it("renders Worlds and Pricing links", () => {
+  it("renders Worlds, Pricing and the published Guides links", () => {
     render(<Nav />);
+    expect(screen.getByRole("link", { name: "Guides" })).toHaveAttribute(
+      "href",
+      "/guides",
+    );
     expect(screen.getByText("Worlds")).toBeInTheDocument();
     expect(screen.getByText("Pricing")).toBeInTheDocument();
   });

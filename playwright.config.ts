@@ -7,6 +7,9 @@ const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "./e2e",
+  // Signed-in review uses local fixtures and deliberately disables auth recording.
+  // Run it only with e2e/signed-in-results.config.ts, which serializes mutations.
+  testIgnore: /signed-in.*\.spec\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   // 1 retry, not 2: the dev-server compile races the extra retry buffered
@@ -43,7 +46,7 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      testIgnore: /mobile\.spec\.ts/,
+      testIgnore: [/mobile\.spec\.ts/, /signed-in.*\.spec\.ts/],
     },
     // Mobile device emulation per dev-plan §6b. Runs a scoped mobile smoke
     // suite (see `e2e/mobile.spec.ts`) against the 3 reference devices.

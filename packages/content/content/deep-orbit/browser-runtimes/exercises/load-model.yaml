@@ -121,6 +121,46 @@ testCode: |
         expect(() => loaded.predict(probe), 'You have copied the metadata, but the inspected model remains alive. Dispose it in a finally block.').toThrow('disposed');
       } finally { probe.dispose(); }
       expect(loads, 'Load the URL once and read every field from that model. Loading again repeats work.').toBe(1);
+
+      // A separate model owns real tensors even when reading its metadata fails.
+      const failingUrl = '/models/inspection-failure/model.json';
+      let failingModel = null;
+      let failingWeights = null;
+      let failureLoads = 0;
+      let inspectionError = null;
+      tf = new Proxy(realTf, {
+        get(target, prop) {
+          if (prop === 'loadLayersModel') return async function(url) {
+            if (url !== failingUrl) return realTf.loadLayersModel(url);
+            failureLoads++;
+            const m = realTf.sequential();
+            m.add(realTf.layers.dense({ units: 1, inputShape: [2] }));
+            failingWeights = m.getWeights();
+            Object.defineProperty(m, 'inputs', {
+              get() { throw new Error('Inspection shape unavailable'); },
+            });
+            failingModel = m;
+            return m;
+          };
+          return target[prop];
+        },
+      });
+      try {
+        await loadAndInspect(failingUrl);
+      } catch (error) {
+        inspectionError = error;
+      } finally {
+        tf = realTf;
+      }
+      try {
+        expect(failureLoads, 'Load the failing inspection URL once.').toBe(1);
+        expect(inspectionError && inspectionError.message,
+          'Report the inspection failure instead of inventing metadata.').toBe('Inspection shape unavailable');
+        expect(failingWeights.every(tensor => tensor.isDisposed),
+          'Dispose the loaded model in finally, including when reading its shapes throws.').toBe(true);
+      } finally {
+        if (failingModel && failingWeights.some(tensor => !tensor.isDisposed)) failingModel.dispose();
+      }
     });
   });
 estimatedMinutes: 12

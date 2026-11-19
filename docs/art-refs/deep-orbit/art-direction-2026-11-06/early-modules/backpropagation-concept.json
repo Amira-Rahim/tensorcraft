@@ -1,0 +1,29 @@
+{
+  "module": "training-loop",
+  "lesson": "backpropagation",
+  "phase": "concept",
+  "room": "engineering",
+  "cast": [
+    "ensign-demir"
+  ],
+  "moment": "Demir stands beside a clean three-stage computational diagram on the engineering wall. His right hand uses a stylus to trace the route backward from a single loss marker through the three stages, while his left holds a plain notebook. His face brightens at realizing the repeated work can be reused. A small ARIA ring with horizontal flat waveform occupies a separate side screen. Direction is right-to-left from loss, not a signal magically traveling through wires. No text or exact graph labels.",
+  "alt": "Demir follows the calculation backward from the loss with ARIA beside the diagram.",
+  "location": "Archimedes, Engineering",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit training-loop/backpropagation, concept section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the engineering set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal. Scene: Demir stands beside a clean three-stage computational diagram on the engineering wall. His right hand uses a stylus to trace the route backward from a single loss marker through the three stages, while his left holds a plain notebook. His face brightens at realizing the repeated work can be reused. A small ARIA ring with horizontal flat waveform occupies a separate side screen. Direction is right-to-left from loss, not a signal magically traveling through wires. No text or exact graph labels. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Remove inherited background pseudo-equations and tiny gibberish. Background screens contain only sparse plain lines or waveforms. No fabricated numbers, correctness ticks, pass/fail stamps or glowing approval lights. No planet or crystal icons in data cells. Keep exact data and code in the lesson interface, not the illustration.\nTargeted correction after QA: Use case: precise-object-edit. Change ONLY the contents of the large wall display, preserving Demir, his exact face, hair, two hands, stylus and notebook, ARIA side display, room, camera and lighting. Remove the large bypass arrow above the three blocks. Remove all internal neuron circles and branches. The final diagram must be a single straight chain: exactly three simple empty rectangular stage blocks arranged left-to-right, with one small loss circle at the far right. Exactly three short coral arrows point LEFT: from loss circle into right block, from right block into middle block, from middle block into left block. No other arrows, no bypasses, no internal topology, no letters or numbers. Demir's stylus points to the left block.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-cba7c094-bbb0-4ee9-8bb5-69d46452af13.png",
+  "source": "art-src/scenes/training-loop__backpropagation-concept-openai-20261106.png",
+  "src": "/scenes/deep-orbit/training-loop/backpropagation-concept.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "Demir has one stylus hand and one notebook hand, both attached naturally; face is fully lit.",
+    "furniture": "Intact console surfaces; bodies clearly occupy open aisle and hands contact props naturally.",
+    "identity": "Demir retains warm skin, brown hair, stubble and green devices; Nazari retains mature features and gray-streaked short hair.",
+    "story": "Corrected three-stage chain has exactly three backward arrows from a single loss circle. No bypass, invented neuron counts or optimizer update.",
+    "tone": "Curiosity and restrained smiles, no panic or forced celebration.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

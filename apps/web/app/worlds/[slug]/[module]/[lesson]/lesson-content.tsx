@@ -1,4 +1,6 @@
 "use client";
+
+import { orderedLessonExercises } from "@/lib/lesson-exercise-order";
 import { DeepOrbitRecap } from "./deep-orbit-recap";
 import { ProseText } from "@tensorcraft/ui/prose-text";
 import { createElement } from "react";
@@ -30,17 +32,17 @@ import {
   KeyTakeaways,
   LearningObjectives,
   LessonRecap,
+  markExerciseSolutionViewed,
   Quiz,
 } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useActivityUser } from "@/app/components/learning-activity-scope";
 import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
 import { MissionLearningGoals } from "@/app/components/lesson-visuals/mission-learning-goals";
+import { supportsLessonResultExplanation } from "@/lib/lesson-result-explanations";
 
-// Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
-// runtime + editor (~300 KB gzipped). Loading it dynamically with
-// `ssr: false` keeps it out of the lesson's initial chunk and defers the
-// fetch until the learner reaches the Challenge step.
+// Keep the Challenge pane client-only. The public UI entry also loads the
+// editor implementation lazily, outside the initial lesson scripts.
 const Exercise = dynamic(
   () => import("@tensorcraft/ui").then((m) => ({ default: m.Exercise })),
   {
@@ -51,6 +53,20 @@ const Exercise = dynamic(
       </div>
     ),
   },
+);
+const LearningEvidenceExercise = dynamic(
+  () =>
+    import("@/app/components/learning-evidence-exercise").then(
+      (m) => m.LearningEvidenceExercise,
+    ),
+  { ssr: false },
+);
+const LessonResultExercise = dynamic(
+  () =>
+    import("@/app/components/lesson-result-exercise").then(
+      (module) => module.LessonResultExercise,
+    ),
+  { ssr: false },
 );
 import {
   BossBeat,
@@ -139,6 +155,7 @@ interface LessonContentProps {
    * the RIGHT pane instance, and a prop value would be stale.
    */
   getHintsUsed?: () => number;
+  getHintLevels?: () => number[];
   glossaryTerms?: GlossaryEntry[];
   /**
    * XS renderer slice (fresh-eyes rerun §4/T1-16): prose visibility is a
@@ -216,6 +233,7 @@ const mdxComponents = {
 };
 
 const ChallengeSceneContext = createContext<ReactNode>(null);
+const EMPTY_EXERCISES: ExerciseData[] = [];
 
 /**
  * Renders compiled MDX content from Velite.
@@ -224,7 +242,7 @@ const ChallengeSceneContext = createContext<ReactNode>(null);
  */
 export function LessonContent({
   lesson,
-  exercises = [],
+  exercises = EMPTY_EXERCISES,
   worldId,
   moduleId,
   lessonId,
@@ -239,6 +257,7 @@ export function LessonContent({
   onHintRevealed,
   onRecallPending,
   getHintsUsed,
+  getHintLevels,
   glossaryTerms,
   hideChallengeOnward,
   hideTeaching,
@@ -262,6 +281,10 @@ export function LessonContent({
     }
     return map;
   }, [exercises]);
+  // Content updates must not change the MDX component identities and remount
+  // an active editor or an already-open hint panel.
+  const exerciseMapRef = useRef(exerciseMap);
+  exerciseMapRef.current = exerciseMap;
 
   const handleExerciseSubmit = useCallback(
     (result: ExerciseSubmitResult) => {
@@ -330,10 +353,28 @@ export function LessonContent({
 
   const handleHintRevealed = useCallback(
     (hintLevel: 1 | 2 | 3) => {
+      if (
+        hintLevel === 3 &&
+        worldId === "deep-orbit" &&
+        (lessonId === "normalization" ||
+          lessonId === "building-a-network" ||
+          lessonId === "evaluating-deep-scan")
+      ) {
+        // The lesson's help panel lives outside the exercise. Retain exposure
+        // even if the learner leaves before running their code.
+        markExerciseSolutionViewed(
+          lessonId === "normalization"
+            ? "normalize-data"
+            : lessonId === "building-a-network"
+              ? "simple-network"
+              : "deep-scan-eval",
+          draftOwner,
+        );
+      }
       onHintRevealed?.(hintLevel);
       trackHintRequested(hintLevel, { worldId, lessonId });
     },
-    [worldId, lessonId, onHintRevealed],
+    [worldId, lessonId, onHintRevealed, draftOwner],
   );
 
   // Recall cards register here (RegisteredRecallPrompt below). Both the set
@@ -375,6 +416,11 @@ export function LessonContent({
     (visibleComponents?.has("challenge") ?? false);
 
   const exerciseCount = exercises.length;
+  const orderedTasks = useMemo(
+    () => orderedLessonExercises(lesson.body, exercises),
+    [lesson.body, exercises],
+  );
+  const taskPrefix = lessonId === "launch" ? "launch" : `lesson-${lessonId}`;
 
   // Build MDX components with the onSubmit handler and framework wired in
   const components = useMemo(() => {
@@ -452,11 +498,10 @@ export function LessonContent({
       Dialogue: (props: React.ComponentProps<typeof Dialogue>) => {
         // Mirror wrapVisibility's epilogue bypass: inside an <Epilogue>, the
         // epilogue wrapper is the gate, so render unconditionally; elsewhere
-        // gate on shouldShow("Dialogue"). Then resolve the speaker to a world
-        // character to build the avatar slot: ARIA renders as her live
-        // procedural waveform (never raster art, per the bible), humans as
-        // the expression-crossfading portrait. Unknown speakers stay
-        // avatar-less, exactly as before.
+        // gate on shouldShow("Dialogue"). Resolve the speaker to a world
+        // character and crossfade its annotated expression portrait. ARIA's
+        // portrait shows her abstract waveform glyph. Unknown speakers stay
+        // avatar-less.
         const insideEpilogue = useContext(EpilogueContext);
         if (!insideEpilogue && !shouldShow("Dialogue")) return null;
         const ch = worldId
@@ -470,6 +515,8 @@ export function LessonContent({
           avatarSlot = (
             <AnimatedAvatar
               name={ch.name}
+              isAI={ch.isAI}
+              size={64}
               {...portraitSources(worldId, ch, props.expression)}
             />
           );
@@ -643,32 +690,73 @@ export function LessonContent({
           }
         : undefined;
     base.Exercise = (props: { slug: string }) => {
+      const linkedTask =
+        worldId === "deep-orbit" && scoped && exerciseCount > 1;
+      const taskAnchor = linkedTask
+        ? `${taskPrefix}-editor-${props.slug}`
+        : undefined;
+      const taskReturnAnchor = linkedTask
+        ? `${taskPrefix}-brief-${props.slug}`
+        : undefined;
       if (scoped && shouldShow("ExerciseBrief")) {
         return (
-          <ExerciseBrief
-            slug={props.slug}
-            onHintRevealed={handleHintRevealed}
-            compactHints={worldId === "deep-orbit" && scoped}
-          />
+          <>
+            {linkedTask && props.slug === orderedTasks[0]?.slug && (
+              <nav aria-label="Lesson tasks">
+                <ul>
+                  {orderedTasks.map((task) => (
+                    <li key={task.slug}>
+                      <a href={`#${taskPrefix}-editor-${task.slug}`}>
+                        {task.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+            <ExerciseBrief
+              slug={props.slug}
+              anchorId={taskReturnAnchor}
+              editorAnchor={taskAnchor}
+              onHintRevealed={handleHintRevealed}
+              compactHints={worldId === "deep-orbit" && scoped}
+            />
+          </>
         );
       }
       if (!shouldShow("Exercise")) return null;
-      return (
-        <Exercise
-          {...props}
-          key={`${props.slug}:${draftOwner ?? "guest"}`}
-          draftOwner={draftOwner}
-          bridge={exerciseWorkspace ? undefined : bridgeHint}
-          workspace={exerciseWorkspace}
-          hints={exerciseWorkspace ? lesson.hints : undefined}
-          onHintRevealed={handleHintRevealed}
-          onSubmit={submit}
-          brief={scoped ? "external" : "inline"}
-          titled={scoped && exerciseCount > 1}
-          editorHeading={
-            worldId === "deep-orbit" && scoped ? "Your JavaScript" : undefined
-          }
+      const paneProps = {
+        ...props,
+        draftOwner,
+        bridge: exerciseWorkspace ? undefined : bridgeHint,
+        workspace: exerciseWorkspace,
+        hints: exerciseWorkspace ? lesson.hints : undefined,
+        onHintRevealed: handleHintRevealed,
+        getHintLevels,
+        onSubmit: submit,
+        brief: scoped ? ("external" as const) : ("inline" as const),
+        titled: scoped && exerciseCount > 1,
+        taskAnchor,
+        taskReturnAnchor,
+        editorHeading:
+          worldId === "deep-orbit" && scoped ? "Your JavaScript" : undefined,
+      };
+      const key = `${props.slug}:${draftOwner ?? "guest"}`;
+      return worldId === "deep-orbit" &&
+        (props.slug === "normalize-data" ||
+          props.slug === "simple-network" ||
+          props.slug === "deep-scan-eval") ? (
+        <LearningEvidenceExercise
+          {...paneProps}
+          slug={props.slug}
+          key={key}
+          content={exerciseMapRef.current.get(props.slug)}
         />
+      ) : worldId === "deep-orbit" &&
+        supportsLessonResultExplanation(props.slug) ? (
+        <LessonResultExercise {...paneProps} key={key} />
+      ) : (
+        <Exercise {...paneProps} key={key} />
       );
     };
 
@@ -725,6 +813,9 @@ export function LessonContent({
     lesson.concept.bridge,
     glossaryByTerm,
     exerciseCount,
+    orderedTasks,
+    taskPrefix,
+    getHintLevels,
     visibleComponents,
     scoped,
     exerciseWorkspace,

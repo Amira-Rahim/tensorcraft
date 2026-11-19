@@ -2,7 +2,6 @@ import type { Context, Next } from "hono";
 import { createHash } from "node:crypto";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
 import { getRedis } from "../lib/redis";
-import { withPostHogUserContext } from "../lib/posthog";
 import type { AppEnv } from "../types";
 
 const JWT_CACHE_TTL = 30;
@@ -35,7 +34,7 @@ export async function authMiddleware(
     if (cached?.userId) {
       c.set("userId", cached.userId);
       c.set("accessToken", token);
-      return withPostHogUserContext(cached.userId, next);
+      return next();
     }
   } catch {
     // Redis failure is non-fatal, fall through to Supabase validation
@@ -62,5 +61,5 @@ export async function authMiddleware(
 
   c.set("userId", user.id);
   c.set("accessToken", token);
-  return withPostHogUserContext(user.id, next);
+  return next();
 }

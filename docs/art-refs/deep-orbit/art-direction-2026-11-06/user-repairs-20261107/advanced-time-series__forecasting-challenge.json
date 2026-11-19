@@ -1,0 +1,148 @@
+{
+  "id": "late-saved-fix-6",
+  "index": 6,
+  "key": "deep-orbit/advanced-time-series/forecasting",
+  "phase": "challenge",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__forecasting-challenge-narrative-stage1-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+    "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml"
+  ],
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Reference1 canonical ensign-demir. Reference2 is bridge ROOM ONLY / architecture only. Final reference is EDIT TARGET. Make only these two targeted corrections: turn every tiny auxiliary graphical data display in the far-left background and rear console to inactive dark charcoal, including the amber rows and green rows. Keep physical pushbuttons distinct. Subdue the bright mint rim on Demir hair and uniform to a thin quiet desaturated gray-sage rim. Preserve the ENTIRE main Synthetic series screen exactly, including its diagram, punctuation, text orientation, pending status and legends. Preserve all facial morphology, hands, chair, pose, body proportions and natural focused expression. The circular background table stays inactive. Landscape1536x1024. Preserve cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic framing, near-black space, subdued sage #6BAA8A and aged brass #A89060, not photorealistic.",
+  "priorCandidateSha256": "03b1d53035f432f268fe427998625fa9ee27d0a002460c029d90dc18c47c6dee",
+  "reason": "Main narrative, numeric grounding, anatomy and screen perspective pass. Left auxiliary displays still contain unexplained amber graphical bars, and mint rim is stronger than muted repaired series. Targeted blanking and subdued rim required before publication.",
+  "candidatePath": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+  "candidateSha256": "5845a91ad6598a9a7abb626afd424342691f99ac632076904fd35e97ebe66ce1",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__forecasting-challenge-narrative-stage1-openai-20261107.png",
+      "sha256": "03b1d53035f432f268fe427998625fa9ee27d0a002460c029d90dc18c47c6dee",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1"
+    }
+  ],
+  "ownerQa": {
+    "status": "pass",
+    "reviewer": "/root/reader_late",
+    "inspection": "Native fullframe compared with prior approved-gates candidate; canonical identity and source text rechecked.",
+    "correction": "Auxiliary graphical bars removed and mint rim subdued; all main screen text and natural hands preserved.",
+    "gates": [
+      "identity",
+      "head-neck-proportions",
+      "two connected arms/hands",
+      "reader direction",
+      "screen perspective",
+      "source-grounded information",
+      "muted palette",
+      "task-directed narrative"
+    ],
+    "publication": "Pending root independent peer review"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-56c4fbe7-584c-4246-9da4-3f9f201f5f2e.png",
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-56c4fbe7-584c-4246-9da4-3f9f201f5f2e.png",
+  "publishedSource": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+  "sourceSha256": "5845a91ad6598a9a7abb626afd424342691f99ac632076904fd35e97ebe66ce1",
+  "webpSha256": "c8e098628fa951e161ff8e0f54462868a3b9672e3edf48a1ee8430797e3b3835",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+    "sourceSha256": "338691c9726cfe8bb6d88019e316bd36a42cd5efbd744e6243ada8ab552a89d8",
+    "webpSha256": "268091f57df5ca264b5294beb0a47cdc2899ab7c4bf5727397b3033aa6613426",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_late",
+    "status": "approved",
+    "candidateSha256": "5845a91ad6598a9a7abb626afd424342691f99ac632076904fd35e97ebe66ce1",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsBodyAndFurniture": "pass",
+      "headNeckAndShoulders": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "screenMeaning": {
+        "status": "pass",
+        "reviewer": "/root/reader_late",
+        "inspection": "Native fullframe compared with prior approved-gates candidate; canonical identity and source text rechecked.",
+        "correction": "Auxiliary graphical bars removed and mint rim subdued; all main screen text and natural hands preserved.",
+        "gates": [
+          "identity",
+          "head-neck-proportions",
+          "two connected arms/hands",
+          "reader direction",
+          "screen perspective",
+          "source-grounded information",
+          "muted palette",
+          "task-directed narrative"
+        ],
+        "publication": "Pending root independent peer review"
+      }
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+        "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

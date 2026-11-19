@@ -1,0 +1,550 @@
+[
+  {
+    "key": "model-loading-briefing",
+    "id": "browser-runtimes/model-loading",
+    "phase": "briefing",
+    "cast": [
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__model-loading-openai-20261107.png",
+    "inputSha256": "405ddcee2bd28d33a5395e33ebb353b386c308c8d1658379aee69fb5766e5dcd",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-4aa3464c-6231-4f80-a8ba-fa5844193627.png",
+    "archivedInputSha256": "405ddcee2bd28d33a5395e33ebb353b386c308c8d1658379aee69fb5766e5dcd",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__model-loading-openai-20261107.png",
+        "sha256": "405ddcee2bd28d33a5395e33ebb353b386c308c8d1658379aee69fb5766e5dcd"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+        "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+        "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+      }
+    ],
+    "screenMeaning": "Wrong model URL returns404; the loader needs model.json plus its referenced binary weights.",
+    "screenSpecification": "Top large monitor: a small error icon and exact readable error \"404\" followed by \"/models/deep-scan.json\". Middle monitor: replace all arbitrary shard cubes and dials with a simple plan titled EXPECTED FILES. Two named file icons: \"model.json\" pointing to \"weights.bin\", the arrow labeled \"references\". Under model.json write \"/models/deep-scan/model.json\". This shows expected files after an incorrect URL, not a successful load. The bottom large monitor must be entirely inactive dark glass, with all prior waves, dials and charts removed.",
+    "proportionSpecification": "Gently reduce only Demir whole head about 8 percent linearly while preserving canonical facial morphology, hair, expression, gaze and natural neck alignment. Preserve all body sizes and continuous arm chains. Do not over-shrink the head.",
+    "prompt": "Use case: precise-object-edit with exact identity preservation. First image is the canonical Ensign Demir face identity reference. Last image is the edit target. Change ONLY the small wrist terminal screen on the wrist beside Demir's chin: remove its waveform and make its screen entirely inactive dark glass. Preserve the wrist device casing, both hands and arm poses, finger contact at chin, face morphology, head size, hair, natural neck, all clothing, main monitor labels and arrows, mug, room, color palette, framing and every other pixel as closely as possible. No new text or graphics. One 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-briefing.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-briefing.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f9ad8919-0386-45ba-b14a-2c4167a2d185.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f9ad8919-0386-45ba-b14a-2c4167a2d185.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "47e12b3f273665ca7b2c724578e291fb5b9ae90550663aaca8e52f272332a1a4",
+    "inputCandidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-d46c1651-8034-4d42-9f7b-084b7767914c.png",
+    "referencePaths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-d46c1651-8034-4d42-9f7b-084b7767914c.png"
+    ],
+    "faceProofs": [
+      {
+        "character": "demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 155,
+          "top": 150,
+          "width": 340,
+          "height": 390
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-4aa3464c-6231-4f80-a8ba-fa5844193627.png",
+        "beforeSha256": "405ddcee2bd28d33a5395e33ebb353b386c308c8d1658379aee69fb5766e5dcd",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f9ad8919-0386-45ba-b14a-2c4167a2d185.png",
+        "reviewedImageSha256": "47e12b3f273665ca7b2c724578e291fb5b9ae90550663aaca8e52f272332a1a4",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/proofs/model-loading-briefing-demir.png",
+        "proofSha256": "dba6d62e7d57cb983b990a325ce239037d0c3e5257fc22af125ab5f9f03d2404"
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "independentReview": {
+      "status": "approved",
+      "reviewer": "art_peer_final",
+      "candidateSha256": "47e12b3f273665ca7b2c724578e291fb5b9ae90550663aaca8e52f272332a1a4",
+      "proofSha256": [
+        "dba6d62e7d57cb983b990a325ce239037d0c3e5257fc22af125ab5f9f03d2404"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-4aa3464c-6231-4f80-a8ba-fa5844193627.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-d46c1651-8034-4d42-9f7b-084b7767914c.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f9ad8919-0386-45ba-b14a-2c4167a2d185.png",
+        "art-src/scenes/browser-runtimes__model-loading-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "key": "model-loading-concept",
+    "id": "browser-runtimes/model-loading",
+    "phase": "concept",
+    "cast": [
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__model-loading-concept-openai-20261107.png",
+    "inputSha256": "d6914b5e4fdaf131c6718c9c0d09918d26e0f8061e0360efc2f7e7e6d3cc9ae7",
+    "archivedInput": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-concept-openai-20261107.png",
+    "archivedInputSha256": "d6914b5e4fdaf131c6718c9c0d09918d26e0f8061e0360efc2f7e7e6d3cc9ae7",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__model-loading-concept-openai-20261107.png",
+        "sha256": "d6914b5e4fdaf131c6718c9c0d09918d26e0f8061e0360efc2f7e7e6d3cc9ae7"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+        "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+        "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+      }
+    ],
+    "screenMeaning": "Manifest topology and binary weights reconstruct a runnable model; cache is a separate load source.",
+    "screenSpecification": "On the main teaching screen replace anonymous files with two named file icons \"model.json\" and \"weights.bin\", each with an arrow INTO a box titled \"LayersModel\". Title \"MANIFEST + WEIGHTS\". Both files assemble the runnable model. No arbitrary extra shard count, cache branch, progress percentage or success badge.",
+    "proportionSpecification": "Preserve all head and body sizes exactly; these standing or leaning proportions are already balanced.",
+    "prompt": "Use case: precise-object-edit. First image is the immutable canonical Demir portrait. LAST image is the target. Remove ONLY the bottom sentence 'Both files assemble the runnable model.' from the main teaching monitor, leaving dark screen below the two-file diagram. Preserve MANIFEST + WEIGHTS, model.json, weights.bin, LayersModel and both arrows pointing into LayersModel exactly. No replacement sentence. Preserve all faces, eyes, age, expression, hair, head/body size, hands, stylus grip, pose, camera, palette, room and other screen content. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-concept.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-concept.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-9dd05327-b7f4-466a-a36a-3572aa314b4b.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-9dd05327-b7f4-466a-a36a-3572aa314b4b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "revision": 2,
+    "inputCandidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-85f0e0f8-4a58-4207-be72-bc0c5e941266.png",
+    "referencePaths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-85f0e0f8-4a58-4207-be72-bc0c5e941266.png"
+    ],
+    "candidateSha256": "c486031d8d7053b9ff48dfb5ef89ef1d0c350c67b4899fc38a675975ac00f57d",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 520,
+          "top": 20,
+          "width": 300,
+          "height": 350
+        },
+        "before": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-concept-openai-20261107.png",
+        "beforeSha256": "d6914b5e4fdaf131c6718c9c0d09918d26e0f8061e0360efc2f7e7e6d3cc9ae7",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-9dd05327-b7f4-466a-a36a-3572aa314b4b.png",
+        "reviewedImageSha256": "c486031d8d7053b9ff48dfb5ef89ef1d0c350c67b4899fc38a675975ac00f57d",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/proofs/model-loading-concept-ensign-demir.png",
+        "proofSha256": "89b6606b316dde6533925966cb528b9afb6c2947a828c32be2ab2bd76c18e2e3",
+        "beforeDeletedWorkingCopy": true,
+        "beforeRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched.",
+        "proofDeletedWorkingCopy": true,
+        "proofRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "independentReview": {
+      "status": "approved",
+      "reviewer": "art_peer_final",
+      "candidateSha256": "c486031d8d7053b9ff48dfb5ef89ef1d0c350c67b4899fc38a675975ac00f57d",
+      "proofSha256": [
+        "89b6606b316dde6533925966cb528b9afb6c2947a828c32be2ab2bd76c18e2e3"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "archivedInputDeletedWorkingCopy": true,
+    "archivedInputRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched."
+  },
+  {
+    "key": "model-loading-challenge",
+    "id": "browser-runtimes/model-loading",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__model-loading-challenge-openai-20261107.png",
+    "inputSha256": "eb49d88684b25f58045d23948f60cf293f605061ae870a5f0c9d982d0783e2ce",
+    "archivedInput": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-challenge-openai-20261107.png",
+    "archivedInputSha256": "eb49d88684b25f58045d23948f60cf293f605061ae870a5f0c9d982d0783e2ce",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__model-loading-challenge-openai-20261107.png",
+        "sha256": "eb49d88684b25f58045d23948f60cf293f605061ae870a5f0c9d982d0783e2ce"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+        "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+        "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+      }
+    ],
+    "screenMeaning": "Load once, inspect input/output shapes and layer count, then dispose the inspected model.",
+    "screenSpecification": "On the main console replace anonymous model and bars with an inspection task panel titled \"LOAD AND INSPECT\". Show \"Load once\", then three requested field labels \"inputShape\", \"outputShape\", \"layerCount\", with values left blank. Bottom instruction \"Finally: dispose model\". This is the task before the learner runs it. Do not invent metadata values, a completed answer or green success marks. Keep the screen sparse and readable.",
+    "proportionSpecification": "Gently reduce only Demir whole head about 8 percent linearly while preserving canonical facial morphology, hair, expression, gaze and natural neck alignment. Preserve all body sizes and continuous arm chains. Do not over-shrink the head.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 1 images are canonical identity portraits for ensign-demir. Next image supplies muted screen/metal COLOR STYLE ONLY, never composition or people. LAST image is the target. Preserve exact cast, faces, age, hair, expression, gaze, poses, props, hands, camera and dashboard alcove. Gently reduce only Demir whole head about 8 percent linearly while preserving canonical facial morphology, hair, expression, gaze and natural neck alignment. Preserve all body sizes and continuous arm chains. Do not over-shrink the head. Preserve target local warm practical light and room atmosphere. Screen ink muted sage #6BAA8A, metal aged brass #A89060, dark charcoal/navy surfaces, natural tan skin, flat cel shadows. Remove bright green bloom and luminous hair rims, avoid orange skin or glossy 3D. On the main console replace anonymous model and bars with an inspection task panel titled \"LOAD AND INSPECT\". Show \"Load once\", then three requested field labels \"inputShape\", \"outputShape\", \"layerCount\", with values left blank. Bottom instruction \"Finally: dispose model\". This is the task before the learner runs it. Do not invent metadata values, a completed answer or green success marks. Keep the screen sparse and readable. Every OTHER secondary display must be inactive dark charcoal glass without generic waves, bars, radar dials, charts or meaningless labels. Preserve physical buttons and furniture. Exact short labels, normal spaces, uncluttered screen perspective. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-challenge.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-challenge.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f70bd23a-7840-46c2-8c1f-ca12ede6eb09.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f70bd23a-7840-46c2-8c1f-ca12ede6eb09.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "2fc820597ea1cd75fc186834afdeb35a249293d24510aa4c12c0ad2d1625fb10",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 300,
+          "top": 70,
+          "width": 350,
+          "height": 410
+        },
+        "before": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-challenge-openai-20261107.png",
+        "beforeSha256": "eb49d88684b25f58045d23948f60cf293f605061ae870a5f0c9d982d0783e2ce",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f70bd23a-7840-46c2-8c1f-ca12ede6eb09.png",
+        "reviewedImageSha256": "2fc820597ea1cd75fc186834afdeb35a249293d24510aa4c12c0ad2d1625fb10",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/proofs/model-loading-challenge-ensign-demir.png",
+        "proofSha256": "f3b6760b4a2006cc31745f28c4002f94913abbb38f1078d46a43d206ebda0efd",
+        "beforeDeletedWorkingCopy": true,
+        "beforeRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched."
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "independentReview": {
+      "status": "approved",
+      "reviewer": "art_peer_final",
+      "candidateSha256": "2fc820597ea1cd75fc186834afdeb35a249293d24510aa4c12c0ad2d1625fb10",
+      "proofSha256": [
+        "f3b6760b4a2006cc31745f28c4002f94913abbb38f1078d46a43d206ebda0efd"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "archivedInputDeletedWorkingCopy": true,
+    "archivedInputRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched.",
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f70bd23a-7840-46c2-8c1f-ca12ede6eb09.png",
+        "art-src/scenes/browser-runtimes__model-loading-challenge-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "key": "model-loading-takeaways",
+    "id": "browser-runtimes/model-loading",
+    "phase": "takeaways",
+    "cast": [
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__model-loading-takeaways-openai-20261107.png",
+    "inputSha256": "95555cb305fb0616f6c05228490ea1ae94b4432a9d5efc5e5295c94ebdd36a90",
+    "archivedInput": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-takeaways-openai-20261107.png",
+    "archivedInputSha256": "95555cb305fb0616f6c05228490ea1ae94b4432a9d5efc5e5295c94ebdd36a90",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__model-loading-takeaways-openai-20261107.png",
+        "sha256": "95555cb305fb0616f6c05228490ea1ae94b4432a9d5efc5e5295c94ebdd36a90"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+        "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+        "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+      }
+    ],
+    "screenMeaning": "Explicit versioned IndexedDB model caching changes the load path; old cached weights must not silently persist.",
+    "screenSpecification": "On the handheld tablet replace anonymous cubes with an ordered workflow titled \"INDEXEDDB VERSIONS\". Three steps connected downward: \"Load deep-scan-v2\", then \"Verify v2\", then \"Remove deep-scan-v1\". Preserve the tablet angle and natural hands. This order keeps the old offline copy until the new version has been verified. No success tick or invented capacity/progress.",
+    "proportionSpecification": "Gently reduce only Demir whole head about 8 percent linearly while preserving canonical facial morphology, hair, expression, gaze and natural neck alignment. Preserve all body sizes and continuous arm chains. Do not over-shrink the head.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 1 images are canonical identity portraits for ensign-demir. Next image supplies muted screen/metal COLOR STYLE ONLY, never composition or people. LAST image is the target. Preserve exact cast, faces, age, hair, expression, gaze, poses, props, hands, camera and dashboard alcove. Gently reduce only Demir whole head about 8 percent linearly while preserving canonical facial morphology, hair, expression, gaze and natural neck alignment. Preserve all body sizes and continuous arm chains. Do not over-shrink the head. Preserve target local warm practical light and room atmosphere. Screen ink muted sage #6BAA8A, metal aged brass #A89060, dark charcoal/navy surfaces, natural tan skin, flat cel shadows. Remove bright green bloom and luminous hair rims, avoid orange skin or glossy 3D. On the handheld tablet replace anonymous cubes with an ordered workflow titled \"INDEXEDDB VERSIONS\". Three steps connected downward: \"Load deep-scan-v2\", then \"Verify v2\", then \"Remove deep-scan-v1\". Preserve the tablet angle and natural hands. This order keeps the old offline copy until the new version has been verified. No success tick or invented capacity/progress. Every OTHER secondary display must be inactive dark charcoal glass without generic waves, bars, radar dials, charts or meaningless labels. Preserve physical buttons and furniture. Exact short labels, normal spaces, uncluttered screen perspective. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-takeaways.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-takeaways.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-729553fe-a4d3-4791-8488-8c19d7a3255a.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-729553fe-a4d3-4791-8488-8c19d7a3255a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "44d42576d3167f6c3c99244b6bd3dcbced8704c6c13fafff670b9ad7ff75ae40",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 355,
+          "top": 10,
+          "width": 350,
+          "height": 410
+        },
+        "before": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-takeaways-openai-20261107.png",
+        "beforeSha256": "95555cb305fb0616f6c05228490ea1ae94b4432a9d5efc5e5295c94ebdd36a90",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-729553fe-a4d3-4791-8488-8c19d7a3255a.png",
+        "reviewedImageSha256": "44d42576d3167f6c3c99244b6bd3dcbced8704c6c13fafff670b9ad7ff75ae40",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/proofs/model-loading-takeaways-ensign-demir.png",
+        "proofSha256": "83bcbe92bc429a463c6115f7fbbbadd838444e60398727021a38280480d9cd05",
+        "beforeDeletedWorkingCopy": true,
+        "beforeRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched.",
+        "proofDeletedWorkingCopy": true,
+        "proofRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "independentReview": {
+      "status": "approved",
+      "reviewer": "art_peer_final",
+      "candidateSha256": "44d42576d3167f6c3c99244b6bd3dcbced8704c6c13fafff670b9ad7ff75ae40",
+      "proofSha256": [
+        "83bcbe92bc429a463c6115f7fbbbadd838444e60398727021a38280480d9cd05"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "archivedInputDeletedWorkingCopy": true,
+    "archivedInputRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched."
+  },
+  {
+    "key": "model-loading-epilogue",
+    "id": "browser-runtimes/model-loading",
+    "phase": "epilogue",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+    "inputSha256": "1e110a9aa1bfc421a7283c79c15d04023a5fe615cd1cdd3a4bb80323c079f76e",
+    "archivedInput": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+    "archivedInputSha256": "1e110a9aa1bfc421a7283c79c15d04023a5fe615cd1cdd3a4bb80323c079f76e",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+        "sha256": "1e110a9aa1bfc421a7283c79c15d04023a5fe615cd1cdd3a4bb80323c079f76e"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+        "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+        "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+      }
+    ],
+    "screenMeaning": "Notebook and dashboard scores differ by three percentage points because the dashboard loaded cachedv1 instead of retrainedv2.",
+    "screenSpecification": "Keep both physical comparison displays. On Farah held display replace the blank bar with \"NOTEBOOK\" and \"Retrained v2\". On Demir dashboard screen replace its bar with \"DASHBOARD\" and \"Cached v1\". On the small rear comparison screen show only \"Same reading\" and \"3 percentage points apart\". This is the verified story discrepancy. Do not invent absolute scores or arrows suggesting one is always higher. All remaining rear monitors inactive dark glass.",
+    "proportionSpecification": "Preserve all head and body sizes exactly; these standing or leaning proportions are already balanced.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 2 images are canonical identity portraits for dr-farah, ensign-demir. Next image supplies muted screen/metal COLOR STYLE ONLY, never composition or people. LAST image is the target. Preserve exact cast, faces, age, hair, expression, gaze, poses, props, hands, camera and dashboard alcove. Preserve all head and body sizes exactly; these standing or leaning proportions are already balanced. Preserve target local warm practical light and room atmosphere. Screen ink muted sage #6BAA8A, metal aged brass #A89060, dark charcoal/navy surfaces, natural tan skin, flat cel shadows. Remove bright green bloom and luminous hair rims, avoid orange skin or glossy 3D. Keep both physical comparison displays. On Farah held display replace the blank bar with \"NOTEBOOK\" and \"Retrained v2\". On Demir dashboard screen replace its bar with \"DASHBOARD\" and \"Cached v1\". On the small rear comparison screen show only \"Same reading\" and \"3 percentage points apart\". This is the verified story discrepancy. Do not invent absolute scores or arrows suggesting one is always higher. All remaining rear monitors inactive dark glass. Every OTHER secondary display must be inactive dark charcoal glass without generic waves, bars, radar dials, charts or meaningless labels. Preserve physical buttons and furniture. Exact short labels, normal spaces, uncluttered screen perspective. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-epilogue.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/model-loading-epilogue.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-9bd1db0a-31b3-4bc7-bece-77e328ddceb4.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-9bd1db0a-31b3-4bc7-bece-77e328ddceb4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "b18fdcfa9e2d3aa148756baca6f5dcbaf0ee4a16a75556f3b9910074856c709b",
+    "faceProofs": [
+      {
+        "character": "dr-farah",
+        "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 140,
+          "top": 50,
+          "width": 380,
+          "height": 400
+        },
+        "before": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+        "beforeSha256": "1e110a9aa1bfc421a7283c79c15d04023a5fe615cd1cdd3a4bb80323c079f76e",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-9bd1db0a-31b3-4bc7-bece-77e328ddceb4.png",
+        "reviewedImageSha256": "b18fdcfa9e2d3aa148756baca6f5dcbaf0ee4a16a75556f3b9910074856c709b",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/proofs/model-loading-epilogue-dr-farah.png",
+        "proofSha256": "d54e4cd7750059fcab57d73996dfb1d83f22d4bf5228705a696416cdeb53bb03",
+        "beforeDeletedWorkingCopy": true,
+        "beforeRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched.",
+        "proofDeletedWorkingCopy": true,
+        "proofRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+      },
+      {
+        "character": "ensign-demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 930,
+          "top": 0,
+          "width": 350,
+          "height": 450
+        },
+        "before": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/inputs/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+        "beforeSha256": "1e110a9aa1bfc421a7283c79c15d04023a5fe615cd1cdd3a4bb80323c079f76e",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-9bd1db0a-31b3-4bc7-bece-77e328ddceb4.png",
+        "reviewedImageSha256": "b18fdcfa9e2d3aa148756baca6f5dcbaf0ee4a16a75556f3b9910074856c709b",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/model-loading5/proofs/model-loading-epilogue-ensign-demir.png",
+        "proofSha256": "8e9c5010dea2ad14a5857400263bdcb8af65c0498b79ae531bb90d70990ed8dc",
+        "beforeDeletedWorkingCopy": true,
+        "beforeRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched.",
+        "proofDeletedWorkingCopy": true,
+        "proofRetentionNote": "Superseded local review image removed at the user-requested cleanup checkpoint. Historical path and hash retained."
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "independentReview": {
+      "status": "approved",
+      "reviewer": "art_peer_final",
+      "candidateSha256": "b18fdcfa9e2d3aa148756baca6f5dcbaf0ee4a16a75556f3b9910074856c709b",
+      "proofSha256": [
+        "d54e4cd7750059fcab57d73996dfb1d83f22d4bf5228705a696416cdeb53bb03",
+        "8e9c5010dea2ad14a5857400263bdcb8af65c0498b79ae531bb90d70990ed8dc"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "archivedInputDeletedWorkingCopy": true,
+    "archivedInputRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched."
+  }
+]

@@ -1,0 +1,183 @@
+{
+  "id": "anomaly-detection__reconstruction-error-challenge",
+  "lesson": "anomaly-detection/reconstruction-error",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "room": "lab",
+  "src": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+  "alt": "Demir prepares two eight-feature probes to check reconstruction error and tensor cleanup.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:45:49.051311+00:00",
+  "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: ensign-demir. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Demir is seated using a keyboard with both hands, absorbed in setting up the synthetic check. Remove the pen, lift his gaze slightly toward the large active lab wall. Keep his face visible in three-quarter view, coherent chair support and long enough forearms. The small console no longer holds the main evidence.\nExact visible display content: Title \"Synthetic offset model\". Exactly two large rows \"A: [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]\" and \"B: [0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1]\". \"Rebuild: add 0.1 to every feature\". Three output slots \"MSE A: pending\", \"MSE B: pending\", \"Tensor change: pending\". No solved outputs. Use sufficiently large wall and short rows; no tiny text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+  "promptSha256": "c05c7ef75844627c4d115c9aac2735dcccd14754ad68cb0b3bf0a5ada541158a",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room master",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+      "role": "edit target, not identity authority",
+      "sha256": "8de48d1f4d5ea596ed58383212e8cc008ec4802afeadd0b3c143f080a1721934"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+    "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+  },
+  "sourceSha256": "cf34680a0c75413270423588043c07f5fb157534db59e1b1c314c0504c8f1a19",
+  "sourceEvidence": {
+    "task": "Demir is seated using a keyboard with both hands, absorbed in setting up the synthetic check. Remove the pen, lift his gaze slightly toward the large active lab wall. Keep his face visible in three-quarter view, coherent chair support and long enough forearms. The small console no longer holds the main evidence.",
+    "visibleDataOperationAndResult": "Title \"Synthetic offset model\". Exactly two large rows \"A: [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]\" and \"B: [0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1]\". \"Rebuild: add 0.1 to every feature\". Three output slots \"MSE A: pending\", \"MSE B: pending\", \"Tensor change: pending\". No solved outputs. Use sufficiently large wall and short rows; no tiny text.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "Synthetic arrays are densely packed in small oblique panel; ample rear display is unused.",
+        "repairDirection": "Large upright main display with exact A/B arrays, add .1 rebuild and pending MSE/tensor outputs."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 1 are canonical identity authorities in this order: ensign-demir. Reference 2 is the room authority; reference 3 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 1 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Ensign Demir: young adult man, light warm skin with freckles, thick dark swept hair, short stubble, charcoal jumpsuit and green ear device.\nSpecific action and staging: Demir is seated using a keyboard with both hands, absorbed in setting up the synthetic check. Remove the pen, lift his gaze slightly toward the large active lab wall. Keep his face visible in three-quarter view, coherent chair support and long enough forearms. The small console no longer holds the main evidence.\nExact visible display content: Title \"Synthetic offset model\". Exactly two large rows \"A: [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]\" and \"B: [0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1]\". \"Rebuild: add 0.1 to every feature\". Three output slots \"MSE A: pending\", \"MSE B: pending\", \"Tensor change: pending\". No solved outputs. Use sufficiently large wall and short rows; no tiny text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp"
+  },
+  "exerciseSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+    "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+  },
+  "publicationStatus": "withheld pending independent peer review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-a42d8549-ac99-4121-8abb-9ae35eafdfda.png",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+  "candidateSha256": "cf34680a0c75413270423588043c07f5fb157534db59e1b1c314c0504c8f1a19",
+  "generatedAt": "2026-11-08T19:01:02.333680+00:00",
+  "owner": "/root/quality_sequence",
+  "faceCropCoordinates": {
+    "ensign-demir": {
+      "left": 1090,
+      "top": 230,
+      "width": 260,
+      "height": 320
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 770,
+      "top": 825,
+      "width": 390,
+      "height": 135
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-08T19:18:53.234500+00:00",
+    "candidateSha256": "cf34680a0c75413270423588043c07f5fb157534db59e1b1c314c0504c8f1a19",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "ensign-demir",
+        "referencePath": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "candidateCropCoordinates": {
+          "left": 1090,
+          "top": 230,
+          "width": 260,
+          "height": 320
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Demir types the two supplied synthetic arrays into the lab console.",
+    "emotion": "Focused curiosity before running the check.",
+    "eyeline": "Toward the large synthetic-offset display.",
+    "narrativeReason": "The challenge supplies the exact exercise inputs and leaves MSE and tensor-change results for the learner to produce.",
+    "findings": [
+      "All sixteen array values match the source, with add 0.1 to every feature and all three outputs pending.",
+      "The display uses the wall generously. Both typing hands have plausible thumb sides, key contacts and wrist alignment."
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__reconstruction-error-challenge/candidate.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+  "webpSha256": "2be1e41666885db4db9cff1837f73d11c257ae05369081b4740928053682f7a1",
+  "webpQuality": 78,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+    "sourceSha256": "8de48d1f4d5ea596ed58383212e8cc008ec4802afeadd0b3c143f080a1721934",
+    "webpSha256": "fe424bd21e51a2146585db60f13966deb5733dce52b894b4b8abacb57a3e3066",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b9b54ad8-a3ba-4a03-a480-1571ff13675f.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_runtime",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "cf34680a0c75413270423588043c07f5fb157534db59e1b1c314c0504c8f1a19",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "All sixteen array values match the source, with add 0.1 to every feature and all three outputs pending.",
+      "The display uses the wall generously. Both typing hands have plausible thumb sides, key contacts and wrist alignment.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

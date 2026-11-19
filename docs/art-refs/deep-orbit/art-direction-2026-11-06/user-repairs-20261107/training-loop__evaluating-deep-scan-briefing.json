@@ -1,0 +1,93 @@
+{
+  "key": "evaluating-deep-scan-briefing",
+  "id": "training-loop/evaluating-deep-scan",
+  "phase": "briefing",
+  "cast": [
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve story scene edit. First image(s) are authoritative neutral portraits of each named human, next is ROOM GEOMETRY ONLY, last is scene to replace. Preserve exact canonical facial structure, age markers, hair, equipment and uniforms. Natural moderately stylized adult proportions, short relaxed necks and ordinary shoulder widths. Two coherent arms per person, natural five-finger hands and wrist alignment. Text, rows, boxes, labels follow physical display perspective including foreshortening and vanishing directions. The operators must see the fronts of screens. Camera beside operators sees the same surface. No camera-facing placards or empty posed smiles. Muted sage #6BAA8A and aged brass #A89060 against charcoal, natural skin, restrained warm practical light. Unused screens dark. No decorative neon, random graphs, plants, extra people or invented results. Landscape1536x1024. Mirza sits in three-quarter side view at the Bridge command workstation, turning her clearly visible face toward the working monitor with a firm curious raised eyebrow, as she requests an evaluation. One hand rests on a trackball, other naturally rests open on the console edge. Her pocket watch remains a uniform accessory. The main monitor faces her and the camera shares her viewing side. Show exact short status labels: 'Evaluation request', 'Training rows: 100', 'Held-out rows: 43', 'Results: pending'. Small footer 'Synthetic exercise fixture'. NO curves or metrics yet. The moment is her initiating a careful test of readings excluded from training, not displaying a finished result. Quiet duty light, most rear panels off. Keep her seated pelvis/thigh support anatomically plausible and hands separate from furniture. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "canonical identity",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room geometry only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "670f1c6e2832443ae442006bb8cb38c0d5f138ed65866df12e8b49b3b0798953"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+    }
+  ],
+  "candidatePath": "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cc0f4623-8282-422b-939a-26b5e27bde41.png",
+  "candidateSha256": "0c32b0e8c532ae4aa0313baae567073e49cf91ad20a8ba370c3bceacd7834b3a",
+  "tool": "built-in image_gen",
+  "ownReview": {
+    "reviewer": "/root",
+    "status": "pass pending independent peer",
+    "method": "Native 1536x1024 complete frame and canonical portraits inspected",
+    "notes": "Natural arm chains, necks, identities, task-action and muted palette. Readable text in screen plane. Takeaways numerical bar fill looks about54percent for60percent, withhold pending removal of redundant bars."
+  },
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cc0f4623-8282-422b-939a-26b5e27bde41.png",
+  "publishedSource": "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+  "sourceSha256": "0c32b0e8c532ae4aa0313baae567073e49cf91ad20a8ba370c3bceacd7834b3a",
+  "webpSha256": "a3b677e5fdf5a8c331f8b49906ea9493e737837e70ef82eb380abc18f0ab9a25",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+    "sourceSha256": "670f1c6e2832443ae442006bb8cb38c0d5f138ed65866df12e8b49b3b0798953",
+    "webpSha256": "9c10120ac2faa5b6ee58df5a119fedfe400eab6173e616659998ae4123419830",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-52f880ad-c8d5-4475-b091-1616a9d78554.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "0c32b0e8c532ae4aa0313baae567073e49cf91ad20a8ba370c3bceacd7834b3a",
+    "method": "Native complete1536x1024 plus canonical references and current MDX",
+    "checks": {
+      "combinedNativeReview": "Mirza uses trackball while resting her other hand naturally; canonical face, normal neck and seated body. Operator and camera share monitor front. Exact100 training/43held-out rows/pending and syntheticfixture labeling match MDX. Complete layout follows screen perspective. Muted palette, rear monitors inactive, meaningful request moment.",
+      "sourceFiles": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+          "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+        "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+    "docs/art-refs/deep-orbit/commander-mirza.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

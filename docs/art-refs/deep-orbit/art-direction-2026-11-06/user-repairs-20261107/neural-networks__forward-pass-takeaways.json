@@ -1,0 +1,153 @@
+{
+  "id": "neural-networks/forward-pass",
+  "phase": "takeaways",
+  "name": "forward-pass-takeaways-reader",
+  "cast": [
+    "ensign-demir"
+  ],
+  "room": "bridge",
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-fe04e3a6-dafc-42d6-832d-bd72da432406.png",
+  "meaning": "Add batch axis with expandDims(0): shape[n] to[1,n], example[5,6] to[[5,6]], valuesunchanged.",
+  "prompt": "Use case: precise-object-edit. Image1 canonical Demir identity authority. Image2 bridge ROOM ONLY. Image3 exact existing narrative candidate. Change ONLY the flat foreground touch tablet's screen content: remove the camera-facing [5,6] text and its outlined box entirely. Keep it a plain dark pen/touch INPUT pad controlling the main console, with one faint neutral contact dot exactly under his touching index fingertip. No lettering, no new symbols, no hidden diagram. Demir naturally uses this blank input pad; all relevant data already appears on the main monitor that faces him. Preserve ALL main monitor text/shape/data exactly: Add a batch axis; [n] through expandDims(0) to [1,n]; [5,6] to [[5,6]]; Values unchanged. Preserve its own screen perspective. Preserve Demir face, correct anatomical-right earpiece, hair, stubble, natural working gaze, full seated body/chair, both complete arms and every finger, stylus-free touching index, keyboard hand, wrist terminal, furniture and all room objects exactly. No head resize. Keep muted sage/brass/charcoal and natural skin, no bright newglow. Full1536x1024 samecel-shaded style. Nothing else changes.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "ROOM ONLY",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-fe04e3a6-dafc-42d6-832d-bd72da432406.png",
+      "role": "exact existing narrative candidate edit target",
+      "sha256": "63493418b7f830747a7cc05012f5c28762d7791bd032676ba6e9ce4d0b981916"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+      "sha256": "16d0d96d4f1cdeee1209f21a273e55bac29d1e398f00771c82a78c087f8cb9a7"
+    }
+  ],
+  "status": "published",
+  "tool": "built-in imagegen",
+  "generationHistory": [
+    {
+      "prompt": "Use case: precise-object-edit. Image1 canonical Demir identity authority. Image2 bridge ROOM ONLY. Image3 exact existing narrative candidate. Change ONLY the flat foreground touch tablet's screen content: remove the camera-facing [5,6] text and its outlined box entirely. Keep it a plain dark pen/touch INPUT pad controlling the main console, with one faint neutral contact dot exactly under his touching index fingertip. No lettering, no new symbols, no hidden diagram. Demir naturally uses this blank input pad; all relevant data already appears on the main monitor that faces him. Preserve ALL main monitor text/shape/data exactly: Add a batch axis; [n] through expandDims(0) to [1,n]; [5,6] to [[5,6]]; Values unchanged. Preserve its own screen perspective. Preserve Demir face, correct anatomical-right earpiece, hair, stubble, natural working gaze, full seated body/chair, both complete arms and every finger, stylus-free touching index, keyboard hand, wrist terminal, furniture and all room objects exactly. No head resize. Keep muted sage/brass/charcoal and natural skin, no bright newglow. Full1536x1024 samecel-shaded style. Nothing else changes.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical ensign-demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "role": "ROOM ONLY",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-fe04e3a6-dafc-42d6-832d-bd72da432406.png",
+          "role": "exact existing narrative candidate edit target",
+          "sha256": "63493418b7f830747a7cc05012f5c28762d7791bd032676ba6e9ce4d0b981916"
+        }
+      ],
+      "output": {
+        "path": "/tmp/forward-pass-takeaways-reader-candidate.png",
+        "sha256": "3184b8de364e015292a28137d3d99b49a3e17312e458b70e9b06eef4dab08aab",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-805ebbbd-fbd8-47b0-bf2e-d55120b1ccae.png"
+      }
+    }
+  ],
+  "candidate": {
+    "path": "/tmp/forward-pass-takeaways-reader-candidate.png",
+    "sha256": "3184b8de364e015292a28137d3d99b49a3e17312e458b70e9b06eef4dab08aab",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-805ebbbd-fbd8-47b0-bf2e-d55120b1ccae.png"
+  },
+  "ownReview": {
+    "nativeFullFrame": "pass",
+    "identity": "Fresh exact candidate crop beside canonical portrait pass morphology/age/equipment.",
+    "anatomy": "Both continuous arm chains and supported task contact preserved, natural working gaze.",
+    "readerDirection": "Forward: flat plain input pad, no wrongly oriented ink; main monitor faces Demir. Loss: no outward papers, Farah uses selector with shared working panel.",
+    "semantics": "Exact text and values checked against MDX/YAML; no invented result.",
+    "palette": "Loss pillar now subdued gray-sage, both scenes muted.",
+    "faceCrop": {
+      "left": 540,
+      "top": 45,
+      "width": 350,
+      "height": 400
+    },
+    "originalEvidence": {
+      "path": "/tmp/forward-pass-takeaways-reader-candidate.png",
+      "sha256": "3184b8de364e015292a28137d3d99b49a3e17312e458b70e9b06eef4dab08aab",
+      "canonical": {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "role": "canonical ensign-demir",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    },
+    "temporaryProofs": "Fresh combined proof viewed then removed."
+  },
+  "candidatePath": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+  "candidateSha256": "3184b8de364e015292a28137d3d99b49a3e17312e458b70e9b06eef4dab08aab",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-805ebbbd-fbd8-47b0-bf2e-d55120b1ccae.png",
+  "temporaryCandidatePathAtReview": "/tmp/forward-pass-takeaways-reader-candidate.png",
+  "publishedSource": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+  "sourceSha256": "3184b8de364e015292a28137d3d99b49a3e17312e458b70e9b06eef4dab08aab",
+  "webpSha256": "4ecae3d84709ee0a904e14deb26aee27a91e2687b2d852137e2234c45735b570",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+    "sourceSha256": "63493418b7f830747a7cc05012f5c28762d7791bd032676ba6e9ce4d0b981916",
+    "webpSha256": "86a28a447e59c4cca0765f069cb9ea488c06598f6c0f9e11b069a4084766794d",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-fe04e3a6-dafc-42d6-832d-bd72da432406.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/late_final",
+    "status": "approved",
+    "candidateSha256": "3184b8de364e015292a28137d3d99b49a3e17312e458b70e9b06eef4dab08aab",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsAndBody": "pass",
+      "readerDirection": "pass",
+      "screenPerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "Add batch axis with expandDims(0): shape[n] to[1,n], example[5,6] to[[5,6]], valuesunchanged."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+        "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+        "sha256": "16d0d96d4f1cdeee1209f21a273e55bac29d1e398f00771c82a78c087f8cb9a7"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

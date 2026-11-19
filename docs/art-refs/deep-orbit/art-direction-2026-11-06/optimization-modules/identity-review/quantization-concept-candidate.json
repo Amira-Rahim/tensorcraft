@@ -1,0 +1,105 @@
+{
+  "index": 4,
+  "module": "optimization-edge",
+  "lesson": "quantization",
+  "phase": "concept",
+  "room": "engineering",
+  "characters": [
+    "chief-nazari"
+  ],
+  "aria": false,
+  "alt": "Nazari compares two encodings with the same weight count and different storage widths.",
+  "scene": "Nazari stands beside an engineering teaching screen, near-frontal face with an interested raised eyebrow. One hand holds a stylus pointed toward the screen without touching it; the other holds a slate against her waist. The screen has TWO clearly separated encoding strips. Each strip contains exactly EIGHT rectangular weight cells, arranged in two rows of four. The upper cells are wide horizontal rectangles, the lower cells are narrow horizontal rectangles of about one quarter the width. All eight positions remain in both strips, with matched orderly arrangement and the same neutral green color. There are sixteen visible outer cells total, no internal subdivisions, no removed cells, no class symbols. This illustrates fewer bytes per stored weight, not fewer weights or neurons. No speed arrow or success badge. Close three-quarter body view but face gently toward camera.",
+  "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari stands beside an engineering teaching screen, near-frontal face with an interested raised eyebrow. One hand holds a stylus pointed toward the screen without touching it; the other holds a slate against her waist. The screen has TWO clearly separated encoding strips. Each strip contains exactly EIGHT rectangular weight cells, arranged in two rows of four. The upper cells are wide horizontal rectangles, the lower cells are narrow horizontal rectangles of about one quarter the width. All eight positions remain in both strips, with matched orderly arrangement and the same neutral green color. There are sixteen visible outer cells total, no internal subdivisions, no removed cells, no class symbols. This illustrates fewer bytes per stored weight, not fewer weights or neurons. No speed arrow or success badge. Close three-quarter body view but face gently toward camera. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "src": "/scenes/deep-orbit/optimization-edge/quantization-concept.webp",
+  "source": "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+  "location": "Archimedes, Engineering",
+  "status": "generated-awaiting-review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e9513bcd-848e-4965-a249-b2122343c61a.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-92d8f6de-1446-418c-8574-add3abe7d330.png",
+      "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari stands beside an engineering teaching screen, near-frontal face with an interested raised eyebrow. One hand holds a stylus pointed toward the screen without touching it; the other holds a slate against her waist. The screen has TWO clearly separated encoding strips. Each strip contains exactly EIGHT rectangular weight cells, arranged in two rows of four. The upper cells are wide horizontal rectangles, the lower cells are narrow horizontal rectangles of about one quarter the width. All eight positions remain in both strips, with matched orderly arrangement and the same neutral green color. There are sixteen visible outer cells total, no internal subdivisions, no removed cells, no class symbols. This illustrates fewer bytes per stored weight, not fewer weights or neurons. No speed arrow or success badge. Close three-quarter body view but face gently toward camera. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "reason": "Both grids had unequal row heights but identical overall encoding width; diagram failed storage encoding semantics."
+    },
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-44045b61-b3a3-4592-8e20-742e9d3b4f9f.png",
+      "prompt": "Use case: precise-object-edit. Reference image 1 is Nazari's canonical identity; reference image 2 is the target scene. Change ONLY the contents of the large screen. Keep every face, head, body, hand, stylus, slate, room, composition and lighting exactly unchanged. Replace the existing screen graphics with TWO panels, top and bottom. In the TOP panel place exactly EIGHT identical wide horizontal solid green rectangles, arranged as two rows of four, all SAME height and SAME width. In the BOTTOM panel place exactly EIGHT identical short green rectangles, arranged as two rows of four. Each bottom rectangle has exactly the SAME HEIGHT as a top rectangle but ONE QUARTER its WIDTH. Thus every top-row and second-row cell in the upper panel has same dimensions; every cell in lower panel has same dimensions. Keep each lower cell aligned with its upper counterpart's LEFT edge, leaving a large empty gap to its right. Exactly sixteen solid green shapes total. No internal subdivisions, no extra stripes, text, labels, symbols or arrows. Teaching meaning: eight weights stay eight weights, each encoded with fewer bytes. The two panels can have identical outer borders, but their cells must clearly differ in horizontal WIDTH only. Preserve illustration style.",
+      "reason": "Width ratio closer to half instead of quarter; refine to quarter."
+    },
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-bd4e7b7c-42ca-4183-90d0-69149a3a7458.png",
+      "prompt": "Use case: precise-object-edit. First image canonical Nazari, second image target. Change ONLY the eight small green rectangles within the BOTTOM panel of the large screen. Keep all their heights and left edges and row positions fixed; reduce each small rectangle's horizontal width to about 27 pixels in this 1536-wide image, so its width is ONE QUARTER of the corresponding upper cell's approximately110-pixel width. This makes eight slender vertical green rectangles, arranged two rows by four columns with lots of empty space to their right. Preserve exactly eight wide upper green rectangles, and exactly eight much narrower lower green rectangles. All other pixels should be unchanged, especially Nazari's face, hair, body, hands, stylus, slate and room. No text or symbols added.",
+      "reason": "Eight lower cells preserved, but narrowed too far to about one seventh of upper width."
+    }
+  ],
+  "editPrompt": "Use case: precise-object-edit. Image1 canonical Nazari, Image2 target scene. Make one tiny graphic correction only: each of the EIGHT narrow green bars in the LOWER screen panel is currently about17pixels wide. Increase each of these lower green bars to 30pixels wide, expanding RIGHTWARD while keeping each LEFT EDGE, HEIGHT, vertical position and color unchanged. This is a modest broadening of all eight lower bars. DO NOT change the eight wide rectangles in the upper panel. DO NOT narrow anything. Keep the eight lower bars clearly much narrower than the eight upper cells. Exactly eight lower bars in two rows of four. Preserve EVERY other aspect: Nazari's exact face/hair, hands/stylus/slate, body, room, lighting, panels, camera, all upper cells. No other marks or words.",
+  "editReferences": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-bd4e7b7c-42ca-4183-90d0-69149a3a7458.png"
+  ],
+  "candidate": "/tmp/optimization-candidates/4.webp",
+  "candidateSha256": "aa2b5abbe9984c6b447282bf5e875f822e155eb98bb5fabb9b75b7fc0de58e80",
+  "sourceSha256": "fb6514b169c7a10d0f4fa7e0186524018dfa8c7b68dcce13116ff6de2689aaa5",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-bd4e7b7c-42ca-4183-90d0-69149a3a7458.png",
+      "role": "edit target",
+      "sha256": "e25d6636a4307678e9fdef202b2daca2e4abdb2604e7eea02cb0bbd7d62d80c3"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 157744,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/quantization-concept-chief-nazari-proof.png",
+      "crop": {
+        "left": 260,
+        "top": 60,
+        "width": 330,
+        "height": 360
+      }
+    }
+  ],
+  "generationReferences": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-44045b61-b3a3-4592-8e20-742e9d3b4f9f.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-92d8f6de-1446-418c-8574-add3abe7d330.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-bd4e7b7c-42ca-4183-90d0-69149a3a7458.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e9513bcd-848e-4965-a249-b2122343c61a.png",
+      "art-src/scenes/optimization-edge__quantization-concept-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

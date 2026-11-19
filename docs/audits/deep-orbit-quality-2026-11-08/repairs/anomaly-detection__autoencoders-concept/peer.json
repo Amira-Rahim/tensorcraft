@@ -1,0 +1,58 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T06:47:54.666075+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-concept/candidate.png",
+  "candidateSha256": "3923abf2c497dccd9a8624a23fc09d6a92d5b9ed1d7a1d5218db925d1e10c74a",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original inspection and enlarged canonical-face plus hand crops; current lesson source facts checked. Traced shoulder-elbow-wrist-hand chains, thumb sides, prop continuity, operator direction and display surface perspective.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+    "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 1060,
+      "top": 275,
+      "width": 340,
+      "height": 370
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 450,
+      "top": 680,
+      "width": 215,
+      "height": 145
+    },
+    {
+      "left": 1060,
+      "top": 825,
+      "width": 255,
+      "height": 115
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The readable main architecture correctly takes 3 raw plus 8 FFT inputs through a 4-value bottleneck to rebuild 11 values. This matches the lesson architecture without inventing an output.",
+    "Farah has canonical face structure and an attentive gaze. The dial pinch and resting notebook hand have natural thumb sides, continuous arms and real surface contact."
+  ],
+  "repairDirection": "None."
+}

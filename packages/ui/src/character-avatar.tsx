@@ -37,8 +37,8 @@ export function CharacterAvatar({
   }, []);
   useImgSettled(imgRef, src, settle);
   const frame = {
-    width: size,
-    height: size,
+    width: `var(--tc-avatar-size, ${size}px)`,
+    height: `var(--tc-avatar-size, ${size}px)`,
     border: `2px solid ${accentColor}`,
     background: "var(--tc-surface)",
     borderRadius: 0,

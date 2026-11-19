@@ -59,28 +59,54 @@ testCode: |
       expect(weight.dataSync()[0], 'Update the weight with weight.assign(weight - learningRate * gradient), using tensor operations. Assigning a different value to the JavaScript name does not update the original tf.Variable.').toBeCloseTo(4.0, 4);
       recordResult({
         kind: 'table', title: 'Your first weight update',
-        summary: 'The supplied squared-loss case after your initial step. This tests one scalar optimization update. It trains no spacecraft classifier.',
+        summary: 'The captured state after your initial step on lossFn. The exercise requests weight squared. This tests one scalar optimization update. It trains no spacecraft classifier.',
         columns: ['Learning rate', 'Stored gradient', 'Updated weight'],
         rows: [[learningRate, gradient.dataSync()[0], weight.dataSync()[0]]],
       });
     });
     it('three steps in a row keep walking downhill', () => {
       const trace = [weight.dataSync()[0]];
+      const operands = [];
+      const beforeSecond = weight.dataSync()[0];
+      const secondRate = learningRate;
+      const gradientBeforeSecond = gradient;
       step(lossFn);
       expect(gradient, 'The second call to step() left no gradient behind.').toBeDefined();
+      expect(gradient.isDisposed, 'Keep the latest gradient readable for inspection.').toBe(false);
+      if (gradientBeforeSecond !== gradient) {
+        expect(gradientBeforeSecond.isDisposed, 'Dispose of the old gradient when you replace it.').toBe(true);
+      }
       expect(gradient.dataSync()[0], 'Recompute the slope at the new weight. A gradient that repeats the first one means step() is reusing it.').toBeCloseTo(8.0, 4);
       expect(weight.dataSync()[0], 'Each step starts from the weight the step before it produced.').toBeCloseTo(3.2, 4);
       trace.push(weight.dataSync()[0]);
+      operands.push([2, beforeSecond, gradient.dataSync()[0], secondRate, weight.dataSync()[0], tf.tidy(() => lossFn().dataSync()[0])]);
+      const beforeThird = weight.dataSync()[0];
+      const thirdRate = learningRate;
+      const gradientBeforeThird = gradient;
       step(lossFn);
+      expect(gradient, 'The third call to step() left no gradient behind.').toBeDefined();
+      expect(gradient.isDisposed, 'Keep the latest gradient readable for inspection.').toBe(false);
+      if (gradientBeforeThird !== gradient) {
+        expect(gradientBeforeThird.isDisposed, 'Dispose of the old gradient when you replace it.').toBe(true);
+      }
       expect(gradient.dataSync()[0], 'For this squared loss and learning rate, each update gets smaller as the weight approaches the minimum.').toBeCloseTo(6.4, 4);
       expect(weight.dataSync()[0], 'Three steps in, the weight is still moving the same direction.').toBeCloseTo(2.56, 4);
       trace.push(weight.dataSync()[0]);
+      operands.push([3, beforeThird, gradient.dataSync()[0], thirdRate, weight.dataSync()[0], tf.tidy(() => lossFn().dataSync()[0])]);
       recordResult({
         kind: 'series', title: 'The weight after three of your steps',
         summary: 'The weight values saved after your three updates on the squared loss.',
         xLabel: 'Update', yLabel: 'Weight', labels: ['1', '2', '3'],
         series: [{ name: 'Weight', values: trace }],
       });
+      if (operands.every(row => row.every(Number.isFinite))) {
+        recordResult({
+          kind: 'table', title: 'Operands from your next two updates',
+          summary: 'Observed values around calls two and three to step(lossFn), including the actual loss read after each update. The first learner call already ran before these probes. This table records no before-state for that first call.',
+          columns: ['Update', 'Weight before', 'Stored gradient', 'Learning rate', 'Weight after', 'Loss after'],
+          rows: operands,
+        });
+      }
     });
     it('step() differentiates the function it receives, not the one this exercise defines', () => {
       step(() => weight.square().mul(3).asScalar());

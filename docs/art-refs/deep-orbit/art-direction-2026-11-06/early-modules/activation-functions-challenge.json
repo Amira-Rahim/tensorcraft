@@ -1,0 +1,29 @@
+{
+  "module": "neural-networks",
+  "lesson": "activation-functions",
+  "phase": "challenge",
+  "room": "bridge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "moment": "Demir leans slightly toward a bridge console with a focused, inquisitive smile. His right hand selects a test on a keyboard; his left hand rests flat on the outer console edge. A close angled screen contains two rows of simple bars for raw inputs and activation outputs, with empty display space reserved for running the test, no checkmarks or numerical answers. Show his visible face and both arms clearly, torso in the aisle outside the console. The separate alert switch remains untouched.",
+  "alt": "Demir tests activation outputs without changing the separate alert setting.",
+  "location": "Archimedes, Bridge",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/bridge.png"
+  ],
+  "prompt": "Use case: illustration-story. Asset: Deep Orbit neural-networks/activation-functions, challenge section. Generate one new landscape 1536x1024 story composition, not a collage. Input images: the first 1 are canonical character identity references; the final image is the bridge set reference. Preserve recognizable faces, ages, skin tones, hair, uniforms and equipment. Cast only: Ensign Demir, a young adult man with light-medium warm skin, tousled dark brown hair, light stubble, slate junior uniform, green comms earpiece and wrist terminal. Scene: Demir leans slightly toward a bridge console with a focused, inquisitive smile. His right hand selects a test on a keyboard; his left hand rests flat on the outer console edge. A close angled screen contains two rows of simple bars for raw inputs and activation outputs, with empty display space reserved for running the test, no checkmarks or numerical answers. Show his visible face and both arms clearly, torso in the aisle outside the console. The separate alert switch remains untouched. Tone: inviting, engaging, quietly lighthearted through competence, curiosity and natural human reactions. Anatomy and spatial constraints: exactly 1 human, each with two arms and two hands attached naturally. Hands have plausible fingers and grasp objects cleanly. No extra limbs, duplicated hands, detached fingers, fused bodies, floating props, or characters embedded in furniture. Bodies occupy open floor space; solid console and bench edges remain intact. Visible warmly lit faces, never silhouettes or back-only crew. No readable text, letters, numerals, logos or watermark. ARIA, only when requested, is a thin simple ring containing one horizontal waveform, never a face or ornamental spirograph. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.\nTargeted correction after QA: Use case: precise-object-edit. Edit ONLY the large foreground screen in the reference image. It is a pending ReLU test. Replace its current two filled bar rows with ONE upper input panel: a single thin horizontal zero baseline, five separate simple bars, the first two extending downward below that baseline and the final three extending upward above it. Below this input panel, draw ONE large completely empty dark result pane with a thin green outline, awaiting the test. No output values, no bar transformations, no pass/fail mark, no labels or numbers. Preserve Demir's face, identity, two hands, body, clothing, earpiece, console geometry, camera and warm bridge light exactly. No new objects or limbs.",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-a7535a02-cf4f-47c4-89cd-ca5fb0527c05.png",
+  "source": "art-src/scenes/neural-networks__activation-functions-challenge-openai-20261106.png",
+  "src": "/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+  "qa": {
+    "approved": true,
+    "anatomy": "One keyboard hand and one hand resting on the upper display frame, two connected arms.",
+    "furniture": "Console and chair edges remain coherent, no torso or limb intersects solid furniture.",
+    "identity": "Demir's face, stubble, tousled hair, earpiece and wrist terminal retained.",
+    "story": "Corrected misleading changed positive outputs. Screen now shows mixed-sign inputs with an empty pending-result pane.",
+    "tone": "Engaged and curious, with a small natural smile.",
+    "method": "Built-in imagegen. Full generated frame visually inspected."
+  }
+}

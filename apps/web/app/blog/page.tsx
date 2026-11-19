@@ -1,16 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPosts } from "@tensorcraft/content";
+import { BLOG_DESCRIPTION } from "./blog-details";
 
 export const metadata: Metadata = {
   title: "The Bridge: JavaScript-to-ML Insights, Tensorcraft",
-  description:
-    "Weekly browser-ML news, mapped to the lessons that teach the underlying concepts.",
+  description: BLOG_DESCRIPTION,
   openGraph: {
+    type: "website",
+    siteName: "Tensorcraft",
     title: "The Bridge: JavaScript-to-ML Insights, Tensorcraft",
-    description:
-      "Weekly browser-ML news, mapped to the lessons that teach the underlying concepts.",
+    description: BLOG_DESCRIPTION,
     url: "https://tensorcraft.app/blog",
+    images: [
+      "/api/og?title=The%20Bridge&world=deep-orbit&subtitle=JavaScript-to-ML%20notes",
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Bridge: JavaScript-to-ML Insights, Tensorcraft",
+    description: BLOG_DESCRIPTION,
+    images: [
+      "/api/og?title=The%20Bridge&world=deep-orbit&subtitle=JavaScript-to-ML%20notes",
+    ],
   },
   alternates: {
     canonical: "https://tensorcraft.app/blog",
@@ -35,10 +47,8 @@ export default function BlogIndexPage() {
 
         {/* Fluid one-liner: 10 mono chars at 0.555em per char; the family
             clamp (shared with the landing wall) lands 128px at 1440. */}
-        {/* The intro line ("Weekly browser-ML news...") was removed
-            2026-09-01 (owner request); the metadata/RSS descriptions keep
-            theirs, those are search-register surfaces. The h1 takes the
-            gap it left. */}
+        {/* The owner removed the introductory paragraph on 2026-09-01.
+            Keep the title and its spacing. */}
         <h1 className="text-[clamp(3rem,calc(10vw-1rem),8.5rem)] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-16 uppercase">
           The Bridge
         </h1>
@@ -46,8 +56,15 @@ export default function BlogIndexPage() {
         {posts.length === 0 ? (
           <div className="border border-border bg-surface p-10">
             <p className="text-base text-text-muted">
-              Our first post is coming soon.
+              We haven&apos;t published any posts yet. Our practical guides
+              explain machine learning through JavaScript examples.
             </p>
+            <Link
+              href="/guides"
+              className="mt-4 inline-block text-primary underline underline-offset-4"
+            >
+              JavaScript machine learning guides
+            </Link>
           </div>
         ) : (
           <ul className="space-y-8">
@@ -56,10 +73,12 @@ export default function BlogIndexPage() {
                 key={post.slug}
                 className="border border-border bg-surface p-6 md:p-8"
               >
-                <p className="font-mono text-xs md:text-sm text-text-muted tracking-wider uppercase mb-2">
-                  {new Date(post.publishedAt).toISOString().slice(0, 10)}
-                  {post.weekIso ? ` · ${post.weekIso}` : ""}
-                  {post.worldSlug ? ` · ${post.worldSlug}` : ""}
+                <p className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs md:text-sm text-text-muted tracking-wider uppercase mb-2">
+                  <time dateTime={post.publishedAt}>
+                    {new Date(post.publishedAt).toISOString().slice(0, 10)}
+                  </time>
+                  {post.weekIso && <span>{post.weekIso}</span>}
+                  {post.worldSlug && <span>{post.worldSlug}</span>}
                 </p>
                 <h2 className="text-xl md:text-3xl font-mono font-bold mb-2">
                   <Link href={`/blog/${post.slug}`} className="hover:underline">

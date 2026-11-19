@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
-import { PurchaseAnalytics } from "./purchase-analytics";
 import { PendingPoller } from "./pending-poller";
 import {
   PurchaseSuccessView,
@@ -11,7 +10,6 @@ import {
 export const metadata: Metadata = {
   title: "Purchase Confirmation | Tensorcraft",
   description: "Your Tensorcraft purchase details and course access.",
-  robots: { index: false, follow: false },
 };
 
 export default async function PurchaseSuccessPage({
@@ -85,19 +83,14 @@ export default async function PurchaseSuccessPage({
   }
 
   return (
-    <>
-      {purchase && (
-        <PurchaseAnalytics planId={purchase.plan_id} amount={purchase.amount} />
-      )}
-      <PurchaseSuccessView
-        purchase={purchase}
-        paymentFailed={paymentFailed}
-        pendingContent={
-          !purchase && !paymentFailed ? (
-            <PendingPoller sessionId={sessionId} />
-          ) : undefined
-        }
-      />
-    </>
+    <PurchaseSuccessView
+      purchase={purchase}
+      paymentFailed={paymentFailed}
+      pendingContent={
+        !purchase && !paymentFailed ? (
+          <PendingPoller sessionId={sessionId} />
+        ) : undefined
+      }
+    />
   );
 }

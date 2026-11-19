@@ -1,0 +1,158 @@
+{
+  "id": "anomaly-detection__threshold-tuning-takeaways",
+  "lesson": "anomaly-detection/threshold-tuning",
+  "phase": "takeaways",
+  "char": "chief-nazari",
+  "room": "bridge",
+  "src": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+  "alt": "Nazari compares capture and crew-pager thresholds on a large bridge display.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:06:27.334380+00:00",
+  "prompt": "Use case: precise-object-edit. Asset: 1536x1024 landscape Deep Orbit lesson story illustration. Recompose the last reference image to fix the user-rejected anatomy and improve teaching display readability. Image 1 is the canonical identity authority. Image 2 is the room authority. Image 3 is the edit target, not an identity authority. Keep the same person, adult proportions, clothing, canonical face shape, eye spacing, nose, jaw, complexion, age and signature equipment. Preserve warm brass, sage green interfaces, near-black space and crisp bold cel shading. Use the room's available space for ONE generously sized, readable primary physical lesson display. Set it close to upright and angled toward the operator, with text, lines and boxes all following its plane. Never strand important text on a little tabletop screen beneath an unused large wall. Large words with comfortable margins. Show only the exact required lesson content; no filler labels or invented metrics. Keep the whole screen visible and unblocked. Exactly one human and exactly two arms, each traced from its own shoulder through elbow and neutral wrist to one hand. Natural ordinary object contact, no duplicate forearms, no dangling extra hand, no folded or twisted wrist. No pen or stylus anywhere. No pointing gesture. Keep the face recognizable in a candid three-quarter view with eyes directed to the real screen, not the audience. No tiny anonymous face. Preserve adult head/body balance, visible sensible seated or standing support. The technical display is equipment being used for the ongoing task, not a floating overlay. No unrelated diagram. No speech bubble, watermark or signature.\nCanonical person: Chief Nazari, older woman with short swept gray-streaked dark hair, angular face, visible age lines, olive engineering jumpsuit and no earpiece. Moment: she reviews different cutoff policies for saving captures and waking the crew. Keep her skeptical, calculating expression, visible three-quarter face and gaze toward the comparison table. Recompose the old button-press arm completely: Nazari is seated at left, her right forearm supported naturally on the desk and right hand resting on an ordinary mouse, index and middle fingers relaxed on the two buttons and thumb naturally at its side. Wrist nearly straight. Left hand rests flat on a closed notebook. Show exactly two complete connected shoulder-elbow-wrist-hand chains, with no pointing finger and no reaching for elevated buttons. Use a broad upright physical bridge display filling the right half and center, giving the text the empty space formerly behind her. Exact title \"Fictional validation report\". A generously sized table with columns \"Capture\" and \"Crew pager\". Row \"Cutoff\": 0.2 and 1.0. Row \"Precision\": 0.34 and 1.00. Row \"Recall\": 1.00 and 0.72. Under the columns respectively \"Save events\" and \"Limit wakeups\". Clear amber footer \"Future rate: unverified\". Keep exact values, column alignment and screen perspective. No guarantee about future false alarms and no invented new measured results. No other technical text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "20bc104dec9fec4b61a2b79e6aa92469dbb0399c826634bfb7319e0321563c88",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room master"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+      "sha256": "835e4196a5d4abd450bef9fd543f3cfcb321784a601a8e19aa13ac794ae2577d",
+      "role": "edit target"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+    "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+  },
+  "sourceSha256": "ac4fbfb2109970949b21a961c81129efbdfd5e62ee34b9f9b9a61bdf7283ac27",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Asset: 1536x1024 landscape Deep Orbit lesson story illustration. Recompose the last reference image to fix the user-rejected anatomy and improve teaching display readability. Image 1 is the canonical identity authority. Image 2 is the room authority. Image 3 is the edit target, not an identity authority. Keep the same person, adult proportions, clothing, canonical face shape, eye spacing, nose, jaw, complexion, age and signature equipment. Preserve warm brass, sage green interfaces, near-black space and crisp bold cel shading. Use the room's available space for ONE generously sized, readable primary physical lesson display. Set it close to upright and angled toward the operator, with text, lines and boxes all following its plane. Never strand important text on a little tabletop screen beneath an unused large wall. Large words with comfortable margins. Show only the exact required lesson content; no filler labels or invented metrics. Keep the whole screen visible and unblocked. Exactly one human and exactly two arms, each traced from its own shoulder through elbow and neutral wrist to one hand. Natural ordinary object contact, no duplicate forearms, no dangling extra hand, no folded or twisted wrist. No pen or stylus anywhere. No pointing gesture. Keep the face recognizable in a candid three-quarter view with eyes directed to the real screen, not the audience. No tiny anonymous face. Preserve adult head/body balance, visible sensible seated or standing support. The technical display is equipment being used for the ongoing task, not a floating overlay. No unrelated diagram. No speech bubble, watermark or signature.\nCanonical person: Chief Nazari, older woman with short swept gray-streaked dark hair, angular face, visible age lines, olive engineering jumpsuit and no earpiece. Moment: she reviews different cutoff policies for saving captures and waking the crew. Keep her skeptical, calculating expression, visible three-quarter face and gaze toward the comparison table. Recompose the old button-press arm completely: Nazari is seated at left, her right forearm supported naturally on the desk and right hand resting on an ordinary mouse, index and middle fingers relaxed on the two buttons and thumb naturally at its side. Wrist nearly straight. Left hand rests flat on a closed notebook. Show exactly two complete connected shoulder-elbow-wrist-hand chains, with no pointing finger and no reaching for elevated buttons. Use a broad upright physical bridge display filling the right half and center, giving the text the empty space formerly behind her. Exact title \"Fictional validation report\". A generously sized table with columns \"Capture\" and \"Crew pager\". Row \"Cutoff\": 0.2 and 1.0. Row \"Precision\": 0.34 and 1.00. Row \"Recall\": 1.00 and 0.72. Under the columns respectively \"Save events\" and \"Limit wakeups\". Clear amber footer \"Future rate: unverified\". Keep exact values, column alignment and screen perspective. No guarantee about future false alarms and no invented new measured results. No other technical text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "userCorrection": true,
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp"
+  },
+  "generatedAt": "2026-11-08T17:13:36.869880+00:00",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-91064fe3-4e54-4c21-8f1e-7959b2939dcb.png",
+  "candidatePath": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+  "candidateSha256": "ac4fbfb2109970949b21a961c81129efbdfd5e62ee34b9f9b9a61bdf7283ac27",
+  "faceCropCoordinates": {
+    "coordinateSpace": "candidate pixels, origin top-left",
+    "left": 215,
+    "top": 75,
+    "width": 365,
+    "height": 410
+  },
+  "ownReview": {
+    "reviewedAt": "2026-11-08T17:15:48.904465+00:00",
+    "candidateSha256": "ac4fbfb2109970949b21a961c81129efbdfd5e62ee34b9f9b9a61bdf7283ac27",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution full-image review plus temporary face-crop comparison against the canonical portrait. Traced all complete arm chains, inspected hands and object contact, screen perspective, text, source facts, gaze and posture.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "action": "Nazari reviews the two cutoff policies with a mouse while resting the other hand on her notebook.",
+    "emotion": "Skeptical practical assessment.",
+    "eyeline": "Toward the large right-hand validation report.",
+    "narrativeReason": "Saving captures and waking crew have different operational costs.",
+    "findings": [
+      "The awkward elevated button press is gone. Nazari's two complete arms now end in an ordinary supported mouse hand and a resting notebook hand, with clear fingers and neutral wrists.",
+      "The large report uses the available space. Capture cutoff 0.2, precision 0.34, recall 1.00 and crew pager cutoff 1.0, precision 1.00, recall 0.72 exactly match the fictional validation data.",
+      "Save events, Limit wakeups and Future rate: unverified retain the actual policy comparison and uncertainty. Table lines, text and spacing share the screen perspective.",
+      "The canonical face crop retains Nazari's age lines, angular jaw and chin, brows, nose, gray-streaked short hair and complexion."
+    ],
+    "canonicalFaceComparison": {
+      "referencePath": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "candidateCropCoordinates": {
+        "coordinateSpace": "candidate pixels, origin top-left",
+        "left": 215,
+        "top": 75,
+        "width": 365,
+        "height": 410
+      },
+      "nativeCropReviewed": true,
+      "temporaryCropRemoved": true
+    },
+    "remainingGate": "Independent peer review and root publication; active assets remain unchanged."
+  },
+  "publicationStatus": "withheld pending independent peer review",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__threshold-tuning-takeaways/candidate.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp",
+  "webpSha256": "392fcf5e56125cf585c6309f557eb29b35a64ec6212258eca6604d47ab864117",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+    "sourceSha256": "835e4196a5d4abd450bef9fd543f3cfcb321784a601a8e19aa13ac794ae2577d",
+    "webpSha256": "533b10430587760cdae7de334a6f23739e69ffd19a08c36165c2ea6288769c7f",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-07e35822-8fef-4b8e-83cc-04dff2639e85.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "ac4fbfb2109970949b21a961c81129efbdfd5e62ee34b9f9b9a61bdf7283ac27",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Exact canonical identity and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and natural grip",
+      "Large upright primary display with source-grounded content",
+      "Reader/operator direction and surface perspective",
+      "Distinct candid action, reaction and narrative reason",
+      "Independent exact-hash peer PASS required"
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

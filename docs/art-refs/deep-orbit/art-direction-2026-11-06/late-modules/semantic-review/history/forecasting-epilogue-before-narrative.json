@@ -1,0 +1,95 @@
+{
+  "key": "deep-orbit/advanced-time-series/forecasting",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identity. Cinematic Deep Orbit adventure-comic scene,1536x1024. First reference images are canonical faces, next is bridge master for room/palette, LAST is exact scene to edit. Preserve exact people, facial morphology, adult age markers, warm skin, nose/jaw/eye proportions, hair, side-specific accessories, expressions, story action and entire room composition. Keep every continuous shoulder-elbow-wrist-hand chain, grips, torso/head alignment, thighs, chair support and rail contacts intact. Demir comms anatomical RIGHT ear, Farah lens anatomical LEFT eye. Make only requested screens and small proportional adjustments. Keep narrative people dominant; embed concise task meaning in existing screens rather than turning scene into a full technical infographic. All peripheral monitors, wrist displays and unmentioned readable displays must be OFF, plain charcoal glass with no arbitrary bars, waveforms, gauges or text. Retain physical buttons. Muted sage, aged brass and charcoal with natural warm skin; no neon mint, cyan or mustard wash. Preserve Nazari standing with handonhipandtablet, Demir holdingpaperbothhands, Farah seated with natural body/chair and2supportedarms. All exact faces and expressions unchanged. Farah head needs only a very small adjustment toabout95 percent currentlinear size; others unchanged. The large right console shows one clean clock timeline with left event \"Observed 0308\" and right event \"Predicted 0312\" connected by a short bracket labeled \"4 min early\". Exact chronological order, no invented waveform. Demir paper becomes a concise interval note with two rows: \"Pulse gap: 73.4 s\" and \"Larger cycle: 47 min\" followed by the shared phrase \"Both shrinking\". Those are original measured baselines, not tonight values; small heading \"Initial measurements\". Do not add latest interval values or a zero-time forecast. All background/wrist screens OFF. Keep the worried curious crew investigating compression, not celebrating a solved mystery. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/forecasting-epilogue-before.png",
+      "sha256": "9b659909b7d5742fe2620c5825617afe1adb697acd2f8af8db94c93fd3666863",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "9b659909b7d5742fe2620c5825617afe1adb697acd2f8af8db94c93fd3666863",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp",
+    "sha256": "afc00c6dd9876353e40cd1e1ce830a68d31a440bf8e1a9b0c5a9bb0d592875e9"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1"
+    }
+  ],
+  "panelSpecification": {
+    "state": "story miss and investigation",
+    "panels": [
+      "Main console: Observed0308 precedesPredicted0312, marked4min early.",
+      "Demir paper: Initial measurements Pulse gap73.4s, Larger cycle47min, Both shrinking. No invented latest values or zero-time forecast."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Preserve Nazari standing with handonhipandtablet, Demir holdingpaperbothhands, Farah seated with natural body/chair and2supportedarms. All exact faces and expressions unchanged. Farah head needs only a very small adjustment toabout95 percent currentlinear size; others unchanged. The large right console shows one clean clock timeline with left event \"Observed 0308\" and right event \"Predicted 0312\" connected by a short bracket labeled \"4 min early\". Exact chronological order, no invented waveform. Demir paper becomes a concise interval note with two rows: \"Pulse gap: 73.4 s\" and \"Larger cycle: 47 min\" followed by the shared phrase \"Both shrinking\". Those are original measured baselines, not tonight values; small heading \"Initial measurements\". Do not add latest interval values or a zero-time forecast. All background/wrist screens OFF. Keep the worried curious crew investigating compression, not celebrating a solved mystery."
+  },
+  "bodyConstraints": "Preserve all approved whole body construction, continuous arms and hands, supported chair poses. No blanket realism.",
+  "candidatePath": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+  "candidateSha256": "0de89b54f8c66eda92eab46a8f7bb46cfa7c37b14dd7a3055bc6e99f2c97c0d1",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c23a5867-bf12-46df-9dc2-ea0a6249fd10.png",
+  "ownReview": "All exact labels and phase states inspected. Canonical people, clear continuous arms and hands, natural head/neck/body alignment, sensible chair contacts, muted room palette. No unrelated monitor content.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-epilogue-identity-proof.jpg",
+  "independentReview": {
+    "reviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "0de89b54f8c66eda92eab46a8f7bb46cfa7c37b14dd7a3055bc6e99f2c97c0d1",
+    "proofSha256": "bb1c5746b2132db810c8db6f0bba203639bc61c625f606d96883a90eee79a8e3",
+    "notes": "Root inspected all3 canonical faces and fullframe. Natural poses and proportions pass. Observed0308 precedesPredicted0312 by4minutes. Paper names original73.4-second pulse gap and47-minute larger cycle, both shrinking. Current MDX verified."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__forecasting-epilogue-semantics-stage1-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-epilogue.webp",
+  "publishedOutputSha256": "8dab1a40979c09ca76e46f8be5f66ace9d0484b628f4e0b8aa48a71944cddb02",
+  "encoding": {
+    "format": "webp",
+    "quality": 83,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 190716
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

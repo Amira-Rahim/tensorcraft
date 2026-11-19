@@ -146,6 +146,36 @@ Give the watch a way to spot slow predictions and changing inputs before decidin
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
+## The logs behind the summary
+
+The exercise supplies three scores, a 100-call duration log, and two recent feature rows. These are diagnostic fixtures. The durations are supplied numbers, so they describe this log rather than your browser's speed.
+
+<CodeBlock language="typescript" title="monitor-log-trace.ts">
+{`const scores = [0.9, 0.8, 0.7];
+const durations = [...Array.from({ length: 95 }, (_, i) => 40 + i), 400, 400, 400, 400, 400];
+const sorted = [...durations].sort((a, b) => a - b);
+function percentile(p: number): number | null {
+  if (!sorted.length) return null;
+  return sorted[Math.max(0, Math.ceil(sorted.length * p / 100) - 1)];
+}
+const baselineMean = [0, 0];
+const recent = [[0, 0], [2, 4]];
+const recentMean = baselineMean.map((_, i) =>
+  recent.reduce((sum, row) => sum + row[i], 0) / recent.length
+);
+console.log('Mean score:', scores.reduce((sum, value) => sum + value, 0) / scores.length);
+console.log('P50, P95, P99:', [50, 95, 99].map(percentile)); // [89, 134, 400] ms
+console.log('Mean distance:', Math.hypot(...recentMean)); // sqrt(5)`}
+</CodeBlock>
+
+Nearest rank selects a value from the sorted log. With 100 observations, P95 selects position 94 in a zero-based array. P0 selects the minimum and P100 the maximum. Five slow calls raise P99 to 400 ms while P95 remains 134 ms. A mean alone would hide that slow end.
+
+The recent feature means are `[1, 2]`. Their Euclidean distance from `[0, 0]` is about 2.236. Keep the same feature order and scaler across both periods. An empty log returns `null`, displayed as **No data**. A recorded zero says the means match. Different spreads can still share the same mean.
+
+The mean score of 0.8 does not establish 80% accuracy. Nazari needs reviewed outcome labels to measure correctness. She can use the summary to choose what to investigate while those labels arrive.
+
+<ConceptReference summary="Optional: application monitor and drift reference">
+
 <CodeBlock language="typescript" title="monitor.ts">
 {`interface PredictionLog {
   timestamp: number;
@@ -241,6 +271,8 @@ if (drift.thresholdExceeded) {
   console.table(drift.features);
 }`}
 </CodeBlock>
+
+</ConceptReference>
 
 Accuracy requires trusted outcome labels. In this mission they arrive after manual review, so live scores and drift cannot establish whether a prediction was correct. Track delayed label coverage and compute evaluation metrics when those labels arrive. Some applications receive outcomes quickly. Others never obtain reliable labels for every case.
 

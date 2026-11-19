@@ -1,0 +1,52 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T07:15:32.531967+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__reconstruction-error-concept/candidate.png",
+  "candidateSha256": "a949d5532d3dc9f3c34fbcec54ea4fb0b97fe9f9673c3943a058f62df30fadd8",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full native original plus enlarged face and hand crops, compared with canonical portraits. Current lesson and required exercise facts checked. Arm chains, thumb sides, contact, operator direction and display perspective inspected.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+    "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 1030,
+      "top": 245,
+      "width": 340,
+      "height": 335
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 735,
+      "top": 810,
+      "width": 505,
+      "height": 190
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "Subtract, square, mean over 11 and one MSE form the correct main flow. The branch at squared gaps correctly preserves 11 per-feature contributions separately from their mean.",
+    "Farah has natural mouse and bench contact, connected arms, canonical face and engaged attention."
+  ],
+  "repairDirection": "None."
+}

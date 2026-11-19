@@ -1,0 +1,290 @@
+{
+  "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portraits first are immutable identity references; room master palette reference; LAST input is target. Correct ONLY Demir's flat report reader direction. Rotate its printed content180degrees within the paper plane, so Baseline report and Settings saved are upright to Demir on the far side of the desk, and visibly UPSIDE DOWN to the camera. Do not mirror text, do not replace it with gibberish. Preserve exact face, thoughtful expression, head size, complete seated body and two connected arms/hands, hovering control hand, all monitor wording, room and palette. One1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-narrative-stage1-openai-20261107.png",
+      "sha256": "6accbde072c948722108f14fe8a38db5cb13e66850e39e36ad7ee2baa7cb45c7",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "6accbde072c948722108f14fe8a38db5cb13e66850e39e36ad7ee2baa7cb45c7",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+    "sha256": "49ab32f15766de5fd3201cd25ecf34b66523ad15efb7e1fd65a052545dcd2e91"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+      "matchesCandidateMetadata": true
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+      "matchesCandidateMetadata": true
+    }
+  ],
+  "panelSpecification": {
+    "state": "review decision pending",
+    "concreteGenerationSpecification": "Restage Demir alone in a quiet late-watch bridge moment. He sits naturally turned toward the console, shoulders and chair aligned, camera diagonally alongside shows his thoughtful three-quarter face. His brow creases as he looks at Sample 7741. One hand rests on a flat baseline report on the desk; the other hovers above a control without pressing, a visible pause before the decision. Remove the outward raised paper. Main monitor at a working angle reads Sample 7741, Label unresolved, Training decision pending, and a small footer Original capture retained. No selected option, no completed classification, no green success. The flat paper has only Baseline report and Settings saved, written in perspective aligned to its edges. No invented measurement, graph or wave. Other monitors and wrist display off. Natural short neck, two anatomically connected arms with credible fingertips, warm skin and muted charcoal/brass/sage. No camera gaze, no illustration-as-presentation, and no giant headline behind the person.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "Epilogue and BossBeat 7741"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portraits first are immutable identity references; room master palette reference; LAST input is target. Correct ONLY Demir's flat report reader direction. Rotate its printed content180degrees within the paper plane, so Baseline report and Settings saved are upright to Demir on the far side of the desk, and visibly UPSIDE DOWN to the camera. Do not mirror text, do not replace it with gibberish. Preserve exact face, thoughtful expression, head size, complete seated body and two connected arms/hands, hovering control hand, all monitor wording, room and palette. One1536x1024 scene."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-3b75da30-5244-4838-8555-a44b223f246e.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+    "proofSha256": "135cdddf4005efa054d6a65c2d1114f3c99e7c00e5b6ab800a2627dc246c14aa",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Demir pauses at the unresolved reading with a hand stopped above the controls, saving the baseline record without pretending the decision is settled."
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/normal-vs-anomalous-epilogue-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-epilogue-target.png",
+    "sha256": "fa496b457f617483320be5b959b9c06e676ed82cb4ba7feb931e07aa54832830",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "fa496b457f617483320be5b959b9c06e676ed82cb4ba7feb931e07aa54832830",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-epilogue-runtime-before.png",
+    "sha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir pauses at the unresolved reading with a hand stopped above the controls, saving the baseline record without pretending the decision is settled.",
+    "fullSpecification": "Restage Demir alone in a quiet late-watch bridge moment. He sits naturally turned toward the console, shoulders and chair aligned, camera diagonally alongside shows his thoughtful three-quarter face. His brow creases as he looks at Sample 7741. One hand rests on a flat baseline report on the desk; the other hovers above a control without pressing, a visible pause before the decision. Remove the outward raised paper. Main monitor at a working angle reads Sample 7741, Label unresolved, Training decision pending, and a small footer Original capture retained. No selected option, no completed classification, no green success. The flat paper has only Baseline report and Settings saved, written in perspective aligned to its edges. No invented measurement, graph or wave. Other monitors and wrist display off. Natural short neck, two anatomically connected arms with credible fingertips, warm skin and muted charcoal/brass/sage. No camera gaze, no illustration-as-presentation, and no giant headline behind the person."
+  },
+  "narrativeVisualReview": "approved",
+  "candidateSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+  "faceBoxes": {
+    "demir": [
+      355,
+      75,
+      330,
+      425
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-epilogue-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Demir alone in a quiet late-watch bridge moment. He sits naturally turned toward the console, shoulders and chair aligned, camera diagonally alongside shows his thoughtful three-quarter face. His brow creases as he looks at Sample 7741. One hand rests on a flat baseline report on the desk; the other hovers above a control without pressing, a visible pause before the decision. Remove the outward raised paper. Main monitor at a working angle reads Sample 7741, Label unresolved, Training decision pending, and a small footer Original capture retained. No selected option, no completed classification, no green success. The flat paper has only Baseline report and Settings saved, written in perspective aligned to its edges. No invented measurement, graph or wave. Other monitors and wrist display off. Natural short neck, two anatomically connected arms with credible fingertips, warm skin and muted charcoal/brass/sage. No camera gaze, no illustration-as-presentation, and no giant headline behind the person. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "6accbde072c948722108f14fe8a38db5cb13e66850e39e36ad7ee2baa7cb45c7",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5b2aab05-1cd0-48ed-ab6f-19e7f8200768.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/normal-vs-anomalous-epilogue-target.png",
+          "sha256": "fa496b457f617483320be5b959b9c06e676ed82cb4ba7feb931e07aa54832830",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "fa496b457f617483320be5b959b9c06e676ed82cb4ba7feb931e07aa54832830",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-epilogue-identity-proof.jpg"
+    }
+  ],
+  "surfacePerspectiveReview": {
+    "status": "approved",
+    "reviewer": "late_final",
+    "candidateSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+    "reason": "Final work-surface orientation and text baselines match reader and plane."
+  },
+  "previousPanelSpecification": {
+    "state": "review decision pending",
+    "concreteGenerationSpecification": "Preserve exact Demir face, head scale, paper grip, pointing finger and seated chair pose. Main right monitor replaces all waveform cards with \"Sample 7741\" then \"Label unresolved\" and \"Training decision pending\". Beneath are two identical unselected outlined options \"Include\" and \"Exclude with reason\". Footer \"Original capture retained\". No chosen option or completed classification. Paper he holds shows only \"Baseline report\" and \"Settings saved\" in two short readable lines. All other screens, wrist display and unused holo table off. Keep his thoughtful expression and natural anatomy.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "section": "Epilogue and BossBeat 7741"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "approved",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-3b75da30-5244-4838-8555-a44b223f246e.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-5b2aab05-1cd0-48ed-ab6f-19e7f8200768.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+      "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "independentPeerReview": {
+    "index": 14,
+    "key": "deep-orbit/anomaly-detection/normal-vs-anomalous",
+    "phase": "epilogue",
+    "path": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-narrative-stage2-openai-20261107.png",
+    "metadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/normal-vs-anomalous-epilogue-candidate.json",
+    "candidateSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+    "readerDirection": "pass",
+    "rationale": "No impossible outward-facing reading or writing detected in the temporary full-scene screen.",
+    "inspection": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "currentFileSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+    "publicationAuthorized": false,
+    "hashStillMatches": true,
+    "activeSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+    "activeSha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+    "ledgerSha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+    "peerStatus": "pass",
+    "peerRationale": "Demir pauses over unresolved sample7741 and saved baseline settings. Record lies flat facing him; preserved original capture and pending decision avoid inventing outcome. Replaces generic card sorting with a meaningful decision.",
+    "currentSourceHashes": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+        "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+        "matchesCandidateMetadata": true
+      }
+    ],
+    "gates": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    }
+  },
+  "temporaryCandidatePathAtReview": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-narrative-stage2-openai-20261107.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+  "sourceSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+  "webpSha256": "91cfb3c5d6df4f369af8cfc952b94e81ed59dfa238ed2dad8c9ec327e92c6be7",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+    "sourceSha256": "d342157e1adb80a6170418a4024f08401258421180c660cad6842ad9714a2b58",
+    "webpSha256": "49ab32f15766de5fd3201cd25ecf34b66523ad15efb7e1fd65a052545dcd2e91",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_late",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+    "method": "Native 1536x1024 active/candidate comparison with current source grounding and canonical cast comparison",
+    "checks": {
+      "identity": "pass: canonical facial morphology, age, hair and signature equipment",
+      "anatomy": "pass: natural head/neck/shoulder proportions and two plausible connected arm chains per person",
+      "readerDirection": "pass: shared screens face operator; personal records face reader",
+      "perspective": "pass: all screen labels, arrows and paper marks follow physical plane",
+      "palette": "pass: subdued sage and aged brass; incidental displays inactive",
+      "story": "pass: task-directed eyelines and believable working emotion",
+      "source": "pass: current lesson supports every legible factual assertion"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+        "matchesCandidateMetadata": true
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+        "sha256": "84518333d92283a97480092f3c2a83a6de4eb9ce921b6abc6bf08f00c4464002",
+        "matchesCandidateMetadata": true
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

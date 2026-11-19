@@ -1,0 +1,93 @@
+{
+  "index": 10,
+  "module": "optimization-edge",
+  "lesson": "pruning",
+  "phase": "takeaways",
+  "room": "engineering",
+  "characters": [
+    "chief-nazari"
+  ],
+  "aria": false,
+  "alt": "Nazari compares equal-sized dense weight grids and keeps the per-class review beside them.",
+  "scene": "Nazari alone at a tabletop under a warm workshop lamp, face toward camera with a small wry smile. She holds two stiff report cards, one in each hand, at chest height. Both cards have the SAME outer size and the same two-by-four grid of exactly EIGHT cells. Left card eight green cells; right card four green and four dark cells with all eight borders preserved. No cells disappear and no card shrinks. A separate closed review folder sits on the table. This reinforces unchanged dense storage slots after zeroing and the need for prediction evaluation, without claiming speedup or accuracy preservation. Hands hold outer edges naturally, fingers not intersecting the grids; waist-up frontal composition.",
+  "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari alone at a tabletop under a warm workshop lamp, face toward camera with a small wry smile. She holds two stiff report cards, one in each hand, at chest height. Both cards have the SAME outer size and the same two-by-four grid of exactly EIGHT cells. Left card eight green cells; right card four green and four dark cells with all eight borders preserved. No cells disappear and no card shrinks. A separate closed review folder sits on the table. This reinforces unchanged dense storage slots after zeroing and the need for prediction evaluation, without claiming speedup or accuracy preservation. Hands hold outer edges naturally, fingers not intersecting the grids; waist-up frontal composition. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "src": "/scenes/deep-orbit/optimization-edge/pruning-takeaways.webp",
+  "source": "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+  "location": "Archimedes, Engineering",
+  "status": "generated-awaiting-review",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e653a85f-ea55-4181-ac3c-a971c5be6a22.png",
+  "previousAttempts": [
+    {
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7eb5446a-cc9c-4fb4-be28-bef65662155d.png",
+      "prompt": "Create one new Deep Orbit lesson scene, 1536x1024 landscape. Image 1 is the authoritative neutral identity portrait of chief-nazari. LAST image is room reference only, not facial authority or a screen-content template. EXACT SAME INDIVIDUAL FACES across the series is mandatory. Chief Nazari is the EXACT mature48-year-old woman in her neutral portrait: broad compact nose, firm rounded jaw and chin, natural mature forehead/eye/cheek/mouth folds, strong individual brow shapes, gray short bob and olive engineering coverall with multitool. Preserve her mature facial width and age even while smiling. Human heads should be near-frontal or gentle three-quarter, large and clearly lit, each face at least about200pixels high; keep identity proportions fixed while expressions and gaze vary. Nazari alone at a tabletop under a warm workshop lamp, face toward camera with a small wry smile. She holds two stiff report cards, one in each hand, at chest height. Both cards have the SAME outer size and the same two-by-four grid of exactly EIGHT cells. Left card eight green cells; right card four green and four dark cells with all eight borders preserved. No cells disappear and no card shrinks. A separate closed review folder sits on the table. This reinforces unchanged dense storage slots after zeroing and the need for prediction evaluation, without claiming speedup or accuracy preservation. Hands hold outer edges naturally, fingers not intersecting the grids; waist-up frontal composition. Preserve the room's canonical architecture, consoles, warm brass, pipes/rails and space beyond the windows while using this new camera and action. Do NOT copy pseudo-equations, tiny gibberish or decorative symbols from the room master. All screens use only the simple requested diagrams; no words, digits, labels, formulas or strings of fake glyphs. No planets/crystals/emoji inside data cells. Precisely preserve requested diagram counts and topology. Exactly 1 humans, no background people, black silhouettes or faceless bodies. Each human has exactly two attached arms and hands; natural five-finger anatomy, correct grips, continuous shoulder-elbow-wrist chains. Bodies remain wholly outside furniture, rails and tables. Warm, curious, engaging space adventure through these specific actions; retain an earned sober beat without horror or melodrama. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "reason": "Sine-wave symbols inside weight cells misrepresent scalar weights; remove all interior symbols."
+    }
+  ],
+  "editReferences": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7eb5446a-cc9c-4fb4-be28-bef65662155d.png"
+  ],
+  "editPrompt": "Use case: precise-object-edit. First image canonical Nazari, second image target. Change ONLY the interiors of the sixteen weight-grid cells on the two report cards. REMOVE EVERY WAVEFORM LINE from all sixteen cells. Preserve the outer cards, 2-row 4-column grid borders and colors exactly: left card eight uniform solid green cells; right card top four solid green cells and bottom four solid dark gray cells. These are scalar weight slots, not waveforms. Every cell must be completely plain, flat, with no internal lines, icons, patterns or glyphs. Keep Nazari's face, hair, body, two hands and grip, furniture, room, framing and lighting exactly unchanged. Eight cells per card, same outer card sizes, no text added.",
+  "candidate": "/tmp/optimization-candidates/10.webp",
+  "candidateSha256": "839fcdc58fc5ac8a4234bbe750c8384091d5d9df8b78c5d4d5e281b5a54eeb23",
+  "sourceSha256": "22992886d9444e0d4f045dfaab6dcc3f8b6263f71072abe4ad192f184157ae13",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7eb5446a-cc9c-4fb4-be28-bef65662155d.png",
+      "role": "edit target",
+      "sha256": "5aef7d38f05527c4faad56c759a2b5eb2446b05d316e71c8a774167b30c6b8fc"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 143740,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-review/pruning-takeaways-chief-nazari-proof.png",
+      "crop": {
+        "left": 580,
+        "top": 15,
+        "width": 380,
+        "height": 415
+      }
+    }
+  ],
+  "generationReferences": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/engineering.png"
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-7eb5446a-cc9c-4fb4-be28-bef65662155d.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-e653a85f-ea55-4181-ac3c-a971c5be6a22.png",
+      "art-src/scenes/optimization-edge__pruning-takeaways-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/masters/engineering.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

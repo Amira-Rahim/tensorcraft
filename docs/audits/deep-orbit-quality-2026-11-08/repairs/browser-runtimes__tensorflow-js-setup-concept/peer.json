@@ -1,0 +1,86 @@
+{
+  "reviewer": "quality_early",
+  "reviewedAt": "2026-11-08T19:21:29.395198+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__tensorflow-js-setup-concept/candidate.png",
+  "candidateSha256": "4708d690cf52019e849259f36e514ce2ad2561ffd804ae60d68ed2f327ef0c89",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x or 3x face/hand/prop crops, full shoulder-elbow-wrist chains traced in original, direct canonical portrait comparison, current lesson and relevant exercise source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": "rt0face",
+      "k": 0,
+      "box": [
+        190,
+        125,
+        740,
+        585
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__tensorflow-js-setup-concept/candidate.png"
+    },
+    {
+      "i": "rt0hands",
+      "k": 0,
+      "box": [
+        70,
+        405,
+        740,
+        700
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__tensorflow-js-setup-concept/candidate.png"
+    },
+    {
+      "i": "rt0demirhands",
+      "k": 0,
+      "box": [
+        180,
+        810,
+        905,
+        995
+      ],
+      "scale": 2,
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__tensorflow-js-setup-concept/candidate.png"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Nazari now has one arm reaching behind Demir to the chair and one continuous near arm resting palm-down on its edge. Demir's two arms reach the trackball and keyboard naturally. Thumb placement and occluded digits are plausible.",
+    "displayLegibilityAndSource": "Large setup steps exactly show npm install @tensorflow/tfjs, import, await tf.ready(), tf.getBackend() and tf.version.tfjs, matching the current setup lesson.",
+    "identityExpressionAndStory": "The skeptical and sheepish exchange reads candidly, with canonical facial structure and adult proportions.",
+    "palette": "Muted sage, charcoal and aged brass with warm skin and restrained lighting.",
+    "perspectiveAndOperator": "Readable physical display fronts with consistent text plane and plausible operator orientation.",
+    "largeDisplayRule": "Essential lesson information is large and clear, using the available scene space rather than a tiny rear console."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true
+}

@@ -129,11 +129,11 @@ async function openSettledTakeaways(page: Page, path: string) {
 // activity has had a <footer> of its own since content fix 8 (2026-10-17).
 const SITE_FOOTER = "footer[aria-label='Site footer']";
 
-// The footer's top edge less the bottom of the nav's lowest control. The
-// nav's own box ends at its bottom padding (--l-nav-bottom, the 40 px), so
-// a reading from that box stays 0 when the padding is lost.
-function footerGap(page: Page) {
-  return page.evaluate((footer) => {
+// The reader's bottom edge less the bottom of the nav's lowest control.
+// Free lesson links now follow the reader, before the site footer. Measuring
+// within the reader keeps that extra content from masking lost nav padding.
+function readerBottomGap(page: Page) {
+  return page.evaluate(() => {
     const one = (s: string) => {
       const found = document.querySelectorAll(s);
       if (found.length !== 1) throw new Error(`${s}: ${found.length} matches`);
@@ -146,8 +146,11 @@ function footerGap(page: Page) {
     const lowest = Math.max(
       ...controls.map((el) => el.getBoundingClientRect().bottom),
     );
-    return one(footer).getBoundingClientRect().top - lowest;
-  }, SITE_FOOTER);
+    return (
+      one("[data-testid='lesson-frame']").getBoundingClientRect().bottom -
+      lowest
+    );
+  });
 }
 
 // The story grid's lowest painted edge: the border-box bottom of the blocks
@@ -327,7 +330,7 @@ test.describe("lesson layout, desktop", () => {
     const which = settled
       ? `step ${step + 1} with the recall settled`
       : `step ${step + 1}`;
-    test(`${which} has no right column, and the footer sits at least 40 px below the nav`, async ({
+    test(`${which} has no right column, and the reader ends at least 40 px below the nav controls`, async ({
       page,
     }) => {
       if (settled) await openSettledTakeaways(page, LESSONS.paragraphLed);
@@ -341,7 +344,7 @@ test.describe("lesson layout, desktop", () => {
       await expect(page.getByTestId("lesson-right")).toHaveCount(0);
       // A floor, not an exact value: on a step shorter than the viewport
       // the page's minimum height adds space. The nav owns that minimum spacing.
-      expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
+      expect(await readerBottomGap(page)).toBeGreaterThanOrEqual(39);
     });
   }
 
@@ -659,7 +662,7 @@ test.describe("lesson layout, desktop", () => {
       await expect(page.getByTestId("lesson-workbench")).toBeVisible();
       await expect(page.locator(`${code}:visible`).first()).toBeVisible();
       await expect(page.getByTestId("lesson-right")).toHaveCount(0);
-      expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
+      expect(await readerBottomGap(page)).toBeGreaterThanOrEqual(39);
     });
   }
 
@@ -684,7 +687,9 @@ test.describe("lesson layout, desktop", () => {
           getComputedStyle(one("[data-testid='lesson-frame']")).paddingRight,
         );
       const href = control.getAttribute("href");
-      const nextLessonLinks = Array.from(document.querySelectorAll("a")).filter(
+      const nextLessonLinks = Array.from(
+        one("[data-testid='lesson-frame']").querySelectorAll("a"),
+      ).filter(
         (a) => a.getAttribute("href") === href && a.getClientRects().length > 0,
       ).length;
       return {
@@ -698,8 +703,48 @@ test.describe("lesson layout, desktop", () => {
     expect(m.inside).toBe(true);
     expect(Math.abs(m.right - m.frameRight)).toBeLessThanOrEqual(1);
     expect(m.text).toMatch(/Next Mission/i);
-    // One control for one action: no body card links to the next lesson.
+    // The reader has one next-mission action; the module footer lists all lessons.
     expect(m.nextLessonLinks).toBe(1);
+  });
+
+  test("the free module footer links all five lessons after the reader", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 4);
+    const navigation = page.getByRole("navigation", {
+      name: "Free lessons in Foundations: Tensors & Data",
+      exact: true,
+    });
+    await expect(navigation).toBeVisible();
+    const links = navigation.getByRole("link");
+    await expect(links).toHaveCount(5);
+    expect(
+      await links.evaluateAll((items) =>
+        items.map((a) => a.getAttribute("href")),
+      ),
+    ).toEqual([
+      LESSONS.paragraphLed,
+      LESSONS.headingLed,
+      "/worlds/deep-orbit/foundations/tensor-operations",
+      "/worlds/deep-orbit/foundations/data-loading",
+      SPANNING_LESSON,
+    ]);
+    await expect(navigation.locator('[aria-current="page"]')).toHaveAttribute(
+      "href",
+      LESSONS.paragraphLed,
+    );
+    const order = await navigation.evaluate((nav, siteFooter) => {
+      const reader = document.querySelector("[data-testid='lesson-frame']")!;
+      const footer = document.querySelector(siteFooter)!;
+      return {
+        readerBottom: reader.getBoundingClientRect().bottom,
+        navigationTop: nav.getBoundingClientRect().top,
+        navigationBottom: nav.getBoundingClientRect().bottom,
+        footerTop: footer.getBoundingClientRect().top,
+      };
+    }, SITE_FOOTER);
+    expect(order.navigationTop).toBeGreaterThanOrEqual(order.readerBottom);
+    expect(order.footerTop).toBeGreaterThanOrEqual(order.navigationBottom);
   });
 
   test("the recap and the terms list follow the recall card once it settles", async ({
@@ -779,9 +824,10 @@ test.describe("lesson layout, desktop", () => {
       const entry = one("[data-testid='glossary-entry-tensor']");
       return {
         grid: box(one("[data-testid='lesson-grid']")),
-        // The step's three sections, in reading order.
+        // The recall, its story scene, the recap and terms, in reading order.
         sections: [
           "[data-testid='takeaways-recall']",
+          ".lesson-takeaways-scene",
           "[data-testid='takeaways-prose']",
           "[data-testid='lesson-terms-list']",
         ].map((s) => box(one(s))),
@@ -802,7 +848,7 @@ test.describe("lesson layout, desktop", () => {
       expect(Math.abs(section.left - m.grid.left)).toBeLessThanOrEqual(1);
       expect(Math.abs(section.width - m.grid.width)).toBeLessThanOrEqual(1);
     }
-    // The recall card, the recap and the terms list stack a section gap
+    // The recall card, story scene, recap and terms list stack a section gap
     // (48 px) apart.
     for (let i = 1; i < m.sections.length; i++) {
       expect(
@@ -1202,19 +1248,18 @@ test.describe("lesson layout, phone", () => {
     const which = settled
       ? `step ${step + 1} with the recall settled`
       : `step ${step + 1}`;
-    test(`nothing renders between Continue and the footer on ${which}`, async ({
+    test(`nothing in the reader renders below Continue on ${which}`, async ({
       page,
     }) => {
       if (settled) await openSettledTakeaways(page, LESSONS.paragraphLed);
       else await openStep(page, LESSONS.paragraphLed, step);
-      // Everything <main> renders between Continue and the site footer, in
-      // document space. The regression this guards is a column landing
-      // below the nav on phones, so the probe covers all of <main>,
-      // including the shell's right slot and footer outside the step body.
+      // A lesson column must not land below the nav on phones. Inspect the
+      // entire reader, including the shell's right slot and footer outside
+      // the step body. The free module navigation follows the reader by design.
       // Toasts render outside <main>, in the root layout, and the lessons
       // drawer renders nothing while closed; the position filter skips only
       // elements that are themselves fixed, not their children.
-      const between = await page.evaluate((footer) => {
+      const between = await page.evaluate(() => {
         const one = (s: string) => {
           const found = document.querySelectorAll(s);
           if (found.length !== 1)
@@ -1225,8 +1270,9 @@ test.describe("lesson layout, phone", () => {
           el.getBoundingClientRect().top + window.scrollY;
         const go = one("[data-step-continue]");
         const top = doc(go) + go.getBoundingClientRect().height;
-        const bottom = doc(one(footer));
-        return [...document.querySelectorAll("main *")]
+        const reader = one("[data-testid='lesson-frame']");
+        const bottom = doc(reader) + reader.getBoundingClientRect().height;
+        return [...reader.querySelectorAll("*")]
           .filter((el) => {
             if (!el.checkVisibility()) return false;
             if (getComputedStyle(el).position === "fixed") return false;
@@ -1242,9 +1288,9 @@ test.describe("lesson layout, phone", () => {
             (el) =>
               `${el.tagName.toLowerCase()}: ${el.textContent!.trim().slice(0, 40)}`,
           );
-      }, SITE_FOOTER);
+      });
       expect(between).toEqual([]);
-      expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
+      expect(await readerBottomGap(page)).toBeGreaterThanOrEqual(39);
     });
   }
 

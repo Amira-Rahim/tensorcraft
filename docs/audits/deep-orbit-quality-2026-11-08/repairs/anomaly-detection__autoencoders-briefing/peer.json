@@ -1,0 +1,59 @@
+{
+  "reviewer": "quality_early",
+  "reviewedAt": "2026-11-08T17:24:03.098562+00:00",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-briefing/candidate.png",
+  "candidateSha256": "63477b60f01a914e26f40063ca8c64a7ffb383b113ce47ff44d38b46b39606d9",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Fresh native original plus 2x face and hand/contact crops; full shoulder/elbow/wrist chains traced in the original. Canonical portrait independently viewed. Current lesson source checked for required display meaning.",
+  "checks": {
+    "armsHandsProps": "Farah's shoulder, sleeve, elbow and wrist chains are complete. Mouse grip and resting hand are distinct; fingers overlap naturally without merging into the console.",
+    "displayReadabilityAndAccuracy": "The wall display fills the available left space. Three individually normal feature checks and the unseen combination over eleven days are clear. Check feature relationships expresses the lesson problem accurately.",
+    "identityExpressionAndStory": "Farah preserves the canonical face, tied dark hair, visor, earring and coat. Focused screen gaze and forward lean are candid.",
+    "colorAndPerspective": "Muted sage interfaces, charcoal and brass, warm skin and coherent equipment planes. Large readable lesson display is unobstructed and faces its operator."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "cropCoordinates": [
+    {
+      "i": "peer3face",
+      "box": [
+        980,
+        180,
+        1290,
+        530
+      ],
+      "scale": 2,
+      "k": 3
+    },
+    {
+      "i": "peer3arms",
+      "box": [
+        675,
+        720,
+        1390,
+        940
+      ],
+      "scale": 2,
+      "k": 3
+    }
+  ],
+  "canonicalReference": {
+    "path": "docs/art-refs/deep-orbit/dr-farah.png",
+    "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+    "role": "canonical identity"
+  },
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+    "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+  },
+  "temporaryCropsRemoved": true,
+  "publication": "Peer review only; no active asset mutation."
+}

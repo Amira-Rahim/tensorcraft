@@ -1,7 +1,7 @@
 /**
  * Visual regression tests, responsive layout breakpoints.
  *
- * Per dev-plan §8k. 4 breakpoints × 2 high-impact pages (landing + pricing).
+ * See docs/visual-regression.md. 4 breakpoints × 2 high-impact pages (landing + pricing).
  * Widths: 320 (mobile S), 768 (tablet), 1024 (laptop), 1440 (desktop L).
  */
 import path from "node:path";

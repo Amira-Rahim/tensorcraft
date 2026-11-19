@@ -1,0 +1,108 @@
+{
+  "id": "recurrent-networks/simple-rnns",
+  "phase": "briefing",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png"
+  ],
+  "prompt": "Use case: precise-object-edit. Canonical portraits first, engineering master room-only next, LAST is target. Remove ONLY the two decorative strokes flanking the heading One-unit cell drill. Keep all numerical values, formula, screen layout, people and environment unchanged. One1536x1024 image. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "alt": "Farah shows Demir how the same input gives a different hidden state after earlier readings.",
+  "location": "Archimedes, Engineering",
+  "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+  "screenMeaning": "Main board title \"One-unit cell drill\". Formula \"h = tanh(0.8h + x)\" with \"Start h = 0\". Exactly three rows under headers \"Input x | Updated h\": \"0.5 | 0.4621\", \"0.9 | 0.8537\", \"0.5 | 0.8284\". Below \"Hand-picked weights, bias 0\". Farah points at last updated state. Emphasize that same0.5 input gives differentstate because ofhistory. Remove all arbitrary stairplots. Preserve Farah two connected arms and Demir comfortable chair position, anatomically plausible head-neck-torso alignment, hands naturally on controls.",
+  "status": "published",
+  "prefix": "rnn",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-ab2ddd20-367c-4cf4-a491-2327b00bef9b.png",
+  "previousCandidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png",
+  "candidatePath": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-ab2ddd20-367c-4cf4-a491-2327b00bef9b.png",
+  "candidateSha256": "7812222c5f89cb7e9b818c86158165cac2509202f2a12f0d4a90ae63bffa6dd7",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "room geometry only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png",
+      "sha256": "db18484390cfec8526ba7d4036aeab3245f1af7f71b6356c122d7e941566f89f",
+      "role": "edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-ab2ddd20-367c-4cf4-a491-2327b00bef9b.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns.webp",
+  "sourceSha256": "7812222c5f89cb7e9b818c86158165cac2509202f2a12f0d4a90ae63bffa6dd7",
+  "webpSha256": "5226617627d1e113b9abfe8927aecb7619af6aa11d5856e7132c0ba8a9411fe8",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+    "sourceSha256": "f580dc4eed41bb48137cbc0d65cbb8408cba7c2aed3250f192924923d3beadff",
+    "webpSha256": "78673cf99e0ce8b9dce9233b89935a2642b4a69a605b4d451de44626cf72eeff",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-0fa8ff61-0be7-465e-845a-727a08a1e4ae.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "7812222c5f89cb7e9b818c86158165cac2509202f2a12f0d4a90ae63bffa6dd7",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalFaces": "pass",
+      "armsAndHands": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "surfacePerspective": "pass",
+      "readerDirection": "pass",
+      "meaning": "Hand-picked one-cell0.8 recurrent,1input,bias0 outputs0.4621,0.8537,0.8284 exactly match MDX.",
+      "story": "Engaged working interaction"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

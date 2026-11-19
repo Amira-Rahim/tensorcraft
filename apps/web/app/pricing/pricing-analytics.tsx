@@ -2,37 +2,37 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { worldSlugs } from "@tensorcraft/worlds";
-import { trackPricingPageViewed } from "@/lib/analytics";
+import { isLaunched } from "@tensorcraft/shared";
+import { EVENTS, track } from "@/lib/analytics-events";
+import { useAnalyticsReady } from "@/lib/analytics-ready";
 
 /**
- * Fires {@link EVENTS.PRICING_PAGE_VIEWED} on mount with a best-guess
- * `source` based on URL context:
- *   - `?locked=<slug>`   → redirected from a paywalled lesson
- *   - `?purchase=cancelled` → user aborted a Stripe checkout
- *   - otherwise          → `direct`
- *
- * Rendered from `apps/web/app/pricing/page.tsx`; renders nothing.
+ * Records the current pricing-page context after analytics becomes ready.
+ * Entry context describes this page, not the external acquisition channel.
  */
 export function PricingAnalytics() {
   const searchParams = useSearchParams();
+  const ready = useAnalyticsReady();
 
   useEffect(() => {
+    if (!ready) return;
     const locked = searchParams.get("locked");
     const purchase = searchParams.get("purchase");
 
-    let source: "direct" | "paywall" | "dashboard" | "upgrade_cta" = "direct";
-    let lockedWorldId: string | undefined;
-
-    if (locked && (worldSlugs as readonly string[]).includes(locked)) {
-      source = "paywall";
-      lockedWorldId = locked;
-    } else if (purchase === "cancelled") {
-      source = "upgrade_cta";
-    }
-
-    trackPricingPageViewed(source, lockedWorldId);
-  }, [searchParams]);
+    const gated = locked && isLaunched(locked);
+    track(EVENTS.PRICING_PAGE_VIEWED, {
+      entryContext: gated
+        ? "locked_lesson"
+        : purchase === "cancelled"
+          ? "checkout_cancelled"
+          : "standard",
+      ...(gated
+        ? { source: "paywall" as const, lockedWorldId: locked }
+        : purchase === "cancelled"
+          ? { source: "upgrade_cta" as const }
+          : {}),
+    });
+  }, [ready, searchParams]);
 
   return null;
 }

@@ -1,0 +1,30 @@
+{
+  "retrievedAt": "2026-11-11T09:11:24Z",
+  "source": "OpenSEO connected tool",
+  "tool": "get_search_console_performance",
+  "arguments": {
+    "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+    "startDate": "2026-10-12",
+    "endDate": "2026-11-08",
+    "dataState": "final",
+    "dimensions": [
+      "date"
+    ],
+    "type": "web",
+    "rowLimit": 1000
+  },
+  "result": {
+    "ok": false,
+    "reason": "not_connected",
+    "connectionRequired": true,
+    "connectUrl": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/search-performance",
+    "meta": {
+      "projectId": "83d1f46c-c0d8-44ab-966e-e9a343691c44",
+      "url": "https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/search-performance"
+    },
+    "resultId": "ac11ae1b-655e-457e-a55b-e10141347a12"
+  },
+  "creditsUsed": 0,
+  "reasonForRetry": "Owner indicated an intention to connect Search Console. This one retry checked whether the connection had completed.",
+  "interpretation": "Search Console still reports not_connected. Connection remains pending. No traffic or search values were returned."
+}

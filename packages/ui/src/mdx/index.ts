@@ -4,11 +4,15 @@ export { DerivationDrawer } from "./derivation-drawer";
 export { LessonPrefsProvider, useLessonPrefs } from "./lesson-prefs";
 export type { LessonPrefs } from "./lesson-prefs";
 export { Dialogue } from "./dialogue";
-export { Exercise, ExerciseDataProvider } from "./exercise";
+export { Exercise } from "./exercise-lazy";
+export { ExerciseDataProvider } from "./exercise-data";
 export { ExerciseBrief } from "./exercise-brief";
 export type {
   ExerciseData,
   ExerciseSubmitResult,
+  ExerciseRunSnapshot,
+  ExerciseSavedRunsContext,
+  ExerciseProps,
   ExerciseBridge,
 } from "./exercise";
 export { GlossaryTerm } from "./glossary-term";

@@ -1,0 +1,36 @@
+{
+  "module": "neural-networks",
+  "lesson": "activation-functions",
+  "phase": "concept",
+  "src": "/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+  "index": 1,
+  "characters": [
+    "dr-farah"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of dr-farah. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. DR-FARAH (portrait 1, scene head near x=629): faithfully reproduce the portrait's mature 38-year-old olive-tan face, facial width, full rounded lower cheeks, short rounded chin, compact nose bridge and round tip, restrained almond-shaped dark eyes and spacing, exact brow shapes and mouth proportions, natural dark hairline and loosely tied compact dark waves. Keep adult eye/smile detail. Do not slim her face, sharpen her chin, lengthen her nose, enlarge her eyes, smooth away adult features or give her glamorous flowing hair. The rectangular green AR lens stays on the anatomically correct eye as in the portrait. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene.",
+  "references": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-concept.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-180421df-7b34-4a4c-8845-f121052f8731.png",
+  "candidate": "/tmp/early-identity-candidates/1.webp",
+  "candidateSha256": "68cfc7dd89486c9fce9524a342bbacd25e88315fce4d74b26d792d85aa44af3c",
+  "sourceSha256": "7a30ab6aeb2f4f17b3cd5caba5777d556e4ceb6379b82be749f54272a8b686b5",
+  "beforeSha256": "f559c0902de2241dc77ae486be0042f1daf2559d95719bb88fb4cbfb29332bfa",
+  "bytes": 133778,
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "reference": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-concept-dr-farah-correction.png",
+      "crop": {
+        "left": 444,
+        "top": 102,
+        "width": 369,
+        "height": 426
+      }
+    }
+  ]
+}

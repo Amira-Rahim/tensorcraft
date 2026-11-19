@@ -1,17 +1,324 @@
 # Post-Launch Backlog (canonical)
 
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. The price decision does not establish learning outcomes or willingness to pay.
+
+Earlier dated pricing records and proposed bundle or subscription prices below remain historical. They do not override this offer.
+
 **This file is the single source of truth for every task deferred to after V1
-launch.** Created 2026-07-21 by consolidating `v2-polish-backlog.md`,
-`dev-plan.md` §9d/§10d/§10e/§10f, `v2-beat-expansion-plan.md`,
+launch.** Created 2026-07-21 by consolidating the former polish and development
+ledgers (retired 2026-11-06, available in Git history), `v2-beat-expansion-plan.md`,
 `email-retention-sequences.md`, the growth roadmap task lists
 (`roadmap.md` Horizons 1-3), and Claude memory entries.
 
 **Rule:** when postponing any work, add a checkbox line HERE (with its gate and
 a link to the detail spec if one exists). Detail specs stay in their own files;
-this doc is the index of record. Deferred mentions surviving elsewhere
-(`dev-plan.md`, audit ledgers) are historical and non-authoritative.
+this doc is the index of record. Deferred mentions in dated audit ledgers
+are historical and non-authoritative.
+
+## Marketing audit follow-ups (2026-11-12)
+
+Evidence: `output/marketing/audit-2026-11-12/` (git-ignored, start with
+`EVIDENCE.md`). Shipped on 2026-11-12: the redirect that keeps the November 10
+pitch links on the sensor case, X handle removal on both hosts, media kit links
+and posters, and the case-page fixes (script order, crew-video observer, phone
+headings, short-screen layout, loading and failure shown on the main button,
+double-click guard, answer backing plate, hero course-link tap target, code
+wrapping, film shot at 36.05 s with a new poster). Committed on 2026-11-13:
+the hidden guest email form, session replay off, and three CI fixes for the
+Ubuntu 26.04 runner image. The same day the API moved to hono 4.13.16 and
+@hono/node-server 2.1.6, which fix seven advisories published on 2026-11-12.
+One let RegExpRouter skip wildcard middleware, which the API uses for
+authentication.
+
+Owner decisions and actions:
+
+- [ ] **Replies from `support@tensorcraft.app`.** The address only forwards, so
+  a reply from the private inbox shows the personal address. Set up send-as
+  through Resend SMTP or a mailbox, send a test to a separate account, and
+  check the full headers before replying to any editor. Then send
+  `output/marketing/sensor-grouping-launch/cooperpress-followup-draft.txt`.
+- [ ] **X account.** Choose a fresh brand handle or the legacy one.
+  `apps/web/lib/__tests__/case-pages-metadata.test.ts` keeps `twitter:site`
+  off until then.
+- [ ] **Where the case pages live.** A tensorcraft.app subdomain or the
+  `/cases` path. Today five URLs serve two pages.
+- [ ] **Public repository.** Amira-Rahim/tensorcraft has been public since
+  2026-03-08, and the browser-project guide links to it. Decide whether the
+  organization name fits the identity rule.
+- [ ] **Drafts before publishing.** Rewrite the DEV article by hand under an
+  organization account (DEV's AI-assisted rule), recut the sensor clip (its
+  end card points to tensorcraft.app), and point the unpublished X draft at
+  `/sensor-grouping.html`.
+- [ ] **PostHog project setting.** Optionally switch recording off in the
+  project too. The web SDK already ignores it.
+
+Engineering and content:
+
+- [ ] **Lower page.** Facts row (56 lessons, 11 modules, about 28 hours, five
+  free, $79 once, 5-day refund), a real lesson capture, a shorter worlds
+  section, the real ARIA and Mirza exchange, one type scale with a 13 px
+  floor, and a footer with maker line, pricing, terms, privacy and contact.
+- [ ] **Hero load time.** Enable "Teach this model" at first paint and wait
+  for the model only at the reveal, defer the hero video, and try a smaller
+  TensorFlow.js build. Slow 4G takes 6.4 s to an enabled button.
+- [ ] **Share images.** PNG cards built from the demo's real result.
+- [ ] **Sensor case quotes.** Three lines attributed to Farah and Demir do
+  not exist in the course. Replace them with canon or label them.
+- [ ] **Production leftovers.** `/media/learn-trailer.mp4` (45 MB) is
+  unreferenced on the site but is the source footage for
+  `scripts/marketing/build-pattern-intro.mjs`, so move it out of `public/`
+  and update the script. Remove `/media/tensorcraft-teaser.mp4` and
+  `/design-previews/`.
+- [ ] **Cases site operations.** A build script and CI for the git-ignored
+  deploy folder, plus cache and security headers
+  (`agents/perf-delivery-seo/proposed-vercel.json` in the evidence pack).
+- [ ] **Story section on phones.** The art crops to half a face.
+
+## SEO and GEO release verification (2026-11-10)
+
+Local implementation and item status live in the [execution checklist](seo-geo-plan.md).
+
+- [ ] **Account baseline.** November 11 collection reached PostHog and OpenSEO.
+  The [provisional baseline](audits/seo-geo-2026-11-11-baselines/README.md)
+  records 2 visitors, 45 sessions and 139 pageviews for October 12 to November 8.
+  The original cohort matches zero people. Live event/host exclusions now pass
+  a controlled internal SDK check. The [measurement repair](audits/seo-geo-2026-11-11-baselines/measurement-fix.md)
+  ships browser/payment/signup changes and reconciles one paid $50
+  checkout creation cohort with Stripe and Supabase. Consent migration 067 is
+  applied in production, with all 15 catalog checks passing. Protected API
+  release 35 passes health checks on both machines, with verified PostHog settings.
+  Eight live API consent checks
+  and public web page/asset checks pass. Gate: remaining account-consent,
+  withdrawal, normal owner-browser marking, production payment/exercise/module ingestion, Bing
+  and refund reconciliation.
+  A later [browser check](audits/seo-geo-2026-11-11-baselines/browser-followup.md)
+  verified guide handoff, lesson arrival and prediction submission in one
+  internal SDK session. Project filters exclude the test events. Search Console
+  performance collection and the first GEO sample are complete. The separate
+  GEO item below records coverage and limits.
+- [x] **Search Console performance baseline, November 11.** OpenSEO uses the
+  verified `sc-domain:tensorcraft.app` property. Final web-search data records
+  1 click and 70 impressions for October 12 to November 8, compared with
+  4 clicks and 69 impressions for September 14 to October 11. Both windows
+  contain 28 daily rows with no further page of results. Query, page, device
+  and country breakdowns are saved in the linked baseline. Search dates use
+  Pacific Time. A 90-day extension records 9 clicks and 383 property impressions
+  for August 11 through November 8. Bing remains a separate gap.
+- [x] **First GEO sample, November 11.** The one-off check returned 34 answers,
+  two upstream failures and zero no-answer results. OpenSEO recorded 0/34
+  Tensorcraft mentions and 0/34 own-site citations. Twenty-three unresolved
+  Google redirect URLs limit independent destination verification. This is
+  the provider's recorded result for one sample, with no trend or traffic claim.
+  Recurrence is disabled. The approved cap was 216 credits ($0.216), and the
+  provider did not return the actual debit. See the
+  [private report](https://app.openseo.so/p/83d1f46c-c0d8-44ab-966e-e9a343691c44/reports/faddb2f6-fed3-4397-a0cc-992419c10721)
+  and [sample evidence](audits/seo-geo-2026-11-11-baselines/geo/findings-2026-11-11.json).
+- [x] **Runnable project training and evaluation.** Released November 12 in
+  `470ded71` in the existing browser-project guide. The example
+  trains for 1, 5 or 15 epochs and displays actual losses, a paired comparison
+  on 400 validation readings and selectable mistakes. Real-runtime tests
+  verify train-only scaling, split boundaries, the recorded default mistake
+  and cleanup. All 55 focused tests, web typecheck, lint and the production
+  build pass. Initial HTML exposes method/source links without invented run
+  results. Production checks in Chromium and WebKit passed the release gate:
+  worker execution under the CSP, a keyboard-started five-epoch run, mistake
+  selection, cancel and restart, and a 393 px layout. Both browsers displayed
+  the recorded CPU-runtime results. The
+  [implementation record](audits/seo-geo-2026-11-11-baselines/runnable-project-followup.md)
+  lists the checks and their limits. The evidence supports
+  this reader task but does not promise AI citations. No outreach or recurring
+  collection occurred.
+- [x] **Sourced course comparison additions.** Released November 12 in
+  `68d6e3d7`. The existing comparison now includes
+  DeepLearning.AI's browser TensorFlow.js course on Coursera and Henry Ly's
+  freeCodeCamp ml5.js video course. Rechecked all seven linked external
+  sources. The new entries cover goals, prerequisites, practice and outputs.
+  Coursera retains its intermediate/prior-TensorFlow qualification and Python
+  conversion module. The freeCodeCamp entry identifies its announcement as
+  the source and attributes the video to Henry Ly. Seven schema citations
+  match visible sources, with a November 12 review date. Six focused tests,
+  web typecheck, scoped lint and the 104-page production build pass. Local
+  HTTP returns 200 with the new content in initial HTML. The table implements
+  responsive column widths and a sticky criteria column. On production at
+  393 px, the table scrolls inside its focusable region with the criteria
+  column pinned and no page-level horizontal scroll. Arrow keys scroll the
+  focused region in Chromium, and a synthesized touch swipe scrolls it in
+  Chromium's mobile mode. Headless WebKit does not arrow-scroll any focusable
+  overflow box, so Safari keyboard scrolling and physical touch devices remain
+  unverified. No quality,
+  learner-outcome or citation-growth claims were added. The prior evidence is
+  in the [source review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-2026-11-11.json)
+  and [independent review](audits/seo-geo-2026-11-11-baselines/geo/source-review-courses-independent-2026-11-11.json).
+- [ ] **Public syllabus and course identity, November 13.** Implementation
+  is complete. Production release verification remains pending. All 56 lesson
+  titles render in initial HTML
+  across 11 native module disclosures. Paid lesson bodies stay outside public
+  HTML and client props, and purchase/progression gates remain in place.
+  Search and social titles describe the JavaScript ML course. Visible
+  prerequisites, runtime/simulation scope, estimated hours and current offer
+  agree with course metadata. The project preview links directly to the live
+  training example. All 57 focused tests, web typecheck, scoped lint,
+  development HTTP checks and the 104-page build pass. A later Chrome desktop
+  check opened a paid module and exposed its unlinked lesson titles. Owner
+  feedback reduced ten repeated module purchase actions to one course-level
+  action. Chrome and HTTP checks confirm one pricing action and all 56 titles.
+  The 38 focused follow-up checks pass. Gate: keyboard, mobile and direct
+  demo handoff checks, then release verification. Keyboard actions were
+  interrupted after Chrome's active context changed.
+- [ ] **Independent sample review, November 13.** The
+  [bounded brief and inquiry drafts](learning-study/browser-ml-review-brief-2026-11-13.md)
+  use the existing review process. Infinite Red and Curricular have relevant
+  primary-source service evidence. Availability, assigned reviewers,
+  independence and quotes remain unconfirmed. Recipient/draft approval and
+  sender identity are pending. No inquiry, hiring, payment, access grant or
+  external review has occurred. A sample cannot establish full-course quality
+  or actual learner outcomes.
+- [ ] **Visual and real-browser capture QA.** HTTP/SSR and local event tests pass.
+  Native desktop checks now verify the guide hub, reshape interaction,
+  lesson handoff, incorrect prediction feedback and retained practice record.
+  PostHog confirms their internal event delivery and exclusion. Gate: stable
+  browser access for mobile, keyboard, video, Challenge editing/grading,
+  account-consent persistence, withdrawal and server-event delivery.
+- [ ] **Remaining production search checks.** Owner-authorized main push
+  `65a1c242` deployed on November 11. Production HTTP checks pass for 23 sitemap
+  pages, guides, lesson links, media and canonicals. The 15 initial Search Console
+  inspections found eight indexed pages, four guide URLs unknown to Google,
+  normalization discovered but unindexed, and two expected www redirects.
+  Current normalization and operations pages return 200 with self-canonicals.
+  A later owner-account action resubmitted the sitemap successfully, with
+  Google reporting 23 pages and one video. All five indexing requests were
+  accepted. The 12:41 UTC follow-up confirms the hub, all three guides and
+  normalization indexed with successful mobile fetches and matching canonicals.
+  Gate: verify Bing indexing and collect crawler evidence. See the
+  [indexing follow-up](audits/seo-geo-2026-11-11-baselines/openseo/indexing-followup.md).
+- [x] **SEO follow-up release, November 11.** The eight-file release was
+  promoted at 12:49 UTC. It includes verified first-production video timestamps,
+  immutable project-source links, the November 11 project update and the
+  lesson-arrival consent implementation. The release passed 156 focused tests
+  across ten files, web typechecking, migration checks and a 104-page build.
+  Public page/metadata/link checks pass and the deployment is ready.
+  The release manifest records the deployed source.
+  [Release verification](audits/seo-geo-2026-11-11-baselines/release/seo-followup-public-verification.json).
+- [x] **Late-consent lesson delivery, November 11.** A production browser
+  accepted analytics at 12:55:25.574 UTC. PostHog then received one consent
+  event, one pageview and one tensor-shapes arrival in the same SDK session,
+  all marked internal. No introduction arrival appears in the bounded query.
+  [Delivery evidence](audits/seo-geo-2026-11-11-baselines/posthog/browser-late-consent-verification.json).
+  This closes the narrow delivery check. SPA navigation, withdrawal/reacceptance
+  and signed-in account persistence remain in the browser QA item.
+- [ ] **Video datetime recrawl.** Corrected intro and Deep Orbit timestamps
+  now appear in production HTML. Gate: confirm Google has recrawled them
+  before claiming the warning is cleared.
+- [ ] **Campaign-owner metadata release.** Main mirror now returns 200 and
+  names the existing campaign host as canonical/OG owner. The published campaign
+  root still lacks its source canonical tag. Gate: release that separate host
+  and verify its actual metadata.
+- [ ] **Field performance and outcome review.** Public PSI returned 429. Fresh
+  compiled payload observations are not Core Web Vitals. Gate: current lab/field
+  data and live cohort/citation records before tightening budgets or reporting
+  an acquisition improvement. The optional checkout-source question stays off
+  by the owner's November 10 choice.
+- [x] **Initial lesson editor payload, deployed November 11.** A lazy public
+  Exercise adapter removes the eager editor export. Both sampled free lessons
+  changed from 931,675 to 670,486 summed initial gzip bytes (28.03% less).
+  All six public control routes stayed unchanged. The runtime boundary and
+  exercise/lesson suites pass. Browser Challenge verification remains in the
+  visual QA item above. Details: the linked audit.
+
+## First-1,000 funnel follow-ups (2026-11-02)
+
+Repo work from §9 of the [first-1,000 plan](marketing-first-1000-paid.md). A
+fresh-visitor walkthrough of production on desktop ("Essential only" consent,
+analytics requests blocked) passed every step a guest can take: homepage,
+lesson one without an account, failing starter, passing solution, completion
+saved and kept after a reload, the end-of-lesson sign-up prompt, `/auth`,
+`/pricing`, and the signed-out "Buy now" redirect to sign-in. An iPhone 13
+profile covered the homepage, the consent banner, the hero CTA and the
+opening of lesson one. Stripe
+test mode (the key in the gitignored `apps/api/.env.checkout-test.local`)
+accepted Checkout Sessions built with the handler's exact parameters, with and
+without the source question. Not yet covered: entry from a campaign link,
+signup with guest-progress carry-over, a completed test-mode purchase, and the
+access it grants. A local purchase also needs the Docker-based Supabase stack.
+
+- [x] **Free-lesson CTA tracking beyond /learn** (§4, item 2 of the /learn
+  redesign entry): `landing_hero`, `landing_footer`, and `pricing_footer`.
+- [ ] **(OWNER) The hero note awaits approval.** "The first 5 lessons are
+  free, no account needed." sits under the hero buttons (`landing-hero.tsx`),
+  as §9 item 2 of the plan asks. The count comes from
+  `getModuleLessonCount()`, which `module-counts.test.ts` checks against the
+  lesson files. The record it
+  touches:
+  - It returns the content of the trust line "No credit card. No account for
+    module 1." to the same slot. Commit 0be63b29 removed that line on
+    2026-08-19.
+  - It brings back the free claim dropped from the button on 2026-08-22
+    (b3f7b7ae, "Run Your First Tensor (Free)"). The owner also had the bridge
+    section's free CTA removed on 2026-08-31. The session record gives
+    redundancy as the reason: the hero and closing CTAs already led to the
+    same free lesson.
+  - On wide screens it lifts the buttons 28px off the subhead's bottom edge,
+    which the 2026-08-31 one-row layout aligned. Hanging the note below the
+    row on wide screens would keep that alignment.
+  - On phones it sits under the second button, 84px below the primary one.
+    On a first visit at 375 by 667 the consent bar covers it. At 320 by 568
+    the note sits below the fold, and the consent bar covers the primary
+    button itself.
+  If approved, update the history comments in `e2e/landing.spec.ts` and
+  `apps/web/app/page.test.tsx`. The landing visual baselines mask the hero
+  canvas, so a baseline diff will not show the note. The 320px capture still
+  changes height and needs a re-mint.
+- [ ] **(OWNER) The checkout source question stays
+  off while `ACQUISITION_SOURCES` is empty.** Filling the list in
+  `apps/api/src/lib/acquisition-source.ts` switches on the optional "How did
+  you find Tensorcraft?" question. The owner confirmed on November 10 that it
+  should stay disabled. The following dependencies apply only if that decision
+  changes. Labels and values
+  must each be unique, and the unit test enforces every rule Stripe test mode
+  enforced on 2026-11-02. Put these privacy changes in a web deploy that is
+  live before the API deploy that carries the list:
+  - `/privacy` section 2 (purchase data): Stripe keeps the optional answer
+    with the payment, and Tensorcraft does not copy it.
+  - Section 3 (purposes): the purpose, learning which channels bring buyers,
+    and its legal basis. The owner or counsel picks consent for a voluntary
+    answer or a stated legitimate interest.
+  - Section 9 (retention): how long the answer stays. The ten-year tax
+    retention for purchase records does not cover it.
+  - The "Last updated" date and the privacy snapshot test.
+  - Access and erasure: add a Stripe Dashboard step to section 4 of
+    [the support runbook](support-runbook.md), and widen Stripe's purpose in
+    [privacy-compliance.md](privacy-compliance.md). Stripe's Redaction Jobs
+    API (public preview) can also redact Checkout Sessions.
+- [ ] **(B5) Guest exercise runs call two signed-in endpoints.**
+  `lesson-content.tsx` posts `/api/exercise-attempts` on every run and
+  `/api/github/commit` after a pass without checking for a session. Both
+  return 401 for guests (three console errors in the walkthrough). The API's
+  global rate limiter (`apps/api/src/index.ts`) runs before auth, so a traffic
+  spike spends Upstash quota on requests that can only fail. Skip both calls
+  when there is no session.
+- [x] **(B2) Empty blog promotion.** The November 10 local SEO work points
+  desktop/mobile marketing navigation to the published guide library. The blog
+  route remains available without a promise of a future publication schedule.
+  Restore a blog navigation item when actual posts justify it.
+- [ ] **(OWNER) The Kit drafts carry two stale claims.** Fix them before
+  creating the automations (plan §9 item 6). In [the drafts](email-retention-sequences.md), A1 says "The
+  first lesson takes fifteen minutes", but lesson one's `estimatedMinutes` is
+  8 (the module totals 59). A2 says "55 bridges", but the shared `BRIDGES`
+  list has 51 entries, and no page on the site states a count.
 
 ## CI repair follow-ups (2026-10-25)
+
+- [ ] **Dependency tooling advisories, rechecked November 11.** The Sentry
+  repair passes the workspace production audit. Full workspace audit still
+  reports 32 findings through development dependencies, including two critical
+  tinypool findings via postgres-meta/oxfmt. Gate: supported tooling updates
+  and full validation. No exploitable application request path was verified.
+- [ ] **Downloadable runtime-lab parity and advisories, rechecked November 11.**
+  Its independent npm/Python inputs and published archive are outside that
+  production audit. Reported protobufjs/msgpack findings and source/archive
+  differences need a separate repair and validation of the exact rebuilt zip.
+  Gate: confirm upstream affected/fixed ranges, update supported pins and check
+  clean archive extraction/runtime behavior. [Existing W03 evidence](audits/repository-reality-2026-11-06/web-ui.md#w03-the-downloadable-runtime-lab-is-behind-its-source-package-and-converter-pins-p1).
 
 Found while bringing `main` CI back to green after it stayed red from
 2026-10-06. None blocks CI; each is a real defect or an owner call.
@@ -68,11 +375,14 @@ The [roadmap](roadmap.md) now records the owner's long-term goal of 200,000
 unique paying customers. This opening project cannot establish that demand.
 
 - [x] **Visual design before production coding, 2026-10-04.** Used the
-  frontend-design skill to create an [isolated prototype](design-previews/foundations/index.html)
+  frontend-design skill to create an isolated prototype, preserved in the
+  [Foundations verification record](design-previews/foundations/verification.json)
   covering all five free lessons and five steps, with desktop/phone captures,
   existing artwork and tokens, linked packet/code selection, shape and scaling
   interactions, and authored retry/success states. Token choices, wireframes,
-  self-critique, and implementation limits are included in the artifact.
+  self-critique, and implementation limits informed the retained opening plan.
+  The prototype runtime was retired after the production rollout. Use the
+  development-only `/design/deep-orbit` route for the current lesson preview.
   This records prototype creation and internal review, not owner design
   acceptance, production implementation, learner results, or paying demand.
 - [x] **Connect and simplify the Foundations opening, 2026-10-06.** The
@@ -142,7 +452,7 @@ unique paying customers. This opening project cannot establish that demand.
   separate evidence. Full-course learner evidence remains required before
   claiming beginner effectiveness or scaling an unproven paid funnel.
 
-## Current content priority: the $70 course standard (2026-09-17)
+## Content quality and learner evidence (2026-09-17)
 
 **Owner sequence, 2026-09-18:** first close technical teaching gaps, then
 complete the internal content review, then add persistent story consequences
@@ -151,8 +461,9 @@ content grades reach A (at least 9/10 with complete coverage and no blocking
 defects). Track the current pass in the
 [internal review record](audits/internal-content-review-2026-09-18.md).
 
-Owner request: address the new educational audit, target at least 9/10 in
-each category, keep $50 as the launch price, and prepare for $70 after
+Original owner request, 2026-09-17 (pricing superseded 2026-11-09): address
+the educational audit, target at least 9/10 in each category, keep $50 as
+the launch price, and prepare for $70 after
 learning from customers. Implementation and evidence gates are in the
 [content quality plan](content-quality-plan.md); findings are in the
 [independent audit](audits/education-product-audit-2026-09-17.md).
@@ -218,8 +529,9 @@ data-gated deferrals. The world-2 release gate remains separate.
   Nobody has been contacted or hired. After the internal A gate, recruit independent subject/editorial
   reviewers and 12-20 learners; collect actual scores, delayed checks and
   30-day use evidence. No human results have been collected by this patch.
-- [ ] **After quality and learner gates, Q7:** validate the $70 offer using
-  actual purchase/refund evidence. Keep the live price at $50 during repairs.
+- [ ] **Q7 price validation:** assess the $79 introductory and $99 regular
+  offer using actual purchase, refund, support and learner evidence. The
+  November 9 owner decision supersedes the earlier price hold.
 - [ ] **Start measurement review now, Q8:** verify learning and acquisition
   funnels; use cohort evidence to assess the 200,000 unique paying-customer
   ambition, with buyers distinguished from seats and repeat purchases.
@@ -634,12 +946,11 @@ memory was refuted by that audit: `pnpm audit` clean.)
      `<video preload="none" poster controls>` (click-to-play, zero bytes
      against the audited load) and the /learn visual baselines are re-minted.
      An externally produced video can replace the file at the same path later.
-  2. **Adopt `FreeLessonCtaTracker` beyond /learn.** The landing hero, landing
-     final CTA, bridge-preview section, and /pricing footer all link the free
-     lesson untracked. Wrap them in
-     `apps/web/app/components/free-lesson-cta-tracker.tsx` and widen the
-     event's `source` union in `apps/web/lib/analytics-events.ts` as surfaces
-     adopt it.
+  2. **Adopt `FreeLessonCtaTracker` beyond /learn. DONE 2026-11-02.** The
+     landing hero (`landing_hero`), landing final CTA (`landing_footer`), and
+     /pricing footer (`pricing_footer`) now fire `free_lesson_cta_clicked`.
+     The bridge-preview section no longer links the free lesson, so it needs
+     no tracker.
   3. [ ] (OPERATOR) **Request GSC re-indexing of /learn after the redesign
      deploys** (Search Console URL inspection, "Request indexing"). Already
      queued as an open operator leftover in
@@ -755,7 +1066,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   signal-ward launch sprint runs (see `docs/audits/ai-slop-audit-2026-08-12.md`).
 
 - [ ] **Light-mode follow-ups** (deferred from the 2026-07-23 rollout; context
-  in `docs/dev-plan.md` 2026-07-23 entry + `docs/superpowers/plans/2026-07-22-light-mode.md`):
+  in `docs/superpowers/plans/2026-07-22-light-mode.md`):
   - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless -
     no site nav - so today learners flip scheme from other pages or the OS;
     candidate spot: the lesson ChromeBar).
@@ -885,7 +1196,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] The other 20 character sheets (Neon / Signal / Nova / Terra) +
     world wiring + their scene art: gated on those worlds launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in
-  `pre-launch-checklist.md` Rounds 11-12 but never filed until 2026-07-22;
+  the retired pre-launch checklist, Rounds 11-12, and filed 2026-07-22;
   a third item, "HintPanel coverage 3/56", was dropped as stale - Run #7
   regenerated 77 hint ladders on 2026-07-16):
   - [ ] Sandpack offline fallback for the exercise editor.
@@ -912,17 +1223,18 @@ memory was refuted by that audit: `pnpm audit` clean.)
   `certificates.ts:137`.
 - [ ] DISPATCH weekly-intel cron: the milestone producer shipped 2026-07-13
   but the *weekly* push (#13's premise) has no scheduler - pick pg_cron or
-  a Vercel Scheduled Function (explicitly deferred in
-  `docs/gt-narrative-polish-checklist.md`, never filed until 2026-07-22).
+  a Vercel Scheduled Function if the DISPATCH feature is restored. This
+  deferred work was consolidated here on 2026-07-22.
   Same for the dispatch-messages email mirror via Resend.
 - [ ] Counterfactual data layer: migration 031 + `counterfactual-client.ts`
   still collect choices but the `/log/rewind` surface was cut 2026-06-01 -
   data accrues that nothing reads. Build a surface (#3's payoff) or stop
   collecting; GDPR minimization argues against hoarding it
   (added 2026-07-22).
-- [ ] Reconcile `docs/gt-narrative-polish-checklist.md` open items against
-  Runs 6-8 - verify what's done, fold survivors here, mark the checklist
-  historical.
+- [x] Retired the superseded GT narrative checklist, 2026-11-06. Deferred
+  DISPATCH scheduler/email work and restoration decisions remain here. Current
+  story requirements live in [Q4](content-quality-plan.md#q4-improve-story-and-consequential-choices)
+  and the [story style bible](story-style-bible.md).
 - [ ] Verify R0-R4 structural-variety closure: the
   copy-humanization-reaudit plan (2026-06-10) was likely absorbed by Run 7
   cadence work + Run 8 endorsement, but never formally ticked off. Check
@@ -1184,7 +1496,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] `ActivityHeatmap` component (post-V0.5).
 - [ ] Remove deprecated `<Quiz>` + `<KeyTakeaways>` MDX components once all
   worlds are migrated off them.
-- **Audit-parked email + pipeline resilience** (pre-launch-checklist Rounds
+- **Audit-parked email + pipeline resilience** (retired pre-launch checklist, Rounds
   11-12, filed here 2026-07-22):
   - [ ] Refund-comms email (transactional template when a refund is issued).
   - [ ] News-scrape failure alerts.
@@ -1348,10 +1660,15 @@ post-launch by its own definition ("not before launch"), user-count-gated
 like §3. Last two items were prose-only findings (launch-blockers R2-5)
 with no checkbox anywhere until now.
 
-- [ ] `skill_events` partitions end **2027-04-01**;
-  `ensure_skill_events_partitions()` has zero callers and inserts are
-  fire-and-forget, so expiry fails silently and the skill genome dies
-  unnoticed. Wire a scheduled caller + alert.
+- [x] `skill_events` partitions end **2027-04-01** unless extended. A
+  scheduled caller exists: `.github/workflows/partitions.yml` runs
+  `ensure_skill_events_partitions()` on the 1st of each month and fails loud
+  on a non-2xx response (green every month from 2026-08-01 to 2026-11-01).
+  Inserts stay fire-and-forget, so the workflow carries the warning: a red
+  run, or a missed ping on the Sentry Crons `partitions` heartbeat
+  (`docs/observability.md`, Task 4), raises the alert. Every run so far was a
+  no-op, because partitions exist through 2027-03. The 2027-02-01 run is the
+  first to create one (`skill_events_2027_04`), so confirm it then.
 - [ ] Six `auth.getUser()` round-trips per authenticated page view; no
   `React.cache()` anywhere in the repo.
 - [ ] All 22 RLS policies use unwrapped `auth.uid()` (Supabase's documented
@@ -1377,8 +1694,7 @@ with no checkbox anywhere until now.
 ## /extras removal (2026-08-15)
 
 Owner decision, executed 2026-08-15: the /extras surface and its content were
-removed in full. Plan + execution ledger:
-`docs/superpowers/plans/2026-08-15-extras-removal.md`.
+removed in full. The removal record and restoration guidance follow.
 
 **What was removed**
 
@@ -1400,7 +1716,8 @@ removed in full. Plan + execution ledger:
 
 - Free tier is Module 1 (5 lessons) only.
 - The §4.10 roadmap-response marketing asset is BLOCKED (its topic map used
-  the deep-dive track as its spine; see `docs/marketing-plan.md`).
+  the deep-dive track as its spine). Current acquisition work follows the
+  [first-1,000 plan](marketing-first-1000-paid.md).
 - Curriculum no longer covers classical ML, ethics, math derivations, or the
   Python bridge anywhere.
 
@@ -1596,8 +1913,9 @@ has already been written off once (see above) - do not launch dark again.
 - [ ] (OPERATOR) **Sentry alerting.** Capture is real and verified in both
   apps (`apps/api/src/lib/sentry.ts` + `middleware/sentry.ts`; web's three
   `sentry.*.config.ts` loaded via `instrumentation.ts:14-18`), but alert
-  rules have no repo representation at all. Create the three rules specified
-  at `pre-launch-checklist.md` §B10 in each Sentry project.
+  rules live in Sentry. The [observability guide](observability.md#task-2-sentry-alert-rules-15-min-free)
+  records six rules created and read back on 2026-08-25. Verify their current
+  delivery using that guide before treating alerting as a release check.
 - [ ] (OPERATOR) **Plausible:** add site `tensorcraft.app`, set
   `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` in Vercel. ~EUR 9/mo. The script component
   (`apps/web/app/components/plausible-script.tsx:8`) is already conditional
@@ -1613,11 +1931,9 @@ has already been written off once (see above) - do not launch dark again.
   blocker.
 - [ ] (OPERATOR) **Product Hunt "upcoming" page** - follower capture only works
   pre-launch.
-- [ ] (OPERATOR) **Twitter/X account @tensorcraft** - create now (posting cadence can
-  wait). Launch execution (`dev-plan.md` §10b) announces on Twitter/X, so
-  the account must predate launch; also removes handle-squatting risk. The
-  old "DEFERRED to V1.0" note contradicted §10b and is resolved in favor of
-  pre-launch (2026-07-22).
+- [ ] (OPERATOR) **Twitter/X account @tensorcraft** - reserve the handle before
+  announcing there. Follow the [first-1,000 plan](marketing-first-1000-paid.md)
+  for the current distribution plan and posting priorities.
 - [x] **FAQPage JSON-LD on `/pricing`** - **DONE 2026-07-25**: FaqSection
   now emits the FAQPage markup itself, so `/` and `/pricing` both carry it,
   and the sitewide copy was removed from the root layout (wrong-page
@@ -1845,7 +2161,7 @@ has already been written off once (see above) - do not launch dark again.
   stay applied, so a function it created being present is correct, not a
   finding.
   **The real defect was one line of rollback SQL, and it is now FIXED:**
-  `docs/pre-launch-checklist.md:671` said
+  the [historical pre-launch checklist](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L671) said
   `drop function if exists public.get_shared_certificate(text) cascade;`.
   No such overload exists, so `if exists` made it a silent no-op and a
   genuine 019 rollback would have left the function behind pointing at a
@@ -2368,7 +2684,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
 > against current code and several had their sub-items corrected.
 
 - [ ] **First lesson auto-play: AFFORDANCE FIXED 2026-08-23, scene kept by owner decision.** The complaint was never the story, it was being trapped in it. Fixed: Skip is now a real control ("Skip intro", `text-xs`, 44px min target, `--tc-border-interactive` which clears 3:1) instead of a 10px label on a decorative border; and a learner who skips once is not auto-played at again, remembered in `localStorage` through `lib/script-preference.ts`. Every storage access is guarded, because this API throws SecurityError when site data is blocked and an unguarded read once white-screened the whole site. "Replay scene" still exists, so the scene is never unreachable. 5 tests. **Still open:** the scene itself is unchanged at ~15.5s for a first-time visitor, which is a deliberate product call, not an oversight. Original finding: the page is functionally blank during playback, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the entire product, and it is the destination of the landing page's primary CTA. Re-verified 2026-08-20: `lesson-steps.tsx:1357` still auto-plays on first visit, per-beat hold is 800-3200ms so 6-8 beats lands in the 15s band, and the Skip control is still `text-[10px]`. The only other escape is `prefers-reduced-motion`.
-- [x] **Guest email capture: SHIPPED.** Corrected 2026-08-20; this entry said "no email capture for guests anywhere in the free module", which is no longer true. `guest-email-capture.tsx` renders for guests only and is mounted in the lesson flow behind `isFreeModule` (`lesson-steps.tsx:1757`). Rows land with `subscribed` false per migration 050, so capture does not imply digest consent.
+- [x] **Guest email capture: SHIPPED, then HIDDEN 2026-11-12.** The form confirmed "Sent." and promised a link back, but no sender mails `free-module-end` rows. `GUEST_EMAIL_CAPTURE_ENABLED` in `guest-email-capture.tsx` brings it back once the open "Guest resume-link email" item ships. Corrected 2026-08-20; this entry said "no email capture for guests anywhere in the free module", which is no longer true. `guest-email-capture.tsx` renders for guests only and is mounted in the lesson flow behind `isFreeModule` (`lesson-steps.tsx:1757`). Rows land with `subscribed` false per migration 050, so capture does not imply digest consent.
 - [x] **Mobile editor type: CLOSED 2026-08-23, 16px shipped WITH the scroller focus fix. B9.** Both Sandpack themes now set 16px (clears the iOS auto-zoom threshold), and the Exercise component makes `.cm-scroller` keyboard-reachable. Root cause of the earlier failure, found in the packages themselves: CodeMirror's constructor sets `scrollDOM.tabIndex = -1`, and Sandpack additionally sets `tabindex="-1"` on the contenteditable surface (its keyboard pattern is Tab to the wrapper, Enter to enter the editor), so once the 16px type overflowed the 400px box the scroller was a scrollable region with nothing focusable inside it: axe `scrollable-region-focusable`, serious, both schemes. A MutationObserver-backed effect in `packages/ui/src/mdx/exercise.tsx` overwrites the scroller to `tabindex="0"` with `role="group"` and an aria-label, and re-applies when Sandpack recreates the editor (theme swaps). Browser-verified locally: both Challenge-step axe audits pass, and `e2e/exercise-run.spec.ts` ("Exercise editor keyboard access") now pins the attribute contract so a Sandpack or CodeMirror upgrade that drops it fails by name, not only in the axe sweep.
   **History:** the first attempt (same day) shipped the size bump alone and was reverted when CI caught the axe violation; no local test could, because it needs a real browser to lay out. Still open in this area: no axe run at any mobile viewport, and all non-axe e2e is dark-only via the global `colorScheme: "dark"` pin. Original finding:
   **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold. Re-verified 2026-08-20: still `size: "13px"` in BOTH Sandpack themes (`packages/ui/src/mdx/exercise.tsx:174` dark, `:205` light). Also still true: no axe run at any mobile viewport (`e2e/accessibility.spec.ts` runs only in the chromium project, which excludes the mobile specs), and all non-axe e2e is dark-only via the global `colorScheme: "dark"` pin (`playwright.config.ts:32`). **Corrected:** the "no mobile affordance past the exercise gate" clause is stale, the mobile pane toggle exists (`lesson-steps.tsx:820`).
@@ -5310,7 +5626,17 @@ visitors between 2026-08-26 and 2026-10-02.
 
 Privacy:
 
-- [ ] **(B0) Session replay is on but undisclosed.** Project settings record
+- [ ] **Guest resume-link email.** The free-module guest form is hidden
+  because nothing mailed its rows. To bring it back, have the API send the
+  promised link back to the guest's lesson for new `free-module-end` rows
+  (Resend, transactional, no digest enrollment), test delivery, then set
+  `GUEST_EMAIL_CAPTURE_ENABLED` to true.
+- [x] **(B0) Session replay is on but undisclosed.** Closed in code
+  2026-11-12 by the disable option: `apps/web/lib/posthog.ts` passes
+  `disable_session_recording: true`, `enable_heatmaps: false` and
+  `enable_recording_console_log: false`, so the policy's "pageviews and
+  product events" is accurate again. Optional owner step: also switch
+  recording off in the PostHog project settings. Original finding: project settings record
   100% of consenting sessions (replay, console logs, heatmaps; default
   masking, 30-day retention), and `apps/web/lib/posthog.ts` does not turn
   them off. The policy promises "pageviews and product events"
@@ -5320,12 +5646,21 @@ Privacy:
   `enable_recording_console_log: false`) and in the project, or disclose it,
   sample it (`docs/tech-spec.md:482` says 10%), mask text, and version
   consent so earlier "accepted" values are asked again.
-- [ ] **(B1) Server-side PostHog events ignore the banner.** `payment_*`
-  (`apps/api/src/routes/payments.ts`), `code_pushed`
-  (`apps/api/src/routes/github.ts`) and `$exception` (user context from
-  `apps/api/src/middleware/auth.ts`) go out keyed to the Supabase user id
-  whatever the visitor chose, against `privacy/page.tsx:163-171`. None sent
-  yet. Gate them on a stored consent signal, or state a legal basis.
+- [ ] **(B1) Server analytics consent release verification.** November 11 changes
+  add revisioned account consent and withdrawal, fresh browser choices and
+  current-consent checks for every server capture. Missing choices and failed
+  lookups skip analytics while fulfillment continues. Server exception
+  autocapture is disabled. Migration 067 restricts writes to an authenticated
+  RPC, prevents stale grants from replacing withdrawals and includes consent
+  in account exports and erasure. Migration 067 completed in production at
+  11:01:47 UTC, with all 15 catalog checks passing. Protected API release 34
+  passes health and source-hash checks on both machines. The web release is
+  promoted and its public pages and assets pass HTTP checks. Eight live API
+  checks verify grants, stale conflicts and withdrawal. Release 35 enables the
+  expected PostHog project and EU host on both healthy machines. Gate: full
+  browser runtime and consented server-event delivery.
+  [Implementation record](audits/seo-geo-2026-11-11-baselines/server-consent-fix.md).
+  [Deployment evidence](audits/seo-geo-2026-11-11-baselines/deployment.md).
 - [ ] **(B2) Precise location is stored.** Events and the identified person
   carry city, postal code and coordinates although `anonymize_ips` is on;
   the policy says nothing about location. Strip below country or region
@@ -5347,30 +5682,38 @@ Privacy:
 
 Measurement (needed before any funnel number, and before the B3 gate):
 
-- [ ] **(B0) The internal-traffic filter matches nobody.** Cohort 221371
-  keys on `$internal_or_test_user`, which nothing sets, and anonymous
-  visitors get no person (identified-only profiles). Set
-  `internal_or_test_user_hostname: 'localhost'`, register a persisted
-  `tc_internal` super property (owner account, or a one-time
-  `?tc_internal=1`), filter on event properties, and turn "Filter test
-  accounts" on by default.
+- [ ] **(B0) Internal traffic, owner-browser marking pending.** November 11
+  live settings retain cohort 221371, add negative event-marker and dev/preview
+  host filters, and default exclusions on. The released browser hook labels
+  anonymous events and retains an explicit `?tc_internal=1` browser choice
+  through sign-out. A controlled SDK event records 1 unfiltered and 0 filtered.
+  Gate: mark owner browsers and verify their capture. Historical unmarked
+  activity remains unknown. Details: the linked measurement repair.
 - [ ] **(B0) Usage alerts.** Free plan, hard cap 1M events a month (data
   dropped above it): billing alert at 250k, insight alert on daily
   `$opt_in` above 50 as a loop tripwire.
-- [ ] **(B2) Dev servers send to the production project** (`localhost:3001`
-  events 2026-08-26/27). Separate dev project key, or the hostname flag.
-- [ ] **(B2) `signup_completed` is not a signup.** It fires on every
-  Supabase `SIGNED_IN`, including tab refocus (169 events for one account;
-  `apps/web/lib/supabase/session-listener.tsx:102-117`). Fire once for a
-  new account (account age plus a per-user key, or decided server-side in
-  the auth callback); treat every historical value as invalid.
+- [ ] **(B2) Development traffic, capture verification pending.** Live negative
+  host filters exclude localhost, loopback and Vercel preview hosts. The released
+  browser hook additionally marks every non-public hostname as internal.
+  Gate: verify automatic capture on development/preview hosts.
+- [ ] **(B2) Authoritative signup measurement.** The November 11 release
+  removes `signup_completed` from generic Supabase `SIGNED_IN` callbacks.
+  These callbacks also run for returning sessions and tab focus.
+  Gate: verify the deployed suppression and implement a verified account-creation
+  signal. Account-age guesses cannot prove a new registration. Historical
+  signup counts remain invalid.
 - [ ] **(B2) Reverse proxy** (Installation Health fails; ad blockers on a
   JavaScript audience): Next.js rewrites under a neutral path (not
   `/ingest`), `ui_host`, then narrow the CSP.
-- [ ] **(B3) First-visit mount events are lost.** `lesson_started`,
-  `pricing_page_viewed`, `paywall_hit` and similar fire before Accept and
-  `capture()` drops them. Queue in memory and flush after opt-in, or re-fire
-  page-level events once analytics is ready.
+- [ ] **(B3) Remaining first-visit page-context events.** Deployed pricing,
+  paywall and visible-session events observe analytics readiness. The November
+  11 released `lesson_started` follow-up observes only the current visit after
+  consent, with no replay or duplicate on reacceptance. Its six regressions
+  pass. The 12:49 UTC production release includes this change. The later
+  browser check verifies one current lesson arrival after late consent, in
+  the same SDK session as its consent event and pageview. Gate: review remaining
+  mount events and cover SPA navigation, withdrawal/reacceptance and signed-in
+  persistence in a browser. Existing lesson/step durations retain their timing semantics.
 - [ ] **(B3) Tabs initialised together split one person into several ids.**
   The consent broadcast initialises every open tab at once; each mints its
   own distinct id, and `consent_granted` fires once per tab. Initialise only
@@ -5381,16 +5724,33 @@ Measurement (needed before any funnel number, and before the B3 gate):
   internal traffic. Define B3's "users" as DB accounts and "data" as
   consented module-1 starts after these fixes. Dashboard: the existing
   "Success-metrics dashboard + alerts" operator item.
-- [ ] **(B1) `payment_completed` double count**: the client sends it on every
-  purchase-success mount and the webhook sends it too. Count revenue from
-  `$lib = posthog-node` only, or drop the client event.
-- [ ] **(B1) No posthog-node event has ever arrived.** Consistent with zero
-  payments, but `docs/deployment-guide.md:47` names `POSTHOG_KEY` while the
-  API reads `POSTHOG_PROJECT_TOKEN`; confirm the Fly secret name.
+- [ ] **(B1) Payment analytics reconciliation.** The November 11
+  release removes browser receipt capture, separates credit-only access grants
+  and adds version 2 Stripe IDs, amount, currency and live/test evidence.
+  Refund amounts are cumulative snapshots per charge. Gate: verify a
+  real webhook event and reconcile records. SDK delivery remains best effort.
+- [ ] **(B1) Production server ingestion.** A controlled internal event from
+  the local API configuration arrived in PostHog on November 11. One paid $50
+  live checkout creation cohort matches a completed Supabase purchase row.
+  The deployment guide now correctly names `POSTHOG_PROJECT_TOKEN`, and released
+  shutdown flushes the SDK. Switching Fly to the owning account restored app
+  access. The initial inspection found missing PostHog settings and the earlier
+  payment code on both machines. Consent migration 067 now passes all 15 catalog
+  checks, and protected API release 35 passes health checks on both machines.
+  Runtime settings match the existing PostHog project and EU host. The web
+  release and eight live API consent checks pass. Gate: full browser runtime
+  and consented server-event delivery, including actual webhook ingestion. The local
+  diagnostic does not verify the deployed API. Follow-up helper inspection
+  coincided with failed health checks. Temporary-process cleanup restored one
+  machine, and a restart restored the other. Future checks must account for
+  the 256 MB memory limit and avoid another parallel SDK bootstrap. No
+  transaction, webhook replay, secret change or code deploy occurred during
+  that initial inspection. The later API release has separate deployment evidence.
+  [Runtime evidence](audits/seo-geo-2026-11-11-baselines/measurement/production-runtime.json).
 - [ ] **(B5) Launch links carry no UTMs** (zero tagged visits so far).
-- [ ] **(B9) Blog lesson links carry internal UTMs**
-  (`apps/web/app/blog/[slug]/lesson-link.tsx:25`) that overwrite the
-  session's real campaign.
+- [x] **(B9) Remove internal blog lesson UTMs.** November 10 local changes use
+  canonical lesson links and keep blog context in the click event. Regression
+  tests pass. Verify SDK acquisition attribution after release.
 - [ ] **(B9) Per-path Web Vitals are attributed to the next page**
   (`$pathname` at flush); break down by `$current_url`.
 

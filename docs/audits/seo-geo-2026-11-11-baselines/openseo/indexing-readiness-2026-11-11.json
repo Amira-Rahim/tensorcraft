@@ -1,0 +1,3212 @@
+{
+  "collectedFromUTC": "2026-11-11T12:17:12.633Z",
+  "collectedToUTC": "2026-11-11T12:17:15.772Z",
+  "method": "Public HTTP GET and static HTML parsing with jsdom; no JavaScript execution or rendered-browser visibility check.",
+  "scope": {
+    "sitemapPages": 23,
+    "htmlResponses": 23,
+    "auxiliaryRequests": 2,
+    "totalRequests": 25,
+    "maximumConcurrentHtmlRequests": 4,
+    "crawlBoundary": "Only URLs in the live sitemap. Graph depth follows initial HTML anchors between those URLs. Fragment-only anchors collapse to their page; query URLs remain distinct."
+  },
+  "limits": [
+    "Successful public GET responses do not prove Googlebot reachability or Google rendered eligibility.",
+    "Hidden-ancestor checks cover HTML hidden attributes and inline display:none only; responsive CSS visibility is not evaluated.",
+    "Link depth covers this bounded sitemap graph only.",
+    "Counts describe observed responses and links, not ranking or quality scores."
+  ],
+  "robots": {
+    "url": "https://tensorcraft.app/robots.txt",
+    "status": 200,
+    "body": "User-Agent: *\nAllow: /\nAllow: /api/og\nDisallow: /api/\n\nSitemap: https://tensorcraft.app/sitemap.xml\n"
+  },
+  "sitemap": {
+    "url": "https://tensorcraft.app/sitemap.xml",
+    "status": 200,
+    "entries": [
+      {
+        "url": "https://tensorcraft.app",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/pricing",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/learn",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/blog",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/guides",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+        "lastModified": "2026-11-10T00:00:00.000Z"
+      },
+      {
+        "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "lastModified": "2026-11-10T00:00:00.000Z"
+      },
+      {
+        "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "lastModified": "2026-11-10T00:00:00.000Z"
+      },
+      {
+        "url": "https://tensorcraft.app/about",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/compare",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/terms",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/privacy",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/neon-protocol",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/signal-ward",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/nova-canvas",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/terra-grid",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+        "lastModified": null
+      },
+      {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+        "lastModified": null
+      }
+    ]
+  },
+  "pages": [
+    {
+      "url": "https://tensorcraft.app/",
+      "requestedAtUTC": "2026-11-11T12:17:13.192Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/",
+      "title": "Tensorcraft: Machine Learning for JavaScript Developers",
+      "canonical": [
+        "https://tensorcraft.app/"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Machine learning for JavaScript engineers."
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start Deep Orbit free",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "Watch introduction",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/media/tensorcraft-intro.mp4",
+          "text": "Watch the Tensorcraft introduction",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start Deep Orbit free",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Explore all worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Learn more",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start Deep Orbit free",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "See pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 3067
+    },
+    {
+      "url": "https://tensorcraft.app/pricing",
+      "requestedAtUTC": "2026-11-11T12:17:13.192Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/pricing",
+      "title": "ML Course Pricing: Free Preview, $79 per Course, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/pricing"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Course pricing"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "See terms",
+          "rel": null,
+          "hasHiddenAncestor": true
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Start Free",
+          "rel": null,
+          "hasHiddenAncestor": true
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Browse the full Deep Orbit syllabus",
+          "rel": null,
+          "hasHiddenAncestor": true
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start Module 1",
+          "rel": null,
+          "hasHiddenAncestor": true
+        }
+      ],
+      "initialMainTextCharacters": 0
+    },
+    {
+      "url": "https://tensorcraft.app/worlds",
+      "requestedAtUTC": "2026-11-11T12:17:13.192Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds",
+      "title": "ML Courses in JavaScript: 1 live, 4 coming, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "The course worlds"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Time-Series & SignalsLiveDeep OrbitHelp the crew investigate an unexplained signal11 modules, 56 lessonsStart",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 977
+    },
+    {
+      "url": "https://tensorcraft.app/learn",
+      "requestedAtUTC": "2026-11-11T12:17:13.193Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/learn",
+      "title": "Machine Learning with JavaScript, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/learn"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Machine Learning with JavaScript"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start Module 1 free",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Deep Orbit",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start Module 1 free",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "See all worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 724
+    },
+    {
+      "url": "https://tensorcraft.app/blog",
+      "requestedAtUTC": "2026-11-11T12:17:13.877Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/blog",
+      "title": "The Bridge: JavaScript-to-ML Insights, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/blog"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "The Bridge"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/blog",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "JavaScript machine learning guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 158
+    },
+    {
+      "url": "https://tensorcraft.app/guides",
+      "requestedAtUTC": "2026-11-11T12:17:13.878Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/guides",
+      "title": "JavaScript machine learning guides, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/guides"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "JavaScript machine learning guides"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "text": "TensorFlow.js reshape vs transpose",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "text": "Machine learning in JavaScript: a learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "text": "A browser ML project: a rule, a model, and a recorded mistake",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Deep Orbit",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 941
+    },
+    {
+      "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+      "requestedAtUTC": "2026-11-11T12:17:13.878Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+      "title": "TensorFlow.js reshape vs transpose, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "TensorFlow.js reshape vs transpose"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "Tensorcraft",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/about",
+          "text": "Tensorcraft",
+          "rel": "author",
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?start=experiment",
+          "text": "interactive lesson",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Deep Orbit course overview",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "course pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "text": "JavaScript ML learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "text": "independent project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "tensor-shapes lesson",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 5581
+    },
+    {
+      "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+      "requestedAtUTC": "2026-11-11T12:17:13.878Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+      "title": "Machine learning in JavaScript: a learning path, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/guides/javascript-machine-learning-learning-path"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Machine learning in JavaScript: a learning path"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "Tensorcraft",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/about",
+          "text": "Tensorcraft",
+          "rel": "author",
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "text": "reshape and transpose guide",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "text": "browser ML project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Deep Orbit overview",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "curriculum and pricing page",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "From JavaScript Arrays to Tensors",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "Understanding Tensor Shapes",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "Basic Tensor Operations",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "Loading and Preparing Data",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 7108
+    },
+    {
+      "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+      "requestedAtUTC": "2026-11-11T12:17:14.075Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/guides/browser-machine-learning-project",
+      "title": "A browser ML project: a rule, a model, and a recorded mistake, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/guides/browser-machine-learning-project"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "A browser ML project: a rule, a model, and a recorded mistake"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "Tensorcraft",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/about",
+          "text": "Tensorcraft",
+          "rel": "author",
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-occupancy-v1/DATA-LICENSE.md",
+          "text": "data attribution and modification record",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-project-preview.json",
+          "text": "recorded fixture",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-occupancy-v1/README.md",
+          "text": "Read the independent project brief",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-occupancy-v1.zip",
+          "text": "Download the starter files",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "text": "See the JavaScript ML learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start the first free lesson",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "The course overview",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 5088
+    },
+    {
+      "url": "https://tensorcraft.app/about",
+      "requestedAtUTC": "2026-11-11T12:17:14.076Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/about",
+      "title": "About Tensorcraft, Why this course exists",
+      "canonical": [
+        "https://tensorcraft.app/about"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Why this course exists."
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/about",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "text": "browser ML project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-project-preview.json",
+          "text": "recorded demonstration mistake",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "text": "reshape and transpose guide",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Start Module 1",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 2826
+    },
+    {
+      "url": "https://tensorcraft.app/compare",
+      "requestedAtUTC": "2026-11-11T12:17:14.076Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/compare",
+      "title": "JavaScript ML courses compared, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/compare"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "ML learning options for JavaScript engineers"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/about",
+          "text": "Tensorcraft",
+          "rel": "author",
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Deep Orbit",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "pricing and the curriculum",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "text": "JavaScript ML learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "text": "browser ML project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start the free first lesson",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Deep Orbit curriculum",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 4548
+    },
+    {
+      "url": "https://tensorcraft.app/terms",
+      "requestedAtUTC": "2026-11-11T12:17:14.076Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/terms",
+      "title": "Terms of Service | Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/terms"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Terms of Service"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "← Back to home",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 3305
+    },
+    {
+      "url": "https://tensorcraft.app/privacy",
+      "requestedAtUTC": "2026-11-11T12:17:14.250Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/privacy",
+      "title": "Privacy Policy | Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/privacy"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Privacy Policy"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "← Back to home",
+          "rel": null,
+          "hasHiddenAncestor": true
+        }
+      ],
+      "initialMainTextCharacters": 0
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit",
+      "requestedAtUTC": "2026-11-11T12:17:14.250Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/deep-orbit",
+      "title": "Deep Orbit: Module Map, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/deep-orbit"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Deep Orbit"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "01○Lesson 01 · 12 minFrom JavaScript Arrays to Tensorsbeginner",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "02○Lesson 02 · 25 minUnderstanding Tensor Shapesbeginner",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "03○Lesson 03 · 22 minBasic Tensor Operationsbeginner",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "04○Lesson 04 · 24 minLoading and Preparing Databeginner",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "05○Lesson 05 · 27 minData Normalizationbeginner",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "02M02Neural Networks: Layers & ArchitectureFrom $79, Module 1 freeBuild a neuron, apply activations, connect layers, count parameters, and prepare input batches for an untrained classifier.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "03M03Training: Loss, Gradients & Optimization🔒Calculate loss and gradients, update weights, control training, and evaluate predictions on separate readings.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "04M04Browser ML Runtimes🔒Set up a browser runtime, export and load model files, run repeated predictions, and compare three JavaScript ML tools.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "05M05Signal Processing🔒Inspect frequencies, track them over time, taper window edges, and turn signal measurements into model features.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "06M06Recurrent Networks🔒Build recurrent models, inspect memory updates, create time-ordered windows, and split the stream before evaluation to avoid overlap.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "07M07Anomaly Detection🔒Define a normal baseline, train an autoencoder, measure reconstruction error, tune thresholds, and combine three detector votes.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "08M08Advanced Time-Series🔒Explore attention, forecasting, Kalman filters, and ensembles. Compare their assumptions and check their errors.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "09M09LLM Integration🔒Build prompts, retrieve evidence from logs, validate generated claims, and connect several models into a reporting pipeline.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "10M10Optimization & Edge🔒Profile a model, reduce weight precision, test pruning, cache predictions, and compare GPU backends. Measure size, speed, memory, and prediction changes separately.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing?locked=deep-orbit",
+          "text": "11M11Capstone: Deploy DEEP SCAN🔒Connect the system, build release checks, monitor behavior, document the model, and rehearse training and deployment.",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Start Module 1 free",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-project-preview.json",
+          "text": "Inspect the row, artifact hashes, and reproduction command",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-occupancy-v1/README.md",
+          "text": "Read the project brief",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-occupancy-v1.zip",
+          "text": "Download the starter",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/assignments/room-occupancy-v1/DATA-LICENSE.md",
+          "text": "Data source and scope",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 3767
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/neon-protocol",
+      "requestedAtUTC": "2026-11-11T12:17:14.250Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/neon-protocol",
+      "title": "Neon Protocol: Coming Soon, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/neon-protocol"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Neon Protocol"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/neon-protocol",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?start=concept",
+          "text": "Array shape and axis meaning",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations?start=concept",
+          "text": "Weighted sums",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization?start=concept",
+          "text": "Saved preprocessing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/training-loop/evaluating-deep-scan?start=concept",
+          "text": "Baselines and error costs",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/browser-runtimes/model-loading?start=concept",
+          "text": "Versioned model loading",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?start=concept",
+          "text": "Array shape and axis meaning",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations?start=concept",
+          "text": "Weighted sums",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Start free in Deep Orbit",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 4362
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/signal-ward",
+      "requestedAtUTC": "2026-11-11T12:17:14.250Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/signal-ward",
+      "title": "Signal Ward: Coming Soon, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/signal-ward"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Signal Ward"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/signal-ward",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?start=concept",
+          "text": "Array shape and axis meaning",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization?start=concept",
+          "text": "Saved preprocessing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/advanced-time-series/beyond-lstm?start=concept",
+          "text": "Attention as a weighted sum",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/training-loop/evaluating-deep-scan?start=concept",
+          "text": "Baselines and error costs",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/browser-runtimes/model-loading?start=concept",
+          "text": "Versioned model loading",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Start free in Deep Orbit",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 2139
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/nova-canvas",
+      "requestedAtUTC": "2026-11-11T12:17:14.694Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/nova-canvas",
+      "title": "Nova Canvas: Coming Soon, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/nova-canvas"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Nova Canvas"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/nova-canvas",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes?start=concept",
+          "text": "Array shape and axis meaning",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations?start=concept",
+          "text": "Weighted sums",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/browser-runtimes/model-loading?start=concept",
+          "text": "Versioned model loading",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/training-loop/evaluating-deep-scan?start=concept",
+          "text": "Baselines and error costs",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Start free in Deep Orbit",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 2120
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/terra-grid",
+      "requestedAtUTC": "2026-11-11T12:17:14.694Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/terra-grid",
+      "title": "Terra Grid: Coming Soon, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/terra-grid"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Terra Grid"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/terra-grid",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/",
+          "text": "T_TENSORCRAFT",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds",
+          "text": "Worlds",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/pricing",
+          "text": "Pricing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth",
+          "text": "Start now",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization?start=concept",
+          "text": "Saved preprocessing",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/training-loop/evaluating-deep-scan?start=concept",
+          "text": "Baselines and error costs",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/browser-runtimes/model-loading?start=concept",
+          "text": "Versioned model loading",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/capstone/launch?start=challenge",
+          "text": "Evaluation before release",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Start free in Deep Orbit",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 2223
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+      "requestedAtUTC": "2026-11-11T12:17:14.694Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+      "title": "From JavaScript Arrays to Tensors | Deep Orbit, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "From JavaScript Arrays to Tensors"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth?redirectTo=%2Fworlds%2Fdeep-orbit%2Ffoundations%2Fintroduction-to-tensors",
+          "text": "Create a free account",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Mission MapMission Map",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "From JavaScript Arrays to Tensors",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "Understanding Tensor Shapes",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "Basic Tensor Operations",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "Loading and Preparing Data",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 6676
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+      "requestedAtUTC": "2026-11-11T12:17:14.694Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+      "title": "Understanding Tensor Shapes | Deep Orbit, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Understanding Tensor Shapes"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth?redirectTo=%2Fworlds%2Fdeep-orbit%2Ffoundations%2Ftensor-shapes",
+          "text": "Create a free account",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Mission MapMission Map",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "From JavaScript Arrays to Tensors",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "Understanding Tensor Shapes",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "Basic Tensor Operations",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "Loading and Preparing Data",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "text": "TensorFlow.js reshape vs transpose",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 10027
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+      "requestedAtUTC": "2026-11-11T12:17:15.246Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+      "title": "Basic Tensor Operations | Deep Orbit, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Basic Tensor Operations"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth?redirectTo=%2Fworlds%2Fdeep-orbit%2Ffoundations%2Ftensor-operations",
+          "text": "Create a free account",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Mission MapMission Map",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "From JavaScript Arrays to Tensors",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "Understanding Tensor Shapes",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "Basic Tensor Operations",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "Loading and Preparing Data",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 7629
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+      "requestedAtUTC": "2026-11-11T12:17:15.247Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+      "title": "Loading and Preparing Data | Deep Orbit, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Loading and Preparing Data"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth?redirectTo=%2Fworlds%2Fdeep-orbit%2Ffoundations%2Fdata-loading",
+          "text": "Create a free account",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Mission MapMission Map",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "From JavaScript Arrays to Tensors",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "Understanding Tensor Shapes",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "Basic Tensor Operations",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "Loading and Preparing Data",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 8464
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+      "requestedAtUTC": "2026-11-11T12:17:15.247Z",
+      "status": 200,
+      "finalUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+      "title": "Data Normalization | Deep Orbit, Tensorcraft",
+      "canonical": [
+        "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization"
+      ],
+      "robotsMeta": [],
+      "xRobotsTag": null,
+      "h1": [
+        "Data Normalization"
+      ],
+      "initialHtmlAnchors": [
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "Skip to content",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/auth?redirectTo=%2Fworlds%2Fdeep-orbit%2Ffoundations%2Fnormalization",
+          "text": "Create a free account",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit",
+          "text": "Mission MapMission Map",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "text": "From JavaScript Arrays to Tensors",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "text": "Understanding Tensor Shapes",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "text": "Basic Tensor Operations",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "text": "Loading and Preparing Data",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "text": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/learn",
+          "text": "Learn",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/guides",
+          "text": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/compare",
+          "text": "Compare",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/terms",
+          "text": "Terms",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "url": "https://tensorcraft.app/privacy",
+          "text": "Privacy",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ],
+      "initialMainTextCharacters": 6893
+    }
+  ],
+  "targets": [
+    {
+      "url": "https://tensorcraft.app/guides",
+      "minimumLinkDepthFromHomepage": 1,
+      "sitemapEntry": {
+        "url": "https://tensorcraft.app/guides",
+        "lastModified": null
+      },
+      "inboundFromOtherPages": [
+        {
+          "sourceUrl": "https://tensorcraft.app/",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/pricing",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/pricing",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/learn",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/learn",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/blog",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/blog",
+          "anchorText": "JavaScript machine learning guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/blog",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/about",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/about",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/compare",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/compare",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/terms",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/terms",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/privacy",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/privacy",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/neon-protocol",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/neon-protocol",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/signal-ward",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/signal-ward",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/nova-canvas",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/nova-canvas",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/terra-grid",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/terra-grid",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+          "anchorText": "Guides",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ]
+    },
+    {
+      "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+      "minimumLinkDepthFromHomepage": 2,
+      "sitemapEntry": {
+        "url": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+        "lastModified": "2026-11-10T00:00:00.000Z"
+      },
+      "inboundFromOtherPages": [
+        {
+          "sourceUrl": "https://tensorcraft.app/guides",
+          "anchorText": "TensorFlow.js reshape vs transpose",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "anchorText": "reshape and transpose guide",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/about",
+          "anchorText": "reshape and transpose guide",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "anchorText": "TensorFlow.js reshape vs transpose",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ]
+    },
+    {
+      "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+      "minimumLinkDepthFromHomepage": 2,
+      "sitemapEntry": {
+        "url": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+        "lastModified": "2026-11-10T00:00:00.000Z"
+      },
+      "inboundFromOtherPages": [
+        {
+          "sourceUrl": "https://tensorcraft.app/guides",
+          "anchorText": "Machine learning in JavaScript: a learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "anchorText": "JavaScript ML learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/browser-machine-learning-project",
+          "anchorText": "See the JavaScript ML learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/compare",
+          "anchorText": "JavaScript ML learning path",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ]
+    },
+    {
+      "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+      "minimumLinkDepthFromHomepage": 2,
+      "sitemapEntry": {
+        "url": "https://tensorcraft.app/guides/browser-machine-learning-project",
+        "lastModified": "2026-11-10T00:00:00.000Z"
+      },
+      "inboundFromOtherPages": [
+        {
+          "sourceUrl": "https://tensorcraft.app/guides",
+          "anchorText": "A browser ML project: a rule, a model, and a recorded mistake",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/tensorflow-js-reshape-vs-transpose",
+          "anchorText": "independent project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "anchorText": "browser ML project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/about",
+          "anchorText": "browser ML project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/compare",
+          "anchorText": "browser ML project case",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ]
+    },
+    {
+      "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+      "minimumLinkDepthFromHomepage": 2,
+      "sitemapEntry": {
+        "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+        "lastModified": null
+      },
+      "inboundFromOtherPages": [
+        {
+          "sourceUrl": "https://tensorcraft.app/guides/javascript-machine-learning-learning-path",
+          "anchorText": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit",
+          "anchorText": "05○Lesson 05 · 27 minData Normalizationbeginner",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors",
+          "anchorText": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-shapes",
+          "anchorText": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/tensor-operations",
+          "anchorText": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        },
+        {
+          "sourceUrl": "https://tensorcraft.app/worlds/deep-orbit/foundations/data-loading",
+          "anchorText": "Data Normalization",
+          "rel": null,
+          "hasHiddenAncestor": false
+        }
+      ]
+    }
+  ]
+}

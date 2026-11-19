@@ -1,0 +1,101 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/candidate.png",
+  "candidateSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Independent fresh native candidate and original comparison, 2x face and hands using Sharp diagnostic extracts, complete shoulder-elbow-wrist chains at 1.25x, canonical Demir comparison, 1.5x display, current MDX/exercise facts and 768 x 512 preview.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "name": "gradient-final-face",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/candidate.png",
+      "box": [
+        365,
+        130,
+        715,
+        580
+      ],
+      "scale": 2
+    },
+    {
+      "name": "gradient-final-chains",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/candidate.png",
+      "box": [
+        55,
+        450,
+        1100,
+        980
+      ],
+      "scale": 1.25
+    },
+    {
+      "name": "gradient-final-rest",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/candidate.png",
+      "box": [
+        240,
+        820,
+        550,
+        960
+      ],
+      "scale": 2
+    },
+    {
+      "name": "gradient-final-mouse",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/candidate.png",
+      "box": [
+        820,
+        810,
+        1110,
+        965
+      ],
+      "scale": 2
+    },
+    {
+      "name": "gradient-final-display",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/candidate.png",
+      "box": [
+        802,
+        175,
+        1515,
+        727
+      ],
+      "scale": 1.5
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+      "sha256": "1ff5952eb7da68d094f13533c6a1720674167fde98749ac548d1013b29518253"
+    }
+  ],
+  "checks": {
+    "anatomyContact": "Right shoulder, bent elbow, forearm and wrist lead continuously to a relaxed notebook contact. Four distinct fingers rest on the cover; the thumb is naturally hidden on the far side. The left shoulder and bent elbow form a separate chain to the mouse. Its near radial thumb and leading fingers articulate around the mouse, with the remaining digits overlapping on the far side. Both wrists are neutral and there is no clipboard grip, button claw, fused arm or detached finger.",
+    "identityExpression": "Canonical hair, face width, nose, eye spacing, freckles, stubble and earpiece remain consistent. Head and torso have ordinary adult proportions. The focused, anticipatory gaze is directed at the screen.",
+    "displayContent": "Expected first step remains explicit. L=w\u00b2, initial w=5, lower w=4 and 5 - 0.1 \u00d7 10 = 4 match the scalar exercise. The illustrative bowl has 0 under its minimum and both labeled points on the positive branch, with one arrow down and left from 5 toward 4. No completed classifier or measured mission result is claimed.",
+    "perspectiveOperator": "Frontal rectangular bezel and glass share level horizontal edges, title rule, graph baseline and footer box. Demir is to the left and forward of the screen on its readable side.",
+    "largeDisplayRule": "The large right-hand screen gives all values and labels ample space. Each remains clearly readable at 768 x 512 without clipping.",
+    "palette": "Engineering retains warm amber light and muted slate and sage."
+  },
+  "scores": {
+    "colorLight": 5,
+    "movementAnatomyContact": 4,
+    "expressionGaze": 5,
+    "identityProportions": 5,
+    "displayContentLegibilityPerspective": 4,
+    "compositionStoryAction": 5
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T14:22:53.726587+00:00"
+}

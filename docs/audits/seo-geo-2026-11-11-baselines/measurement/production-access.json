@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-11-11 10:00:26 UTC",
+  "app": "tensorcraft-api",
+  "flyctlVersion": "0.5.7",
+  "login": {
+    "browserFlowCompleted": true,
+    "whoamiSucceeded": true,
+    "credentialValuesRetained": false
+  },
+  "access": {
+    "visibleApps": [],
+    "visibleOrganizationAliases": [
+      "personal"
+    ],
+    "environmentTokenOverridesPresent": false,
+    "appStatus": "Could not find App tensorcraft-api",
+    "machineListing": "unauthorized",
+    "secretListing": "unauthorized"
+  },
+  "publicHealth": {
+    "url": "https://tensorcraft-api.fly.dev/api/health",
+    "httpStatus": 200,
+    "service": "tensorcraft-api",
+    "responseTimestamp": "2026-11-11T09:58:24.413Z"
+  },
+  "productionPosthog": {
+    "configurationVerified": false,
+    "diagnosticSent": false,
+    "reason": "Authenticated Fly account does not expose the target app. Owning account or organization access is required."
+  },
+  "remoteChanges": {
+    "deployed": false,
+    "secretsChanged": false,
+    "restartsRequested": false,
+    "paymentsCreated": false,
+    "webhooksReplayed": false
+  }
+}

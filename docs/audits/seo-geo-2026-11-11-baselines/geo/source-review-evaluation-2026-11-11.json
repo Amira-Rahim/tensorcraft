@@ -1,0 +1,60 @@
+{
+  "checkedAtUTC": "2026-11-11T12:59:41.436068+00:00",
+  "method": "Read public pages using the web tool. No outreach or paid exploration. Paraphrased observations below.",
+  "sources": [
+    {
+      "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+      "type": "Reference documentation",
+      "observations": [
+        "Explains inconsistent preprocessing and data leakage with paired incorrect and corrected executable Python examples.",
+        "Fits preprocessing on training data and applies saved transforms to held-out data. Recommends split-aware pipelines.",
+        "Tensorcraft is not named in the inspected leakage sections."
+      ],
+      "opportunity": "Use as primary support for a compact JavaScript split-and-scale example in the existing browser project guide. Do not imply the Python example is a TensorFlow.js API reference.",
+      "submissionPath": "No course-directory submission path observed."
+    },
+    {
+      "url": "https://opensource.microsoft.com/blog/2024/02/06/on-device-training-training-a-model-in-browser/",
+      "type": "Vendor engineering article",
+      "publishedDate": "2024-02-06",
+      "observations": [
+        "Explains ONNX Runtime browser training with artifact preparation, package setup, training and validation steps, plus links to demo source and product documentation.",
+        "Tensorcraft is not named in the inspected article body.",
+        "The page contains visible template filler around its technical article. Its dated runtime limitations were not verified as current product capabilities."
+      ],
+      "opportunity": "The concrete setup, train and evaluate sequence is a useful format comparison. This vendor article is not a course roundup or established outreach prospect.",
+      "submissionPath": "GitHub feedback and feature requests are linked for ONNX Runtime, not course listing requests."
+    },
+    {
+      "url": "https://stats.stackexchange.com/questions/574824/avoiding-data-leakage-in-preprocessing-and-handling-unseen-values-in-test-data",
+      "type": "Forum or community",
+      "observations": [
+        "Original question dated May 11, 2022. The fetched page has no answer and shows last modification about four years ago.",
+        "Asks how preprocessing handles unseen categories, test values outside training ranges and invalid log inputs.",
+        "Tensorcraft is not named on the inspected page."
+      ],
+      "opportunity": "Do not recommend promotional outreach to this old unanswered thread based on a single citation. It identifies useful edge cases to explain with primary technical references.",
+      "technicalReliance": "The original thread is evidence about its question and activity, not an authority for technical answers."
+    },
+    {
+      "url": "https://codelabs.developers.google.com/codelabs/tfjs-training-regression",
+      "type": "Reference tutorial",
+      "observations": [
+        "Provides HTML setup, data loading, model construction, training callbacks and plotted predictions for a car-regression example.",
+        "Displayed setup loads TensorFlow.js 2.0.0. The inspected walkthrough fits and visualizes its supplied dataset without an independent held-out evaluation.",
+        "Tensorcraft is not named in inspected sections."
+      ],
+      "opportunity": "Use its clear setup-to-output sequence as a content-format comparison. Retain Tensorcraft's own pinned runtime and verified data-split/evaluation rules rather than copying the example as an evaluation benchmark.",
+      "limits": "Code was read, not executed. Historical dependencies and linked hosting options were not validated."
+    }
+  ],
+  "ownedPageRead": {
+    "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/normalization",
+    "observations": [
+      "Public initial content explains fitting feature statistics on training rows and reusing them for validation and future rows.",
+      "Shows z-score and min-max code, constant-column handling, numerical outputs, and a supplied fixed-model preview.",
+      "This existing free lesson supports scaling questions. Do not claim normalization or leakage coverage is entirely absent."
+    ],
+    "limitations": "Web access to the two guide pages returned an internal error. Anonymous HTTP release checks and earlier owned-page evidence successfully read them."
+  }
+}

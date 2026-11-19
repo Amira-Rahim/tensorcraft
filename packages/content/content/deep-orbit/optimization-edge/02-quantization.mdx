@@ -108,9 +108,32 @@ Help Nazari see what the smaller weight file costs: store the kernels at lower p
 
 <LearningObjectives objectives={["Compare uint16 and uint8 storage with the original float32 weights", "Quantize a model using TensorFlow.js conversion tools", "Measure prediction changes and evaluate errors on labeled data", "Distinguish smaller stored weights from runtime memory and compute speed", "Use weight-name patterns to quantize selected layers"]} />
 
-## Precision Reduction
+## One supplied kernel becomes integer codes
+
+The required exercise checks a synthetic five-class classifier and small two-class Dense probes. Start with the stretched probe. Its kernel has shape `[2, 2]` and flattened values `[40, -10, 0, 0.05]`. Those are supplied weights, separate from the downloadable 673-parameter binary lab and the exercise's five-class model.
+
+Find each two-dimensional kernel's own minimum and maximum. Divide its range by 255 to get the scale. For a selected weight, round `(weight - min) / scale` to get an integer from 0 to 255. Decode with `code * scale + min`. Keep the flattened order.
+
+<CodeBlock language="javascript" title="selected-kernel-code.js">
+{`const original = Math.fround(0.05); // The last weight in the supplied kernel.
+const min = -10;
+const scale = (40 - min) / 255;
+const code = Math.round((original - min) / scale);
+const decoded = code * scale + min;
+console.log({ original, scale, code, decoded, error: Math.abs(decoded - original) });`}
+</CodeBlock>
+
+The 40 stretches the range. Both zero and the small positive weight receive code 51, which decodes to zero. If a kernel is constant, use scale zero and codes zero, then decode every position to its minimum. Leave one-dimensional biases unchanged.
+
+Report the largest absolute decoding error before the decoded values undergo another float32 rounding. Apply the decoded kernels, predict every supplied capture before and after, and count changed argmax classes. The stretched reference changes three of five class decisions. The separate even kernel changes none of four. The activity shows those checked reference decisions. Your exercise output shows your own run.
+
+These captures have no trusted labels, so disagreement gives no accuracy verdict. The returned codes are JavaScript number arrays. Packing a smaller weight file is a separate export step, and neither result promises faster inference or lower peak memory.
+
+## Storage precision and conversion
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="Float storage and affine integer conversion">
 
 <CodeBlock language="typescript" title="quantization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -155,6 +178,8 @@ function dequantize(quantized: number[], scale: number, min: number): number[] {
 // change the predicted class, depending on the score and threshold.
 // Compare predictions from the original and decoded models.`}
 </CodeBlock>
+
+</ConceptReference>
 
 ## Saving Quantized Models
 
@@ -201,6 +226,8 @@ The coding exercise supplies a separate synthetic classifier with several output
 Your results keep each capture's old and new class side by side, along with the stored codes from one kernel. Nazari can use that comparison to choose what needs closer evaluation. These captures have no trusted labels, so a changed class tells us the models disagree. It cannot tell us which prediction is correct.
 
 <Exercise slug="quantize-weights" />
+
+Inspect the kernel's integer positions, scale, minimum, and decoded error beside your changed-class count. A constant-kernel failure points to division by zero. Unexpected bias changes point to treating every weight tensor as a kernel. A useful comparison can show changed decisions even when another check fails.
 
 <RecallPrompt
   question="What does quantization change, and what do you still need to measure?"

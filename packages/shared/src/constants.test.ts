@@ -31,8 +31,9 @@ describe("PRICING", () => {
     expect(PRICING.free.worlds).toBe(0);
   });
 
-  it("has correct single tier at $50", () => {
-    expect(PRICING.single.price).toBe(50);
+  it("has the $79 introductory single tier and $99 regular price", () => {
+    expect(PRICING.single.price).toBe(79);
+    expect(PRICING.single.regularPrice).toBe(99);
     expect(PRICING.single.worlds).toBe(1);
   });
 

@@ -1,0 +1,66 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:26:12.182525+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__forward-pass-concept/candidate.png",
+  "candidateSha256": "3c07202a80b9bd0463425c68f7cf12028c6eec0d730f10740e7fd714d9357e46",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "sha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-neural-networks__forward-pass-concept-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__forward-pass-concept/candidate.png",
+      "rect": [
+        45,
+        115,
+        630,
+        430
+      ]
+    },
+    {
+      "name": "peer-neural-networks__forward-pass-concept-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__forward-pass-concept/candidate.png",
+      "rect": [
+        110,
+        530,
+        235,
+        160
+      ]
+    },
+    {
+      "name": "peer-neural-networks__forward-pass-concept-2",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/neural-networks__forward-pass-concept/candidate.png",
+      "rect": [
+        470,
+        760,
+        540,
+        210
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The large display accurately preserves [0.5, 0.8, 0.2] while expandDims(0) changes shape [3] to [1, 3], with nested array brackets and one row, three features.",
+    "Demir's delighted recognition and Farah's attentive gaze feel candid. Keyboard, notebook and two-handed tablet contacts have coherent fingers and neutral wrists, with canonical identity retained."
+  ],
+  "repairDirection": "None."
+}

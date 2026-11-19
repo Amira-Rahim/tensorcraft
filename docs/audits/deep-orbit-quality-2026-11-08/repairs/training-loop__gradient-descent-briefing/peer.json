@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:29:33.927130+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__gradient-descent-briefing/candidate.png",
+  "candidateSha256": "0e332fc35a0ed03082b70fdea0e383418694ca5c73f23d545a0203af10bda564",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "Canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-training-loop__gradient-descent-briefing-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__gradient-descent-briefing/candidate.png",
+      "rect": [
+        245,
+        195,
+        320,
+        380
+      ]
+    },
+    {
+      "name": "peer-training-loop__gradient-descent-briefing-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/training-loop__gradient-descent-briefing/candidate.png",
+      "rect": [
+        165,
+        735,
+        765,
+        260
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The main display uses available space for 673 parameters and the three source-grounded questions about direction, step size and loss.",
+    "Nazari retains her canonical mature face and skeptical expression. Her trackball hand and resting multitool hand have coherent thumbs and fingers, supported neutral wrists and complete arm chains."
+  ],
+  "repairDirection": "None."
+}

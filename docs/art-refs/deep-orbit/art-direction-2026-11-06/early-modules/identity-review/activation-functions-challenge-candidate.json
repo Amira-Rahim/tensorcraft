@@ -1,0 +1,36 @@
+{
+  "module": "neural-networks",
+  "lesson": "activation-functions",
+  "phase": "challenge",
+  "src": "/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+  "index": 2,
+  "characters": [
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=698): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-aa9648ee-72e6-42f0-a5ac-d5ef95472087.png",
+  "candidate": "/tmp/early-identity-candidates/2.webp",
+  "candidateSha256": "e49ca8c60b512fdb8be28ca10986d807a200bf1d9a4435b575170ed7eae91da1",
+  "sourceSha256": "2ff9f8665655bf4b6a50253a13843798d567a8dc6456ca352382c0dc89f22c5a",
+  "beforeSha256": "ea3d0a1b9be35dad14497d47943fb6fa73934b22a1d2480b65427d6aa1d1e396",
+  "bytes": 155634,
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/activation-functions-challenge-ensign-demir-correction.png",
+      "crop": {
+        "left": 528,
+        "top": 54,
+        "width": 339,
+        "height": 417
+      }
+    }
+  ]
+}

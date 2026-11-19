@@ -1,0 +1,273 @@
+{
+  "key": "launch-briefing",
+  "auditIndex": 3,
+  "id": "capstone/launch",
+  "phase": "briefing",
+  "cast": [
+    "commander-mirza",
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__launch-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__launch-openai-20261107.png",
+    "sha256": "ec2b345869ffaf0a44c1fc3e97652cd65e03329f87ec6c059525ebd0e5b7dfc0"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; Farah lens stays over anatomical LEFT eye. Nazari and Mirza have no monocle or earpiece. Only exact named cast. Keep active threecrew launchbriefing butremove brightdecorativeradialhologram. Mirza stands byrail giving calmgo-aheadpalmgesture, Nazari leaningnearDemir console withskepticalcare, Demirseatedreadystart notyetcelebrating. Main shared upright displayfrontface \"Canary plan\". Three rows \"One console: candidate\", \"Other consoles: previous release\", \"Shadow mode: log only\". Footer \"Compare verdicts before rollout\". No countdowninvented or successstatus. Facesnaturalcanonical, separatehands and supportedseatedbody; muted practicalbridge. IMPORTANT layout: place every working person on the same viewing side of the upright main screen, never behind its back; the physical screen is to one SIDE of all people so the camera beside them can see its face. Exactly these humans: commander-mirza, chief-nazari, ensign-demir. No extra people, portraits or anonymous technicians. All auxiliary screens, including tiny rear cabinet screens and wrist monitors, are plain dark glass with no graphs, text, lines or grids. Use no exotic biological lab plants.  cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "meaning": "Launch1consolecanary30sec restold shadowlogonly30verdictagree then2minlaterfleet;agreementnotaccuracy.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__launch-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__launch-openai-20261107.png",
+      "sha256": "ec2b345869ffaf0a44c1fc3e97652cd65e03329f87ec6c059525ebd0e5b7dfc0",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+      "sha256": "a15a994665a5ea421475b18198c55b2a9de05ac9b968ca499e43dbbaf5c11227"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
+      "sha256": "b122364f6ca60960692e6fb8d6fa998994bdeb88badddab996bebce44d35e59b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+      "sha256": "8fe399cc75ddbba241d5f16b19cfce762aa7461dde825dbedce4e8317f1c7827"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
+      "sha256": "da399d406e9417adaed42e148135402442e74c282adb1fb591a44cf4094da867"
+    }
+  ],
+  "status": "published",
+  "candidatePath": "art-src/scenes/capstone__launch-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-9bd8f648-909a-4d33-ad22-89ef572d8880.png",
+  "candidateSha256": "bb17cc60b3fdf957119e69815e6c0d707e2fde1cecc7233702adf0f31739d4c2",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; Farah lens stays over anatomical LEFT eye. Nazari and Mirza have no monocle or earpiece. Only exact named cast. Keep active threecrew launchbriefing butremove brightdecorativeradialhologram. Mirza stands byrail giving calmgo-aheadpalmgesture, Nazari leaningnearDemir console withskepticalcare, Demirseatedreadystart notyetcelebrating. Main shared upright displayfrontface \"Canary plan\". Three rows \"One console: candidate\", \"Other consoles: previous release\", \"Shadow mode: log only\". Footer \"Compare verdicts before rollout\". No countdowninvented or successstatus. Facesnaturalcanonical, separatehands and supportedseatedbody; muted practicalbridge. IMPORTANT layout: place every working person on the same viewing side of the upright main screen, never behind its back; the physical screen is to one SIDE of all people so the camera beside them can see its face. Exactly these humans: commander-mirza, chief-nazari, ensign-demir. No extra people, portraits or anonymous technicians. All auxiliary screens, including tiny rear cabinet screens and wrist monitors, are plain dark glass with no graphs, text, lines or grids. Use no exotic biological lab plants.  cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__launch-openai-20261107.png",
+          "sha256": "ec2b345869ffaf0a44c1fc3e97652cd65e03329f87ec6c059525ebd0e5b7dfc0",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-9bd8f648-909a-4d33-ad22-89ef572d8880.png",
+        "sha256": "bb17cc60b3fdf957119e69815e6c0d707e2fde1cecc7233702adf0f31739d4c2"
+      }
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/capstone__launch-openai-20261107.png",
+      "sha256": "ec2b345869ffaf0a44c1fc3e97652cd65e03329f87ec6c059525ebd0e5b7dfc0",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+      "sha256": "a15a994665a5ea421475b18198c55b2a9de05ac9b968ca499e43dbbaf5c11227"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
+      "sha256": "b122364f6ca60960692e6fb8d6fa998994bdeb88badddab996bebce44d35e59b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+      "sha256": "8fe399cc75ddbba241d5f16b19cfce762aa7461dde825dbedce4e8317f1c7827"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
+      "sha256": "da399d406e9417adaed42e148135402442e74c282adb1fb591a44cf4094da867"
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/remaining_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "method": "Native full-frame review against canonical portraits and current MDX plus launch challenge YAML",
+    "notes": "Mirza explains the one-console canary plan beside Nazari and seated Demir; all three see the monitor front. Plausible six hands and balanced adult bodies. Exact shadow-mode plan is pending, comparison before rollout explicit. No invented measurements. Main typography shares physical screen perspective and inactive background screens remain dark."
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1bbaf-2629-7411-9a98-0d6ee0a3c4f3/exec-9bd8f648-909a-4d33-ad22-89ef572d8880.png",
+  "publishedSource": "art-src/scenes/capstone__launch-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/capstone/launch.webp",
+  "sourceSha256": "bb17cc60b3fdf957119e69815e6c0d707e2fde1cecc7233702adf0f31739d4c2",
+  "webpSha256": "83e46a217804e33aa47f46320f845d58ca3e711b930dfef440175bec2b76c9a0",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/capstone__launch-openai-20261107.png",
+    "sourceSha256": "ec2b345869ffaf0a44c1fc3e97652cd65e03329f87ec6c059525ebd0e5b7dfc0",
+    "webpSha256": "c91d02c0d86f7c5698b685bee11475fa36e56f16f53a843710a487889d804b7f",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4535d4bf-d88f-48be-bd74-095eda77dc8d.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/remaining_root_opt",
+    "status": "approved",
+    "candidateSha256": "bb17cc60b3fdf957119e69815e6c0d707e2fde1cecc7233702adf0f31739d4c2",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Mirza authorizes the plan while Nazari and Demir watch. Six coherent hands, normal necks and body support. One-console candidate, previous release elsewhere and log-only shadow comparison match the current deployment story; no results invented. Shared monitor front and all lines follow its plane. Canonical facial morphology confirmed with temporary crops.",
+      "faceCrops": [
+        {
+          "phase": "briefing",
+          "who": "chief-nazari",
+          "crop": [
+            210,
+            190,
+            240,
+            290
+          ],
+          "candidateSha256": "bb17cc60b3fdf957119e69815e6c0d707e2fde1cecc7233702adf0f31739d4c2"
+        },
+        {
+          "phase": "briefing",
+          "who": "ensign-demir",
+          "crop": [
+            390,
+            340,
+            260,
+            320
+          ],
+          "candidateSha256": "bb17cc60b3fdf957119e69815e6c0d707e2fde1cecc7233702adf0f31739d4c2"
+        },
+        {
+          "phase": "briefing",
+          "who": "commander-mirza",
+          "crop": [
+            710,
+            100,
+            240,
+            310
+          ],
+          "candidateSha256": "bb17cc60b3fdf957119e69815e6c0d707e2fde1cecc7233702adf0f31739d4c2"
+        }
+      ],
+      "temporaryCropsRemoved": true,
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+          "sha256": "a15a994665a5ea421475b18198c55b2a9de05ac9b968ca499e43dbbaf5c11227"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
+          "sha256": "b122364f6ca60960692e6fb8d6fa998994bdeb88badddab996bebce44d35e59b"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+          "sha256": "8fe399cc75ddbba241d5f16b19cfce762aa7461dde825dbedce4e8317f1c7827"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
+          "sha256": "da399d406e9417adaed42e148135402442e74c282adb1fb591a44cf4094da867"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+        "sha256": "a15a994665a5ea421475b18198c55b2a9de05ac9b968ca499e43dbbaf5c11227"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
+        "sha256": "b122364f6ca60960692e6fb8d6fa998994bdeb88badddab996bebce44d35e59b"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+        "sha256": "8fe399cc75ddbba241d5f16b19cfce762aa7461dde825dbedce4e8317f1c7827"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
+        "sha256": "da399d406e9417adaed42e148135402442e74c282adb1fb591a44cf4094da867"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/capstone__launch-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/capstone/launch.webp",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/capstone__launch-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/capstone/launch.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

@@ -1,0 +1,439 @@
+{
+  "date": "2026-11-09",
+  "completedAt": "2026-11-09T18:14:01.187884+00:00",
+  "status": "complete",
+  "scope": "Repository-owned source, scripts, documentation, artwork, generated outputs and local artifact directories. Dependencies, Git internals, credentials and private study records were preserved.",
+  "selectedFilesRemoved": 27,
+  "localArtifactFilesRemoved": 14676,
+  "totalFilesRemoved": 14703,
+  "totalBytesRemoved": 9629222302,
+  "removedFiles": [
+    {
+      "path": "apps/web/app/components/five-worlds-section.tsx",
+      "bytes": 10819,
+      "sha256": "e98925aa8b0ba33fd7eb15d6d652512f91f0eaa766b1cef1bbdafec01dbaa593",
+      "reason": "Retired landing section and its isolated test; active page imports WorldExplorerSection."
+    },
+    {
+      "path": "apps/web/app/components/five-worlds-section.test.tsx",
+      "bytes": 5261,
+      "sha256": "266f6773fd0c14ab1c991d2b290c03ba17c9de382a418f43880bc55ae10b415a",
+      "reason": "Retired landing section and its isolated test; active page imports WorldExplorerSection."
+    },
+    {
+      "path": "apps/web/app/dashboard/world-cards.tsx",
+      "bytes": 10872,
+      "sha256": "ce7fb4a6efa95864a2db60ba847d9984b3269d12f42c4ada646b82ed562768b7",
+      "reason": "Retired dashboard world grid, its sole button dependency or its isolated test; active dashboard uses DashboardView and MissionJourney."
+    },
+    {
+      "path": "apps/web/app/dashboard/notify-me-button.tsx",
+      "bytes": 856,
+      "sha256": "a264b4dc08f95043d47451a658c60d7051f04b708e6d5df2dc9ea5436916c29f",
+      "reason": "Retired dashboard world grid, its sole button dependency or its isolated test; active dashboard uses DashboardView and MissionJourney."
+    },
+    {
+      "path": "apps/web/app/dashboard/__tests__/world-cards.test.tsx",
+      "bytes": 6504,
+      "sha256": "2de21482be043965041dd74ff319b5b0b73be3180653f3ad7d79484eb75d9ef9",
+      "reason": "Retired dashboard world grid, its sole button dependency or its isolated test; active dashboard uses DashboardView and MissionJourney."
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/recurrent-networks__sequences-matter-briefing-identity-first.prompt.txt",
+      "bytes": 1896,
+      "sha256": "4e7a567839ef8903c69b25e89e1dacd132bcbef0752b4078425a454c0402e324",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/recurrent-networks__simple-rnns-briefing-identity-first.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/recurrent-networks__sequence-prediction-briefing-identity-first.prompt.txt",
+      "bytes": 1896,
+      "sha256": "4e7a567839ef8903c69b25e89e1dacd132bcbef0752b4078425a454c0402e324",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/recurrent-networks__simple-rnns-briefing-identity-first.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-epilogue-identity-revision.prompt.txt",
+      "bytes": 1453,
+      "sha256": "bee015050a6a098341d37478a7ec8b290ef654f971379a6d8aff0dfbe031507a",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-briefing-identity-revision.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__fourier-transform-briefing-identity.prompt.txt",
+      "bytes": 2142,
+      "sha256": "50e7324e3a226319a368e39e613eca6fcee0832000c26bccd6fafd9f9d449bcd",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__fourier-transform-concept-identity.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__fourier-transform-epilogue-identity.prompt.txt",
+      "bytes": 2142,
+      "sha256": "50e7324e3a226319a368e39e613eca6fcee0832000c26bccd6fafd9f9d449bcd",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__fourier-transform-concept-identity.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-concept-identity.prompt.txt",
+      "bytes": 2002,
+      "sha256": "b562fd1b05e746b47b378ded6e48bdc492dbcf4783d7e8a4c2c7b1cfb55b15d3",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-epilogue-identity.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-briefing-identity.prompt.txt",
+      "bytes": 2002,
+      "sha256": "b562fd1b05e746b47b378ded6e48bdc492dbcf4783d7e8a4c2c7b1cfb55b15d3",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-epilogue-identity.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__fft-as-features-concept-qa-repair.prompt.txt",
+      "bytes": 943,
+      "sha256": "428acc507e2c7d5778c7c32a95dd457109190e476b0f8d9bda5f1de74c37ea4c",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__fft-as-features-challenge-qa-repair.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-challenge-continuity.prompt.txt",
+      "bytes": 804,
+      "sha256": "0953a6c5710adb395147224bed20c4e65bd9a0b7a0a56b3919084a0bd71874d3",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-concept-continuity.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-epilogue-continuity.prompt.txt",
+      "bytes": 804,
+      "sha256": "0953a6c5710adb395147224bed20c4e65bd9a0b7a0a56b3919084a0bd71874d3",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/signal-processing__time-vs-frequency-concept-continuity.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/model-loading-epilogue-approved.prompt.txt",
+      "bytes": 793,
+      "sha256": "b88f860968be4baa776d5a5edf93390b904812fea459e6b253b9080ca044efbb",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/model-loading-epilogue-ear.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/onnx-runtime-web-takeaways-approved.prompt.txt",
+      "bytes": 852,
+      "sha256": "626ecfe6dbcf44e42a2acab3b7cf4ec86abb90c6b608f149c6b8d49513ec3002",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/onnx-runtime-web-takeaways-correction.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/transformers-js-concept-approved.prompt.txt",
+      "bytes": 1030,
+      "sha256": "1f9ff66ecd406b345c33a6cbcef6d4ccb1c8e4c5e615b98912d9ca4479d2ad67",
+      "kind": "unreferenced exact duplicate prompt",
+      "retainEquivalent": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/user-priority3/transformers-js-concept-correction.prompt.txt",
+      "evidence": [
+        "Byte-identical retained file.",
+        "No full-path or basename references in repository text files found by rg --files inventory.",
+        "Current and historical referenced provenance paths remain intact."
+      ]
+    },
+    {
+      "path": "probe.mjs",
+      "bytes": 1581,
+      "sha256": "2e22e55dfc309bcdb0d879b7f68f3586e9bc63529a165df01ef8deb3aefc0b14",
+      "kind": "obsolete diagnostic script",
+      "replacement": ".github/workflows/synthetic-checks.yml and current Playwright route tests",
+      "evidence": [
+        "Unreferenced root scratch URL checker with no package, CI, script or test caller. Only historical inventory and a closed formatting note mention it. It logs statuses without enforcing assertions."
+      ]
+    },
+    {
+      "path": "scripts/probe-hint.mjs",
+      "bytes": 116437,
+      "sha256": "963831651b2c39c734178ad6f7d947cbb7615324813d106fdb6da87fc03c21f3",
+      "kind": "obsolete diagnostic script",
+      "replacement": "scripts/validate-exercises.mjs and scripts/report-hint-dictation.mjs",
+      "evidence": [
+        "Obsolete copied exercise validator with debug output. Its header advertises scripts/validate-exercises.mjs. It lacks the current validator's multi-cheat loop and visible-result requirements; no live caller exists. Historical candidate-source manifests and file inventory list its old hash."
+      ]
+    },
+    {
+      "path": ".review/root-face-progress.json",
+      "bytes": 21194,
+      "sha256": "b76952fb947a029d68a0e0946718918f53e896852a3e3b4f5171bf83c42aa82d",
+      "reason": "Redundant face-generation scratch data after preserving the superseded loss output identity in the durable cleanup record."
+    },
+    {
+      "path": ".review/root-face-second.json",
+      "bytes": 12473,
+      "sha256": "e1acf737f688f6fc7d19ee4a2683ace5974f729dd8183e0987933471f46b3110",
+      "reason": "Redundant face-generation scratch data after preserving the superseded loss output identity in the durable cleanup record."
+    },
+    {
+      "path": ".review/root-face-final-loss.json",
+      "bytes": 3691,
+      "sha256": "418a2cf5eb61b54b485a1e92e322f9168b8368e9b8121759fc6d18248022bcc0",
+      "reason": "Redundant face-generation scratch data after preserving the superseded loss output identity in the durable cleanup record."
+    },
+    {
+      "path": ".review/gallery.config.mjs",
+      "bytes": 245,
+      "sha256": "e805957a3d1ee67f63a267596dd396c79ca63a6434847dd4de4feb1b6ce7ae13",
+      "reason": "Uncalled Playwright harness and local config for removed 63/107-item galleries on inactive localhost:3102. Its target and assertions are obsolete."
+    },
+    {
+      "path": ".review/character-gallery.spec.ts",
+      "bytes": 1138,
+      "sha256": "460af93df36e11d758f7fccd1ef78d9b1cd5ae88baa1d17b737d0055ea9c5209",
+      "reason": "Uncalled Playwright harness and local config for removed 63/107-item galleries on inactive localhost:3102. Its target and assertions are obsolete."
+    },
+    {
+      "path": ".review/deep-orbit-art-audit.config.mjs",
+      "bytes": 237,
+      "sha256": "826ba7309087d22e818672a69f549b7e05ff905582dd5cd6fa23ef10e45d1a5f",
+      "reason": "Uncalled Playwright harness and local config for removed 63/107-item galleries on inactive localhost:3102. Its target and assertions are obsolete."
+    },
+    {
+      "path": ".review/deep-orbit-art-audit.spec.ts",
+      "bytes": 2442,
+      "sha256": "a2960225557e03d91c197b00e61933f7d78481a87f18803f0a645bc2a5ee6472",
+      "reason": "Uncalled Playwright harness and local config for removed 63/107-item galleries on inactive localhost:3102. Its target and assertions are obsolete."
+    }
+  ],
+  "localArtifactGroups": [
+    {
+      "path": ".turbo/cache",
+      "files": 8343,
+      "bytes": 7563489887,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": ".review/character-runtime",
+      "files": 4965,
+      "bytes": 1126849891,
+      "reason": "Inactive isolated source snapshot, superseded by .review/runtime; all differing source files older than current and no unique source work"
+    },
+    {
+      "path": "apps/web/.next/cache",
+      "files": 44,
+      "bytes": 290846289,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "apps/web/.next/dev",
+      "files": 1311,
+      "bytes": 643892881,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "playwright-report",
+      "files": 1,
+      "bytes": 569475,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "apps/web/test-results",
+      "files": 1,
+      "bytes": 45,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "output/local-world-explorer-e2e/.last-run.json",
+      "files": 1,
+      "bytes": 45,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": ".DS_Store",
+      "files": 1,
+      "bytes": 6148,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 1957112,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "apps/web/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 870662,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "apps/api/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 269351,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "packages/ui/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 93977,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "packages/worlds/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 14424,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "packages/content/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 57218,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "packages/shared/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 16638,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "packages/supabase/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 64166,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    },
+    {
+      "path": "packages/bridges-public/tsconfig.tsbuildinfo",
+      "files": 1,
+      "bytes": 11584,
+      "reason": "Regenerable local cache, build artifact, test output or OS metadata"
+    }
+  ],
+  "preservedGenerationProvenance": [
+    {
+      "id": "training-loop/loss-functions-epilogue",
+      "status": "superseded historical generation output",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-ea724645-d06c-4826-b00b-b679563f6479.png",
+      "sha256": "2a1c502bffc19b056dd5cb3ba9b4113656c0e89eb959a2d8d1817160314d5748",
+      "archiveExists": true,
+      "bytes": 1779399,
+      "promptRecord": "docs/art-refs/deep-orbit/face-visible-scenes-2026-11-06/root.json",
+      "promptJsonPointer": "/scenes/7/prompt",
+      "refinementPromptJsonPointer": "/scenes/7/refinementPrompt",
+      "finalOutputJsonPointer": "/scenes/7/path",
+      "sourceScratchFiles": [
+        ".review/root-face-progress.json",
+        ".review/root-face-second.json"
+      ],
+      "note": "The prompt was retained exactly in the durable root.json record, but that record now points at the refined cd8b66b2 output. This entry retains the earlier ea724645 identity so both scratch lists can be removed without losing provenance."
+    }
+  ],
+  "sourceChanges": [
+    {
+      "path": "apps/web/app/globals.css",
+      "change": "Remove comment references to retired dashboard components."
+    },
+    {
+      "path": "apps/web/app/learn/learn-hero-scene.tsx",
+      "change": "Remove comment reference to retired five-worlds component."
+    },
+    {
+      "path": "apps/web/app/worlds/world-cards-grid.tsx",
+      "change": "Remove comment reference to retired dashboard component."
+    },
+    {
+      "path": "apps/web/app/components/world-explorer-section.test.tsx",
+      "change": "Remove four ignored exact options from role queries. Installed Testing Library role queries already match string names exactly; TypeScript now passes."
+    }
+  ],
+  "verification": {
+    "webTypecheck": "PASS: tsc --noEmit --incremental false",
+    "focusedRuntimeTests": {
+      "files": 6,
+      "tests": 52,
+      "verdict": "PASS"
+    },
+    "sceneApprovalTests": {
+      "tests": 14,
+      "verdict": "PASS"
+    },
+    "sceneApprovalSynchronization": "PASS: 280/280",
+    "maintainedScriptSyntax": "PASS: validate-exercises.mjs and report-hint-dictation.mjs",
+    "runningReviewApp": "HTTP 200 from localhost:3100 after local cleanup",
+    "gitDiffCheck": "PASS",
+    "sourceImportAudit": {
+      "files": 1016,
+      "specifiers": 3286,
+      "result": "No remaining production imports of the deleted components."
+    },
+    "documentationAudit": {
+      "files": 2183,
+      "result": "Only unreferenced exact prompt copies and superseded diagnostic scripts removed."
+    },
+    "artwork": "All 280 active scene source/runtime pairs verified; supporting and model references preserved."
+  },
+  "retainedForPurpose": [
+    "Active .review/runtime and its local database state.",
+    "Canonical artwork references, current PNG sources, runtime artwork and model binaries.",
+    "Historical audit screenshots, logs and preservation snapshots cited by reports.",
+    "Current video production files and design prototypes.",
+    "Package/framework entrypoints, migrations, dynamic exercise fixtures and package-local configuration.",
+    "Operational scripts with unresolved external lifecycle, even when old."
+  ],
+  "limits": [
+    "This is a reference and redundancy audit, not proof that every retained file will be needed forever.",
+    "No production services were contacted or changed. No commit was created."
+  ]
+}

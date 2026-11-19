@@ -81,7 +81,9 @@ production build, dark scheme, signed out, scene resolved, at 1,440 by 900
 and 390 by 844 unless a line says otherwise:
 
 - Consent: with no consent stored, the bar is at most 64 px tall at 1,440
-  and at most 160 px at 390. Scrolled to the page end on the Briefing, the
+  and at most 176 px at 390. The budget was 160 px until the 2026-11-11
+  account-activity sentence made the copy five lines (170.5 px). The
+  four-line copy measured 151 px. Scrolled to the page end on the Briefing, the
   nav row's bottom edge is at or above the bar's top edge. `document.body`
   carries a bottom padding equal to the bar's height while the bar is
   shown, and none after a choice.

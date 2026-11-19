@@ -37,13 +37,22 @@ testCode: |
   describe('deployment requirements',()=>{
     const useCase=(patch)=>({latencyBudgetMs:500,dataSensitive:false,modelSizeMB:10,needsOffline:false,...patch});
     it('keeps privacy and offline requirements when the model exceeds the budget', () => {
-      for (const patch of [
+      const cases = [
         { dataSensitive: true },
         { needsOffline: true },
         { dataSensitive: true, needsOffline: true },
-      ])
+      ].map(patch => useCase({ modelSizeMB: 51, ...patch }));
+      const inputs = cases.map(row => [row.modelSizeMB, row.latencyBudgetMs, row.dataSensitive, row.needsOffline]);
+      const decisions = cases.map(row => recommendDeployment(row));
+      if (decisions.every(value => typeof value === 'string' && value.length <= 100)) recordResult({
+        kind: 'table', title: 'Local requirements in your policy probe',
+        summary: 'Supplied policy inputs copied before your calls, paired with the actual returned decisions. These are policy probes, not device benchmarks.',
+        columns: ['Model MB', 'Latency preference ms', 'Sensitive input', 'Offline required', 'Returned recommendation'],
+        rows: inputs.map((row, i) => [...row, decisions[i]]),
+      });
+      for (const decision of decisions)
         expect(
-          recommendDeployment(useCase({ modelSizeMB: 51, ...patch })),
+          decision,
           'A server violates this requirement. Reconsider the model or download plan.',
         ).toBe('reconsider');
     });
@@ -58,16 +67,23 @@ testCode: |
     it('uses the stated inclusive size budget and strict latency preference', () => {
       const below = useCase({ modelSizeMB: 50, latencyBudgetMs: 49 });
       const at = useCase({ modelSizeMB: 50, latencyBudgetMs: 50 });
+      const inputs = [below, at].map(row => [row.modelSizeMB, row.latencyBudgetMs, row.dataSensitive, row.needsOffline]);
       const belowDecision = recommendDeployment(below);
       const atDecision = recommendDeployment(at);
-      expect(belowDecision).toBe('client');
-      expect(atDecision).toBe('server');
+      if ([belowDecision, atDecision].every(value => typeof value === 'string' && value.length <= 100)) recordResult({
+        kind: 'table', title: 'Boundary inputs in your policy probe',
+        summary: 'The complete supplied boundary inputs before your calls and the actual returned recommendations. Size 50 is within this policy budget. Latency 50 does not meet its below-50 preference.',
+        columns: ['Model MB', 'Latency preference ms', 'Sensitive input', 'Offline required', 'Returned recommendation'],
+        rows: inputs.map((row, i) => [...row, [belowDecision, atDecision][i]]),
+      });
       recordResult({
         kind: 'table', title: 'Your deployment recommendations',
         summary: 'Two boundary cases from the supplied decision policy. These check the requirements. Measure device performance separately.',
         columns: ['Model MB', 'Latency preference ms', 'Recommendation'],
         rows: [[below.modelSizeMB, below.latencyBudgetMs, belowDecision], [at.modelSizeMB, at.latencyBudgetMs, atDecision]],
       });
+      expect(belowDecision).toBe('client');
+      expect(atDecision).toBe('server');
     });
     it('has no client preference without any of those reasons',()=>{for(const modelSizeMB of [5,10,30,40])expect(recommendDeployment(useCase({modelSizeMB}))).toBe('server');});
   });

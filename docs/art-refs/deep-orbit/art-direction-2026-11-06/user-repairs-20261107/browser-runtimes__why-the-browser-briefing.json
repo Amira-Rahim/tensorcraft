@@ -1,0 +1,152 @@
+{
+  "id": "browser-runtimes/why-the-browser",
+  "phase": "briefing",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: precise-object-edit. Correct ONLY the extra-arm defect in the LAST reference. Image 1 is canonical Chief Nazari identity, image 2 canonical Demir identity, image 3 the bridge room, LAST the edit target. Preserve both canonical faces, their expressions, every display word and diagram, all colors, proportions, lighting and framing. Nazari currently has THREE arms: a near arm descending from her viewer-left shoulder to the console, a pointing arm reaching toward the display, and an erroneous second descending arm on the viewer-right edge of her torso. REMOVE the erroneous extra descending arm and its palm from roughly x610-815,y570-830. Rebuild that small area as the continuous side of her olive uniform and the clear console surface. Keep her two correct attached arms: one pointing at the display and one bracing on the console with the hand partially behind Demir. Trace each retained arm to its own shoulder; absolutely no third limb or detached hand. Preserve Demir completely. Preserve the giant readable display exactly: Bridge dashboard, Awaiting local runtime, Local plan, Input to Model to Verdict, Compute-bay link: unavailable, Signal input (schematic), and the schematic trace. Do not shrink any text or change surface perspective. Output landscape 1536 x 1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "bd2a6c433d1042fd9edeee101c03bfaf9282100fa1727b5a73afd49b81d5c8b1",
+  "source": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+  "sourceSha256": "1110efe08e947b84a390e8bfbdde3b24de4025cf82de3677a8be436970e3b4a4",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "bridge room only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-9f0770f0-fd28-494e-bfdd-5303e10b106c.png",
+      "sha256": "bbf5d62c9eb542267c5d4c1f2a2a056a33b44b0ec515c5888d718814eaab6e0e",
+      "role": "Edit target: remove extra arm only"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+    }
+  ],
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with an unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+  "candidateSha256": "1110efe08e947b84a390e8bfbdde3b24de4025cf82de3677a8be436970e3b4a4",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-9dafa203-6509-404f-bc77-d57f38e9adc9.png",
+  "generationAttempts": [
+    {
+      "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: Canonical ensign-demir identity; image 3: bridge room only; image 4: Edit target; replace staging while preserving section meaning.\nScene: Preserve the briefing's candid disagreement but bring their actual task into a legible shared workspace. Nazari stands LEFT leaning one hand on the console edge, her other hand points with a relaxed connected index finger toward the pending dashboard. Her face turns toward Demir with a firm questioning eyebrow. Demir sits just in front of her left side, hand at his chin, other hand relaxed on his chair arm; he looks from the display up to Nazari with hesitant curiosity. The large upright shared work display fills the RIGHT half of the frame, replacing the tiny distant plan and horizontal text. Display exact text: title 'Bridge dashboard'; large status 'Awaiting local runtime'; below it an explicitly labeled 'Local plan' containing three boxes 'Input' -> 'Model' -> 'Verdict'; separate short line 'Compute-bay link: unavailable'. At bottom a modest single signal trace labeled 'Signal input (schematic)'. All diagrams and labels lie on this one vertical display plane. No text on a horizontal holo table, no fabricated classification. Keep the bridge architecture recognizable, with dark auxiliary panels.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "1f9991b82434570ee0d37a0db6b7063b87d3162c801bfa7835472883fa6aff9d",
+      "actualReferences": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "Canonical chief-nazari identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "Canonical ensign-demir identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "bridge room only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-9f0770f0-fd28-494e-bfdd-5303e10b106c.png",
+          "sha256": "bbf5d62c9eb542267c5d4c1f2a2a056a33b44b0ec515c5888d718814eaab6e0e",
+          "role": "Edit target: remove extra arm only"
+        }
+      ],
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-9f0770f0-fd28-494e-bfdd-5303e10b106c.png",
+      "candidateSha256": "bbf5d62c9eb542267c5d4c1f2a2a056a33b44b0ec515c5888d718814eaab6e0e",
+      "ownVerdict": "REJECT: Nazari has an extra descending arm and hand at the right edge of her torso."
+    }
+  ],
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "1110efe08e947b84a390e8bfbdde3b24de4025cf82de3677a8be436970e3b4a4",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      80,
+      130,
+      660,
+      480
+    ],
+    "handCropCoordinatesXYWH": [
+      230,
+      410,
+      610,
+      570
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": "The extra descending arm is removed. Nazari has one pointing arm and one braced console arm; Demir has one thinking hand and one chair-resting hand. Specific skeptical exchange and large perspective-correct local-runtime plan preserve the opening situation."
+  },
+  "generatedSha256": "1110efe08e947b84a390e8bfbdde3b24de4025cf82de3677a8be436970e3b4a4",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__why-the-browser-briefing/candidate.png",
+  "publishedSource": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser.webp",
+  "webpSha256": "2ca733f8e6e74c18f6efefdfa82ee3e9f4f1a8a7a2e7a079bfc92528af9775cc",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+    "sourceSha256": "ecfef4b31aecbf306aac7af27d25294c978eab2dfeca914c60087bf455222535",
+    "webpSha256": "54bf5e5da4c1e92d836df013bf3e78c58a4210504321ebbf9f8a972cd9726c7d",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-ab816afe-ddcc-4d4b-a051-630efd1b3c9c.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "1110efe08e947b84a390e8bfbdde3b24de4025cf82de3677a8be436970e3b4a4",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical portraits compared to enlarged face crop.",
+      "Complete arm chains, thumb sides and prop contact checked.",
+      "Large source-correct display and operator direction checked.",
+      "Natural adult proportions and phase-specific candid action checked."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+        "sha256": "dc9cc8f8c0641c3397733f9a25a4bd7909627571708e9fd17f20b2dc059646a0"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/browser-runtimes__why-the-browser-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

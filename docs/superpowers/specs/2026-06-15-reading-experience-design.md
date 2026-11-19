@@ -141,7 +141,7 @@ They must never render the same way; this distinction is a hard requirement.
 ## Documentation
 
 - Update `docs/story-style-bible.md` (or a new authoring note) with the term/code conventions and how to add a glossary entry.
-- Note the deferred multi-framework lessons + remaining-themes glossary content in `docs/dev-plan.md`.
+- Note the deferred multi-framework lessons + remaining-themes glossary content in [the product roadmap](../../../ROADMAP.md).
 
 ## Risks / open questions
 

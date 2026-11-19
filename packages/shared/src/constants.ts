@@ -95,10 +95,12 @@ export function isComingSoon(slug: string): boolean {
  * webhook amount validation in apps/api/src/routes/payments.ts) and the
  * Schema.org Offer price in JSON-LD. Single source of truth for all pricing
  * display, checkout, and structured data.
+ * Single-world introductory pricing is $79, with a $99 regular price.
+ * No end date is scheduled. Set `price` to `regularPrice` to end the offer.
  */
 export const PRICING = {
   free: { price: 0, worlds: 0, label: "Free Preview" },
-  single: { price: 50, worlds: 1, label: "Single World" },
+  single: { price: 79, regularPrice: 99, worlds: 1, label: "Single World" },
   twoBundle: { price: 90, worlds: 2, label: "Two Worlds" },
   threeBundle: { price: 135, worlds: 3, label: "Three Worlds" },
   allFive: { price: 225, worlds: 5, label: "All 5 Worlds" },

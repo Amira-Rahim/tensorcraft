@@ -48,9 +48,9 @@ describe("SiteFooter", () => {
     );
   });
 
-  it("does not duplicate header nav links", () => {
+  it("keeps course and purchase navigation in the header", () => {
     render(<SiteFooter />);
-    for (const name of [/worlds/i, /pricing/i, /^blog$/i, /glossary/i]) {
+    for (const name of [/worlds/i, /pricing/i]) {
       expect(screen.queryByRole("link", { name })).not.toBeInTheDocument();
     }
   });

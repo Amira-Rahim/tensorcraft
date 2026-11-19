@@ -44,7 +44,7 @@ export default function TermsPage() {
         </Link>
 
         <h1 className="text-4xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-text-muted mb-12">Last updated: August 16, 2026</p>
+        <p className="text-text-muted mb-12">Last updated: November 3, 2026</p>
 
         <div className="prose-custom space-y-8 text-[15px] leading-relaxed text-text-muted">
           <section>
@@ -102,10 +102,18 @@ export default function TermsPage() {
               5. Intellectual Property
             </h2>
             <p>
-              All course content, code examples, narratives, and materials are
-              the intellectual property of Tensorcraft. Code you write during
-              exercises belongs to you. You may not redistribute, resell, or
-              publicly share course content without written permission.
+              Tensorcraft owns its original course content, code examples,
+              narratives, and materials. Code you write during exercises belongs
+              to you. Tensorcraft-owned code and course content released in our
+              source repository use the Mozilla Public License 2.0. Materials
+              with separate licenses retain those terms. These Terms do not
+              restrict rights granted by the applicable open licenses. Account
+              access and purchases remain subject to these Terms.
+            </p>
+            <p>
+              <a href="https://github.com/Amira-Rahim/tensorcraft">
+                View the repository's license and material notices.
+              </a>
             </p>
           </section>
 

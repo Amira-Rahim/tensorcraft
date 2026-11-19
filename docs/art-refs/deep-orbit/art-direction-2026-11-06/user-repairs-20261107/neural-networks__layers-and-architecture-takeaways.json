@@ -1,0 +1,241 @@
+{
+  "lesson": "neural-networks/layers-and-architecture",
+  "phase": "takeaways",
+  "status": "published",
+  "owner": "/root",
+  "prompt": "Use case: precise-object-edit. Make ONE small edit to reference 3: replace the tiny nonsense pencil arithmetic on the open notebook with only a single handwritten numeral \"225\", oriented for Nazari to read from her position, upside down to the camera. Her pencil tip is finishing the final 5. The rest of the notebook page is blank faint ruling. Preserve everything else exactly: her canonical face and age, mature proportions, both hands and continuous straight pencil, wrists, arms, notebook placement, display text and geometry, engineering room and colors. Reference1 is the canonical Nazari portrait, reference2 is engineering architecture, reference3 is exact edit target. No other changes. All five large-screen lines remain verbatim and unchanged: Practice model; (4 x 16) + 16 = 80; (16 x 8) + 8 = 136; (8 x 1) + 1 = 9; Total: 225 parameters. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical Nazari identity authority, first reference",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "approved engineering room authority only, second reference",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d7d7023f-dc54-4d3e-a97f-d6dbe322daf3.png",
+      "role": "exact current candidate edit target, notebook marks only",
+      "sha256": "e3333b0640933f90f723c108aa6ba5dc4487442516a2db34aa8a6bd65b7e45b6"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+      "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
+      "sha256": "9b3b4d1756293a028b60b873cd9c1fd4f4f9b839659d21b12ef88596bdcd6e8e"
+    }
+  ],
+  "originalSourceSha256": "a839dae3c39661c016756e2ac099d4ff91f7bc9b0d2511c93038564bdfd8b135",
+  "request": "User rejected paper position during writing. Restage notebook directly in front of writer and move audience-readable arithmetic to shared display.",
+  "publication": {
+    "date": "2026-11-09",
+    "replacement": "in-place",
+    "source": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-b409e8fc-e923-498f-8e50-36e5a1ee1e6c.png",
+  "candidatePath": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+  "candidateSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+  "tool": "built-in image_gen",
+  "attempts": [
+    {
+      "lesson": "neural-networks/layers-and-architecture",
+      "phase": "takeaways",
+      "status": "generated-awaiting-own-review",
+      "owner": "/root",
+      "prompt": "Use case: illustration-story. Correct the physical writing setup in the THIRD image. Landscape 1536x1024 Deep Orbit scene. Image 1 is the authoritative canonical Chief Nazari portrait: preserve her mature lined face, tan skin, short gray-streaked hair, brows, nose, mouth, jaw and olive engineering uniform. Image 2 is Engineering room architecture and materials only. Image 3 is the old scene to restage, not an anatomy authority.\nNazari sits on the RIGHT at the engineering desk, leaning gently forward as she checks her parameter arithmetic. Give her restrained, dry satisfaction, eyes down at her work, never at camera. Keep normal balanced adult head, neck, shoulders and torso. Replace the huge poster sheet with a small ordinary notebook lying flat directly in front of her chest, within easy writing reach. The notebook's top edge is farther from her torso and its bottom edge is nearest her, so its reading direction truly faces her. Camera is at the front-left corner of her desk and sees her recognizable three-quarter face, natural writing action and a clear upright working display to her LEFT. Her right forearm rests on the desk, right hand holds one straight continuous pencil in a relaxed tripod grip with the tip touching the notebook; left hand rests flat on the near edge of the notebook to steady it. Every shoulder, elbow and wrist is connected, both wrists neutral, hands have coherent fingers and thumbs. Remove the multitool from under her hand; place it closed to the side of the notebook. The notebook can contain a few short pencil calculation marks in her reading direction, but it carries no audience-facing information.\nUse the available LEFT wall for one generous physical monitor displaying the exact practice-model arithmetic in large clean type. Monitor faces the operator and camera on the same visible side. Use a frontal rectangular glass plane with straight level top/bottom edges and parallel vertical sides on a plausible swivel mount. All title, text, rules and rows are level and share that glass plane, no pasted-on angle or warped type.\nExact monitor text, five spacious lines: \"Practice model\"; \"(4 x 16) + 16 = 80\"; \"(16 x 8) + 8 = 136\"; \"(8 x 1) + 1 = 9\"; \"Total: 225 parameters\". This is the separate four-input practice stack, not the 673-parameter bridge model. Do not add outcomes, badges, charts or extra people. Keep inactive peripheral screens dark, tool wall, lamp and familiar engineering room, restrained brass warmth, muted sage UI, natural skin and charcoal shadows. Physical desk supports the notebook and hands. Preserve candid purposeful story action and comfortable composition.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical Nazari identity authority, first reference",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "role": "approved engineering room authority only, second reference",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d7d7023f-dc54-4d3e-a97f-d6dbe322daf3.png",
+          "role": "exact current candidate edit target, notebook marks only",
+          "sha256": "e3333b0640933f90f723c108aa6ba5dc4487442516a2db34aa8a6bd65b7e45b6"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+          "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
+          "sha256": "9b3b4d1756293a028b60b873cd9c1fd4f4f9b839659d21b12ef88596bdcd6e8e"
+        }
+      ],
+      "originalSourceSha256": "a839dae3c39661c016756e2ac099d4ff91f7bc9b0d2511c93038564bdfd8b135",
+      "request": "User rejected paper position during writing. Restage notebook directly in front of writer and move audience-readable arithmetic to shared display.",
+      "publication": {
+        "alt": "Nazari checks her practice-model parameter count while making notes at the engineering desk.",
+        "location": "Archimedes, Engineering",
+        "action": "Nazari writes a parameter-count note while checking a large engineering display.",
+        "emotion": "Focused, with restrained satisfaction at the small count.",
+        "eyeline": "Down toward her notebook, with the shared calculation display in her working field.",
+        "checks": [
+          "Notebook lies directly in front of writer and faces her.",
+          "Correct 80 + 136 + 9 = 225 practice-model counts.",
+          "One coherent display plane.",
+          "Canonical mature face and balanced proportions.",
+          "Connected arms and natural tripod pencil grip."
+        ]
+      },
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d7d7023f-dc54-4d3e-a97f-d6dbe322daf3.png",
+      "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/layers-and-architecture-takeaways/candidate.png",
+      "candidateSha256": "e3333b0640933f90f723c108aa6ba5dc4487442516a2db34aa8a6bd65b7e45b6",
+      "tool": "built-in image_gen",
+      "ownReview": {
+        "reviewer": "/root",
+        "verdict": "needs-revision",
+        "candidateSha256": "e3333b0640933f90f723c108aa6ba5dc4487442516a2db34aa8a6bd65b7e45b6",
+        "nativeReviewed": true,
+        "canonicalFacesCompared": true,
+        "preview768Reviewed": true,
+        "findings": [
+          "Notebook has plausible placement, writer-facing orientation, straight pencil and connected arm chains.",
+          "Notebook pencil marks look like incomplete arbitrary arithmetic. Replace with only one clear handwritten 225 in Nazari reading direction, matching shared total. Display facts are correct."
+        ],
+        "magnifiedCrops": [
+          {
+            "box": [
+              620,
+              635,
+              690,
+              310
+            ],
+            "scale": 2
+          },
+          {
+            "box": [
+              780,
+              160,
+              340,
+              340
+            ],
+            "scale": 2
+          }
+        ]
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "verdict": "PASS",
+    "candidateSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+    "nativeReviewed": true,
+    "canonicalFacesCompared": true,
+    "preview768Reviewed": true,
+    "fullArmChainsReviewed": true,
+    "findings": [
+      "Notebook directly in front of Nazari, small enough to reach, lies flat and faces her. Single handwritten 225 is upside down to camera and correctly oriented to Nazari.",
+      "Straight pencil finishes the final digit, right forearm/wrist/grip are connected. Left resting hand steadies the page.",
+      "Mature canonical facial geometry, ordinary neck length and shoulders preserved.",
+      "Exact 80 + 136 + 9 = 225 practice count remains on the upright shared display, legible at 768px.",
+      "Angled monitor horizontal rules converge with glass top/bottom consistently, with operator on front side."
+    ],
+    "magnifiedCrops": [
+      {
+        "box": [
+          620,
+          635,
+          690,
+          310
+        ],
+        "scale": 2
+      },
+      {
+        "box": [
+          780,
+          160,
+          340,
+          340
+        ],
+        "scale": 2
+      }
+    ],
+    "displayGeometry": {
+      "glassTop": [
+        [
+          146,
+          145
+        ],
+        [
+          522,
+          189
+        ]
+      ],
+      "glassBottom": [
+        [
+          146,
+          484
+        ],
+        [
+          523,
+          462
+        ]
+      ],
+      "assessment": "Upper rules descend right, middle rules flatten and lower rules rise right consistently toward the same horizontal vanishing region."
+    },
+    "temporaryCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/layers-and-architecture-takeaways/candidate.png",
+  "publishedSource": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+  "sourceSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+  "webpSha256": "879bfe83332ff350c3b887038b5132cb758527af08fddce438fb6028b284a5e0",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+    "sourceSha256": "a839dae3c39661c016756e2ac099d4ff91f7bc9b0d2511c93038564bdfd8b135",
+    "webpSha256": "3966c8e4e108fc258fa49bc560891d5d407947ec492f68059ddbd3a5a0820a3d",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-39e53528-c075-413c-b1f5-1ccfa01e9fe2.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "acb7b50dd56ecf3a6fa11457e6b616babe3c1159e4ebb8a4901d1b3c2bbad557",
+    "method": "Reopened after user correction. Exact current candidate independently inspected for screen plane and operator direction, canonical faces, full arm chains and magnified hands, plus 768px readability. Adjacent peer.json records the decision.",
+    "checks": [
+      "Notebook lies directly in front of writer and faces her.",
+      "Correct 80 + 136 + 9 = 225 practice-model counts.",
+      "One coherent display plane.",
+      "Canonical mature face and balanced proportions.",
+      "Connected arms and natural tripod pencil grip."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+        "sha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
+        "sha256": "9b3b4d1756293a028b60b873cd9c1fd4f4f9b839659d21b12ef88596bdcd6e8e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root",
+  "promptSha256": "5ed731a8cd9dfc9b112c2480683004d3418a1cd9d211bf0b60825b8ae9955509"
+}

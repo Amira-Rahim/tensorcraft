@@ -1,0 +1,115 @@
+{
+  "i": 58,
+  "room": "bridge",
+  "moment": "Farah sits at the RIGHT of a quiet bridge with her torso turned toward a LARGE LEFT archive display. One hand holds an archive card by its lower edge angled toward her, showing its blank back to camera. Her other hand rests on a keyboard. She has thoughtful slightly furrowed brows, lips quietly closed, looking from card toward the pending check. Exact main-screen text in only three huge rows: 'Archive 7741', 'Signal 3: 0.518', 'Calibration check pending'. Leave generous spacing, no invented confidence label or resolution. Use the upper-left wall for the real main display, with muted green illumination on her face.",
+  "id": "training-loop__evaluating-deep-scan-epilogue",
+  "lesson": "training-loop/evaluating-deep-scan",
+  "phase": "epilogue",
+  "source": "art-src/scenes/training-loop__evaluating-deep-scan-epilogue-openai-20261107.png",
+  "sourceSha256": "b3e8df81e81b2490d450019b069787b154ab4d93b12d2d0d66624ab8bb6c3066",
+  "lessonSource": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+  "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 1 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: dr-farah. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Farah sits at the RIGHT of a quiet bridge with her torso turned toward a LARGE LEFT archive display. One hand holds an archive card by its lower edge angled toward her, showing its blank back to camera. Her other hand rests on a keyboard. She has thoughtful slightly furrowed brows, lips quietly closed, looking from card toward the pending check. Exact main-screen text in only three huge rows: 'Archive 7741', 'Signal 3: 0.518', 'Calibration check pending'. Leave generous spacing, no invented confidence label or resolution. Use the upper-left wall for the real main display, with muted green illumination on her face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "Canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "Room only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__evaluating-deep-scan-epilogue-openai-20261107.png",
+      "role": "Edit target, not identity authority",
+      "sha256": "b3e8df81e81b2490d450019b069787b154ab4d93b12d2d0d66624ab8bb6c3066"
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Recompose and improve the LAST reference scene for a 1536x1024 landscape Deep Orbit lesson image. The first 1 reference image(s) are the canonical human identity authority, preserving facial width, jaw, chin, nose, eyes, brows, mouth, complexion, apparent age, hair and signature equipment. The next reference is room authority only. LAST is the old target, not a pose or anatomy authority. Show exactly the canonical cast: dr-farah. Preserve mature adult proportions, natural shoulder width, short ordinary necks and individually recognizable candid faces. Each person has exactly two arms traced from shoulder through elbow to neutral wrist and one hand, correct thumb side and plausible distinct fingers and physical object contact. Enlarge the primary physical lesson display to use the available room generously. All essential labels at least about 30 pixels tall at this resolution, with comfortable margins. Camera sees both readable display front and recognizable three-quarter faces; the display truly faces its operator, all text and shapes follow its plane. No eye contact with camera, no staged lecture, no text floating over the image, no tiny console under an unused wall. Muted charcoal, sage and aged brass; warm natural skin, soft key light and restrained rim light. No orange wash, no neon outline, no extra people, no watermark or signature. Farah sits at the RIGHT of a quiet bridge with her torso turned toward a LARGE LEFT archive display. One hand holds an archive card by its lower edge angled toward her, showing its blank back to camera. Her other hand rests on a keyboard. She has thoughtful slightly furrowed brows, lips quietly closed, looking from card toward the pending check. Exact main-screen text in only three huge rows: 'Archive 7741', 'Signal 3: 0.518', 'Calibration check pending'. Leave generous spacing, no invented confidence label or resolution. Use the upper-left wall for the real main display, with muted green illumination on her face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__evaluating-deep-scan-epilogue-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "status": "published",
+  "owner": "/root/quality_early",
+  "tool": "builtin image_gen",
+  "preparedAt": "2026-11-08T17:36:15.452527+00:00",
+  "promptSha256": "b2f586cf1f87ef94c75d9ee2a120f07b2bcceb78673a363036a825841173e4a8",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c"
+    }
+  ],
+  "publication": {
+    "alt": "Farah checks archive 7741's score while the bridge display marks calibration as pending.",
+    "action": "Farah checks an archive card with one hand while the other remains at the keyboard.",
+    "emotion": "Thoughtful caution about the unresolved score.",
+    "eyeline": "From the archive card toward the score and controls.",
+    "checks": [
+      "Archive 7741, Signal 3: 0.518 and calibration check pending match the current epilogue and are large and clear. Two complete shoulder-to-wrist chains, natural keyboard hand and card grip pass magnified review. Farah's canonical visor, face shape and features are retained."
+    ],
+    "location": "Archimedes, Bridge"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-b67d-7f41-8967-155e81c59d03/exec-669a8184-2097-4e9d-9abc-4432f42e0c63.png",
+  "candidatePath": "art-src/scenes/training-loop__evaluating-deep-scan-epilogue-openai-20261107.png",
+  "candidateSha256": "236f60831a9aff293ae22350a943bf48490892c6753fdc35c680640713e6d84e",
+  "ownReview": {
+    "reviewer": "quality_early",
+    "reviewedAt": "2026-11-08T18:49:38.958508+00:00",
+    "candidateSha256": "236f60831a9aff293ae22350a943bf48490892c6753fdc35c680640713e6d84e",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "method": "Native generated original plus magnified hands/props and face comparison with independently viewed canonical portraits. All complete arm chains traced in original.",
+    "cropCoordinates": [
+      {
+        "i": "r10face",
+        "k": 10,
+        "box": [
+          1065,
+          165,
+          1395,
+          605
+        ],
+        "scale": 2
+      },
+      {
+        "i": "r10hands",
+        "k": 10,
+        "box": [
+          480,
+          735,
+          1260,
+          980
+        ],
+        "scale": 2
+      }
+    ],
+    "canonicalFaceReferences": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "role": "Canonical identity: dr-farah",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      }
+    ],
+    "checks": "Archive 7741, Signal 3: 0.518 and calibration check pending match the current epilogue and are large and clear. Two complete shoulder-to-wrist chains, natural keyboard hand and card grip pass magnified review. Farah's canonical visor, face shape and features are retained.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "temporaryCropsRemoved": true
+  },
+  "publishedSource": "art-src/scenes/training-loop__evaluating-deep-scan-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+  "publicationStatus": "published after independent exact-hash peer approval"
+}

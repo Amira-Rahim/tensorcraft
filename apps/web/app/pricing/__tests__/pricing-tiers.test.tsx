@@ -119,10 +119,13 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     expect(screen.queryByTestId("tier-card-all-five")).toBeNull();
   });
 
-  it("renders canonical dollar amounts on every buyable tier", () => {
+  it("shows the introductory charge and regular price on the paid tier", () => {
     render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-free")).toHaveTextContent("$0");
-    expect(screen.getByTestId("tier-card-single")).toHaveTextContent("$50");
+    const paid = screen.getByTestId("tier-card-single");
+    expect(paid).toHaveTextContent("Introductory price");
+    expect(paid).toHaveTextContent("$79");
+    expect(paid).toHaveTextContent("Regular price $99");
   });
 
   it("maps plan ids to tier cards", () => {

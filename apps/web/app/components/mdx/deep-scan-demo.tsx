@@ -256,7 +256,7 @@ export function DeepScanDemo({
                     }
                   >
                     {row.id === "7741"
-                      ? `${verdict(row.score)}, score ${(row.score * 100).toFixed(0)}%. No trained verdict yet`
+                      ? `${verdict(row.score)}, score ${(row.score * 100).toFixed(0)}%. True label unknown`
                       : verdict(row.score)}
                   </span>
                 </>
@@ -265,9 +265,9 @@ export function DeepScanDemo({
           ))}
         {status === "done" && (
           <p className="pt-3 text-text-muted border-t border-border mt-3">
-            // that number is real, an actual neural network computed it in your
-            tab just now. Five readings it understood. One it didn&rsquo;t.
-            Teaching it to answer is the rest of the course.
+            This preview network computed the scores in your tab. The crew still
+            needs to evaluate its predictions against known labels. Sample
+            7741&rsquo;s true label remains unknown.
           </p>
         )}
       </div>

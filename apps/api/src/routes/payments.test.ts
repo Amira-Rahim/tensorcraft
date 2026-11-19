@@ -1,6 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Hono } from "hono";
 import { payments } from "./payments";
+import { acquisitionSourceFields } from "../lib/acquisition-source";
+
+// This mock returns no source field whatever ACQUISITION_SOURCES holds, so
+// every other checkout test sees the session exactly as before. The describe
+// block "checkout asks where the buyer found Tensorcraft" switches it on.
+vi.mock("../lib/acquisition-source", () => ({
+  acquisitionSourceFields: vi.fn(() => []),
+}));
 
 const mockInsert = vi.fn();
 const mockUpdate = vi.fn();
@@ -14,7 +22,11 @@ const mockSessionCreate = vi.fn();
  * used by the webhook's race-condition no-regression logic (§338).
  * Default null means "row does not exist".
  */
-let mockAdminExistingRow: { status: string; user_id?: string } | null = null;
+let mockAdminExistingRow: {
+  status: string;
+  user_id?: string;
+  stripe_session_id?: string;
+} | null = null;
 // When set, controls what update().eq()[.select()] resolves to.
 let mockEqResult: { data: unknown; error: unknown } | null = null;
 
@@ -206,6 +218,7 @@ vi.mock("../lib/posthog", () => ({
   withPostHogUserContext: (_distinctId: string, fn: () => unknown) => fn(),
   SERVER_EVENTS: {
     PAYMENT_COMPLETED: "payment_completed",
+    PURCHASE_ACCESS_GRANTED: "purchase_access_granted",
     PAYMENT_REFUNDED: "payment_refunded",
   },
 }));
@@ -232,17 +245,10 @@ vi.mock("../lib/operator-alert", () => ({
 }));
 
 vi.mock("@tensorcraft/shared", async (importOriginal) => ({
-  // Spread the real module so genuinely shared logic (slug validation,
-  // launch flags) is exercised rather than re-implemented in a stub.
-  // Only the pricing/slug surfaces below are pinned for test determinism.
+  // Exercise the real price table. Historical webhook amounts below stay
+  // fixed so a price change cannot rewrite an earlier purchase or refund.
+  // Launch every world here to exercise the future bundle upgrade paths.
   ...(await importOriginal<typeof import("@tensorcraft/shared")>()),
-  PRICING: {
-    free: { price: 0, worlds: 0, label: "Free Preview" },
-    single: { price: 49, worlds: 1, label: "Single World" },
-    twoBundle: { price: 79, worlds: 2, label: "Two Worlds" },
-    threeBundle: { price: 99, worlds: 3, label: "Three Worlds" },
-    allFive: { price: 129, worlds: 5, label: "All 5 Worlds" },
-  },
   isValidWorldSlug: (slug: string) =>
     [
       "deep-orbit",
@@ -1086,6 +1092,7 @@ describe("Upgrade path", () => {
       url: "https://checkout.stripe.com/c/pay/cs_test_upgrade",
     });
     mockServerInsert.mockReset();
+    mockCaptureServer.mockClear();
     mockExistingPurchases = null;
     mockProfileEmail = "buyer@example.com";
     mockProfileCustomerId = null;
@@ -1101,6 +1108,32 @@ describe("Upgrade path", () => {
       body: JSON.stringify(body),
     });
   }
+
+  it("charges the $79 introductory price for Deep Orbit", async () => {
+    const res = await checkout({
+      planId: "single",
+      worldIds: ["deep-orbit"],
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        line_items: [
+          expect.objectContaining({
+            price_data: expect.objectContaining({
+              currency: "usd",
+              unit_amount: 7900,
+            }),
+            quantity: 1,
+          }),
+        ],
+        metadata: expect.objectContaining({
+          originalPrice: "79",
+          creditApplied: "0",
+        }),
+      }),
+    );
+  });
 
   it.each([null, [], "single", 5, { planId: 5, worldIds: ["deep-orbit"] }])(
     "rejects malformed checkout data: %j",
@@ -1138,8 +1171,8 @@ describe("Upgrade path", () => {
   );
 
   it("allows upgrade when user owns some worlds", async () => {
-    // User paid $49 for deep-orbit. Requests twoBundle (deep-orbit + neon-protocol, $79).
-    // Not allOwned (neon-protocol not yet owned). credit=$49, adjustedPrice=$30.
+    // An earlier buyer paid $49 for deep-orbit. The current twoBundle costs $90.
+    // The new world is unowned, so credit=$49 and adjustedPrice=$41.
     // Should create a Stripe session with the reduced price.
     mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 49 }];
 
@@ -1152,13 +1185,13 @@ describe("Upgrade path", () => {
     const body = await res.json();
     expect(body.url).toBeDefined();
     expect(body.granted).toBeUndefined();
-    // Stripe session should be created with adjusted unit_amount (30 * 100 = 3000 cents)
+    // Stripe charges the current bundle price minus the amount actually paid.
     expect(mockSessionCreate).toHaveBeenCalledWith(
       expect.objectContaining({
         line_items: expect.arrayContaining([
           expect.objectContaining({
             price_data: expect.objectContaining({
-              unit_amount: 3000,
+              unit_amount: 4100,
             }),
           }),
         ]),
@@ -1252,8 +1285,8 @@ describe("Upgrade path", () => {
     // Mock a purchase whose credit (for overlapping worlds) is >= plan.price,
     // with at least one requested world NOT in ownedWorlds.
     // Purchase: deep-orbit at $200 (hypothetical inflated amount via mock).
-    // Request twoBundle (deep-orbit + neon-protocol) at $79. Not allOwned.
-    // credit=$200 → capped at plan.price ($79) → adjustedPrice=0 → auto-grant.
+    // Request twoBundle (deep-orbit + neon-protocol) at $90. Not allOwned.
+    // Credit caps at the $90 plan price, leaving a $0 auto-grant.
     mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 200 }];
     mockServerInsert.mockResolvedValue({ error: null });
 
@@ -1266,6 +1299,19 @@ describe("Upgrade path", () => {
     const body = await res.json();
     expect(body.granted).toBe(true);
     expect(body.worlds).toEqual(["deep-orbit", "neon-protocol"]);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "purchase_access_granted",
+      expect.objectContaining({
+        grantId: expect.stringMatching(/^auto_grant_/),
+        reason: "upgrade_credit",
+      }),
+      "user-test-123",
+    );
+    expect(
+      mockCaptureServer.mock.calls.some(
+        ([name]) => name === "payment_completed",
+      ),
+    ).toBe(false);
     expect(mockServerInsert).toHaveBeenCalledWith(
       expect.objectContaining({
         amount: 0,
@@ -1291,9 +1337,9 @@ describe("Upgrade path", () => {
   });
 
   it("caps credit at plan price so adjustedPrice is never negative", async () => {
-    // Credit ($80) exceeds plan price ($79 for twoBundle) for a partial overlap.
-    // credit is capped to $79, adjustedPrice = max(0, 79 - 79) = 0 → auto-grant, not negative.
-    mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 80 }];
+    // Credit ($100) exceeds the $90 twoBundle price for a partial overlap.
+    // Credit caps at $90, leaving a $0 auto-grant.
+    mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 100 }];
     mockServerInsert.mockResolvedValue({ error: null });
 
     const res = await checkout({
@@ -1301,7 +1347,7 @@ describe("Upgrade path", () => {
       worldIds: ["deep-orbit", "neon-protocol"],
     });
 
-    // credit=$80 capped to $79 (plan.price), adjustedPrice=0 → auto-grant
+    // Credit caps at the plan price, leaving a $0 auto-grant.
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.granted).toBe(true);
@@ -1483,6 +1529,93 @@ describe("checkout collects the billing country with Stripe Tax off", () => {
     expect(res.status).toBe(200);
     expect(mockSessionCreate).toHaveBeenCalledWith(
       expect.objectContaining({ billing_address_collection: "required" }),
+    );
+  });
+});
+
+/**
+ * Acquisition source (first-1,000 plan §9 item 5). PostHog only sees visitors
+ * who accept analytics, so a buyer who declines leaves no source. An optional
+ * Stripe Checkout question records the buyer's own answer on the session.
+ */
+describe("checkout asks where the buyer found Tensorcraft", () => {
+  const checkout = () =>
+    app.request("/api/payments/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer test-token",
+      },
+      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
+    });
+
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    vi.stubEnv("APP_URL", "http://localhost:3000");
+    mockSessionCreate.mockReset();
+    mockSessionCreate.mockResolvedValue({ url: "https://stripe.test/source" });
+    mockExistingPurchases = null;
+    mockProfileEmail = "buyer@example.com";
+    mockProfileCustomerId = null;
+  });
+
+  const field = {
+    key: "source",
+    label: {
+      type: "custom" as const,
+      custom: "How did you find Tensorcraft?",
+    },
+    type: "dropdown" as const,
+    optional: true,
+    dropdown: { options: [{ label: "Hacker News", value: "hackernews" }] },
+  };
+
+  it("passes the optional source question to Stripe when options exist", async () => {
+    vi.mocked(acquisitionSourceFields).mockReturnValueOnce([field]);
+
+    const res = await checkout();
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ custom_fields: [field] }),
+    );
+  });
+
+  it("keeps the question when it retries without a stale saved customer", async () => {
+    vi.mocked(acquisitionSourceFields).mockReturnValueOnce([field]);
+    mockProfileCustomerId = "cus_stale_deleted";
+    // The handler mutates one params object between the two creates, so
+    // mock.calls would show only its final state. Copy each call instead.
+    const sent: Array<Record<string, unknown>> = [];
+    mockSessionCreate
+      .mockImplementationOnce(async (params: Record<string, unknown>) => {
+        sent.push(structuredClone(params));
+        throw new Error("No such customer: cus_stale_deleted");
+      })
+      .mockImplementationOnce(async (params: Record<string, unknown>) => {
+        sent.push(structuredClone(params));
+        return { url: "https://stripe.test/retry" };
+      });
+
+    const res = await checkout();
+
+    expect(res.status).toBe(200);
+    expect(sent.map((params) => params.customer)).toEqual([
+      "cus_stale_deleted",
+      undefined,
+    ]);
+    expect(sent.map((params) => params.custom_fields)).toEqual([
+      [field],
+      [field],
+    ]);
+  });
+
+  it("sends no custom_fields while the option list is empty", async () => {
+    const res = await checkout();
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate.mock.calls[0][0]).not.toHaveProperty(
+      "custom_fields",
     );
   });
 });
@@ -1696,6 +1829,197 @@ describe("purchase receipt on delayed settle", () => {
         amount: 49,
         sessionId: "cs_async_1",
       }),
+    );
+  });
+});
+
+// Payment reporting needs provider evidence and cannot substitute current prices.
+describe("settlement analytics evidence", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    mockInsert.mockReset();
+    mockInsert.mockResolvedValue({ error: null });
+    mockConstructEvent.mockReset();
+    mockCaptureServer.mockClear();
+    mockEventLedgerInsert.mockReset();
+    mockAdminExistingRow = null;
+    mockEqResult = null;
+  });
+
+  async function deliver(
+    type:
+      "checkout.session.completed" | "checkout.session.async_payment_succeeded",
+    overrides: Record<string, unknown> = {},
+    livemode = false,
+  ) {
+    const event = {
+      id: "evt_settlement_evidence",
+      type,
+      livemode,
+      data: {
+        object: {
+          id: "cs_test_evidence",
+          client_reference_id: "user_evidence",
+          payment_status: "paid",
+          amount_total: 7900,
+          currency: "usd",
+          payment_intent: "pi_evidence",
+          metadata: { planId: "single", worldIds: "deep-orbit" },
+          ...overrides,
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+    return app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: { "stripe-signature": "sig_test" },
+      body: JSON.stringify(event),
+    });
+  }
+
+  it.each([
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
+  ] as const)("keeps provider IDs, currency and mode for %s", async (type) => {
+    const res = await deliver(type);
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        sessionId: "cs_test_evidence",
+        stripeEventId: "evt_settlement_evidence",
+        paymentIntentId: "pi_evidence",
+        eventSource: "stripe_webhook",
+        analyticsVersion: 2,
+        amount: 79,
+        amountMinor: 7900,
+        currency: "usd",
+        livemode: false,
+        paymentKind: "cash",
+      }),
+      "user_evidence",
+    );
+  });
+
+  it.each([
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
+  ] as const)("keeps a no-charge %s at zero", async (type) => {
+    const res = await deliver(
+      type,
+      {
+        amount_total: 0,
+        payment_status: "no_payment_required",
+      },
+      true,
+    );
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 0 }),
+      expect.anything(),
+    );
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        amount: 0,
+        amountMinor: 0,
+        paymentKind: "no_charge",
+        livemode: true,
+      }),
+      "user_evidence",
+    );
+  });
+
+  it("keeps a missing amount unknown instead of reporting the plan price", async () => {
+    const res = await deliver("checkout.session.completed", {
+      amount_total: null,
+    });
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        amount: null,
+        amountMinor: null,
+        paymentKind: "unknown",
+      }),
+      "user_evidence",
+    );
+  });
+
+  it("does not label an unknown currency as USD revenue", async () => {
+    const res = await deliver("checkout.session.completed", { currency: null });
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_completed",
+      expect.objectContaining({
+        amount: null,
+        amountMinor: 7900,
+        currency: null,
+      }),
+      "user_evidence",
+    );
+  });
+
+  it("does not count an unpaid checkout as a settlement", async () => {
+    await deliver("checkout.session.completed", { payment_status: "unpaid" });
+    expect(mockCaptureServer).not.toHaveBeenCalled();
+  });
+
+  it("does not emit another settlement for an already completed checkout", async () => {
+    mockAdminExistingRow = { status: "completed" };
+    await deliver("checkout.session.completed");
+    expect(mockCaptureServer).not.toHaveBeenCalled();
+  });
+
+  it("does not emit another settlement after losing the duplicate delivery claim", async () => {
+    mockEventLedgerInsert.mockResolvedValue({ error: { code: "23505" } });
+    await deliver("checkout.session.completed");
+    expect(mockCaptureServer).not.toHaveBeenCalled();
+  });
+
+  it("records refund evidence as cumulative minor units, with its checkout link", async () => {
+    mockAdminExistingRow = {
+      status: "partially_refunded",
+      user_id: "user_evidence",
+      stripe_session_id: "cs_live_evidence",
+    };
+    const event = {
+      id: "evt_refund_evidence",
+      type: "charge.refunded",
+      livemode: true,
+      data: {
+        object: {
+          id: "ch_evidence",
+          payment_intent: "pi_evidence",
+          amount: 7900,
+          amount_refunded: 2000,
+          currency: "usd",
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: { "stripe-signature": "sig_test" },
+      body: JSON.stringify(event),
+    });
+    expect(res.status).toBe(200);
+    expect(mockCaptureServer).toHaveBeenCalledWith(
+      "payment_refunded",
+      expect.objectContaining({
+        sessionId: "cs_live_evidence",
+        chargeId: "ch_evidence",
+        stripeEventId: "evt_refund_evidence",
+        paymentIntentId: "pi_evidence",
+        amountRefundedMinor: 2000,
+        currency: "usd",
+        livemode: true,
+        eventSource: "stripe_webhook",
+        analyticsVersion: 2,
+        isFullRefund: false,
+      }),
+      "user_evidence",
     );
   });
 });

@@ -1,0 +1,219 @@
+{
+  "key": "pruning-concept",
+  "auditIndex": 64,
+  "id": "optimization-edge/pruning",
+  "phase": "concept",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+    "sha256": "1123079373fb86576e0501fd53b2e72932cd0783414e5d34d95009ed3aa6478b"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Farah lens stays over anatomical LEFT eye. Demir seatedRIGHT at engineering desk, headturnednaturallyLEFTto monitor with self-aware amused eyebrow, onehandholdingpen overnotebooklyingflaton desk facinghim, otherrestsbykeyboard. Camera sees notebookpages obliquelywithoutlegiblewriting. Sharedmonitorheading \"Eight-weight example\". Rows \"Requested sparsity: 60%\", \"Actually zeroed: 4 of 8\". Two comparisonboxes \"Before dot product: 0.994\" and \"After dot product: 1.000\". Footer \"Same probe input: all ones\" and \"Dense slots remain\". Allscreengeometrycoherent. This captureshisrealizationthat tree-shakinganalogyfailedwithoutmakinghimpresentcard.",
+  "meaning": "Sourceeightweightsexamplefloor4zerosatrequested.6,dotallones.994to1,allslotsretained.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+      "sha256": "1123079373fb86576e0501fd53b2e72932cd0783414e5d34d95009ed3aa6478b",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8167c23-634b-4f57-875f-632d0918aaf4.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/pruning-concept/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/pruning-concept/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+  "candidateSha256": "265591b60dfdbff0e7699e64b21c9a6ec675e4749e4460dfdcd49105ee88a743",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Farah lens stays over anatomical LEFT eye. Demir seatedRIGHT at engineering desk, headturnednaturallyLEFTto monitor with self-aware amused eyebrow, onehandholdingpen overnotebooklyingflaton desk facinghim, otherrestsbykeyboard. Camera sees notebookpages obliquelywithoutlegiblewriting. Sharedmonitorheading \"Eight-weight example\". Rows \"Requested sparsity: 60%\", \"Actually zeroed: 4 of 8\". Two comparisonboxes \"Before dot product: 0.994\" and \"After dot product: 1.000\". Footer \"Same probe input: all ones\" and \"Dense slots remain\". Allscreengeometrycoherent. This captureshisrealizationthat tree-shakinganalogyfailedwithoutmakinghimpresentcard.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+          "sha256": "1123079373fb86576e0501fd53b2e72932cd0783414e5d34d95009ed3aa6478b",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8167c23-634b-4f57-875f-632d0918aaf4.png",
+        "sha256": "265591b60dfdbff0e7699e64b21c9a6ec675e4749e4460dfdcd49105ee88a743"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Sourceeightweightsexamplefloor4zerosatrequested.6,dotallones.994to1,allslotsretained.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/pruning-concept/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/pruning-concept/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+      "sha256": "1123079373fb86576e0501fd53b2e72932cd0783414e5d34d95009ed3aa6478b",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+    }
+  ],
+  "independentReview": {
+    "key": "pruning-concept",
+    "id": "optimization-edge/pruning",
+    "phase": "concept",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8167c23-634b-4f57-875f-632d0918aaf4.png",
+    "candidateSha256": "265591b60dfdbff0e7699e64b21c9a6ec675e4749e4460dfdcd49105ee88a743",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+        "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Source60percentrequest4of8zeroed,.994to1.000 allonesprobe exactlyverified; notebookblankruled. Native full frame inspected against canonical identity and current source.",
+    "alt": "Demir records how pruning four of eight weights changes the same dot product.",
+    "location": "Archimedes, Engineering"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8167c23-634b-4f57-875f-632d0918aaf4.png",
+  "publishedSource": "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-concept.webp",
+  "sourceSha256": "265591b60dfdbff0e7699e64b21c9a6ec675e4749e4460dfdcd49105ee88a743",
+  "webpSha256": "3ace79f2433d2c1dcb5a0e278acea8598484e84c8968264538a35ce9c119e187",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+    "sourceSha256": "1123079373fb86576e0501fd53b2e72932cd0783414e5d34d95009ed3aa6478b",
+    "webpSha256": "607ddf8db2fb2cedbac5116a38861e22e5b3f79bc29f08c772454bf6bc6c9f13",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-56efbed5-9337-4031-b00b-e8d798fce416.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "265591b60dfdbff0e7699e64b21c9a6ec675e4749e4460dfdcd49105ee88a743",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+        "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-concept.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__pruning-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

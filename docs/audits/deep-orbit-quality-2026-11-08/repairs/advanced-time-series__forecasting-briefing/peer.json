@@ -1,0 +1,69 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T07:15:32.526876+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__forecasting-briefing/candidate.png",
+  "candidateSha256": "78e61fab56b0cc2ead3e0a8f4f8ca65e2b03e38c9e53bf83f30a30742eb97b7e",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full native original plus enlarged face and hand crops, compared with canonical portraits. Current lesson and required exercise facts checked. Arm chains, thumb sides, contact, operator direction and display perspective inspected.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+    "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "role": "canonical identity: commander-mirza",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 130,
+      "top": 330,
+      "width": 250,
+      "height": 300
+    },
+    "commander-mirza": {
+      "left": 1200,
+      "top": 310,
+      "width": 190,
+      "height": 255
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 180,
+      "top": 850,
+      "width": 480,
+      "height": 105
+    },
+    {
+      "left": 1100,
+      "top": 695,
+      "width": 320,
+      "height": 270
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "Rollout correctly feeds predictions into the recent window; replay adds the next observation to observed history. The large readable loops distinguish the two modes without inventing a result.",
+    "Mirza and Farah have coherent arm chains, natural rail, table and trackball contact, canonical faces and an engaged conversational gaze."
+  ],
+  "repairDirection": "None."
+}

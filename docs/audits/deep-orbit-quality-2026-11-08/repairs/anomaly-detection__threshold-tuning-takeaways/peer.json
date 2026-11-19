@@ -1,0 +1,59 @@
+{
+  "reviewer": "quality_early",
+  "reviewedAt": "2026-11-08T17:24:03.100482+00:00",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__threshold-tuning-takeaways/candidate.png",
+  "candidateSha256": "ac4fbfb2109970949b21a961c81129efbdfd5e62ee34b9f9b9a61bdf7283ac27",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Fresh native original plus 2x face and hand/contact crops; full shoulder/elbow/wrist chains traced in the original. Canonical portrait independently viewed. Current lesson source checked for required display meaning.",
+  "checks": {
+    "armsHandsProps": "Nazari's two arms connect normally to mouse and notebook-resting hands. Mouse grip has credible finger curvature; five digits are visible on the notebook hand with correct thumb side. Notebook pages and covers remain continuous.",
+    "displayReadabilityAndAccuracy": "Large shared report clearly shows cutoff 0.2 with precision 0.34/recall 1.00 and cutoff 1.0 with precision 1.00/recall 0.72. Future rate unverified avoids claiming unmeasured operations performance.",
+    "identityExpressionAndStory": "Nazari retains canonical age, gray-streaked short hair, cheek lines and angular face. Reserved concentration suits the threshold tradeoff.",
+    "colorAndPerspective": "Muted sage interfaces, charcoal and brass, warm skin and coherent equipment planes. Large readable lesson display is unobstructed and faces its operator."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "cropCoordinates": [
+    {
+      "i": "peer4face",
+      "box": [
+        215,
+        75,
+        580,
+        485
+      ],
+      "scale": 2,
+      "k": 4
+    },
+    {
+      "i": "peer4arms",
+      "box": [
+        115,
+        740,
+        860,
+        990
+      ],
+      "scale": 2,
+      "k": 4
+    }
+  ],
+  "canonicalReference": {
+    "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+    "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+    "role": "canonical identity"
+  },
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+    "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e"
+  },
+  "temporaryCropsRemoved": true,
+  "publication": "Peer review only; no active asset mutation."
+}

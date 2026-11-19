@@ -1,0 +1,80 @@
+{
+  "reviewedAt": "2026-11-07",
+  "sourceFiles": [
+    "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+    "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml"
+  ],
+  "entries": [
+    {
+      "phase": "briefing",
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage3-openai-20261107.png",
+      "candidateSha256": "fc09f3ebb8b21603a334df6c3bf6515b1166e7c4ce0a82d55471c6976165e836",
+      "proofPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-briefing-identity-proof.jpg",
+      "proofSha256": "4130a1e83847071305ae36583203891b2b91614ee790a1e94739866a81d042cb",
+      "verdict": "pass",
+      "identity": "pass: exact canonical morphological comparison, adult age, eyes/nose/jaw, appropriate yaw/expression",
+      "fullframe": "pass: distinct connected arm chains, natural head/neck/chest alignment and seated support, balanced stylized proportions",
+      "palette": "pass: restrained sage/brass, inactive peripheral panels",
+      "screenMeaning": "Explicit schematic sequence:80readings,step4/78,74positions apart; separate raw4.0s/77.4s gap73.4s. No false proportional axis.",
+      "reviewer": "art_peer_final"
+    },
+    {
+      "phase": "concept",
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-concept-semantics-stage2-openai-20261107.png",
+      "candidateSha256": "78458d66d4d00caa59fbee152acea8208fa89d5a5e0ff5452a040311d5968170",
+      "proofPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-concept-identity-proof.jpg",
+      "proofSha256": "112b3651fab93e2cb93bdddd757b147df9f4bd119304db23367acf09dd07f533",
+      "verdict": "pass",
+      "identity": "pass: exact canonical morphological comparison, adult age, eyes/nose/jaw, appropriate yaw/expression",
+      "fullframe": "pass: distinct connected arm chains, natural head/neck/chest alignment and seated support, balanced stylized proportions",
+      "palette": "pass: restrained sage/brass, inactive peripheral panels",
+      "screenMeaning": "Position affects scores;readings+position toscorer/softmax weights; originalreading andweights combine tosummary. Original features only.",
+      "reviewer": "art_peer_final"
+    },
+    {
+      "phase": "challenge",
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-challenge-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "2eb05bbd6316be74106e31ccdaa22721d331cd420fe41b2ca9d3a51495a7d240",
+      "proofPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-challenge-identity-proof.jpg",
+      "proofSha256": "ca9b903d689071c660a2d7e1b723ed5fb9accc3d69c3b1965e0d64a6b8dcb316",
+      "verdict": "pass",
+      "identity": "pass: exact canonical morphological comparison, adult age, eyes/nose/jaw, appropriate yaw/expression",
+      "fullframe": "pass: distinct connected arm chains, natural head/neck/chest alignment and seated support, balanced stylized proportions",
+      "palette": "pass: restrained sage/brass, inactive peripheral panels",
+      "screenMeaning": "Exact moderate-score synthetic fixture [[0,4],[.25,2],[.5,0]], normalized positions0,.5,1, scorer[1,0,.5]; pending weights[3]/summary[2].",
+      "reviewer": "art_peer_final"
+    },
+    {
+      "phase": "takeaways",
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage3-openai-20261107.png",
+      "candidateSha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+      "proofPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-takeaways-identity-proof.jpg",
+      "proofSha256": "45dc4ee62a2fd00d9938d0980c3c802e9d17433f0a3e8128a72b4a603471cd34",
+      "verdict": "pass",
+      "identity": "pass: exact canonical morphological comparison, adult age, eyes/nose/jaw, appropriate yaw/expression",
+      "fullframe": "pass: distinct connected arm chains, natural head/neck/chest alignment and seated support, balanced stylized proportions",
+      "palette": "pass: restrained sage/brass, inactive peripheral panels",
+      "screenMeaning": "Explicit schematic complete80 contains0..31/onset4 plus32..79; truncated48 misses0..31/onset4, retains32..79. Both weight sums1, timestamp/windowlength check explicit.",
+      "reviewer": "art_peer_final"
+    },
+    {
+      "phase": "epilogue",
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-epilogue-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "16418c806ce3def2700197dba9cdefa06444b95609564534266b79d968bcc3f9",
+      "proofPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-epilogue-identity-proof.jpg",
+      "proofSha256": "358196029761f98bbae861cdd652269a947b53ec0f9d7975476f06be3087bc17",
+      "verdict": "pass",
+      "identity": "pass: exact canonical morphological comparison, adult age, eyes/nose/jaw, appropriate yaw/expression",
+      "fullframe": "pass: distinct connected arm chains, natural head/neck/chest alignment and seated support, balanced stylized proportions",
+      "palette": "pass: restrained sage/brass, inactive peripheral panels",
+      "screenMeaning": "Seven numbered captures over six hours, each marks missing first32seconds; wider-window tablet states onset captured. No fabricated score or accuracy.",
+      "reviewer": "art_peer_final"
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

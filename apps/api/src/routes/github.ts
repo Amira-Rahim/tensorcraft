@@ -580,7 +580,7 @@ github.post("/commit", async (c) => {
 
     // Authoritative engagement event, fires only on a confirmed GitHub push.
     // Matches the server-side pattern used for payment_completed (§6i).
-    captureServer(
+    await captureServer(
       SERVER_EVENTS.CODE_PUSHED,
       {
         worldId,
@@ -615,9 +615,8 @@ github.post("/commit", async (c) => {
 // POST /api/github/retroactive-push, Push all completed artifacts for a world
 // ──────────────────────────────────────────────────────────────────────────
 //
-// Runs in-process (single request). For background infra, see the TODO in
-// dev-plan §5f, deferred until a job queue (Upstash QStash / Fly Machines
-// cron) is wired up. Progress is returned synchronously in the response.
+// Runs in-process (single request), returning progress synchronously.
+// Background export work remains deferred in docs/post-launch-backlog.md.
 
 github.use("/retroactive-push", authMiddleware);
 
@@ -794,7 +793,7 @@ github.post("/retroactive-push", async (c) => {
           status: "pushed",
           ...res,
         });
-        captureServer(
+        await captureServer(
           SERVER_EVENTS.CODE_PUSHED,
           {
             worldId: body.worldId,

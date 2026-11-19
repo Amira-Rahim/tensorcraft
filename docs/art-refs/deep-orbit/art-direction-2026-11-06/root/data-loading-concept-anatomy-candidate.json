@@ -1,0 +1,25 @@
+{
+  "id": "foundations/data-loading",
+  "phase": "concept",
+  "cast": [
+    "ensign-demir"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-06f31007-8d3b-41c7-8abc-9571f3d0ecac.png",
+  "prompt": "Use case: precise anatomy repair and lesson-grounded story illustration. Input1 is Demir's immutable FACE identity. Input2 is the target Deep Orbit Data Loading CONCEPT scene. REBUILD Demir's torso and BOTH arms to remove ambiguous same-shoulder arm attachment: turn his chest into an open front three-quarter view so BOTH shoulder joints are visible. His anatomical LEFT shoulder (viewer-right) connects to one left upper arm and elbow extending naturally toward the display; that left hand points with one index finger. His anatomical RIGHT shoulder (viewer-left) connects to a separate right upper arm down his side, right elbow bent gently, right palm resting flat on the desk. Two continuous separate shoulder-elbow-wrist-hand chains, two arms, two hands, natural fingers/thumbs. No crossed hidden arm emerging from his abdomen. Keep his exact canonical face, broad soft squared jaw, compact rounded nose, freckles, uneven stubble, hair and RIGHT-ear comms. Balanced warm stylized adult proportions, no large bobblehead and no tiny head. Preserve his curious approachable expression. Keep Engineering setting, physical desk and natural separation from furniture. Muted sage green screens and aged brass with warm restrained lamp light, charcoal navy uniform and natural tan skin, no neon glow or orange-yellow wash.\nReplace the PRIMARY screen with the actual lesson's lazy generator example, no random shapes: left a small stack of record cards labeled exactly '16-row stand-in'; center ONE selected record labeled 'ID 1'; two thin arrows lead from that single selected record to two separate outputs on the right. TOP output labeled exactly 'xs [3]' contains exactly THREE adjoining cells with values '100', '1', '0.1'. LOWER output labeled exactly 'ys [1]' contains exactly ONE cell with value '1'. Archive stack to selected record has one simple arrow. This depicts readSample(1) yielding one feature tensor and one label tensor on demand. Do not show batches, training, a progress bar, a success verdict or an invented result. Small title 'One row per request'. Make every short label/value clean and readable. The other monitor remains ARIA's ONE simple thin ring with ONE horizontal waveform, no invented charts. Place Demir's pointing fingertip near the selected record without hiding labels. Preserve a clean uncluttered teaching diagram, no duplicate cells, no extra output boxes. ONE1536x1024 landscape scene.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/identity-review/data-loading-concept-anatomy-input.png"
+  ],
+  "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+  "screenMeaning": "One lazy read of practice row ID1 yields xs[3]=[100,1,0.1] and ys[1]=[1], using the actual supplied readSample formula. No batching or model training is depicted.",
+  "alt": "Demir traces one requested practice row into its three feature values and one label.",
+  "location": "Archimedes, Engineering",
+  "deletedHistoricalImages": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/root/identity-review/data-loading-concept-anatomy-input.png",
+      "sha256": "9d7e5ef861c46c609dfd84dcf91e0c7707a6cd608546c8e684dcdebd15594e18",
+      "availability": "deleted-obsolete-working-copy"
+    }
+  ]
+}

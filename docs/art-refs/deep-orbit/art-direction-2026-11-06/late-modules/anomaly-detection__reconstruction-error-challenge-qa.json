@@ -1,0 +1,21 @@
+{
+  "key": "anomaly-detection/reconstruction-error",
+  "phase": "challenge",
+  "source": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261106.png",
+  "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+  "tool": "built-in imagegen",
+  "sourceSha256": "3657d8c7d6a02218cf0e099baaa616ef1c826d2d10c57a2b9e0a7d4fe634093d",
+  "outputSha256": "6258d0d509343e9a7a1721d881ece3217433abd3247e452f23f95df468835aec",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 186470,
+  "webpQuality": 86,
+  "alt": "Demir checks reconstruction scores while keeping temporary tensors under control.",
+  "review": {
+    "status": "accepted",
+    "method": "Visual inspection of full generated image, tracing all visible limbs and furniture boundaries; canonical face comparison; source story review.",
+    "notes": "Demir holds tablet with one hand and adjusts one dial with the other. Two continuous arms, no chair or desk intersection. Resource indicators are bounded and no unsupported performance result is presented."
+  }
+}

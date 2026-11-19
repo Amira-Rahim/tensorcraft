@@ -1,0 +1,25 @@
+{
+  "id": "foundations/data-loading",
+  "phase": "briefing",
+  "cast": [
+    "ensign-demir"
+  ],
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-5e6d63a1-7166-4150-8c6b-125ce0594355.png"
+  ],
+  "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+  "screenMeaning": "The failed full-archive load stopped after 19,204 of 28,800 readings at about 40 GB. All figures match the opening story; no invented intermediate measurement trace.",
+  "alt": "Demir studies the failed full-archive load, stopped at 19,204 readings with about 40 GB held in memory.",
+  "location": "Archimedes, Engineering",
+  "spec": {
+    "scale": "Preserve current head size and tired leaned pose. The red warning lamp belongs to this failed-load story and stays red.",
+    "screen": "Replace the large main screen with ONE archive-memory chart titled Full archive load. Horizontal axis Archive readings, from0 to28,800. Vertical axis Memory. Draw a rising line that STOPS at an amber X at19,204 readings, around40GB. Label the stop 19,204 /28,800 and about40GB. Short status Allocation failed. Do NOT draw a fall back to zero or claim the full archive loaded. Remove unrelated pie charts, clocks, battery segments and decorative dashboards from this main screen. Other small displays remain dim archive status, no unrelated fake plots. Right ARIA display is one thin ring and a single horizontal waveform.",
+    "alt": "Demir studies the failed full-archive load, stopped at19,204 readings with about40GB held in memory.",
+    "meaning": "Opening story: loading every raw capture into one array stops at19,204 of28,800 records and about40GB, requiring the lazy-loading fix."
+  },
+  "status": "generated-awaiting-review",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-745f43f2-0034-4dd8-ac38-7e769f3959a5.png",
+  "prompt": "Targeted screen-only edit. First input is canonical Ensign Demir identity. Last input is edit target. Preserve the exact character face, expression, body, head scale, natural hands, posture, camera, furniture and red warning light. Change only displayed UI and tame excessive yellow screen lettering.\nReplace large main display's chart with a clean practical status panel, no chart at all because intermediate measurements are unavailable. Title \"Full archive load\". Three well-spaced rows below: \"Readings loaded\" with \"19,204 of 28,800\", \"Memory\" with \"about 40 GB\", \"Status\" with \"Allocation failed\". Every word must have normal spaces. Sage green labels on dark charcoal-green glass, restrained amber for failed status only. No other numbers, progress bars, extra decorative panels or made-up measurements.\nMake the three small displays below this main display inactive dark glass with no text, numbers or shapes. Right display: ARIA as one thin muted sage ring with one simple horizontal waveform through it; no gold circle. Keep natural skin and aged brass, reduce yellow-gold screen cast. Lamp stays red. Exact same human and room.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic."
+}

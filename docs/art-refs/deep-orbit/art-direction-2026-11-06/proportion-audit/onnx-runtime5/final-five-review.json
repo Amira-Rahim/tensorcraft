@@ -1,0 +1,576 @@
+[
+  {
+    "key": "onnx-runtime-web-challenge",
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__onnx-runtime-web-challenge-openai-20261107.png",
+    "inputSha256": "98ed76d4f1a114bc8b54576dc0a6d2b294dd89781d189657d647567efe4f5a7a",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-65033157-7e8a-4f60-a2c7-cdf8145fe5f0.png",
+    "archivedInputSha256": "98ed76d4f1a114bc8b54576dc0a6d2b294dd89781d189657d647567efe4f5a7a",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__onnx-runtime-web-challenge-openai-20261107.png",
+        "sha256": "98ed76d4f1a114bc8b54576dc0a6d2b294dd89781d189657d647567efe4f5a7a"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+        "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+        "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+      }
+    ],
+    "screenMeaning": "Feed both runtimes identical[1,3]float32 values, await output, compare returned scores within0.0001; fixture intervals are simulated.",
+    "screenSpecification": "Label the left main screen \"TFJS\" and right \"ONNX WASM\". Both show exactly the SAME input \"[0.42, 0.66, 0.31]\" and shape \"float32 [1, 3]\". Each has an unfilled field \"Output:\". A small shared rule on one main screen reads \"abs(a - b) <= 0.0001\". Replace blank clock drawings on BOTH lower screens with the readable timing sequence \"Start -> predict -> await output -> Stop\" and the heading \"SIMULATED TIMER\". No returned intervals, output values, agreement tick or speed winner before the task runs. All other screens inactive.",
+    "proportionSpecification": "Gently reduce Demir whole head about 8 percent linearly while preserving canonical internal face geometry, expression, age, hair, gaze and natural neck alignment. Preserve body, poses and arms. No large reduction.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 1 images are immutable canonical portraits for ensign-demir. Next image is muted COLOR STYLE ONLY, never pose, people or layout. LAST image is the target. Preserve exact canonical faces, age, wardrobe, gaze, expression, camera, room, phase action, all continuous arm chains, hands, furniture contacts and natural anatomy. Gently reduce Demir whole head about 8 percent linearly while preserving canonical internal face geometry, expression, age, hair, gaze and natural neck alignment. Preserve body, poses and arms. No large reduction. Keep engineering-room warm practical lamps, olive/charcoal surfaces and aged brass hardware. Screen ink muted sage #6BAA8A, brass #A89060-family, natural warm tan skin and flat cel shadows. Remove neon mint bloom, luminous green hair/skin edges, shiny bright gold and glossy gradients. Label the left main screen \"TFJS\" and right \"ONNX WASM\". Both show exactly the SAME input \"[0.42, 0.66, 0.31]\" and shape \"float32 [1, 3]\". Each has an unfilled field \"Output:\". A small shared rule on one main screen reads \"abs(a - b) <= 0.0001\". Replace blank clock drawings on BOTH lower screens with the readable timing sequence \"Start -> predict -> await output -> Stop\" and the heading \"SIMULATED TIMER\". No returned intervals, output values, agreement tick or speed winner before the task runs. All other screens inactive. Every secondary screen not explicitly assigned above becomes inactive dark charcoal glass, no unrelated waves, bars, diagrams, dials or text. Physical buttons remain. Exact short labels with normal spaces, clear perspective and no invented data. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-challenge.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-challenge.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-968ca775-3ddd-4ae8-8083-42aa9c7fc0c2.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-968ca775-3ddd-4ae8-8083-42aa9c7fc0c2.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "ef202a7f533be345f870abcfd019d2b88943f4124706f15538ecfee24e62cde1",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 321,
+          "top": 88,
+          "width": 298,
+          "height": 347
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-65033157-7e8a-4f60-a2c7-cdf8145fe5f0.png",
+        "beforeSha256": "98ed76d4f1a114bc8b54576dc0a6d2b294dd89781d189657d647567efe4f5a7a",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-968ca775-3ddd-4ae8-8083-42aa9c7fc0c2.png",
+        "reviewedImageSha256": "ef202a7f533be345f870abcfd019d2b88943f4124706f15538ecfee24e62cde1",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/proofs/onnx-runtime-web-challenge-ensign-demir.png",
+        "proofSha256": "d487fc5d9e5092f0750fa50d0a404b1a635d916cd8004ebed4054b256b988b99"
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "rootReview": {
+      "status": "approved",
+      "reviewer": "root",
+      "candidateSha256": "ef202a7f533be345f870abcfd019d2b88943f4124706f15538ecfee24e62cde1",
+      "proofSha256": [
+        "d487fc5d9e5092f0750fa50d0a404b1a635d916cd8004ebed4054b256b988b99"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-65033157-7e8a-4f60-a2c7-cdf8145fe5f0.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-968ca775-3ddd-4ae8-8083-42aa9c7fc0c2.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "art-src/scenes/browser-runtimes__onnx-runtime-web-challenge-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "key": "onnx-runtime-web-briefing",
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "briefing",
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__onnx-runtime-web-openai-20261107.png",
+    "inputSha256": "37159b9754e2890a39085d8578a0b0a058fc7acdfc98d43a8e0066f2732f23c5",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-522491dd-cb26-4085-ab78-e4d37152c6f0.png",
+    "archivedInputSha256": "37159b9754e2890a39085d8578a0b0a058fc7acdfc98d43a8e0066f2732f23c5",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__onnx-runtime-web-openai-20261107.png",
+        "sha256": "37159b9754e2890a39085d8578a0b0a058fc7acdfc98d43a8e0066f2732f23c5"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+        "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+        "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+      }
+    ],
+    "screenMeaning": "Nazari asks for output parity, cold first prediction and200 completed warm calls on target consoles.",
+    "screenSpecification": "Replace both large rear chart screens with a paired comparison plan. Left title \"TFJS\", right title \"ONNX WASM\". Both show the identical text \"Same model, weights and input\" and \"Input fixture: [0.42, 0.66, 0.31]\". No plotted outputs or winner. On the central small console show \"BENCHMARK PLAN\" then \"First usable prediction\", \"20 warmups\", \"200 measured calls\". These are the actual planned checks, not timing results. All other monitors inactive.",
+    "proportionSpecification": "Preserve all head/body sizes exactly. No head shrinking.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 2 images are immutable canonical portraits for chief-nazari, ensign-demir. Next image is muted COLOR STYLE ONLY, never pose, people or layout. LAST image is the target. Preserve exact canonical faces, age, wardrobe, gaze, expression, camera, room, phase action, all continuous arm chains, hands, furniture contacts and natural anatomy. Preserve all head/body sizes exactly. No head shrinking. Keep engineering-room warm practical lamps, olive/charcoal surfaces and aged brass hardware. Screen ink muted sage #6BAA8A, brass #A89060-family, natural warm tan skin and flat cel shadows. Remove neon mint bloom, luminous green hair/skin edges, shiny bright gold and glossy gradients. Replace both large rear chart screens with a paired comparison plan. Left title \"TFJS\", right title \"ONNX WASM\". Both show the identical text \"Same model, weights and input\" and \"Input fixture: [0.42, 0.66, 0.31]\". No plotted outputs or winner. On the central small console show \"BENCHMARK PLAN\" then \"First usable prediction\", \"20 warmups\", \"200 measured calls\". These are the actual planned checks, not timing results. All other monitors inactive. Every secondary screen not explicitly assigned above becomes inactive dark charcoal glass, no unrelated waves, bars, diagrams, dials or text. Physical buttons remain. Exact short labels with normal spaces, clear perspective and no invented data. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-briefing.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-briefing.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-edca0952-36ba-4005-a021-cbbddae06886.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-edca0952-36ba-4005-a021-cbbddae06886.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "558bec6cb78bb4995ee5fe86ae743925a5d721c9128028d880cf9d6a23fa56c4",
+    "faceProofs": [
+      {
+        "character": "nazari",
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 215,
+          "top": 315,
+          "width": 240,
+          "height": 275
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-522491dd-cb26-4085-ab78-e4d37152c6f0.png",
+        "beforeSha256": "37159b9754e2890a39085d8578a0b0a058fc7acdfc98d43a8e0066f2732f23c5",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-edca0952-36ba-4005-a021-cbbddae06886.png",
+        "reviewedImageSha256": "558bec6cb78bb4995ee5fe86ae743925a5d721c9128028d880cf9d6a23fa56c4",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/proofs/onnx-runtime-web-briefing-nazari.png",
+        "proofSha256": "0aab62543c9363ab47a0983e453a0e500c4f36042361bea61e5b995f92db8cf0"
+      },
+      {
+        "character": "demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 1060,
+          "top": 470,
+          "width": 235,
+          "height": 270
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-522491dd-cb26-4085-ab78-e4d37152c6f0.png",
+        "beforeSha256": "37159b9754e2890a39085d8578a0b0a058fc7acdfc98d43a8e0066f2732f23c5",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-edca0952-36ba-4005-a021-cbbddae06886.png",
+        "reviewedImageSha256": "558bec6cb78bb4995ee5fe86ae743925a5d721c9128028d880cf9d6a23fa56c4",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/proofs/onnx-runtime-web-briefing-demir.png",
+        "proofSha256": "4888d3ee6419576ffb8aaf9a2b2327b788982ff6ef146ef0304e4fd5b20d9fbd"
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "rootReview": {
+      "status": "approved",
+      "reviewer": "root",
+      "candidateSha256": "558bec6cb78bb4995ee5fe86ae743925a5d721c9128028d880cf9d6a23fa56c4",
+      "proofSha256": [
+        "0aab62543c9363ab47a0983e453a0e500c4f36042361bea61e5b995f92db8cf0",
+        "4888d3ee6419576ffb8aaf9a2b2327b788982ff6ef146ef0304e4fd5b20d9fbd"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-522491dd-cb26-4085-ab78-e4d37152c6f0.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-edca0952-36ba-4005-a021-cbbddae06886.png",
+        "art-src/scenes/browser-runtimes__onnx-runtime-web-openai-20261107.png",
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "key": "onnx-runtime-web-concept",
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "concept",
+    "cast": [
+      "chief-nazari",
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+    "inputSha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-3037ca2d-bfd1-4e65-afb4-c70381770a52.png",
+    "archivedInputSha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+        "sha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+        "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+        "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+      }
+    ],
+    "screenMeaning": "ONNX portability depends on graph operators, opset and execution provider, not file format alone.",
+    "screenSpecification": "On the center teaching display show exact architecture \"DEEP SCAN\" with four connected blocks \"3\" -> \"32 ReLU\" -> \"16 ReLU\" -> \"1 sigmoid\". Beneath it a short line \"Check: operators, opset, provider\". Do not add success checks, approval badges or universal portability claims. Both activations and final sigmoid are required. All other screens inactive.",
+    "proportionSpecification": "Preserve all head/body sizes exactly. No head shrinking.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 2 images are immutable canonical portraits for chief-nazari, ensign-demir. Next image is muted COLOR STYLE ONLY, never pose, people or layout. LAST image is the target. Preserve exact canonical faces, age, wardrobe, gaze, expression, camera, room, phase action, all continuous arm chains, hands, furniture contacts and natural anatomy. Preserve all head/body sizes exactly. No head shrinking. Keep engineering-room warm practical lamps, olive/charcoal surfaces and aged brass hardware. Screen ink muted sage #6BAA8A, brass #A89060-family, natural warm tan skin and flat cel shadows. Remove neon mint bloom, luminous green hair/skin edges, shiny bright gold and glossy gradients. On the center teaching display show exact architecture \"DEEP SCAN\" with four connected blocks \"3\" -> \"32 ReLU\" -> \"16 ReLU\" -> \"1 sigmoid\". Beneath it a short line \"Check: operators, opset, provider\". Do not add success checks, approval badges or universal portability claims. Both activations and final sigmoid are required. All other screens inactive. Every secondary screen not explicitly assigned above becomes inactive dark charcoal glass, no unrelated waves, bars, diagrams, dials or text. Physical buttons remain. Exact short labels with normal spaces, clear perspective and no invented data. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-concept.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-concept.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b4c4c69b-449a-4c59-8ca7-685846476305.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b4c4c69b-449a-4c59-8ca7-685846476305.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "a5516b0746f58c65a9c1f887ffab19fd0fc43143c7552faffe3812e33a332286",
+    "faceProofs": [
+      {
+        "character": "chief-nazari",
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 196,
+          "top": 97,
+          "width": 285,
+          "height": 307
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-3037ca2d-bfd1-4e65-afb4-c70381770a52.png",
+        "beforeSha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b4c4c69b-449a-4c59-8ca7-685846476305.png",
+        "reviewedImageSha256": "a5516b0746f58c65a9c1f887ffab19fd0fc43143c7552faffe3812e33a332286",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/proofs/onnx-runtime-web-concept-chief-nazari.png",
+        "proofSha256": "f5e564383db5bfc81d39efbee0b0ce9c04d19c4e7eece3b45e41e785e6d0a199"
+      },
+      {
+        "character": "ensign-demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 1081,
+          "top": 84,
+          "width": 234,
+          "height": 311
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-3037ca2d-bfd1-4e65-afb4-c70381770a52.png",
+        "beforeSha256": "c4027fb97dc9bedf766b9b956ea508d4175725d908b51a37db8d9af7a933386b",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b4c4c69b-449a-4c59-8ca7-685846476305.png",
+        "reviewedImageSha256": "a5516b0746f58c65a9c1f887ffab19fd0fc43143c7552faffe3812e33a332286",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/proofs/onnx-runtime-web-concept-ensign-demir.png",
+        "proofSha256": "1a0c47362eda37a5fc4b3434a098c77c2b414819fadd716d061d4ecf8d74a13f"
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "rootReview": {
+      "status": "approved",
+      "reviewer": "root",
+      "candidateSha256": "a5516b0746f58c65a9c1f887ffab19fd0fc43143c7552faffe3812e33a332286",
+      "proofSha256": [
+        "f5e564383db5bfc81d39efbee0b0ce9c04d19c4e7eece3b45e41e785e6d0a199",
+        "1a0c47362eda37a5fc4b3434a098c77c2b414819fadd716d061d4ecf8d74a13f"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-3037ca2d-bfd1-4e65-afb4-c70381770a52.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-b4c4c69b-449a-4c59-8ca7-685846476305.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "art-src/scenes/browser-runtimes__onnx-runtime-web-concept-openai-20261107.png",
+        "docs/art-refs/deep-orbit/chief-nazari.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "key": "onnx-runtime-web-epilogue",
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "epilogue",
+    "cast": [
+      "ensign-demir"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__onnx-runtime-web-epilogue-openai-20261107.png",
+    "inputSha256": "cda70a22028d81b3e580ce69578a8a2e0137a4543fdb3eb9e614fbd49900fc9d",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-ae1d045e-391b-4464-89d6-e8ea9e77b847.png",
+    "archivedInputSha256": "cda70a22028d81b3e580ce69578a8a2e0137a4543fdb3eb9e614fbd49900fc9d",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__onnx-runtime-web-epilogue-openai-20261107.png",
+        "sha256": "cda70a22028d81b3e580ce69578a8a2e0137a4543fdb3eb9e614fbd49900fc9d"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+        "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+        "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+      }
+    ],
+    "screenMeaning": "ARIA records rules0.4ms/wrong sample7741, WASMbench0.9ms/uncertain and liveWebGL3.4ms/uncertain; these cover different work.",
+    "screenSpecification": "Replace the three blank cards on the small foreground monitor with a readable log titled \"ARIA LOG 0317\". Exactly three rows: \"Rule engine 0.4 ms\"; \"WASM bench 0.9 ms\"; \"WebGL live 3.4 ms\". A clear footer reads \"Different workloads\". These are story values, NOT a controlled speed ranking. Preserve the abstract waveform hologram to the right as ARIA speaking, with a short label \"ARIA\" so it is identified as her voice display rather than a data plot. All other wall and equipment screens inactive dark glass.",
+    "proportionSpecification": "Preserve all head/body sizes exactly. No head shrinking.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 1 images are immutable canonical portraits for ensign-demir. Next image is muted COLOR STYLE ONLY, never pose, people or layout. LAST image is the target. Preserve exact canonical faces, age, wardrobe, gaze, expression, camera, room, phase action, all continuous arm chains, hands, furniture contacts and natural anatomy. Preserve all head/body sizes exactly. No head shrinking. Keep engineering-room warm practical lamps, olive/charcoal surfaces and aged brass hardware. Screen ink muted sage #6BAA8A, brass #A89060-family, natural warm tan skin and flat cel shadows. Remove neon mint bloom, luminous green hair/skin edges, shiny bright gold and glossy gradients. Replace the three blank cards on the small foreground monitor with a readable log titled \"ARIA LOG 0317\". Exactly three rows: \"Rule engine 0.4 ms\"; \"WASM bench 0.9 ms\"; \"WebGL live 3.4 ms\". A clear footer reads \"Different workloads\". These are story values, NOT a controlled speed ranking. Preserve the abstract waveform hologram to the right as ARIA speaking, with a short label \"ARIA\" so it is identified as her voice display rather than a data plot. All other wall and equipment screens inactive dark glass. Every secondary screen not explicitly assigned above becomes inactive dark charcoal glass, no unrelated waves, bars, diagrams, dials or text. Physical buttons remain. Exact short labels with normal spaces, clear perspective and no invented data. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-epilogue.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-epilogue.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-cdd43f97-95fb-431b-917b-a4778f67aab3.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-cdd43f97-95fb-431b-917b-a4778f67aab3.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "59ba359948988ebf437fba0112c6ff377fd7836a1bf11f7abaf9c0ca0531a833",
+    "faceProofs": [
+      {
+        "character": "ensign-demir",
+        "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 493,
+          "top": 88,
+          "width": 318,
+          "height": 373
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-ae1d045e-391b-4464-89d6-e8ea9e77b847.png",
+        "beforeSha256": "cda70a22028d81b3e580ce69578a8a2e0137a4543fdb3eb9e614fbd49900fc9d",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-cdd43f97-95fb-431b-917b-a4778f67aab3.png",
+        "reviewedImageSha256": "59ba359948988ebf437fba0112c6ff377fd7836a1bf11f7abaf9c0ca0531a833",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/proofs/onnx-runtime-web-epilogue-ensign-demir.png",
+        "proofSha256": "92fc16e5439419ab885c7ac4866356ee0c85b9691c3c5cbc621e012aa3bdf301"
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "rootReview": {
+      "status": "approved",
+      "reviewer": "root",
+      "candidateSha256": "59ba359948988ebf437fba0112c6ff377fd7836a1bf11f7abaf9c0ca0531a833",
+      "proofSha256": [
+        "92fc16e5439419ab885c7ac4866356ee0c85b9691c3c5cbc621e012aa3bdf301"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    },
+    "reviewDerivativesCleanup": {
+      "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+      "previewFilesRemoved": true,
+      "originalPathsAndHashesRetained": true,
+      "approvalStatusUnchanged": true
+    },
+    "reviewEvidence": {
+      "kind": "original-images",
+      "paths": [
+        "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-ae1d045e-391b-4464-89d6-e8ea9e77b847.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-cdd43f97-95fb-431b-917b-a4778f67aab3.png",
+        "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "art-src/scenes/browser-runtimes__onnx-runtime-web-epilogue-openai-20261107.png",
+        "docs/art-refs/deep-orbit/ensign-demir.png"
+      ]
+    }
+  },
+  {
+    "key": "onnx-runtime-web-takeaways",
+    "id": "browser-runtimes/onnx-runtime-web",
+    "phase": "takeaways",
+    "cast": [
+      "chief-nazari"
+    ],
+    "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/signal-repairs/identity-approved.json",
+    "status": "candidate-awaiting-root-review",
+    "input": "art-src/scenes/browser-runtimes__onnx-runtime-web-takeaways-openai-20261107.png",
+    "inputSha256": "afbe35c361065ac93b2155d85c7eea251a836fa1a7f39a8f93756c253ba87f5d",
+    "archivedInput": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-99f47e56-9cba-42a3-b112-ee2fea665827.png",
+    "archivedInputSha256": "afbe35c361065ac93b2155d85c7eea251a836fa1a7f39a8f93756c253ba87f5d",
+    "references": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-e2e62fe9-7114-479e-83a4-806560686e43.png",
+        "sha256": "66a5e5ab650a7d90203faff2961646fc8c607b850f82144741e693382e8a9d07"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__onnx-runtime-web-takeaways-openai-20261107.png",
+        "sha256": "afbe35c361065ac93b2155d85c7eea251a836fa1a7f39a8f93756c253ba87f5d"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+        "sha256": "931219869d2157016edcb03948918a59a7f9eb8c0931f0c663d79f763fba224a"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+        "sha256": "fd301c640e191874950feb92baffeda1e5360f470ec4a562d2962951bab2d0ce"
+      }
+    ],
+    "screenMeaning": "Check output parity before controlled timing; keep distributions and separate cold startup from warm inference.",
+    "screenSpecification": "Replace the three arbitrary histograms on Nazari tablet with a clear summary titled \"COMPARE ON TARGET\". Four short rows: \"Same weights, input and batch\"; \"Check output agreement\"; \"Warm median and P95\"; \"First usable prediction\". No histogram, fictional latency sample or winner. All other monitors and instrument screens inactive dark glass.",
+    "proportionSpecification": "Gently reduce Nazari whole head about 8 percent linearly while preserving canonical internal face geometry, expression, age, hair, gaze and natural neck alignment. Preserve body, poses and arms. No large reduction.",
+    "prompt": "Use case: identity-preserve educational adventure-comic scene edit. First 1 images are immutable canonical portraits for chief-nazari. Next image is muted COLOR STYLE ONLY, never pose, people or layout. LAST image is the target. Preserve exact canonical faces, age, wardrobe, gaze, expression, camera, room, phase action, all continuous arm chains, hands, furniture contacts and natural anatomy. Gently reduce Nazari whole head about 8 percent linearly while preserving canonical internal face geometry, expression, age, hair, gaze and natural neck alignment. Preserve body, poses and arms. No large reduction. Keep engineering-room warm practical lamps, olive/charcoal surfaces and aged brass hardware. Screen ink muted sage #6BAA8A, brass #A89060-family, natural warm tan skin and flat cel shadows. Remove neon mint bloom, luminous green hair/skin edges, shiny bright gold and glossy gradients. Replace the three arbitrary histograms on Nazari tablet with a clear summary titled \"COMPARE ON TARGET\". Four short rows: \"Same weights, input and batch\"; \"Check output agreement\"; \"Warm median and P95\"; \"First usable prediction\". No histogram, fictional latency sample or winner. All other monitors and instrument screens inactive dark glass. Every secondary screen not explicitly assigned above becomes inactive dark charcoal glass, no unrelated waves, bars, diagrams, dials or text. Physical buttons remain. Exact short labels with normal spaces, clear perspective and no invented data. Output one 1536x1024 image.",
+    "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-takeaways.prompt.txt",
+    "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/onnx-runtime-web-takeaways.json",
+    "candidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-983e0f73-6b4a-4e27-86be-7ddaae55a99f.png",
+    "outputHint": "Generated images are saved to /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf as /Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-983e0f73-6b4a-4e27-86be-7ddaae55a99f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "candidateSha256": "0a91785fd8841e1b2d57e9aa88c203ccfe22756a282ffb6d18a235d0cf06a237",
+    "faceProofs": [
+      {
+        "character": "chief-nazari",
+        "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "referenceCrop": {
+          "left": 110,
+          "top": 0,
+          "width": 290,
+          "height": 330
+        },
+        "crop": {
+          "left": 200,
+          "top": 10,
+          "width": 408,
+          "height": 451
+        },
+        "before": "/Users/amira.salah/.codex/generated_images/01a1b4f9-1a4e-7983-88f1-5bead4e30ab0/exec-99f47e56-9cba-42a3-b112-ee2fea665827.png",
+        "beforeSha256": "afbe35c361065ac93b2155d85c7eea251a836fa1a7f39a8f93756c253ba87f5d",
+        "reviewedImage": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-983e0f73-6b4a-4e27-86be-7ddaae55a99f.png",
+        "reviewedImageSha256": "0a91785fd8841e1b2d57e9aa88c203ccfe22756a282ffb6d18a235d0cf06a237",
+        "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/onnx-runtime5/proofs/onnx-runtime-web-takeaways-chief-nazari.png",
+        "proofSha256": "166a1525b55b0eaa9734f3bf736078bf9cbf3221d284003d6da0ed6e9b162fed"
+      }
+    ],
+    "ownReview": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeckShoulder": "pass",
+      "proportions": "pass",
+      "palette": "pass",
+      "screenSemantics": "pass",
+      "notes": "Full native frame inspected. Canonical face crop review follows. Final secondary screens inactive, meaningful labels match current lesson and exercise. No invented measurement or completed challenge answer."
+    },
+    "rootReview": {
+      "status": "approved",
+      "reviewer": "root",
+      "candidateSha256": "0a91785fd8841e1b2d57e9aa88c203ccfe22756a282ffb6d18a235d0cf06a237",
+      "proofSha256": [
+        "166a1525b55b0eaa9734f3bf736078bf9cbf3221d284003d6da0ed6e9b162fed"
+      ],
+      "scope": "Full frame, current canonical face proofs, anatomy, proportions, palette, room continuity, exact current MDX/YAML screen semantics and inactive secondary displays."
+    }
+  }
+]

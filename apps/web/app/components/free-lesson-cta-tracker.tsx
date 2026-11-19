@@ -3,8 +3,8 @@
 import { EVENTS, track } from "@/lib/analytics-events";
 import type { EventProperties } from "@/lib/analytics-events";
 
-type FreeLessonCtaSource =
-  EventProperties[typeof EVENTS.FREE_LESSON_CTA_CLICKED]["source"];
+type FreeLessonCtaProperties =
+  EventProperties[typeof EVENTS.FREE_LESSON_CTA_CLICKED];
 
 /**
  * Fires `free_lesson_cta_clicked` when the user clicks a free-lesson link.
@@ -15,15 +15,22 @@ type FreeLessonCtaSource =
  */
 export function FreeLessonCtaTracker({
   source,
+  guideSlug,
+  targetLesson,
+  placement,
   children,
-}: {
-  source: FreeLessonCtaSource;
+}: FreeLessonCtaProperties & {
   children: React.ReactNode;
 }) {
   return (
     <span
       onClickCapture={() => {
-        track(EVENTS.FREE_LESSON_CTA_CLICKED, { source });
+        track(EVENTS.FREE_LESSON_CTA_CLICKED, {
+          source,
+          ...(guideSlug ? { guideSlug } : {}),
+          ...(targetLesson ? { targetLesson } : {}),
+          ...(placement ? { placement } : {}),
+        });
       }}
       className="contents"
     >

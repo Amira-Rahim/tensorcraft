@@ -1,0 +1,69 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T06:47:54.659624+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__time-series-ensemble-methods-concept/candidate.png",
+  "candidateSha256": "3e7169936b8a1bc3594064ece5018678df70fa0e20d498dfb6be1c69861c60d2",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original inspection and enlarged canonical-face plus hand crops; current lesson source facts checked. Traced shoulder-elbow-wrist-hand chains, thumb sides, prop continuity, operator direction and display surface perspective.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+    "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 125,
+      "top": 270,
+      "width": 275,
+      "height": 290
+    },
+    "ensign-demir": {
+      "left": 1200,
+      "top": 235,
+      "width": 240,
+      "height": 295
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 170,
+      "top": 690,
+      "width": 470,
+      "height": 210
+    },
+    {
+      "left": 960,
+      "top": 560,
+      "width": 520,
+      "height": 335
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The source table values LSTM 0.045 / 0.333, attention 0.038 / 0.467 and Kalman 0.058 / 0.200 are exact and legible. Weighted blending and evaluation on a separate period remain distinct.",
+    "Both canonical faces and conversational eyelines pass. Farah has natural mouse and bench contact; Demir has a plausible dial grip and rail hold, each with correct thumb placement and complete arm chains."
+  ],
+  "repairDirection": "None."
+}

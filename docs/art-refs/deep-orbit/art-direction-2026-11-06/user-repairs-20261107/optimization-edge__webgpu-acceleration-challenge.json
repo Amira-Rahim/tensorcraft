@@ -1,0 +1,244 @@
+{
+  "key": "webgpu-acceleration-challenge",
+  "auditIndex": 59,
+  "id": "optimization-edge/webgpu-acceleration",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5a5458c0-dcbd-4a60-b36f-4c2c59da8950.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+    "sha256": "2e8a14e1d0b0f67242b28e9b212438e463e7217f269fbb3e275f1d21c3b28c83"
+  },
+  "prompt": "Use case: precise-object-edit. First reference canonical Demir identity; second bridge architecture only; last exact target. Change only the incorrect earpiece on Demir's visible anatomical LEFT ear at image right. Remove that visible earpiece and reconstruct a natural bare left ear, matching his canonical skin and ear anatomy. His single right-ear earpiece is hidden on the far side by his head in this left-profile angle, so do not draw another device elsewhere. Preserve all other pixels as closely as possible: face morphology, hair, pose, both hands, body, chair, colors, exact display text, perspective and composition. No other changes.",
+  "meaning": "Exercise tries suppliedpreferenceorder,continuefalse/throw,awaitreadyonceafterfirstsuccess,controlledruntime. Listillustrativelessonorder.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5a5458c0-dcbd-4a60-b36f-4c2c59da8950.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5a5458c0-dcbd-4a60-b36f-4c2c59da8950.png",
+      "sha256": "28fbd2a87d307025044fecf2f81329e78867eec886cc3a74f07047f23c7e9c16",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+      "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e5c9ea5f-df2a-4f6a-a749-efce0a3967b4.png",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Demir seated RIGHT at bridgeconsole, facingLEFTtoward uprightworkscreen withdeterminedlivelysmile, bothhandsonthekeyboard. Removeheldtabletandbuttonpresentation. Screenheading \"Backend fallback rehearsal\". Orderedlist \"WebGPU\", \"WebGL\", \"WASM\", \"CPU\" eachwithsmall \"pending\" label. Bottom \"False or throw: try next\", \"First success: await ready\", \"Return selected name\". Footer \"Controlled runtime test\". No checkmarkchosenbackend or fabricatedtiming. This isactualstartup test, naturalhands/neckchaircontact.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5a5458c0-dcbd-4a60-b36f-4c2c59da8950.png",
+          "sha256": "28fbd2a87d307025044fecf2f81329e78867eec886cc3a74f07047f23c7e9c16",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5a5458c0-dcbd-4a60-b36f-4c2c59da8950.png",
+        "sha256": "28fbd2a87d307025044fecf2f81329e78867eec886cc3a74f07047f23c7e9c16"
+      },
+      "review": "Hold for localized wording or equipment correction"
+    },
+    {
+      "prompt": "Use case: precise-object-edit. First reference canonical Demir identity; second bridge architecture only; last exact target. Change only the incorrect earpiece on Demir's visible anatomical LEFT ear at image right. Remove that visible earpiece and reconstruct a natural bare left ear, matching his canonical skin and ear anatomy. His single right-ear earpiece is hidden on the far side by his head in this left-profile angle, so do not draw another device elsewhere. Preserve all other pixels as closely as possible: face morphology, hair, pose, both hands, body, chair, colors, exact display text, perspective and composition. No other changes.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5a5458c0-dcbd-4a60-b36f-4c2c59da8950.png",
+          "sha256": "28fbd2a87d307025044fecf2f81329e78867eec886cc3a74f07047f23c7e9c16",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e5c9ea5f-df2a-4f6a-a749-efce0a3967b4.png",
+        "sha256": "66f8ac89b7d2f614816ccb0b0edff1f694a7139587af1c6e3acac4416b54cac6"
+      }
+    }
+  ],
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-challenge/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-challenge/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+  "candidateSha256": "66f8ac89b7d2f614816ccb0b0edff1f694a7139587af1c6e3acac4416b54cac6",
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Exercise tries suppliedpreferenceorder,continuefalse/throw,awaitreadyonceafterfirstsuccess,controlledruntime. Listillustrativelessonorder.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-challenge/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/webgpu-acceleration-challenge/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-5a5458c0-dcbd-4a60-b36f-4c2c59da8950.png",
+      "sha256": "28fbd2a87d307025044fecf2f81329e78867eec886cc3a74f07047f23c7e9c16",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+      "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+    }
+  ],
+  "independentReview": {
+    "key": "webgpu-acceleration-challenge",
+    "id": "optimization-edge/webgpu-acceleration",
+    "phase": "challenge",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e5c9ea5f-df2a-4f6a-a749-efce0a3967b4.png",
+    "candidateSha256": "66f8ac89b7d2f614816ccb0b0edff1f694a7139587af1c6e3acac4416b54cac6",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+        "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+        "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Controlledruntime rehearsal,falseor throwtrynext,firstsuccessawaitready,selectednamereturned;noinventedresults. Native full frame inspected against canonical identity and current source.",
+    "alt": "Demir tests the backend fallback order and waits for initialization.",
+    "location": "Archimedes, Bridge"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e5c9ea5f-df2a-4f6a-a749-efce0a3967b4.png",
+  "publishedSource": "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration-challenge.webp",
+  "sourceSha256": "66f8ac89b7d2f614816ccb0b0edff1f694a7139587af1c6e3acac4416b54cac6",
+  "webpSha256": "a5c4cd92d62397d2990a2bf96fe846aec4e9ee903064737f58ecc940ad6ab240",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+    "sourceSha256": "2e8a14e1d0b0f67242b28e9b212438e463e7217f269fbb3e275f1d21c3b28c83",
+    "webpSha256": "4d34d34d5b4d7fed65bfe5e9b1e38a464dc09aaaa20e62ed29c417afb7b659c8",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ddd58a74-933a-4ab2-80b7-61838eca6f11.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "66f8ac89b7d2f614816ccb0b0edff1f694a7139587af1c6e3acac4416b54cac6",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+        "sha256": "76b26aa3ddde47106b470f2be483dc376d94100e433cbcd6d0ff280525429acb"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+        "sha256": "aeb77fd0534a6cb00ae3c60a4003d9561b6d910f8ec6200ab94d1d1742090906"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__webgpu-acceleration-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/webgpu-acceleration-challenge.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

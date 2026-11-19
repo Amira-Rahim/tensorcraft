@@ -1,0 +1,236 @@
+{
+  "key": "data-loading-takeaways",
+  "id": "foundations/data-loading",
+  "phase": "takeaways",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir stands LEFT at engineering loader console, both hands relaxed on bench, one beside mouse. He leans in with small satisfied smile while checking work plan before next archive run. Screen RIGHT faces him. Diagram heading \"Archive loading\". First box \"Split by time\" branches to \"Earlier: training\" and \"Later: validation\". ONLY training branch continues through boxes \"Shuffle rows\" then \"Batch\". Validation stays separate. Footer \"Read records on demand\". Lower note \"Keep each sequence in order\". No implied training or timing measurement. Remove tablet. The picture tells his recovery from memory-heavy loading by inspecting a sensible data path. Familiar engineering pipes and toolboard, no random waveforms.",
+  "meaning": "Recap lazyread, chronologicalsplit, shuffletrainingexamples beforebatch when orderirrelevant; sequences preserve order.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+      "sha256": "031760988741b4890e9b092688f080793cae662fa3f041f49810736b8175f381",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-00ce5d35-e89f-4720-a488-2ab026c74d5a.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 330,
+      "top": 180,
+      "width": 280,
+      "height": 330
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 220,
+      "top": 820,
+      "width": 620,
+      "height": 170
+    }
+  ],
+  "candidatePath": "art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+  "candidateSha256": "84c6d4c155fd0636e9a7d0fa80f94fb90957c76698cb907aaf76d93140ff84a9",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir stands LEFT at engineering loader console, both hands relaxed on bench, one beside mouse. He leans in with small satisfied smile while checking work plan before next archive run. Screen RIGHT faces him. Diagram heading \"Archive loading\". First box \"Split by time\" branches to \"Earlier: training\" and \"Later: validation\". ONLY training branch continues through boxes \"Shuffle rows\" then \"Batch\". Validation stays separate. Footer \"Read records on demand\". Lower note \"Keep each sequence in order\". No implied training or timing measurement. Remove tablet. The picture tells his recovery from memory-heavy loading by inspecting a sensible data path. Familiar engineering pipes and toolboard, no random waveforms.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+          "sha256": "031760988741b4890e9b092688f080793cae662fa3f041f49810736b8175f381",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-00ce5d35-e89f-4720-a488-2ab026c74d5a.png",
+        "sha256": "84c6d4c155fd0636e9a7d0fa80f94fb90957c76698cb907aaf76d93140ff84a9"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Recap lazyread, chronologicalsplit, shuffletrainingexamples beforebatch when orderirrelevant; sequences preserve order.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 330,
+        "top": 180,
+        "width": 280,
+        "height": 330
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 220,
+        "top": 820,
+        "width": 620,
+        "height": 170
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+      "sha256": "031760988741b4890e9b092688f080793cae662fa3f041f49810736b8175f381",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "data-loading-takeaways",
+    "id": "foundations/data-loading",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-00ce5d35-e89f-4720-a488-2ab026c74d5a.png",
+    "candidateSha256": "84c6d4c155fd0636e9a7d0fa80f94fb90957c76698cb907aaf76d93140ff84a9",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T20:29:48.454692+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+        "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical ages, faces, hair, skin, adult proportions and attire consistent.",
+      "anatomy": "Visible hands and full limb chains, neck and body support plausible. Furniture and device contacts coherent.",
+      "screenPlane": "All displayed content aligned to physical plane.",
+      "readerDirection": "Readers and camera see actual workdisplay front obliquely, or room-facing wall display.",
+      "story": "Candid screen work or cast interaction; no audience-only held placards.",
+      "palette": "Muted charcoal, sage and brass consistent.",
+      "meaning": "Current recap and batch-data contract split by time before shuffling training only, read records on demand, then batch. Validation branch stays separate; sequence order reminder avoids shuffling within temporal captures. Diagram follows monitor perspective."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/foundations/data-loading-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-00ce5d35-e89f-4720-a488-2ab026c74d5a.png",
+  "publishedSource": "art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/foundations/data-loading-takeaways.webp",
+  "sourceSha256": "84c6d4c155fd0636e9a7d0fa80f94fb90957c76698cb907aaf76d93140ff84a9",
+  "webpSha256": "13bdf67801062c393c2eb1e3ee9910a3683af73ab259339e673372eda271988f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+    "sourceSha256": "031760988741b4890e9b092688f080793cae662fa3f041f49810736b8175f381",
+    "webpSha256": "52fb15a93ca3eb12493c5d71de86dfa3695ce867d72981e67a874b7f88013e5c",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1da81e12-4c93-463f-a757-05d237dcca3e.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "84c6d4c155fd0636e9a7d0fa80f94fb90957c76698cb907aaf76d93140ff84a9",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 inspected independently.",
+      "identity": "Canonical ages, faces, hair, skin, adult proportions and attire consistent.",
+      "anatomy": "Visible hands and full limb chains, neck and body support plausible. Furniture and device contacts coherent.",
+      "screenPlane": "All displayed content aligned to physical plane.",
+      "readerDirection": "Readers and camera see actual workdisplay front obliquely, or room-facing wall display.",
+      "story": "Candid screen work or cast interaction; no audience-only held placards.",
+      "palette": "Muted charcoal, sage and brass consistent.",
+      "meaning": "Current recap and batch-data contract split by time before shuffling training only, read records on demand, then batch. Validation branch stays separate; sequence order reminder avoids shuffling within temporal captures. Diagram follows monitor perspective."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+        "sha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+        "sha256": "88a2e228ca20d46dc1c57e61366e85da9395a44e9c2b3691a06c8ea0c76782d5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/foundations/data-loading-takeaways.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

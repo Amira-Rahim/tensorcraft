@@ -1,0 +1,51 @@
+{
+  "id": "neural-networks/building-a-network",
+  "phase": "challenge",
+  "cast": [
+    "ensign-demir"
+  ],
+  "prompt": "Use case: identity-preserve teaching-story edit. First reference(s) exact canonical portraits in listed cast order, LAST image TARGET scene. Preserve adult face identity morphology age eyes/nose/mouth/jaw, hair and expression; Mirza mature dark complexion silver temples, Farah anatomicalLEFTlens, Demir anatomicalRIGHTcomms, visibleleft ear bare. Preserve full coherent head-neck-chest alignment, every separate shoulder-arm-hand chain, physical handgrips and contacts, torso furniture and room perspective. Keep warm moderately stylized proportions. Main panels meaningful to exact specified lesson, integrated into existing devices with short clear typography. ALL other screens and wrist displays inactive dark charcoal, no arbitrary plots/radars/bars/shapes. Muted sage #6BAA8A and aged brass #A89060, practical warmneutral lighting; no neonmintbloom oryellowgold wash. No coloredleftaccentbars. 1536x1024 celshaded story illustration. Subtly reduce Demir fullhead8percent only, preserveidentity. Maintainindexonkey andoppositehandholdingnotecard. Two mainconsolepanels: LEFT title 'Copy A',subtitle '24 / 12 / 1 units, 529 parameters', orderedworkflow 'Save initial weights + scores' downwardarrow 'fit: 50 epochs, batch 16' downwardarrow 'Save new scores'. RIGHT title 'Copy B',same subtitle '24 / 12 / 1 units, 529 parameters', 'Save initial scores', 'Leave untrained'. Both are TASK PLAN, no scores/results/success. Physicalnotecard clearlyreads 'Practice data [120,8]' and '0-59 calm' and '60-119 flagged'. Wristdisplayoff. Allotherpanels dark.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__building-a-network-challenge-openai-20261107.png"
+  ],
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+  ],
+  "status": "generated-awaiting-review",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-0d3f7d61-737c-4fa0-9e1b-a7a9cb9a93c3.png",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/building-a-network-challenge-ensign-demir-proof.png",
+      "sha256": "2675462f6c3710a283ba7a87574abfd184cc5ca63c7919d23395b56a5be87aae",
+      "crop": {
+        "left": 275,
+        "top": 70,
+        "width": 300,
+        "height": 400
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-10eb5942-d34f-4c52-8eba-fa93018e4ba3.png",
+      "priorSha256": "9083bd91136b59008c538dc3baaca8b62ed64485a7a25a8ae2672acff44002a0",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-0d3f7d61-737c-4fa0-9e1b-a7a9cb9a93c3.png",
+      "candidateSha256": "55c7cee1c1d66c4b3cca1ecb69b364ef35cc26e7acae6a7e60887d46ad0d855f"
+    }
+  ],
+  "pathSha256": "55c7cee1c1d66c4b3cca1ecb69b364ef35cc26e7acae6a7e60887d46ad0d855f",
+  "screenMeaning": {
+    "section": "Challenge; simple-network instructions",
+    "spec": "Practice120rows×8features→two copies24/12/1,529params. CopyA before→fit50epochs,batch16→after; CopyB remains untrained. Rows0-59 calm,60-119 flagged. Do not invent scores/accuracy for random initializations.",
+    "currentSource": "art-src/scenes/neural-networks__building-a-network-challenge-openai-20261107.png",
+    "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-challenge.webp",
+    "canonicalReferences": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "cast": [
+      "ensign-demir"
+    ]
+  }
+}

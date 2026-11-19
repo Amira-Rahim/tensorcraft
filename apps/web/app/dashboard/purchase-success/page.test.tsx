@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { render, cleanup } from "@testing-library/react";
 import type { ReactElement } from "react";
 
 // ──────────────────────────────────────────────
@@ -106,21 +107,11 @@ vi.mock("@/app/components/ambient-background", () => ({
   AmbientBackground: () => null,
 }));
 
-// Mark the component boundary without firing the production analytics hook.
-vi.mock("./purchase-analytics", () => ({
-  PurchaseAnalytics: ({
-    planId,
-    amount,
-  }: {
-    planId: string;
-    amount: number;
-  }) => (
-    <div
-      data-testid="purchase-analytics-stub"
-      data-plan={planId}
-      data-amount={amount}
-    />
-  ),
+// A receipt visit must never count as a new payment conversion.
+const trackCheckoutCompletedMock = vi.fn();
+vi.mock("@/lib/analytics", () => ({
+  trackCheckoutCompleted: (...args: unknown[]) =>
+    trackCheckoutCompletedMock(...args),
 }));
 
 // The poller polls through useRouter, which the next/navigation mock above
@@ -134,6 +125,7 @@ vi.mock("./pending-poller", () => ({
 function resetState(): void {
   purchaseRows = [];
   getUserMock.mockReset();
+  trackCheckoutCompletedMock.mockClear();
 }
 
 function completedPurchase(overrides: Partial<PurchaseRow> = {}): PurchaseRow {
@@ -165,9 +157,6 @@ async function renderPage(
 
 function expectNoConfirmedPurchase(document: Document, html: string) {
   expect(document.querySelector('[data-testid="purchase-receipt"]')).toBeNull();
-  expect(
-    document.querySelector('[data-testid="purchase-analytics-stub"]'),
-  ).toBeNull();
   expect(document.querySelector('[data-testid="cta-first-lesson"]')).toBeNull();
   expect(document.querySelector('[data-testid^="access-start-"]')).toBeNull();
   expect(document.querySelector('a[href="/worlds/deep-orbit"]')).toBeNull();
@@ -219,16 +208,26 @@ describe("dashboard/purchase-success/page", () => {
     ).toBeNull();
   });
 
-  it("renders the engineering plate and analytics only after confirmation", async () => {
+  it("renders the engineering plate after confirmation", async () => {
     purchaseRows.push(completedPurchase());
-    const { document, html } = await renderPage();
-
+    const { html } = await renderPage();
     expect(html).toContain("/locations/deep-orbit/engineering.webp");
-    const analytics = document.querySelector(
-      '[data-testid="purchase-analytics-stub"]',
-    );
-    expect(analytics?.getAttribute("data-plan")).toBe("single");
-    expect(analytics?.getAttribute("data-amount")).toBe("79");
+  });
+
+  it("does not count a receipt mount or revisit as another payment", async () => {
+    purchaseRows.push(completedPurchase());
+    const { default: PurchaseSuccessPage } = await import("./page");
+    try {
+      for (let visit = 0; visit < 2; visit += 1) {
+        const element = (await PurchaseSuccessPage({})) as ReactElement;
+        const view = render(element);
+        expect(view.getByTestId("purchase-receipt")).toBeTruthy();
+        view.unmount();
+      }
+      expect(trackCheckoutCompletedMock).not.toHaveBeenCalled();
+    } finally {
+      cleanup();
+    }
   });
 
   it("keeps an unknown checkout pending without showing purchased access", async () => {

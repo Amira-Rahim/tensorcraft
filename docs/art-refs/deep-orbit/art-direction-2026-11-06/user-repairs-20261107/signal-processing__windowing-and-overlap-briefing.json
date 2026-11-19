@@ -1,0 +1,189 @@
+{
+  "key": "windowing-and-overlap-briefing",
+  "id": "signal-processing/windowing-and-overlap",
+  "phase": "briefing",
+  "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+  "sourceSha256": "b762fc1a2d00fc30082d4a5fc046f8fc17464659f383c03841adf93c58fd7e98",
+  "sourceEvidence": {
+    "mdx": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+    "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+  },
+  "reviewer": "/root/reader_signal",
+  "nativeReview": "1536x1024 current source visually inspected",
+  "gates": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeck": "pass",
+    "readerDirection": "pass",
+    "surfacePerspective": "pass",
+    "palette": "pass",
+    "lessonMeaning": "hold",
+    "storyAction": "pass"
+  },
+  "verdict": "hold",
+  "holdReason": "Two leakage plots need Rectangular/Hann labels; incidental random graphics.",
+  "preserve": "Muted palette, canonical cast, discussion, reader direction and anatomy pass; preserve.",
+  "prompt": "Use case: precise-object-edit. References canonical portraits first are identity authority, lab master is ROOM ONLY, last image is edit target. Restore Farah's signature translucent sage-green rectangular AR monocle over her ANATOMICAL LEFT eye, exactly matching canonical portrait. At this nearly frontal view it covers the eye on image right. Keep her visible eyebrow, iris and face through transparent lens. Keep both other crew, all hands, the whole good scene and display untouched. Output1536x1024. No other edits.",
+  "promptSha256": "9334ed20306483cf52a4ba39f1202e0b986ae538deff060bc3bd7f933564e5ae",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-28d05fa0-dd97-4983-ab91-4a5945091307.png",
+      "sha256": "aa4e93d0698ba1aba79aa004821ddbfd8710e17f11415c2c5333e209e37441bb"
+    }
+  ],
+  "alt": "Farah compares rectangular and Hann leakage patterns as Nazari questions the extra peaks.",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-c7444a51-bcf5-42bc-9c99-239be591e6db.png",
+  "candidateSha256": "b762fc1a2d00fc30082d4a5fc046f8fc17464659f383c03841adf93c58fd7e98",
+  "history": [
+    {
+      "prompt": "Use case: precise-object-edit. Asset: Deep Orbit signal-processing/windowing-and-overlap-briefing scene,1536x1024 landscape. Image1: dr-farah canonical identity authority; Image2: ensign-demir canonical identity authority; Image3: chief-nazari canonical identity authority; Image4: lab ROOM ONLY master, copy architecture not its incidental graphics or oversaturated lighting; Image5: exact edit target.\nPrecisely preserve this good muted-palette three-person discussion and all faces, natural limbs and tablet-back staging. Correct only the ambiguous display content and stray peripheral UI. On the primary wall, keep two schematic frequency-magnitude plots, label the left Rectangular and the right Hann. Left has a narrow dominant main lobe with conspicuous side lobes, right a broader main lobe with much lower side lobes, both centred at the same horizontal location. Label shared axes Frequency / Magnitude and caption Schematic leakage comparison. No numerical tick claims. A small footer Taper changes leakage and peak width. Farah points between the plots as Nazari considers the false alarms and Demir listens. Blank random pies/radars and wrist data. Do not recompose the good figures or overcorrect their proportions.\nIdentity: preserve canonical facial geometry, ages, skin, hairstyle, natural expressions and signature equipment. Keep readable faces in natural three-quarter angles, stable adult head/body proportions. Trace each shoulder through elbow/wrist to one natural five-finger hand; solid furniture contacts. Each screen front faces its actual reader; all text and diagrams follow its physical perspective, never camera-facing overlays. No extra crew, no plants, no fake tiny glyphs. Subordinate unused screens and wrist displays are dark. Muted charcoal, gray, restrained olive, sage interface and aged brass. Warm light remains localized, no yellow wash or electric lime. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Equipment-side check: Demir has one earpiece on anatomical RIGHT ear only. If his visible ear is anatomical LEFT, keep it bare and hide the far-side earpiece completely; never float green hardware on cheek, eye or collar.",
+      "promptSha256": "ad3711bc945d930bc39395a82f131ec1c3a939ff77f396fd79a176cfbad04c21",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-28d05fa0-dd97-4983-ab91-4a5945091307.png",
+          "sha256": "aa4e93d0698ba1aba79aa004821ddbfd8710e17f11415c2c5333e209e37441bb"
+        }
+      ],
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-28d05fa0-dd97-4983-ab91-4a5945091307.png",
+      "candidateSha256": "aa4e93d0698ba1aba79aa004821ddbfd8710e17f11415c2c5333e209e37441bb"
+    }
+  ],
+  "ownReview": {
+    "verdict": "pass",
+    "nativeFull": true,
+    "notes": "Full native reviewed. Canonical identity and signature equipment, natural body and hand chains, meaningful source-specific data, physical text/graph perspective, actual reader front and candid task pass."
+  },
+  "candidatePath": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-c7444a51-bcf5-42bc-9c99-239be591e6db.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-28d05fa0-dd97-4983-ab91-4a5945091307.png",
+      "sha256": "aa4e93d0698ba1aba79aa004821ddbfd8710e17f11415c2c5333e209e37441bb",
+      "role": "canonical identity"
+    }
+  ],
+  "independentReview": {
+    "key": "windowing-and-overlap-briefing",
+    "id": "signal-processing/windowing-and-overlap",
+    "phase": "briefing",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-c7444a51-bcf5-42bc-9c99-239be591e6db.png",
+    "candidateSha256": "b762fc1a2d00fc30082d4a5fc046f8fc17464659f383c03841adf93c58fd7e98",
+    "verdict": "pass",
+    "reviewer": "/root",
+    "method": "Native complete1536x1024 against canonical portraits and current MDX/exercise",
+    "notes": "Farah explains taper change while Nazari skeptical and Demir thoughtful. Canonical threefaces and natural independent hands including inwardtablet; schematic rectangular/Hann comparison widerpeak/lowerdistantleakage correct, label axisplane and muted palette coherent.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+        "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+      }
+    ],
+    "alt": "Farah explains the taper tradeoff to a skeptical Nazari and a thoughtful Demir.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-c7444a51-bcf5-42bc-9c99-239be591e6db.png",
+  "publishedSource": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap.webp",
+  "webpSha256": "5b198f06797720d20116cb89c51ec95d816ca86e1046e8ed3a860727dba55718",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+    "sourceSha256": "21e86b7d7d89beda539ba995e898dcd089106c6c3f4fd7fa71b8ac65ddef22c9",
+    "webpSha256": "c82cc28364c6a4f7113f9d7b20743d5ece4e61fe7377f408704c02f0066fa003",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-91d9e26c-3218-4090-bdc0-0b95680cb21c.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_signal",
+    "status": "approved",
+    "candidateSha256": "b762fc1a2d00fc30082d4a5fc046f8fc17464659f383c03841adf93c58fd7e98",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Farah explains taper change while Nazari skeptical and Demir thoughtful. Canonical threefaces and natural independent hands including inwardtablet; schematic rectangular/Hann comparison widerpeak/lowerdistantleakage correct, label axisplane and muted palette coherent."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+        "sha256": "dfce3edfed930e654575e1b010e236005d21b549aa4c6da428df58afa8cce717"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__windowing-and-overlap-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

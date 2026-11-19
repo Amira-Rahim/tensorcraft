@@ -1,0 +1,219 @@
+{
+  "key": "sliding-windows-briefing",
+  "auditIndex": 35,
+  "id": "recurrent-networks/sliding-windows",
+  "phase": "briefing",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+    "sha256": "e2ffa55394be73f185a8205fcc6a5e2c3686df6ab96930ce9d7641784f4002b5"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir at bridge console RIGHT seenin threequarter view, looking LEFT at monitor with a wry caught-my-mistake smile, one hand on mouse and other resting on closed notebook on desk. Remove bright wrist glow and camera-facing buttonpresspose. Screen heading \"Overlapping windows\". Two rows of numbered boxes, firstrow \"0 1 2 3\" secondrow \"1 2 3 4\". Highlight shared readings1,2,3 consistently; label \"Illustrative 4-reading windows\". Footer \"Neighbors share data\" and \"Split the recording first\". This is an explicitly small illustration, not the80readingmissionwindow. Keep index positions visually aligned on sameaxis ifoverlapdiagram, or simpletwo labeledrows withsamevalues highlighted. Muted sage/brass, canonical Demir. Demir single earpiece is on anatomical RIGHT ear only, as canonical portrait. If his left profile is visible, draw a bare left ear and keep earpiece hidden on far right side. Never mirror equipment.",
+  "meaning": "Intro overlappingneighbors sharemostreadings;chronologicalrawsplitneeded,small4readingillustrationmarked.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+      "sha256": "e2ffa55394be73f185a8205fcc6a5e2c3686df6ab96930ce9d7641784f4002b5",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-886e8303-a003-452c-8557-ed11cd2ec4b1.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/sliding-windows-briefing/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/sliding-windows-briefing/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+  "candidateSha256": "528ecdcde2f8ffd81b0ae757a4c6557ba95ff7159c8776bbd1bf42e2f60c4efd",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Demir at bridge console RIGHT seenin threequarter view, looking LEFT at monitor with a wry caught-my-mistake smile, one hand on mouse and other resting on closed notebook on desk. Remove bright wrist glow and camera-facing buttonpresspose. Screen heading \"Overlapping windows\". Two rows of numbered boxes, firstrow \"0 1 2 3\" secondrow \"1 2 3 4\". Highlight shared readings1,2,3 consistently; label \"Illustrative 4-reading windows\". Footer \"Neighbors share data\" and \"Split the recording first\". This is an explicitly small illustration, not the80readingmissionwindow. Keep index positions visually aligned on sameaxis ifoverlapdiagram, or simpletwo labeledrows withsamevalues highlighted. Muted sage/brass, canonical Demir. Demir single earpiece is on anatomical RIGHT ear only, as canonical portrait. If his left profile is visible, draw a bare left ear and keep earpiece hidden on far right side. Never mirror equipment.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+          "sha256": "e2ffa55394be73f185a8205fcc6a5e2c3686df6ab96930ce9d7641784f4002b5",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-886e8303-a003-452c-8557-ed11cd2ec4b1.png",
+        "sha256": "528ecdcde2f8ffd81b0ae757a4c6557ba95ff7159c8776bbd1bf42e2f60c4efd"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Intro overlappingneighbors sharemostreadings;chronologicalrawsplitneeded,small4readingillustrationmarked.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/sliding-windows-briefing/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/sliding-windows-briefing/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+      "sha256": "e2ffa55394be73f185a8205fcc6a5e2c3686df6ab96930ce9d7641784f4002b5",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+    }
+  ],
+  "independentReview": {
+    "key": "sliding-windows-briefing",
+    "id": "recurrent-networks/sliding-windows",
+    "phase": "briefing",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-886e8303-a003-452c-8557-ed11cd2ec4b1.png",
+    "candidateSha256": "528ecdcde2f8ffd81b0ae757a4c6557ba95ff7159c8776bbd1bf42e2f60c4efd",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+        "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Four-reading example clearly labeled illustrative; shared three values highlighted, split-first source exact. Native full frame inspected, readable surfaces, coherent hands and furniture.",
+    "alt": "Demir notices that neighboring windows share readings and checks the chronological split.",
+    "location": "Archimedes, Bridge"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-886e8303-a003-452c-8557-ed11cd2ec4b1.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows.webp",
+  "sourceSha256": "528ecdcde2f8ffd81b0ae757a4c6557ba95ff7159c8776bbd1bf42e2f60c4efd",
+  "webpSha256": "8e1c2a97884d9cbe19e6c8f93dea0615d01d3b6819610bc301690acfa659b624",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+    "sourceSha256": "e2ffa55394be73f185a8205fcc6a5e2c3686df6ab96930ce9d7641784f4002b5",
+    "webpSha256": "258cf8d2781f72e13f5a874136235a5fd10fe67f2d704eca56209e7e207558e0",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-406efcf2-4ccf-4d28-aef9-fb9f28744942.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "528ecdcde2f8ffd81b0ae757a4c6557ba95ff7159c8776bbd1bf42e2f60c4efd",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+        "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

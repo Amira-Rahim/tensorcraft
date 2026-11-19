@@ -1,0 +1,68 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "briefing",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next LAB room reference only, LAST exact target. Preserve exact people, adult ages, facial morphology, expressions, hairstyle, signature equipment, natural warm skin, body poses, every connected shoulder-elbow-wrist-hand chain, grips, neck alignment, chairs and contacts. Farah lens anatomical LEFT eye, Demir comms anatomical RIGHT ear, Nazari has NO eyewear. Keep story action dominant. Every unmentioned monitor and wrist display OFF, plain charcoal glass. No arbitrary graph, wave, code, bars or meters. Keep restrained sage, aged brass and charcoal. Remove neon mint rims and broad yellow/gold wash. The tall glass LAB PILLAR must become dark muted sage with thin dim grey internal bands, never glowing lime. Natural warm lamp light. Keep Farah standing with stylus raised and tablet held, exact face and head scale unchanged. Replace the entire large board with three compact equal cards: \"Amplitude: normal\", \"Frequency: normal\", \"Phase: normal\". Below the three cards one larger outlined group label \"Combination unseen in eleven days\". A small footer \"Check feature relationships\". These are qualitative status cards, no invented measurement values or diagram. Farah points naturally toward the combination label. Erase all previous hourglass nodes and decorative waveforms. Her tablet back remains plain. All other screens off. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/autoencoders-briefing-before.png",
+      "sha256": "f8c0f7d46be745daac2d0c4fe56410bd5be6cb1e3264a86d1629d4f044b2e5af",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "f8c0f7d46be745daac2d0c4fe56410bd5be6cb1e3264a86d1629d4f044b2e5af",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+    "sha256": "89690b0d81832e60fc18f9028924e8114868d1deeede4aa1ca20463347a5e783"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "problem / proposed mission model",
+    "concreteGenerationSpecification": "Keep Farah standing with stylus raised and tablet held, exact face and head scale unchanged. Replace the entire large board with three compact equal cards: \"Amplitude: normal\", \"Frequency: normal\", \"Phase: normal\". Below the three cards one larger outlined group label \"Combination unseen in eleven days\". A small footer \"Check feature relationships\". These are qualitative status cards, no invented measurement values or diagram. Farah points naturally toward the combination label. Erase all previous hourglass nodes and decorative waveforms. Her tablet back remains plain. All other screens off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Opening dialogue and Encoder to Bottleneck to Decoder"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve approved whole poses and connected anatomy. Only concept and epilogue Farah receive at most5 percent head adjustment after native review. Other heads unchanged.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-briefing-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "75aab5d1de5014efc99813cb1048b78e0bb01f4f1d9efa6e5409485a35bd12d4",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-3ab5e3ae-8688-4f72-9967-7b31064b816f.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-briefing-identity-proof.jpg",
+  "ownReview": "Viewed native fullframe: task panels match current MDX/YAML, inactive secondary screens contain no unsupported data, subdued palette, continuous arm chains and supported seated poses. Canonical face comparisons checked separately. Head scale remains balanced and stylized.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

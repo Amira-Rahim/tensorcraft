@@ -1,0 +1,55 @@
+{
+  "module": "neural-networks",
+  "lesson": "layers-and-architecture",
+  "phase": "concept",
+  "src": "/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp",
+  "index": 21,
+  "characters": [
+    "chief-nazari"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=530): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-0af97cca-a2a1-40de-bf57-deebd4469216.png",
+  "candidate": "/tmp/early-identity-candidates/21.webp",
+  "candidateSha256": "8508ae3bd372d06f0df6416b3793ba9a5794c7319a594447b6e46105bdc64bf3",
+  "sourceSha256": "c34731254121023a5f11c17d58262f45c3c80612c68a686746139943d4baa582",
+  "beforeSha256": "0cbef480f7a6acc081d8b9c2862e264bcea7f7007eaaff2fdf0377983f525eb0",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp",
+      "role": "edit target",
+      "sha256": "0cbef480f7a6acc081d8b9c2862e264bcea7f7007eaaff2fdf0377983f525eb0"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 148352,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/layers-and-architecture-concept-chief-nazari-correction.png",
+      "crop": {
+        "left": 366,
+        "top": 165,
+        "width": 327,
+        "height": 375
+      }
+    }
+  ]
+}

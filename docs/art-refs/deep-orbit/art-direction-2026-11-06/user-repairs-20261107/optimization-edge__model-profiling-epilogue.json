@@ -1,0 +1,219 @@
+{
+  "key": "model-profiling-epilogue",
+  "auditIndex": 68,
+  "id": "optimization-edge/model-profiling",
+  "phase": "epilogue",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+    "sha256": "2c59aa5b5d6202c8d3360f623d380823dc475a58e6b49300929b6c56c086ea02"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Farah lens stays over anatomical LEFT eye. Demir RIGHT at workstation, leaning forward toward monitor LEFT with surprised hopeful expression tempered by concern. One hand on playback control dial, other lightly ondesk. Remove heldpaper. Screen heading \"Watchdog recovery\". Exact lines \"211 KB partial telemetry\", \"Last clean interval: 61.2 s\" and \"Lost capture: unrecovered\". A small separate statuslabel \"Replay fragment\" with simpleplaybackprogress only, no fabricateddatawaveform. ARIAsmallringdisplay mayretaincalmwaveform ascharacterexpression, notmeasurement. Warm thoughtfulmomentwhere heseessomethingwas savedbutdoesnotdeclarefullrescue.",
+  "meaning": "Epilogue211KBsalvage,lastinterval61.2s,recoveredpartialtelemetrynotlostcapture.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+      "sha256": "2c59aa5b5d6202c8d3360f623d380823dc475a58e6b49300929b6c56c086ea02",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+      "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2689ccfd-c75e-4cd1-867f-e2b5f809060f.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/model-profiling-epilogue/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/model-profiling-epilogue/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+  "candidateSha256": "36f7156baf227d2c12afa8b329c12b88d6bb44d469f249e603f35392113f7178",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Farah lens stays over anatomical LEFT eye. Demir RIGHT at workstation, leaning forward toward monitor LEFT with surprised hopeful expression tempered by concern. One hand on playback control dial, other lightly ondesk. Remove heldpaper. Screen heading \"Watchdog recovery\". Exact lines \"211 KB partial telemetry\", \"Last clean interval: 61.2 s\" and \"Lost capture: unrecovered\". A small separate statuslabel \"Replay fragment\" with simpleplaybackprogress only, no fabricateddatawaveform. ARIAsmallringdisplay mayretaincalmwaveform ascharacterexpression, notmeasurement. Warm thoughtfulmomentwhere heseessomethingwas savedbutdoesnotdeclarefullrescue.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+          "sha256": "2c59aa5b5d6202c8d3360f623d380823dc475a58e6b49300929b6c56c086ea02",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2689ccfd-c75e-4cd1-867f-e2b5f809060f.png",
+        "sha256": "36f7156baf227d2c12afa8b329c12b88d6bb44d469f249e603f35392113f7178"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Epilogue211KBsalvage,lastinterval61.2s,recoveredpartialtelemetrynotlostcapture.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/model-profiling-epilogue/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/model-profiling-epilogue/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+      "sha256": "2c59aa5b5d6202c8d3360f623d380823dc475a58e6b49300929b6c56c086ea02",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+      "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+    }
+  ],
+  "independentReview": {
+    "key": "model-profiling-epilogue",
+    "id": "optimization-edge/model-profiling",
+    "phase": "epilogue",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2689ccfd-c75e-4cd1-867f-e2b5f809060f.png",
+    "candidateSha256": "36f7156baf227d2c12afa8b329c12b88d6bb44d469f249e603f35392113f7178",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+        "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+        "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "211KBpartial,61.2s lastclean, lostcaptureunrecovered match epilogue; ARIAabstract only, surprisedtaskfocus. Native full frame inspected against canonical identity and current source.",
+    "alt": "Demir replays ARIA’s recovered telemetry fragment and finds the last clean pulse interval.",
+    "location": "Archimedes, Engineering"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2689ccfd-c75e-4cd1-867f-e2b5f809060f.png",
+  "publishedSource": "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-epilogue.webp",
+  "sourceSha256": "36f7156baf227d2c12afa8b329c12b88d6bb44d469f249e603f35392113f7178",
+  "webpSha256": "56fac34c6d2161065028dde7137e723bf9f4575ef55c46f0abe85f569dbd812c",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+    "sourceSha256": "2c59aa5b5d6202c8d3360f623d380823dc475a58e6b49300929b6c56c086ea02",
+    "webpSha256": "bcdc6f4fc747cda7f9dc2d7160b5dccf91f3a3aa89fff827deb9162ec393a000",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-00c79064-e7c2-4c4d-a740-1382a400ce65.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "36f7156baf227d2c12afa8b329c12b88d6bb44d469f249e603f35392113f7178",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+        "sha256": "248e47f615dcb1b1e5a7606a819a18472b9f8d67aaee1ca3625f91a9401d65e5"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+        "sha256": "9f6f3ab0287cb5476586384d6ddaa423d1fc8e9cc21ded1be605d8367194af14"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-epilogue.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__model-profiling-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/model-profiling-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

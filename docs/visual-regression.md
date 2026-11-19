@@ -1,7 +1,6 @@
 # Visual Regression Testing
 
-Scope and conventions for the Playwright screenshot-comparison suite that
-covers Phase 8 §8k of `dev-plan.md`.
+Scope and conventions for the Playwright screenshot-comparison suite.
 
 ## What is covered
 

@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/capstone__documentation-takeaways/candidate.png",
+  "candidateSha256": "9cfecd4c31a38888ccd58f424cd0ad6fba41a0bc57b250b721b52780f96ee796",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist chains and explicit thumb chirality review, direct canonical portrait comparison, and current lesson source checks.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 1,
+      "name": "root-rest-doctake-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/capstone__documentation-takeaways/candidate.png",
+      "box": [
+        1025,
+        150,
+        1340,
+        510
+      ],
+      "scale": 2
+    },
+    {
+      "i": 1,
+      "name": "root-rest-doctake-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/capstone__documentation-takeaways/candidate.png",
+      "box": [
+        675,
+        745,
+        1330,
+        1010
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sha256": "c3b198d727195d3c6df86de15240cd820e5d1b12e94ec6c60998eeee4ca8eddd"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah's right thumb and index finger pinch the turned page with the sheet continuous to the binder; her left hand rests naturally on the opposing page. Two arms, neutral wrists and correct thumb sides.",
+    "displayLegibilityAndSource": "The large Handover review board distinguishes evaluation context and limitations from checks, thresholds, action owners and escalation, then specifies validation on separate periods. Current documentation recap supports each item.",
+    "identityExpressionAndStory": "Farah's small thoughtful smile and upward glance suit reviewing the handover. Her canonical overlay, swept hair and facial structure are retained.",
+    "palette": "Muted sage, charcoal and aged brass with warm natural skin.",
+    "perspectiveAndOperator": "Main display geometry and text follow their physical plane and remain visible to the operator.",
+    "largeDisplayRule": "The main lesson facts are large and clear, using the available working display area."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:18:43.207966+00:00"
+}

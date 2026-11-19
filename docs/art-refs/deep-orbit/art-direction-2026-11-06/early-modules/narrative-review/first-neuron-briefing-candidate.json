@@ -1,0 +1,58 @@
+{
+  "id": "neural-networks/first-neuron",
+  "phase": "briefing",
+  "currentSource": "art-src/scenes/neural-networks__first-neuron-openai-20261107.png",
+  "currentSha256": "ba554ddcc916ca411a8f00421e0347ad73a42d66bf3965965b58ccde9b883f3e",
+  "reviewedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-52216e14-3dec-4d29-8b42-d73d6db937e2.png",
+  "reviewedSha256": "ba554ddcc916ca411a8f00421e0347ad73a42d66bf3965965b58ccde9b883f3e",
+  "pendingCandidate": false,
+  "cast": [
+    "dr-farah"
+  ],
+  "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/first-neuron-sheet.jpg",
+  "slug": "first-neuron",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-52216e14-3dec-4d29-8b42-d73d6db937e2.png"
+  ],
+  "prompt": "Use case: identity-preserve narrative restaging. Asset:1536x1024 landscape illustrated story frame for Deep Orbit. Inputs first 1: immutable canonical characters dr-farah. LAST input: existing scene to restage, maintaining its style, room, factual display content and character identities. User requests a living story scene, not a portrait or explanation poster. Rebuild the WHOLE body pose, furniture and camera as needed, do not rotate only a head. Keep exact canonical facial morphology, age, eyes, compact nose, broad jaw/chin and skin tones even in changed expression/yaw. Farah38 with anatomicalLEFTlens; Nazari48 mature graybob, bare ears. Maintain warm moderate adult stylization and current balanced head scale; do not shrink heads. Muted sage, gray and restrained brass, no neon mint or bright yellow wash. Candid lab investigation at calibration bench. Farah sits on the lab stool in a natural side-front three-quarter view, whole torso and face toward the bench, looking at its working monitor rather than camera. She adjusts the brass calibration selector with one hand while her other hand steadies a small open notebook lying on the bench. Slightly knitted brows, curious concern about the unknown signal. Remove the raised pointing-at-wall lecture pose. Keep exact current monitor data but integrate as the calibration bench's working terminal instead of a giant teaching poster: Tone A / Known calibration; Tone B / Known calibration; Sector 7-G / Unknown. Beside it compact Test reading with 0.5,0.8,0.2 feeding one node 'Weighted sum + bias' then one 'Score' output, no numerical result yet. Readable, at a natural oblique working angle. Do not add charts or decorative shapes. Other screens off. Natural two arms and hands, normal stylized head/body balance. Scene shows her choosing a known test reading to inspect before training. No other characters. No text beyond specified existing task data. No decorative plots, no left accent bars, no em dash, no captions outside the scene, no looking at camera, no frontal card display, no generic lecturer smile. Keep canonical3quarter facial visibility through sensible camera placement, not twisted necks.",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/first-neuron-briefing-candidate.json",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-1d816593-be0f-4324-a092-ffe7823508ae.png",
+  "tool": "built-in image_gen",
+  "date": "2026-11-07",
+  "status": "pending full-frame and independent narrative review",
+  "pathSha256": "97d506b4bdcde68799d23878148150b86ad436b26f2e3758b2e50b4d4920f161",
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/first-neuron-briefing-dr-farah-proof.png",
+      "sha256": "11e35ebee288ea41fdc68d8526f1a552539170fc5aaae62caa3c5ed7fac66d1c",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-1d816593-be0f-4324-a092-ffe7823508ae.png",
+      "candidateSha256": "97d506b4bdcde68799d23878148150b86ad436b26f2e3758b2e50b4d4920f161",
+      "crop": {
+        "left": 810,
+        "top": 45,
+        "width": 370,
+        "height": 420
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-1d816593-be0f-4324-a092-ffe7823508ae.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-52216e14-3dec-4d29-8b42-d73d6db937e2.png",
+      "art-src/scenes/neural-networks__first-neuron-openai-20261107.png",
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

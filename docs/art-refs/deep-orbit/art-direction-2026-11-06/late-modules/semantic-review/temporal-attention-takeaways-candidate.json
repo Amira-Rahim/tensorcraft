@@ -1,0 +1,248 @@
+{
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "takeaways",
+  "status": "superseded",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identity. Canonical portraits first, room reference next, LAST exact edit target. Keep exact candid Demir face, balanced head size, body and chair position, two coherent continuous shoulder-elbow-wrist-hand chains, stylus gesture and all console labels. Change ONLY notebook contents and neon highlights. Remove invented timestamp rows00:00:00,00:00:08,00:00:16,00:00:24. Notebook must contain exactly three short lines \"Step 4: 4.0 s\", \"Step 78: 77.4 s\", \"Gap: 73.4 s\". These are raw capture timestamps, not axis spacing. Fit text naturally to the notebook page perspective with consistent baselines and spacing; do not alter its size. Preserve complete80/truncated48 counts, missing0-31, retained32-79, onsetstep4 in both early regions, weightsum1 and schematicsequence labels EXACTLY. Reduce bright mint hair rim and ear glow to a thin subdued sage line, no other face changes. Clean cel-shaded adventure-comic linework. One full1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__temporal-attention-takeaways-narrative-stage1-openai-20261107.png",
+      "sha256": "d8dd633934b8e9dce870f9497ee47f341b5e4e79ea88820d22e3d320dd82f654",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "d8dd633934b8e9dce870f9497ee47f341b5e4e79ea88820d22e3d320dd82f654",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+    "sha256": "d41bc9f475b74d34b355c8f9e9c5ea6e2f34b694100582f48485078008b3c222"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+    }
+  ],
+  "panelSpecification": {
+    "finalMeaning": "Change only the two display interiors and unused emitter light. Replace proportional axes with explicit discrete sequence segments. Left heading \"Complete: 80 readings\". Two outlined segment cards inside: \"Steps 0-31\" with smaller \"Onset: step 4\" INSIDE it, then \"Steps 32-79\". Both segments retained. Right heading \"Truncated: 48 readings\". First muted amber hatched card \"Missing: 0-31\" with smaller \"Onset: step 4\" INSIDE this missing card, then muted sage card \"Retained: 32-79\". No numeric axis, no dots placed on a scale, no tick marks. Each display footer \"Weight sum = 1\" and small \"Schematic sequence\". Right bottom reminder \"Check timestamps and window length\". Turn OFF unused foreground holo emitter disk so it is charcoal glass. Preserve exact Demir face, complete head size, hair, body, hands and tablet grip. Keep two screens in exactly the same location; all other screens remain off.",
+    "sourceBasis": {
+      "state": "recall",
+      "panels": [
+        "Left panel: Complete 80-reading window with an onset marker. Right panel: Truncated window with missing beginning visibly hatched.",
+        "Shared footer: Both weight sums = 1. Check timestamps and window length. Use the supplied-window distinction, not a confidence gauge."
+      ],
+      "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+    },
+    "concreteGenerationSpecification": "Completely RESTAGE as a candid discovery at the bridge console, not a presenter standing beside boards. Demir sits sideways in his chair in natural three-quarter view, chair and torso aimed toward two adjoining low sloping capture displays. Camera views the scene from the console's far corner, so his canonical face and the screens are naturally visible at an oblique angle. His brow furrows and his mouth is slightly open as he catches the omitted onset. One hand holds a stylus on the missing segment; the other anchors a timestamp note on the desk. He looks only at the comparison, never camera. No tablet or paper held up. The displays show schematic sequence blocks, not a proportional axis. Left: Complete: 80 readings, one block Steps 0-31 containing Onset: step 4, then Steps 32-79, footer Weight sum = 1. Right: Truncated: 48 readings, a muted amber missing block Missing: 0-31 containing Onset: step 4, then Retained: 32-79, footer Weight sum = 1. Tiny shared label Schematic sequence. Keep these as genuine working capture-review screens with compact labels, not huge lesson boards. His stylus stops at the missing onset. Every other display off, unused holo table off. Muted sage, charcoal and aged brass; no neon.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit with immutable canonical identity. Canonical portraits first, room reference next, LAST exact edit target. Keep exact candid Demir face, balanced head size, body and chair position, two coherent continuous shoulder-elbow-wrist-hand chains, stylus gesture and all console labels. Change ONLY notebook contents and neon highlights. Remove invented timestamp rows00:00:00,00:00:08,00:00:16,00:00:24. Notebook must contain exactly three short lines \"Step 4: 4.0 s\", \"Step 78: 77.4 s\", \"Gap: 73.4 s\". These are raw capture timestamps, not axis spacing. Fit text naturally to the notebook page perspective with consistent baselines and spacing; do not alter its size. Preserve complete80/truncated48 counts, missing0-31, retained32-79, onsetstep4 in both early regions, weightsum1 and schematicsequence labels EXACTLY. Reduce bright mint hair rim and ear glow to a thin subdued sage line, no other face changes. Clean cel-shaded adventure-comic linework. One full1536x1024 scene."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-65146359-809c-429a-9d47-cdf94aeefaf3.png",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit cinematic cel-shaded adventure-comic scene,1536x1024. First references are exact canonical people, then bridge room master for muted palette and materials, LAST reference is exact scene to edit. Keep the same composition, room geometry, people, expressions and story action. Preserve canonical face morphology exactly, including nose, jaw, eyes, brows, complexion, adult stubble/age marks, hair and side-specific equipment. Demir comms on anatomical RIGHT ear. Keep each entire shoulder-elbow-wrist-hand chain connected, all original grips and physical contacts, torso/neck gaze alignment, chair and body support. Preserve stylized adult warmth. Do not replace the scene with an infographic: integrate one concise task display into existing equipment, keeping people and story dominant. All other screens, wrist displays and peripheral monitors must be inactive charcoal glass with NO arbitrary graphics, text, waveforms, bars, circles or invented data. Physical hardware buttons may remain. No fake technical decoration. Preserve Demir tablet grip, both arms and stance, canonical exact face and smile. Head is a little heavy: if needed reduce whole head only toabout93 percent current linear size, without elongating neck or changing face morphology. On the two existing comparison monitors, replace waves with simple capture-range diagrams. Left heading \"Complete: 80 readings\" with a straight timeline from0 to79 and one dot at4 labeled \"Onset\". Right heading \"Truncated: 48 readings\" with the same full span0 to79, its initial0 to31 region hatched amber and labeled \"Missing\", the retained32 to79 region muted sage; the early onset dot at4 lies in the missing region, never in retained data. Under each monitor write \"Weight sum = 1\". One small footer on right says \"Check timestamps and window length\". No confidence gauge, no arbitrary measured traces or numeric results. All peripheral displays and wrist screen OFF. Keep aged brass frames, restrained sage light. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Preserve natural skin and restrained sage/brass, no cyan, neon mint or mustard wash. Output one full scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/temporal-attention-takeaways-before.png",
+          "sha256": "fcf64c28b294115501f8539b3619200c7dc630f5e60ad480519f95a4344a441c",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "fcf64c28b294115501f8539b3619200c7dc630f5e60ad480519f95a4344a441c",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "7ab9e54b8061f81e46369f92aa4e4bc4cd897b2a854209a50caa5825069bf70f",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c4bc4c70-15e8-4eb5-93a5-b80b8c1ad146.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-takeaways-identity-proof.jpg",
+      "status": "candidate-awaiting-review"
+    },
+    {
+      "prompt": "Use case: precise-object-edit with immutable canonical identity. First references are canonical people and room, LAST input is the exact edit target. Only the specified display change is authorized. All face morphology, head scales, anatomy, poses, furniture, materials, lighting and composition must remain unchanged. Correct ONLY the two capture-range diagrams. Preserve exact Demir face, head size, body, hands, tablet, room and palette. On both complete and truncated timelines, place the Onset dot at4/79 of the span from0 to79, about5.06 percent after the left endpoint. It should be much closer to0 than it currently is. Move its4 label and downward annotation arrow with it. The truncated display is an80-slot strip: the hatched missing first32 slots occupy EXACTLY40 percent of its fullwidth, with the retained48 slots occupying60 percent. Label missing side0 to31 and retained side32 to79, with31 just left of the boundary and32 just right. Keep the early onset dot inside the missing region. Preserve headings Complete:80 readings and Truncated:48 readings, both Weight sum =1, and Check timestamps and window length. No other edits. Output one full1536x1024 scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage1-openai-20261107.png",
+          "sha256": "7ab9e54b8061f81e46369f92aa4e4bc4cd897b2a854209a50caa5825069bf70f",
+          "role": "target scene"
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage2-openai-20261107.png",
+      "candidateSha256": "afec35060167e876b74205f80737bf9d94239ae0ca79703013db64de186b8cf7",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c5aacfc1-b540-4a77-9315-7cbeaa383f1a.png"
+    }
+  ],
+  "requestedDisplayCorrections": "Keep exact candid Demir face, balanced head size, body and chair position, two coherent continuous shoulder-elbow-wrist-hand chains, stylus gesture and all console labels. Change ONLY notebook contents and neon highlights. Remove invented timestamp rows00:00:00,00:00:08,00:00:16,00:00:24. Notebook must contain exactly three short lines \"Step 4: 4.0 s\", \"Step 78: 77.4 s\", \"Gap: 73.4 s\". These are raw capture timestamps, not axis spacing. Fit text naturally to the notebook page perspective with consistent baselines and spacing; do not alter its size. Preserve complete80/truncated48 counts, missing0-31, retained32-79, onsetstep4 in both early regions, weightsum1 and schematicsequence labels EXACTLY. Reduce bright mint hair rim and ear glow to a thin subdued sage line, no other face changes.",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "1422de5a77536b9f47b7d115f4093578f016393348a4fa738a3b795b73b5f9d4",
+    "proofSha256": "0b662890c95c62b7fbd47bd5cabbc0f7a21906c55857807bf67466362469be4f",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Demir catches the missing onset while comparing full and truncated captures, visibly frustrated by a misleading comparison."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-semantics-stage3-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+  "publishedOutputSha256": "d41bc9f475b74d34b355c8f9e9c5ea6e2f34b694100582f48485078008b3c222",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 162346
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/temporal-attention-takeaways-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/temporal-attention-takeaways-target.png",
+    "sha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/temporal-attention-takeaways-runtime-before.png",
+    "sha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir catches the missing onset while comparing full and truncated captures, visibly frustrated by a misleading comparison.",
+    "fullSpecification": "Completely RESTAGE as a candid discovery at the bridge console, not a presenter standing beside boards. Demir sits sideways in his chair in natural three-quarter view, chair and torso aimed toward two adjoining low sloping capture displays. Camera views the scene from the console's far corner, so his canonical face and the screens are naturally visible at an oblique angle. His brow furrows and his mouth is slightly open as he catches the omitted onset. One hand holds a stylus on the missing segment; the other anchors a timestamp note on the desk. He looks only at the comparison, never camera. No tablet or paper held up. The displays show schematic sequence blocks, not a proportional axis. Left: Complete: 80 readings, one block Steps 0-31 containing Onset: step 4, then Steps 32-79, footer Weight sum = 1. Right: Truncated: 48 readings, a muted amber missing block Missing: 0-31 containing Onset: step 4, then Retained: 32-79, footer Weight sum = 1. Tiny shared label Schematic sequence. Keep these as genuine working capture-review screens with compact labels, not huge lesson boards. His stylus stops at the missing onset. Every other display off, unused holo table off. Muted sage, charcoal and aged brass; no neon."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "c54d706fe99976ab48943d87421213ce150a9274972b46fc8ec84545c00d48b0",
+  "faceBoxes": {
+    "demir": [
+      370,
+      105,
+      340,
+      405
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-takeaways-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Completely RESTAGE as a candid discovery at the bridge console, not a presenter standing beside boards. Demir sits sideways in his chair in natural three-quarter view, chair and torso aimed toward two adjoining low sloping capture displays. Camera views the scene from the console's far corner, so his canonical face and the screens are naturally visible at an oblique angle. His brow furrows and his mouth is slightly open as he catches the omitted onset. One hand holds a stylus on the missing segment; the other anchors a timestamp note on the desk. He looks only at the comparison, never camera. No tablet or paper held up. The displays show schematic sequence blocks, not a proportional axis. Left: Complete: 80 readings, one block Steps 0-31 containing Onset: step 4, then Steps 32-79, footer Weight sum = 1. Right: Truncated: 48 readings, a muted amber missing block Missing: 0-31 containing Onset: step 4, then Retained: 32-79, footer Weight sum = 1. Tiny shared label Schematic sequence. Keep these as genuine working capture-review screens with compact labels, not huge lesson boards. His stylus stops at the missing onset. Every other display off, unused holo table off. Muted sage, charcoal and aged brass; no neon. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/temporal-attention-takeaways-target.png",
+          "sha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "3a0d13d3c6bd7017c00a792bda16994c008c98010657b31d6f4de9e9db65649b",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "d8dd633934b8e9dce870f9497ee47f341b5e4e79ea88820d22e3d320dd82f654",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-222a56e5-01ad-422c-b834-7dd52508a3b7.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-takeaways-identity-proof.jpg",
+      "faceBoxes": {
+        "demir": [
+          370,
+          105,
+          340,
+          405
+        ]
+      }
+    }
+  ],
+  "previousPanelSpecification": {
+    "finalMeaning": "Change only the two display interiors and unused emitter light. Replace proportional axes with explicit discrete sequence segments. Left heading \"Complete: 80 readings\". Two outlined segment cards inside: \"Steps 0-31\" with smaller \"Onset: step 4\" INSIDE it, then \"Steps 32-79\". Both segments retained. Right heading \"Truncated: 48 readings\". First muted amber hatched card \"Missing: 0-31\" with smaller \"Onset: step 4\" INSIDE this missing card, then muted sage card \"Retained: 32-79\". No numeric axis, no dots placed on a scale, no tick marks. Each display footer \"Weight sum = 1\" and small \"Schematic sequence\". Right bottom reminder \"Check timestamps and window length\". Turn OFF unused foreground holo emitter disk so it is charcoal glass. Preserve exact Demir face, complete head size, hair, body, hands and tablet grip. Keep two screens in exactly the same location; all other screens remain off.",
+    "sourceBasis": {
+      "state": "recall",
+      "panels": [
+        "Left panel: Complete 80-reading window with an onset marker. Right panel: Truncated window with missing beginning visibly hatched.",
+        "Shared footer: Both weight sums = 1. Check timestamps and window length. Use the supplied-window distinction, not a confidence gauge."
+      ],
+      "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+    }
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-222a56e5-01ad-422c-b834-7dd52508a3b7.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-65146359-809c-429a-9d47-cdf94aeefaf3.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c4bc4c70-15e8-4eb5-93a5-b80b8c1ad146.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c5aacfc1-b540-4a77-9315-7cbeaa383f1a.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-takeaways.webp",
+      "art-src/scenes/advanced-time-series__temporal-attention-takeaways-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-narrative-stage2-openai-20261107.png",
+    "sha256": "1422de5a77536b9f47b7d115f4093578f016393348a4fa738a3b795b73b5f9d4",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/advanced-time-series__temporal-attention-takeaways.json"
+}

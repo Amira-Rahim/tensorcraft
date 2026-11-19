@@ -1,0 +1,55 @@
+{
+  "module": "neural-networks",
+  "lesson": "first-neuron",
+  "phase": "epilogue",
+  "src": "/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+  "index": 14,
+  "characters": [
+    "chief-nazari"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of chief-nazari. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. CHIEF-NAZARI (portrait 1, scene head near x=1100): faithfully reproduce the portrait's mature 48-year-old weathered tan face, wide compact round-tipped nose and its bridge, exact cheek width, firm rounded chin and jaw, steady eye spacing and shaped brows, restrained mouth proportions, crow's feet, forehead and cheek folds, gray-streaked short practical dark hair with the same hairline and swept masses. Do not elongate the nose, taper the jaw, erase mature lines, glamorize her or replace her individual face with a generic stern engineer. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face. Nazari's current sharp side profile is not an identity authority. Turn her head slightly toward camera so her canonical broad nose and rounded lower face can be recognized, keeping the mug and both hands unchanged.",
+  "references": [
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-fdd6bf06-f863-45f7-8883-ea1edace2eaa.png",
+  "candidate": "/tmp/early-identity-candidates/14.webp",
+  "candidateSha256": "84531a1aa0b05802ad6df8287087796de4599832434c68994a3aa2b08cdbc901",
+  "sourceSha256": "48037e4b7d7372bbfd5427572fa20c2aa58d1030e2821382f10742910b3c4d33",
+  "beforeSha256": "64a220b6e4783b9d7ff8644624aa1c810c99b6f484a50f81cd3fcf9103820c6c",
+  "actualReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+      "role": "edit target",
+      "sha256": "64a220b6e4783b9d7ff8644624aa1c810c99b6f484a50f81cd3fcf9103820c6c"
+    }
+  ],
+  "webpQuality": 80,
+  "webpEffort": 4,
+  "resizeFit": "cover",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 123216,
+  "proofs": [
+    {
+      "character": "chief-nazari",
+      "reference": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/first-neuron-epilogue-chief-nazari-correction.png",
+      "crop": {
+        "left": 966,
+        "top": 177,
+        "width": 267,
+        "height": 315
+      }
+    }
+  ]
+}

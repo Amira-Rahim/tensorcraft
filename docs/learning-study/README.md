@@ -4,6 +4,11 @@ This packet prepares Q5 and Q6 of the [content quality plan](../content-quality-
 It contains no reviewer scores or learner results. The author-side checks in
 the repository cannot establish a 9/10 independent score or a $70 return on investment.
 
+The November 13 [browser ML sample-review brief](browser-ml-review-brief-2026-11-13.md)
+defines a public two-lesson/project sample, two qualified business inquiry
+routes and concrete inquiry drafts. It preserves the full-course and learner
+pilot gates below. No inquiry or engagement has occurred.
+
 The September 19 [measurement handoff](learning-product-handoff.md) adds
 observations for the new experiments, both ML routes and revised story choices.
 It distinguishes an optional mixed-background discovery round from this

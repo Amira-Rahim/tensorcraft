@@ -1,0 +1,80 @@
+{
+  "id": "neural-networks/building-a-network",
+  "phase": "takeaways",
+  "currentSource": "art-src/scenes/neural-networks__building-a-network-takeaways-openai-20261107.png",
+  "currentSha256": "8066012a722d0b41ddc7c60592ed74662a09a5bf9863d6f7ad00d8f576112b23",
+  "reviewedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a23f6856-0e83-48cf-97f8-45034c8e3103.png",
+  "reviewedSha256": "7de94086a5eda21464e75461c040f1615c4d432269445b0c570769bf785600b2",
+  "pendingCandidate": true,
+  "cast": [
+    "ensign-demir",
+    "commander-mirza"
+  ],
+  "sheet": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/building-a-network-sheet.jpg",
+  "slug": "building-a-network",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-9084b319-9cf2-4e16-aad3-1ea7e6c4a6d9.png"
+  ],
+  "prompt": "Use case: precise-object-edit. First2canonical portraits identity only. Next BRIDGE master is ROOM ONLY, ignore any people and graphics. Last is TARGET. Correct ONLY the central tabletop screen's reader direction and inactive background screens. Both crew stand at the FAR side of the screen. Rotate ALL content within that same physical tabletop screen180degrees so every row faces them and is upside-down to the viewer. Preserve exact 'Build: predict() works', 'Compile: training settings', 'Fit: updates weights', 'Same training rows; no unseen-data test'. Keep each line properly mapped to the flat receding glass plane. Preserve both exact faces, shared amused/skeptical eyelines, all4arm/hand chains and existing fingertip/rail contacts. Change background incidental displays to inactive dark glass, leave physical switch lights. No camera-facing teaching typography. Preserve all balanced stylized head sizes, identities/age, anatomy, lighting and muted palette. No extra people/gadgets/diagrams, no left accent bars or em dash. Preserve1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/building-a-network-takeaways-reader-fix.json",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a89e0d6d-5892-464e-9ed3-49e9fee01eca.png",
+  "tool": "built-in image_gen",
+  "date": "2026-11-07",
+  "status": "pending fullframe and canonical proof review",
+  "pathSha256": "bd4061aae5dce9edcc69ddae380743327fbd7e263e0daab206a89ff63df1917a",
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/building-a-network-takeaways-ensign-demir-proof.png",
+      "sha256": "024b6709338ade6dbed930515b32b185848e978119a7b3fc94546af34e81ea52",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "canonicalSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a89e0d6d-5892-464e-9ed3-49e9fee01eca.png",
+      "candidateSha256": "bd4061aae5dce9edcc69ddae380743327fbd7e263e0daab206a89ff63df1917a",
+      "crop": {
+        "left": 382,
+        "top": 85,
+        "width": 215,
+        "height": 255
+      }
+    },
+    {
+      "character": "commander-mirza",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/building-a-network-takeaways-commander-mirza-proof.png",
+      "sha256": "5b984721284f3eea4fc3cd2944fc070ea4c3c8838c6426458df81efad385edb2",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "canonicalSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a89e0d6d-5892-464e-9ed3-49e9fee01eca.png",
+      "candidateSha256": "bd4061aae5dce9edcc69ddae380743327fbd7e263e0daab206a89ff63df1917a",
+      "crop": {
+        "left": 1030,
+        "top": 100,
+        "width": 190,
+        "height": 225
+      }
+    }
+  ],
+  "checkpointStatus": "HOLD: useful current candidate has correct whole-body story, four hands and rotated screen plane, but final brass row has a garbled character. Needs narrow text correction. Later0474a74f regression rejected; do not publish it.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-9084b319-9cf2-4e16-aad3-1ea7e6c4a6d9.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a23f6856-0e83-48cf-97f8-45034c8e3103.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-a89e0d6d-5892-464e-9ed3-49e9fee01eca.png",
+      "art-src/scenes/neural-networks__building-a-network-takeaways-openai-20261107.png",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

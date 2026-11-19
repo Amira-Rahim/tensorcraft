@@ -1,0 +1,135 @@
+{
+  "id": "optimization-edge/quantization",
+  "phase": "briefing",
+  "owner": "quality_runtime",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: Canonical ensign-demir identity; image 3: engineering room only; image 4: Edit target; enlarge teaching display while preserving story action.\nScene: Nazari stands LEFT at the engineering bench with a closed multitool set down under one relaxed hand, her other hand resting on the desk. She gives Demir a stern sideways question. Demir stands just behind her, holding a closed notebook naturally with both hands near his waist and listening. LARGE upright RIGHT display fills available wall with exact title 'Weight storage'; subtitle '85 million weights'; spacious table headers 'Format', 'Bytes per weight', 'Total'; row 'float32 | 4 | 340 MB'; row 'uint8 | 1 | 85 MB'; lower lines 'Decode to floats at load' and 'Changed decisions: measure next'. No invented accuracy result. Camera beside the operators; display readable to them and viewer.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "fa2c4b554448bbbe5fc3cdce734865855bda6354c00f920a1c769e7dae17c923",
+  "source": "art-src/scenes/optimization-edge__quantization-openai-20261107.png",
+  "sourceSha256": "d1359a697d772038406713033a1a9b9491ee897f66de2f11f99ac87257272ab4",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "engineering room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__quantization-openai-20261107.png",
+      "sha256": "d1359a697d772038406713033a1a9b9491ee897f66de2f11f99ac87257272ab4",
+      "role": "Edit target; enlarge teaching display while preserving story action"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517"
+    }
+  ],
+  "sourceEvidence": {
+    "lessonSource": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+    "lessonSha256": "e417dde7abe0a7696dc8a4018df27d93adadb35227aa01e0d132068791171517",
+    "context": "Briefing uses rounded 85 million weights, 340 MB float32 to 85 MB uint8, decoded back to floats at load, with changed decisions still to measure.",
+    "benchmarks": "docs/audits/deep-orbit-quality-2026-11-08/benchmark.json",
+    "identityReferences": [
+      {
+        "character": "chief-nazari",
+        "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+      },
+      {
+        "character": "ensign-demir",
+        "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+      }
+    ]
+  },
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/optimization-edge__quantization-openai-20261107.png",
+  "candidateSha256": "723c1a710b89c107614f00e8ee4ca60bd7022f881ec456c1de0055b182968044",
+  "publication": {
+    "alt": "Nazari weighs the smaller uint8 file against decisions that still need to be measured.",
+    "location": "engineering",
+    "action": "Nazari weighs the smaller uint8 file against decisions that still need to be measured.",
+    "emotion": "Skeptical scrutiny and attentive curiosity.",
+    "eyeline": "Characters see and use the same readable display surface.",
+    "checks": [
+      "Canonical faces and adult proportions.",
+      "Two complete arm chains per character; correct thumbs and prop contact.",
+      "Large source-correct display, no invented outcome.",
+      "Perspective and operator orientation."
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-32a6126f-e95d-4436-9c48-6c86bea60fb8.png",
+  "generatedSha256": "723c1a710b89c107614f00e8ee4ca60bd7022f881ec456c1de0055b182968044",
+  "ownReview": {
+    "reviewedAt": "2026-11-09T06:57:12.329500+00:00",
+    "nativeReviewed": true,
+    "candidateSha256": "723c1a710b89c107614f00e8ee4ca60bd7022f881ec456c1de0055b182968044",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": {
+      "chief-nazari": [
+        350,
+        300,
+        225,
+        285
+      ],
+      "ensign-demir": [
+        90,
+        235,
+        190,
+        275
+      ]
+    },
+    "handCropCoordinatesXYWH": [
+      [
+        150,
+        710,
+        145,
+        180
+      ],
+      [
+        340,
+        875,
+        525,
+        145
+      ]
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Nazari studies the storage calculation with a skeptical expression while Demir listens with a closed notebook. Natural book, multitool and desk contact, two arms each, canonical age and faces pass. The large table correctly shows 85 million weights, float32 4 bytes / 340 MB and uint8 1 byte / 85 MB, decoding at load and decisions still to measure."
+  },
+  "publishedSource": "art-src/scenes/optimization-edge__quantization-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/optimization-edge__quantization-briefing/candidate.png",
+      "sha256": "723c1a710b89c107614f00e8ee4ca60bd7022f881ec456c1de0055b182968044",
+      "bytes": 2208078,
+      "retainedEquivalent": "art-src/scenes/optimization-edge__quantization-openai-20261107.png",
+      "reason": "Published duplicate"
+    }
+  ]
+}

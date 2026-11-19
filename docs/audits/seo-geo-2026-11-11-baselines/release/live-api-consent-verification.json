@@ -1,0 +1,91 @@
+{
+  "startedAtUtc": "2026-11-11T11:08:47.607Z",
+  "endpoint": "https://tensorcraft-api.fly.dev/api/analytics-consent",
+  "method": "temporary_confirmed_account_with_finally_cleanup",
+  "steps": [
+    {
+      "name": "unauthenticated_get",
+      "method": "GET",
+      "expectedStatus": 401,
+      "status": 401,
+      "noStore": true
+    },
+    {
+      "name": "unauthenticated_put",
+      "method": "PUT",
+      "expectedStatus": 401,
+      "status": 401,
+      "noStore": true
+    },
+    {
+      "name": "missing_record_defaults_off",
+      "method": "GET",
+      "expectedStatus": 200,
+      "status": 200,
+      "noStore": true,
+      "granted": false,
+      "revision": 0
+    },
+    {
+      "name": "fresh_grant",
+      "method": "PUT",
+      "expectedStatus": 200,
+      "status": 200,
+      "noStore": true,
+      "granted": true,
+      "revision": 1
+    },
+    {
+      "name": "stale_grant_conflicts",
+      "method": "PUT",
+      "expectedStatus": 409,
+      "status": 409,
+      "noStore": true,
+      "granted": true,
+      "revision": 1
+    },
+    {
+      "name": "stale_revision_withdrawal_wins",
+      "method": "PUT",
+      "expectedStatus": 200,
+      "status": 200,
+      "noStore": true,
+      "granted": false,
+      "revision": 2
+    },
+    {
+      "name": "stale_grant_cannot_restore",
+      "method": "PUT",
+      "expectedStatus": 409,
+      "status": 409,
+      "noStore": true,
+      "granted": false,
+      "revision": 2
+    },
+    {
+      "name": "withdrawal_remains_off",
+      "method": "GET",
+      "expectedStatus": 200,
+      "status": 200,
+      "noStore": true,
+      "granted": false,
+      "revision": 2
+    }
+  ],
+  "status": "passed",
+  "triggerPreflight": {
+    "tlsVerified": true,
+    "expectedProfileOnlyTrigger": true,
+    "profileInsertTriggers": 0,
+    "sourceSha256": "3c50aad58406ab14d590caf4f94a49d1d77c902e85036d4cd2025610a9db4bc0"
+  },
+  "temporaryAccountCreated": true,
+  "confirmationEmailRequested": false,
+  "cleanupCounts": {
+    "auth_users": 0,
+    "profiles": 0,
+    "analytics_consents": 0
+  },
+  "cleanupSucceeded": true,
+  "completedAtUtc": "2026-11-11T11:08:55.072Z"
+}

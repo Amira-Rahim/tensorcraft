@@ -1,0 +1,1791 @@
+{
+  "foundations/introduction-to-tensors": {
+    "lessonSource": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml"
+    ],
+    "verifiedData": "Selected sensors A-D at three moments: [2,20,5,8,3,18,7,8,4,16,6,9]. Tensor shape[12]. Chart rows A[2,3,4], B[20,18,16], C[5,7,6], D[8,8,9]. No training.",
+    "phases": {
+      "briefing": {
+        "section": "StoryPassage and BriefingTakeaway",
+        "spec": "Show recording header A B C D and three timestamped rows of the12 verified values, titled Selected12readings. ARIA side status:4096 rules, no useful pattern. Do not depict learned result.",
+        "currentSource": "art-src/scenes/foundations__introduction-to-tensors-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "commander-mirza",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "What the example shows",
+        "spec": "Array of12 verified readings \u2192 tf.tensor \u2192 shape[12]. Retain grouping note: sensor identity comes from header A B C D, not tensor shape.",
+        "currentSource": "art-src/scenes/foundations__introduction-to-tensors-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; create-a-tensor instructions",
+        "spec": "Show input streamValues with12 verified numbers and the two task lines reading=tf.tensor(streamValues), shape=reading.shape as current task. Preview axes labeled Selected moment1,2,3 / Recorded reading; no invented result.",
+        "currentSource": "art-src/scenes/foundations__introduction-to-tensors-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap; exercise solution chartRows",
+        "spec": "Show shape[12] and four labeled sensor rows A[2,3,4],B[20,18,16],C[5,7,6],D[8,8,9], linked to supplied grouping code. Label Tensor created, no model training.",
+        "currentSource": "art-src/scenes/foundations__introduction-to-tensors-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Four labeled three-point charts using the exact A-D values. A rises2\u21923\u21924; B falls20\u219218\u219216; C5\u21927\u21926; D8\u21928\u21929. Small header A B C D accompanies handoff to Farah.",
+        "currentSource": "art-src/scenes/foundations__introduction-to-tensors-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "foundations/tensor-shapes": {
+    "lessonSource": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml"
+    ],
+    "verifiedData": "Same12 readings. Grid[3,4]=[[2,20,5,8],[3,18,7,8],[4,16,6,9]], transpose[4,3]=[[2,3,4],[20,18,16],[5,7,6],[8,8,9]]. Full recording[450,64]\u2192[64,450].",
+    "phases": {
+      "briefing": {
+        "section": "StoryPassage and BriefingTakeaway",
+        "spec": "Show exact3x4 selected-readings grid with columns A B C D and rows moments1,2,3; highlight that one chart line must keep one sensor together.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "concept": {
+        "section": "Farah\u2019s plan in JavaScript",
+        "spec": "Show exact3x4 grid \u2192 transpose \u2192 exact4x3 grid. Track A's2,3,4 through the swap with one muted highlight. Labels moments\u00d7sensors and sensors\u00d7moments.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; reshape-tensor instructions",
+        "spec": "Show flat12 verified values, target grid[3,4], second row highlighted3,18,7,8, and transpose target[4,3]. No3x3 or invented colored matrices.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "takeaways": {
+        "section": "Farah\u2019s plan in JavaScript",
+        "spec": "Compare reshape[4,3] first row[2,20,5] marked mixes sensors against transpose first row[2,3,4] marked sensor A. Same shape, different meaning.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Show full-recording shape[450,64]\u2192transpose\u2192[64,450], and a clearly labeled Selected excerpt A-D chart with the verified3-point rows. Do not invent numerical full-recording waveforms.",
+        "currentSource": "art-src/scenes/foundations__tensor-shapes-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      }
+    }
+  },
+  "foundations/tensor-operations": {
+    "lessonSource": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml"
+    ],
+    "verifiedData": "pass1[[2,10],[4,12],[6,14]], pass2[4,8], gain2; merged[[3,9],[4,10],[5,11]], boosted[[6,18],[8,20],[10,22]]. Wrong matMul[1,64]\u00d7[1,64]. mix rule[readings,channels]\u00d7transpose([banks,channels])\u2192[readings,banks].",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Error panel shows matMul[1,64]\u00d7[1,64], with mismatched inner64 and1 highlighted. Label64 channels waiting; no successful result or generic tangled atom.",
+        "currentSource": "art-src/scenes/foundations__tensor-operations-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-operations.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Averaging and amplifying the readings; merge-two-passes.ts",
+        "spec": "Worked first row: [2,10]+[4,8] \u2192 divide2 \u2192 [3,9] \u2192 gain2 \u2192 [6,18]. Keep exactly two channels throughout.",
+        "currentSource": "art-src/scenes/foundations__tensor-operations-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-operations-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; add-tensors instructions",
+        "spec": "Show the actual3x2 pass1 and broadcast row[4,8], operation mean then gain2, and explicit checks merged[3,2], boosted[3,2]. Separate small mixChannels rule[readings,channels]\u00d7mix.T\u2192[readings,banks]. No unrelated waveforms as primary task.",
+        "currentSource": "art-src/scenes/foundations__tensor-operations-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-operations-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Weighted channel sums; LessonRecap",
+        "spec": "Show correct average matrix and boosted matrix from verified data; separate mul element-wise from matMul weighted sum with axis labels. No unlabeled sine-wave tablets.",
+        "currentSource": "art-src/scenes/foundations__tensor-operations-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-operations-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Primary labeled hour-log schematic:64 channels, repeated synchronized ripple, repeated pass2/pass3. Mark schematic mission capture because raw waveform values are not supplied. Keep a small exact worked-result[6,18] as verified calculation inset; do not invent timestamps or anomaly classification.",
+        "currentSource": "art-src/scenes/foundations__tensor-operations-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/tensor-operations-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "foundations/data-loading": {
+    "lessonSource": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml"
+    ],
+    "verifiedData": "Archive28800 readings, crash at19204 after about40GB. Practice16 rows: readSample(i) features[i*100,i,i/10], label i%2. shuffle10 then batch4; four xs[4,3], ys[4,1] batches. TrainIDs0-11, validation12-15; no training.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Memory plot labeled readings loaded, rising to crash at19204 /28800; annotation about40GB and Array buffer allocation failed. No generic unlabeled rising curve.",
+        "currentSource": "art-src/scenes/foundations__data-loading-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/data-loading.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Reading samples on demand; batch-data readSample",
+        "spec": "APPROVED rootrepair exec-06f31007:16-row stand-in\u2192ID1\u2192xs[3]=[100,1,0.1] and ys[1]=[1]. Title One row per request. Two clear arrows to separate tensors; no batch/training/success.",
+        "currentSource": "art-src/scenes/foundations__data-loading-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/data-loading-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; batch-data instructions",
+        "spec": "Show16 labeled rowIDs feeding shuffle(buffer10) then batch4. Four output groups each labeled xs[4,3],ys[4,1], and separate saved membership Training0-11 /Validation12-15. Preserve each row's features-label pairing; no fixed random shuffle outcome asserted.",
+        "currentSource": "art-src/scenes/foundations__data-loading-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/data-loading-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Training and validation periods; LessonRecap",
+        "spec": "Show chronological IDs0-15 split after11. Training0-11 may reorder within its region; validation12,13,14,15 stays ordered. Adjacent note shuffle before batch and no model trained.",
+        "currentSource": "art-src/scenes/foundations__data-loading-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/data-loading-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Show archive progress28800/28800 and a flat memory-use schematic labeled bounded memory. Fictional run4min and ARIA9s may be labeled Mission timings, not benchmark. Four channel scale previews cue normalization without invented numeric measurements.",
+        "currentSource": "art-src/scenes/foundations__data-loading-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/data-loading-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "foundations/normalization": {
+    "lessonSource": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml"
+    ],
+    "verifiedData": "Batch[[20,.2],[22,.8],[24,.4],[26,.6]], mean[23,.5], std\u2248[2.236,.224]. Fixed weights[.9,-1.4],bias-.3,sigmoid; scores not calibrated probability. min[20,.2],max[26,.8]. Sample7741 unresolved.",
+    "phases": {
+      "briefing": {
+        "section": "Opening Dialogue; Scaling each feature",
+        "spec": "Show actual two columns Temperature20,22,24,26 and Signal.2,.8,.4,.6, with visibly different raw scales. Task Scale each feature; no invented three-channel waveforms.",
+        "currentSource": "art-src/scenes/foundations__normalization-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "commander-mirza",
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Scaling each feature",
+        "spec": "Show each column's mean23/.5 and std2.236/.224, with z=(x-mean)/std. Worked first row[20,.2]\u2192approximately[-1.342,-1.342], labeled rounded.",
+        "currentSource": "art-src/scenes/foundations__normalization-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; normalize-data instructions",
+        "spec": "Actual4x2 batch\u2192fit training mean/std\u2192scale\u2192fixed preview neuron weights[.9,-1.4],bias-.3\u2192scores[4,1]. Mark score not calibrated probability; no invented confidence or successful classification.",
+        "currentSource": "art-src/scenes/foundations__normalization-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Min-max scaling; LessonRecap",
+        "spec": "Show training bounds Temperature20..26, Signal.2...8 and formula(x-min)/(max-min). State reuse training statistics; later values may exceed0..1; constant scale uses divisor1.",
+        "currentSource": "art-src/scenes/foundations__normalization-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue and BossBeat7741",
+        "spec": "Show archive row7741 highlighted for review, label cause unknown. Six preview score slots: five near ends, one near boundary, without invented numeric scores unless obtained from DeepScanDemo source. Capture record shows replay/calibration unresolved; no alien/sensor-noise verdict.",
+        "currentSource": "art-src/scenes/foundations__normalization-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/foundations/normalization-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "neural-networks/first-neuron": {
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml"
+    ],
+    "verifiedData": "Concept x[.5,.8,.2],w[.4,-.2,.6],b.1\u2192.26. Exercise x[1,2,3],w[.2,.8,-.5],b.1\u2192.4 scalar shape[]. Story tones A.81/B.12 over20min; unknown7741 unresolved.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Show calibration inputs Tone A and Tone B separately labeled Known tones, plus Sector7-G labeled Unknown. One neuron diagram has three measured inputs and one score output; no claim known-tone success solves unknown signal.",
+        "currentSource": "art-src/scenes/neural-networks__first-neuron-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "concept": {
+        "section": "A weighted sum of inputs; Reading the Weights",
+        "spec": "Three input-weight pairs .5\u00d7.4=.20, .8\u00d7-.2=-.16, .2\u00d7.6=.12 feed sum+bias.1\u2192score.26. Exactly three connections and one scalar output.",
+        "currentSource": "art-src/scenes/neural-networks__first-neuron-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; implement-neuron solutionCode",
+        "spec": "Display exercise inputs[1,2,3],weights[.2,.8,-.5],bias.1 feeding dot+add. Output requirement scalar shape[]; no probability label or trained-classifier verdict. A worked calculation may show expected.4 clearly marked check.",
+        "currentSource": "art-src/scenes/neural-networks__first-neuron-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "dr-farah"
+        ]
+      },
+      "takeaways": {
+        "section": "Reading the Weights; LessonRecap",
+        "spec": "Show input\u00d7weight contributions .20,-.16,.12 and bias.1 totaling.26. Annotate weight sign gives direction, contribution depends on input. No unrelated wave comparisons.",
+        "currentSource": "art-src/scenes/neural-networks__first-neuron-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Galley monitor has two clearly labeled stable score traces:Tone A.81, Tone B.12; time span20min, known calibration tones. No claim of generalization or classification of7741.",
+        "currentSource": "art-src/scenes/neural-networks__first-neuron-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "chief-nazari"
+        ]
+      }
+    }
+  },
+  "neural-networks/activation-functions": {
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml"
+    ],
+    "verifiedData": "ReLU probe[-2,-.5,0,1.5,3]\u2192[0,0,0,1.5,3]. Scores-.06/1.04 map sigmoid\u2248.485/.739; threshold.5 separate. Story alertlist tonesA,B,7741; ARIA nominal, unresolved.",
+    "phases": {
+      "briefing": {
+        "section": "Opening Nazari dialogue; A Score and an Alert Are Different",
+        "spec": "Two raw scores-.06 and1.04, a separate threshold control, and label Where is the alert rule? Do not imply sigmoid selects threshold.",
+        "currentSource": "art-src/scenes/neural-networks__activation-functions-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "What a Linear Stack Cannot Add",
+        "spec": "ReLU graph with labeled axes input/output and corners(-2,0),(0,0),(3,3), plus max(0,x). Optional verified V-shape relu(x)+relu(-x)=abs(x), clearly separate.",
+        "currentSource": "art-src/scenes/neural-networks__activation-functions-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; relu-activation testCode probe",
+        "spec": "Show five input values[-2,-.5,0,1.5,3] aligned with five ReLU outputs[0,0,0,1.5,3]. Negative bars clamp to zero and positive bars retain height; no empty unlabelled output panel.",
+        "currentSource": "art-src/scenes/neural-networks__activation-functions-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "A Score and an Alert Are Different; LessonRecap",
+        "spec": "Show-.06\u2192sigmoid\u2248.485 and1.04\u2192\u2248.739, threshold.5 as separate dashed line. Label Score range, alert threshold, calibration as three different checks; no80%probability claim.",
+        "currentSource": "art-src/scenes/neural-networks__activation-functions-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "chief-nazari",
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "At0316, neuron alert list contains ToneA,ToneB,7741; separate ARIA panel says7741 nominal. Header Disagreement recorded, cause unresolved. Keep threshold visible as a separate setting without inventing its changed value.",
+        "currentSource": "art-src/scenes/neural-networks__activation-functions-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "neural-networks/layers-and-architecture": {
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml"
+    ],
+    "verifiedData": "Bridge3\u219232ReLU\u219216ReLU\u21921sigmoid; parameters128+528+17=673. Practice4\u219216ReLU\u21928ReLU\u21921sigmoid;80+136+9=225; any width formula(width*16+16)+(16*8+8)+9. Old96/32/1=3521.",
+    "phases": {
+      "briefing": {
+        "section": "Opening dialogue; The three-layer network",
+        "spec": "Nazari's engineering quote shows Bridge inputs3\u219232\u219216\u21921, parameter budget673, status not trained. Contrast old96/32/1 quote3521 as rejected oversized configuration only if space permits.",
+        "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "concept": {
+        "section": "The three-layer network",
+        "spec": "Show labeled Bridge3\u219232ReLU\u219216ReLU\u21921sigmoid with per-layer counts128,528,17. Diagram block size may suggest width but labels establish exact counts.",
+        "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; build-layer instructions",
+        "spec": "Practice architecture explicitly4\u219216ReLU\u21928ReLU\u21921sigmoid, counts80,136,9 totaling225. Include predictParams(width) formula; do not accidentally show bridge32/16/1 or673.",
+        "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap; parameter count rule",
+        "spec": "Parameter-count rule(inputs\u00d7units)+units; practice4\u219216 layer gives64weights+16biases=80. Next136 and9 sum225, labeled Practice; no unverified performance claim.",
+        "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Paper on engineering board labeled Bridge model summary:32ReLU128params;16ReLU528params;1sigmoid17params;Total673. Demir verifies128+528+17. Status still needs training.",
+        "currentSource": "art-src/scenes/neural-networks__layers-and-architecture-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "chief-nazari"
+        ]
+      }
+    }
+  },
+  "neural-networks/forward-pass": {
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "verifiedData": "Story expected[rows,3], flat[3] adapter\u2192[3,1]wrong, correct[1,3]. Practice input[[1,2],[3,4]] shape[2,2]\u2192dense3\u2192[2,3]; single[5,6]\u2192[[5,6]][1,2]. Random outputs not fixed. Fictional epilogue scores.49,.53,.51.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Shape-error panel:expected[rows,3],received[3]\u2192adapter[3,1]. Highlight missing batch axis; no arbitrary four-box pipeline.",
+        "currentSource": "art-src/scenes/neural-networks__forward-pass-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "dr-farah"
+        ]
+      },
+      "concept": {
+        "section": "Data Flows Forward",
+        "spec": "One three-feature reading shape[3]\u2192expandDims(0)\u2192one row shape[1,3]. Label rows/features axes and preserve all three feature positions; no changing values.",
+        "currentSource": "art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; forward-pass solutionCode",
+        "spec": "Practice batch[[1,2],[3,4]][2,2]\u2192Dense3\u2192output shape[2,3], and single[5,6][2]\u2192[[5,6]][1,2]. Outputs depend on random weights, so show shapes and units without invented numbers or success claims.",
+        "currentSource": "art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap",
+        "spec": "Show input shape[n]\u2192expandDims(0)\u2192[1,n], with exact practice[5,6]\u2192[[5,6]]. Separate output ownership/dispose note if needed; no classifier verdict.",
+        "currentSource": "art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Saved story run lists scores.49,.53,.51 labeled Random initial weights; not trustworthy predictions. Input contract[1,3] fixed. No green success bars suggesting useful classifications.",
+        "currentSource": "art-src/scenes/neural-networks__forward-pass-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "neural-networks/building-a-network": {
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml"
+    ],
+    "verifiedData": "Practice120x8, calmIDs0-59/flagged60-119;24ReLU\u219212ReLU\u21921sigmoid529params. Two independent copies; onlyAfit50epochs,batch16. Adam/binaryCrossentropy/accuracy. Story bridge3\u219232\u219216\u21921 673; untrained7741rank differs betweeninitializations.",
+    "phases": {
+      "briefing": {
+        "section": "Mirza dialogue; Network setup",
+        "spec": "Bridge classifier3\u219232ReLU\u219216ReLU\u21921sigmoid,673parameters, status assemble/compile before training. Show compile settings Adam,binaryCrossentropy,accuracy, with no training-result chart.",
+        "currentSource": "art-src/scenes/neural-networks__building-a-network-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/commander-mirza.png"
+        ],
+        "cast": [
+          "commander-mirza"
+        ]
+      },
+      "concept": {
+        "section": "Network setup",
+        "spec": "Two separate stages Build layers\u2192predict available, then Compile(Adam,BCE,accuracy)\u2192Fit updates weights. State compile does not train/reset; random initial weights, zero biases.",
+        "currentSource": "art-src/scenes/neural-networks__building-a-network-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/commander-mirza.png"
+        ],
+        "cast": [
+          "commander-mirza"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; simple-network instructions",
+        "spec": "Practice120rows\u00d78features\u2192two copies24/12/1,529params. CopyA before\u2192fit50epochs,batch16\u2192after; CopyB remains untrained. Rows0-59 calm,60-119 flagged. Do not invent scores/accuracy for random initializations.",
+        "currentSource": "art-src/scenes/neural-networks__building-a-network-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap; simple-network instructions",
+        "spec": "Compare operations:build/predict,compile config,fit changes weights. Practice parameter total529 and training settings50epochs/batch16; scores reuse training rows, not unseen-data evaluation.",
+        "currentSource": "art-src/scenes/neural-networks__building-a-network-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/commander-mirza.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "commander-mirza"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Two saved untrained initial states A/B with starting weights saved; a separate Sample7741 note states Rank changed. No fabricated rank positions or scores. Card Train and test. This implements exact ending with fewer unspecified visual positions.",
+        "currentSource": "art-src/scenes/neural-networks__building-a-network-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      }
+    }
+  },
+  "recurrent-networks/sequences-matter": {
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml"
+    ],
+    "verifiedData": "Practice five-row stream[[1],[2],[3],[4],[5]], window3,stride1 produces2pairs:123\u21924 and234\u21925. xs[2,3,1],ys[2,1].",
+    "phases": {
+      "briefing": {
+        "section": "Opening Farah dialogue",
+        "spec": "Ordered trace labeled One reading at a time versus Same readings in order. Use the sourced first-feature excerpt0.5,0.8,0.3,0.5,0.9, marked Selected five readings. No learned detection yet.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequences-matter-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Sequence Shape; create-sequences first test",
+        "spec": "Five boxes1,2,3,4,5 labeled Synthetic practice stream. Bracket1,2,3 as input,4 as next-reading target. Show xs[batch,time,features].",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; create-sequences first test",
+        "spec": "Exactly two input-target rows: [1,2,3] next4 and [2,3,4] next5. Labels window3,stride1. Target remains outside each window.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap; create-sequences first test",
+        "spec": "Show two windows with xs[2,3,1] and two targets with ys[2,1]. Mark axes batch,time,features. One small note Split before windowing.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Two paper runs labeled Ordered archive and Shuffled archive. Same per-reading score field across both, labeled Stateless classifier. Do not invent score numbers or imply identical chronological trace shapes. Order cannot affect a per-row score.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "recurrent-networks/simple-rnns": {
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml"
+    ],
+    "verifiedData": "Handpicked cell h=tanh(.8h+x),h0=0,input[.5,.9,.5],states[.4621,.8537,.8284]. Fictional overnight80steps200epochs6hoursloss.693.",
+    "phases": {
+      "briefing": {
+        "section": "Opening; reducer-with-memory.ts",
+        "spec": "Small state chain: input0.5 then0.9 then0.5; hidden values0.4621,0.8537,0.8284. Header Handpicked one-unit cell. Three steps only.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "The Learned Reducer",
+        "spec": "One recurrent cell diagram h_next=tanh(0.8h_prev+x). Previous state and new input have separate arrows. Example h_prev0,x0.5 gives0.4621, rounded.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__simple-rnns-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir",
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; build-rnn instructions",
+        "spec": "Two aligned tracks labeled JavaScript runCell and TF.js SimpleRNN. Both take same readings and the same extracted weights. Output All hidden states. No invented random weight values.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__simple-rnns-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Vanishing Gradient Problem",
+        "spec": "Direct derivative example0.8^60\u22480.0000015 labeled Near-zero states. Caption Repeated factors shrink gradient. No universal20step cutoff.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Overnight run log:80-step windows,200epochs,6hours,loss0.693,predictions\u22480.5. Small annotation Gradient fades near20;pattern at74, marked Mission run. No success check.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "recurrent-networks/lstm-gates": {
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml"
+    ],
+    "verifiedData": "Three sigmoid gates forget/input/output;candidate tanh. c_new=f*c_prev+i*g;h_new=o*tanh(c_new). Kernel order input,forget,candidate,output. Story950400one-secondrows11days,trainfirstday,testlaterdays.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Failed run200/200,loss0.693,pattern gap74steps. Farah tablet label Gated cell. No claim gates guarantee range.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "LSTM gates and cell state",
+        "spec": "One cell-state path with forget gate f, input gate i and tanh candidate g, producing c_new=f*c_prev+i*g. Separate output gate o produces h_new=o*tanh(c_new). Distinguish3gates from4parameter groups.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__lstm-gates-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; build-lstm instructions",
+        "spec": "Four kernel columns labeled INPUT,FORGET,CANDIDATE,OUTPUT. Match handwritten step to TF.js LSTM, recurrentActivation sigmoid, oneunit. Show c and h as separate outputs without invented random values.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap",
+        "spec": "Single keep-path example0.99^100\u22480.366, label Direct cell-state path; input gate closed. Small note No guaranteed memory range. Trained weights persist, window state resets.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__lstm-gates-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Mission replay timeline:Train Day1, Replay Day4,80-step window,Fresh state. Label pulse detected in later replay. Small source note1row/s from raw captures, not33-second archive summaries. No invented benchmark accuracy.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "recurrent-networks/sliding-windows": {
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml"
+    ],
+    "verifiedData": "Exercise readings0..11,window4,splitAt8 gives5train windows1eval,drop3crossing. Demo200readings8step:38/39=97.4% overlap holdout vs60.6%laterperiod;baseline66.7%.",
+    "phases": {
+      "briefing": {
+        "section": "Opening; Overlapping windows",
+        "spec": "Two neighboring8-reading windows share7 readings; label Every-fifth holdout97.4%. Mark Shared readings, evaluation leak. Values not provided need not invent individual readings.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Sliding Window Pattern",
+        "spec": "Live buffer80readings,drop oldest/add newest. Two markers74stepsapart require75readingsincluding endpoints. No arbitrary30step success.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; sliding-window first test",
+        "spec": "Synthetic IDs0..11 in order, cut before8. Show train example[4,5,6,7] label1 and eval[8,9,10,11] label0. Cross-boundary[5,6,7,8] is excluded. Small counts5train/1eval.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Overlapping windows; LessonRecap",
+        "spec": "Evaluation comparison97.4% shared-readingholdout,60.6% laterperiod,66.7% always-contactbaseline. Note Different evaluation periods. Do not label36.8points pure overlap effect.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Dashboard Buffer80/80,one new reading/s,10min live. Split report label No shared readings. Classification card labeled Latest window without inventedclassscore. Cue Next question:forecast.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sliding-windows-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir",
+          "dr-farah"
+        ]
+      }
+    }
+  },
+  "recurrent-networks/sequence-prediction": {
+    "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml"
+    ],
+    "verifiedData": "Practice LSTM8\u2192Dense3,Adam.01,MSE,MAE,batch32. Physicallimits amplitude0..2048,zerocrossings0..63,phase-pi..pi. 47demo steps=47seconds;story47minabout38pulse-levelsteps,arrival3secondslate.",
+    "phases": {
+      "briefing": {
+        "section": "Opening dialogue",
+        "spec": "Short forecast panel labeled Next reading, Baseline comparison pending. Separate bridge forecast47min, unverified timing. Do not imply short forecast validates long horizon.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequence-prediction-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Next-Value Prediction",
+        "spec": "[windows,80,3] uses moments axes[0,1] to yield mean[3],std[3]. Show physical limits0..2048counts,0..63crossings,-pi..pirad compactly. No invented forecastvalues.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; predict-next instructions",
+        "spec": "Three-stage loop Predict3 values, Clamp in z-score units, Append to next window. Include bound=(physicalLimit-mean)/std. Label47one-secondsteps=47seconds.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Multi-Step Forecasting; LessonRecap",
+        "spec": "Two horizon cards:Demo47steps\u00d71s=47s;Bridge\u224838pulse-levelsteps\u224847min. Footer Compare baseline and error by horizon. Bounds do not prove accuracy.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Mission timing trace flat until47:03 with one spike then. Vertical predictionmarker47:00 and observedmarker47:03. Label Timing error+3s, cause unresolved. No accuracy claim.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "commander-mirza",
+          "dr-farah",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "capstone/system-architecture": {
+    "lessonSource": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml"
+    ],
+    "verifiedData": "Full5stage architecture branches extractor to classifier and anomaly detector, reporter consumesboth. Exerciselinearchain diagnostic8samples. Dashboard512MB,interval47.0s.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Five labeled pipeline blocks Preprocess,Extract,Classify,Detect anomaly,Report. Extract branches toClassify/Detect, both feedReport. Small Mission interval47.0s and dashboard512MB budget, notmeasuredusage.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__system-architecture-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "commander-mirza",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Pipeline Architecture; Component Registry",
+        "spec": "Compare compact Chain runner with one carriedvalue versus dependency map with two savedoutputs joiningReport. Label Branch scheduler required. No direct FFT-to-threefeatureclassifier compatibilityclaim.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__system-architecture-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir",
+          "chief-nazari"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; pipeline-architecture instructions",
+        "spec": "Eight-sample diagnostic flow Normalize\u2192FFT magnitudes\u2192Input tensor. Each stage shows Validate then await process. Title Diagnostic chain. No fake classificationresult.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__system-architecture-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap",
+        "spec": "Failed handoff card exact text Validation failed at: followed by named actualstage if selected; safer generic stage contract Input schema\u2192Validate\u2192Process\u2192Output. Label Feature order and preprocessing required.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__system-architecture-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Five labeled architectureblocks with small FALLBACK: RULE-BASED (ARIA). Unknown readings\u2192Review. Status Chain checked;Branch scheduler pending. Interval47.0s. ARIA one thinring withhorizontalwaveform.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__system-architecture-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/system-architecture-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": []
+      }
+    }
+  },
+  "capstone/ci-cd-pipeline": {
+    "lessonSource": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+      "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml"
+    ],
+    "verifiedData": "Gatefixture5rows4correctscore.8,floor.9fails. Export3\u219216\u21928\u21921 has6tensors209params836float32weightbytes. Identity hashstrings notprovided, do notinvent.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Two labeled records Candidate manifest and Previous evaluation with join mismatch highlighted. Header Artifact identity mismatch. No fake hashes or green releaseapproval.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__ci-cd-pipeline-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "The release artifact",
+        "spec": "Four required releaseitems Graph,Weights,Preprocessing,Label order grouped under Verify exact bytes, then Load verified bytes. Do not invent cryptographicdigests.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__ci-cd-pipeline-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; ci-cd-gate supplied fixture",
+        "spec": "Compact ledger5cases,4correct,score0.8,required0.9,HOLD. Optional singleerrorrow predictedquasar/actualpulsar. Title Supplied predictions.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__ci-cd-pipeline-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Challenge export; LessonRecap",
+        "spec": "Serialized practice model3\u219216\u21928\u21921,6tensors209parameters836weightbytes. Caption In-memory export;not published. Hash identity and evaluation still required.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__ci-cd-pipeline-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Release log2214:Wrong pair blocked;Correct pair verified;Restored release checked. Allrows tied to Candidate identity without fakehashstrings. Mission pulseinterval44.0s,secondoperatorassigned.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__ci-cd-pipeline-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/ci-cd-pipeline-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "capstone/monitoring": {
+    "lessonSource": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml"
+    ],
+    "verifiedData": "Nearest-rank supplied100latencies40..134 plus5\u00d7400: P50=89,P95=134,P99=400ms. Drift Euclideandistanceofmeans. Storyconfidence.94,latency5ms,fft5rises,interval37s.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Incident card0249,Dashboard froze,Memory warning missing. Task Monitor latency and input change. No random healthgauge or claimfutureaccuracy91.8%.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__monitoring-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/monitoring.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Model Health Dashboard; Drift Detection",
+        "spec": "Three plainly labeled measurements Model score,Latency,Feature means. Under score, Outcomes needed for accuracy. No data in unmeasured field, notzero.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__monitoring-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/monitoring-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; model-monitor supplied latency test",
+        "spec": "Supplied100-call log with P50 89ms,P95 134ms,P99 400ms. Small note95values40..134ms;5values400ms. Title Scenario durations. Notdevicebenchmark.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__monitoring-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/monitoring-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Drift Detection; LessonRecap",
+        "spec": "Baseline mean[0.5,0.5,0.5],recentmean[0.6,0.6,0.6],distance\u22480.1732. Label Investigate shift;accuracyneedslabels. Meanmatch doesnotproveunchangeddistribution.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__monitoring-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/monitoring-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Mission alert panel fft_5 rising, centered72Hz;Modelscore0.94;Prediction5ms. Two alerts6hoursapart,latestinterval37.0s. Label Input drift, outcomes pending. No accuracyverdict.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__monitoring-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/monitoring-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir",
+          "dr-farah"
+        ]
+      }
+    }
+  },
+  "capstone/documentation": {
+    "lessonSource": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml"
+    ],
+    "verifiedData": "FictionalmetadataDEEPSCANv1.0.0,91.8%atpruningreview,3988weightbytes,anomalyrecall84.0%,inputFloat32Array64. Calibration180windows100samples,P99.5 startingcutoff,interval31.6s.",
+    "phases": {
+      "briefing": {
+        "section": "Opening Farah dialogue",
+        "spec": "Handover checklist Model card,Input contract,Runbook. Highlight Evaluation context and Lowest class recall as missing reviewitems, notcompletedblankcards.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__documentation-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Model Card",
+        "spec": "Compact fictional Model card:DEEP SCANv1.0.0,Accuracy91.8% atpruningreview,Lowest recall anomaly84.0%,Input64samples onechannel. Footnote Label coverage incomplete.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__documentation-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; write-model-card fixture",
+        "spec": "Metadata\u2192Modelcard with exact fields Accuracy91.8%(pruningreview),Lowestrecallanomaly84.0%,Weightbytes3988,InputFloat32Array(64). Mark Fictionalmetadata. Omitlatencyifspacepreventsmeasurementcontext.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__documentation-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap",
+        "spec": "Runbook condition Drift exceeds reviewcutoff,actions Inspect calibration/preprocessing,Review labeledcases,Escalate tonamedwatchowner. Separate note Evaluate replacement before release. No automaticretrainarrow.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__documentation-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Calibration record180calmwindows,100samples/window,P99=0.5,Starting cutoff. Nextstep Validate on separateperiod. Pulseinterval31.6s. ARIAacceptshandoversteps,notproofquality.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__documentation-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/documentation-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "capstone/launch": {
+    "lessonSource": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
+      "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+      "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml"
+    ],
+    "verifiedData": "Recorded0157canary1console30sec,30matchingverdicts,fleet2minlater. Final7741statistical0vote,AE6.2>1vote,LSTM.041>.01vote. Ratios[1,2,1.5,5/3,1.6,1.625]. Score.999vs.518different systems,originunknown.",
+    "phases": {
+      "briefing": {
+        "section": "Opening; recorded deployment",
+        "spec": "Canary1bridgeconsole,30seconds,Shadow30/30matchingverdicts. Remainingfleetoldbuild. Label Agreement check, notaccuracy. No fleetdeployedbeforecheck.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__launch-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/launch.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "commander-mirza",
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Deployment checks",
+        "spec": "Sequentialchecks with boundeddeadline then Canary then Expand. Include Timeout\u2192cancelrequest\u2192skipremaining. Keep compatible model+preprocessing rollbackpair. No fabricatedhashes.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__launch-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/launch-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; classify-anomaly zeroHourReading",
+        "spec": "Sample7741 decisioncard:Statistical0,Autoencoder1,LSTM1;Votes2/3. Intervalratio match. Classification confirmed-anomaly. Footer Mission rule;originunknown. This exact supplieddecision is concrete payoff;avoid cramming all3exercises.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__launch-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/launch-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap; launch-rehearsal instructions",
+        "spec": "Release evidence path Fit history\u2192Canary scores\u2192Gate. Gate Accuracy\u2265floor AND no score-mean drift. Label Synthetic local rehearsal, notdeployment. No inventedtrainingresult.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__launch-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/launch-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Missionrecord Sample7741,2/3detectorvotes,Ratio template matched,Classification confirmed-anomaly,Origin unknown. Secondaryticker29.7s andfalling ifsceneimmediatereveal. Ifcurrentcompositionisfinalemptybridge, use actual lastrow interval_s0.0,classificationSIGNAL,confidence1.00,operator_note none withlabel11dayslater. Never mix thetwo times.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/capstone__launch-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/capstone/launch-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "commander-mirza",
+          "dr-farah",
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "browser-runtimes/inference-pipeline": {
+    "lessonSource": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml"
+    ],
+    "verifiedData": "Preprocess3features withtrainingranges,shape[1,3],thresholdp>.5. Asyncfinallydispose. Story7741.518unknown,Forreview,steadyTensorcount1hour.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Memoryincident:Canceled calls,+120live tensors. Header Output tensors retained. No browserRAMsafeclaim.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/browser-runtimes__inference-pipeline-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir",
+          "chief-nazari"
+        ]
+      },
+      "concept": {
+        "section": "Synchronous/async inference examples",
+        "spec": "One rawreading\u2192savedtrainingpreprocessing\u2192[1,3]\u2192predict\u2192plain score;output tensor\u2192dispose afterread. Do notinvent accuracy.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-concept.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir",
+          "chief-nazari"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; inference-pipeline",
+        "spec": "Taskdiagram one[1,3]input\u2192predict\u2192awaitdata\u2192finallydispose. Branch p>0.5 anomaly,otherwise noise,confidenceclassscore. No unearned sampleverdict.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/browser-runtimes__inference-pipeline-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-challenge.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "LessonRecap; memory incident",
+        "spec": "Live tensors2/call\u00d71call/s=7200/hour. Flat/fallingcounts imply nofiniteexhaustionforecast for thismetric, notallmemorysafety. Keep memorychartlabeled Tensorcount.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/browser-runtimes__inference-pipeline-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-takeaways.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "CURRENTROOTAPPROVEDexec7834930f:Sample7741,Anomalyscore0.518,Labelunknown,Forreview;Tensorcountflat1hour. Exactbalancedheads preserved.",
+        "layoutConstraint": "One compact main panel, at most one small supporting panel. Secondary monitors dark standby or repeat the same task. No arbitrary plots or unsupported result.",
+        "currentSource": "art-src/scenes/browser-runtimes__inference-pipeline-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-epilogue.webp",
+        "canonicalReferences": [],
+        "cast": [
+          "dr-farah",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "training-loop/loss-functions": {
+    "lessonSource": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml"
+    ],
+    "verifiedData": "Prediction.52,label1,error.48,squared.2304. BCE atp.5=ln2\u2248.6931. LogitsAPI sigmoidCrossEntropy;probabilitiesAPI binaryCrossentropy.",
+    "phases": {
+      "briefing": {
+        "section": "Opening Farah dialogue",
+        "spec": "Main panel Prediction0.52,Label1.00,Error0.48. Title How wrong? One pair only, not invented prediction bars.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__loss-functions-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "concept": {
+        "section": "Prediction error",
+        "spec": "Worked squared error (1-0.52)^2=0.2304. Label One example;MSE averages the batch. Avoid drawing arbitrary loss curve.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__loss-functions-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; mse-loss instructions",
+        "spec": "Two distinct labeled paths Logits\u2192sigmoidCrossEntropy and Probabilities\u2192binaryCrossentropy. Separate MSE output scalar. No sigmoid applied twice.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__loss-functions-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "dr-farah"
+        ]
+      },
+      "takeaways": {
+        "section": "DerivationDrawer; LessonRecap",
+        "spec": "Confident-wrong example y1,p0.01:gradient atlogit MSE+sigmoid\u2248-0.0196,BCE+sigmoid=-0.99. Label Gradient at output logit. Do not imply all hidden gradients fixed.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__loss-functions-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Lab glass Baseline:p=0.5,BCE0.6931. Two pending fields Training class-frequency baseline and Separate test score. No fake date,scoreor deploymentapproval.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__loss-functions-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "dr-farah"
+        ]
+      }
+    }
+  },
+  "training-loop/gradient-descent": {
+    "lessonSource": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml"
+    ],
+    "verifiedData": "Practicew5,L=w\u00b2,gradient10,lr.1\u2192w4,loss25\u219216. Concept(x-3)\u00b2 lr.1 vs easinghalf-square differentrates. Story673parameters1updated672pending.",
+    "phases": {
+      "briefing": {
+        "section": "Opening Nazari dialogue",
+        "spec": "Engineering task board673parameters,Which direction? Magnified one-weight card w=5. No success curve for all673.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__gradient-descent-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "concept": {
+        "section": "Gradient descent updates",
+        "spec": "One update w_new=w-0.1\u00d7gradient. Worked practice5-0.1\u00d710=4;loss25\u219216. Keep1weight only.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__gradient-descent-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; gradient-step instructions",
+        "spec": "Task tf.variableGrads(fn) yields gradient10 atw5 forL=w\u00b2,thenassign4. Label Example first step; tests changefn. No hardcoded derivative presented asgeneral algorithm.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Gradient descent updates",
+        "spec": "Small exact loss graph L=(x-3)^2 with minimumx3. Contrast rate0.1 convergent with rate1.5 sequence0\u21929\u2192-9\u219227, clearly thisloss nothalf-square easing.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__gradient-descent-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Task ledger1weight updated,672remaining,673total. ARIA records One-weight loss trace, labeled illustrative if drawn withoutactualvalues. No trainedmodel claim.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__gradient-descent-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png",
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "chief-nazari",
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "training-loop/backpropagation": {
+    "lessonSource": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml"
+    ],
+    "verifiedData": "PracticeL=sin(a)+b\u00b2+c*a,a1.5,b-.5,c.25,grads\u2248.320737,-1,1.5. Autodiff1forward vs numeric3calls\u00d72=6. Story673gradients120ms vs27s fictional.",
+    "phases": {
+      "briefing": {
+        "section": "Opening StoryPassage",
+        "spec": "Progress Parameter500/673,Elapsed20s,Method one-weight nudge. Title Mission diagnostic. No actual runtimebenchmark claim.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__backpropagation-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Working Backwards",
+        "spec": "Forward w3\u2192L=w\u00b2=9;backward gradient6. One forward arrow and reverse derivative arrow, loss is notweightupdate.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; backprop-chain three-variable test",
+        "spec": "Main panel L=sin(a)+b\u00b2+c\u00d7a;valuesa1.5,b-0.5,c0.25. Output gradients rounded[0.3207,-1,1.5]. Footer One recorded forward pass. No invented neuralnetworkaccuracy.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__backpropagation-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "takeaways": {
+        "section": "Challenge numeric comparison; LessonRecap",
+        "spec": "Actual three-variable fixture:Autodiff1forward;Numerical estimates6forward (two pervariable). Caption Pass count,notdevice timing. Avoid claiming sharedbaseoptimizationusedbythisexercise.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__backpropagation-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "chief-nazari"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Mission timings673gradients:Forward+backward120ms;Naive27s. Label Story run, notbenchmark. Nazari stopwatchandcostrecord makepurposeclear.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__backpropagation-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "chief-nazari"
+        ]
+      }
+    }
+  },
+  "training-loop/training-loop": {
+    "lessonSource": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml"
+    ],
+    "verifiedData": "100syntheticrows,80train20validation;epochs\u2264500,batch8..64(default32);earlystopval_loss,patience5,minDelta0. Storyepoch102val.081. Comparelast10vsprior10,strict5%band.",
+    "phases": {
+      "briefing": {
+        "section": "Opening training log",
+        "spec": "Plot exactlyepochs1..5 losses.7402,.7256,.7113,.6989,.6861. Label Mission training log. Baseline.6931 dashedline optional. Do notextend inventedcurve.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__training-loop-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/training-loop.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "concept": {
+        "section": "Early stopping",
+        "spec": "100rows split80training/20validation. Callback monitorval_loss,patience5,limit500. Loop Forward\u2192Loss\u2192Backward\u2192Update. Caption Finalweights retained,notbestrestored.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__training-loop-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/training-loop-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; training-loop-exercise instructions",
+        "spec": "Run settings500maxepochs,batch32,validation20%,patience5. Result boxes History pending and Validation loss pending, notfabricatedfinishedmetrics.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/training-loop-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/chief-nazari.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "chief-nazari"
+        ]
+      },
+      "takeaways": {
+        "section": "Reading training curves; diagnose",
+        "spec": "Compare two ten-value windows labeled Previous10 and Recent10. Trend rules >5%down/up,exact5%flat. Header Trend describes result, notcause. No overfittingdiagnosisfromonecurve.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__training-loop-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/training-loop-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Mission run stopped Epoch102,Validationloss0.081,5epochswithoutnewbest. Nextorder Evaluate unseen signals. Do notcallthis held-outtestscore orbestcheckpointrestoration.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__training-loop-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/training-loop-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png"
+        ],
+        "cast": [
+          "ensign-demir"
+        ]
+      }
+    }
+  },
+  "training-loop/evaluating-deep-scan": {
+    "lessonSource": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml"
+    ],
+    "verifiedData": "Practice100train43test(40generated+3storycases),fit30epochs,batch16,evaluate[loss,accuracy]. Diagnosegap>.15first,thenboth<.7. Fictional94%test,7741.518uncertain.",
+    "phases": {
+      "briefing": {
+        "section": "Opening Mirza dialogue",
+        "spec": "Two disjoint data groups Training100 and Separate evaluation43. Task Evaluate unseen readings. No early94%claimor fleetreleaseapproval.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/commander-mirza.png"
+        ],
+        "cast": [
+          "commander-mirza"
+        ]
+      },
+      "concept": {
+        "section": "Training and held-out evaluation",
+        "spec": "Fit usestrainX/trainY only;Evaluate usestestX/testY. Result order[loss,accuracy]. No arrow fromtestdata into fit.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__evaluating-deep-scan-concept-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-concept.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/commander-mirza.png"
+        ],
+        "cast": [
+          "commander-mirza"
+        ]
+      },
+      "challenge": {
+        "section": "Challenge; deep-scan-eval instructions",
+        "spec": "Settings30epochs,batch16 on100trainrows;separate43testrows. Two outputs Train accuracy pending and Test accuracy pending,verdictpending. No fictional94%used asactualexerciseresult.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__evaluating-deep-scan-challenge-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-challenge.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/ensign-demir.png",
+          "docs/art-refs/deep-orbit/commander-mirza.png"
+        ],
+        "cast": [
+          "ensign-demir",
+          "commander-mirza"
+        ]
+      },
+      "takeaways": {
+        "section": "What the evaluation supports; diagnose",
+        "spec": "Rulecard:train-test>0.15\u2192large-gap;otherwise both<0.7\u2192low-scores;otherwise no-gap-warning. Footer Investigate cause;no releaseapproval.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__evaluating-deep-scan-takeaways-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-takeaways.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png",
+          "docs/art-refs/deep-orbit/commander-mirza.png"
+        ],
+        "cast": [
+          "dr-farah",
+          "commander-mirza"
+        ]
+      },
+      "epilogue": {
+        "section": "Epilogue",
+        "spec": "Mission evaluation94%on smalltestset;Sample7741 score0.518,Review pending. Farah note Check sensors/calibration. Supervised prototype only;unknowncause preserved.",
+        "layoutConstraint": "One compact main panel with a concrete section task. Incidental displays dark standby. No invented measurement or learner result.",
+        "currentSource": "art-src/scenes/training-loop__evaluating-deep-scan-epilogue-openai-20261107.png",
+        "currentRuntime": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan-epilogue.webp",
+        "canonicalReferences": [
+          "docs/art-refs/deep-orbit/dr-farah.png"
+        ],
+        "cast": [
+          "dr-farah"
+        ]
+      }
+    }
+  }
+}

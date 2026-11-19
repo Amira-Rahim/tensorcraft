@@ -1,0 +1,121 @@
+{
+  "id": "browser-runtimes/tensorflow-js-setup",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "useCase": "illustration-story",
+  "prompt": "Use case: illustration-story. Regenerate the LAST reference as a candid educational story scene, with restrained charcoal/navy, muted sage, aged brass and naturally lit skin. Keep the canonical face structure and age from the FIRST portrait references, including facial width, nose, eyes, mouth, hairline, complexion and signature equipment. Room reference supplies environment only; target supplies section context, not a pose to copy. Exactly the named cast, no additional humans. Natural adult head-to-body balance, compact necks, ordinary shoulders, relaxed connected shoulder-elbow-wrist-hand chains. Exactly two attached arms per human. Correct fingers, thumbs and grips; inspect their contact visually. No neon outline, orange wash, glossy rendering, plants, arbitrary decoration, fake text or extra panels.\nALL-IMAGE USER REQUIREMENT: maximize lesson display legibility using available scene space. Use a large working display that occupies the available wall or frame area; do not squeeze key information onto a tiny console while leaving the wall unused. Main teaching text should be large, spacious, crisp and legible at course viewing size, with short exact labels. Camera beside the operator, showing the readable front of the display and recognizable three-quarter faces; the operator genuinely sees and uses that same surface. Project every glyph, border and diagram into its physical plane. Preserve story action and specific reactions. Landscape 1536 x 1024.\nReference roles: image 1: Canonical chief-nazari identity; image 2: Canonical ensign-demir identity; image 3: bridge room only; image 4: Edit target; replace staging while preserving section meaning.\nScene: Camera beside two operators at a bridge workstation. Nazari sits near LEFT foreground leaning slightly forward, holding a small stopwatch naturally low in her left hand with the dial facing her, thumb near its control. Her right hand rests open on the work surface. Demir stands behind and slightly to her right, one hand on the console control, the other resting on its side rail. He watches the shared screen with concentrated patience, lips closed, while Nazari watches the readback step, not the audience. A meaningful pause waiting for completed work, with subtle dry impatience in her raised eyebrow. No tablet. The stopwatch is a tool, never presented toward the viewer. Large upright work display on RIGHT fills available upper and right space. Exact short text: title 'Measure this device'; subtitle '256 x 256 matMul'; a large vertical connected four-step flow 'Start timer' then 'matMul' then 'await C.data()' then 'Stop timer'. Highlight 'await C.data()' as active. Bottom line 'Include output readback'. No invented elapsed timing, no success verdict. Workbench and standing body have clear physical separation.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "f508b14c82c49ab03a74d19ce900cd6d00bde064f5823c6400c3f6ac9e18b1d0",
+  "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+  "sourceSha256": "3c651627b73b8a94436eccd4775b38f34cc7185007c35cd64f73f9d79b60b612",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "Canonical chief-nazari identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "Canonical ensign-demir identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "bridge room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+      "sha256": "fe4c0ca4bec9ab491473a2eda052233ee104914b51542562d6832e060cf5df42",
+      "role": "Edit target; replace staging while preserving section meaning"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+    }
+  ],
+  "displayRequirement": "Maximize lesson display legibility using available scene space; tiny console text with an unused wall is unacceptable.",
+  "candidatePath": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+  "candidateSha256": "3c651627b73b8a94436eccd4775b38f34cc7185007c35cd64f73f9d79b60b612",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-f776b3f7-9f88-4ef5-a54c-f1e700ce504e.png",
+  "ownReview": {
+    "nativeReviewed": true,
+    "candidateSha256": "3c651627b73b8a94436eccd4775b38f34cc7185007c35cd64f73f9d79b60b612",
+    "canonicalPortraitsCompared": true,
+    "faceCropCoordinatesXYWH": [
+      200,
+      130,
+      480,
+      460
+    ],
+    "handCropCoordinatesXYWH": [
+      300,
+      610,
+      520,
+      390
+    ],
+    "cropScale": 2,
+    "temporaryCropsDeleted": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": "Nazari watches the completed-work timing sequence while holding the stopwatch; Demir is poised on the controls. Exactly two arm chains per character with plausible occlusion of Nazari's far arm; stopwatch, rail and key contact read cleanly. Giant display includes await C.data() before stop and remains crisp in its plane."
+  },
+  "generatedSha256": "3c651627b73b8a94436eccd4775b38f34cc7185007c35cd64f73f9d79b60b612",
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/browser-runtimes__tensorflow-js-setup-takeaways/candidate.png",
+  "publishedSource": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-takeaways.webp",
+  "webpSha256": "1082ddc2dd203e501f47972e818fbdf708a0be8a66dc6a5c31ebcc40d5783b0b",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+    "sourceSha256": "fe4c0ca4bec9ab491473a2eda052233ee104914b51542562d6832e060cf5df42",
+    "webpSha256": "eedcd245dde9a6324fcbbab3d7ee88a548aad511727c40c57873fc8ae0f81551",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-79f61e42-1238-4f4e-8e33-f3ef98e8cdb6.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "3c651627b73b8a94436eccd4775b38f34cc7185007c35cd64f73f9d79b60b612",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Canonical portraits compared to enlarged face crop.",
+      "Complete arm chains, thumb sides and prop contact checked.",
+      "Large source-correct display and operator direction checked.",
+      "Natural adult proportions and phase-specific candid action checked."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+        "sha256": "80f5711c0f5a85dc6ec5c9b5cc0ae7fc24990768647db9ed90d17edc334bbc0d"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/browser-runtimes__tensorflow-js-setup-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-takeaways.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

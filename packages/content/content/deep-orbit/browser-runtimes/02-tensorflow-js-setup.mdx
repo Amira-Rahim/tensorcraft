@@ -64,28 +64,74 @@ You will initialize TensorFlow.js and check which backend is ready to run your c
 
 <LearningObjectives objectives={["Read the setup steps and initialize the supplied TensorFlow.js runtime", "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
 
-## Installation and imports
+## A preference request and a runtime report
+
+The dashboard's startup check has two jobs: let the runtime finish starting, then report its actual backend and version. A **preference** asks for a backend. The runtime's response determines whether that request worked.
+
+The Challenge supplies a controlled cold runtime. Its backend names and probe version change on each run. That makes the sequence inspectable without depending on this browser's GPU. The test deliberately keeps `getBackend()` unavailable until `ready()` resolves. Its output is a simulated startup report. A real installation reports its own available backend and package version.
+
+| Startup case | Preference request | Required next step | Successful report |
+| --- | --- | --- | --- |
+| No preferred name | Skip `setBackend()` | Await `ready()` | Read the runtime's selected backend and version |
+| Registered backend starts | `setBackend(name)` resolves `true` | Await `ready()` | Read the accepted backend from the runtime |
+| Registered backend cannot start | The request resolves `false` | Await `ready()` so an available backend can start | Read that available backend from the runtime |
+| Unregistered name | The request rejects with an error | Catch the request error, then await `ready()` | Read the backend the runtime selected |
+| No backend can start | A preference may refuse | Let the `ready()` error reach the caller | Return no invented successful report |
+
+In the activity, choose a scenario and move through the startup points. The fixed names are illustrative test inputs. Notice that the requested name and the reported backend can differ. The version must come from the same ready runtime.
+
+## Installation and the awaited sequence
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
+The course pins TensorFlow.js `4.22.0`. A matching local installation uses `npm install @tensorflow/tfjs@4.22.0`. The editor already supplies the package, so its Challenge needs no install command.
+
+This runnable example requests the registered CPU backend. It records whether the request worked, awaits readiness outside the request's `try` block, and reads the runtime metadata. The CPU choice makes this example usable without a GPU. Measure your workload before choosing a deployment backend.
+
 <CodeBlock language="typescript" title="setup.ts">
-{`// Step 1: Install (exactly like any JS dependency)
-// npm install @tensorflow/tfjs
+{`import * as tf from '@tensorflow/tfjs';
 
-// Step 2: Import
-import * as tf from '@tensorflow/tfjs';
+const preferred = 'cpu'; // A supplied preference for this example.
+let preferenceStatus = 'not requested';
+if (preferred) {
+  try {
+    const accepted = await tf.setBackend(preferred);
+    preferenceStatus = accepted ? 'accepted' : 'refused';
+  } catch (error) {
+    preferenceStatus = 'request rejected';
+  }
+}
 
-// Step 3: Wait for initialization
+// Keep this outside the request catch. A total startup failure must reject.
 await tf.ready();
-
-// Step 4: Check which backend is active
-console.log('Backend:', tf.getBackend());  // 'webgl', 'wasm', or 'cpu'
-console.log('TF.js version:', tf.version.tfjs);`}
+const activeBackend = tf.getBackend();
+const activeVersion = tf.version.tfjs;
+console.log({ preferenceStatus, backend: activeBackend, version: activeVersion });
+// With this real CPU example: accepted, cpu, and the installed version.`}
 </CodeBlock>
 
-## Backends: The Runtime Engine
+Your `initTF(preferred?)` receives its preference from the caller. If the caller omits it, make no `setBackend()` request. After readiness, return an object with the exact fields `backend` and `version`. Read those values from `tf.getBackend()` and `tf.version.tfjs`. A name copied from the preference can be wrong after refusal. A hardcoded version cannot describe the generated test runtime.
 
-Backends can differ in speed, precision and which operations they support. Register the backends you plan to use, then check which one actually starts:
+Catch only the preference-request error. An error from `ready()` means startup failed, and the caller needs it to show a failure state. A broad catch around the whole function would hide that failure. These checks establish startup behavior. They do not benchmark a model or prove a device meets the dashboard's budget.
+
+## Backend choices and measurements
+
+| Backend | Where supported operations run | Setup to verify |
+| --- | --- | --- |
+| `webgl` | GPU shaders | Backend registration, WebGL access, and operation support |
+| `webgpu` | GPU compute | Separate backend package, browser support, and an available adapter |
+| `wasm` | Compiled WebAssembly kernels on the CPU | Backend package and matching WASM binary paths |
+| `cpu` | JavaScript on the CPU | Registered CPU backend and measured workload budget |
+
+Importing an API does not establish GPU access. Backends can differ in operation support, precision, startup cost, memory use, and speed. A small model can favor a CPU path after transfer overhead. Benchmark the actual workload on the devices you support.
+
+The story's `0.5`, `3.0`, and `110.0 ms` figures describe a fictional matrix multiplication at the story console. They supply no timing target for the Challenge or your device. A useful benchmark records the selected backend, installed version, input shape, warmup, individual samples, and completed output readback.
+
+<ConceptReference summary="Backend registration and an optional device benchmark">
+
+### Registration and an explicit fallback order
+
+This separate application example registers additional packages and supplies matching WASM files. Its fallback ladder is an example order. Measure supported devices before choosing one. `navigator.gpu` signals an API's presence. Requesting a backend still needs to succeed.
 
 <CodeBlock language="typescript" title="backends.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -130,9 +176,9 @@ await tf.ready();
 // wasm on a machine with a perfectly good GPU, and nothing warns you.`}
 </CodeBlock>
 
-## Benchmarking Your Setup
+### Completed matrix-multiplication samples
 
-This example measures one completed matrix multiplication per call. It does not predict the latency of a whole model. Keep the samples and record the browser, device, input shape and backend alongside them.
+This function measures one completed matrix multiplication per call. It warms the same shape and readback path before collecting samples. It does not measure cold application startup or the latency of a whole model. Keep the samples and record the browser and device alongside them.
 
 <CodeBlock language="typescript" title="benchmark.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -162,6 +208,10 @@ async function benchmarkBackend(backendName: string) {
   }
 }`}
 </CodeBlock>
+
+The independent runtime lab runs the real package in supported backends and records its own observations. Its report identifies headless or visible-browser mode and the renderer. A software renderer is not a physical GPU measurement.
+
+</ConceptReference>
 
 ## Challenge
 

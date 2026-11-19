@@ -76,17 +76,23 @@ testCode: |
       expect(r.ratePerHour, 'Divide the increase in tensor count by the hours between the first and last readings.').toBeCloseTo(120, 5);
     });
     it('computes hours until the budget is hit', () => {
-      const r = diagnose(
-        [{ t: 0, numTensors: 400 }, { t: 1, numTensors: 520 }],
-        10000,
-      );
-      expect(r.hoursToBudget, 'Subtract the latest tensor count from the budget to find the remaining capacity.').toBeCloseTo(79, 1);
+      const snapshots = [{ t: 0, numTensors: 400 }, { t: 1, numTensors: 520 }];
+      const budget = 10000;
+      const copied = snapshots.map(row => [row.t, row.numTensors]);
+      const r = diagnose(snapshots, budget);
+      recordResult({
+        kind: 'table', title: 'Endpoints supplied for your capacity estimate',
+        summary: 'The supplied first and last snapshots before your function ran, and the tensor-count budget. Time is in hours. This is a fixed incident worksheet, not a live browser memory reading.',
+        columns: ['Endpoint', 'Hours', 'Tensor count', 'Budget tensors'],
+        rows: [['First', ...copied[0], budget], ['Last', ...copied[1], budget]],
+      });
       recordResult({
         kind: 'table', title: 'Your capacity estimate for the watch',
         summary: 'Projection from the supplied 400-to-520 tensor snapshot case. It assumes the endpoint growth rate continues and does not identify a leak.',
         columns: ['Growing', 'Tensors per hour', 'Hours to budget'],
         rows: [[r.growing, r.ratePerHour, r.hoursToBudget]],
       });
+      expect(r.hoursToBudget, 'Subtract the latest tensor count from the budget to find the remaining capacity.').toBeCloseTo(79, 1);
     });
     it('a flat count has no projected growth deadline', () => {
       const r = diagnose(

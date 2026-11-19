@@ -104,17 +104,8 @@ export function SessionListener() {
           tagKitEventOnce("signed_up", "tc_signup_tagged").catch(() => {}),
         );
 
-        // signup_completed closes the funnel opened by signup_started in
-        // auth-form. Without it the conversion rate is uncomputable - the
-        // KPI formulas in docs/tech-spec.md divide by exactly this event,
-        // and it is the step paid distribution spend is judged on. Fired
-        // here rather than in /auth/callback because that is a server route
-        // with no analytics client.
-        void import("../analytics-events").then(({ EVENTS, track }) =>
-          track(EVENTS.SIGNUP_COMPLETED, {
-            method: session.user?.app_metadata?.provider ?? "unknown",
-          }),
-        );
+        // SIGNED_IN also fires for returning sessions and tab focus.
+        // New-account reporting requires an authoritative creation signal.
 
         // Identify with the Supabase UUID. Email is deliberately person-only
         // data and is not sent with product events.

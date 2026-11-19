@@ -1,0 +1,384 @@
+{
+  "deep-orbit/browser-runtimes/inference-pipeline": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/browser-runtimes/inference-pipeline-takeaways.webp",
+      "alt": "Nazari checks tensor ownership after asynchronous readback at the bridge console.",
+      "location": "Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/browser-runtimes/inference-pipeline.webp",
+      "alt": "Demir shows Nazari the 120 tensors retained when cancelled readings skipped output cleanup.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/browser-runtimes/inference-pipeline-concept.webp",
+      "alt": "Nazari shows Demir how to retain the output for asynchronous readback and dispose it afterward.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/browser-runtimes/inference-pipeline-challenge.webp",
+      "alt": "Demir prepares a scaled probe for prediction, with the class result still pending.",
+      "location": "bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/browser-runtimes/inference-pipeline-epilogue.webp",
+      "alt": "Farah queues an unknown archive sample while Demir leans beside her to inspect the steady pipeline.",
+      "location": "Bridge"
+    }
+  },
+  "deep-orbit/foundations/normalization": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/foundations/normalization-takeaways.webp",
+      "alt": "Farah checks saved training bounds before reusing the scaler on later readings.",
+      "location": "Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/foundations/normalization-epilogue.webp",
+      "alt": "Farah and Demir inspect sample 7741 on a screen facing their shared side of the desk.",
+      "location": "Archimedes, Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/foundations/normalization.webp",
+      "alt": "Demir prepares four readings while Farah explains scaling and Mirza follows their shared display.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/foundations/normalization-challenge.webp",
+      "alt": "Demir prepares the four raw readings at a monitor turned toward his keyboard.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/foundations/normalization-concept.webp",
+      "alt": "Farah explains column scaling while Demir watches their shared monitor from beside her.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/capstone/documentation": {
+    "challenge": {
+      "src": "/scenes/deep-orbit/capstone/documentation-challenge.webp",
+      "alt": "Demir works through the documentation evidence at the lab console.",
+      "location": "Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/capstone/documentation-takeaways.webp",
+      "alt": "Farah actively checks the handover binder against the wall review.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/capstone/documentation-epilogue.webp",
+      "alt": "Demir considers ARIA's request for a threshold, with a separate-period calibration check still pending.",
+      "location": "Lab"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/capstone/documentation.webp",
+      "alt": "Farah takes notes while Demir discusses the evidence and unknowns needed for the handover.",
+      "location": "Archimedes, Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/capstone/documentation-concept.webp",
+      "alt": "Farah and Demir review evaluation counts and coverage limits for the model card.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/capstone/ci-cd-pipeline": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/capstone/ci-cd-pipeline-takeaways.webp",
+      "alt": "Nazari compares artifact identity checks with evaluation, target-device and rollback checks.",
+      "location": "Engineering"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/capstone/ci-cd-pipeline.webp",
+      "alt": "Nazari compares a new candidate with an old evaluation while Demir spots the release mismatch.",
+      "location": "Archimedes, Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/capstone/ci-cd-pipeline-epilogue.webp",
+      "alt": "Nazari hands Demir the verification device after the matching release passes its checks.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/capstone/ci-cd-pipeline-concept.webp",
+      "alt": "Nazari and Demir check that the verified release bundle matches its evaluation report.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/capstone/ci-cd-pipeline-challenge.webp",
+      "alt": "Demir rehearses the release gate and checks the saved model before a deployment decision.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/capstone/monitoring": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/capstone/monitoring-takeaways.webp",
+      "alt": "Demir studies the monitoring evidence at the engineering console.",
+      "location": "Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/capstone/monitoring-challenge.webp",
+      "alt": "Demir prepares to inspect score, latency and drift metrics from the pipeline logs.",
+      "location": "Archimedes, Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/capstone/monitoring-epilogue.webp",
+      "alt": "Farah and Demir inspect the changed signal as its pulse interval reaches 37 seconds.",
+      "location": "Archimedes, Engineering"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/capstone/monitoring.webp",
+      "alt": "Demir listens to ARIA as his monitoring watch waits for its first measurements.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/capstone/monitoring-concept.webp",
+      "alt": "Demir separates model scores, end-to-end latency and feature drift while setting up the monitoring watch.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/capstone/system-architecture": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/capstone/system-architecture-takeaways.webp",
+      "alt": "Demir reviews the system connections at the bridge console.",
+      "location": "Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/capstone/system-architecture.webp",
+      "alt": "Demir opens the mission architecture while Mirza studies the five connected components and 47.0-second interval.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/capstone/system-architecture-concept.webp",
+      "alt": "Nazari checks the stage contracts while Demir connects the pipeline.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/capstone/system-architecture-challenge.webp",
+      "alt": "Demir prepares an eight-sample diagnostic to test the stage handoffs.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/capstone/system-architecture-epilogue.webp",
+      "alt": "ARIA keeps watch over fallback checks after the crew leave the bridge.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/foundations/data-loading": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/foundations/data-loading-takeaways.webp",
+      "alt": "Demir checks the capture loading and validation steps at his workstation.",
+      "location": "Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/foundations/data-loading-challenge.webp",
+      "alt": "Demir checks that training IDs 0 through 11 stay separate from validation IDs 12 through 15.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/foundations/data-loading-concept.webp",
+      "alt": "Demir checks one archive row on a large engineering display, keeping its features and label paired.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/foundations/introduction-to-tensors": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/foundations/introduction-to-tensors-takeaways.webp",
+      "alt": "Demir reviews the supplied sensor grouping beside the tensor's flat shape of twelve values.",
+      "location": "Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/foundations/introduction-to-tensors.webp",
+      "alt": "Mirza and Demir select twelve archive readings before connecting them to the chart.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/foundations/introduction-to-tensors-concept.webp",
+      "alt": "Demir creates a one-axis tensor from twelve selected readings at his bridge console.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/foundations/tensor-shapes": {
+    "challenge": {
+      "src": "/scenes/deep-orbit/foundations/tensor-shapes-challenge.webp",
+      "alt": "Farah prepares the twelve readings for moment rows and sensor rows at the lab console.",
+      "location": "Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/foundations/tensor-shapes-takeaways.webp",
+      "alt": "Farah compares reshape and transpose results with the same shape but different sensor groupings.",
+      "location": "Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/foundations/tensor-shapes-concept.webp",
+      "alt": "Farah follows sensor A as a three-by-four grid is transposed into four sensor rows.",
+      "location": "Archimedes, Lab"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/foundations/tensor-shapes.webp",
+      "alt": "Farah compares the recording header with a large grid showing three moments across four channels.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/foundations/tensor-shapes-epilogue.webp",
+      "alt": "Farah follows the repeating B trace after turning the recording into one row per sensor.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/foundations/tensor-operations": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/foundations/tensor-operations-takeaways.webp",
+      "alt": "Demir and Nazari check the gain calculation and channel-mixing shapes on a large bridge display.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/foundations/tensor-operations-epilogue.webp",
+      "alt": "Nazari and Demir notice synchronized ripples in four selected channels on a large bridge display.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/recurrent-networks/lstm-gates": {
+    "challenge": {
+      "src": "/scenes/deep-orbit/recurrent-networks/lstm-gates-challenge.webp",
+      "alt": "Demir checks the gate inputs before running the LSTM task.",
+      "location": "Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/recurrent-networks/lstm-gates-epilogue.webp",
+      "alt": "Farah and Demir pause at ARIA's four seconds of silence after the fictional archive replay.",
+      "location": "Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/recurrent-networks/lstm-gates-concept.webp",
+      "alt": "Farah studies how the three gates combine the previous cell state and candidate update.",
+      "location": "Archimedes, Engineering"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/recurrent-networks/lstm-gates.webp",
+      "alt": "Farah proposes learned gates after the failed RNN run while Nazari questions the cost.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/recurrent-networks/sequence-prediction": {
+    "concept": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequence-prediction-concept.webp",
+      "alt": "Farah traces the rolling prediction loop, including clamping, saved scaling and baseline checks.",
+      "location": "Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequence-prediction-takeaways.webp",
+      "alt": "Farah and Demir compare the demo forecast horizon with the bridge countdown while checking units and a baseline.",
+      "location": "Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequence-prediction-challenge.webp",
+      "alt": "Demir builds the rolling forecast loop and checks its bounds against the saved training scale.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/recurrent-networks/sequences-matter": {
+    "concept": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequences-matter-concept.webp",
+      "alt": "Farah compares the same five amplitude readings in two different orders.",
+      "location": "Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequences-matter-takeaways.webp",
+      "alt": "Farah and Demir review overlapping practice windows, next-reading targets and their tensor shapes.",
+      "location": "Lab"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequences-matter.webp",
+      "alt": "Farah shows Demir five ordered amplitude readings that their one-row classifier cannot compare across time.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequences-matter-challenge.webp",
+      "alt": "Demir builds input-target pairs from a five-reading practice stream in the lab.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sequences-matter-epilogue.webp",
+      "alt": "Demir compares ordered and shuffled readings and finds that each reading keeps its score.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/recurrent-networks/simple-rnns": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/recurrent-networks/simple-rnns-takeaways.webp",
+      "alt": "Farah studies an illustrative shrinking-gradient path, with a reminder to inspect actual gradients.",
+      "location": "Engineering"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/recurrent-networks/simple-rnns.webp",
+      "alt": "Farah shows Demir how the same input gives a different hidden state after earlier readings.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/recurrent-networks/simple-rnns-concept.webp",
+      "alt": "Demir and Farah compare a one-unit recurrence and notice the same input produces a different later state.",
+      "location": "Archimedes, Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/recurrent-networks/simple-rnns-challenge.webp",
+      "alt": "Demir checks each hidden state against the SimpleRNN layer's output at the engineering console.",
+      "location": "Archimedes, Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/recurrent-networks/simple-rnns-epilogue.webp",
+      "alt": "Nazari reviews the failed overnight run while Demir pauses with his coffee.",
+      "location": "Archimedes, Engineering"
+    }
+  },
+  "deep-orbit/recurrent-networks/sliding-windows": {
+    "takeaways": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sliding-windows-takeaways.webp",
+      "alt": "Demir checks how many readings a window needs to include two events and extra context.",
+      "location": "Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sliding-windows-concept.webp",
+      "alt": "Demir and Farah check an ordered stream split before building training and validation windows.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sliding-windows-challenge.webp",
+      "alt": "Demir checks the twelve-reading synthetic stream before building windows across its split.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sliding-windows-epilogue.webp",
+      "alt": "Demir sends a complete 80-reading window to the classifier as Farah asks about forecasting.",
+      "location": "Archimedes, Bridge"
+    },
+    "briefing": {
+      "src": "/scenes/deep-orbit/recurrent-networks/sliding-windows.webp",
+      "alt": "Demir notices that neighboring windows share readings and checks the chronological split.",
+      "location": "Archimedes, Bridge"
+    }
+  },
+  "deep-orbit/capstone/launch": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/capstone/launch.webp",
+      "alt": "Mirza authorizes a one-console canary while Nazari and Demir prepare the comparison.",
+      "location": "Archimedes, Bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/capstone/launch-challenge.webp",
+      "alt": "Demir prepares the sequential deployment checks at his bridge console.",
+      "location": "Archimedes, Bridge"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/capstone/launch-takeaways.webp",
+      "alt": "Nazari returns the rollback binder while Demir reviews the complete release checklist.",
+      "location": "Archimedes, Bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/capstone/launch-epilogue.webp",
+      "alt": "The crew studies the final signal review together before reporting the findings to Earth.",
+      "location": "Archimedes, Bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/capstone/launch-concept.webp",
+      "alt": "Nazari checks the complete release bundle while Demir prepares verification.",
+      "location": "Archimedes, Bridge"
+    }
+  }
+}

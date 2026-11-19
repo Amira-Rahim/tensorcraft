@@ -19,9 +19,8 @@ export const dynamicParams = false;
  * Module-overview shim. There is no standalone module page in the current
  * design, the world page's module map is the canonical module overview.
  * This route exists because real surfaces still link to
- * `/worlds/{slug}/{module}`: the lesson page's "Go to previous module"
- * prerequisite gate and the BreadcrumbList JSON-LD on every lesson. Without
- * it those links land on a 404.
+ * `/worlds/{slug}/{module}` from the lesson prerequisite gate's "Go to
+ * previous module" link. Without this route that link lands on a 404.
  *
  * Valid module of a launched world → redirect to the world page.
  * Anything else → real 404.

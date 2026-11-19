@@ -1,0 +1,178 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portrait references first, room palette reference next, LAST input exact edit target. Change ONLY the glowing lime-green vertical pillar behind Demir. Make its glass a dark desaturated sage, with faint subdued rings and no luminous yellow-green glow. Preserve all synthetic fixture values and pending fields, Demir canonical face, entire pose, complete arms/hands, keyboard and stylus contacts, monitor perspective and all other room details. Clean cel-shaded adventure-comic illustration,1536x1024. No changes outside requested detail.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__reconstruction-error-challenge-narrative-stage1-openai-20261107.png",
+      "sha256": "210256d433184beb85c3c585bbbdec1e8fa06e2e19d929240e741d807eccb5b4",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "210256d433184beb85c3c585bbbdec1e8fa06e2e19d929240e741d807eccb5b4",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+    "sha256": "a3f091cd2416ae4429535c728174211d5117d6196af8166172986426d499d231"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sha256": "dec34450564614d8f3963d95bf9a3cf627d276b42b576e430c9a5cae535425e6"
+    }
+  ],
+  "panelSpecification": {
+    "state": "pending learner score",
+    "concreteGenerationSpecification": "Restage Demir seated at the lab desk, chair and torso turned toward a low sloped evaluation screen, not a tablet held to the camera. He leans slightly forward, eyes following the two input rows with focused caution. One hand rests on the keyboard ready to run, the other stylus hovers over the pending fields; arms connect naturally to distinct shoulders and remain supported. Camera diagonal beside the screen catches his recognizable three-quarter face. Turn the giant wallboard and all incidental monitors off. The one working screen contains a compact exact fixture headed Synthetic offset model: A [0.5,0.3,0.7,0.2,0.8,0.1,0.6,0.4]; B [0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1]. Next line Rebuild: add 0.1 to every feature. Three smaller fields MSE A: pending, MSE B: pending, Tensor change: pending. No computed scores, anomaly verdict or success. Keep the table modest in the scene, naturally oriented toward Demir and perspective-aligned in every baseline and column. No paper or held card. Preserve canonical face and balanced adult proportions, natural short neck, muted charcoal/sage/brass and warm skin, no neon.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Challenge and reconstruction-error.yaml offset-model fixture"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portrait references first, room palette reference next, LAST input exact edit target. Change ONLY the glowing lime-green vertical pillar behind Demir. Make its glass a dark desaturated sage, with faint subdued rings and no luminous yellow-green glow. Preserve all synthetic fixture values and pending fields, Demir canonical face, entire pose, complete arms/hands, keyboard and stylus contacts, monitor perspective and all other room details. Clean cel-shaded adventure-comic illustration,1536x1024. No changes outside requested detail."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b9b54ad8-a3ba-4a03-a480-1571ff13675f.png",
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/reconstruction-error-challenge-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-challenge-target.png",
+    "sha256": "e882efd5b456a65b2046eaefbbb9eb8359f8e0712e16185d7b07fa2b0afd35b8",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "e882efd5b456a65b2046eaefbbb9eb8359f8e0712e16185d7b07fa2b0afd35b8",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-challenge-runtime-before.png",
+    "sha256": "f659ba50ad2482a6ffde9cab10769010a4cce36cfec143acf12b7aedebfb875e",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "f659ba50ad2482a6ffde9cab10769010a4cce36cfec143acf12b7aedebfb875e",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Demir checks two supplied inputs and the pending memory result before running his scorer, concentrating on the actual fixture.",
+    "fullSpecification": "Restage Demir seated at the lab desk, chair and torso turned toward a low sloped evaluation screen, not a tablet held to the camera. He leans slightly forward, eyes following the two input rows with focused caution. One hand rests on the keyboard ready to run, the other stylus hovers over the pending fields; arms connect naturally to distinct shoulders and remain supported. Camera diagonal beside the screen catches his recognizable three-quarter face. Turn the giant wallboard and all incidental monitors off. The one working screen contains a compact exact fixture headed Synthetic offset model: A [0.5,0.3,0.7,0.2,0.8,0.1,0.6,0.4]; B [0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1]. Next line Rebuild: add 0.1 to every feature. Three smaller fields MSE A: pending, MSE B: pending, Tensor change: pending. No computed scores, anomaly verdict or success. Keep the table modest in the scene, naturally oriented toward Demir and perspective-aligned in every baseline and column. No paper or held card. Preserve canonical face and balanced adult proportions, natural short neck, muted charcoal/sage/brass and warm skin, no neon."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "8de48d1f4d5ea596ed58383212e8cc008ec4802afeadd0b3c143f080a1721934",
+  "faceBoxes": {
+    "demir": [
+      855,
+      155,
+      335,
+      405
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-challenge-identity-proof.jpg",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage Demir seated at the lab desk, chair and torso turned toward a low sloped evaluation screen, not a tablet held to the camera. He leans slightly forward, eyes following the two input rows with focused caution. One hand rests on the keyboard ready to run, the other stylus hovers over the pending fields; arms connect naturally to distinct shoulders and remain supported. Camera diagonal beside the screen catches his recognizable three-quarter face. Turn the giant wallboard and all incidental monitors off. The one working screen contains a compact exact fixture headed Synthetic offset model: A [0.5,0.3,0.7,0.2,0.8,0.1,0.6,0.4]; B [0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1]. Next line Rebuild: add 0.1 to every feature. Three smaller fields MSE A: pending, MSE B: pending, Tensor change: pending. No computed scores, anomaly verdict or success. Keep the table modest in the scene, naturally oriented toward Demir and perspective-aligned in every baseline and column. No paper or held card. Preserve canonical face and balanced adult proportions, natural short neck, muted charcoal/sage/brass and warm skin, no neon. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "210256d433184beb85c3c585bbbdec1e8fa06e2e19d929240e741d807eccb5b4",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-62a5f7da-e6f2-44e6-8ab5-6dd878525e62.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/reconstruction-error-challenge-target.png",
+          "sha256": "e882efd5b456a65b2046eaefbbb9eb8359f8e0712e16185d7b07fa2b0afd35b8",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "e882efd5b456a65b2046eaefbbb9eb8359f8e0712e16185d7b07fa2b0afd35b8",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/reconstruction-error-challenge-identity-proof.jpg"
+    }
+  ],
+  "nextCandidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-narrative-stage2-openai-20261107.png",
+  "previousPanelSpecification": {
+    "state": "pending learner score",
+    "concreteGenerationSpecification": "Preserve exact Demir face, full head scale, seated pose, tablet grip and other hand on dial. Main rear board headed \"Synthetic offset model\" with two rows of exact eight-feature inputs: \"A: [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]\" and \"B: [0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1]\". Beneath \"Rebuild: add 0.1 to every feature\". Do not show reconstructed outputs. His tablet replaces sliders with three pending fields \"MSE A: pending\", \"MSE B: pending\", \"Tensor change: pending\". No success, anomaly or prefilled result. All other screens off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "Challenge and reconstruction-error.yaml offset-model fixture"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "8de48d1f4d5ea596ed58383212e8cc008ec4802afeadd0b3c143f080a1721934",
+    "proofSha256": "6a226cbc69aff2159b903275baec2b70afd2be0dfc095ac58eb4eba045f2b214",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Demir checks two supplied inputs and the pending memory result before running his scorer, concentrating on the actual fixture."
+  },
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-62a5f7da-e6f2-44e6-8ab5-6dd878525e62.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-b9b54ad8-a3ba-4a03-a480-1571ff13675f.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-challenge.webp",
+      "art-src/scenes/anomaly-detection__reconstruction-error-challenge-narrative-stage2-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "publishedReview": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__reconstruction-error-challenge.json",
+  "obsoleteWorkingImageRemoved": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-narrative-stage2-openai-20261107.png"
+}

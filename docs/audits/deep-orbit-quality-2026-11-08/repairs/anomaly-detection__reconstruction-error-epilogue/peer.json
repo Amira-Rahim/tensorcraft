@@ -1,0 +1,52 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T07:15:32.534020+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__reconstruction-error-epilogue/candidate.png",
+  "candidateSha256": "29e6b77da1ec7025060ebcaa5a9f420a7d55a4b15205cd8c891212d41cc3294b",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full native original plus enlarged face and hand crops, compared with canonical portraits. Current lesson and required exercise facts checked. Arm chains, thumb sides, contact, operator direction and display perspective inspected.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+    "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "faceCropCoordinates": {
+    "ensign-demir": {
+      "left": 270,
+      "top": 130,
+      "width": 250,
+      "height": 290
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 350,
+      "top": 730,
+      "width": 350,
+      "height": 220
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "Mission squared errors 64.12, 2.89, 0.71 and other eight below 0.1 match the source. The 72 Hz bin nearest 73.4 Hz and ARIA replay of 400 decisions at priority 3 remain clearly readable, with replay queued.",
+    "Demir reacts candidly to ARIA. His two arms, trackball grip and bracing hand have plausible contact and thumb positions; identity and adult proportions pass."
+  ],
+  "repairDirection": "None."
+}

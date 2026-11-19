@@ -1,0 +1,256 @@
+{
+  "key": "sequences-matter-concept",
+  "id": "recurrent-networks/sequences-matter",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-870b0aa6-d688-42e3-b68b-039adfe46b3b.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+    "sha256": "d5b4eb5cbdd7317d89f910f6032ae52e3d4b79da6e084ba34f2fa74ac444a1e3"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah stands RIGHT close to lab monitor LEFT, body turned toward it, face visible in threequarter profile. One hand lightly rests on desk and other hand on ordinary mouse. She is checking a reordered excerpt with bright interested raised brows, a subtle aha moment, not looking toward viewer. Remove both raised cards. Monitor heading \"Same five amplitude readings\". Two rows \"Ordered: 0.5  0.8  0.3  0.5  0.9\" and \"Reordered: 0.3  0.5  0.9  0.8  0.5\". Beneath \"Order changes the sequence\". Each sequence is five aligned cells with values in correct order. Smaller note \"One reading alone hides the pattern\". No random waveform or invented output. Lab has muted sage column and brass details, no plants.",
+  "meaning": "Sourceamplitudes.5,.8,.3,.5,.9; reordering samevalueschangessequence; single-readingclassifiercannotcomparesteps.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-870b0aa6-d688-42e3-b68b-039adfe46b3b.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-870b0aa6-d688-42e3-b68b-039adfe46b3b.png",
+      "sha256": "d9aa378cd75061f7f79e0a6e05246b0a9f0761ceb65c8dcd61b1d7559a9ee321",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2e9092b4-13f9-4d16-b350-7d6c335f699e.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 985,
+      "top": 145,
+      "width": 350,
+      "height": 370
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 775,
+      "top": 765,
+      "width": 220,
+      "height": 110
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 1035,
+      "top": 845,
+      "width": 210,
+      "height": 90
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+  "candidateSha256": "884715d4eed82b96f92de0c2f5efcfbb8d29feea625f976cee08696957f3d378",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Farah stands RIGHT close to lab monitor LEFT, body turned toward it, face visible in threequarter profile. One hand lightly rests on desk and other hand on ordinary mouse. She is checking a reordered excerpt with bright interested raised brows, a subtle aha moment, not looking toward viewer. Remove both raised cards. Monitor heading \"Same five amplitude readings\". Two rows \"Ordered: 0.5  0.8  0.3  0.5  0.9\" and \"Reordered: 0.3  0.5  0.9  0.8  0.5\". Beneath \"Order changes the sequence\". Each sequence is five aligned cells with values in correct order. Smaller note \"One reading alone hides the pattern\". No random waveform or invented output. Lab has muted sage column and brass details, no plants.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-870b0aa6-d688-42e3-b68b-039adfe46b3b.png",
+          "sha256": "d9aa378cd75061f7f79e0a6e05246b0a9f0761ceb65c8dcd61b1d7559a9ee321",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2e9092b4-13f9-4d16-b350-7d6c335f699e.png",
+        "sha256": "884715d4eed82b96f92de0c2f5efcfbb8d29feea625f976cee08696957f3d378"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Sourceamplitudes.5,.8,.3,.5,.9; reordering samevalueschangessequence; single-readingclassifiercannotcomparesteps.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 985,
+        "top": 145,
+        "width": 350,
+        "height": 370
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 775,
+        "top": 765,
+        "width": 220,
+        "height": 110
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 1035,
+        "top": 845,
+        "width": 210,
+        "height": 90
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-870b0aa6-d688-42e3-b68b-039adfe46b3b.png",
+      "sha256": "d9aa378cd75061f7f79e0a6e05246b0a9f0761ceb65c8dcd61b1d7559a9ee321",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "sequences-matter-concept",
+    "id": "recurrent-networks/sequences-matter",
+    "phase": "concept",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2e9092b4-13f9-4d16-b350-7d6c335f699e.png",
+    "candidateSha256": "884715d4eed82b96f92de0c2f5efcfbb8d29feea625f976cee08696957f3d378",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-08T07:13:07.611242+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Five amplitudes .5/.8/.3/.5/.9 match the current MDX excerpt first feature. Reordered .3/.5/.9/.8/.5 has same multiset. Ordered cells communicate sequence meaning without fabricated output."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-concept.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-2e9092b4-13f9-4d16-b350-7d6c335f699e.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-concept.webp",
+  "sourceSha256": "884715d4eed82b96f92de0c2f5efcfbb8d29feea625f976cee08696957f3d378",
+  "webpSha256": "e2a7ed4fdd69969d409074029897fa7050c837b747dfadfb0b7681489f9ce476",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+    "sourceSha256": "d5b4eb5cbdd7317d89f910f6032ae52e3d4b79da6e084ba34f2fa74ac444a1e3",
+    "webpSha256": "3c34332b26eba96e135dac89dde1952da8af49173eec7aaf688979da2884be81",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-3e89e6b4-2ea7-4d38-b1fa-8a98a3a677f7.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "884715d4eed82b96f92de0c2f5efcfbb8d29feea625f976cee08696957f3d378",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Five amplitudes .5/.8/.3/.5/.9 match the current MDX excerpt first feature. Reordered .3/.5/.9/.8/.5 has same multiset. Ordered cells communicate sequence meaning without fabricated output."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

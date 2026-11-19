@@ -1,0 +1,308 @@
+{
+  "lesson": "signal-processing/spectrograms",
+  "phase": "concept",
+  "owner": "/root",
+  "status": "published",
+  "prompt": "Use case: precise-object-edit. Make ONE very small technical-diagram edit in reference3, keep all other pixels/composition unchanged. Reference1 canonical Farah identity, reference2 Lab architecture, reference3 exact target. At the top signal strip, draw exactly three same-sized overlapping rectangles. Approximate native-pixel rectangles: Window1 x240 to390, y208 to286; Window2 x350 to500, y208 to286; Window3 x460 to610, y208 to286. This makes each width150 and each hop110, so both neighboring pairs overlap by40. Draw ALL four outline edges of each rectangle clearly, including the third window LEFT vertical edge atx460 inside Window2. First rectangle amber, nexttwo sage with transparent interior. Current third rectangle merely touches the second at its right edge; fix that. Retain the waveform and the three straight arrows to labels Window1,Window2,Window3 and their three heatmap columns. Remove the tiny decorative arrowhead at the lower-right footer border. No extra lines, no duplicate pens, no connector crosslinks. Preserve Farah, hands, stylus, face, adult proportions, all screen labels and values, frontal glass/bezel alignment, room, lighting, colors, chair and desk EXACTLY. Screen heading Time samples (schematic), footer One FFT per complete window. remain unchanged.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical Farah face and adult proportions, first reference",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "Lab architecture only, second reference",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-94514817-ceff-49a9-89df-bb8a2297f38f.png",
+      "sha256": "4fce6ab92cd3489423b11908036162e4173c09ba124a4e8d45f9be9718c53530",
+      "role": "exact candidate2, only top window outlines and stray footer arrow edit"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+    }
+  ],
+  "originalSourceSha256": "ff611a2e8bc7d3bf2cbd488d5719be2960bab48a60269bc62e79017803218ef1",
+  "request": "User rejected awkward screen orientation. Make physical display upright and coherent while retaining useful schematic and candid Farah action.",
+  "publication": {
+    "date": "2026-11-09",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-concept.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-057d715c-4220-46a3-82d2-c3555e0e1283.png",
+  "candidatePath": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+  "candidateSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+  "attempts": [
+    {
+      "lesson": "signal-processing/spectrograms",
+      "phase": "concept",
+      "owner": "/root",
+      "status": "needs-revision",
+      "prompt": "Use case: precise-object-edit. Fix the display orientation in reference3, a 1536x1024 Deep Orbit spectrogram lesson illustration. Image1 is canonical Farah identity authority. Image2 is Lab architecture only. Image3 is exact scene to repair, not identity authority. Keep Farah's canonical face, mature proportions, relaxed interested expression, gray lab coat, AR lens, seated working pose and muted sage/brass/charcoal palette.\nReplace the strongly reclined trapezoid drafting display with a large UPRIGHT monitor on a physically plausible swivel pedestal at the LEFT. Its glass and bezel are a FRONTAL rectangle: horizontal level top and bottom, vertical parallel sides, no in-plane tilt or steep oblique foreshortening. Farah and camera are on the readable front side, Farah to the right and slightly nearer camera. The monitor should comfortably use the left half of frame and face her. Keep a three-quarter view of her recognizable face, looking toward the diagram and speaking with engaged curiosity, not looking at camera. Her left hand rests simply on the desk, with clear five-finger anatomy; her right hand holds one straight stylus in a natural grip, pointing to the first highlighted time window. Each arm visibly connects shoulder, elbow, neutral wrist and hand. Keep the pen clear of text.\nDraw all interface elements in exactly the same frontal plane as glass and bezel, level text baselines, horizontal rules and vertical axes. Schematic diagram exact content: heading \"Time samples (schematic)\"; beneath it a horizontal short waveform with exactly three equal-width overlapping outlined windows shifted right. First window amber, other two sage. Each window connects down to its own label: \"Window 1\", \"Window 2\", \"Window 3\". Each of those connects down to ONE corresponding column of a three-column spectrogram. Spectrogram x axis labeled \"Time\", y axis labeled \"Frequency\", dark-to-light scale labeled \"Magnitude\". Highlight only the first column in amber to correspond to Window1, other two columns sage. Footer \"One FFT per complete window\". No invented numeric findings, no extra windows/columns, no random background plots. Diagram is illustrative, not a claim about actual capture values. Comfortable spacing and readable generous type at 768px. Maintain familiar Lab room, dim inactive peripheral monitors, soft face light, no plants or neon wash. No extra people or floating overlay graphics.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "role": "canonical Farah face and adult proportions, first reference",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/lab.png",
+          "role": "Lab architecture only, second reference",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-73e74977-fc54-484f-84d8-379ec3a27f76.png",
+          "sha256": "6503b841e320d0f060137609baf2a4a57030035be69c955a4f305b5a3d268285",
+          "role": "exact current candidate, monitor-only edit target"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+        }
+      ],
+      "originalSourceSha256": "ff611a2e8bc7d3bf2cbd488d5719be2960bab48a60269bc62e79017803218ef1",
+      "request": "User rejected awkward screen orientation. Make physical display upright and coherent while retaining useful schematic and candid Farah action.",
+      "publication": {
+        "alt": "Farah traces three overlapping windows into corresponding spectrogram columns on an upright lab monitor.",
+        "location": "Archimedes, Lab",
+        "action": "Farah follows the first window into its corresponding spectrum column.",
+        "emotion": "Engaged curiosity while making the time-frequency connection.",
+        "eyeline": "Toward the highlighted first window on the working monitor.",
+        "checks": [
+          "Canonical Farah face, balanced mature proportions.",
+          "Three windows map one-to-one to three spectrogram columns.",
+          "Frequency vertical, Time horizontal, Magnitude color.",
+          "All content shares frontal physical glass plane and faces operator.",
+          "Straight stylus and natural hands with connected arm chains."
+        ]
+      },
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-73e74977-fc54-484f-84d8-379ec3a27f76.png",
+      "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+      "candidateSha256": "6503b841e320d0f060137609baf2a4a57030035be69c955a4f305b5a3d268285",
+      "ownReview": {
+        "reviewer": "/root",
+        "verdict": "FAIL",
+        "candidateSha256": "6503b841e320d0f060137609baf2a4a57030035be69c955a4f305b5a3d268285",
+        "nativeReviewed": true,
+        "findings": [
+          "Stray duplicate stylus tip and diagonal connector under time windows create incorrect connection.",
+          "Window outlines are unequal widths.",
+          "Screen top remains slightly oblique while lower content is level."
+        ]
+      }
+    },
+    {
+      "lesson": "signal-processing/spectrograms",
+      "phase": "concept",
+      "owner": "/root",
+      "status": "needs-revision",
+      "prompt": "Use case: precise-object-edit. Repair ONLY the monitor and its diagram in image3. Image1 is canonical Farah identity; image2 is Lab architecture; image3 is exact target. Preserve Farah face, age, proportions, hands, actual stylus held in her hand, clothes, chair and all room details unchanged. The actual held stylus points at the heatmap at mid-height. REMOVE the stray floating gold pencil-tip shape at the BOTTOM of the UPPER time-window diagram and REMOVE its diagonal green line into Window2. Only one pen exists in the whole image, held by Farah.\nMake the monitor glass and bezel exactly FRONTAL: level horizontal top and bottom with parallel vertical sides, then use the same level baselines and boxedges for ALL content. Correct the upper signal diagram to exactly THREE equal-width rectangular windows, offset right by the same distance and each overlapping the next. First amber, second and third sage. Exactly ONE simple vertical arrow connects EACH rectangle to its respective label directly below it: Window1, Window2, Window3. No diagonal connectors, no crosslinks. Then each label connects vertically downward to its one corresponding heatmap column. Exactly THREE equal-width columns, first amber, next2sage. Keep heading \"Time samples (schematic)\", labels \"Window 1\", \"Window 2\", \"Window 3\", axes \"Frequency\" vertical and \"Time\" horizontal, scale \"Magnitude\", footer \"One FFT per complete window.\" Keep all text large and correct, with comfortable spacing. No extra graphics, no extra numbers. The window diagram shows three same-sized time slices of a schematic signal, feeding three spectra in chronological order. Preserve every other part of the image exactly.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "role": "canonical Farah face and adult proportions, first reference",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/lab.png",
+          "role": "Lab architecture only, second reference",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-94514817-ceff-49a9-89df-bb8a2297f38f.png",
+          "sha256": "4fce6ab92cd3489423b11908036162e4173c09ba124a4e8d45f9be9718c53530",
+          "role": "exact candidate2, only top window outlines and stray footer arrow edit"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+        }
+      ],
+      "originalSourceSha256": "ff611a2e8bc7d3bf2cbd488d5719be2960bab48a60269bc62e79017803218ef1",
+      "request": "User rejected awkward screen orientation. Make physical display upright and coherent while retaining useful schematic and candid Farah action.",
+      "publication": {
+        "alt": "Farah traces three overlapping windows into corresponding spectrogram columns on an upright lab monitor.",
+        "location": "Archimedes, Lab",
+        "action": "Farah follows the first window into its corresponding spectrum column.",
+        "emotion": "Engaged curiosity while making the time-frequency connection.",
+        "eyeline": "Toward the highlighted first window on the working monitor.",
+        "checks": [
+          "Canonical Farah face, balanced mature proportions.",
+          "Three windows map one-to-one to three spectrogram columns.",
+          "Frequency vertical, Time horizontal, Magnitude color.",
+          "All content shares frontal physical glass plane and faces operator.",
+          "Straight stylus and natural hands with connected arm chains."
+        ]
+      },
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-94514817-ceff-49a9-89df-bb8a2297f38f.png",
+      "candidatePath": "docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+      "candidateSha256": "4fce6ab92cd3489423b11908036162e4173c09ba124a4e8d45f9be9718c53530",
+      "ownReview": {
+        "reviewer": "/root",
+        "verdict": "FAIL",
+        "candidateSha256": "4fce6ab92cd3489423b11908036162e4173c09ba124a4e8d45f9be9718c53530",
+        "nativeReviewed": true,
+        "findings": [
+          "Frontal monitor and extra pencil fragment corrected.",
+          "Third time window touches second rather than overlapping. Equal window width and equal hop needed for this diagram."
+        ]
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "verdict": "PASS",
+    "candidateSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+    "nativeReviewed": true,
+    "canonicalFacesCompared": true,
+    "preview768Reviewed": true,
+    "fullArmChainsReviewed": true,
+    "displayPlaneReviewed": true,
+    "magnifiedCrops": [
+      {
+        "name": "hands",
+        "box": [
+          435,
+          480,
+          680,
+          470
+        ],
+        "scale": 2
+      },
+      {
+        "name": "face",
+        "box": [
+          1020,
+          145,
+          315,
+          330
+        ],
+        "scale": 2
+      },
+      {
+        "name": "display",
+        "box": [
+          58,
+          107,
+          720,
+          615
+        ],
+        "scale": 2
+      }
+    ],
+    "findings": [
+      "Upright physical glass and content now form one frontal rectangle. Operator and camera are on its visible front side.",
+      "Three overlapping approximately equal-width time windows now map to three spectrogram columns in chronological order. Axes and magnitude key are correct. No numerical capture claim is made.",
+      "Stray duplicated stylus and diagonal connector removed. Actual held pen is straight and continuous.",
+      "Both complete arm chains, five-finger stylus grip and relaxed desk contact inspected. Canonical face geometry and age retained.",
+      "All labels and window-column correspondence remain readable at 768px."
+    ],
+    "displayGeometry": {
+      "glassTop": [
+        [
+          60,
+          108
+        ],
+        [
+          775,
+          108
+        ]
+      ],
+      "glassBottom": [
+        [
+          60,
+          720
+        ],
+        [
+          775,
+          720
+        ]
+      ],
+      "titleRule": [
+        [
+          77,
+          176
+        ],
+        [
+          755,
+          176
+        ]
+      ],
+      "heatmapTop": [
+        [
+          201,
+          425
+        ],
+        [
+          636,
+          425
+        ]
+      ],
+      "heatmapBottom": [
+        [
+          201,
+          590
+        ],
+        [
+          636,
+          590
+        ]
+      ]
+    },
+    "temporaryCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/spectrograms-concept/candidate.png",
+  "publishedSource": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-concept.webp",
+  "sourceSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+  "webpSha256": "55cd03c759041a352b9bfd0386fe47feae1caa050ac8ba7e4a41cc644b50b21b",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+    "sourceSha256": "ff611a2e8bc7d3bf2cbd488d5719be2960bab48a60269bc62e79017803218ef1",
+    "webpSha256": "8a49ae3e8a04843f1d92abfb765c0bf34fe5db469fa45cd59b1ba10114304332",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-e403b140-b27b-4ca7-8c83-73e02a77e6e5.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "ec76572c35f730043ac7365dae29c4cbc9910776f1e84a29120105310bb6adbe",
+    "method": "Reopened after user correction. Exact current candidate independently inspected for screen plane and operator direction, canonical faces, full arm chains and magnified hands, plus 768px readability. Adjacent peer.json records the decision.",
+    "checks": [
+      "Canonical Farah face, balanced mature proportions.",
+      "Three windows map one-to-one to three spectrogram columns.",
+      "Frequency vertical, Time horizontal, Magnitude color.",
+      "All content shares frontal physical glass plane and faces operator.",
+      "Straight stylus and natural hands with connected arm chains."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+        "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__spectrograms-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms-concept.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root",
+  "promptSha256": "efbfaaf8b2716cff60c1b309cdeec2f679f10290fdab55bb8986343c0f30ac96",
+  "tool": "built-in image_gen"
+}

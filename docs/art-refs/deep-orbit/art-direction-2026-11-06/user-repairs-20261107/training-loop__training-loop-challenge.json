@@ -1,0 +1,298 @@
+{
+  "key": "deep-orbit/training-loop/training-loop",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical Demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical Nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "role": "engineering ROOM ONLY",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+    },
+    {
+      "path": "/tmp/training-loop-challenge-hands-stage3.png",
+      "sha256": "4eab3bb306d4180a92bc2acd70972a607ea619c92f7c9fac4888f7d946656cc7",
+      "role": "stage3 full supported pose, localized left-hand-only repair target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+      "sha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
+      "sha256": "fe23465490441ee5d7ab69c0514bbd386621873873e2821f836318bd0824a74a"
+    }
+  ],
+  "sourceMeaning": {
+    "section": "MDX early-stopping/Challenge; YAML instructions",
+    "screen": "Example losses; Training and Validation over Epoch; patience5. Illustrative traces, not claimed learner output.",
+    "rule": "monitor val_loss, patience5, minDelta0; callback bound to actual fit; may stop before500 or reachbudget",
+    "story": "Demir inspects the example loss behavior with Nazari and pauses the display while preparing the stopping rule.",
+    "readerDirection": "Mainconsole faces Demir; docked tablet front faces Demir with back visible to camera."
+  },
+  "prompt": "Precise localized image edit. Images1 and2 are canonical Demir and Nazari faces, image3 engineering room master only, image4 is the full scene to edit. Output1536x1024 full scene. Keep EVERYTHING identical except Demir's anatomical LEFT hand at viewer-right on the pause panel.\n\nCRITICAL DEFECT: this left hand has only THREE long fingers plus a thumb. The upper vague contour does not count as a finger. Replace the entire LEFT HAND with a fresh correct five-digit hand. Do not simply trace the defective hand. Draw FOUR distinct long fingers and ONE separate short thumb. Show five clearly separated fingertip silhouettes, with visible dark gaps between every pair. No finger may hide behind another. No merged fingertip or vague ridge.\n\nSpread this LEFT hand naturally across the console, relaxed palm down, viewed from slightly above. Keep its wrist connected to the existing forearm with a neutral angle. Use the existing left-hand region plus extra space above it, between the hand and the docked tablet, for a wider relaxed fan. The digit order from the lower/body-facing edge upward/away is:\n1. A short broad THUMB resting on the console near the wrist.\n2. The INDEX immediately adjacent to the thumb, lightly contacting the green pause button.\n3. A slightly longer MIDDLE finger extending separately diagonally upper-right.\n4. A shorter RING finger separately above the middle.\n5. A clearly shorter LITTLE finger, separately above the ring, with a complete outline, its own visible rounded fingertip and nail. Put its tip visibly apart from the ring tip with a generous clear gap.\nGive all fingers coherent knuckles, ordinary two bends and natural length hierarchy, thumb with its own base joint. Count all five visible tips before finishing. Make this an unmistakable anatomically LEFT hand, with thumb on inner/body-facing side, no reflected right hand. No clenched grip, no curled claw. If necessary widen this shallow pause panel a little and shift the pause key under the index to accommodate the relaxed spread. Keep index light contact and wrist/forearm alignment.\n\nAbsolutely preserve Demir's OTHER right hand with wrist terminal on the left ledge: it already has five correct fingers and must not change. Preserve both faces, expressions, gaze, head and torso sizes, whole supported two-arm pose and tablet dock. Preserve Nazari entirely. Main screen EXACTLY unchanged, including Example losses, Training, Validation, Epoch labels, Patience5 and exactly five empty boxes, same curves and perspective. Preserve muted sage/brass/charcoal palette and entire engineering room. No additions except correcting the left hand. Fullframe1536x1024.",
+  "generationHistory": [
+    {
+      "prompt": "Use case: precise-object-edit with strict identity and anatomical preservation. Image1 canonical Ensign Demir. Image2 canonical Chief Nazari. Image3 engineering master ROOM ARCHITECTURE ONLY. Image4 LAST exact current target.1536x1024. Repair Demir's complete two-arm working pose, not another superficial finger redraw.\n\nScene: Nazari stands at left watching Demir inspect the illustrative training/validation losses on the engineering console. Keep both exact canonical faces, visible natural working gazes, expressions, hairstyle, age, stubble/wrinkles, uniforms, original head/body proportions. Keep Nazari entirely unchanged including both arms/hands and her posture. Keep the same room, tools, hanging lamps, console and framing.\n\nRebuild Demir's BOTH ARM poses with clear distinct shoulder origins, believable elbows, neutral wrists and grounded contact. His anatomical RIGHT arm is on viewer-left and wears the wrist terminal. Remove the tablet from that hand entirely. Place that tablet securely in a small dock fixed to the console beside the keyboard, its screen oriented toward Demir. Camera sees its plain charcoal back or edge. No writing on its back. The dock visibly supports the tablet's bottom, no floating. Demir's freed RIGHT hand now rests palm-down on an open console ledge close to him, fingers relaxed and slightly separated, wrist straight, elbow naturally bent. Exactly five correctly proportioned digits; no cup grip, no grasp or backward thumb.\n\nDemir's anatomical LEFT arm is on viewer-right. Repose this ENTIRE arm so his shoulder is relaxed, elbow slightly bent, forearm reaches an easy nearby control, wrist stays neutral. Move the same broad green PAUSE button down onto a reachable shallow sloped console area beside the keyboard if needed. Leave a plain inactive button in its old location. His LEFT palm heel rests lightly on the same shallow console surface, index fingertip presses the broad pause button. Other three fingers rest loosely and extend naturally across the surface instead of curling into a claw. Show the LEFT hand's dorsal/oblique surface, properly placed knuckles, a distinct short thumb emerging from the radial side near the wrist and resting on the body-facing side of his palm. Thumb has its own base joint and natural length, not a long flat extra finger, not folded underneath another hand. Exactly one thumb plus four fingers. No mirrored right hand, no fused digits, no unnatural wrist torsion. The pressed pause key and fingers share the console plane. Broad simple reachable contact, no stretched fingertip.\nAdjust Demir's torso and console ledge minimally if needed to make both full shoulder-elbow-wrist-hand chains anatomically believable. Keep his face identity, gaze, head size and neck natural. His body must not pass through console. Two hands are clearly separated, each connected to its own wrist/arm. Do not pose him holding anything toward the camera.\n\nPreserve the main lesson screen's actual content EXACTLY: heading \"Example losses\"; two plots labeled \"Training\" and \"Validation\", \"Epoch\" under each; same illustrative trace shapes; \"Patience: 5\" with exactly five empty boxes. These are example curves, no invented numeric loss, epoch count or diagnosis. All typography/axes/curves/boxes remain projected onto that physical screen's existing perspective, not camera-flat labels. Keep the side screens inactive. Tablet is a secondary device with no new data visible to viewer.\nKeep muted sage displays, charcoal and worn brass, natural skin and the current warm task light. Tone any fluorescent green edge only to thin muted sage. No mustard wash. Clean cohesive cel-shaded illustration. Strictly inspect real LEFT thumb anatomy, fingertips, palm, wrist and both arm chains. No extra objects or characters beyond the needed tablet dock.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical Demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical Nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "role": "engineering ROOM ONLY",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+          "role": "exact active target5e911f2f",
+          "sha256": "5e911f2f8a29f6d46ad6f33b46c58d03832b0f3afa9f9e0cb1bb7d007692ebc3"
+        }
+      ],
+      "output": {
+        "path": "/tmp/training-loop-challenge-hands-candidate.png",
+        "sha256": "9d8712cf1a6d16738ace962579afbdb6fc9f1aaf7a8ac3b3f826effc979210ad",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-4ab03a82-bfae-4797-835a-0ac9207160d8.png"
+      },
+      "review": "HOLD. Full arm support/dock/identity pass; hand close view has ambiguous fifth digits and pressed finger is not adjacent to thumb."
+    },
+    {
+      "prompt": "Use case: precise-object-edit. Images1 and2 are canonical Demir and Nazari identity authorities. Image3 is engineering ROOM ONLY. Image4 LAST is exact current candidate. Preserve every part of image4 except Demir's two hands/wrists and the nearby pause key position. Preserve both faces, head size, emotion/gaze, both full arm origins and elbow positions, Nazari entire body/hands, newly docked tablet, console, lighting and main screen exactly.\n\nThe full pose now has good support, but BOTH hands need anatomically complete five-digit reconstruction. Make hands ordinary human hands, no cartoon four-finger anatomy. Clearly count ONE thumb and FOUR fingers on EACH hand. Show all five separate fingertips on each hand in a relaxed natural fan, with no hidden ambiguous fifth digit. Use realistic joint placement, adult finger-length hierarchy, natural nail placement and a soft bend, still in this cel-shaded art style.\n\nAnatomical LEFT hand on viewer-right pressing pause: the current extended TOP finger is wrongly placed relative to the thumb. Rebuild the entire hand and wrist, including palm width and all five metacarpal origins. Thumb remains a distinct short digit on the INNER/body-facing lower side. The INDEX must be the next finger immediately beside that thumb, not the outermost top finger across all other fingers. Place the broad pause key underneath this true index fingertip by moving the key slightly lower/nearer Demir on the same console plane. The index lightly presses it. Above/away from the index, show the MIDDLE finger slightly longest, RING slightly shorter, and LITTLE finger clearly shortest, relaxed and separated with small natural gaps, their tips supported by the console beside the key. All four fingers originate in correct anatomical order across the knuckles. Short thumb rests separately on the lower/inner palm side with a real thumb base and natural bend. Exactly five visibly distinct fingertips. Wrist straight with forearm; back of left hand visible obliquely. No huge hand, no thumbflattenedintoapalm, no mirrored right hand, no pinky pressing pause. Move key rather than stretch or twist index. Remove the former pause location, one pause key only.\n\nAnatomical RIGHT resting hand with watch on viewer-left: rebuild the whole hand at the current ledge contact. Show one distinct short thumb on its natural inner side and all FOUR relaxed fingers, each with a separate visible fingertip and appropriate length. Neutral wrist, palm down lightly on ledge. No grasp or claw. This hand is at rest and holds nothing. Do not add a second wristwatch.\n\nBoth hand sizes match Demir's forearms and face naturally. Every hand has five fingers, every finger belongs to that palm and has a joint chain. Preserve exactly two arms total. Keep the tablet securely docked on console, screen facing Demir.\n\nMain screen absolutely unchanged: \"Example losses\", \"Training\", \"Validation\", two \"Epoch\" labels, \"Patience: 5\", exactly five empty boxes; preserve both example curve shapes and all screen perspective. Keep palette muted sage/brass/charcoal and all other objects unchanged.1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical Demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical Nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "role": "engineering ROOM ONLY",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+        },
+        {
+          "path": "/tmp/training-loop-challenge-hands-candidate.png",
+          "sha256": "9d8712cf1a6d16738ace962579afbdb6fc9f1aaf7a8ac3b3f826effc979210ad",
+          "role": "stage1 full-pose candidate, hand anatomy correction target"
+        }
+      ],
+      "output": {
+        "path": "/tmp/training-loop-challenge-hands-final.png",
+        "sha256": "e859135aaf1ea70c3df6e95891e293fe6ac86d32e5b05656d50e0fabd3527da0",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-3851f560-eb8d-4a46-9e08-12a3bf18c536.png"
+      },
+      "review": "HOLD. Correct index/thumb order, but left visible little finger and right visible thumb remain missing. Both to be made explicit."
+    },
+    {
+      "prompt": "Precise anatomical correction to image4. Image1 canonical Demir, image2 canonical Nazari, image3 engineering room-only. Keep image4 composition, all faces and bodies, both arms, docked tablet, console, all lesson-screen text and graphs, all colors exactly unchanged.\n\nDemir's two hands currently each SHOW ONLY FOUR DIGITS. Correct this exact visible defect; each must visibly have FIVE digits.\n\n1. Viewer-right PAUSE hand is his anatomical LEFT hand. It currently shows the short bottom thumb, the index touching the key, then two fingers above. ADD the missing FIFTH digit: a separate shorter LITTLE FINGER on the far/top outer edge of this hand, above the existing three long fingers, with its own knuckle, two joints and a distinct clearly visible fingertip. Fan the FOUR long fingers apart slightly so no fingertip hides behind another. Correct visible order bottom-to-top: short THUMB; INDEX pressing key; MIDDLE; RING; short LITTLE FINGER. Five tips total. Keep index/pause contact, relaxed wrist, real left-hand thumb base. The little finger's tip must not fuse into the ring finger.\n\n2. Viewer-left WATCH hand rests on the ledge. It currently has FOUR long fingers but its THUMB is absent. ADD one short thumb visibly extending from the palm's upper/inner edge near the wrist, with a web between thumb and index. Keep the four existing relaxed fingers and add no further finger. The thumb should rest on the ledge above and separated from the four-finger fan. Five tips total: thumb plus index, middle, ring, little. Match adult thumb length and joint placement.\n\nOrdinary adult human hands with all five digits visibly distinguishable, not cartoon four-digit hands. Gentle natural spread, no claw or strained grip. Both hands remain on console surfaces with existing arm continuity and neutral wrists. Do not change any other element.1536x1024 cel-shaded illustration.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical Demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical Nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "role": "engineering ROOM ONLY",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+        },
+        {
+          "path": "/tmp/training-loop-challenge-hands-final.png",
+          "sha256": "e859135aaf1ea70c3df6e95891e293fe6ac86d32e5b05656d50e0fabd3527da0",
+          "role": "stage2 pose target, explicit missing digits correction"
+        }
+      ],
+      "output": {
+        "path": "/tmp/training-loop-challenge-hands-stage3.png",
+        "sha256": "4eab3bb306d4180a92bc2acd70972a607ea619c92f7c9fac4888f7d946656cc7",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-14c215da-b294-42e3-8dde-e06a614778f6.png"
+      },
+      "review": "Root HOLD: only three clearly visible long fingers plus thumb. Vague contour cannot establish little finger. Need four clearly separated long tips plus thumb."
+    },
+    {
+      "prompt": "Precise localized image edit. Images1 and2 are canonical Demir and Nazari faces, image3 engineering room master only, image4 is the full scene to edit. Output1536x1024 full scene. Keep EVERYTHING identical except Demir's anatomical LEFT hand at viewer-right on the pause panel.\n\nCRITICAL DEFECT: this left hand has only THREE long fingers plus a thumb. The upper vague contour does not count as a finger. Replace the entire LEFT HAND with a fresh correct five-digit hand. Do not simply trace the defective hand. Draw FOUR distinct long fingers and ONE separate short thumb. Show five clearly separated fingertip silhouettes, with visible dark gaps between every pair. No finger may hide behind another. No merged fingertip or vague ridge.\n\nSpread this LEFT hand naturally across the console, relaxed palm down, viewed from slightly above. Keep its wrist connected to the existing forearm with a neutral angle. Use the existing left-hand region plus extra space above it, between the hand and the docked tablet, for a wider relaxed fan. The digit order from the lower/body-facing edge upward/away is:\n1. A short broad THUMB resting on the console near the wrist.\n2. The INDEX immediately adjacent to the thumb, lightly contacting the green pause button.\n3. A slightly longer MIDDLE finger extending separately diagonally upper-right.\n4. A shorter RING finger separately above the middle.\n5. A clearly shorter LITTLE finger, separately above the ring, with a complete outline, its own visible rounded fingertip and nail. Put its tip visibly apart from the ring tip with a generous clear gap.\nGive all fingers coherent knuckles, ordinary two bends and natural length hierarchy, thumb with its own base joint. Count all five visible tips before finishing. Make this an unmistakable anatomically LEFT hand, with thumb on inner/body-facing side, no reflected right hand. No clenched grip, no curled claw. If necessary widen this shallow pause panel a little and shift the pause key under the index to accommodate the relaxed spread. Keep index light contact and wrist/forearm alignment.\n\nAbsolutely preserve Demir's OTHER right hand with wrist terminal on the left ledge: it already has five correct fingers and must not change. Preserve both faces, expressions, gaze, head and torso sizes, whole supported two-arm pose and tablet dock. Preserve Nazari entirely. Main screen EXACTLY unchanged, including Example losses, Training, Validation, Epoch labels, Patience5 and exactly five empty boxes, same curves and perspective. Preserve muted sage/brass/charcoal palette and entire engineering room. No additions except correcting the left hand. Fullframe1536x1024.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "canonical Demir",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical Nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "role": "engineering ROOM ONLY",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24"
+        },
+        {
+          "path": "/tmp/training-loop-challenge-hands-stage3.png",
+          "sha256": "4eab3bb306d4180a92bc2acd70972a607ea619c92f7c9fac4888f7d946656cc7",
+          "role": "stage3 full supported pose, localized left-hand-only repair target"
+        }
+      ],
+      "output": {
+        "path": "/tmp/training-loop-challenge-hands-stage4.png",
+        "sha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c84149d8-aece-41db-8f57-42bd70e13dd7.png"
+      },
+      "review": "Own PASS native, exact screen, fresh canonical comparison and enlarged five-digit hand."
+    }
+  ],
+  "candidate": {
+    "path": "/tmp/training-loop-challenge-hands-stage4.png",
+    "sha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c84149d8-aece-41db-8f57-42bd70e13dd7.png"
+  },
+  "ownReview": {
+    "reviewer": "late_final",
+    "nativeFullFrame": "PASS supported complete two-arm pose, tablet dock and unchanged faces/screen.",
+    "identity": "Demir and Nazari fresh canonical comparisons pass exact face morphology, age, equipment and expression.",
+    "rightHand": "Preserved five clear tips on resting watch hand, neutral wrist and ledge contact.",
+    "leftHand": "PASS at enlarged crop: five separate silhouettes, short thumb with clear base, adjacent index touching pause, separate middle/ring and clearly shorter little finger with distinct tip and nail. No overlap or vague fifth contour. Natural palm support and neutral wrist.",
+    "pose": "Both arms rebuilt, distinct shoulder origins, neutral wrists, supported palms. Tablet secured in dock, no cupped grip. Console widened to support right hand without body intersection.",
+    "screen": "Example losses; Training and Validation traces over Epoch; Patience5 and exactly5 empty boxes unchanged, illustrative rather than claimed measured output.",
+    "readerDirection": "Tablet dock faces Demir; console mainpanel shared viewing side, no handwriting or text on tablet back.",
+    "faceEvidence": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+        "crop": {
+          "left": 125,
+          "top": 10,
+          "width": 255,
+          "height": 305
+        }
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "crop": {
+          "left": 126,
+          "top": 18,
+          "width": 280,
+          "height": 320
+        }
+      },
+      {
+        "path": "/tmp/training-loop-challenge-hands-stage4.png",
+        "sha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+        "DemirCrop": {
+          "left": 768,
+          "top": 153,
+          "width": 270,
+          "height": 345
+        },
+        "NazariCrop": {
+          "left": 143,
+          "top": 65,
+          "width": 272,
+          "height": 300
+        }
+      }
+    ],
+    "handEvidence": {
+      "path": "/tmp/training-loop-challenge-hands-stage4.png",
+      "sha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+      "leftCrop": {
+        "left": 1080,
+        "top": 738,
+        "width": 340,
+        "height": 150
+      },
+      "rightCrop": {
+        "left": 610,
+        "top": 795,
+        "width": 300,
+        "height": 150
+      }
+    },
+    "proofPolicy": "Fresh final canonical and enlarged hand crops viewed. Current left hand preview retained temporarily for root; all evidence uses originals/hash/crops.",
+    "candidateSha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172"
+  },
+  "candidatePath": "art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+  "candidateSha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-c84149d8-aece-41db-8f57-42bd70e13dd7.png",
+  "temporaryCandidatePathAtReview": "/tmp/training-loop-challenge-hands-stage4.png",
+  "publishedSource": "art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/training-loop-challenge.webp",
+  "sourceSha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+  "webpSha256": "c4dcbf4bc2641a9674a18048a74a8d9391c5d81462e42bb23aa0048fe23b4609",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+    "sourceSha256": "5e911f2f8a29f6d46ad6f33b46c58d03832b0f3afa9f9e0cb1bb7d007692ebc3",
+    "webpSha256": "2cf08ec293e22039df31ac11e4a3bf40306236bcfd57ed7b4a8831c6fafce9a0",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-564825a0-388d-478b-be9d-c004feeec4d7.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "21f9a8cb650a1bc0ed0904a20b471e9ff0b1397be223c79111ec641e3f1d1172",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "readerDirection": "Tablet docked at console; readable loss screen faces operator.",
+      "sourceMeaning": "Training and validation example curves, Epoch, patience5emptycells preserved from validatedasset.",
+      "anatomy": "Four distinct long left fingertips plus thumb confirmed enlarged, index contacts pause; right hand5digits restsflat; both full armchains supported.",
+      "identity": "Demir and Nazari compared against canonical portraits, expressions retained.",
+      "perspective": "Loss charts and labels retained on console plane."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+        "sha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
+        "sha256": "fe23465490441ee5d7ab69c0514bbd386621873873e2821f836318bd0824a74a"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/training-loop-challenge.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__training-loop-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/training-loop-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

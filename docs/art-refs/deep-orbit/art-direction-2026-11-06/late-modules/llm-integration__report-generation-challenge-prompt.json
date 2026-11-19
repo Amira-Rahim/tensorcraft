@@ -1,0 +1,25 @@
+{
+  "key": "llm-integration/report-generation",
+  "phase": "challenge",
+  "room": "lab",
+  "refs": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/lab.png"
+  ],
+  "prompt": "Use case: illustration-story. Generate one distinctly staged1536x1024 Deep Orbit challenge scene. The FIRST 1 references are the authoritative neutral crew portraits, in this order: ensign-demir. The LAST reference defines room materials and architecture only. Reproduce each exact individual, especially facial morphology and age, not merely clothing. Stage exactly these humans: Ensign Demir, adult male mid-twenties, warm light-medium skin, dark tousled hair, light uneven stubble, slate junior uniform, green comms earpiece and one green wrist terminal. DEMIR must be exactly the reference man: mid-twenties warm light-medium face, broad softly squared lower jaw, short round chin, compact round-ended nose of canonical width, fairly straight brows and exact eye spacing, sparse freckles and uneven short stubble. Compact tousled dark hair with the same front locks, green round earpiece on anatomical RIGHT ear. Do not make a long thin pointed nose, tapered anime face, tall quiff or a teenager. Favor frontal or gentle three-quarter faces with both eyes and full nose width visible; retain natural story gaze. Faces should be large enough to verify, not tiny profiles. Demir stands beside a clear tabletop organizing report sections. Five simple page cards form an ordered bundle, a sixth page card lies separately under a thin amber outline. One small additional omission note is clipped visibly to the five-page bundle. He holds the bundle with one hand and rests his other hand beside the withheld page. No words or approval symbols. Exactly five included pages and one withheld section, not six approved sections. All human faces are clearly visible, expressive and well lit. Keep the adventure inviting, curious and lightly warm, with restrained humor where appropriate. Each human has exactly two continuous arms and two hands with natural thumbs and fingers. Trace every limb to its shoulder. Separate bodies, sleeves, hands, chairs, rails and tabletop volumes with clear silhouettes and natural contact shadows. Avoid crossed or overlapping limbs where they obscure anatomy. No extra limb, forked forearm, fused fingers, floating hand, duplicated person, body through furniture, black silhouettes, humanoid ARIA, readable words, letters, numerals, watermark or fake code. Displays use simple unlabeled visual marks without invented claims. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Any background display copied from the room master must be simplified to plain dark panels or simple waveform plots. No letter-like glyphs, pseudo-equations, decorative scribbles, astronomical pictures, planets, clouds, crystals or arbitrary science pictograms anywhere on displays. ",
+  "alt": "Demir assembles five reviewed sections and attaches a note naming the withheld section.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+  "lessonSha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room master"
+    }
+  ]
+}

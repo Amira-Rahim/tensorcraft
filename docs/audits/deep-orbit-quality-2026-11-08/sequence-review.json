@@ -1,0 +1,2432 @@
+[
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261107.png",
+    "sourceSha256": "e3c09d107e9ee7fde988cdd487ac4546fcdcdcf8b19b23e628cf6a00a145df0f",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's open hand and upward eyeline meet Demir's forward lean and concerned brow. Both hands make plausible bench or notebook contact.",
+      "Readable forecast times, 208 s difference and early ripple at step 4 of 80 follow the angled display. Muted sage, charcoal and brass match the reference lighting."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234",
+        "detail": "Opening PULSE LOG gives 0134:55 predicted, 0131:27 observed, 208 seconds early and precursor at step 4 of 80. Attention remains untested at briefing."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-challenge-openai-20261107.png",
+    "sourceSha256": "c711d8b4ee91dde58a5c349593172aae070dd65a0cb837484cf03ba298824548",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir writes on the input pad while glancing toward his own monitor. Fingers, wrist, pen contact and seated upper body are coherent.",
+      "Synthetic attention probe labels the exact query, keys and values and leaves blend pending. The wall display stays subordinate to the working gesture."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234",
+        "detail": "Challenge and simple-attention exercise require unscaled query-key scores, softmax and value blend. Probe query [1, 0], keys [[1, 0], [0, 1]], values [[2, 0], [0, 2]] are exact exercise inputs."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+        "sha256": "80898cbc20df73fb59bacb2a99bdfa8e38de5dea754b4d1f110ab727cb886b8c",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-concept-openai-20261107.png",
+    "sourceSha256": "6156faba3878c9d00bf7c702fd070de378fff6088b613badcd27f42b28a78a8d",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah follows the value blend with her stylus, maintaining a believable shoulder-elbow-wrist chain and a precise, engaged expression.",
+      "Scores 2, 1, 0 and rounded weights 0.665, 0.245, 0.090 match the worked example. Three weighted routes converge clearly on the blend with all text in screen perspective."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234",
+        "detail": "Query-Key-Value Framework explicitly gives softmax([2, 1, 0]) as [0.665, 0.245, 0.090] and says all three value rows contribute."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-epilogue-openai-20261107.png",
+    "sourceSha256": "530c41724cfbdfc89c4d9aa5c37bbd6c0ba214c82a97bf0186d4a49b75506338",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah pauses in the doorway while Demir turns his chair and head toward her. The open hand on the jamb, downward stylus and chair contact create a distinct late-watch interruption.",
+      "Archive 73.4 s and tonight 73.1 s correctly label amplitude spike to frequency shift. Repeat check remains 73.1 s and next capture stays pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234",
+        "detail": "Epilogue repeats 73.1 seconds against archived 73.4 and has Farah stop at the door to request timestamp and window checks. It does not resolve the cause."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/beyond-lstm",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__beyond-lstm-takeaways-openai-20261107.png",
+    "sourceSha256": "d25f0965aa4a551ec27ebc0c6da404cc7affed3ab4db0507b96aa5e442d3665f",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah traces the blend as Demir leans in to read. Gaze and hand direction connect the two faces to the diagram without posing for the viewer.",
+      "The compact flow separates keys used for scores from values used for the blend. Step 4 and step 78 are present with Cause unresolved, preserving the lesson's caution."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+        "sha256": "7590a4c723ed3fd083b65ed7b6e8619bdc43fef79d176c811452ec47ef2fb234",
+        "detail": "Recall and recap distinguish query-key scores, softmax weights and value blend. The worked example mentions high weights at steps 4 and 78 without causal proof."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__forecasting-openai-20261107.png",
+    "sourceSha256": "7a0fe2033722e16b3a0f36035c0fa9e01901ec8f120ff9bbb80687e4017c291b",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's raised explanatory hand meets Mirza's attentive sideways gaze. Mirza rests naturally on the rail with a restrained smile.",
+      "Table text is correctly upside down to the audience and readable from Farah's position. Observed history, Now and Forecast to evaluate express preparation without inventing results."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+        "detail": "Briefing asks what a repeatable forecast can establish and what observation distinguishes explanations. Lesson compares forecasts at the same horizon."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+    "sourceSha256": "5845a91ad6598a9a7abb626afd424342691f99ac632076904fd35e97ebe66ce1",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir's concentrated brow and separate keyboard and dial actions are specific to setting up the run. Contact and arm paths remain clean.",
+      "A blank synthetic-series plot correctly says Training pending. Observed, Your rollout and Your replay remain legend entries rather than fabricated result curves."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+        "detail": "forecast-signal returns actual rollout and oneStep arrays from a synthetic run. Its recordResult labels steps ahead and synthetic scalar value and sets no performance guarantee."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+        "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__forecasting-concept-openai-20261107.png",
+    "sourceSha256": "0df3d0c9ec270c0120de5ac85fdae9d8b1bea710ec4bf5fdab88084cd1a858b1",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah leans into a working display and compares two flow diagrams with the stylus. Her free hand rests on an open notebook with believable contact.",
+      "Rollout feeds Prediction back as Next input while replay receives New observation in observed history. Arrows and short labels are sharp and follow the display plane."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+        "detail": "Multi-Step Forecasting and predictOneStepAhead distinguish prediction feedback from windows rebuilt from observed history."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__forecasting-epilogue-openai-20261107.png",
+    "sourceSha256": "a85e281ad6e591d9f7a922a5206a3ecd7476c03241653256e5e3fed9f6224c26",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir points to the worksheet while Farah presses a console key and Nazari demands an answer through a tense raised brow. Expressions differ appropriately across all three faces.",
+      "Observed 0308, Predicted 0312 and 4 min early match the consequence. The paper faces its readers and preserves initial 73.4 s and 47 min measurements with both shrinking."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+        "detail": "Epilogue says 0312 forecast, 0308 pulse, four minutes early; initial pulse interval 73.4 seconds and larger cycle 47 minutes are both shrinking."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/forecasting",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__forecasting-takeaways-openai-20261107.png",
+    "sourceSha256": "b0fd8a55c3ed62c8a96bde6e7c11e942d4ca488f940ff85da599a86125c6147c",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza questions the display with an open hand while Farah follows it with her stylus. Their leaning torsos, shoulders and gazes agree.",
+      "Earlier period and Later period both use observed history. The explicit Predictions not fed to later inputs accurately summarizes one-step replay on a clear angled screen."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+        "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8",
+        "detail": "Recall warns that comparing horizons does not establish drift. One-step replay compares earlier and later periods without feeding predictions back."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261107.png",
+    "sourceSha256": "5bc182229029424d9e23372318d9cbdfbab6f5325f8a7c59e1fc6553b5c4cc07",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir props his chin and opens his free hand toward Farah, who answers with a precise stylus gesture. Their exchange is candid and the poses are connected.",
+      "The eight plotted daily measurements agree with the sloping chart grid, including the small reversals on days 3, 5 and 7. EMA results 72.57 and 72.08 and latest 72.0 are readable."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+        "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966",
+        "detail": "Opening log is 73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0. EMA alpha 0.2 ends 72.57, alpha 0.8 ends 72.08."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-challenge-openai-20261107.png",
+    "sourceSha256": "9686347dceffc3e4c3b12a4c29f2b2021ece929faa1b39cfb781a2b79605fe7d",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir uses a reader-facing handheld terminal, with its back toward the audience. His gaze and top-edge control tap agree with the object.",
+      "The exact eight-day log, initial estimate 73.1 and Q=0.1, R=1 are sharp. Updates for days 2-8 remain pending rather than pre-solving the challenge."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+        "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966",
+        "detail": "Challenge runs the scalar Kalman filter on the eight-day log. Worked example initializes from the first reading and updates measurements.slice(1)."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-concept-openai-20261107.png",
+    "sourceSha256": "0d599cb65b65028c15cfb84ab5b508275abae3d8c2cde9c1c9a3d5837683a90f",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah uses the control slider while pointing at the gain step. Wrist and finger contact are plausible and her gaze stays on the operator-facing display.",
+      "Predict variance, Compute gain, Correct estimate + variance and Next reading form the intended loop. Assumed variances Q=0.1, R=1 and initial variance=1 match the example."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+        "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966",
+        "detail": "Prediction and correction code expands variance, computes gain, corrects estimate and variance, then retains that state for the next measurement."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-epilogue-openai-20261107.png",
+    "sourceSha256": "cea58b589e99ca9b9028471052274a5f2aacd9973210b5e743bcc8af677b623b",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Mirza writes under the desk lamp as Farah watches with concern. The pen grip, writing contact and paper facing the readers are clean.",
+      "The side monitor preserves estimate 72.4 s, latest 72.0 s and assumed Q=0.1, R=1. Backup plans by 0800 appears on the worksheet without disclosing the private time in Mirza's margin."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+        "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966",
+        "detail": "Epilogue brings the estimate and assumed noise variances to Mirza, who writes privately and orders backup transmission plans by 0800."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/kalman-filters",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__kalman-filters-takeaways-openai-20261107.png",
+    "sourceSha256": "f6b289401dc479f3af102710ff143da6eb38bcaa60c22a32e77f16b63aac16b2",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Both crew lean over the same reader-facing paper. Demir points to the latest measurement with a worried brow while Farah directs the stylus to the estimate.",
+      "72.43 s estimate, 72.0 s reading, 0.43 s gap and the missing daily-change state are exact. Upside-down audience text belongs naturally to the desk plane."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+        "sha256": "14af1a8d61963f9e454d0417bc4a4264afdc01527b8f0c4ca733b92fd8e5a966",
+        "detail": "The source states final estimate 72.43, final reading 72.0 and gap 0.43. A one-state level filter does not track daily change."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+    "sourceSha256": "a362ffba38ef8c9cc122cb0a6405a7d0a6cafe09fd572d3febe99f9f5bf59d73",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 2,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "The pen shaft visibly changes direction near the hand. The user rejected the bent prop and the strained presentation grip."
+    ],
+    "repairDirection": "Remove the pen. Recompose both complete arm chains with a neutral mouse hand and a resting support hand. Put the Step 4 / Step 78 comparison on a large shared bridge screen.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+        "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d",
+        "detail": "Temporal Attention Layer distinguishes 74 dashboard positions from the raw timestamp difference 77.4-4=73.4 seconds inside an 80-reading window."
+      }
+    ],
+    "supersededReview": {
+      "scores": {
+        "color": 4,
+        "pose": 4,
+        "expression": 4,
+        "displays": 5,
+        "composition": 4,
+        "identity": 4,
+        "story": 4
+      },
+      "verdict": "matches-benchmark",
+      "findings": [
+        "Demir leans toward the table monitor, following the time gap with his stylus while his free hand anchors him on the rim.",
+        "80 readings, steps 4 and 78, 74 positions, timestamps 4.0 and 77.4 s and gap 73.4 s are distinct and exact. The display explicitly calls the arrangement schematic."
+      ]
+    },
+    "userOverride": {
+      "date": "2026-11-08",
+      "basis": "Explicit user correction supersedes the earlier approval. Fresh native reinspection confirms the issue.",
+      "readabilityRule": "Use available empty space for a large readable main lesson display."
+    }
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-challenge-openai-20261107.png",
+    "sourceSha256": "59d5ab26c5f271dcd893c711d384cfdac6513b361261ab22c4536f3f7df6f1fd",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir studies and points at the probe's second reading with a bright engaged expression; his free hand rests on the keyboard.",
+      "The three readings, positions 0, 0.5, 1, scorer [1, 0, 0.5] and pending weights [3] and summary [2] match the mild synthetic exercise case."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+        "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d",
+        "detail": "Challenge adds a position feature to the scorer but pools original features only. Exercise mild case is [[0, 4], [0.25, 2], [0.5, 0]] with scorer [[1], [0], [0.5]]."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+        "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-concept-openai-20261107.png",
+    "sourceSha256": "be8d3e8675e03aeace2538db1efd77dba07c41e93cebc885cbe2c9c95d326908",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 2,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "The stylus grip and wrist angle are anatomically unconvincing. Earlier native review failed to catch this user-identified defect."
+    ],
+    "repairDirection": "Remove the stylus and rebuild the full shoulder-to-hand chain around an ordinary keyboard or mouse interaction. Enlarge the position-scoring diagram on the available bridge display.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+        "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d",
+        "detail": "Putting the Position Back and the challenge require position to affect scores while the returned summary excludes that position column."
+      }
+    ],
+    "supersededReview": {
+      "scores": {
+        "color": 4,
+        "pose": 4,
+        "expression": 4,
+        "displays": 5,
+        "composition": 4,
+        "identity": 4,
+        "story": 4
+      },
+      "verdict": "matches-benchmark",
+      "findings": [
+        "The concentrated stylus action links Demir's eyeline to the lower reading path. Arms, neck and seated posture remain relaxed and coherent.",
+        "Readings + Position feed Scorer then Softmax weights. Original Readings feed Summary separately, with Original features only clearly retained."
+      ]
+    },
+    "userOverride": {
+      "date": "2026-11-08",
+      "basis": "Explicit user correction supersedes the earlier approval. Fresh native reinspection confirms the issue.",
+      "readabilityRule": "Use available empty space for a large readable main lesson display."
+    }
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-epilogue-openai-20261107.png",
+    "sourceSha256": "16418c806ce3def2700197dba9cdefa06444b95609564534266b79d968bcc3f9",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir turns toward Nazari while adjusting the recording dial. Nazari's guarded raised brow and his tentative smile make this a specific correction after lost captures.",
+      "Seven rows, six hours and First 32 s missing agree with the consequence; Nazari's outward-facing carried tablet shows Wider window and Onset captured. Text is clear and aligned to its surfaces."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+        "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d",
+        "detail": "Epilogue specifies seven captures over six hours, all missing their first thirty-two seconds, followed by successful wide-window re-recording. Capture bars are schematic status rows rather than a timed axis."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/temporal-attention",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__temporal-attention-takeaways-openai-20261107.png",
+    "sourceSha256": "c54d706fe99976ab48943d87421213ce150a9274972b46fc8ec84545c00d48b0",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 1,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "The image contains a duplicated arm chain: the stylus arm and the notebook arm do not resolve into a coherent pair of shoulders and elbows."
+    ],
+    "repairDirection": "Recompose Demir with exactly two complete arms. Use a simple keyboard and mouse task and a large readable complete-versus-truncated comparison. Move timestamps from the tabletop notebook onto the shared display.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+        "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d",
+        "detail": "Live Ring Buffer example slices full at step 32 for 48 readings; both normalized weight sums are 1 despite the missing onset at step 4. Raw gap remains 73.4 s."
+      }
+    ],
+    "supersededReview": {
+      "scores": {
+        "color": 4,
+        "pose": 4,
+        "expression": 5,
+        "displays": 5,
+        "composition": 5,
+        "identity": 4,
+        "story": 4
+      },
+      "verdict": "matches-benchmark",
+      "findings": [
+        "Demir's worried brow and stylus isolate the missing onset on the second display, giving the comparison a clear physical action.",
+        "Complete 80 readings and truncated 48 readings preserve ranges 0-31 and 32-79. Both weight sums remain 1; the notebook separately retains raw timestamp evidence."
+      ]
+    },
+    "userOverride": {
+      "date": "2026-11-08",
+      "basis": "Explicit user correction supersedes the earlier approval. Fresh native reinspection confirms the issue.",
+      "readabilityRule": "Use available empty space for a large readable main lesson display."
+    }
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "briefing",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-openai-20261107.png",
+    "sourceSha256": "7289f1e9657a400f4f563cef240da3eac6fc1a0325f9f106d33bc5e0e7ff6284",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's open hand accompanies Demir's enthusiastic console work. Their different standing and seated positions create a natural shared view.",
+      "Same input fans to LSTM, Attention and Kalman before Blend pending. Same target, time and units and Compare with best member are legible and source-correct."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa",
+        "detail": "Briefing says all three ensemble members run and must predict the same target, time and units. Improvement requires comparison with the best member."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "challenge",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-challenge-openai-20261107.png",
+    "sourceSha256": "cac09f006bb1465c1f9ac72a6a7262ced3dbb5dbbb465d5ae80e403361bc63d6",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir compares a specific table row with his stylus while operating the keyboard, with a focused expression and credible contact.",
+      "Synthetic evaluation inputs exactly match the fixture, prior errors stay separate and both MAE and beats-best results remain pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa",
+        "detail": "weighted-ensemble uses actual [10, 20, 30, 40], LSTM [12, 18, 30, 40], Attention [8, 22, 30, 40], Kalman [10, 20, 33, 37] and prior errors 0.045, 0.038, 0.058."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+        "sha256": "4bc36260abe0e077a5a75aa8da5e3198501ce29f3b36fbe32282ee47fb01a872",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "concept",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-concept-openai-20261107.png",
+    "sourceSha256": "2a16aaa8d2d347eb8c477ba0b7c6fe991190332a3a783af09dddc1ce80f6eb47",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah points to the attention weight while Demir adjusts the blending dial and glances back at her. Hands rest convincingly on both rail and console.",
+      "Physical modules and connecting routes clearly map prior-period normalized MAEs to rounded shares 0.333, 0.467, 0.200. Labels face the crew and the blend remains to be evaluated later."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa",
+        "detail": "Combining Models gives prior errors 0.045, 0.038, 0.058, rounded inverse-squared-MAE weights 0.333, 0.467, 0.200 and separate evaluation."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "epilogue",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-epilogue-openai-20261107.png",
+    "sourceSha256": "023ca53289dc24bfa0ce899fc965c1f48e725bd8828824e53c2af5c64e52d92e",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir writes as Nazari leans in with a skeptical raised brow, creating a grounded discussion under the engineering lamps.",
+      "LSTM, Attention and Linear each have differing zero dates; Zero interval: meaning unknown preserves uncertainty. ARIA remains an abstract waveform."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa",
+        "detail": "Epilogue compares two model extrapolations and Demir's linear line beyond the same eight readings. Zero dates disagree and the physical meaning stays unknown."
+      }
+    ]
+  },
+  {
+    "lesson": "advanced-time-series/time-series-ensemble-methods",
+    "phase": "takeaways",
+    "source": "art-src/scenes/advanced-time-series__time-series-ensemble-methods-takeaways-openai-20261107.png",
+    "sourceSha256": "dfc4996e9f0739f0462fe80e2acbc51f6991c65438e62a336859e3fd90cb71ab",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's frown and deliberate underline give a specific reaction to the ensemble losing. Pen, fingers and notebook contact are coherent.",
+      "Illustrative comparison lists member errors 0.052, 0.036, 0.050 and blend 0.041, correctly highlights the best member 0.036 and states that it wins."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+        "sha256": "1a22d401a8da787a36788aa2034d610274a73ba10516a104bb0c8f7b657f8bfa",
+        "detail": "Recall explicitly asks whether ensemble MAE 0.041 beats members 0.052, 0.036, 0.050. It does not beat member 0.036."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+    "sourceSha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 2,
+      "composition": 2,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "The primary lesson text is squeezed onto a small console while the large wall screen is empty. This violates the new binding user readability rule."
+    ],
+    "repairDirection": "Move the three normal feature readings and unseen-combination message to the large rear lab screen. Keep Farah candidly investigating the relationship, with clear simple hands.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37",
+        "detail": "Opening Farah dialogue says each feature cleared the individual z-score check but their combination never occurred in eleven days."
+      }
+    ],
+    "supersededReview": {
+      "scores": {
+        "color": 4,
+        "pose": 4,
+        "expression": 5,
+        "displays": 4,
+        "composition": 4,
+        "identity": 4,
+        "story": 5
+      },
+      "verdict": "matches-benchmark",
+      "findings": [
+        "Farah bends over a specific inconsistency with a sharp concerned eyeline and circles its explanation using the stylus. Her bench hand supports the lean.",
+        "Amplitude, Frequency and Phase each read normal while Combination unseen in eleven days is isolated below them. The compact screen shows exactly why a joint model is needed."
+      ]
+    },
+    "userOverride": {
+      "date": "2026-11-08",
+      "basis": "Explicit user correction supersedes the earlier approval. Fresh native reinspection confirms the issue.",
+      "readabilityRule": "Use available empty space for a large readable main lesson display."
+    }
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-challenge-openai-20261107.png",
+    "sourceSha256": "5235b2c6cd137ec39c62cb65767cb3fa35606b3e4567be9f06ab196a6d39d772",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir checks the screening table while typing; his smile is engaged with the work and his other hand rests on the notebook.",
+      "72 synthetic rows and 8 features divide into 48 calm kept and 24 flagged excluded. Fit pending avoids a fabricated training outcome."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37",
+        "detail": "Challenge is an explicitly synthetic eight-feature archive, distinct from the 11-feature mission model. build-autoencoder fixture has 48 calm and 24 flagged rows."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-concept-openai-20261107.png",
+    "sourceSha256": "de1c7260b912f95a5cbcebaa83f4fcce006ecd65c0d7490e3a1e7239ac0a59dc",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah follows the rebuilt output with her stylus, her free hand open on a notebook. Her downward gaze and arm direction are natural.",
+      "Mission model is correctly 11 features from 3 raw +8 FFT features, bottleneck 4, rebuilt 11. Encoder and decoder stages are clear without falsely depicting the exercise's two-unit bottleneck."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37",
+        "detail": "Encoder to Bottleneck to Decoder gives mission path 11-32-16-4-16-32-11. The exercise separately uses 8-4-2-4-8."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+    "sourceSha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's focused inspection and Nazari's irritated sideways look create a concrete review scene. Nazari records the cost on a correctly reader-facing notebook.",
+      "Mission review preserves 1.4 x baseline below cutoff, 412 suspect rows of 28,800, activity near 73.4 Hz, next run 0115 and Cause unresolved. Both crew retain canonical facial structure and age."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37",
+        "detail": "Epilogue gives a 1.4 x-baseline miss, 412 contaminated rows, 90 minutes training, 28,800 total rows and second run 0115. Source cause of the physical signal remains unresolved."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/autoencoders",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-takeaways-openai-20261107.png",
+    "sourceSha256": "c7a6b9bfc5dfd0a7e3f3d4151450a82556a901d9ec0d543db4bbd8f25e4cf2d5",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir leans over the bench and points to the suspect row while Farah listens with a skeptical look and works at the console. His hand is supported and the arm chain is clear.",
+      "Separate synthetic evaluation and One of 5 held-out pairs label the display. Calm 0.608/0.392 and suspect 0.858/0.358/0.642/0.142 match the first held-out fixture; it asks to inspect misses and false alarms without claiming performance."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37",
+        "detail": "Held-out depths start 0.108. Calm basis [1, 1, 1, 1, -1, -1, -1, -1] gives 0.608/0.392; tainted row adds 0.25 alternating extra component. Five pairs remain separate from training."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261107.png",
+    "sourceSha256": "4944e6847e0930c3e800e11531e6528ee5f163d812bdc119513cc1d6fd33e5b3",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari leans on the bench with one hand at her hip, Farah turns to answer, and Mirza watches from the chair back. Their visible expressions and support contacts make a specific interruption.",
+      "This shift lists loose cable, cosmic ray and third alert pending, correctly leaving the current cause unresolved. Palette and understated face light match the benchmarks."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "detail": "Opening dialogue enumerates first alert loose cable, second cosmic ray and third alert requiring a numerical definition of anomaly."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261107.png",
+    "sourceSha256": "7df5015d21de5c4960c941ca3532d80f60c883ffe8c053afec7ee32e842b4f40",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir alternates between notebook and keyboard while looking at the synthetic check. Pen grip and working-screen direction are correct.",
+      "Reading 100, mean 50, standard deviation 10 and absolute z-score>3 reproduce the exercise probe, with the decision left pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "detail": "detect-anomaly test calls isAnomaly(100, 50, 10); the rule is a strict absolute z-score greater than 3, with a separate zero-variance policy."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+        "sha256": "e336c84029939406df50c8e36461e4729cd133781a9aed46fe246953b675e321",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-concept-openai-20261107.png",
+    "sourceSha256": "db35054bacc3f0de6b80c2fae980ce40c1d26997831779288008fd7339ce1952",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah works the dial and stylus while Nazari scrutinizes the result from the rail, carrying her own tablet with its back toward the audience.",
+      "Normalized amplitude 0 to 1, mean 0.52, std 0.15 and strict bounds below 0.07 or above 0.97 are correct. Exact boundaries stay unflagged is explicit."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "detail": "The baseline has mean 0.52 and standard deviation 0.15, with strict three-sigma flags below 0.07 and above 0.97. This is a bounded normalized amplitude feature."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-epilogue-openai-20261107.png",
+    "sourceSha256": "61b70aef48356238b1154c918e6ac34a06e9358b6412c6f8d039299671a761c8",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir pauses over the action key with a worried brow and a hand on the saved report. The scene communicates a decision still needing justification.",
+      "Sample 7741 remains Label unresolved and Training decision pending; Original capture retained and the reader-facing saved settings report preserve the source's audit trail."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "detail": "Epilogue preserves original capture and saves baseline report with training settings. The optional choice does not grant sample 7741 a known true label."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/normal-vs-anomalous",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-takeaways-openai-20261107.png",
+    "sourceSha256": "22ca446898f5c96838f7dcdcd2935691ba8a8751913541343ecbb4bbbb8e187f",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari writes Measure observed rate while entering the assumed rate at the console, with a suitably unimpressed expression.",
+      "Assumed Gaussian 0.27%, 100,000 normal readings/hour and about 270 flags/hour are correct and explicitly conditional. Notebook text follows its plane and faces her."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+        "sha256": "dc80385039bdc44af82421b95464d85a59a08d48439a79901cb03be88fac984e",
+        "detail": "The recall calculates 0.0027 times 100,000 as 270 expected flags per hour under stated Gaussian assumptions, and distinguishes this from observed rates."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261107.png",
+    "sourceSha256": "bc74730fc3e938899eec786c1679d9cf52accd3ef5d54c21e94a723b4172878f",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir looks up mid-question with an open palm while Farah answers from beside the console. Their hand and bench contacts are clear.",
+      "Input and rebuilt input feed squared feature differences then mean=MSE; Score pending keeps the briefing before measurement. Labels and arrows are crisp and perspective-correct."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770",
+        "detail": "Opening dialogue asks Demir to measure the reconstruction first and then inspect features. MSE combines squared differences into one score."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-challenge-openai-20261107.png",
+    "sourceSha256": "8de48d1f4d5ea596ed58383212e8cc008ec4802afeadd0b3c143f080a1721934",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir's concentrated gaze follows the stylus to the pending result panel while his other hand works the keyboard.",
+      "Both eight-value test readings and add 0.1 to every feature are exact. MSE A, MSE B and tensor change all remain pending, avoiding invented runtime outputs."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770",
+        "detail": "reconstruction-error exercise supplies an offset model returning input+0.1 for A[0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4] and B[0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1]."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-concept-openai-20261107.png",
+    "sourceSha256": "2fde254e4e6a02767af2f9104e481edda79328342ed47c10f1253ccdc17f4718",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah braces against the bench while tracing the mean operation. Face, gaze and stylus share one focused action.",
+      "Subtract then square branches to 11 per-feature squared errors and mean over 11 features produces one MSE per reading, correctly separating aggregate and diagnostic outputs."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770",
+        "detail": "Measuring reconstruction error averages squared input-minus-reconstruction differences over 11 features. Error by feature retains those 11 contributions separately."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-openai-20261107.png",
+    "sourceSha256": "401311284363174d6a02f1119d558dbc19d0e5c564b4b69a66828d3fbd32c379",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir presses the queue button and turns toward ARIA's display with a surprised expression. His other hand rests on the round worktable.",
+      "Table text faces Demir from the left side and gives fft_5=64.12, fft_6=2.89, amplitude=0.71, other 8 below 0.1. ARIA requests 400 decisions at priority 3, Queued."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770",
+        "detail": "The epilogue and feature-errors example give the fictional feature contributions and the 72 Hz bin nearest 73.4 Hz. ARIA requests a replay job of 400 decisions at priority 3; it is queued."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/reconstruction-error",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-openai-20261107.png",
+    "sourceSha256": "f23617afa2ba0fdcbe3a177443f52a7a0623dcd92791eb4dd0991b5b1121dc0c",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir stops mid-note and looks to Farah in surprise, while she watches calmly. Their forearms and hands rest naturally on the table.",
+      "The reader-facing constructed mapping has [1000, 0] rebuilt exactly with MSE 0 and [0, 0.2] rebuilt [0, 0] with MSE 0.02. Low error can miss an anomaly is supported without claiming a trained result."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770",
+        "detail": "A Detector Can Miss defines encode first coordinate, decode second as 0 and yields MSE 0 for [1000, 0], MSE 0.02 for [0, 0.2]."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261107.png",
+    "sourceSha256": "45fae86135319a51f550b13f1c99d8947cc92cbcc2609e81edb947705336dac6",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Four recognizable crew converge on different actions: Nazari questions, Mirza leans on the rail, Farah points to votes and Demir preserves the capture. The serious faces and connected arm chains stay clear despite the larger cast.",
+      "Archive 7741 and live capture each show amplitude quiet, autoencoder flag, LSTM flag, votes 2. The separate live panel preserves 73.4 Hz, 12 x highest-normal error and unresolved cause."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+        "detail": "Opening replay and new live capture produce the same two votes; individual readings stay within range. Nazari requests retained raw capture and independent calibration check."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-challenge-openai-20261107.png",
+    "sourceSha256": "aaac29a95e4b7785c0fe08c50350c8e73fbc36261cbd183667046891042170ae",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir points directly to the autoencoder score while keeping his other hand relaxed on the desk. His gaze follows the working display.",
+      "Eight recent amplitudes, actual 0.50, reconstruction 6.2/cutoff 1.0 and LSTM predicted 0.20/tolerance 0.10 exactly match the sample 7741 probe. Votes and alert remain pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+        "detail": "ensemble-detector sample 7741 test uses calmWindow [0.5, 0.54, 0.51, 0.53, 0.52, 0.52, 0.5, 0.54], actual 0.5, error 6.2, threshold 1, predicted 0.2, tolerance 0.1."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+        "sha256": "94c81b2cb9d5f6208d954ba7d81ba81999dbecbb34345fb5cabc5731343c6de3",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+    "sourceSha256": "d8c19185fe9b71d1556bb08db8c18909767ad0fc2c154f3304b7f66619a95437",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah turns from her keyboard to Demir as he leans in, creating a restrained explanation rather than a camera-facing presentation.",
+      "Same capture, three checks gives amplitude quiet, autoencoder 6.2>1.0, LSTM 0.041>0.01 and 2 votes of 3:investigate. Cause unknown preserves the distinction between alert and diagnosis."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+        "detail": "Ensemble Detection supplies fictional mission scores 6.2 and 0.041 with cutoffs 1.0 and 0.01, respectively. A two-vote count is not a cause or probability."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-epilogue-openai-20261107.png",
+    "sourceSha256": "695d8c93bb1b6a487ab9c25a74e6913257469731f29546f158492486b3e67400",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah looks back to Nazari after typing a replay check. Nazari's guarded half-smile and raised brow make the comparison feel curious rather than triumphant.",
+      "Fresh copy, different machine and exact relative gaps 1, 1, 2, 3, 5, 8, 13 appear with correlation 0.9987. Calibration leak and external pattern remain competing questions, with independent instrument pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+        "detail": "Epilogue repeats the timing decomposition on another machine, finds correlation 0.9987 and explicitly leaves calibration leakage versus external pattern unresolved pending an independent instrument."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/the-anomaly",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__the-anomaly-takeaways-openai-20261107.png",
+    "sourceSha256": "92166392b334ea8e3fb4715af5b32b18b615b96927f50c3f35bcd9ff6be8a31c",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari traces the shared-input branch while Farah marks the alert. Their physical debate spans the table without symmetric posing.",
+      "Reader-facing schematic routes one shared capture to quiet statistical and flagged autoencoder/LSTM checks, then 2 votes and investigation. Shared training data and unresolved cause remain explicit."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+        "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e",
+        "detail": "Recall emphasizes two votes count threshold crossings and shared inputs or training can create correlated misses. The display makes no probability claim."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "briefing",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-openai-20261107.png",
+    "sourceSha256": "af7f3249dba7bc9396759c328839e9cc42f0470aa3b2a2f84bf11ab346692342",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari enumerates the workload with an open hand while Farah listens over her mug. Grip, wrist and bench support are plausible and their expressions differ.",
+      "14 reviewed alerts and 12 cosmic-background cases match the opening. False alarms and missed anomalies stay visible while the cutoff remains under review."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e",
+        "detail": "Opening dialogue says 14 alerts last week, 12 cosmic background. Farah asks for misses to be compared with false alarms before choosing a higher cutoff."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "challenge",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-challenge-openai-20261107.png",
+    "sourceSha256": "625b359c7916a20349cd59b39882ef444ed29b9878284f6bc9e6671b90c0d5fb",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir works at a keyboard and circular stylus input while concentrating on the candidate table. The supported seated pose has natural clearance.",
+      "Six synthetic errors and labels, candidate cutoffs 0.3 and 0.6 and strict error>cutoff are exact. Selected cutoff andF1 remain pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e",
+        "detail": "find-threshold overlap case uses errors[0.2, 0.4, 0.5, 0.7, 0.9, 0.3], labels[false, true, false, true, true, false], candidates[0.3, 0.6]."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+        "sha256": "ba5b6ec86026aab3877a8e51cc55a7751935c93870e561aaa0019f56b39c2f2b",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "concept",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-concept-openai-20261107.png",
+    "sourceSha256": "6f02e7e3feaa8140d400e45093b37844e6925b33ba53df5a8572b9aa8aeb1d51",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah points to the measured comparison while adjusting the dial; Nazari studies it with a guarded expression and a handheld pager.",
+      "The three cutoff, precision, recall, F1 rows exactly reproduce the fictional validation report and remain aligned on the angled screen."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e",
+        "detail": "The fictional evaluation report gives cutoff 0.2 with precision 0.34, recall 1 and F1 0.51; cutoff 0.4 with precision 0.89, recall 0.95 and F1 0.92; and cutoff 1 with precision 1, recall 0.72 and F1 0.84."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "epilogue",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-epilogue-openai-20261107.png",
+    "sourceSha256": "1f134f37950956f0524892e4349d3fc52dea98f63af59755e4ae33d9d4bcfcb2",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari hands over the open watch log with a restrained approving look, and Demir receives it while turning toward her. Both grips and the notebook's weight are believable.",
+      "Replay 14 earlier alerts, cutoff 1.0, 12 cosmic-background cases quiet and 2 signal readings still flagged exactly express the earned result without future guarantees."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e",
+        "detail": "Epilogue replays last week's 14 alerts at cutoff 1.0, leaving 12 quiet and 2 flagged, then hands the next watch's threshold log to Demir."
+      }
+    ]
+  },
+  {
+    "lesson": "anomaly-detection/threshold-tuning",
+    "phase": "takeaways",
+    "source": "art-src/scenes/anomaly-detection__threshold-tuning-takeaways-openai-20261107.png",
+    "sourceSha256": "835e4196a5d4abd450bef9fd543f3cfcb321784a601a8e19aa13ac794ae2577d",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 2,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "repair-required",
+    "findings": [
+      "Nazari's button hand has an awkward wrist and finger configuration. The user rejected its anatomy."
+    ],
+    "repairDirection": "Replace the pointed button press with an ordinary supported mouse grip. Rebuild the entire arm chain and use the available bridge wall for a large exact cutoff comparison.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+        "sha256": "140f68d0a34eac64be3ab6e9ffe80678b75a86aece70a85e6db859cdffd65e1e",
+        "detail": "Cutoffs and cost separates capture cutoff 0.2 with precision 0.34 and recall 1 from pager cutoff 1.0 with precision 1 and recall 0.72. Zero observed false alarms does not verify the future rate."
+      }
+    ],
+    "supersededReview": {
+      "scores": {
+        "color": 4,
+        "pose": 4,
+        "expression": 5,
+        "displays": 5,
+        "composition": 4,
+        "identity": 4,
+        "story": 4
+      },
+      "verdict": "matches-benchmark",
+      "findings": [
+        "Nazari presses the crew-pager control while reviewing its cost, with a skeptical brow and a steady free hand on the notebook.",
+        "Fictional validation report correctly separates capture cutoff 0.2 from crew pager 1.0 with their precision/recall values. Future rate:unverified preserves evaluation limits."
+      ]
+    },
+    "userOverride": {
+      "date": "2026-11-08",
+      "basis": "Explicit user correction supersedes the earlier approval. Fresh native reinspection confirms the issue.",
+      "readabilityRule": "Use available empty space for a large readable main lesson display."
+    }
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261107.png",
+    "sourceSha256": "fbc557b7f4ec41abfff1b661e7c42584b98ba32ee297e1e575c21ad06c07f7ee",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir holds his forehead after the failed run while Nazari folds her arms and Farah works the mouse. The distinct reactions, adult proportions and contact points match the benchmark's natural staging.",
+      "Forget, Input and Output roles are short and correct; Range still needs testing prevents an invented guarantee. Last run loss 0.693 is grounded in the preceding lesson."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949",
+        "detail": "The LSTM opening follows 200 epochs and six wasted hours from the simple RNN run. The preceding Simple RNNs epilogue logs flat loss 0.693 and predictions near 0.5 on both classes. The new gates need held-out testing."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-challenge-openai-20261107.png",
+    "sourceSha256": "da0f6c80fc7352e0152886554af45f846a6d6a6291a2c5dd75abd77d7286f062",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir types with both hands and an engaged but concentrated expression. Fingers, wrists and keyboard contact are individually coherent.",
+      "One-unit check lists packed columns 0 Input, 1 Forget, 2 Candidate, 3 Output; matching kernels, sigmoid gates, hidden-state comparison and returnSequences: true are correct. Checks remain pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949",
+        "detail": "The challenge builds a one-unit LSTM with recurrentActivation set to sigmoid and returnSequences true, then extracts matching input, forget, candidate and output columns for comparison."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-concept-openai-20261107.png",
+    "sourceSha256": "fd514ccbc86c300a38cefb1d6b1a46f137f15dcce0c063ea77478882945674ee",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah reads the cell equations while using the mouse, with an unforced seated posture and relaxed free hand beside her notes.",
+      "c=f*c_prev+i*g and h=o*tanh(c) are clear and exact; f, i, o, glabels and sigmoid gates/tanhcandidate remain distinct and perspective-correct."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949",
+        "detail": "LSTM gates and cell state gives newCell=forget*prevCell+input*candidate and newHidden=output*tanh(newCell), with sigmoid gates and tanh candidate."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-epilogue-openai-20261107.png",
+    "sourceSha256": "bed5ca3b204431e5354c00ca8ac76a0d0e6f1dd60fd5ac349956deb3539d34b9",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir pauses at the mouse and looks to Farah during ARIA's silence. Farah rests at the bench with a restrained thoughtful smile, distinct from the failed-run opening.",
+      "Fictional mission replay specifies first-day training, next 10 days replay, 80-step windows, pulses 72 hours later, fresh state and retained weights. ARIA's flat waveform marks 4 seconds silent."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949",
+        "detail": "The epilogue trains on the first day, replays the other ten days, and detects pulses seventy-two hours beyond training in 80-step windows. It resets state while retaining weights. ARIA waits four seconds."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/lstm-gates",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__lstm-gates-takeaways-openai-20261107.png",
+    "sourceSha256": "e7f2a9f8b311941634e04635c89ca40c3e61a4ae3974cc97737f7077ee87e907",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 5,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir presses reset and looks up at Farah, who leans on the bench to check it. His torso and chair support the natural head turn.",
+      "New window 80 steps loads trained weights but starts hidden h=0 and cell c=0, accurately distinguishing state reset from learned parameters."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+        "sha256": "0f857a4bf28e835a53d0951a8efa6786ec7749b3ea131ef354c55883ab602949",
+        "detail": "The recall explicitly resets hidden and cell state for each stateless 80-step window while retaining trained weights."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-openai-20261107.png",
+    "sourceSha256": "cd070091cf51070d30feae83a11331d9cdfb67c666821d8b9feb325ea7f8bf11",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Warm overhead light and green table light preserve depth and distinct clothing colors. Demir braces both hands on the rim while Farah traces the boundary between measured history and a dashed forecast.",
+      "Their conversational gaze and restrained optimism fit the opening. The plot has a clear history/forecast transition without fabricating an accuracy score."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411",
+        "detail": "Farah and Demir discuss a promising short forecast that still needs a last-value baseline and checks against later captures. The mission countdown is 47 minutes."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-challenge-openai-20261107.png",
+    "sourceSha256": "62c717d8813c556047871bf0827e1b7fe063f4e8c18ede89a2eab00f1f021ed8",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir sits toward the active display, with one hand resting on the console and the other visibly gripping its trackball. The expression is attentive and the face retains the canonical freckles, stubble and hair silhouette.",
+      "The crisp tilted screen orders Recent window, Predict next, Clamp and Append, loops back correctly, and explicitly leaves checks pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411",
+        "detail": "The exercise requires saved scaling, clamping predictions before feedback and a later baseline comparison. No exercise accuracy is established before the learner runs the forecast."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+        "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-concept-openai-20261107.png",
+    "sourceSha256": "9a09074ea50fcd0ba325eb4dbdd7129b6a2dcfa54937ba8a9d4cdd5a99dbb1c7",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah operates a physical dial with credible finger contact while reading the screen. Her seated profile, loose hair and visor preserve identity and avoid a posed presentation.",
+      "Rolling forecast labels and arrows follow the screen plane. Reuse saved scaling, check later readings and compare the last-value baseline accurately summarize the concept."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411",
+        "detail": "The prediction loop reads the recent window, predicts one row, clamps it in the saved scaler's space and appends it. Accuracy must be checked against later observations and a simple baseline."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261107.png",
+    "sourceSha256": "e31301b8b44a0d5d6a59cfee84e4e167989ab15020757878981d930d5813d747",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The four crew members react to the same upper-left display with individual facial tension, posture and hand placement. Farah grips the tablet naturally and Nazari maintains contact with the console lever.",
+      "The isolated spike after a quiet interval depicts the late arrival without inventing numerical timing on an unlabeled chart. Canonical ages, silhouettes and costume roles remain distinct."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411",
+        "detail": "At the 47-minute mark the signal remains flat until 47:03, when a spike arrives. All four crew are watching; Mirza asks Demir to log the three-second discrepancy."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequence-prediction",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+    "sourceSha256": "5b3c75784343e5cde40ca190d4a009025a0a59af884f869209480e54221815fc",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah and Demir exchange an engaged glance while her hand remains on the mouse and his forearm rests convincingly on the chair. The quiet cooperative beat differs from the operation and final surprise scenes.",
+      "The screen clearly distinguishes 47 one-second demo steps from the bridge's 47-minute countdown on a separate pulse series, then calls for original-unit errors and a baseline."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411",
+        "detail": "The lesson explicitly separates a 47-second demonstration from the 47-minute bridge prediction, which uses a separate series with one value per pulse. It requires per-feature errors in original units."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-openai-20261107.png",
+    "sourceSha256": "49c57099135f42406b538678cb3783647e256b8a355a6ec5b733203580bca1b5",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Warm brass instruments, sage screen light and cool laboratory walls match the reference palette. Farah's pointer and open palm accompany Demir's thoughtful chin-rest and supported tablet.",
+      "The screen identifies a five-reading excerpt and normalized amplitude, displaying 0.5, 0.8, 0.3, 0.5 and 0.9 in the correct order. Both characters attend to the explanation rather than the viewer."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552",
+        "detail": "Farah introduces patterns that span readings, while the current classifier sees one row at a time. The illustrated five amplitude values are the first feature of the lesson's five example readings."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-challenge-openai-20261107.png",
+    "sourceSha256": "abd65b5897fed79d24fbbe6757fbde1cca465fdb89485bf316fd08473e0b8061",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir's fingers sit at distinct positions on the keyboard, with believable elbow, wrist and seated proportions. His gaze is directed toward the practice screen.",
+      "The screen uses a clearly named one-feature practice stream 1, 2, 3, 4, 5, a three-step window, stride one and a next-reading target. Checks remain pending and no completed answer is fabricated."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552",
+        "detail": "The exercise's first synthetic case is [[1], [2], [3], [4], [5]], window size 3 and stride 1. Windows without a following target are excluded."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-concept-openai-20261107.png",
+    "sourceSha256": "884715d4eed82b96f92de0c2f5efcfbb8d29feea625f976cee08696957f3d378",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah leans lightly onto the desk while using a mouse, her head and eyes turning to the comparison. Hair, visor, complexion and coat proportions match the canonical identity.",
+      "The ordered row 0.5, 0.8, 0.3, 0.5, 0.9 and reordered row 0.3, 0.5, 0.9, 0.8, 0.5 contain the same values with the same multiplicities. The crisp display teaches changed sequence order rather than changed individual readings."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552",
+        "detail": "The concept explains why a one-reading classifier misses sequence order. The illustration reorders the same five amplitude readings and does not claim that feature order can be ignored."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-epilogue-openai-20261107.png",
+    "sourceSha256": "974f340a1e8e9a1b9a18941d480b88d7b9928be9572e4b07ca80de6d50385716",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The epilogue shifts to Demir alone checking the order test, with one hand on a mouse and one on his notebook. His inclined gaze and raised brow give the discovery a specific quiet beat.",
+      "The display explicitly labels the numbered order test illustrative, preserves the same five readings in the shuffled row and says each reading keeps its own score. This avoids falsely claiming that the output list stays in the same order."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552",
+        "detail": "Demir runs an archived hour in order and shuffled. The stateless classifier gives each reading the same score because order is not yet an input; the reordered results themselves follow the changed input order."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sequences-matter",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__sequences-matter-takeaways-openai-20261107.png",
+    "sourceSha256": "1320313e1069b8c0a604dcfaa8e4749fbaf911d6afe4fb59341d5f7a25e319c1",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The shared workstation scene shows a small reciprocal smile during review. Farah's overlapping hands and Demir's keyboard contact are clear and anatomically coherent.",
+      "The worked pairs [1, 2, 3] to [4] and [2, 3, 4] to [5] correctly yield xs [2, 3, 1] and ys [2, 1]. Axis labels and split-before-windowing guidance remain legible in screen perspective."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+        "sha256": "a21aedc5ac4567159de297c2da91ec7302d0ea214ef8e3d52a0fd4261341e552",
+        "detail": "Five one-feature rows produce two training pairs when the input window is three steps and the target must follow it. The lesson gives [windows, steps, features] inputs and [windows, features] targets."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+        "sha256": "ff4a9d12d387e0d787be664fbfe0a2e9cbcd6492d7f07851993fbb584e9dec53",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261107.png",
+    "sourceSha256": "7812222c5f89cb7e9b818c86158165cac2509202f2a12f0d4a90ae63bffa6dd7",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah points across the workstation toward the third updated state while Demir turns to follow her explanation, keeping contact with a console dial. Warm pendant lighting and restrained green edges retain the benchmark depth.",
+      "The one-unit drill states h = tanh(0.8h + x), starts h at zero, and gives the correct 0.4621, 0.8537 and 0.8284 states for inputs 0.5, 0.9 and 0.5. The hand-picked weights are explicitly qualified."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7",
+        "detail": "The opening uses recurrent weight 0.8, input weight 1 and bias 0 to show that the same 0.5 input can produce different states after different histories."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-challenge-openai-20261107.png",
+    "sourceSha256": "ab6eb78e19463129d6157be531f472b8822390a0192875e901e2c4bd602e4cfd",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir looks toward the monitor while using the mouse and keyboard with coherent forearms and finger contact. The practical tools and open notebook give the scene a specific engineering workstation.",
+      "The screen asks for input and recurrent kernels, state tracking and a library comparison, with returnSequences true and checks pending. Text is crisp and aligned to the monitor plane."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7",
+        "detail": "The exercise builds one SimpleRNN unit with returnSequences true, reads input kernel, recurrent kernel and bias, then compares all states from the JavaScript loop with library output."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+        "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-concept-openai-20261107.png",
+    "sourceSha256": "852c31814f861a667ad58ac25570cf2dd86a4c54a1b852cc1130bca2bf1ee10a",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The pair jointly studies the screen: Farah rests her chin naturally on her hand while Demir operates the mouse. Their expressions convey interest and the character proportions remain canonical.",
+      "The recurrence table again correctly distinguishes the two identical 0.5 inputs by their histories. The screen is readable from the pair's side of the desk and does not reverse any values."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7",
+        "detail": "The concept carries the updated state between steps while keeping the hand-selected weights fixed. It does not equate learned RNN parameters with authored reducer rules."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+    "sourceSha256": "d44c35c18c3af8ee57fe1c1c140e23f0bd39bd6f3a9495b31060fc43b5e196ff",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Nazari's narrowed gaze and planted hand give the failed run a skeptical supervisor beat. Demir holds his warm mug and looks back with weary uncertainty; the expressions are specific and distinct.",
+      "The screen accurately reports 0640, 80-step windows, 200 epochs, six hours, loss 0.693 and predictions near 0.5. The gradient failure is scoped to this run, near step 20, with the pattern 74 steps away."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7",
+        "detail": "The epilogue records an unsuccessful overnight mission run and Nazari's concern about compute cost. These are fictional run values, not a universal failure length for simple RNNs."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/simple-rnns",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-takeaways-openai-20261107.png",
+    "sourceSha256": "0ab95d1870ea5dbb69a3a752f37aaa104ea6d80846666ce51eb7ce4431e5e5c4",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's contemplative chin support, mouse contact and screen-directed gaze suit review of a scalar gradient calculation. The lit face remains distinct from the darker engineering room.",
+      "The display labels an illustrative scalar path with states near zero and recurrent weight 0.8, accurately showing 0.8^60 approximately 1.53 x 10^-6. It explicitly says to inspect actual gradients and rejects a fixed failure length."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7",
+        "detail": "The source uses repeated scalar factors near 0.8 to illustrate shrinking derivatives over 60 updates. Full-network diagnosis requires actual gradient inspection and cannot be inferred from sequence length alone."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "briefing",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261107.png",
+    "sourceSha256": "528ecdcde2f8ffd81b0ae757a4c6557ba95ff7159c8776bbd1bf42e2f60c4efd",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir's sideways gaze, relaxed mouse hand and notebook contact make the opening an active inspection. Warm ceiling light and sage display highlights keep facial and clothing detail visible.",
+      "Two explicitly illustrative four-reading windows, 0-3 and 1-4, correctly highlight their three shared readings. The screen explains the relevant split risk without claiming these are the complete archive."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f",
+        "detail": "The opening questions a high score from shuffled overlapping windows. The concept's small overlapping-window example generalizes to the eight-step evaluation drill and the eighty-reading mission buffer."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "challenge",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-challenge-openai-20261107.png",
+    "sourceSha256": "d63f411dfe8b943d5c8bb6d7a09db82c58dea6407e7b2c19c363a802b5cd0ab5",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 4,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir types with natural paired wrist and finger placement while looking toward the angled screen. His face, shoulder proportions and seated posture match the canonical design.",
+      "The window-builder checklist calls for a time split, windows within each side and matching targets, with no window crossing the split. The 80-reading mission length is clear and checks remain pending."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f",
+        "detail": "The lesson's mission buffer uses eighty readings. The graded splitThenWindow routine supports varying window sizes and keeps each classification target at the last reading of its own window; test examples use smaller windows."
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+        "sha256": "f08e44fcc1a7ed47be4d50d7843935294672fe2f6395a2c4da87bb31bcf6e062",
+        "detail": "Related source facts checked against the displayed content."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "concept",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-concept-openai-20261107.png",
+    "sourceSha256": "950767e373ec12d5f3451ac16f26418da31a0b54c675784930bac3fa6e3b2ee3",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "The pair lean into a shared review, with all visible palms and fingers making credible contact with the desk or mouse. Farah checks Demir's reaction while he studies the split diagram.",
+      "Earlier readings are assigned to training and later readings to validation on a crisp perspective-aligned display. The diagram and instructions keep windows within each side and preserve time order."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f",
+        "detail": "The concept fixes leakage by splitting original readings chronologically before building windows. It does not attribute the entire score change solely to overlap, since the evaluation period also changes."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "epilogue",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-epilogue-openai-20261107.png",
+    "sourceSha256": "21dcc343faa8496acdb4b52927aa432f084edda79e99528704ea3549ab0d868b",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 5,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Farah's leaning conversation with seated Demir provides a distinct next-task beat. Their mutual gaze, slight smiles and supported hands are candid rather than camera-facing.",
+      "The bridge display shows an 80-reading buffer followed by window classification and a dashboard update. Forecasting is posed as the next question, so current classification is not mislabeled prediction of the future."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f",
+        "detail": "The epilogue sends the first complete eighty-reading window to the earlier LSTM and updates the dashboard for ten minutes. Farah then asks whether they can forecast when the pattern returns."
+      }
+    ]
+  },
+  {
+    "lesson": "recurrent-networks/sliding-windows",
+    "phase": "takeaways",
+    "source": "art-src/scenes/recurrent-networks__sliding-windows-takeaways-openai-20261107.png",
+    "sourceSha256": "16311080dd681b740f5e2a9f08ebebcc3078e3d2f577f668eae12be7519b5d34",
+    "method": "Fresh original-resolution visual review of the entire 1536x1024 source against all four benchmark originals and all four canonical portrait originals. Inspected faces, necks, arms, hands, object contact, display marks, perspective and operator direction. Compared all five lesson phases together.",
+    "nativeReviewed": true,
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 5
+    },
+    "verdict": "matches-benchmark",
+    "findings": [
+      "Demir bends naturally toward the bridge controls, one hand on the trackball and the other supporting his weight. His raised expression and open mouth suggest recognition of the endpoint count.",
+      "The display correctly counts positions 0 through 74 as seventy-five readings and gives an eighty-reading window five additional readings. Labels remain clean and tied to the lesson's actual dependency."
+    ],
+    "repairDirection": "None. Retain the active original.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+        "sha256": "2eb435b3a0b61afad11a1326655a47640444241d2b3f720837dd8d3db8aa262f",
+        "detail": "The two relevant events are seventy-four positions apart. Including both requires seventy-five readings, so the eighty-reading input provides five more readings of context. A smaller input cannot recover omitted history."
+      }
+    ]
+  }
+]

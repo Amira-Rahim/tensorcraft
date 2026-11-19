@@ -1,0 +1,36 @@
+{
+  "module": "neural-networks",
+  "lesson": "building-a-network",
+  "phase": "briefing",
+  "src": "/scenes/deep-orbit/neural-networks/building-a-network.webp",
+  "index": 5,
+  "characters": [
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of commander-mirza. Image 2 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. COMMANDER-MIRZA (portrait 1, scene head near x=473): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-d875df59-4d44-4035-9c4c-3475f6cd7621.png",
+  "candidate": "/tmp/early-identity-candidates/5.webp",
+  "candidateSha256": "f41adebe2a08f2bb0e5754683908b716ea44afd581cb1bda4f00352b8347a05a",
+  "sourceSha256": "1e5a4de03a595a24299ef153d02e8b3d8d61739cdf1a1be4d29ee00b6818aa76",
+  "beforeSha256": "e3615ff622bfd465324e09bf9fa10df1a4671ff9878c80a2259bbfb76564c28c",
+  "bytes": 129658,
+  "proofs": [
+    {
+      "character": "commander-mirza",
+      "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "referenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-briefing-commander-mirza-correction.png",
+      "crop": {
+        "left": 300,
+        "top": 27,
+        "width": 345,
+        "height": 405
+      }
+    }
+  ]
+}

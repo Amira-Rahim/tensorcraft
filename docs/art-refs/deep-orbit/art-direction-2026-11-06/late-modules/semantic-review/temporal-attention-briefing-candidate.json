@@ -1,0 +1,156 @@
+{
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "briefing",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identity. First references are canonical people and room; LAST image is the exact edit target. Preserve faces, adult age, facial morphology, expressions, head scale, neck alignment, whole poses and two connected arm chains per person. Change only the tabletop diagram. Replace its numeric horizontal axis with two discrete event cards labeled \"Step 4\" and \"Step 78\", connected by a simple brace labeled \"74 positions apart\". Header \"80 readings\" and a small footer \"Schematic sequence\". No numeric axis, tick marks or implied proportional time scale. Keep the two event cards equally readable. Tablet keeps exact raw timestamps \"4.0 s\", \"77.4 s\" and \"Gap 73.4 s\" under \"Timestamps\". These are raw times, distinct from step indices. Preserve exact Demir face, full body and arm construction, hand contacts, head size, room and muted palette. Deep Orbit clean cel-shaded adventure comic, muted sage and aged brass, charcoal glass, no neon or gold cast. Output one complete 1536x1024 scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/advanced-time-series__temporal-attention-briefing-semantics-stage2-openai-20261107.png",
+      "sha256": "af7cb654073a488ac98446c5c16645321b9366695255f10ed3c9e413100fe296",
+      "role": "target scene",
+      "originalPath": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage2-openai-20261107.png",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "af7cb654073a488ac98446c5c16645321b9366695255f10ed3c9e413100fe296",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+    "sha256": "f15c9639514d8483e77e201974d7b25d9c8b976f698ece5d9785cadf4575c76a"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sha256": "0123f3bc32b333266032224b98bbc295ffbd2117b4e84b2a2e44b1cbf445f99a"
+    }
+  ],
+  "panelSpecification": {
+    "finalMeaning": "Change only the tabletop diagram. Replace its numeric horizontal axis with two discrete event cards labeled \"Step 4\" and \"Step 78\", connected by a simple brace labeled \"74 positions apart\". Header \"80 readings\" and a small footer \"Schematic sequence\". No numeric axis, tick marks or implied proportional time scale. Keep the two event cards equally readable. Tablet keeps exact raw timestamps \"4.0 s\", \"77.4 s\" and \"Gap 73.4 s\" under \"Timestamps\". These are raw times, distinct from step indices. Preserve exact Demir face, full body and arm construction, hand contacts, head size, room and muted palette.",
+    "sourceBasis": {
+      "state": "problem",
+      "panels": [
+        "Main holo: 80-reading timeline with attention hotspots at displayed steps 4 and 78. Label 74 positions apart.",
+        "Small timing strip: event timestamps 4.0 s and 77.4 s, raw gap 73.4 s. Keep this distinct from displayed step positions."
+      ],
+      "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict."
+    }
+  },
+  "bodyConstraints": "Preserve full original coherent poses, connected limbs and chair support. No global realistic re-proportioning.",
+  "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+  "candidateSha256": "fc09f3ebb8b21603a334df6c3bf6515b1166e7c4ce0a82d55471c6976165e836",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-6ed03330-b9a0-4f7c-89ff-d8ee23a9f516.png",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-briefing-identity-proof.jpg",
+  "iterations": [
+    {
+      "prompt": "Use case: identity-preserve and precise teaching-display edit. Asset: Deep Orbit cinematic cel-shaded adventure-comic scene,1536x1024. First references are exact canonical people, then bridge room master for muted palette and materials, LAST reference is exact scene to edit. Keep the same composition, room geometry, people, expressions and story action. Preserve canonical face morphology exactly, including nose, jaw, eyes, brows, complexion, adult stubble/age marks, hair and side-specific equipment. Demir comms on anatomical RIGHT ear. Keep each entire shoulder-elbow-wrist-hand chain connected, all original grips and physical contacts, torso/neck gaze alignment, chair and body support. Preserve stylized adult warmth. Do not replace the scene with an infographic: integrate one concise task display into existing equipment, keeping people and story dominant. All other screens, wrist displays and peripheral monitors must be inactive charcoal glass with NO arbitrary graphics, text, waveforms, bars, circles or invented data. Physical hardware buttons may remain. No fake technical decoration. Preserve Demir exact face, head size, leaning pose and both hands. Replace the floating waveform with a simple floating timeline headed \"80 readings\" spanning indices0 to79. Two muted amber dots are at positions4 near the left and78 near the right. Label those dots \"Step 4\" and \"Step 78\" and put a bracket between them labeled \"74 positions apart\". No invented measured waveform. On the small tablet at table front show the separate raw-timestamp comparison: \"4.0 s\", \"77.4 s\", and \"Gap 73.4 s\". Make clear these are timestamps, not step indices. Both markers stay in the recorded window. Turn all back wall screens and wrist screen OFF. Reduce original bright orange hotspots and green bloom, make table rim aged brass rather than bright yellow gold. Maintain a warm curious investigative mood. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Preserve natural skin and restrained sage/brass, no cyan, neon mint or mustard wash. Output one full scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/temporal-attention-briefing-before.png",
+          "sha256": "305a4ec570ca24e4d6c192a4b64e50608bd927c887e425b88f44a85914d4117f",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "305a4ec570ca24e4d6c192a4b64e50608bd927c887e425b88f44a85914d4117f",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "63d11bd9bd3f3d0b1ae9d3742932d837f287e7e5ba5383afd10fe8e1ade989e0",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-a7cec53d-1c22-4315-8d82-a170a10218a1.png",
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/temporal-attention-briefing-identity-proof.jpg",
+      "status": "candidate-awaiting-review"
+    },
+    {
+      "prompt": "Use case: precise-object-edit with immutable canonical identity. First references are canonical people and room, LAST input is the exact edit target. Only the specified display change is authorized. All face morphology, head scales, anatomy, poses, furniture, materials, lighting and composition must remain unchanged. Correct ONLY the horizontal timeline geometry. Preserve exact Demir face, body, hands, room, palette and every number/word. The line runs from0 to79. Place step4 dot at4/79 of the horizontal span from0, approximately5.06 percent. Place step78 dot at78/79, approximately98.73 percent. Keep them clearly inside the endpoints. The 74 positions apart bracket must have its two upright endpoints directly beneath the two event-dot centers, with short vertical witness lines linking them. Remove minor tick marks if they suggest the wrong spacing; endpoints and event dots are enough. Keep all text, especially80 readings, Step4, Step78, 74 positions apart, raw timestamps4.0 s and77.4 s, Gap73.4 s. Do not move his pointing hand or alter his face/head scale. Output one full1536x1024 scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage1-openai-20261107.png",
+          "sha256": "63d11bd9bd3f3d0b1ae9d3742932d837f287e7e5ba5383afd10fe8e1ade989e0",
+          "role": "target scene"
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage2-openai-20261107.png",
+      "candidateSha256": "af7cb654073a488ac98446c5c16645321b9366695255f10ed3c9e413100fe296",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-00be8d87-6011-4359-a1cf-17190f0d3233.png"
+    }
+  ],
+  "requestedDisplayCorrections": "Change only the tabletop diagram. Replace its numeric horizontal axis with two discrete event cards labeled \"Step 4\" and \"Step 78\", connected by a simple brace labeled \"74 positions apart\". Header \"80 readings\" and a small footer \"Schematic sequence\". No numeric axis, tick marks or implied proportional time scale. Keep the two event cards equally readable. Tablet keeps exact raw timestamps \"4.0 s\", \"77.4 s\" and \"Gap 73.4 s\" under \"Timestamps\". These are raw times, distinct from step indices. Preserve exact Demir face, full body and arm construction, hand contacts, head size, room and muted palette.",
+  "independentReview": {
+    "status": "approved",
+    "reviewer": "/root/art_peer_final",
+    "notes": "All five native fullframes and exact fresh face proofs approved. Final briefing/takeaways schematic sequences preserve indices, raw times, counts, membership and weight sums without misleading proportional axes. Concept scorer flow, actual challenge fixture and seven-capture ending source checked.",
+    "candidateSha256": "fc09f3ebb8b21603a334df6c3bf6515b1166e7c4ce0a82d55471c6976165e836",
+    "proofSha256": "4130a1e83847071305ae36583203891b2b91614ee790a1e94739866a81d042cb",
+    "reviewedAt": "2026-11-07T10:00:21.040811+00:00"
+  },
+  "ownReview": "Native fullframe and canonical proof checked: faces, balanced stylized proportions, two connected arm chains, contacts, palette and all prominent panels pass.",
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__temporal-attention-briefing-semantics-stage3-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+  "publishedOutputSha256": "5a5e8932d6b921d1ab8b96e60a051c17cf2e92e9e3e1d62c6598603c4e602a84",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 129474
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-00be8d87-6011-4359-a1cf-17190f0d3233.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-6ed03330-b9a0-4f7c-89ff-d8ee23a9f516.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-a7cec53d-1c22-4315-8d82-a170a10218a1.png",
+      "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+      "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png",
+      "docs/art-refs/deep-orbit/masters/bridge.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

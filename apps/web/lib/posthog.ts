@@ -6,6 +6,7 @@
 
 import posthog, { type PostHog } from "posthog-js";
 import { hasAnalyticsConsent } from "./consent";
+import { isInternalTraffic } from "./analytics-traffic";
 
 let initialized = false;
 let pendingIdentity:
@@ -58,6 +59,15 @@ export function initPostHog(): PostHog | null {
     // from the next $pageview's $prev_pageview_* properties.
     capture_pageview: false,
     capture_pageleave: true,
+    // Event properties also cover anonymous traffic. Keep the browser marker
+    // outside SDK persistence so sign-out cannot turn internal visits public.
+    before_send: (event) => {
+      event.properties = {
+        ...event.properties,
+        tc_internal: isInternalTraffic(),
+      };
+      return event;
+    },
     persistence: "localStorage+cookie",
     tracing_headers: tracingHeaders,
     capture_performance: { web_vitals: true },
@@ -66,6 +76,12 @@ export function initPostHog(): PostHog | null {
       capture_unhandled_rejections: true,
       capture_console_errors: false,
     },
+    // Session replay, heatmaps and console-log recording stay off. The
+    // privacy policy describes pageviews and product events only, and the
+    // project's recording setting must not override that (B0, 2026-11-12).
+    disable_session_recording: true,
+    enable_heatmaps: false,
+    enable_recording_console_log: false,
   });
 
   initialized = true;

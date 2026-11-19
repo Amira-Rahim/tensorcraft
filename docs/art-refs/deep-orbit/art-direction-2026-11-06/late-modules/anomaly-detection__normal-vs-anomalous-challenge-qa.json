@@ -1,0 +1,21 @@
+{
+  "key": "anomaly-detection/normal-vs-anomalous",
+  "phase": "challenge",
+  "source": "art-src/scenes/anomaly-detection__normal-vs-anomalous-challenge-openai-20261106.png",
+  "output": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous-challenge.webp",
+  "tool": "built-in imagegen",
+  "sourceSha256": "fba7c545f69efa2bd0648bc57bb223e6e3e56e80f1586df460b9de14899111bc",
+  "outputSha256": "3747926b55e80ef38103dc55a9d9d335b0991ad03c5e762892f568ddc7de83f1",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 154914,
+  "webpQuality": 86,
+  "alt": "Demir checks a reading against the baseline before adding a review flag.",
+  "review": {
+    "status": "accepted",
+    "method": "Visual inspection of full generated image, tracing all visible limbs and furniture boundaries; canonical face comparison; source story review.",
+    "notes": "Demir has one pointing arm and one resting arm. All hands and console contacts are coherent. Baseline comparison preserves uncertainty with no verdict stamp."
+  }
+}

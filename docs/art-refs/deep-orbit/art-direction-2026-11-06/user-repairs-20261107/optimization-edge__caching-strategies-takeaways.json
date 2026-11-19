@@ -1,0 +1,244 @@
+{
+  "id": "optimization-edge/caching-strategies",
+  "phase": "takeaways",
+  "owner": "/root/quality_runtime",
+  "status": "published",
+  "preparedAt": "2026-11-09T14:02:16.925341+00:00",
+  "tool": "built-in image_gen",
+  "useCase": "precise-object-edit",
+  "source": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+  "sourceSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+  "sourceArchive": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8290c0c-8b03-45c2-941e-c04944f0332b.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+      "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+      "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit with hand-action restaging. Deep Orbit illustration, 1536 x 1024. Edit the LAST reference. First reference is canonical Ensign Demir identity. Second reference is dashboard station architecture only. Preserve Demir's exact head, canonical facial structure, age, hair, brown eyes, freckles, stubble, headset, expression and rightward work gaze. Preserve torso identity, chair, room, colors, light and both displays with their exact existing text and coherent glass projection. Replace BOTH arm and hand actions completely. Do not retain either current hand pose.\n\nDemir has put the plain bronze mug DOWN on the desk. It stands upright on a clear free area to his right, with its entire base making contact and a soft contact shadow. Its empty handle is visible. Neither hand touches or holds the mug.\n\nHis anatomical RIGHT arm is the near arm in the foreground. Relax its shoulder and elbow. Let the forearm lie naturally on the desk, and let the RIGHT hand rest palm down on the clear desk in the lower center of the composition, away from the keyboard. Show the back of the hand and normal knuckles. Four relaxed fingers are gently separated and naturally slightly curved, fingertips supported on the desk, plus a distinct relaxed thumb on the anatomically correct radial side. The hand is not reaching, grasping, pointing or pressing anything. Make the wrist neutral and continuously attached to the sleeve, no bending through the tabletop. Ordinary adult hand proportions, no giant palm, no long rubber fingers.\n\nHis anatomical LEFT arm is the farther arm. It extends gently from its existing shoulder toward a simple mouse placed on the desk nearer the monitors, behind and clearly separated from the resting near hand. The left elbow bends comfortably, forearm supported. The LEFT hand rests naturally over the mouse: index and middle fingers on the buttons, ring and little fingers softly following the mouse's outer side, thumb supported on its inner side. Use a conventional relaxed ergonomic mouse grip, with continuous forearm-wrist-hand alignment and plausible contact. Do not hide the whole hand behind the mouse. Exactly two complete connected arm chains and exactly two ordinary five-digit hands; no fused or duplicate fingers. Keep the hands well separated in the composition so each action is unambiguous. It should look like a calm spontaneous pause while he reads, not a staged display of hands. Keyboard remains nearby but no hand rests on it.\n\nPreserve all display text exactly. Left: \"Cache handover\", \"Key and pipeline versions\", \"Entry age and LRU\", \"Lookup cost and hit rate\". Right: \"Rounding probe\", table headers \"Input\" and \"Two decimals\", rows 0.499 / 0.50 and 0.501 / 0.50, footer \"Same key can hide different decisions\". Keep both monitors and all graphics aligned with their physical glass planes, readable at 768 x 512. Operator and camera remain on the front viewing side. No additional data, no decorative symbols. Preserve muted sage, brass and charcoal hand-drawn cel shading, natural skin, balanced adult proportions, no change to his face.",
+  "promptSha256": "cec18117caaa2039017a3994c073a684d6e4770ee45cf1d40b58e1499b43d445",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical Demir facial identity, age and uniform",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+      "role": "Dashboard station architecture only",
+      "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-3a7503f8-3312-45ed-8e43-b64b3d35ee2e.png",
+      "sha256": "99cfe3ba21b59d8dd46946d2cf1eb074602aa25b0f4f9a3d3051f0d95ebd9fb5",
+      "role": "User-rejected hand candidate; preserve face and display, completely restage both arm actions and set mug on desk",
+      "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/rejected-v1.png"
+    }
+  ],
+  "sourceEvidence": "The current lesson hands over a version/age/LRU/cost policy and two threshold probes. Inputs 0.499 and 0.501 both round to 0.50 at two decimals, yet the lesson says their scores can fall on different sides of the alert threshold. No score or performance data is invented.",
+  "userDefect": "User reported corrupted keyboard hand and mug grip. Native 2x inspection confirms fused or missing near-hand digits and an ambiguous far-hand/handle grip.",
+  "sourceDiagnosticCropCoordinatesXYWH": {
+    "hands": [
+      480,
+      535,
+      525,
+      380
+    ],
+    "displays": [
+      740,
+      280,
+      796,
+      505
+    ]
+  },
+  "publication": {
+    "date": "2026-11-09",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies-takeaways.webp"
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-c33cebaa-c887-43d3-8ea6-60b611d30f89.png",
+  "generatedSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+  "candidatePath": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+  "candidateSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+  "attempts": [
+    {
+      "prompt": "Use case: precise-object-edit. Deep Orbit illustration, 1536 x 1024. Edit the LAST reference image. First reference is canonical Ensign Demir identity. Second is dashboard station architecture only. Preserve the exact composition, camera, Demir's canonical face, hairstyle, brown eyes, freckles, stubble, headset, charcoal uniform, candid faint smile and focused rightward gaze. Preserve both display housings, their existing coherent glass projection, exact text and values, room, lighting, colors, chair and desk. Change ONLY the two hands, associated wrists/forearms as needed, and the mug/handle interaction.\n\nThe original near keyboard hand has fused or missing digits, and the far mug grip is malformed. Redraw two complete anatomically coherent arm chains, connected to the existing shoulders. Near anatomical RIGHT forearm rests comfortably above the desk and reaches the keyboard. Its right hand is palm down in a natural working pose, dorsal knuckles visible, FOUR separate relaxed fingers gently curved over keys with clear fingertip contacts, plus ONE distinct right thumb resting naturally beside the spacebar on the near side. Correct digit lengths and joints, no mitten, no fused finger slab, no duplication, no disconnected fingertips. This is a candid working hand, not an exaggerated spread hand.\n\nFar anatomical LEFT forearm remains bent beside his torso. The LEFT hand holds the plain bronze mug by one continuous rounded C-shaped handle. The left thumb rests on top of the handle, the left index finger curls through its open hole, and the other three fingers curl naturally below the index to support the grip. Show the handle geometry and natural contact clearly. Correct left-hand orientation and five-digit structure. Keep a comfortable straight wrist, normal hand scale and a stable upright mug. Both arms remain distinct; exactly two hands. If necessary lower the mug slightly for an unambiguous relaxed grip while preserving the seated working action. No extra limbs, no hand passing through ceramic, no hidden impossible handle junctions.\n\nThe display content must remain exactly: Left heading \"Cache handover\". Rows \"Key and pipeline versions\", \"Entry age and LRU\", \"Lookup cost and hit rate\". Right heading \"Rounding probe\". Table columns \"Input\" and \"Two decimals\". Rows 0.499 / 0.50 and 0.501 / 0.50. Footer \"Same key can hide different decisions\". Keep these legible at 768 x 512, all lettering and table rules on the physical glass plane. Operator and camera remain on the same front viewing side. No new data or symbols. Preserve the muted sage and brass hand-drawn cel-shaded style and all original facial proportions.",
+      "promptSha256": "b4f1cb6af3e3a364a537ae648fa583828965bbdb1c3b91095b55813708dd1cae",
+      "actualReferences": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "role": "Canonical Demir facial identity, age and uniform",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+          "role": "Dashboard station architecture only",
+          "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8290c0c-8b03-45c2-941e-c04944f0332b.png",
+          "role": "Exact current edit target; correct both hands and mug grip while preserving face, display and setting",
+          "sha256": "51e2843d3c56043acb83a780f57d305ced61d24a3447e08b21bf4c9d75e8984c",
+          "pathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/source.png"
+        }
+      ],
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-3a7503f8-3312-45ed-8e43-b64b3d35ee2e.png",
+      "generatedSha256": "99cfe3ba21b59d8dd46946d2cf1eb074602aa25b0f4f9a3d3051f0d95ebd9fb5",
+      "candidateSha256": "99cfe3ba21b59d8dd46946d2cf1eb074602aa25b0f4f9a3d3051f0d95ebd9fb5",
+      "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1bc06-1fc6-72d1-b50d-364cb0f521e6/exec-3a7503f8-3312-45ed-8e43-b64b3d35ee2e.png",
+      "verdict": "FAIL",
+      "review": {
+        "reason": "User explicitly rejected the generated hands as weird. Recompose the interaction instead of preserving this grip.",
+        "nativeReviewed": true,
+        "diagnosticCropCoordinatesXYWH": {
+          "face": [
+            335,
+            60,
+            365,
+            430
+          ],
+          "mug": [
+            475,
+            530,
+            270,
+            205
+          ],
+          "keyboard": [
+            675,
+            765,
+            345,
+            155
+          ]
+        },
+        "anatomyAdjudication": "Independent review considered the four visible fingers plus hidden thumb plausible, but this did not satisfy the user and is not approval."
+      },
+      "candidatePathAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/rejected-v1.png"
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/quality_runtime",
+    "candidateSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh native complete composition, 2x face comparison to canonical portrait, complete arm-chain inspection and 2x hands/mouse/mug/display crops, standalone 768 x 512 preview and current MDX/exercise facts.",
+    "canonicalIdentityCompared": true,
+    "faceAndHandMagnification": 2,
+    "runtimeSize": [
+      768,
+      512
+    ],
+    "runtimeSizeVerdict": "PASS",
+    "findings": [
+      "Both arm actions are rebuilt. The near right forearm rests on the desk, with a relaxed dorsal hand and four distinct supported fingers; its far-side thumb is naturally occluded. There is no reaching or keyboard claw.",
+      "The far left forearm reaches a mouse with a neutral wrist, visible near-side thumb and fingers curved naturally over the mouse. Arm chains remain distinct and connect to the correct shoulders.",
+      "The mug now stands independently on the desk with a continuous empty handle and contact shadow. No hand grips it.",
+      "Canonical Demir facial morphology, freckles, stubble, expression and gaze are preserved. The new relaxed posture fits a pause while checking handover.",
+      "Both screens retain their slanted glass families, exact handover labels and the source rounding collision. All key text is readable without clipping at 768 x 512."
+    ],
+    "scores": {
+      "colorLight": 5,
+      "movementAnatomyContact": 4,
+      "expressionGaze": 5,
+      "identityProportions": 5,
+      "displayContentLegibilityPerspective": 4,
+      "compositionStoryAction": 5
+    },
+    "diagnosticCropCoordinatesXYWH": {
+      "face": [
+        335,
+        60,
+        365,
+        430
+      ],
+      "mouseHand": [
+        635,
+        675,
+        275,
+        150
+      ],
+      "restingHand": [
+        535,
+        825,
+        350,
+        155
+      ],
+      "mug": [
+        1285,
+        730,
+        220,
+        200
+      ],
+      "displays": [
+        740,
+        280,
+        796,
+        505
+      ]
+    },
+    "temporaryCropsDeleted": true,
+    "reviewedAt": "2026-11-09T14:09:46.338301+00:00"
+  },
+  "sourceArchiveAtGeneration": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/source.png",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/caching-strategies-takeaways/candidate.png",
+  "publishedSource": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies-takeaways.webp",
+  "webpSha256": "8972d37c599d4c9f5b21f0e7d09303f0c126d3497926aba65a822610cc977d0f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+    "sourceSha256": "51e2843d3c56043acb83a780f57d305ced61d24a3447e08b21bf4c9d75e8984c",
+    "webpSha256": "e03783cc134eb1292f42d676a2f52a99d412e2c2df600f982f2a44e7d042ca09",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-b8290c0c-8b03-45c2-941e-c04944f0332b.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/quality_early",
+    "authorReviewer": "/root/quality_runtime",
+    "status": "approved",
+    "candidateSha256": "d0f2ee7a1942c9b9af57b5bcd2db0cceac27e38dc7e041da6fbd8b021f7735f2",
+    "method": "Reopened after user correction. Exact current candidate independently inspected for screen plane and operator direction, canonical faces, full arm chains and magnified hands, plus 768px readability. Adjacent peer.json records the decision.",
+    "checks": [
+      "Canonical Demir face, age and proportions preserved.",
+      "Two connected relaxed arm chains and natural five-digit hands.",
+      "Mug rests on the desk without a gripping hand; mouse contact is coherent.",
+      "Both screens preserve source facts and a consistent physical plane.",
+      "Exact labels and rounding probes readable at 768 x 512."
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+        "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+        "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+        "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__caching-strategies-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies-takeaways.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

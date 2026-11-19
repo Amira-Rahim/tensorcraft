@@ -41,7 +41,7 @@ reintroduce it in an email. If someone asks inside their window, refund.
 ### What not to do
 
 **Never run a bulk `update purchases set status = 'refunded'`.** The old
-incident runbook at `docs/pre-launch-checklist.md` suggested it. It revokes
+[incident runbook](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L670) suggested it. It revokes
 access from legitimate buyers, and since migration 038's terminal-status
 trigger it is silently ignored on the corrective path anyway, so you get the
 damage without the fix. Refund per Stripe event, never in SQL.

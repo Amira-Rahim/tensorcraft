@@ -3,7 +3,7 @@
 **Date:** 2026-06-10
 **Status:** Implemented
 **Scope:** `LandingHero` layout + all copy surfaces EXCEPT the headline; unit + e2e tests
-**Headline:** untouched - still governed by [2026-05-08-landing-headline-audience-callout.md](2026-05-08-landing-headline-audience-callout.md)
+**Headline:** This pass left the May 8 curiosity-hook headline unchanged. The [August 31 story-first design](2026-08-31-landing-headline-story-first.md) records the current direction.
 
 ## Goal
 

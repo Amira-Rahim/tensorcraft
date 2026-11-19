@@ -42,10 +42,11 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      # No PG_BIN here: the script finds the image's preinstalled server.
+      # A pinned /usr/lib/postgresql/16/bin broke when ubuntu-latest moved
+      # to ubuntu-26.04 (November 2026), which ships PostgreSQL 18.
       - name: Test policies in an isolated PostgreSQL cluster
         run: node scripts/test-rls.mjs
-        env:
-          PG_BIN: /usr/lib/postgresql/16/bin
 
   checks:
     name: Lint, format & typecheck
@@ -249,14 +250,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Key the browser cache on the OS release as well as the lockfile.
+      # Playwright downloads a WebKit build per Ubuntu release (ICU and codec
+      # sonames differ) and picks it from ID and VERSION_ID in
+      # /etc/os-release. Keyed on runner.os alone, the ubuntu-26.04 runners
+      # that ubuntu-latest moved to in November 2026 restored a cache an
+      # ubuntu-24.04 run saved, and WebKit died at launch on a missing
+      # libicudata.so.74.
+      - name: Read the OS release for the browser cache key
+        id: os-release
+        run: echo "id=$(. /etc/os-release && echo "$ID-$VERSION_ID")" >> "$GITHUB_OUTPUT"
+
       - name: Cache Playwright browsers
         uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: playwright-${{ runner.os }}-${{ steps.os-release.outputs.id }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            playwright-${{ runner.os }}-
+            playwright-${{ runner.os }}-${{ steps.os-release.outputs.id }}-
 
       # webkit is REQUIRED, not optional: the mobile-iphone-se and
       # tablet-ipad Playwright projects are WebKit-engined. Installing only

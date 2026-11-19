@@ -1,0 +1,31 @@
+{
+  "key": "llm-integration/rag-for-signals",
+  "phase": "concept",
+  "room": "lab",
+  "refs": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/masters/lab.png"
+  ],
+  "prompt": "Use case: illustration-story. Generate one distinctly staged1536x1024 Deep Orbit concept scene. The FIRST 2 references are the authoritative neutral crew portraits, in this order: dr-farah, ensign-demir. The LAST reference defines room materials and architecture only. Reproduce each exact individual, especially facial morphology and age, not merely clothing. Stage exactly these humans: Dr. Farah, adult woman 38, olive-tan skin, dark loosely tied wavy hair, green AR lens over one eye, slate lab coat and stylus, Ensign Demir, adult male mid-twenties, warm light-medium skin, dark tousled hair, light uneven stubble, slate junior uniform, green comms earpiece and one green wrist terminal. FARAH must be exactly the reference woman: mature38 olive-tan face, broad rounded nose tip and bridge, full rounded cheeks, short rounded chin, restrained almond eyes with canonical eye spacing and brows, faint adult eye/smile lines, natural dark hairline and loosely tied waves. Same anatomical eye has rectangular green AR lens. Do not make a tiny upturned nose, pointed slim jaw, large glamorous eyes or a younger face. DEMIR must be exactly the reference man: mid-twenties warm light-medium face, broad softly squared lower jaw, short round chin, compact round-ended nose of canonical width, fairly straight brows and exact eye spacing, sparse freckles and uneven short stubble. Compact tousled dark hair with the same front locks, green round earpiece on anatomical RIGHT ear. Do not make a long thin pointed nose, tapered anime face, tall quiff or a teenager. Favor frontal or gentle three-quarter faces with both eyes and full nose width visible; retain natural story gaze. Faces should be large enough to verify, not tiny profiles. Medium two-person lab view around a low workbench. Farah holds a slim source-record tablet in one hand and a stylus in the other. Demir stands beside a simple three-stage display showing a stack of record cards, a small selected subset of cards, and a draft sheet. Several unselected source cards remain visible beside the selection, not erased. Demir has both hands resting separately on the bench. Curious collaboration, no approval stamp. All human faces are clearly visible, expressive and well lit. Keep the adventure inviting, curious and lightly warm, with restrained humor where appropriate. Each human has exactly two continuous arms and two hands with natural thumbs and fingers. Trace every limb to its shoulder. Separate bodies, sleeves, hands, chairs, rails and tabletop volumes with clear silhouettes and natural contact shadows. Avoid crossed or overlapping limbs where they obscure anatomy. No extra limb, forked forearm, fused fingers, floating hand, duplicated person, body through furniture, black silhouettes, humanoid ARIA, readable words, letters, numerals, watermark or fake code. Displays use simple unlabeled visual marks without invented claims. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Any background display copied from the room master must be simplified to plain dark panels or simple waveform plots. No letter-like glyphs, pseudo-equations, decorative scribbles, astronomical pictures, planets, clouds, crystals or arbitrary science pictograms anywhere on displays. ",
+  "alt": "Farah and Demir retrieve a visible subset of archive records before drafting an answer.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+  "lessonSha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room master"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-epilogue/candidate.png",
+  "candidateSha256": "2473cca389ce077479db933326788ccc21200d2c5e0934e765d4c84d7afce97b",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist tracing with explicit left/right thumb chirality, direct canonical portrait comparison, and current source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 7,
+      "name": "root-rest-ragepi-faces",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-epilogue/candidate.png",
+      "box": [
+        230,
+        70,
+        765,
+        590
+      ],
+      "scale": 2
+    },
+    {
+      "i": 7,
+      "name": "root-rest-ragepi-pen",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-epilogue/candidate.png",
+      "box": [
+        250,
+        775,
+        760,
+        995
+      ],
+      "scale": 3
+    },
+    {
+      "i": 7,
+      "name": "root-rest-ragepi-demirhands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__rag-for-signals-epilogue/candidate.png",
+      "box": [
+        460,
+        485,
+        865,
+        885
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sha256": "597f905197973673d57270f3640e15d414ecb22cb69dd1a1cca186125029eefe"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Nazari's right-hand pen grip uses a continuous straight pen and correctly opposed thumb, while her left hand braces the page with five coherent digits. Demir's right hand grips the chair and his left hangs naturally beside his body. All four arm chains remain attached.",
+    "displayLegibilityAndSource": "The screen states 14 retrieved versus 17 generated, two additional mismatches and pending free-text review for Band-7 over 72 hours. The source epilogue supplies these exact facts. Nazari's N initial matches signing the correction.",
+    "identityExpressionAndStory": "Nazari's stern downward gaze and Demir's concerned reaction fit the failed-answer audit. Their mature/youthful identities, hair, complexion and equipment remain consistent.",
+    "palette": "Restrained charcoal, sage and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Text and rules share their actual display plane; the operator can see the same front surface.",
+    "largeDisplayRule": "Essential lesson information is large, clear and spacious across the main available working display."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:30:45.441146+00:00"
+}

@@ -1,0 +1,1154 @@
+{
+  "checkedAt": "2026-11-02T20:37:49.521Z",
+  "status": "passed",
+  "scope": "Local evaluation-inspector prototype with selected current lesson passages",
+  "referenceRun": {
+    "capturedAt": "2026-11-02T20:28:07.994Z",
+    "runtimeVersion": "4.22.0",
+    "sourceHashes": {
+      "solution": "fecb0d41f8c68c932119fe7ef3c7b37915342fa5dd67404912b3343eb140f0af",
+      "test": "82a11b2d86602a1441589c31bc982f67e8e4a5a0d69b1401ca35e7dbebc9be12",
+      "exerciseYaml": "1fc161346a448f5dd119c0e580e221741a71bf8efc1b71f22fd7eb06b9fcca57"
+    }
+  },
+  "sourceFiles": {
+    "index.html": "2f69838ca274c615786da6bb18b5e4e48780f4bc6e0f79fb9b85697f3dd142a6",
+    "preview.css": "956dd60f44c24b3ff22bcfa22a57d2c2eee9f59e5ed0ed30df7a86a5d8bb4b4c",
+    "preview.js": "b577ba81783ea2262b70a8da59bef7cd3a471475680668f8b8a3fb6373d408b7",
+    "maintainer-run.json": "abdd6db8dab67e8360815c90cd07e73ff95e2ee03a185f9266db6f7ad7bcc956"
+  },
+  "views": [
+    {
+      "label": "briefing-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-1440-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "briefing-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-1440-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "briefing-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-1024-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "briefing-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-1024-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "briefing-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-390-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "briefing-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-390-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "briefing-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-320-dark",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "briefing-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "concept-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "takeaways-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "epilogue-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "measured-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "empty-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 0,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "zero-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "partial-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "stale-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    },
+    {
+      "label": "failed-320-light",
+      "overflow": false,
+      "imagesLoaded": true,
+      "phases": 5,
+      "chartLabels": 8,
+      "navigationTextFits": true,
+      "controlsDoNotOverlap": true,
+      "filtersBeforePlot": true,
+      "caseButtonsEqualHeight": true,
+      "selectedOptionFits": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "Reference source identifies an actual maintainer run and all 43 cases reconcile",
+      "passed": true
+    },
+    {
+      "name": "Measured points preserve the complete captured distribution",
+      "passed": true
+    },
+    {
+      "name": "Selecting missed anomalies retains all points and selects a real missed case",
+      "passed": true
+    },
+    {
+      "name": "Next case and the case selector remain coordinated",
+      "passed": true
+    },
+    {
+      "name": "Case selection updates the captured values and source explanation",
+      "passed": true
+    },
+    {
+      "name": "Keyboard navigation exposes a visible focus state",
+      "passed": true
+    },
+    {
+      "name": "Reduced motion leaves no running inspector animations",
+      "passed": true
+    },
+    {
+      "name": "Zero-error fixture is labeled synthetic and an empty category stays honest",
+      "passed": true
+    },
+    {
+      "name": "Partial fixture identifies missing evidence and never claims a complete 43-row result",
+      "passed": true
+    },
+    {
+      "name": "Empty result has direction and no fabricated plot",
+      "passed": true
+    },
+    {
+      "name": "Stale and failed previews retain the earlier captured values with explicit status",
+      "passed": true
+    },
+    {
+      "name": "Save and download identify the separate preview record",
+      "passed": true
+    },
+    {
+      "name": "No page script failures or failed resources",
+      "passed": true
+    }
+  ],
+  "accessibility": [
+    {
+      "label": "measured-1440-dark",
+      "violations": []
+    },
+    {
+      "label": "measured-1440-light",
+      "violations": []
+    },
+    {
+      "label": "measured-1024-dark",
+      "violations": []
+    },
+    {
+      "label": "measured-1024-light",
+      "violations": []
+    },
+    {
+      "label": "measured-390-dark",
+      "violations": []
+    },
+    {
+      "label": "empty-390-dark",
+      "violations": []
+    },
+    {
+      "label": "zero-390-dark",
+      "violations": []
+    },
+    {
+      "label": "partial-390-dark",
+      "violations": []
+    },
+    {
+      "label": "stale-390-dark",
+      "violations": []
+    },
+    {
+      "label": "failed-390-dark",
+      "violations": []
+    },
+    {
+      "label": "measured-390-light",
+      "violations": []
+    },
+    {
+      "label": "empty-390-light",
+      "violations": []
+    },
+    {
+      "label": "zero-390-light",
+      "violations": []
+    },
+    {
+      "label": "partial-390-light",
+      "violations": []
+    },
+    {
+      "label": "stale-390-light",
+      "violations": []
+    },
+    {
+      "label": "failed-390-light",
+      "violations": []
+    },
+    {
+      "label": "measured-320-dark",
+      "violations": []
+    },
+    {
+      "label": "measured-320-light",
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    "briefing-1440-dark.png",
+    "epilogue-1440-dark.png",
+    "challenge-1440-dark.png",
+    "inspector-1440-dark.png",
+    "briefing-1440-light.png",
+    "epilogue-1440-light.png",
+    "challenge-1440-light.png",
+    "inspector-1440-light.png",
+    "challenge-1024-dark.png",
+    "challenge-1024-light.png",
+    "briefing-390-dark.png",
+    "epilogue-390-dark.png",
+    "challenge-390-dark.png",
+    "inspector-390-dark.png",
+    "empty-390-dark.png",
+    "zero-390-dark.png",
+    "partial-390-dark.png",
+    "stale-390-dark.png",
+    "failed-390-dark.png",
+    "briefing-390-light.png",
+    "epilogue-390-light.png",
+    "challenge-390-light.png",
+    "inspector-390-light.png",
+    "empty-390-light.png",
+    "zero-390-light.png",
+    "partial-390-light.png",
+    "stale-390-light.png",
+    "failed-390-light.png",
+    "challenge-320-dark.png",
+    "challenge-320-light.png",
+    "missed-case-1440-dark.png",
+    "keyboard-focus-1440-dark.png"
+  ],
+  "pageErrors": [],
+  "failedRequests": [],
+  "limits": [
+    "This is a local prototype, not an authenticated production lesson integration.",
+    "The maintainer reference is actual captured output. Alternative state examples are synthetic.",
+    "Browser checks and screenshots do not establish learning effectiveness.",
+    "Automated accessibility checks do not replace assistive-technology observation.",
+    "Production grading, ownership, persistence and account access are outside this preview."
+  ],
+  "finishedAt": "2026-11-02T20:38:04.343Z"
+}

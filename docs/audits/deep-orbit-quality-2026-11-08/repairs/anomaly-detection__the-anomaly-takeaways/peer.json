@@ -1,0 +1,69 @@
+{
+  "reviewer": "/root/quality_runtime",
+  "reviewedAt": "2026-11-09T07:15:32.538397+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__the-anomaly-takeaways/candidate.png",
+  "candidateSha256": "184d46c62953382ab196a4ebc5839b16061df0d3578fa9561c02b62130c99ffb",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full native original plus enlarged face and hand crops, compared with canonical portraits. Current lesson and required exercise facts checked. Arm chains, thumb sides, contact, operator direction and display perspective inspected.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+    "sha256": "2a5c21452b70d3ae08da3d680a15acb70d7f79c9327b15fde353e9cba037d55e"
+  },
+  "canonicalReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    }
+  ],
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 165,
+      "top": 260,
+      "width": 300,
+      "height": 325
+    },
+    "chief-nazari": {
+      "left": 1100,
+      "top": 250,
+      "width": 280,
+      "height": 315
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 340,
+      "top": 835,
+      "width": 215,
+      "height": 130
+    },
+    {
+      "left": 890,
+      "top": 770,
+      "width": 550,
+      "height": 165
+    }
+  ],
+  "cropConvention": "left, top, width, height in source pixels; diagnostic crops enlarged 2x",
+  "temporaryCropsRemoved": true,
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [
+    "The shared capture branches to a quiet statistical check and two flagged models, giving two votes and an investigation alert. Cause remains unresolved and the shared-training-data limitation is prominent.",
+    "Farah and Nazari have canonical mature faces and engaged conversational gaze. Visible keyboard, console and rail contacts are natural, with plausible occlusion of Farah's far arm."
+  ],
+  "repairDirection": "None."
+}

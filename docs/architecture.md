@@ -56,7 +56,7 @@ tensorcraft/
 
 ### Design Philosophy
 
-Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every world has a unique color palette but shares the same structural design tokens. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every world palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23; `docs/dev-plan.md` (2026-07-23 entry) has the implementation and verification record.
+Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every world has a unique color palette but shares the same structural design tokens. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every world palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23. The [July 23 implementation record](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md#L44) records its verification.
 
 ### 5 Worlds
 
@@ -188,15 +188,32 @@ Client component with Framer Motion animations:
 - `whileInView` for scroll-triggered entries
 - `whileHover` for interactive hover states
 
-### SEO Setup
+### SEO setup
 
-- **Canonical URLs**: Set on root layout (`https://tensorcraft.app`), all world pages, all lesson pages, and capstone pages via Next.js `alternates.canonical` in `generateMetadata`.
-- **Structured Data (JSON-LD)**: Root layout emits `Organization` and `WebSite` schemas only. `Course` schema lives on each world page (moved out of the root layout 2026-07-25: markup belongs on the page that describes the course). `/pricing` emits an `OfferCatalog`, `/learn` emits `BreadcrumbList` plus a course `ItemList` (2026-08-24), and the shared FAQ section co-emits `FAQPage` on the pages that visibly render it. Lesson pages additionally emit `LearningResource` schema (name, description, educationalLevel, timeRequired, isPartOf Course) and `BreadcrumbList` schema (Home > World > Module > Lesson).
-- **Dynamic OG Images**: All pages use `/api/og` (Vercel OG) with per-page `title`, `world`, and `subtitle` query params. No static `/og-image.png` fallback.
-- **Sitemap** (`app/sitemap.ts`): phased. `SITEMAP_PHASE = "core"` ships a trimmed set of high-value URLs (static routes, world pages, free-module lesson pages) to clear GSC "Discovered, currently not indexed"; the full lesson set returns via `SITEMAP_PHASE = "full"` once the core set is indexed. Lesson routes built from `getWorldLessons` at build time. (`/glossary` and `/bridges` routes do not exist; earlier drafts of this list predate their removal.)
-- **robots.txt**: Crawl directives configured.
-- **AI Discoverability**: `llms.txt` (product description for AI crawlers), `.well-known/ai-plugin.json` (OpenAI plugin metadata), FAQ schema in JSON-LD, `/learn` page for answer engine queries.
-- **Internal Linking Strategy**: Landing page links to `/learn` (hero secondary CTA "See how it works") and `/pricing`. `/learn` links to the launched world page, the free first lesson, and `/pricing`; coming-soon worlds are listed unlinked (they are inert everywhere). `/worlds` page includes enriched intro copy and a "Why 5 Worlds?" explainer section for topical depth.
+- Public pages own their canonical URLs through Next.js metadata. The homepage
+  owns the root canonical. The root layout supplies `metadataBase` without a
+  cascading canonical.
+- The root JSON-LD identifies the Organization and WebSite with stable IDs.
+  Course descriptions remain on their world pages. Pricing describes its
+  offers. The video-led `/learn` page describes its introduction and breadcrumbs.
+  Public guides describe their visible articles, author, date and sources.
+  Lesson breadcrumbs link the actual home, course and lesson destinations.
+  Markup does not establish search-feature eligibility or AI citations.
+- Social images use `/api/og`, which robots.txt allows even though other API
+  routes are disallowed. Public utility pages can be crawled to read `noindex`.
+- The sitemap includes canonical public pages, guides, world teasers and the
+  launched free lessons. Paid lessons and capstones redirect signed-out readers
+  and stay out of the sitemap. Only recorded editorial dates supply `lastmod`.
+  The primary watch page supplies its actual video media URL.
+- `/llms.txt` is an optional source index generated from compiled content,
+  shared pricing and the guide registry. It does not control access or promise
+  visibility in AI search. Search and analytics property data verify results.
+- The guide hub, learning path, project case and comparison provide contextual
+  public entry points. Free lessons expose sibling links after the reader.
+  These links preserve the shared story flow and access rules.
+- The [SEO/GEO checklist](seo-geo-plan.md) records local completion and remaining
+  production/account verification. The HTTP smoke check does not measure
+  rankings, rendered content quality, browser performance or conversions.
 
 ### Accessibility (WCAG 2.1 AA)
 

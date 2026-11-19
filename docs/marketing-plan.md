@@ -1,674 +1,199 @@
-# Tensorcraft Marketing Plan v3.3
-
-> **Operating plan superseded (2026-09-25):** For the current goal of
-> 1,000 paying customers from zero users on $200/month, use
-> [First 1,000 paying customers](marketing-first-1000-paid.md).
-> This document is historical. Its advertising budgets, waitlist targets,
-> launch forecasts, unavailable bundles and coordinated-upvote instruction
-> are not part of the current plan.
+# Tensorcraft marketing plan
 
-> **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
-> The other 4 worlds appear as "coming soon" cards with waitlist forms. The
-> bundled pricing tiers described below (2-world / 3-world / all-five) are
-> **unavailable at V1** - only the single-world $50 SKU is purchasable.
-> Activate the bundle tiers when additional worlds ship. Authoritative spec:
-> [`launch-scope.md`](./launch-scope.md). Treat any "five worlds," "275
-> lessons," or "Discord community" claims below as **post-V1 roadmap**, not
-> launch messaging.
-
-## Executive Summary
+Working proposal, updated November 11, 2026. This is the current marketing direction following the owner's request for a fresh strategy. It replaces the earlier first-1,000 plan as the planning baseline.
 
-Tensorcraft is an interactive machine learning education platform built specifically for JavaScript engineers. Unlike traditional ML courses that assume Python fluency and data science backgrounds, Tensorcraft meets JavaScript engineers where they are - in JavaScript, using concepts they already understand from the code they ship, whether it runs in a browser or on Node.
-
-The platform's core differentiator is its library of 50+ JS-to-ML concept bridges: structured explanations that map familiar JavaScript patterns (component state, reactive data flow, middleware chains, event propagation) directly onto ML concepts (model weights, gradient descent, backpropagation, optimization). This approach eliminates the "blank slate" problem that causes most JavaScript developers to abandon ML learning within the first week.
-
-Tensorcraft is delivered as five story-driven worlds, each with a distinct narrative, visual identity, and character cast. All courses run entirely in the browser - no Python environment, no Jupyter notebooks, no conda installs. Learners purchase individual worlds at $50 each (not a subscription), with Module 1 free across all worlds to reduce friction.
-
-This marketing plan outlines the strategy for taking Tensorcraft from launch through full scale, targeting a community of 10,000 active learners and $500K in revenue within the first 18 months.
+The owner confirmed a **$200 monthly marketing budget**. Existing audience size and available marketing hours are unknown. The first month assumes we must earn attention from people who have never heard of Tensorcraft. Targets below describe work and review points, not predicted reach or sales.
 
----
-
-## Target Audience Personas
+## 1. Strategic direction
 
-### Persona 1: "Bridge Builder" Brianna
+The first encounter must explain the offer to someone who has never heard of Tensorcraft: an interactive machine-learning course for JavaScript engineers. Show a capability they might want to learn before introducing character names or tensor operations.
 
-- **Role:** Senior React Developer, 5 years experience
-- **Age:** 28-34
-- **Motivation:** Wants to add ML to her skillset without abandoning her JavaScript career path. Sees ML-powered features appearing in product roadmaps and wants to be the person who builds them, not the person who waits for the backend team.
-- **Pain points:** Every ML course she has tried starts with NumPy and pandas. She does not want to learn Python as a prerequisite to learning ML. She has abandoned three Coursera courses.
-- **Behavior:** Active on Twitter/X, reads dev.to weekly, attends 1-2 conferences per year. Buys courses when she trusts the creator. Prefers self-paced learning in 30-60 minute sessions.
-- **Objection:** "Will this actually work in production, or is it just toy examples?"
+Use the [model-teaching preview](https://tensorcraft-cases.vercel.app/) as that entry. Visitors identify a generated pattern, compare their choice with a real model, label a separate example, and train again. Show the model's actual prediction on the same held-out pattern. Both labels must affect the real training result. These illustrative patterns are separate from Deep Orbit's fictional recordings.
 
-### Persona 2: "Career Pivoter" Carlos
+After that payoff, a 14-second character film introduces Deep Orbit as Tensorcraft's first world. Explain that the free lessons begin with data preparation and the full course continues into model building, training, and evaluation. Keep the first-five-free scope and no-account offer visible.
 
-- **Role:** Mid-level Vue.js Developer, 3 years experience
-- **Age:** 25-30
-- **Motivation:** Wants to pivot into ML engineering or AI product development. Sees day-to-day app work as a stepping stone, not a destination. Wants a structured path that builds real understanding, not just API calls.
-- **Pain points:** Overwhelmed by the ML ecosystem. Does not know where to start. Intimidated by the math. Needs hand-holding through the foundational concepts.
-- **Behavior:** Active on Reddit (r/webdev, r/learnmachinelearning, r/cscareerquestions). Watches YouTube tutorials. Prefers cohort-based or community-supported learning.
-- **Objection:** "Is this deep enough to actually get me a job in ML?"
+Build a recurring campaign from these cases. Each case should work on its own and make the next part of the course easy to understand. The story supplies continuity across the campaign. The code and observed result explain the learning value.
 
-### Persona 3: "Feature Builder" Fatima
+The existing 15-second teaser introduces the setting and brand. The approved 27-second film gives interested viewers the wider explanation. The recurring cases give people a concrete reason to open Tensorcraft and send it to another engineer.
 
-- **Role:** Tech Lead at a startup, Angular/React stack, 7 years experience
-- **Age:** 30-38
-- **Motivation:** Her team needs to ship ML-powered features (recommendations, search ranking, anomaly detection) and she wants to prototype them herself before involving the data science team. She values speed and practicality.
-- **Pain points:** Does not have time for a 40-hour course. Needs targeted, practical knowledge. Wants to understand enough ML to have informed conversations with data scientists and make architectural decisions.
-- **Behavior:** Subscribes to newsletters, skims Hacker News, buys tools that save time. Will pay premium for quality. Likely to purchase team licenses.
-- **Objection:** "I don't need theory, I need to ship. Will this help me ship?"
+This is a positioning hypothesis. People may enjoy a puzzle without wanting a course. The first month must distinguish attention, participation, continued learning, and purchase.
 
-### Persona 4: "Curious Creator" Dev
+## 2. Audience and message
 
-- **Role:** Junior-to-mid JavaScript developer, freelancer or small agency
-- **Age:** 22-28
-- **Motivation:** Genuinely curious about ML. Watches 3Blue1Brown videos. Wants to understand how things work under the hood. Drawn to the aesthetic and storytelling aspects of Tensorcraft.
-- **Pain points:** Free resources are scattered and inconsistent. Paid courses feel corporate and dry. Wants something that feels like a game or an experience, not a lecture.
-- **Behavior:** Active on Twitter/X and Discord. Shares cool projects. Engages with creative developer content. Price-sensitive but will pay for something that feels special.
-- **Objection:** "I can learn this for free on YouTube. Why should I pay?"
+Start with JavaScript engineers who are curious about ML and enjoy learning through visual experiments. They already know how to program. They want to understand what happens to data, how a model learns, and how to judge a result.
 
-### Persona 5: "Server-Side" Sam (added with the 2026-08 rebrand)
+Creative coding communities are a plausible place to reach some of these people. Their interest in visual work does not establish willingness to buy ML education. Keep that distinction visible in the results.
 
-- **Role:** Node.js backend developer, 4-8 years experience. Express/Fastify
-  services, queues, Postgres. Writes TypeScript daily, has never shipped a
-  line of CSS on purpose.
-- **Age:** 26-36
-- **Motivation:** ML features keep landing on the backend roadmap
-  (classification, scoring, anomaly detection on service telemetry). Wants
-  to understand models well enough to build, evaluate, and own them in the
-  runtime they already deploy.
-- **Pain points:** Python-first courses ask for a second toolchain;
-  browser-demo courses feel like toys. Wants the mechanics in JavaScript
-  with a path to running inference server-side (TF.js runs on Node).
-- **Behavior:** Reads Hacker News and Node Weekly, learns from docs over
-  videos, pays for tools that remove friction.
-- **Objection:** "This teaches in the browser; does the knowledge transfer
-  to my Node services?" (Answer we must earn: the tensors, training, and
-  evaluation are runtime-agnostic; the browser is the classroom, not the
-  ceiling.)
+Use this message as the campaign's factual foundation:
 
----
+> Tensorcraft teaches machine learning through interactive story worlds and JavaScript exercises. Start with Deep Orbit, where you help a research crew investigate an unexplained signal. The first five lessons are free in your browser, with no account needed.
 
-## Unique Value Proposition
+Keep the brand relationship consistent:
 
-**For JavaScript engineers who want to understand machine learning deeply enough to evaluate, debug, and architect ML-powered features, Tensorcraft is the only interactive education platform that translates ML concepts into JavaScript - using 50+ concept bridges that map React state to model weights, component lifecycles to training loops, and middleware chains to neural network layers - starting from the tools and mental models you already know.**
+| Name | What it means in the campaign |
+| --- | --- |
+| Tensorcraft | The learning product and the recognizable publisher of every case. |
+| Deep Orbit | Its first available world and the setting for the initial campaign. |
+| Other worlds | Future settings and subjects, clearly marked coming soon. They are not part of the current purchase. |
 
-### Key Differentiators
+Mention the paid continuation when it helps someone decide: Deep Orbit continues into model building, training, evaluation, and deployment. Local pricing is $79 introductory and $99 regular, paid once. Verify the deployed offer before publishing price-bearing copy. There is no scheduled offer deadline in the shared pricing source.
 
-1. **50+ JS-to-ML Concept Bridges:** No other ML course systematically maps JavaScript knowledge to ML concepts. This is Tensorcraft's moat.
-2. **Browser-native:** Zero setup. No Python, no Jupyter, no terminal. Open the URL and start learning. Exercises run in Sandpack.
-3. **Story-driven worlds:** Each course has characters, narrative arcs, and a distinct visual identity. Learning feels like playing a game, not watching a lecture.
-4. **Per-world pricing:** Pay once, own forever. No subscription fatigue. No "cancel before the trial ends" anxiety.
-5. **Dark brutalist aesthetic:** Tensorcraft looks like nothing else in the education space. The brutalist terminal visual identity - sharp edges, offset shadows, monospace-first - resonates with developers and is inherently shareable.
-6. **Free Module 1:** Every world offers its first module free. Learners can experience the full quality before paying.
+## 3. The recurring campaign
 
----
+Use three initial cases from the free material. These are production briefs, not new homepage titles or promises of completion time.
 
-## Pricing Strategy
+| Case | Reason to pay attention | What people can do | Course connection |
+| --- | --- | --- | --- |
+| The sensor grouping | Two arrangements can contain the same readings while grouping them differently. Which one gives the crew a sensor's readings in time order? | Predict, run the two operations, and inspect the selected sensor and chart. | The free tensor-shapes activity. |
+| The input shape | One extra level of nesting changes how the runtime describes the input. What does that dimension represent? | Edit a small input, run it, and connect its shape to the supplied readings. | The first free mission and its tensor explanation. |
+| The input scale | The preprocessing used with a model matters to its predictions. What happens when it changes? | Change the input in the existing normalization interaction and inspect the actual result. | The free normalization lesson. Clearly identify any supplied model. |
 
-### Individual Pricing
+Keep the [sensor-grouping case](https://tensorcraft-cases.vercel.app/sensor-grouping.html) as a supporting lesson preview. It shows data preparation, which is too indirect to carry the first product introduction on its own. The related free course activity also has an existing direct entry path:
 
-| Tier          | Price | Includes                                    |
-|---------------|-------|---------------------------------------------|
-| Free Preview  | $0    | Module 1 of any world (5 lessons)           |
-| Single World  | $50   | All modules of one world                    |
-| Two Worlds    | $90   | Any two worlds ($10 savings)                |
-| Three Worlds  | $135  | Any three worlds ($15 savings)              |
-| All 5 Worlds  | $225  | Lifetime access to all worlds (best value)  |
+`/worlds/deep-orbit/foundations/tensor-shapes?start=experiment`
 
-### Team Pricing
+This URL enters the concept step, not a standalone miniature. Check that a first-time visitor can find the demonstrated activity in the deployed version. Prefer a truthful link and brief orientation over a new campaign landing page.
 
-| Tier | Price | Per-seat cost |
-|------|-------|---------------|
-| Team of 5 | TBD | Planned for post-V1.0 |
-| Team of 10 | TBD | Planned for post-V1.0 |
-| Site License | TBD | Planned for post-V1.0 |
+Explain its connection to ML early: this case practices keeping the meaning of readings intact during data preparation. Follow it with the input-scale case so people also see model behavior. A successful array puzzle alone does not establish interest in learning ML.
 
-### Purchasing Power Parity
+Each edition has the same structure:
 
-- 20-70% discount based on country, delivered via ParityDeals
-- Ensures global accessibility without devaluing the product in primary markets
-- PPP badge displayed at checkout: "We noticed you're visiting from [country]. Here's an adjusted price."
+1. Open on the visual problem, such as the apparent sensor spike. Identify the Deep Orbit context briefly while showing the evidence.
+2. Ask one answerable question. Show enough information for someone to reason about it.
+3. Let the viewer predict, then show the actual code run and its result. Resolve the technical question in the edition itself.
+4. Identify Tensorcraft and Deep Orbit. Invite people to try that exact activity, with the free-access scope beside the link.
+5. Close with the next technical question the course addresses, without inventing a story discovery.
 
-### Pricing Psychology
+Produce one useful source artifact, then adapt it into a short screen recording, one still or question post, and a concise explanation. The proposed recording length is 20 to 40 seconds. Use the time needed to make the result legible. Show code and the result together where possible.
 
-- The $50 single-world price anchors against $90 for two, making the bundle feel like a deal.
-- Free Module 1 eliminates purchase anxiety - learners already know what they're getting before paying $50.
-- Team pricing (post-V1.0) will be positioned as "all worlds included" to increase perceived value.
-- No subscription means no churn problem. Revenue is transactional but predictable via launch cycles.
+Use actual runs from the version people can open. Name supplied examples, fictional recordings, and supplied models. The first mission creates a tensor and visualizes readings. It does not train a model or establish the source of the unexplained signal.
 
----
+### Curiosity in the opening
 
-## Release Timeline
+The first frame should give a stranger something specific to investigate before asking them to care about a course. For the sensor case, show the apparent spike and ask, "Did sensor A really spike?" Then show A's actual readings, let people predict the operation, and reveal which sensors supplied the misleading chart's values.
 
-### Phase 1: Foundation (Months 1-6)
+Resolve the question within the clip or public explanation. The destination offers hands-on control and a related learning task. It does not hold the answer behind a click or signup.
 
-- **Month 1-2:** Core platform development. Landing page live. Email capture begins.
-- **Month 3-4:** Content production for Deep Orbit Modules 1-3. Beta tester recruitment.
-- **Month 5:** Closed beta with 50-100 testers. Collect feedback, fix issues.
-- **Month 6 (V0.5):** Public launch - Deep Orbit at $50. Module 1 free preview.
+Test alternative openings sequentially using the same verified case. A broader opening is the apparent spike. A more technical opening is, "Both operations return four rows of three values. Why do they draw different charts?" Compare attention and course attempts within each channel, since view definitions and audiences differ across platforms.
 
-### Phase 2: Completion (Months 7-10)
+Use the actual surprise as a reason someone might share the case with another engineer. Keep the connection to ML visible so the series attracts people interested in the learning product as well as the individual puzzle. No version should invent a physical anomaly or claim that this grouping task trains a model.
 
-- **Month 7-8:** Deep Orbit Modules 4-6 production. Community building intensifies.
-- **Month 9:** Deep Orbit Modules 4-6 released (free update for world owners).
-- **Month 10 (V1.0):** Deep Orbit complete. Price holds at $50. Full launch campaign.
+## 4. Distribution at scale
 
-### Phase 3: Expansion (Months 11-14)
+Prioritize public discovery and access to established audiences. Personal conversations can explain the response, while repeatable public releases supply the main acquisition experiment. Publishing on a new account does not guarantee viewers.
 
-- **Month 11:** Neon Protocol production begins. Deep Orbit marketing continues.
-- **Month 12-14 (V2.0):** Neon Protocol launch. Bundle pricing activated.
+### Recurring discovery through Shorts and DEV
 
-### Phase 4: Scale (Months 15-18)
+Create a vertical version of the case for YouTube Shorts. Recompose the chart, evidence, and code for a phone screen rather than cropping the landscape film. Open on the apparent spike, use readable captions, and deliver the reveal before inviting people into Tensorcraft. Shorts can appear in the Shorts feed, search, and the homepage, which provides a route beyond existing followers. Reach remains a test. [YouTube discovery guidance](https://support.google.com/youtube/answer/11914225?hl=en).
 
-- **Month 15-16:** Signal Ward production.
-- **Month 17-18:** Signal Ward release. Three-world bundles available. Team sales push.
+Use a channel-profile link for the playable destination. YouTube makes URLs in Shorts descriptions and comments non-clickable, so the invitation must reflect the actual path. Treat viewing and website participation separately. [YouTube link guidance](https://support.google.com/youtube/answer/13748639?hl=en).
 
----
+Publish a complete visual explanation on DEV with the playable demonstration, actual code, result, and relevant JavaScript and ML tags. DEV offers topic-based discovery through Relevant, Latest, and Top feeds. Its editor supports embeds and recurring series. The article must be useful in place and clearly identify Tensorcraft's connection to the activity. [DEV feeds](https://dev.to/help/customizing-your-feed), [publishing and series](https://dev.to/help/writing-editing-scheduling).
 
-# PART 1: SEO STRATEGY
+These are the two recurring releases for each case. Adapt the same source material instead of producing unrelated content for every network. Use an existing relevant social audience if one is available, without adding another mandatory publishing cadence.
 
-## 1.1 Programmatic SEO
+### Amplification through established developer audiences
 
-Generate hundreds of indexable pages from structured data patterns. Each template auto-generates pages targeting long-tail keywords.
+Submit the finished experiment for editorial consideration at Cooperpress's relevant JavaScript publications. A single accepted feature can distribute the case to an existing audience. The pitch asks the editors to consider the case for their readers. It does not ask them to buy the course.
 
-| Template Type | URL Pattern | Est. Pages | Keyword Pattern |
-|---------------|-------------|------------|-----------------|
-| Glossary Entries | `/glossary/[term]` | 120-200 | "what is [term] in machine learning", "[term] explained for developers" |
-| Cheat Sheets | `/cheatsheets/[topic]` | 20-30 | "[topic] cheat sheet", "[topic] quick reference for JS devs" |
-| Code Examples | `/examples/[framework]/[ml-task]` | 150-300 | "[ml-task] in [framework]", "how to [ml-task] with [framework]" |
-| FAQ Collections | `/faq/[category]` | 80-120 | "can I [question] with JavaScript", "how to [question] without Python" |
-| World Previews | `/worlds/[world]/preview/[module]` | 150-500 | "[world] module [N] preview", "tensorcraft [world] walkthrough" |
-| **Total** | | **600-1,280+** | |
+JavaScript Weekly issue 809 includes a JavaScript-to-neural-network demonstration, a concrete example of topic fit. Frontend Focus is another candidate when the case emphasizes the browser interaction. Placement and traffic are uncertain. Frontend Horse also received the November 10 pitch. Its archive ends at [issue 78](https://frontend.horse/issues/78/) and its curator describes it as on hiatus, so it gets no follow-up. [JavaScript Weekly example](https://javascriptweekly.com/issues/809), [Cooperpress contact](https://cooperpress.com/contact/).
 
-**Critical success factor:** Every programmatic page must contain genuine, useful content - not thin keyword-stuffed templates. Google's helpful content update penalizes low-value programmatic pages. Each page should answer a real question a JavaScript developer would ask. Minimum 300 words of unique, hand-reviewed content per page. Pages are generated from a structured content database but individually quality-checked before indexing.
+Supply a finished playable URL, a clear image, and the short recording so a curator can understand and demonstrate the case quickly. A creator can use the same package for a public playthrough. Neither a free feature nor a sponsorship price is assumed.
 
-## 1.2 Topical Authority
+The two pitches sent on November 10, 2026 link the cases host root with `utm_content=sensor-grouping`. The root now serves the model-teaching preview. A redirect in `output/marketing/tensorcraft-cases/vercel.json` sends requests with that value to `/sensor-grouping.html` and keeps their UTM parameters. If an editor publishes the link without those parameters, readers land on the model-teaching preview. Keep the rule while editors and readers can still open those emails. Before a shared URL serves a different page, add a redirect like this one for every link already sent.
 
-Build complete topic clusters to establish Tensorcraft as the authoritative resource for JavaScript-to-ML education.
+### A distinct public launch through Show HN
 
-| Pillar | Cluster Pages | Target |
-|--------|--------------|--------|
-| ML Fundamentals for JS Devs | 15-20 articles covering neural networks, loss functions, optimizers, activation functions - all explained with JS analogies | Rank #1 for "machine learning JavaScript" cluster |
-| TensorFlow.js Ecosystem | 12-18 tutorials on TF.js APIs, model loading, training in browser, WebGL backend, WASM backend | Rank top 3 for all "TensorFlow.js [topic]" queries |
-| JS-to-ML Bridges | 50+ individual bridge pages, each mapping one JS concept to one ML concept with code examples | Own the entire "ML for React/Vue/Angular developers" space |
-| Browser-Based ML | 10-15 articles on WebGPU, Web Workers for training, IndexedDB model caching, inference optimization | Rank for "machine learning in the browser" and related terms |
-| Interactive ML Education | 8-12 articles on pedagogy, interactive learning, story-driven education, gamification in tech ed | Establish thought leadership in ML education niche |
-| ML-Enhanced JavaScript Careers | 10-15 articles on career paths (ML-Enhanced JavaScript Engineer, $120K-$160K), interview prep, portfolio projects, and honest positioning on what JS-based ML skills unlock vs. what additionally requires Python | Capture high-intent "career pivot" traffic |
-| ML Project Tutorials | 15-25 end-to-end project walkthroughs building real ML features in React/Next.js/Vue apps | Rank for "build [ML feature] with [framework]" queries |
+Prepare a launch of the substantial Tensorcraft free experience, using the sensor case as a concrete entry point. Show HN is for runnable work, ideally without signup barriers, and has public discovery through its shownew and Show HN pages. Its rules reject landing-page-only submissions and quickly generated one-offs. Do not present a tiny demonstration as the entire product. [Show HN rules](https://news.ycombinator.com/showhn.html).
 
-**Build order:** Start with JS-to-ML Bridges (the core differentiator), then ML Fundamentals for JS Devs (highest search volume), then TensorFlow.js Ecosystem (strong commercial intent). Remaining pillars build out in months 4-8. Each cluster should have its pillar page live before any supporting articles publish. Internal links from cluster pages always point up to the pillar.
+HN prohibits generated or AI-edited post and comment text and automated posting. The owner must write its launch text and discussion replies. This plan can supply a factual checklist and asset package. [HN guidelines](https://news.ycombinator.com/newsguidelines.html).
 
-## 1.3 Schema Markup
+### The playable asset and CodePen discovery
 
-Implement structured data across all page types to enhance search appearance and enable rich results.
+Keep the full free activity on Tensorcraft. A small public CodePen can additionally make the experiment easy to inspect, embed, and share. CodePen's guidance favors visual work and recommends relevant tags and sharing through Bluesky or DEV. Staff featuring is discretionary. [CodePen picking guidance](https://blog.codepen.io/faq/how-are-picked-pens-chosen/).
 
-| Schema Type | Pages Applied To | Rich Result |
-|-------------|-----------------|-------------|
-| `Course` | World landing pages, module overviews | Course carousel in search, price, provider |
-| `HowTo` | Bridge pages, tutorial articles | Step-by-step rich snippet with images |
-| `FAQPage` | FAQ collections, glossary entries | Expandable FAQ accordion in search results |
-| `Article` | Blog posts, concept explainers | Article rich result with author, date, image |
-| `BreadcrumbList` | All pages | Breadcrumb trail in search results |
-| `Organization` | Homepage, about page | Knowledge panel, logo, social links |
+Public Pens carry an automatic MIT license. Use an original demonstration intended for public reuse with compatible assets. If adaptation exceeds one working day, use the existing Tensorcraft activity and its recording. [CodePen licensing](https://blog.codepen.io/documentation/licensing/).
 
-**Implementation:** Use Next.js `generateMetadata` with JSON-LD script tags. Schema is generated from the same structured content database that drives programmatic pages. Validate all schemas with Google's Rich Results Test before deployment. Monitor coverage in Google Search Console weekly. Use `@graph` pattern to combine multiple schema types on a single page.
+The first launch package therefore has one playable destination, a vertical clip, a complete DEV explanation, a still, and an editorial asset package. The three cases provide a recurring reason to encounter Tensorcraft, while a separate launch introduces the broader product.
 
-## 1.4 Technical SEO for Next.js
+## 5. First-month sequence
 
-| Concern | Strategy |
-|---------|----------|
-| Rendering | SSG for all public content pages (bridges, glossary, blog). ISR with 1-hour revalidation for dynamic pages (user counts, testimonials - **testimonials descoped until real testimonials are available**). SSR only for authenticated dashboard. |
-| Sitemap | Auto-generated `sitemap.xml` via `next-sitemap`. Separate sitemaps for blog, bridges, glossary, worlds. Submit to Google Search Console and Bing Webmaster Tools. |
-| Core Web Vitals | LCP < 2.5s (preload hero images, font-display: swap). CLS < 0.1 (explicit dimensions on all images, skeleton loaders). INP < 200ms (defer non-critical JS, use `React.lazy` for below-fold components). |
-| Crawl Budget | `robots.txt` blocks `/dashboard`, `/api`, `/admin`. Canonical tags on all pages. `noindex` on paginated archive pages beyond page 3. |
-| Image Optimization | Next.js `<Image>` component with automatic WebP/AVIF conversion. Lazy loading for below-fold images. Explicit `width` and `height` on all images to prevent CLS. |
-| URL Structure | Clean, descriptive URLs. No query parameters for content pages. Trailing slashes consistent (no trailing slash). 301 redirects for any URL changes. |
-| Internationalization | `hreflang` tags for future localized content. Start with `en` only. Structure allows `/[locale]/` prefix when ready. |
-| Mobile Optimization | Mobile-first indexing ready. Responsive design tested on all target devices. No mobile-specific URLs (single URL per page). Touch targets meet WCAG 2.5.5 (44x44px minimum). |
+| Period | Marketing work | Reviewable output |
+| --- | --- | --- |
+| Week 1 | Finish the sensor case and its vertical recording. Prepare the DEV explanation, compatible public-demo version if adaptation fits the cap, and editorial asset package. Confirm the destination matches the recording. | One complete edition prepared for Shorts, DEV, and editorial consideration, with source-labelled links. |
+| Week 2 | Release the first edition on Shorts and DEV. Submit the experiment to the relevant editors. Answer public technical questions. Give interested participants a direct next-lesson link and offer future cases only when requested. | Public asset URLs, observed attention and activity participation, editorial responses, and a clear continuation invitation. |
+| Week 3 | Release the input-shape case. Let the response to the first edition shape its explanation. Prepare the factual assets for an owner-written Show HN launch of Tensorcraft's substantial free experience. | A second complete edition, a concrete next-lesson invitation, and a separate product-launch package. |
+| Week 4 | Release the input-scale case. Show how the free tasks connect to the full Deep Orbit project. Review return visits, purchases, refunds, and work spent. | A third edition, a clear paid-continuation explanation, and a decision about the next month. |
 
-## 1.5 Internal Linking Architecture
+This proposes three campaign editions in a month. If time is tight, finish two and spend the remaining time distributing them and talking to participants. A half-finished library of content has little marketing value.
 
-A deliberate internal linking strategy reinforces topical authority and distributes page rank efficiently.
+Independent playthroughs are useful because they show where an explanation works or loses someone. Ask participants before recording or quoting them. Publish their actual experience, including relevant limitations. A person's permission to try the activity does not imply permission to publish their identity or comments.
 
-- **Hub-and-spoke model:** Each topical pillar page is a hub. All cluster articles link back to the hub and to 2-3 sibling articles. Hubs link down to every cluster article. This creates tight, crawlable topic clusters.
-- **Breadcrumbs:** Every page displays a breadcrumb trail (Home > Bridges > React State to Model Weights). Breadcrumbs use `BreadcrumbList` schema markup. Breadcrumbs are both a navigation aid and a linking signal.
-- **Related lessons widget:** At the bottom of every lesson and article, display 3-4 related content cards. Selection algorithm: same topic cluster first, then same world, then highest-performing content. Cards include title, excerpt, and estimated read time.
-- **Click depth rule:** No content page should be more than 3 clicks from the homepage. Bridges are 2 clicks (Home > Bridges > Individual Bridge). Blog posts are 2 clicks (Home > Blog > Post). Lessons are 3 clicks (Home > World > Module > Lesson). Monitor click depth with Screaming Frog monthly.
+## 6. The $200 budget
 
-## 1.6 SEO Content Calendar
+Begin with organic distribution and the assets we already have. Keep the first month's total expenditure at or below $200.
 
-| Phase | Timeline | Focus | Monthly Output |
-|-------|----------|-------|---------------|
-| Phase 1: Foundation | Months 1-3 | Bridge pages (core 20), pillar pages for top 3 clusters, technical SEO setup, sitemap, schema | 20-25 pages/month |
-| Phase 2: Expansion | Months 4-6 | Glossary build-out, comparison pages, remaining pillar pages, first programmatic templates | 30-40 pages/month |
-| Phase 3: Scale | Months 7-12 | Full programmatic page generation, code examples, FAQ collections, cheat sheets | 50-80 pages/month |
-| Phase 4: Optimization | Months 13-18 | Content refresh for underperforming pages, new cluster articles for emerging keywords, link building | 20-30 new + 20 refreshed/month |
+| Allocation | Ceiling | Release condition |
+| --- | ---: | --- |
+| One paid distribution test | $150 | A case has brought relevant people into the course with some observed continuation. One suitable paid placement or capped traffic campaign fits the available budget. |
+| Contingency | $50 | A specific production or delivery obstacle prevents reuse of the winning case. |
 
----
+The paid test is a conditional reserve, not a promised sponsorship purchase. Do not assume a creator or publication accepts $150. Select a placement for audience relevance and a concrete quote. An alternative is one capped traffic test of the strongest creative. Reddit's current setup guidance distinguishes lower-budget page-visit campaigns from its much larger purchase-optimization recommendation. Use a campaign spend cap and evaluate case participation, not a claim of optimized sales. A $150 test cannot establish reliable purchase economics. [Reddit campaign setup](https://business.reddithelp.com/articles/Knowledge/Set-up-a-Reddit-Ads-Campaign), [budgets and caps](https://business.reddithelp.com/s/article/How-much-do-Reddit-Ads-cost).
 
-# PART 2: LAUNCH PLATFORM PLAYBOOK
+Use a clearly disclosed demonstration or sponsorship with its own destination link. Record the quote, actual spend, observed activity participation, and any later purchases. Avoid judging the test by video impressions alone.
 
-## 2.1 Launch Sequencing
+Existing tools are sufficient for this pilot. New subscriptions, giveaways, discounts, and an affiliate system are outside the first month's scope.
 
-Roll out across platforms in a deliberate sequence to maximize compounding momentum.
+## 7. Measurement and decisions
 
-| Week | Platform | Action | Goal |
-|------|----------|--------|------|
-| Week 1 (Mon) | Email list | Launch announcement to full waitlist | 200+ conversions from existing audience |
-| Week 1 (Wed) | Twitter/X | Launch thread + pinned tweet + 24-hour engagement blitz | 500+ retweets, 2K+ likes, trending in dev community |
-| Week 1 (Fri) | Dev.to | "Introducing Tensorcraft" post with embedded interactive demo | 5K+ views, 200+ reactions, dev.to front page |
-| Week 2 (Tue) | Product Hunt | Full PH launch (see 2.2 for strategy) | Top 5 Product of the Day |
-| Week 2 (Thu) | Hacker News | "Show HN" post (see 2.3 for strategy) | Front page, 100+ points |
-| Week 3 (Mon) | Reddit | Posts to r/webdev, r/javascript, r/reactjs (value-first, not promo) | 500+ upvotes combined, 50+ comments |
-| Week 3-4 | LinkedIn, YouTube, Hashnode, newsletters | Staggered rollout across remaining platforms | Sustained traffic over 2-week window |
+The main early signal is a relevant person doing something meaningful in the free activity. Return to another lesson and successful paid use make that signal stronger.
 
-## 2.2 ProductHunt Strategy
+Keep these stages separate:
 
-- **Timing:** Launch on Tuesday at 12:01 AM PT. Tuesday/Wednesday have highest engagement. Avoid Mondays (high competition from funded startups) and Fridays (low traffic).
-- **Framing:** Position as "The ML course that speaks JavaScript" - not another education platform, but a new category. Tagline: "50+ concept bridges that translate machine learning into JavaScript."
-- **Maker comment:** Post immediately after launch. Include: the personal story of why you built this (JavaScript dev frustrated by Python-first ML courses), a 2-minute demo GIF showing a bridge in action, a link to free Module 1, and a genuine ask for feedback.
-- **Expected results:** Top 5 Product of the Day = 1,000-3,000 website visits, 200-500 signups, 30-80 paid conversions. Top 3 = 2x those numbers.
-- **Preparation checklist:**
-  - Recruit 30+ hunters to upvote in the first 2 hours (friends, beta testers, community members)
-  - Prepare all PH assets: logo (240x240), gallery images (1270x760, 5 images showing the product), video (optional but recommended, 1-2 min)
-  - Write the description (max 260 chars for tagline, longer description supports markdown)
-  - Pre-write responses to common questions ("Is this for beginners?", "Why not Python?", "How is this different from freeCodeCamp?")
-  - Schedule social media posts linking to the PH page for launch day
+| Stage | Evidence to record | What it helps us decide |
+| --- | --- | --- |
+| Attention | Within-channel viewing, retention through the evidence and reveal, and specific replies about the question. | Whether the opening earns curiosity and the explanation sustains it. |
+| Public-demo participation | Demonstration visits and actions where observable. | Whether the case itself invites participation. |
+| Course handoff | Visits to the Tensorcraft activity, first attempts, and successful checks or exercise runs. | Whether interest in the case extends into the actual learning product. |
+| Continuation | Return within seven days or a start in another free lesson. | Whether interest extends beyond an isolated puzzle. |
+| Purchase and use | Verified paid orders, refunds, and a later paid-lesson start where observable. | Whether the course explanation attracts customers who use it. |
+| Efficiency | Cash and marketing hours by edition and distribution route. | Whether we can repeat the work within the budget. |
 
-## 2.3 Hacker News Strategy
+Use one campaign name, such as `playable-cases-01`, with a source and content identifier for each link. Example:
 
-- **Format:** Use "Show HN: Tensorcraft - Interactive ML for JavaScript Engineers (browser-based, no Python)" as the title. Keep the URL pointing to the product, not a blog post. HN values being able to see the thing immediately.
-- **Timing:** Post between 8-9 AM ET on a weekday (Tuesday-Thursday). This catches the US East Coast morning crowd and gives European voters time to engage before it falls off.
-- **Rules of engagement:**
-  - Do NOT ask for upvotes. HN detects and penalizes voting rings.
-  - Be in the comments within 5 minutes of posting. Answer every question honestly and thoroughly.
-  - If someone criticizes the approach, engage respectfully. HN rewards thoughtful debate.
-  - Share technical details freely - HN loves implementation details (how you built the Sandpack integration, how bridges are structured, performance optimizations).
-  - Do NOT be defensive about the "no Python" angle. Acknowledge Python's role in ML, explain why browser-based JS serves a different audience.
-- **Expected results:** Front page (100+ points) = 5,000-15,000 visits over 48 hours, 500-1,500 signups. Top 10 = 2-3x those numbers. HN traffic converts at 2-4% to free signups.
+`?start=experiment&utm_source=codepen&utm_medium=demo&utm_campaign=playable-cases-01&utm_content=sensor-grouping`
 
-## 2.4 Platform-by-Platform Guide
+The application has exercise and experiment events, but their existence does not prove campaign-to-purchase reporting. Verify one real campaign entry through the consented event flow before reading source-level conversion rates. Respect analytics consent and report the resulting coverage limits. Use observed counts and voluntary feedback where the full path is unavailable. Reconcile purchases with actual payment records and keep refunds visible.
 
-| # | Platform | Relevance | Audience | Action |
-|---|----------|-----------|----------|--------|
-| 1 | Twitter/X | Primary | JS devs, indie hackers, tech leads | Daily presence. Bridge threads weekly. Launch day blitz. Pin launch tweet. |
-| 2 | Dev.to | Primary | JS devs, career changers | Weekly bridge posts. Launch day "Introducing" post. Cross-post all blog content. |
-| 3 | Hacker News | High | Engineers, technical founders, senior devs | Show HN on launch. Technical deep-dives monthly. Engage in ML/JS discussions. |
-| 4 | Reddit | High | Broad dev community, career changers | Value-first posts in r/webdev, r/javascript, r/reactjs, r/learnmachinelearning. Follow 90/10 rule. |
-| 5 | Product Hunt | High (launch) | Early adopters, tool enthusiasts, indie hackers | One-time launch. Prepare thoroughly. Follow up with milestone launches (V1.0, new worlds). |
-| 6 | LinkedIn | Medium | Tech leads, engineering managers, team buyers | Professional tone. Team license angle. Repurpose Twitter threads. 2-3 posts/week. |
-| 7 | YouTube | Medium | Visual learners, tutorial seekers | Bridge demo animations. Course previews. Live coding sessions. Weekly uploads. |
-| 8 | Hashnode | Medium | Developer bloggers, web devs | Cross-post bridge articles. Hashnode has good SEO juice. |
-| 9 | Discord | Medium | Community hub | Own server for community. Join related servers (Reactiflux, TF.js) as a helpful member, not promoter. |
-| 10 | Substack | Medium | Newsletter subscribers, long-form readers | Weekly newsletter. Bridge deep-dives. Behind-the-scenes. |
-| 11 | Indie Hackers | Medium | Solopreneurs, bootstrappers | Build-in-public updates. Revenue milestones. Product journey posts. |
-| 12 | Lobsters | Low-Medium | Senior engineers, niche technical crowd | Technical deep-dives only. Requires invite. No marketing fluff. |
-| 13 | Mastodon | Low-Medium | Open-source community, privacy-conscious devs | Mirror Twitter content. Engage with #WebDev and #MachineLearning hashtags. |
-| 14 | TikTok | Low-Medium | Junior devs, career changers, visual learners | 60-second bridge explainers. "POV: you're a JS dev learning ML." Experimental. |
-| 15 | Instagram | Low | Design-oriented devs, visual learners | Carousel posts showing bridge diagrams. World aesthetic shots. Low priority. |
-| 16 | Stack Overflow | Low | Developers seeking answers | Answer TensorFlow.js and browser-ML questions. Link to relevant Tensorcraft content only when genuinely helpful. |
-| 17 | Medium | Low | General tech readers | Republish top-performing dev.to posts after 2-week delay. Medium's algo favors established publications. |
+A public demo and Tensorcraft may not identify the same visitors. Report their counts separately when they cannot be matched. An unmatched visitor is not evidence of a drop-off.
 
-**Automation tip:** Use Typefully or Buffer to schedule Twitter/X, LinkedIn, and Mastodon posts from a single queue. Cross-post dev.to articles to Hashnode and Medium with canonical URLs pointing to dev.to. Use Zapier to auto-post new blog articles to Discord #announcements.
+Review the first three editions as a pilot. Small samples support interviews and directional decisions, not claims of a winning variant.
 
-**Skip list:** Facebook Groups (low developer engagement), Quora (declining relevance), Pinterest (wrong audience), Clubhouse (dead platform). Re-evaluate quarterly.
+If no relevant placement happens and few intended readers encounter a case, call the test inconclusive. Low exposure says little about the case's appeal. Repeated attempts by suitable engineers followed by little course continuation are more useful evidence against this approach. Published asset counts alone do not establish success.
 
----
+- If people watch but do not visit, change the invitation or clarify what they can do at the destination.
+- If they visit but do not attempt anything, inspect the match between the clip and the first screen they reach.
+- If they finish one activity but do not continue, test whether the broader course outcome matters to them.
+- If they return but do not buy, ask about the paid outcome, workload, trust, and price before changing the offer.
+- If distribution produces almost no relevant participation, seek a better host or venue before producing another batch of cases.
 
-# PART 3: PAID ADVERTISING
+After the pilot, repeat the case format and distribution route that bring continued learning and paid use. If neither does, change the audience or message before increasing spend. No sales forecast is credible from the available information today.
 
-## 3.1 Budget Allocation
+## 8. Longer-term marketing
 
-Year 1 total paid advertising budget: $60,000-$90,000, allocated across platforms based on audience fit and expected CAC.
+If the cases attract suitable learners, organize the best ones into a public collection that shows a progression from data preparation to a model someone can evaluate. Add selected learner explanations or independent playthroughs with permission.
 
-| Platform | Budget % | Monthly ($) | Role | Target CPC |
-|----------|----------|-------------|------|------------|
-| Twitter/X Ads | 30% | $1,500-$2,250 | Primary acquisition. Promoted tweets targeting JS developers, React/Node/TypeScript keywords. | $0.80-$1.50 |
-| Google Ads | 25% | $1,250-$1,875 | Search ads for high-intent keywords ("learn ML with JavaScript", "TensorFlow.js course", "ML for JavaScript developers"). | $1.50-$3.00 |
-| Reddit Ads | 20% | $1,000-$1,500 | Targeted ads in r/webdev, r/javascript, r/reactjs, r/learnmachinelearning. Conversation-style ads perform best. | $0.50-$1.00 |
-| Dev.to Listings | 10% | $500-$750 | Sponsored listings and display ads on dev.to. High relevance, captive audience. | $1.00-$2.00 |
-| Carbon Ads | 10% | $500-$750 | Display ads on developer-focused sites (MDN, CSS-Tricks, Stack Overflow). Low CPC, high impression volume. | $0.30-$0.80 |
-| YouTube Ads | 5% | $250-$375 | Pre-roll ads on JS/ML tutorial videos. Retargeting only (viewers who visited site but didn't convert). | $0.05-$0.15 (CPV) |
+Invite people who ask for future editions to opt into an existing appropriate follow-up channel. Build a recognizable series before creating a separate community space. Continue showing Tensorcraft as the product and Deep Orbit as the current world. Introduce another world through a real available activity when it is ready.
 
-## 3.2 The Funnel
+Use the recurring audience and demonstrated participation as the basis for a wider launch, additional editorial pitches, and any later paid distribution. The course's useful experience should be visible before the announcement asks for a purchase.
 
-All paid traffic flows through a single, optimized funnel:
+## 9. Basis for the proposal
 
-1. **Ad click** -> Landing page (world-specific or bridge-specific based on ad content)
-2. **Landing page** -> Free Module 1 signup (primary CTA) or email capture (secondary CTA)
-3. **Free Module 1** -> Complete Module 1 (trigger email nurture sequence)
-4. **Email nurture** -> Purchase world at $50
-5. **Post-purchase** -> Upsell to bundle (email sequence triggers at 50% completion)
+Research checked November 10, 2026. External examples show formats and participation routes. They do not prove demand for Tensorcraft.
 
-**CAC trajectory:**
-- Months 1-3: $35-$50 CAC (learning phase, testing creatives and audiences)
-- Months 4-6: $20-$30 CAC (optimized audiences, winning creatives identified)
-- Months 7-12: $12-$20 CAC (retargeting pools built, organic supplements paid)
-- Target steady-state CAC: $15 or below (blended across all paid channels)
+- [Brilliant's CS page](https://brilliant.org/cs/) already emphasizes interactive problem solving and feedback. Interactivity alone is a broad category claim. Tensorcraft should demonstrate its particular combination of JavaScript work and continuing story.
+- [Scrimba's AI Engineer Path](https://scrimba.com/the-ai-engineer-path-c02v) presents a practical JavaScript route into AI applications. Tensorcraft's campaign can make its own model-building and evaluation experience concrete without claiming competitors lack useful practice.
+- [TensorFlow.js](https://www.tensorflow.org/js) already provides tutorials and browser demonstrations. Browser ML availability alone does not explain the value of a paid course. The campaign needs to show how Tensorcraft's sequence, feedback, and story help someone work through a task.
+- [The Coding Train's Passenger Showcase](https://thecodingtrain.com/guides/passenger-showcase-guide) connects learning material with projects participants make and share. That is a useful participation pattern to adapt. Its submission process ties projects to specific Coding Train videos, so it is not a general Tensorcraft promotion directory.
 
-## 3.3 Ad Creative Principles
-
-- **Visual consistency:** All ads use Tensorcraft's dark brutalist aesthetic. Ads should look like the product, not like ads.
-- **Lead with the bridge:** The highest-performing creative concept is the JS-to-ML bridge. "You already know 70% of ML. You just don't know it yet." Show a side-by-side of React code and neural network code with visual connections.
-- **Social proof variants:** > **Status: Descoped** - Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Once testimonials are collected, run ad variants featuring learner quotes. "I learned more about ML in 2 hours on Tensorcraft than in 2 weeks on Coursera" performs better than feature-based copy.~~
-- **Video ads (Twitter, YouTube):** 15-30 second clips showing the bridge animation. Dark background, brutalist terminal UI, code morphing from React to ML. No voiceover needed - text overlay + music.
-- **A/B test relentlessly:** Test 3-5 headline variants per campaign. Kill underperformers within 48 hours. Scale winners to 2x budget before testing new variants.
-
----
-
-# PART 4: ORGANIC CHANNELS
-
-> **STATUS: Deferred to V1.0 (decision 2026-04-20).** Discord community server and Twitter/X primary push are post-launch. V0.5 focuses on organic dev.to + Hacker News + email. Content below remains for future reference but is NOT in the V0.5 launch scope.
-
-## 4.1 Technical Blog
-
-The Tensorcraft blog is the primary SEO and thought leadership asset. Hosted at `tensorcraft.app/blog`, rendered with MDX, and indexed by search engines.
-
-- **Publishing cadence:** 2 articles per week minimum. 1 bridge post + 1 tutorial or concept explainer.
-- **Content length:** 1,500-3,000 words. Longer is better for SEO but only if the content earns its length. No padding.
-- **Code examples:** Every article includes runnable code. Use embedded Sandpack playgrounds for interactive examples. Static code blocks use Shiki with the Tensorcraft dark world.
-- **Cross-posting:** All articles are cross-posted to dev.to (primary) and Hashnode (secondary) with canonical URL pointing to tensorcraft.app. Cross-post 48 hours after original publication.
-
-## 4.2 Substack Newsletter
-
-Weekly newsletter sent every Tuesday at 10 AM ET. "The Bridge" newsletter covers one JS-to-ML bridge in depth each week, plus community highlights, product updates, and curated links.
-
-- **Structure:** Bridge of the week (60%), community spotlight (15%), product update (10%), curated links (15%)
-- **Growth target:** 500 subscribers by month 3, 2,000 by month 6, 5,000 by month 12
-- **Monetization:** Free tier for all subscribers. No paid tier - the newsletter drives course sales, not subscription revenue. Sponsorship slots available after 2,000 subscribers.
-- **Tone:** Conversational, technical but approachable. Written in first person. Every issue should teach something useful even if the reader never buys a course.
-
-## 4.3 Twitter/X
-
-5 posts per week, distributed as follows:
-
-- **Monday:** Bridge insight tweet - a single, punchy mapping between a JS concept and an ML concept. Optimized for bookmarks and quote-tweets.
-- **Tuesday:** Tutorial thread - 5-10 tweet thread walking through a concept or mini-build. Ends with soft CTA to free Module 1.
-- **Wednesday:** Community engagement - reply to trending JS/ML discussions, quote-tweet interesting projects, amplify learner wins.
-- **Thursday:** Behind-the-scenes - development update, design decision, content creation process. Build-in-public angle.
-- **Friday:** Curated content - share and comment on the best JS/ML article, tool, or resource you found that week. Give credit generously.
-
-## 4.4 Interactive Demos
-
-Build 3-5 standalone interactive demos that showcase the bridge concept. These are not gated - they live at `tensorcraft.app/demos/[name]` and are freely accessible.
-
-- **Demo 1:** "React State vs Neural Network Weights" - side-by-side interactive showing how useState and model weights both store and update values
-- **Demo 2:** "Virtual DOM Diffing vs Gradient Descent" - animated visualization showing the parallel optimization strategies
-- **Demo 3:** "Event Propagation vs Backpropagation" - interactive diagram where clicking triggers either DOM event bubbling or neural network backpropagation
-- **Purpose:** These are the top-of-funnel viral assets. Shareable on social media, embeddable in blog posts, linkable from Hacker News. Each demo ends with a tasteful CTA to explore more bridges in Tensorcraft.
-
-## 4.5 Conference Talks
-
-Target 4-6 conference talks in the first 12 months. Talk topics rotate between:
-
-- **"The Bridge Model: Teaching ML Through JavaScript Analogies"** - pedagogical talk for education-focused conferences
-- **"Machine Learning in the Browser: A Practical Guide for JavaScript Teams"** - technical talk for JS conferences
-- **"From React Developer to ML-Enhanced Engineer: A Bridge, Not a Leap"** - career-focused talk for general developer conferences
-
-Conference CFP submissions begin in month 3. Target conferences: React Summit, JSNation, CityJS, Frontend Love, All Things Open, THAT Conference, RenderATL, and local meetups.
-
-## 4.6 Podcast Guesting
-
-Target 2 podcast appearances per month starting in month 4. Prepare a concise "Tensorcraft story" (3 minutes) and 5-6 talking points about the bridge concept, browser-based ML, and JavaScript-to-ML career paths.
-
-**Target shows:**
-- Syntax.fm (Wes Bos & Scott Tolinski - frontend audience, 50K+ listeners)
-- JS Party (Changelog - JavaScript community, 20K+ listeners)
-- PodRocket (LogRocket - frontend engineering, 15K+ listeners)
-- The Changelog (broad developer audience, 30K+ listeners)
-- Frontend Happy Hour (JavaScript engineers, 10K+ listeners)
-- Practical AI (ML audience, introduce the JavaScript angle, 15K+ listeners)
-- Learn with Jason (Jason Lengstorf - live coding + interview format, 10K+ listeners)
-
-## 4.7 Open Source
-
-Release three open-source packages that serve as permanent marketing assets:
-
-- **@tensorcraft/bridges** - The complete bridge database as a JSON/MDX package. MIT licensed. Any educator or content creator can use the bridges in their own work, with attribution. This spreads the Tensorcraft vocabulary ("bridge model", "JS-to-ML mapping") across the ecosystem.
-- **@tensorcraft/brutalist-ui** - The dark brutalist React component library used in Tensorcraft. Developers who use these components in their own projects become familiar with the Tensorcraft aesthetic.
-- **@tensorcraft/sandbox** - The Sandpack-based ML exercise runner. Other educators can build interactive ML exercises. Every exercise built with this package is indirect marketing for Tensorcraft.
-
-## 4.8 Newsletter Sponsorships
-
-Sponsor developer newsletters to reach JavaScript engineers at scale. Allocate $2,000-$4,000/month for newsletter sponsorships starting in month 4.
-
-| Newsletter | Subscribers | Sponsor Price | Frequency |
-|------------|-------------|--------------|-----------|
-| JavaScript Weekly | 200,000+ | $1,500-$2,500/issue | Monthly |
-| Frontend Focus | 100,000+ | $800-$1,500/issue | Biweekly |
-| TLDR Web Dev | 250,000+ | $1,000-$2,000/issue | Monthly |
-
-## 4.9 JS Bridge Visual Content
-
-Create a library of shareable visual assets that illustrate the JS-to-ML bridge concept. These are designed for social media virality and blog embedding.
-
-- **Shareable graphics specs:** 1200x675px (Twitter/LinkedIn optimal), dark background (#181818), sage green accent (`#6BAA8A`) or world-specific color, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout showing JS concept on left and ML concept on right with bridge connector in the center. Brutalist styling: zero border-radius, offset shadows. Include Tensorcraft watermark (bottom-right, subtle). Export as PNG and WebP. Each graphic is a self-contained explanation - useful even without clicking through to the site.
-- **Bridge discovery surface:** Bridges live as collectible cards on the dashboard (`bridge-collection.tsx`), surfaced in context of learner progress rather than as a standalone reference page. The standalone `/bridges` route was removed.
-- **Social calendar:** Publish one bridge graphic every day for 50 days as the "50 Days of Bridges" campaign. Schedule across Twitter/X, LinkedIn, and Instagram simultaneously. Each post includes the graphic and a 2-3 sentence caption explaining the bridge. Target: 50 days of consistent, highly shareable visual content that establishes Tensorcraft as the definitive source for JS-to-ML bridges.
-- **Blog integration:** Every blog post that discusses a bridge concept includes the corresponding bridge graphic as the hero image. Open Graph meta tags use the bridge graphic, ensuring the visual appears in social media shares. This creates a consistent visual language across all channels.
-
-## 4.10 Roadmap-Response Content (added 2026-07-27)
-
-> **Status: BLOCKED (2026-08-15).** The 2026-07-27 coverage prerequisite ("every topic has a live lesson or deep-dive") was closed by the extras track, and /extras was removed on 2026-08-15 (owner decision; restore pointer in `docs/post-launch-backlog.md` §"/extras removal"). Rows in the map below that cite "Deep dive N", "Classical ML extras", or "Ethics extras" no longer have destinations; main-lesson and drawer citations still hold (drawers keep their inline derivations). Executing this play now requires either restoring that content into a launched world or redesigning the asset around deep-orbit-only coverage.
-
-### The signal
-
-On 2026-01-16, a plain-text X article titled "The Math Needed for AI/ML (Complete Roadmap)" (@TheVixhal) pulled **743K views** with tens of thousands of bookmarks. It is a topic list with resource links: no product, no code, no interactivity. Two facts make it a template rather than a one-off:
-
-1. **The audience is exactly Tensorcraft's ICP.** Developers asking "what do I need to learn for ML" is the top of our funnel, and the format ("the math you need") demonstrably reaches them at scale.
-2. **The top replies argue Tensorcraft's thesis for free.** The most-engaged responses said the roadmap is "overwhelming" as a prerequisite and that you should "learn as you go." That is our pedagogy, stated by the market, under a post with 743K views. Math-roadmap listicles go viral several times a year; each one is a recurring distribution event we can respond to.
-
-### The play
-
-Publish a standing **response asset**: "That viral ML math roadmap, except every topic is a running TypeScript lesson." It does not attack the roadmap format; it completes it. Roadmaps tell you *what* to learn and leave you alone with a textbook list. Our response hands the reader the same list where every line links to a lesson in which the concept is *used in code they can run in the browser*, with the math available on demand (derivation drawers; the math-deep-dive companion track was removed 2026-08-15).
-
-- **Primary asset:** blog post at `packages/content/content/blog/` ("The ML math roadmap, as running code"), structured as the topic map below with 2-3 sentences per topic on where it shows up in a working model. Free-module and guest-funnel links throughout; guest capture is already live.
-- **Derivatives:** dev.to cross-post (canonical to blog), an X thread version pinned during roadmap-virality windows, and one bridge graphic per §4.9 spec ("roadmap says: eigenvalues / Tensorcraft says: here is why your training run diverges").
-- **Counter-positioning line** (reusable on landing and /compare): "Roadmaps say learn 40 math topics first. Here is each one, taught inside the code that needs it."
-- **Repeatable trigger:** when any math-roadmap or "ML prerequisites" post is trending, reply with the relevant slice of the map plus the guest link. The asset is evergreen; the trigger is recurring.
-
-### The topic map (the asset's spine)
-
-Coverage record as verified 2026-07-27, when "Deep dive" = `extras/math-deep-dive` and every deep dive was drawer-linked from a main lesson. Since the 2026-08-15 extras removal the extras/deep-dive destinations no longer exist; the map is kept as the coverage-gap ledger for any future rebuild.
-
-| Roadmap topic | Where Tensorcraft teaches it |
-|---|---|
-| Populations, sampling, bias | Ethics extras: dataset bias; browser-runtimes data handling |
-| Mean, variance, std, baselines | Anomaly Detection 1 (z-score baselines from real telemetry) |
-| Random variables, PMF/PDF | Deep dive 6: Statistics of Signals |
-| Normal, Binomial, Uniform | Deep dive 6 (Binomial worked on the 64-channel board) |
-| Central Limit Theorem | Deep dive 6 (plus when it fails: heavy tails, correlation) |
-| Covariance, correlation | Deep dive 6; ensemble-variance drawer in Advanced Time Series 5 |
-| Conditional probability, Bayes | Deep dive 7; base-rate drawer in Training Loop 5 (evaluation) |
-| Maximum likelihood (MLE/MAP) | Deep dive 7 (worked coin-flip MLE; L2 = Gaussian prior, derived) |
-| Linear + logistic regression | Classical ML extras 1 (from-scratch implementation) |
-| Scalars → tensors, matrix ops | Foundations 1-3; Deep dive 1 (vector spaces, rank, determinant) |
-| Matrix inverse (and why ML avoids it) | Deep dive 8 |
-| Eigenvalues/eigenvectors | Deep dive 8 (power iteration in plain TS) |
-| SVD, low-rank, PCA | Deep dive 8 (ties to model compression in Optimization Edge 3) |
-| Derivatives, gradients, chain rule | Training Loop 2-3; Deep dive 2 (backprop by hand, verified with tf.grad) |
-| Jacobian, Hessian | Deep dive 2 |
-| Minima, saddle points, convexity | Deep dive 3; loss-landscape drawer in Training Loop 4 |
-
-### Targets and measurement
-
-- Blog post is the funnel entry: track guest-capture rate from `/blog/ml-math-roadmap*` UTM-tagged links (PostHog), target above the blog average since intent is pre-qualified.
-- X thread success = bookmarks over likes (same pattern as the source post; bookmark-heavy engagement is the "I will come back to this" signal).
-- Review quarterly alongside §6.2's competitive scan: refresh the map when lessons move, and re-run the reply play on each new viral roadmap.
-
----
-
-# PART 5: WAITLIST AND PROMOTION
-
-## 5.1 Waitlist Page Structure
-
-The waitlist page is the primary conversion asset during pre-launch. It lives at `tensorcraft.app` and follows this structure:
-
-- **Hero section:** Full-width dark background (#181818) with ParticleField canvas animation. Headline: "Machine Learning for JavaScript Devs, Finally." Subheadline: "50+ concept bridges that translate ML into the language you already speak." Single email input with "Join the Waitlist" CTA button (brutalist offset shadow on hover). Waitlist count displayed below input ("Join 2,847 JavaScript engineers").
-- **Problem section:** Three-column layout. Column 1: "Every ML course starts with Python" (crossed-out Python logo). Column 2: "You've tried. You've quit." (abandoned Jupyter notebook illustration). Column 3: "It's not you. It's the teaching." (bridge metaphor illustration). Copy: "Machine learning courses weren't built for you. They assume you think in NumPy, not in JavaScript. Tensorcraft fixes that."
-- **What you'll build section:** Interactive carousel showing 3-4 real project outcomes from Tensorcraft lessons. Each slide shows a browser screenshot of the completed project (sentiment analyzer, image classifier, recommendation engine) with a "Built with JavaScript. No Python required." caption.
-- **World previews section:** Five cards, one per world, showing the world name, key art, narrative hook, and character illustrations. Deep Orbit and Neon Protocol are highlighted as "coming first." Other three show "Coming 2026" with faded styling.
-- **FAQ section:** Expandable accordion with 6-8 questions: "Do I need to know Python?", "How is this different from Coursera/fast.ai?", "Is this for beginners?", "What will I be able to build?", "How much does it cost?", "When does it launch?", "Can I try it for free?", "Do you offer team pricing?"
-- **Social proof section:** > **Status: Descoped** - Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Grid of testimonials from beta testers and early reviewers. If pre-launch (no testimonials yet), use: logos of companies where beta testers work, a quote from the creator explaining the mission, and an "As seen on" row with dev.to, Hacker News, and Twitter/X logos once coverage is earned.~~
-
-## 5.2 Promotion Playbook
-
-Four-phase promotion strategy for the waitlist:
-
-- **Phase 1: Setup (Weeks 1-2):** Launch waitlist page. Set up PostHog analytics. Install Meta Pixel and Twitter Pixel for retargeting. Create UTM templates for all channels. Prepare 10 social media post variants for A/B testing. Goal: infrastructure ready, 100 signups from personal network.
-- **Phase 2: First Content (Weeks 3-6):** Publish 4 bridge posts on dev.to. Share each on Twitter/X with link to waitlist. Post to r/webdev and r/javascript (value-first, waitlist link in profile only). Launch "50 Days of Bridges" social campaign. Goal: 500 signups, identify top-performing channels.
-- **Phase 3: Paid Testing (Weeks 7-10):** Allocate $1,500 to test paid ads across Twitter/X ($500), Reddit ($500), and Carbon Ads ($500). Run 3 creative variants per platform. Measure cost-per-waitlist-signup. Kill underperformers, scale winners. Goal: 1,500 signups, CAC < $3 per waitlist signup.
-- **Phase 4: Scale Winners (Weeks 11-16):** Double budget on winning channels. Launch Product Hunt upcoming page. Activate influencer partnerships (10 influencers post about Tensorcraft in the same week). Submit guest posts to JavaScript Weekly and Frontend Focus. Goal: 5,000 signups by launch day.
-
-## 5.3 Email Nurture Sequence
-
-Post-waitlist-signup email sequence to keep subscribers engaged until launch.
-
-| # | Timing | Subject | Content | Goal |
-|---|--------|---------|---------|------|
-| 1 | Day 0 | Welcome to the Tensorcraft waitlist | Thank you, what to expect, introduce the bridge concept, link to first bridge post | Set expectations, deliver immediate value |
-| 2 | Day 3 | Your first JS-to-ML bridge: React State = Model Weights | Deep-dive on one bridge with code examples, link to interactive demo | Demonstrate the bridge concept in action |
-| 3 | Day 7 | Why every ML course fails JavaScript developers | Problem-focused essay explaining the Python-first gap, position Tensorcraft as the solution | Build resonance with the pain point |
-| 4 | Day 14 | Meet Deep Orbit: your first Tensorcraft world | Introduce the world narrative, characters, visual style, and Module 1 outline | Build excitement for the product |
-| 5 | Day 21 | 5 things you can build with JavaScript ML | Practical project showcase (sentiment analysis, image classification, anomaly detection, recommendations, search ranking) | Demonstrate practical value |
-| 6 | Day 30 | Behind the scenes: how we built Tensorcraft | Technical deep-dive on the platform (Next.js, Sandpack, TensorFlow.js, design system) | Build trust through transparency |
-| 7 | Day 45 | The bridge that surprised us most | Highlight an unexpected JS-to-ML bridge that beta testers loved, include their quotes. **Note: Testimonials/quotes descoped until real testimonials are available.** | Social proof + engagement |
-| 8 | Day 60 | Tensorcraft launch date announcement | Announce the launch date, full world pricing ($50), and what's included | Create anticipation |
-| 9 | Day 75 | 1 week until launch: here's your plan | Pre-launch checklist for the reader (block 2 hours, bookmark the URL, prepare your dev environment - just kidding, it's browser-based) | Build urgency with humor |
-| 10 | Launch Day | Tensorcraft is LIVE. Your bridge awaits. | Launch announcement, launch pricing ($50), direct link to free Module 1, 48-hour launch discount | Convert to signup/purchase |
-| 11 | Launch +7 | How the first week went (honest numbers) | Transparent update on launch results, learner count, first testimonials, what's next. **Note: Testimonials descoped until real testimonials are available.** | Build community through transparency |
-
-## 5.4 Waitlist Target
-
-**Goal: 5,000 waitlist signups before launch day.**
-
-Conversion math:
-- 5,000 waitlist signups
-- 60% open rate on launch email (warm, engaged list) = 3,000 opens
-- 30% click-through to site = 900 visitors from email alone
-- 20% of visitors start free Module 1 = 180 free users from waitlist email
-- Plus organic launch day traffic (Product Hunt, HN, Twitter/X) = estimated 2,000-5,000 additional visitors
-- 8-12% free-to-paid conversion over 30 days = 200-500 paid users in first month
-- At $50 per world: $10,000-$25,000 launch month revenue
-
-The waitlist is not just a launch asset - it's the foundation of the email nurture engine that drives long-term revenue. Every subscriber who doesn't convert at launch enters the ongoing newsletter funnel.
-
----
-
-# PART 6: CONTENT MARKETING CALENDAR
-
-## 6.1 First 30 Days
-
-| Day | Type | Topic | Platform |
-|-----|------|-------|----------|
-| 1 | Bridge Post | React State and Neural Network Weights: The Same Mental Model | dev.to, Hashnode, blog |
-| 3 | Tutorial | Build a Color Classifier with Vanilla JS and TensorFlow.js | dev.to, blog |
-| 5 | Bridge Graphic | useState = model.weights (visual) | Twitter/X, LinkedIn |
-| 7 | Thread | "JavaScript developers already understand 70% of ML. Here's why." (10-tweet thread) | Twitter/X |
-| 9 | Bridge Post | Component Lifecycles Are Training Loops in Disguise | dev.to, Hashnode, blog |
-| 11 | Video | Bridge Demo: Virtual DOM Diffing vs Gradient Descent (animated, 3 min) | YouTube, Twitter/X |
-| 13 | Behind-the-Scenes | Why We Are Building an ML Course for JavaScript Devs | blog, Hashnode, Indie Hackers |
-| 15 | Bridge Graphic | useEffect = backpropagation (visual) | Twitter/X, LinkedIn |
-| 17 | Concept Explainer | Neural Networks for JS Devs: No Math, No Python, No Problem | dev.to, blog |
-| 20 | Tutorial | Image Recognition in the Browser: A React Tutorial | dev.to, blog |
-| 22 | Bridge Post | Virtual DOM Diffing and Gradient Descent Walk Into a Bar | dev.to, Hashnode |
-| 25 | Newsletter | The Bridge #1: Redux Reducers and Loss Functions | Substack |
-| 27 | Bridge Graphic | component tree = neural network layers (visual) | Twitter/X, LinkedIn |
-| 30 | Roundup | Month 1 Retrospective: What We Learned, What's Next | blog, Substack, Twitter/X |
-
-## 6.2 Ongoing Cadence
-
-After the first 30 days, settle into a sustainable weekly rhythm:
-
-- **Monday:** Bridge post published on dev.to + Hashnode + blog. Cross-promoted on Twitter/X with bridge graphic.
-- **Tuesday:** Newsletter sent via Substack ("The Bridge" weekly edition). Tutorial or concept explainer published.
-- **Wednesday:** Community engagement day. Reply to comments on dev.to posts. Engage in Reddit discussions. Discord community events (bridge challenge, AMA, etc.).
-- **Thursday:** Behind-the-scenes content. Build-in-public update on Twitter/X. Indie Hackers milestone post if relevant.
-- **Friday:** Curated content roundup shared on Twitter/X and LinkedIn. YouTube video published (if on a weekly video schedule; otherwise biweekly).
-
-**Biweekly:** One long-form tutorial (2,000-3,000 words) with interactive code examples. One podcast pitch or guest post submission.
-
-**Monthly:** One behind-the-scenes deep-dive. One content performance review (identify top-performing pieces, double down on what works). One competitive landscape scan (what are others publishing in the ML education space?).
-
----
-
-# PART 7: BRAND GUIDELINES
-
-The Tensorcraft brand is **brutalist terminal** - sharp, technical, anti-hype. It deliberately looks nothing like the dominant ed-tech aesthetics (gradient-heavy SaaS landing pages, pastel bootcamp marketing, DeFi-neon product pages). These guidelines apply to every customer-facing surface: the product UI, marketing site, blog, social assets, ads, conference slides, and merch.
-
-## 7.1 Visual Identity
-
-- **Sharp edges, zero border-radius.** Corners are always 90 degrees. No `rounded-md`/`rounded-lg`. This is a non-negotiable brand marker.
-- **Hard offset shadows only.** The signature shadow is a `4px 4px 0` offset in the world's border color. No blurred shadows, no drop-shadows, no soft glows.
-- **No gradients.** Backgrounds are solid. Cards are solid. Buttons are solid.
-- **No glow effects.** The prior "neon" direction (glow halos, `--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) has been removed from the product and must not appear in marketing assets.
-- **Monospace-first for code, data, numbers, and accents.** Body prose is Inter, but anything that represents technical content or serves as an accent label uses JetBrains Mono.
-- **Comment-style section labels.** Uppercase, tracking-wider, muted color. Examples: `# skill_genome`, `// loss.hints`, ` - 12wk`, `// why it matters`. These replace decorative section icons and are the visual signature of the brand.
-
-## 7.2 Typography
-
-- **Body:** Inter, regular weight, generous line-height. Used for prose, descriptive copy, and longer-form reading.
-- **Code, data, numbers, accent labels:** JetBrains Mono. Always. This includes pricing numbers on the marketing site, waitlist counts, stats in ads, and section headers in the brutalist "comment" style.
-- **Section headers:** Uppercase + `tracking-wider` in JetBrains Mono when used as accent/structural labels; Inter when used as prose headings.
-- **Maximum two font families per world** - Inter + JetBrains Mono is the global default; worlds do not introduce additional display faces.
-
-## 7.3 Color
-
-- **Shared dark surface:** `#232323` is the primary surface color across all worlds. Background is `#181818`. Text is `#E0E0E0`. Muted is `#A0A0A0`. These are the platform-wide neutrals and should appear in every marketing asset.
-- **Per-world primary accents:**
-  - Deep Orbit - `#6BAA8A`
-  - Neon Protocol - `#4A90D9`
-  - Signal Ward - `#65C07D`
-  - Nova Canvas - `#D07070` (bumped from `#C06060` on 2026-04-20 to meet WCAG AA against `#232323`)
-  - Terra Grid - `#C49535`
-- **Contrast floor:** 4.5:1 for body text, 3:1 for large text. The Nova Canvas primary bump is a reminder: never ship a world color that fails AA against the shared surface.
-- **No gradient fills anywhere**, including on social-media graphics. Color transitions are always solid blocks.
-
-## 7.4 Voice & Tone
-
-- **Technical, honest, anti-hype.** We assume the reader is an engineer. We don't oversell outcomes. When we defer or cut something, we say so.
-- **Anti-marketing-speak.** No "unlock your potential," "revolutionize your career," "AI-powered everything." Write the way a senior engineer would write a thoughtful README.
-- **Brutalist mono labels for flavor.** Copy accents like `# skill_genome`, `// loss.hints`, ` - 12wk`, `// why it matters` live in code-comment voice and carry the brand's visual signature into language.
-- **First person when relevant.** The newsletter, blog, and waitlist emails are written in first person. The product UI is second person ("your skill genome," "your loss curve"). Neither ever uses corporate "we are thrilled to announce."
-
-## 7.5 What Tensorcraft Is NOT Like
-
-Explicit comparisons for marketing and design critique:
-
-- **Not like Zensman / DeFi Neon landing pages.** Tensorcraft previously prototyped in that direction and rejected it. Glow effects, gradients, and neon outlines are off-brand.
-- **Not like typical ed-tech SaaS (Coursera, Udemy, Skillshare).** No pastel illustrations, no stock photos of diverse smiling learners, no hero gradients, no rounded cards.
-- **Not like bootcamp marketing.** No outcome guarantees, no confetti celebrations, no "testimonial carousel of six-figure hires."
-
-When in doubt: does it look like it was rendered by a terminal with a hard shadow, or does it look like a Lottie animation? Only the first one ships.
-
-## 7.6 Social & Ad Assets
-
-- **Matching dark surface.** All social graphics use `#181818` or `#232323` backgrounds. The platform's look is the brand's look; there is no separate "marketing palette."
-- **Mono accents always visible.** Every graphic includes at least one monospace accent label (section header, ticker line, code snippet, bridge statement in mono).
-- **Offset shadows on cards and CTAs.** Flat solid backgrounds plus a `4px 4px 0` shadow in border color. Never blurred.
-- **Sharp corners on every element.** Cards, buttons, image crops, everything.
-- **Per-world primary accent tints** ambient effects (e.g., `ParticleField` atmosphere) on world-specific assets, but the layout, typography, and shadows are identical across all five worlds.
-- **Bridge graphics** (see §4.9) conform to these rules: `#181818` background, per-world primary accent, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout with a bridge connector, zero border-radius, offset shadow.
-
----
-
-## Risk Mitigation
-
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| Low initial demand | Medium | High | Free Module 1 reduces risk. Pivot messaging based on feedback. |
-| Content production delays | High | Medium | Build 2-month buffer. Prioritize Deep Orbit before starting new worlds. |
-| Competitor launches similar product | Low | Medium | Speed to market matters. 50+ bridges is hard to replicate quickly. |
-| Platform technical issues | Medium | High | Extensive beta testing. Error monitoring. Quick response SLA. |
-| Pricing too high for target audience | Medium | Medium | PPP discounts address global accessibility. Monitor conversion rates. |
-| Community toxicity | Low | Medium | Clear code of conduct. Active moderation from day one. |
-
----
-
-## Conclusion
-
-Tensorcraft's marketing strategy is built on a simple insight: JavaScript developers are an underserved audience in ML education, and the JS-to-ML bridge concept is a genuinely novel approach that provides organic viral potential. By leading with free, high-value content (bridge posts, free Module 1, open source components), we build trust and audience before asking for money.
-
-The per-world pricing model eliminates subscription fatigue and aligns incentives - we only get paid when we deliver a complete, valuable learning experience. The dark brutalist aesthetic makes Tensorcraft visually distinctive and inherently shareable on social media.
-
-Success depends on consistent content production, authentic community engagement, and relentless focus on the core value proposition: you already know more about ML than you think, and Tensorcraft will show you why.
+Local facts checked: [pricing and launch status](../packages/shared/src/constants.ts), [direct lesson entry](../apps/web/app/worlds/%5Bslug%5D/%5Bmodule%5D/%5Blesson%5D/page.tsx), [channel activity](../apps/web/app/components/mdx/channel-layout-experiment.tsx), [events](../apps/web/lib/analytics-events.ts), and [consent-gated analytics](../apps/web/lib/posthog.ts). The approved films and current homepage changes remain local until deployed.

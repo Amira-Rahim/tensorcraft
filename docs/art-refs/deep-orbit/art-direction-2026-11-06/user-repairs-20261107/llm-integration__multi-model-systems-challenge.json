@@ -1,0 +1,146 @@
+{
+  "id": "multi-model-challenge-reader",
+  "key": "deep-orbit/llm-integration/multi-model-systems",
+  "phase": "challenge",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png"
+  ],
+  "sources": [
+    "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+    "packages/content/content/deep-orbit/llm-integration/exercises/model-pipeline.yaml"
+  ],
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Image1 exact canonical Demir, image2 bridge ROOM ONLY, image3 EDIT TARGET. Fix the outward-facing reference card and replace meaningless puzzle blocks with the actual exercise pipeline. Keep Demir seated left at the right-side upright monitor, with his face naturally visible in three-quarter view. The monitor front already faces him; preserve its accessible reader side. Demir cross-checks a small pocket notebook, its pages tilted toward HIS eyes and its plain closed-back cover toward camera. No outward reference-card glyph. His far hand holds the notebook gently from its lower edge with the thumb correctly opposed to fingers. Near arm rests on the desk with a neutral wrist, one finger ready over the run control without an extreme hooked bend. Exactly two arms and hands, clear shoulder-elbow-wrist chains, no duplicate fingers. Candid absorbed half-smile, eyes on the monitor, canonical brow/eyes/nose/jaw/stubble/freckles/ear device. Moderate shoulders and adult head/body balance, natural short neck.\nExact screen: heading 'Pipeline test'. A downward flow 'Classify' to 'Check score' to 'Detect'. The Detect node branches into two boxes labeled 'true: write alert' and 'false: alert null'. Small line 'Unsupported class: unknown'. Bottom status 'Run: pending'. All arrows must show those directed connections, no result or success verdict, no values inferred from a run. Every word, connector and box follows the physical monitor plane. Remove old puzzle shapes entirely. All background screens and wrist display dark/inactive. Keep muted gray-sage green ink, aged matte brass, charcoal, warm skin, no fluorescent mint rim or shiny yellow gold. Landscape1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "candidatePath": "art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png",
+  "candidateSha256": "51b3f1ab781345c032472f540b16ab0f830121dbcbde0b1b31b9364f34ac04a4",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "ROOM ONLY"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png",
+      "sha256": "1611bb030f72b24746302bf6135874debee0d2f8e52d25d061775d3dc1847e88",
+      "role": "edit target"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/model-pipeline.yaml",
+      "sha256": "6d12baa1af1005db2e898a4ee161c97026beee86bc2b6144f08852317cff47f5"
+    }
+  ],
+  "ownerQa": {
+    "status": "pass",
+    "reviewer": "/root/reader_late",
+    "method": "Native fullframe plus enlarged face and hand crops; exact canonical portraits compared; all legible content checked against current MDX/YAML.",
+    "identity": "Stable canonical morphology, hair, mature ages, signature equipment. Natural head/neck/shoulder proportions.",
+    "anatomy": "Two connected arm chains per person. Relaxed wrists, plausible pen and paper/tablet/notebook contacts. No extra hands, no body/furniture intersections.",
+    "readerDirection": "All work surfaces face operators. Camera and operators share readable monitor hemisphere. Paper/source surfaces face their actual reader.",
+    "screenMeaning": "Correctly directed Classify -> Check score -> Detect with true writer and false null branches. Unknown fallback and pending run exact. Notebook front tilts toward Demir, no camera-only card.",
+    "style": "Candid task/relational eyelines and modest natural emotion; muted sage/brass, background displays inactive.",
+    "publication": "Pending independent root peer review. No runtime or shared ledger mutation."
+  },
+  "canonicalComparisons": [
+    {
+      "character": "ensign-demir",
+      "canonicalPath": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "candidateCrop": {
+        "left": 295,
+        "top": 15,
+        "width": 425,
+        "height": 560
+      }
+    }
+  ],
+  "inspectionCrops": [
+    {
+      "region": "hands and work surface",
+      "coordinates": {
+        "left": 450,
+        "top": 490,
+        "width": 540,
+        "height": 510
+      }
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/model-pipeline.yaml",
+      "sha256": "6d12baa1af1005db2e898a4ee161c97026beee86bc2b6144f08852317cff47f5"
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-6f3c8f08-b7cc-495c-bc7f-a10e3366e947.png",
+  "status": "published",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-6df0-7e53-b028-86cf4c7a706f/exec-6f3c8f08-b7cc-495c-bc7f-a10e3366e947.png",
+  "publishedSource": "art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-challenge.webp",
+  "sourceSha256": "51b3f1ab781345c032472f540b16ab0f830121dbcbde0b1b31b9364f34ac04a4",
+  "webpSha256": "c8b976599b043c68a5548d6a2b63df171418294984780271e2c831329a4a419f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png",
+    "sourceSha256": "1611bb030f72b24746302bf6135874debee0d2f8e52d25d061775d3dc1847e88",
+    "webpSha256": "9524f182bf040de766fa069d14b8417614f97586616ff0c0c4fdc8363d5dd4f4",
+    "generatedPath": null
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_late",
+    "status": "approved",
+    "candidateSha256": "51b3f1ab781345c032472f540b16ab0f830121dbcbde0b1b31b9364f34ac04a4",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsBodyAndFurniture": "pass",
+      "headNeckAndShoulders": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "screenMeaning": "Correctly directed Classify -> Check score -> Detect with true writer and false null branches. Unknown fallback and pending run exact. Notebook front tilts toward Demir, no camera-only card."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+        "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/llm-integration/exercises/model-pipeline.yaml",
+        "sha256": "6d12baa1af1005db2e898a4ee161c97026beee86bc2b6144f08852317cff47f5"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-challenge.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-challenge.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

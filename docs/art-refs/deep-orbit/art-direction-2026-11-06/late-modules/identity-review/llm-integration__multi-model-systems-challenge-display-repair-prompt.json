@@ -1,0 +1,44 @@
+{
+  "queueIndex": 77,
+  "key": "deep-orbit/llm-integration/multi-model-systems",
+  "phase": "challenge",
+  "status": "awaiting-new-generation",
+  "newGeneration": true,
+  "cast": [
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      280,
+      0,
+      445,
+      550
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__multi-model-systems-challenge-display-stage1-openai-20261107.png",
+      "sha256": "2affd45a0a1244d449f1379c3b760389d09527954fa265f9ba4ff08c3f904d1f",
+      "role": "target scene"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Image 1 is the authoritative canonical Demir identity portrait. Image 2 is the edit target. Change ONLY the graphics INSIDE the large right monitor. Preserve the exact face, hair, skin, earpiece, body, uniform, arms, hands, fingers, held card, control panel, furniture, camera, room and all lighting. The target display currently has three inline green boxes. Correct it to a contract checkpoint stopping a malformed result. Inside the monitor: keep the left green stage containing an intact cube. A short green connector leads to the middle checkpoint, a small amber outlined vertical gate with a visible amber stop bar across it. Put the malformed cube with the missing corner in a separate AMBER outlined rectangle BELOW the middle checkpoint, clearly outside the horizontal route, with one short amber tether ending at the stop bar. No green connection through the gate. At the right, keep the final stage box and intact cube but make both DIM NEUTRAL GRAY and unlit, with a wide visible dark gap before it. The malformed result is blocked and the final stage has not run. Three stage positions remain readable left to right, invalid output held beneath the checkpoint. No text, letters, numerals, labels, check marks or success symbols. Preserve every non-display pixel as closely as possible. No added humans, body parts or props. One 1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/llm-integration__multi-model-systems-challenge-display-repair-prompt.json",
+  "newSource": "art-src/scenes/llm-integration__multi-model-systems-challenge-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems-challenge.webp",
+  "alt": "Demir stops an invalid stage result before it reaches the alert writer.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+  "lessonSha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/llm-integration__multi-model-systems-challenge-display-stage1-openai-20261107.png",
+      "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/llm-integration__multi-model-systems-challenge-prompt.json",
+      "reason": "Invalid output remained green and inline; relocate it outside the checkpoint and dim the unexecuted final stage."
+    }
+  ]
+}

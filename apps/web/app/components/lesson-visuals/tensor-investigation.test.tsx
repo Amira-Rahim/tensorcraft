@@ -10,6 +10,7 @@ import { TensorInvestigation } from "./tensor-investigation";
 import * as tensorExample from "./tensor-example";
 import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
 import { WORKED_PACKET } from "../mdx/channel-layout-data";
+import { LESSON_SCENE_ART } from "@/lib/lesson-scene-art";
 
 afterEach(() => {
   cleanup();
@@ -23,6 +24,26 @@ const renderExample = () =>
   );
 
 describe("the opening signal chart", () => {
+  it("uses the approved Concept image in the first lesson's dedicated experiment", () => {
+    const key = "deep-orbit/foundations/introduction-to-tensors";
+    const previous = LESSON_SCENE_ART[key];
+    LESSON_SCENE_ART[key] = {
+      ...previous,
+      concept: {
+        src: `/scenes/${key}-concept.webp`,
+        alt: "Demir prepares the selected readings.",
+      },
+    };
+    try {
+      renderExample();
+      expect(
+        screen.getByAltText("Demir prepares the selected readings."),
+      ).toHaveAttribute("src", `/scenes/${key}-concept.webp`);
+    } finally {
+      LESSON_SCENE_ART[key] = previous!;
+    }
+  });
+
   it("uses the same twelve readings as the mission without a time-window choice", async () => {
     const run = vi
       .spyOn(tensorExample, "runTensorExample")
@@ -43,7 +64,7 @@ describe("the opening signal chart", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
-        "From your latest run",
+        "From this supplied example run",
       ),
     );
     expect(
@@ -55,6 +76,51 @@ describe("the opening signal chart", () => {
     expect(run).toHaveBeenCalledWith(WORKED_PACKET.flat());
     expect(screen.getByText("[12]")).toBeInTheDocument();
     expect(screen.queryByText(/practice packet/i)).not.toBeInTheDocument();
+  });
+  it("links chart selection to flat positions while keeping equal values at different moments", async () => {
+    vi.spyOn(tensorExample, "runTensorExample").mockResolvedValue({
+      shape: [12],
+      values: WORKED_PACKET.flat(),
+      chartRows: [0, 1, 2, 3].map((sensor) =>
+        WORKED_PACKET.map((row) => row[sensor]!),
+      ),
+    });
+    const { container } = renderExample();
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
+    await screen.findByRole("region", { name: "Chart from this example" });
+    fireEvent.click(screen.getByRole("button", { name: "Sensor D" }));
+    const selected = container.querySelectorAll(
+      "[data-reading-index][data-selected=true]",
+    );
+    expect(
+      Array.from(selected, (cell) => cell.getAttribute("data-reading-index")),
+    ).toEqual(["3", "7", "11"]);
+    expect(
+      Array.from(selected, (cell) => cell.querySelector("code")!.textContent),
+    ).toEqual(["8", "8", "9"]);
+    expect(
+      screen.getByText(/Sensor D uses indices 3, 7, 11/),
+    ).toHaveTextContent("Its readings are 8, 8, 9, in moment order.");
+    expect(container.querySelectorAll("[data-exercise-series]")).toHaveLength(
+      1,
+    );
+    expect(container.querySelector("[data-exercise-series]")).toHaveAttribute(
+      "data-exercise-series",
+      "3",
+    );
+    expect(
+      Array.from(
+        container.querySelectorAll("circle title"),
+        (title) => title.textContent,
+      ),
+    ).toEqual(["Sensor D, 1: 8", "Sensor D, 2: 8", "Sensor D, 3: 9"]);
+    fireEvent.click(screen.getByRole("button", { name: "All series" }));
+    expect(
+      container.querySelectorAll("[data-reading-index][data-selected=true]"),
+    ).toHaveLength(12);
+    expect(container.querySelectorAll("[data-exercise-series]")).toHaveLength(
+      4,
+    );
   });
   it("prevents duplicate runs and refuses a corrupted chart", async () => {
     let finish!: (

@@ -1,0 +1,31 @@
+{
+  "key": "llm-integration/report-generation",
+  "phase": "takeaways",
+  "room": "lab",
+  "refs": [
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/masters/lab.png"
+  ],
+  "prompt": "Use case: illustration-story. Generate one distinctly staged1536x1024 Deep Orbit takeaways scene. The FIRST 2 references are the authoritative neutral crew portraits, in this order: dr-farah, chief-nazari. The LAST reference defines room materials and architecture only. Reproduce each exact individual, especially facial morphology and age, not merely clothing. Stage exactly these humans: Dr. Farah, adult woman 38, olive-tan skin, dark loosely tied wavy hair, green AR lens over one eye, slate lab coat and stylus, Chief Nazari, mature woman 48, lined tan face, short practical dark hair with grey streaks, olive engineering coverall and restrained warmth. FARAH must be exactly the reference woman: mature38 olive-tan face, broad rounded nose tip and bridge, full rounded cheeks, short rounded chin, restrained almond eyes with canonical eye spacing and brows, faint adult eye/smile lines, natural dark hairline and loosely tied waves. Same anatomical eye has rectangular green AR lens. Do not make a tiny upturned nose, pointed slim jaw, large glamorous eyes or a younger face. NAZARI must be exactly the reference mature48 woman: weathered tan complexion, broad set jaw and cheeks, compact rounded nose, characteristic thick brows/eye spacing, forehead lines, crowfeet and cheek folds. Short practical dark bob with grey streaks. Keep mature features and restrained warm humor, no de-aging or slim pointed chin. Favor frontal or gentle three-quarter faces with both eyes and full nose width visible; retain natural story gaze. Faces should be large enough to verify, not tiny profiles. Two-person final consistency review. Farah holds the assembled report in two hands, while Nazari holds a source tablet in one hand and a pencil in the other. Between them on the desk sit two section cards with conflicting simple waveform marks linked by a thin amber bracket. Their expressions are collaborative and lightly amused at catching a mismatch. Separate section review is followed by whole-report checking. No transmission or guaranteed correctness claim. All human faces are clearly visible, expressive and well lit. Keep the adventure inviting, curious and lightly warm, with restrained humor where appropriate. Each human has exactly two continuous arms and two hands with natural thumbs and fingers. Trace every limb to its shoulder. Separate bodies, sleeves, hands, chairs, rails and tabletop volumes with clear silhouettes and natural contact shadows. Avoid crossed or overlapping limbs where they obscure anatomy. No extra limb, forked forearm, fused fingers, floating hand, duplicated person, body through furniture, black silhouettes, humanoid ARIA, readable words, letters, numerals, watermark or fake code. Displays use simple unlabeled visual marks without invented claims. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Any background display copied from the room master must be simplified to plain dark panels or simple waveform plots. No letter-like glyphs, pseudo-equations, decorative scribbles, astronomical pictures, planets, clouds, crystals or arbitrary science pictograms anywhere on displays. ",
+  "alt": "Farah and Nazari check the assembled report for contradictions across its reviewed sections.",
+  "lessonFile": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+  "lessonSha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room master"
+    }
+  ]
+}

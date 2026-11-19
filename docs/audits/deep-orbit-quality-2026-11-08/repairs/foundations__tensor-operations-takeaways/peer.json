@@ -1,0 +1,66 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T19:02:54.400613+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-takeaways/candidate.png",
+  "candidateSha256": "9b38889357b3b114c5839a4ae8a5b5472bd929bd625e85bf632ade0c25f4c4cc",
+  "nativeReviewed": true,
+  "method": "Independent full native original and native face/hand crops compared with canonical portraits. Complete shoulder, elbow, wrist and hand chains traced; thumb side, prop contact, source values, operator-facing display and generous main display size inspected.",
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+      "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+    }
+  ],
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "Canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinates": [
+    {
+      "name": "peer-foundations__tensor-operations-takeaways-0",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-takeaways/candidate.png",
+      "rect": [
+        175,
+        75,
+        415,
+        460
+      ]
+    },
+    {
+      "name": "peer-foundations__tensor-operations-takeaways-1",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-takeaways/candidate.png",
+      "rect": [
+        105,
+        450,
+        525,
+        165
+      ]
+    },
+    {
+      "name": "peer-foundations__tensor-operations-takeaways-2",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-operations-takeaways/candidate.png",
+      "rect": [
+        170,
+        805,
+        550,
+        155
+      ]
+    }
+  ],
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "verdict": "PASS",
+  "findings": [
+    "The generous main display correctly shows [3, 9] multiplied by gain 2 to [6, 18], block [readings, channels], mix [banks, channels], the transposed matrix multiplication and result [readings, banks].",
+    "All four visible arms trace back to the correct shoulders. Keyboard, notebook, chair and folio contacts are plausible with coherent thumbs. Canonical identities, restrained satisfied expressions and screen-directed gaze pass."
+  ],
+  "repairDirection": "None."
+}

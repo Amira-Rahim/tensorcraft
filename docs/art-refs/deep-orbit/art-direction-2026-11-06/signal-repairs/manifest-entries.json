@@ -1,0 +1,244 @@
+{
+  "deep-orbit/signal-processing/time-vs-frequency": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/signal-processing/time-vs-frequency.webp",
+      "alt": "Farah compares the archive and live traces while Demir considers their matching swell.",
+      "location": "Archimedes, Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/signal-processing/time-vs-frequency-concept.webp",
+      "alt": "Farah and Demir compare the three source tones and their amplitudes with the combined time trace.",
+      "location": "lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/signal-processing/time-vs-frequency-challenge.webp",
+      "alt": "Demir compares synthetic captures with the lesson's sample and FFT difference thresholds.",
+      "location": "lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/signal-processing/time-vs-frequency-takeaways.webp",
+      "alt": "Farah checks the reversible complex FFT view at her lab terminal and notes that magnitude alone omits phase.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/signal-processing/time-vs-frequency-epilogue.webp",
+      "alt": "Farah leaves Demir comparing the disputed capture with confirmed background before the overnight transform.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/signal-processing/fourier-transform": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/signal-processing/fourier-transform.webp",
+      "alt": "Farah helps Demir interpret bin 10 from the overnight FFT using the capture size and sample rate.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/signal-processing/fourier-transform-challenge.webp",
+      "alt": "Demir prepares to find the strongest non-DC FFT bin and convert its index to hertz.",
+      "location": "lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/signal-processing/fourier-transform-takeaways.webp",
+      "alt": "Farah adjusts the window length while comparing coarse and fine frequency-bin spacing.",
+      "location": "Archimedes, Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/signal-processing/fourier-transform-concept.webp",
+      "alt": "Farah traces the two example FFT peaks at five and twenty hertz while Demir follows her explanation.",
+      "location": "Archimedes, Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/signal-processing/fourier-transform-epilogue.webp",
+      "alt": "Farah catches Demir's wrist as they discover an unexplained 73.5 Hz FFT bin.",
+      "location": "lab"
+    }
+  },
+  "deep-orbit/signal-processing/spectrograms": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/signal-processing/spectrograms.webp",
+      "alt": "Farah and Demir investigate when a tone disappears from successive windows.",
+      "location": "Archimedes, Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/signal-processing/spectrograms-concept.webp",
+      "alt": "Farah traces three overlapping windows into corresponding spectrogram columns on an upright lab monitor.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/signal-processing/spectrograms-challenge.webp",
+      "alt": "Demir measures a synthetic 40 Hz burst using four consecutive 64-sample windows.",
+      "location": "lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/signal-processing/spectrograms-takeaways.webp",
+      "alt": "Farah adjusts the STFT comparison while Demir weighs frequency detail against timing.",
+      "location": "Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/signal-processing/spectrograms-epilogue.webp",
+      "alt": "Farah records an approximate 73.4-second gap between tone onsets and revises the steady-oscillator hypothesis.",
+      "location": "lab"
+    }
+  },
+  "deep-orbit/signal-processing/fft-as-features": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/signal-processing/fft-as-features.webp",
+      "alt": "Demir sketches his FFT feature proposal as Farah and Nazari question its expected accuracy.",
+      "location": "Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/signal-processing/fft-as-features-takeaways.webp",
+      "alt": "Farah and Nazari review which data may fit the feature scaler.",
+      "location": "Engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/signal-processing/fft-as-features-epilogue.webp",
+      "alt": "Nazari records 87 percent beside Demir's prediction as he smiles at the result.",
+      "location": "Archimedes, Engineering"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/signal-processing/fft-as-features-concept.webp",
+      "alt": "Farah and Demir compare the eight selected FFT bins at the workbench.",
+      "location": "Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/signal-processing/fft-as-features-challenge.webp",
+      "alt": "Demir builds a fixed-order feature row from amplitude, zero crossings and eight FFT bins.",
+      "location": "engineering"
+    }
+  },
+  "deep-orbit/signal-processing/windowing-and-overlap": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/signal-processing/windowing-and-overlap.webp",
+      "alt": "Farah explains the taper tradeoff to a skeptical Nazari and a thoughtful Demir.",
+      "location": "Archimedes, Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/signal-processing/windowing-and-overlap-concept.webp",
+      "alt": "Farah traces how Hann weights soften the signal edges before the FFT.",
+      "location": "Archimedes, Lab"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/signal-processing/windowing-and-overlap-challenge.webp",
+      "alt": "Demir and Nazari prepare a symmetric Hann test before comparing the far-bin magnitudes.",
+      "location": "Archimedes, Lab"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/signal-processing/windowing-and-overlap-takeaways.webp",
+      "alt": "Demir records how a Hann window changes leakage and FFT magnitudes.",
+      "location": "Lab"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/signal-processing/windowing-and-overlap-epilogue.webp",
+      "alt": "Farah pins the tapered spectrum beside sample 7741 as Demir watches the surviving peak.",
+      "location": "Archimedes, Lab"
+    }
+  },
+  "deep-orbit/browser-runtimes/why-the-browser": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/browser-runtimes/why-the-browser.webp",
+      "alt": "Nazari and Demir inspect a local runtime plan while the compute-bay link is unavailable.",
+      "location": "bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/browser-runtimes/why-the-browser-concept.webp",
+      "alt": "Demir tests the connection while Nazari compares local browser prediction with the server request path.",
+      "location": "bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/browser-runtimes/why-the-browser-challenge.webp",
+      "alt": "Demir prepares to test three deployment-policy inputs at the bridge console."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/browser-runtimes/why-the-browser-takeaways.webp",
+      "alt": "Nazari checks the cached app, runtime and model needed for local offline inference.",
+      "location": "bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/browser-runtimes/why-the-browser-epilogue.webp",
+      "alt": "Demir starts the TensorFlow.js package download as Nazari records the dashboard deployment plan."
+    }
+  },
+  "deep-orbit/browser-runtimes/tensorflow-js-setup": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup.webp",
+      "alt": "Nazari and Demir inspect the fictional console benchmark for the same matrix multiplication on WebGL, WASM, and CPU."
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-concept.webp",
+      "alt": "Nazari checks Demir's setup while a large display shows TF.js installation, readiness and backend verification.",
+      "location": "bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-challenge.webp",
+      "alt": "Demir works through an optional backend request, runtime readiness, and actual backend and version reporting."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-takeaways.webp",
+      "alt": "Nazari and Demir prepare a device timing check, with output readback included before the timer stops.",
+      "location": "bridge"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup-epilogue.webp",
+      "alt": "Demir logs five WebGL bridge stations and the slower WASM engineering panel while Nazari rests a hand on its chair."
+    }
+  },
+  "deep-orbit/browser-runtimes/model-loading": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/browser-runtimes/model-loading.webp",
+      "alt": "Demir finds a wrong model URL and checks the expected manifest path and referenced weights file."
+    }
+  },
+  "deep-orbit/browser-runtimes/onnx-runtime-web": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/browser-runtimes/onnx-runtime-web.webp",
+      "alt": "Nazari asks Demir for a controlled TFJS and ONNX WASM benchmark on the same input.",
+      "location": "bridge"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-concept.webp",
+      "alt": "Nazari points out an operation in DEEP SCAN while Demir considers what the ONNX provider must support.",
+      "location": "Engineering"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-challenge.webp",
+      "alt": "Demir waits for the two simulated runtime outputs while checking the same input on both terminals.",
+      "location": "Engineering"
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-takeaways.webp",
+      "alt": "Nazari reviews the controlled runtime comparison checklist on the target device.",
+      "location": "engineering"
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/browser-runtimes/onnx-runtime-web-epilogue.webp",
+      "alt": "Demir studies ARIA's overnight comparison of three different inference workloads.",
+      "location": "Engineering"
+    }
+  },
+  "deep-orbit/browser-runtimes/transformers-js": {
+    "briefing": {
+      "src": "/scenes/deep-orbit/browser-runtimes/transformers-js.webp",
+      "alt": "Demir questions whether they need more training while Nazari points him toward a pretrained sentiment pipeline.",
+      "location": "Lab"
+    },
+    "concept": {
+      "src": "/scenes/deep-orbit/browser-runtimes/transformers-js-concept.webp",
+      "alt": "Demir runs the report pipeline while Nazari checks the preprocessing and model assets.",
+      "location": "bridge"
+    },
+    "challenge": {
+      "src": "/scenes/deep-orbit/browser-runtimes/transformers-js-challenge.webp",
+      "alt": "Demir prepares to keep supplied report, label and score pairs together while sorting the simulated batch."
+    },
+    "takeaways": {
+      "src": "/scenes/deep-orbit/browser-runtimes/transformers-js-takeaways.webp",
+      "alt": "Nazari checks model suitability and deployment requirements at a lab workstation."
+    },
+    "epilogue": {
+      "src": "/scenes/deep-orbit/browser-runtimes/transformers-js-epilogue.webp",
+      "alt": "Farah watches Demir begin a note beside the Sector 7-G signal display.",
+      "location": "Lab"
+    }
+  }
+}

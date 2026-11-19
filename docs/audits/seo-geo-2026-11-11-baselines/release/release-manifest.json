@@ -1,0 +1,255 @@
+{
+  "sourceHead": "22cae183b5d4f7098da406ce755bc5f26eb650f2",
+  "releaseDirectory": "/private/tmp/tensorcraft-release-20261111-ajni01fn/source",
+  "createdAtUtc": "2026-11-11T10:55:38.535252+00:00",
+  "overlayFileCount": 47,
+  "overlay": [
+    {
+      "path": "apps/api/.env.example",
+      "status": "modified",
+      "sha256": "bbd380bd2d0730f043077dc20d900ca2ffbddd5a1118679a7e96ff13ee012b72"
+    },
+    {
+      "path": "apps/api/src/env.ts",
+      "status": "modified",
+      "sha256": "53eb403b48a721a88f1826f7ac62b201bf0520c57538c9672993e308687de659"
+    },
+    {
+      "path": "apps/api/src/index.ts",
+      "status": "modified",
+      "sha256": "8db80e20a575c2432709978d085970d645434034b758dbd5548f7c2eae40c17c"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/posthog.test.ts",
+      "status": "modified",
+      "sha256": "91e8e75ac657cf88d656752328a9dd3efcdf3ed4b8eda66c5115f0d695c8b5ab"
+    },
+    {
+      "path": "apps/api/src/lib/analytics-consent.ts",
+      "status": "added",
+      "sha256": "1b00029d73439461122211fe1dc45afb8106e1b2f69a49fdf2d30460f5cbf455"
+    },
+    {
+      "path": "apps/api/src/lib/posthog.ts",
+      "status": "modified",
+      "sha256": "7cd4cdb347ccb1b4c99fd13c1f8d3ed451511a229338320b3945154e927f3dce"
+    },
+    {
+      "path": "apps/api/src/middleware/auth.ts",
+      "status": "modified",
+      "sha256": "2916d1efaf5624815608f0a5c8937a93fd05384a864c4f1750f07719e4451df7"
+    },
+    {
+      "path": "apps/api/src/routes/__tests__/analytics-consent.test.ts",
+      "status": "added",
+      "sha256": "7e4d3ba1063c0a9d8dfd577821fd9ba8d6e7d9443721aba5a3f5c415ee2b64c9"
+    },
+    {
+      "path": "apps/api/src/routes/__tests__/profiles-privacy.test.ts",
+      "status": "modified",
+      "sha256": "ef41625dfa9b2a7590839136ccebb9a0aa05ee27ff1194fbeeb25e69785f78ff"
+    },
+    {
+      "path": "apps/api/src/routes/__tests__/stripe-flow-integration.test.ts",
+      "status": "modified",
+      "sha256": "e3986f9881f042e33594c327494f0f490ced3f91740ef26094d70d8cf895ac4d"
+    },
+    {
+      "path": "apps/api/src/routes/__tests__/supabase-integration.test.ts",
+      "status": "modified",
+      "sha256": "714ea24c49e6adab3818041cdc2ed52c6588b0f06349e3f3424c460528d575bc"
+    },
+    {
+      "path": "apps/api/src/routes/analytics-consent.ts",
+      "status": "added",
+      "sha256": "81e565f0fef91124899aaab5322ac9e3ef1bacc94bd854359b9b0558026a97b0"
+    },
+    {
+      "path": "apps/api/src/routes/github.ts",
+      "status": "modified",
+      "sha256": "6f90c0f13062fb7adf4becfe89af49b8abbf7af4f16d40bf39dbb5bf85218993"
+    },
+    {
+      "path": "apps/api/src/routes/payments.test.ts",
+      "status": "modified",
+      "sha256": "7517cf2ba84674e91e77f4dc0bcab4fdb305577e273b05915d268b9c7883cfe5"
+    },
+    {
+      "path": "apps/api/src/routes/payments.ts",
+      "status": "modified",
+      "sha256": "20d3d5fe0a40f24723209a71b26cfcbed7989826946a8143cb036cc9cb11a3a3"
+    },
+    {
+      "path": "apps/api/src/routes/profiles.ts",
+      "status": "modified",
+      "sha256": "0bc834066a2aa99dc135f64489b82e3ded3c7e8236ae1cf15fc1483f5949fc7f"
+    },
+    {
+      "path": "apps/web/app/components/__snapshots__/cookie-consent.snapshot.test.tsx.snap",
+      "status": "modified",
+      "sha256": "dcc8d94255db7001f1c895d5c6e7cf3037631d4dcce2f495f5e453f39312e842"
+    },
+    {
+      "path": "apps/web/app/components/__tests__/analytics-provider.test.tsx",
+      "status": "modified",
+      "sha256": "5e98871cec0e0fcc6dffe19a1b2e9a437d2803870ca6fce5d42a23966e01eafe"
+    },
+    {
+      "path": "apps/web/app/components/__tests__/consent-gated-speed-insights.test.tsx",
+      "status": "modified",
+      "sha256": "25d77581262dc8aa735c1357fe4accf0bd420c93708c9988b9bec4c41fd9d781"
+    },
+    {
+      "path": "apps/web/app/components/consent-sync.test.tsx",
+      "status": "added",
+      "sha256": "df317afed8cb34ee3ec10f1c4515a992ffccc140b1fb829f0dc4abd0c18a536f"
+    },
+    {
+      "path": "apps/web/app/components/consent-sync.tsx",
+      "status": "added",
+      "sha256": "253edab3e248bcff5320764d1ab18ac8cfece714ca0a00fe6dcb97b5bcf85cba"
+    },
+    {
+      "path": "apps/web/app/components/cookie-consent.test.tsx",
+      "status": "modified",
+      "sha256": "18444a553182b0a95e1f50100027976e42957e989c48e08bd8462b2e981297f0"
+    },
+    {
+      "path": "apps/web/app/components/cookie-consent.tsx",
+      "status": "modified",
+      "sha256": "3fddaec2cd5b3dd0b8a67ae7d8b03422905a0ab6cbed105092201e49caf5befd"
+    },
+    {
+      "path": "apps/web/app/components/cookie-settings-button.tsx",
+      "status": "modified",
+      "sha256": "8fb6108d3ed35bb20c7922de1833ec1735fcbc389f105f1c443c89757f78685f"
+    },
+    {
+      "path": "apps/web/app/dashboard/purchase-success/page.test.tsx",
+      "status": "modified",
+      "sha256": "d226ba25f0201ff5bfc202881c5613decbbc452b26c23ea18e511dd74a24f5db"
+    },
+    {
+      "path": "apps/web/app/dashboard/purchase-success/page.tsx",
+      "status": "modified",
+      "sha256": "35e780ce66f2221f7b2c170b369ca56e3e221ca06475af6a9c5bc33f3fcd48c3"
+    },
+    {
+      "path": "apps/web/app/dashboard/purchase-success/purchase-analytics.tsx",
+      "status": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "apps/web/app/layout.test.tsx",
+      "status": "modified",
+      "sha256": "4ca6f4db4378ed7eaed384992f0c3f1b83fca6787e636d512361a34ab92a8e47"
+    },
+    {
+      "path": "apps/web/app/layout.tsx",
+      "status": "modified",
+      "sha256": "bc551ecf96a92b3102d9cfad711dce0e15c02cb941669df81e8873a7a6f5b1e4"
+    },
+    {
+      "path": "apps/web/app/privacy/page.tsx",
+      "status": "modified",
+      "sha256": "5e97ff1c9265dbd68f35aae525fa17f4a517ed55d9ae061d231844b2212170ae"
+    },
+    {
+      "path": "apps/web/lib/__tests__/analytics-traffic.test.ts",
+      "status": "added",
+      "sha256": "9ee60393c42ce8bed0be103761af4126da6609e361299556796a13e09404f6a7"
+    },
+    {
+      "path": "apps/web/lib/__tests__/consent-sync.test.ts",
+      "status": "added",
+      "sha256": "aee4f624ae09f84587b3904791176d1bf2603ebb513f13f4b1b3f1d1720e3ffb"
+    },
+    {
+      "path": "apps/web/lib/__tests__/consent.test.ts",
+      "status": "modified",
+      "sha256": "70cff960e699c0e0789ad75d0a9d11c07794755d4e3fc22f7dbc454fd220af1e"
+    },
+    {
+      "path": "apps/web/lib/__tests__/posthog.test.ts",
+      "status": "modified",
+      "sha256": "a280f62402cfa33fabfc8bb223a0123f090eb654a00d0726368a39eae40a24b9"
+    },
+    {
+      "path": "apps/web/lib/analytics-events.ts",
+      "status": "modified",
+      "sha256": "037ce87b009fcea9ecb9b234b5a91f7a71c95550119988bdea36b1caca72d4c4"
+    },
+    {
+      "path": "apps/web/lib/analytics-traffic.ts",
+      "status": "added",
+      "sha256": "7d55d1c05cc2513a87a52eed12bde3abe011a72c44053463d758edc0f440a655"
+    },
+    {
+      "path": "apps/web/lib/analytics.ts",
+      "status": "modified",
+      "sha256": "4efcdf0a096896bea26c92da867ee1675b0826d1ff9cb7f7c72e561d2077e084"
+    },
+    {
+      "path": "apps/web/lib/consent-sync.ts",
+      "status": "added",
+      "sha256": "f8c121ee35fbc204b4c4c219fe624d230d5e5ce20a18d48ce8a27c826d1f2a83"
+    },
+    {
+      "path": "apps/web/lib/consent.ts",
+      "status": "modified",
+      "sha256": "49071d8a932986eb7db04db51d9c36e6fcb0af6300bb8730e617b0dd945ce1ca"
+    },
+    {
+      "path": "apps/web/lib/posthog.ts",
+      "status": "modified",
+      "sha256": "65612174964be5ab34caf304074ac7f873f655e7bef8732548b113bc5118849e"
+    },
+    {
+      "path": "apps/web/lib/supabase/session-listener.test.tsx",
+      "status": "modified",
+      "sha256": "28ad6884ff338afd15a297e7b0f1118bdf2a3a9ad2ebf3fa21c3dffb0cbed926"
+    },
+    {
+      "path": "apps/web/lib/supabase/session-listener.tsx",
+      "status": "modified",
+      "sha256": "36e3a20a07f0635bf2c4e7f50b44c1d0ea80b14f5739a473bc1af9b76fb5b907"
+    },
+    {
+      "path": "packages/supabase/migrations/067_analytics_consent.down.sql",
+      "status": "added",
+      "sha256": "ac635b046c7a005d42f09ee92f5c328cfe410b796fbfb3be66f68a546a4427bc"
+    },
+    {
+      "path": "packages/supabase/migrations/067_analytics_consent.sql",
+      "status": "added",
+      "sha256": "457a7b607a252d15d99d852570676d0586d3000417c9c6de8a3b7069b3f669c3"
+    },
+    {
+      "path": "packages/supabase/src/types.ts",
+      "status": "modified",
+      "sha256": "9675894fe019a2bc3735a669fd0f11ca23f38cfe32e00a293a6148cebfb66049"
+    },
+    {
+      "path": "packages/supabase/tests/analytics-consent.sql",
+      "status": "added",
+      "sha256": "453fc31300b0a04296333fc085b6b76cb9e50eafdc44dbd51b9f4855a9e282b2"
+    },
+    {
+      "path": "scripts/test-rls.mjs",
+      "status": "modified",
+      "sha256": "789b4af73da29a39ca024e6534ee125eb281bf3c03004454d24f67121cfc408f"
+    }
+  ],
+  "excludedDirtyWebFiles": [
+    "apps/web/app/guides/browser-machine-learning-project/page.tsx",
+    "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.test.tsx",
+    "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx",
+    "apps/web/lib/guides.ts"
+  ],
+  "excludedDirtyDocs": true,
+  "environmentFilesIncluded": [
+    "apps/api/.env.example",
+    "apps/web/.env.example"
+  ],
+  "dependenciesIncluded": false
+}

@@ -1,0 +1,66 @@
+{
+  "module": "neural-networks",
+  "lesson": "building-a-network",
+  "phase": "takeaways",
+  "src": "/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp",
+  "index": 8,
+  "characters": [
+    "ensign-demir",
+    "commander-mirza"
+  ],
+  "prompt": "Use case: identity-preserve. This is a STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral portrait of ensign-demir. Image 2 is the authoritative neutral portrait of commander-mirza. Image 3 is the scene to correct. The people in the last image must become the SAME INDIVIDUALS as their reference portraits, with the scene's current poses, expressions and eye directions. Change only heads, hair and neck transitions as needed for identity. Preserve the exact room, bodies, all arms and hands, furniture, uniforms, screen graphics and technical diagrams, colors, lighting direction, composition and image size. ENSIGN-DEMIR (portrait 1, scene head near x=486): faithfully reproduce the portrait's mid-twenties face proportions, warm light-medium complexion, broad softly squared but compact lower face, short rounded chin, compact round-ended nose and its bridge, distinctive straight eyebrows and round alert eyes with the same spacing, short uneven stubble and sparse freckles. Keep compact tousled dark brown hair with the same front locks and hairline, and green round comms earpiece. Do not elongate the jaw or nose, make a pointed chin, inflate the quiff, enlarge the eyes or turn him into a different handsome anime character. COMMANDER-MIRZA (portrait 2, scene head near x=1086): faithfully reproduce the portrait's mature 52-year-old dark-brown face, broad compact nose and rounded tip, full restrained lips, strong brow and dark eye shape/spacing, broad lower cheeks and rounded jaw/chin, forehead folds, crow's feet and nose-to-mouth lines, close-cropped natural hair heavily silvered at the temples and same hairline. Do not slim or elongate her lower face, sharpen the nose, enlarge the eyes, reduce her age or replace her with a generic commanding woman. Preserve warmth and the current expression through expression alone, without changing facial structure. Faces must unmistakably match their individual neutral portraits even without clothing or equipment. Adapt the fixed facial geometry to the existing angle; do not simply paste a front-facing head onto a turned body. No other changes, no new people, text or limbs. One 1536x1024 scene. Identity authority overrides the target head geometry. A slight head turn toward a clear three-quarter camera view is allowed if needed to show the canonical cheeks, nose and chin, while keeping the body, neck connection, expression, task and all hands fixed. This must visibly correct facial structure, not merely restyle the existing wrong face.",
+  "references": [
+    "docs/art-refs/deep-orbit/ensign-demir.png",
+    "docs/art-refs/deep-orbit/commander-mirza.png",
+    "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp"
+  ],
+  "status": "pending",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-67a23dbe-a80d-43da-9fbe-3817d89e3c35.png",
+  "candidate": "/tmp/early-identity-candidates/8.webp",
+  "candidateSha256": "4b2ba3a7dcf7ffd9ac98b881f79c302496eeb500139886a3c4122f291847edf9",
+  "sourceSha256": "8066012a722d0b41ddc7c60592ed74662a09a5bf9863d6f7ad00d8f576112b23",
+  "beforeSha256": "d008082c22d6b6e4092919234c64d5641482bab103c345464f8e8b91b98929f1",
+  "bytes": 156668,
+  "proofs": [
+    {
+      "character": "ensign-demir",
+      "reference": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-takeaways-ensign-demir-correction.png",
+      "crop": {
+        "left": 321,
+        "top": 48,
+        "width": 330,
+        "height": 417
+      }
+    },
+    {
+      "character": "commander-mirza",
+      "reference": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "referenceSha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/identity-review/building-a-network-takeaways-commander-mirza-correction.png",
+      "crop": {
+        "left": 933,
+        "top": 54,
+        "width": 306,
+        "height": 411
+      }
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-67a23dbe-a80d-43da-9fbe-3817d89e3c35.png",
+      "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network-takeaways.webp",
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  }
+}

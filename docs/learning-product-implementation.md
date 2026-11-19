@@ -1,5 +1,7 @@
 # Learning-product implementation ledger
 
+Owner pricing update, 2026-11-09: Deep Orbit is $79 introductory and $99 regular, paid once. This supersedes earlier instructions to keep checkout at $50 or prepare a later $70 offer. Existing purchase and access commitments remain in force. The price decision does not establish learning outcomes or willingness to pay.
+
 Approved 2026-09-19. Baseline: `80a3f029`. Implements the [development plan](learning-product-development-plan.md); finding IDs refer to the [September 19 audit](audits/final-learning-product-audit-2026-09-19.md).
 
 Release status: deployed and production-smoke verified on 2026-09-19. The
@@ -27,7 +29,7 @@ screen-reader work is paused.
 - Activity analytics use the consent-gated typed registry. Payloads contain IDs, version, phase, attempt number, outcome, and assistance only. No free-text answers/code. Events describe interaction, not measured learning.
 - P5 derives labels from existing records first. New activity summaries are account-scoped, versioned, exportable/deletable, and honestly labeled by source. Old records without assistance/version stay unknown.
 - All migrations follow the repository conventions. Schema ships before dependent code; rollback retains learner data. Local verification is distinct from deployed verification.
-- The existing review manifest remains the content inventory. Changed content invalidates affected checks until reviewed. Independent review, learner studies, $70 validation, and acquisition evidence remain later stages.
+- The existing review manifest remains the content inventory. Changed content invalidates affected checks until reviewed. Independent review, learner studies, price validation and acquisition evidence remain later stages.
 
 ## Coverage and current status
 
@@ -44,7 +46,7 @@ screen-reader work is paused.
 | P8 | F11 | Complete; deployed; dashboard continuation removed 2026-09-20 | Checked Neon sample, five-world scope matrix and ending boundary; eight public layouts pass. The completion-gated dashboard continuation was removed by owner ruling (only Deep Orbit for now). |
 | P9 | All | Release verified; final acceptance awaits P7 AT | Final suites, runtime/export/RLS, internal scoring, schema-first deployment, real public/authenticated smoke and measurement handoff complete. Mandatory actual screen-reader evidence remains open. |
 | E1 | F05/F07/F12 | Later, after internal A | Independent reviewers and observed pre/post/transfer/delayed learning; no recruitment yet |
-| E2 | F01/F12 | Later | Owner's $70 decision using actual purchase/refund/support/application evidence; launch remains $50 |
+| E2 | F01/F12 | Later evidence | Assess the $79 introductory and $99 regular offer using actual purchase/refund/support/application evidence. Pricing approved 2026-11-09. |
 | E3 | F11/F12 | Later | Cohort/channel economics, retention and repeat-theme purchases; unique-user accounting |
 
 ## Verification record

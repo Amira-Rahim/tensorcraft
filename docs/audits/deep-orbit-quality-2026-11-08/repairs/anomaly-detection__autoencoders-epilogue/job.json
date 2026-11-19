@@ -1,0 +1,295 @@
+{
+  "id": "anomaly-detection__autoencoders-epilogue",
+  "lesson": "anomaly-detection/autoencoders",
+  "phase": "epilogue",
+  "cast": [
+    "dr-farah",
+    "chief-nazari"
+  ],
+  "room": "lab",
+  "src": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+  "alt": "Farah reviews suspect training rows as Nazari records the missed signal and orders another run.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T20:07:32.386808+00:00",
+  "prompt": "Use case: illustration-story. Repair the LAST reference image with minimal scene changes. The preceding canonical portraits are identity authority, followed by the room reference. Preserve the current composition, mature recognizable faces, candid expressions, body positions, complete natural arm chains, neutral wrists, crisp large readable upright wall display and its exact text, muted charcoal/sage/brass palette, warm skin and restrained rim light. Correct only the foreground paper: REMOVE ALL READABLE WORDS, NUMERALS AND SYMBOLS from the paper or open notebook, including the 90 min note. The paper may show only a few faint abstract horizontal ruling lines that follow its plane. The exact lesson evidence remains on the large wall display, which must remain readable and unchanged. Retain one perfectly straight pen with normal writing grip and tip touching paper; correct any wrist/contact needed. Do not put text on paper facing the audience. The paper is secondary and should contain no legible label. Each visible person has exactly two coherent arms and anatomically correct thumb sides. No new people. Landscape 1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "f6b8c9e2a7c3016b2d29cbc5b242d463fbdae22f3ac9c2a918911a2614535463",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "room master",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-epilogue/rejected-v1.png",
+      "sha256": "d8617b47f5cc10a33b68aa012dc150800e1a2d4e0bd4e38ff3649fdc1595b274",
+      "role": "Current candidate edit target, not identity authority"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+    "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+  },
+  "sourceSha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+  "sourceEvidence": {
+    "task": "Farah leans forward using the mouse to inspect suspect rows on the now-active large rear wall. Chief Nazari sits beside her, serious, writing in her own reader-facing logbook with one straight pen and normal grip; her other hand steadies the page. Preserve their concerned candid expressions and exact identities. All technical evidence goes on the upright wall; the small console can be inactive.",
+    "visibleDataOperationAndResult": "Title \"Mission review\". Large clean lines \"Error: 1.4x baseline\", \"Below this run cutoff\", \"412 suspect rows / 28,800\", \"Activity near 73.4 Hz\", \"Next run: 01:15\". Amber footer \"Review training rows\". Bottom qualifier \"Cause unresolved\". The paper can have only a short owner-facing \"90 min\" note.",
+    "defects": [
+      {
+        "category": "main-display-legibility",
+        "detail": "1.4x baseline, suspect 412/28800 rows, 73.4 Hz and next-run 01:15 are squeezed into a small tilted console while rear screen is unused.",
+        "repairDirection": "Move mission evidence and unresolved-cause status to large upright rear display. Keep Nazari's notes reader-facing."
+      }
+    ]
+  },
+  "generationArgs": {
+    "prompt": "Use case: illustration-story. Repair the LAST reference image with minimal scene changes. The preceding canonical portraits are identity authority, followed by the room reference. Preserve the current composition, mature recognizable faces, candid expressions, body positions, complete natural arm chains, neutral wrists, crisp large readable upright wall display and its exact text, muted charcoal/sage/brass palette, warm skin and restrained rim light. Correct only the foreground paper: REMOVE ALL READABLE WORDS, NUMERALS AND SYMBOLS from the paper or open notebook, including the 90 min note. The paper may show only a few faint abstract horizontal ruling lines that follow its plane. The exact lesson evidence remains on the large wall display, which must remain readable and unchanged. Retain one perfectly straight pen with normal writing grip and tip touching paper; correct any wrist/contact needed. Do not put text on paper facing the audience. The paper is secondary and should contain no legible label. Each visible person has exactly two coherent arms and anatomically correct thumb sides. No new people. Landscape 1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-epilogue/rejected-v1.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah reviews suspect training rows as Nazari records the missed signal and orders another run.",
+    "location": "Archimedes, Lab",
+    "action": "Farah examines the result using the mouse while Nazari makes notes with a straight pen.",
+    "emotion": "Cautious concern about suspect training rows.",
+    "eyeline": "They attend to the wall evidence between glances at the work surface.",
+    "checks": [
+      "The large wall display retains 1.4x baseline below cutoff, 412 suspect rows of 28,800, 73.4 Hz and next run 01:15.",
+      "The audience-facing 90 min note is removed. Paper has only ruling, and the single straight pen meets the page in a normal grip. Four natural arm chains and canonical faces pass fresh crops.",
+      "Canonical facial structure and complete natural arm/hand chains checked at native resolution.",
+      "Awaiting independent exact-hash peer review."
+    ]
+  },
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-8956fc2e-6d47-4afa-a660-9eaa1c286ba6.png",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+  "candidateSha256": "2fdc28be424801cda8badf7b6d784d38c8e2eb5d2bca3aa4f5fd976d65915cb5",
+  "generatedAt": "2026-11-09T06:54:23.083932+00:00",
+  "faceCropCoordinates": {
+    "dr-farah": {
+      "left": 640,
+      "top": 350,
+      "width": 290,
+      "height": 300
+    },
+    "chief-nazari": {
+      "left": 1100,
+      "top": 280,
+      "width": 295,
+      "height": 345
+    }
+  },
+  "handCropCoordinates": [
+    {
+      "left": 330,
+      "top": 810,
+      "width": 580,
+      "height": 125
+    },
+    {
+      "left": 1070,
+      "top": 700,
+      "width": 365,
+      "height": 210
+    }
+  ],
+  "ownReview": {
+    "reviewedAt": "2026-11-09T06:59:39.108961+00:00",
+    "candidateSha256": "2fdc28be424801cda8badf7b6d784d38c8e2eb5d2bca3aa4f5fd976d65915cb5",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "canonicalFaceComparison": [
+      {
+        "character": "dr-farah",
+        "referencePath": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+        "candidateCropCoordinates": {
+          "left": 640,
+          "top": 350,
+          "width": 290,
+          "height": 300
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      },
+      {
+        "character": "chief-nazari",
+        "referencePath": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+        "candidateCropCoordinates": {
+          "left": 1100,
+          "top": 280,
+          "width": 295,
+          "height": 345
+        },
+        "nativeCropReviewed": true,
+        "temporaryCropRemoved": true
+      }
+    ],
+    "handCropsReviewed": true,
+    "temporaryCropsRemoved": true,
+    "action": "Farah examines the result using the mouse while Nazari makes notes with a straight pen.",
+    "emotion": "Cautious concern about suspect training rows.",
+    "eyeline": "They attend to the wall evidence between glances at the work surface.",
+    "narrativeReason": "A below-cutoff result prompts review of suspect training rows and another run, leaving cause unresolved.",
+    "findings": [
+      "The large wall display retains 1.4x baseline below cutoff, 412 suspect rows of 28,800, 73.4 Hz and next run 01:15.",
+      "The audience-facing 90 min note is removed. Paper has only ruling, and the single straight pen meets the page in a normal grip. Four natural arm chains and canonical faces pass fresh crops."
+    ]
+  },
+  "owner": "/root/quality_sequence",
+  "attempts": [
+    {
+      "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: dr-farah, chief-nazari. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Chief Nazari: mature woman, silver-streaked dark bob, weathered tan face and olive engineering coveralls.\nSpecific action and staging: Farah leans forward using the mouse to inspect suspect rows on the now-active large rear wall. Chief Nazari sits beside her, serious, writing in her own reader-facing logbook with one straight pen and normal grip; her other hand steadies the page. Preserve their concerned candid expressions and exact identities. All technical evidence goes on the upright wall; the small console can be inactive.\nExact visible display content: Title \"Mission review\". Large clean lines \"Error: 1.4x baseline\", \"Below this run cutoff\", \"412 suspect rows / 28,800\", \"Activity near 73.4 Hz\", \"Next run: 01:15\". Amber footer \"Review training rows\". Bottom qualifier \"Cause unresolved\". The paper can have only a short owner-facing \"90 min\" note.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+      "promptSha256": "f4aa0da47747235241559a7f78a7e57fb4b033ff20d1a25756eef4d518494024",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "role": "canonical identity: dr-farah",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical identity: chief-nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/lab.png",
+          "role": "room master",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+          "role": "edit target, not identity authority",
+          "sha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032"
+        }
+      ],
+      "generationArgs": {
+        "prompt": "Use case: precise-object-edit. Recompose the LAST reference into a 1536x1024 landscape Deep Orbit lesson scene. References 1 through 2 are canonical identity authorities in this order: dr-farah, chief-nazari. Reference 3 is the room authority; reference 4 is the original edit target for story action, lighting and palette only. Preserve exact recognizable canonical facial structure, eye spacing, nose, jaw, mouth, complexion, age and signature equipment. Exactly 2 humans, the named cast only. Preserve balanced adult proportions and candid expressions. Exactly two complete arms per person, each from its own shoulder through one elbow and neutral wrist to one plausible hand. Ordinary thumb sides, fingers and natural object contact; no extra arm or bent prop. No camera-facing portraits. Faces visible naturally three-quarter with eyes directed toward work or each other. Use available empty wall or upper space for a large upright primary lesson display that is physically plausible and faces its operators. All text and lines follow the display plane, crisp and generously sized with comfortable margins. Keep essential content fully visible. Never put the sole lesson evidence upside down on paper or flat table, or on a tiny tabletop screen beneath a blank wall. Secondary paper can face its owner, but essential content is repeated upright. Remove meaningless decorative technical labels. No generic success verdicts, invented numbers, speech bubbles, watermarks or signatures. Dr. Farah: medium-brown skin, dark tied hair, gray lab coat, earrings and translucent green AR lens over her left eye. Chief Nazari: mature woman, silver-streaked dark bob, weathered tan face and olive engineering coveralls.\nSpecific action and staging: Farah leans forward using the mouse to inspect suspect rows on the now-active large rear wall. Chief Nazari sits beside her, serious, writing in her own reader-facing logbook with one straight pen and normal grip; her other hand steadies the page. Preserve their concerned candid expressions and exact identities. All technical evidence goes on the upright wall; the small console can be inactive.\nExact visible display content: Title \"Mission review\". Large clean lines \"Error: 1.4x baseline\", \"Below this run cutoff\", \"412 suspect rows / 28,800\", \"Activity near 73.4 Hz\", \"Next run: 01:15\". Amber footer \"Review training rows\". Bottom qualifier \"Cause unresolved\". The paper can have only a short owner-facing \"90 min\" note.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, cinematic character and environment framing, near-black space, green #6BAA8A interface glow, warm brass #A89060 trim, cohesive Deep Orbit series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png"
+        ],
+        "transparent_background": false
+      },
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-0042f71b-69ac-4583-9129-7bcd782455e3.png",
+      "candidateSha256": "d8617b47f5cc10a33b68aa012dc150800e1a2d4e0bd4e38ff3649fdc1595b274",
+      "ownReview": {
+        "reviewedAt": "2026-11-08T19:06:40.232869+00:00",
+        "candidateSha256": "d8617b47f5cc10a33b68aa012dc150800e1a2d4e0bd4e38ff3649fdc1595b274",
+        "nativeReviewed": true,
+        "dimensions": [
+          1536,
+          1024
+        ],
+        "method": "Fresh original-resolution image, native face crops compared with canonical portraits, and hand/prop crops. Complete arm chains, body support, gaze, reader/operator direction, surface perspective and current lesson values inspected.",
+        "scores": {
+          "color": 4,
+          "pose": 4,
+          "expression": 4,
+          "displays": 5,
+          "composition": 4,
+          "identity": 4,
+          "story": 4
+        },
+        "verdict": "candidate-passes-own-review",
+        "canonicalFaceComparison": [
+          {
+            "character": "dr-farah",
+            "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+            "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+            "candidateCropCoordinates": {
+              "left": 640,
+              "top": 350,
+              "width": 290,
+              "height": 300
+            },
+            "nativeCropReviewed": true,
+            "temporaryCropRemoved": true
+          },
+          {
+            "character": "chief-nazari",
+            "referencePath": "docs/art-refs/deep-orbit/chief-nazari.png",
+            "referenceSha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+            "candidateCropCoordinates": {
+              "left": 1100,
+              "top": 280,
+              "width": 295,
+              "height": 345
+            },
+            "nativeCropReviewed": true,
+            "temporaryCropRemoved": true
+          }
+        ],
+        "handCropsReviewed": true,
+        "temporaryCropsRemoved": true,
+        "action": "Farah examines the result using the mouse while Nazari writes a 90-minute follow-up note with one straight pen.",
+        "emotion": "Cautious concern about the suspect training rows.",
+        "eyeline": "Both attend to the main result panel between glances at their work.",
+        "narrativeReason": "The below-cutoff result prompts review of suspect training rows and a scheduled next run, leaving cause unresolved.",
+        "findings": [
+          "The large wall display clearly shows error 1.4x baseline below cutoff, 412 suspect rows of 28,800, activity near 73.4 Hz and next run 01:15.",
+          "The pen has a single straight axis through the grip to the page. Four continuous arm chains and correct thumb sides pass native crops."
+        ]
+      },
+      "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-epilogue/rejected-v1.png",
+      "failure": "Independent peer found handwritten paper text oriented toward audience instead of writer."
+    }
+  ],
+  "generationAttemptsErrors": [
+    {
+      "error": "AbsolutePathBuf deserialized without a base path",
+      "resolution": "Normalize all reference paths to absolute paths before retry."
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    }
+  ],
+  "publishedSource": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+  "removedProjectIntermediates": [
+    {
+      "path": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-epilogue/rejected-v1.png",
+      "sha256": "d8617b47f5cc10a33b68aa012dc150800e1a2d4e0bd4e38ff3649fdc1595b274",
+      "bytes": 2343796,
+      "retainedEquivalent": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-0042f71b-69ac-4583-9129-7bcd782455e3.png",
+      "reason": "Rejected intermediate, preserved in tool archive"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "status": "approved",
+  "reviewer": "late_final",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-0897f9c4-0ab5-47de-acd6-ac8af8a5f057.png",
+  "candidateSha256": "29f1dbd80c43df71c29a8dec988e57ee172bc0f1c73fecc40084d1d9b93dab29",
+  "canonicalProofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/building-a-network-epilogue-dr-farah-proof.png",
+      "sha256": "c3b674ee78c5ccda9d6f299b5f14368ab3daf22923928f051a5c5bf32e0a2fb9",
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-0897f9c4-0ab5-47de-acd6-ac8af8a5f057.png",
+      "candidateSha256": "29f1dbd80c43df71c29a8dec988e57ee172bc0f1c73fecc40084d1d9b93dab29",
+      "crop": {
+        "left": 600,
+        "top": 80,
+        "width": 305,
+        "height": 295
+      }
+    }
+  ],
+  "readerProof": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/narrative-review/building-a-network-epilogue-reader-proof.png",
+    "sha256": "0f9f545d37e2dd73fdf7e0cd698ee2bc98252ab145edeecbda279267812378e4"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+      "sha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf",
+      "section": "Epilogue lines235-247"
+    }
+  ],
+  "checks": "Native fullframe, exact canonical comparison and rotated reader detail visually inspected. Natural alert screen eyeline, meaningful saved initial states and changed rank with no invented scores. Train and test faces Farah on notebook plane. Two supported arms, clear wrists and pencil grip, knees/boots/chair coherent. Palette and proportions pass.",
+  "notes": "Approve exec0897f9c4 only, no older candidate approval inferred.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

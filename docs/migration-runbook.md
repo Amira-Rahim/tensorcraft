@@ -91,7 +91,7 @@ all-or-nothing:
   skill_events_old` is commented out - production may still hold a duplicate.
   Any future partition work must confirm the state first
   (`full-audit-2026-07-21.md §3`).
-- **The old incident runbook** (`pre-launch-checklist.md:670`) suggested a bulk
+- **The earlier incident runbook** ([historical checklist](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L670)) suggested a bulk
   `update purchases set status='refunded'` that revokes access from legitimate
   buyers and, since migration 038's trigger, is silently ignored on the
   corrective path. Do not use it; handle refunds per Stripe event, not bulk SQL.

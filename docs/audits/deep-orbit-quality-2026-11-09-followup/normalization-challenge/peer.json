@@ -1,0 +1,139 @@
+{
+  "reviewer": "/root/quality_early",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-challenge/candidate.png",
+  "candidateSha256": "dc08e436f58275d6871b39ac2b34e770d3d7778c3ad252a12f12e5400e0b7285",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "preview768Reviewed": true,
+  "method": "Fresh native image, 2x hand and face crops, complete arm-chain and prop-contact checks, canonical portraits, current MDX/exercise and independent 768 x 512 preview. Physical glass and content convergence assessed, allowing slope to change with row height.",
+  "canonicalFaceReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "Canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 0,
+      "name": "followup-normalization-challenge-face-demir",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-challenge/candidate.png",
+      "box": [
+        262,
+        128,
+        572,
+        501
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-challenge-hands",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-challenge/candidate.png",
+      "box": [
+        551,
+        758,
+        925,
+        963
+      ],
+      "scale": 2
+    },
+    {
+      "i": 0,
+      "name": "followup-normalization-challenge-arm-chains",
+      "source": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/normalization-challenge/candidate.png",
+      "box": [
+        179,
+        440,
+        951,
+        1008
+      ],
+      "scale": 1
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sha256": "5c99f4ec3da155a20aa0460b32e89af3ba535eaf8f66b8f02e7a531191c0c6ae"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Two distinct Demir shoulder-elbow-wrist chains lead to separate typing hands in front of his torso. Fingers contact the keyboard; medial far-left thumb and occluded near-right thumb are consistent with the pose.",
+    "identityExpressionAndStory": "Demir's focused gaze, canonical freckles, swept hair and stubble remain recognizable. The supported typing pose fits the challenge.",
+    "displayLegibilityAndSource": "The four raw rows [20,0.2], [22,0.8], [24,0.4], [26,0.6], batch [4,2], fit/scale/fixed-neuron flow, weights [0.9,-1.4], bias -0.3, sigmoid and pending scores [4,1] match current lesson and exercise. All remain legible at 768 x 512.",
+    "perspectiveAndOperator": "PASS: the glass and content horizontal families converge consistently, with upper lines rising toward the right and lower lines falling as expected around a common horizon. The title divider, raw-row table and lower pending-result band follow that family. The connected keyboard lies in front of the monitor and Demir occupies its readable front side.",
+    "largeDisplayRule": "Main content occupies a large working monitor and remains readable without clipped teaching text at 768 x 512.",
+    "palette": "Muted charcoal, sage and brass remain consistent with Deep Orbit."
+  },
+  "measuredGeometry": {
+    "coordinateSystem": "Approximate native 1536 x 1024 pixel coordinates",
+    "glassTop": [
+      [
+        934,
+        280
+      ],
+      [
+        1496,
+        175
+      ]
+    ],
+    "glassBottom": [
+      [
+        880,
+        719
+      ],
+      [
+        1423,
+        784
+      ]
+    ],
+    "titleDivider": [
+      [
+        943,
+        344
+      ],
+      [
+        1460,
+        271
+      ]
+    ],
+    "rawTableRule": [
+      [
+        943,
+        408
+      ],
+      [
+        1133,
+        391
+      ]
+    ],
+    "rawTableBottom": [
+      [
+        916,
+        617
+      ],
+      [
+        1113,
+        624
+      ]
+    ],
+    "interpretation": "Changing slope with vertical position is expected projective convergence, not a defect."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 4,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "repairDirection": null,
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T13:53:15.917042+00:00"
+}

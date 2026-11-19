@@ -1,0 +1,158 @@
+{
+  "id": "anomaly-detection__autoencoders-briefing",
+  "lesson": "anomaly-detection/autoencoders",
+  "phase": "briefing",
+  "char": "dr-farah",
+  "room": "lab",
+  "src": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+  "alt": "Farah compares individually normal features with an unfamiliar combination on the lab wall display.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:06:27.329578+00:00",
+  "prompt": "Use case: precise-object-edit. Asset: 1536x1024 landscape Deep Orbit lesson story illustration. Recompose the last reference image to fix the user-rejected anatomy and improve teaching display readability. Image 1 is the canonical identity authority. Image 2 is the room authority. Image 3 is the edit target, not an identity authority. Keep the same person, adult proportions, clothing, canonical face shape, eye spacing, nose, jaw, complexion, age and signature equipment. Preserve warm brass, sage green interfaces, near-black space and crisp bold cel shading. Use the room's available space for ONE generously sized, readable primary physical lesson display. Set it close to upright and angled toward the operator, with text, lines and boxes all following its plane. Never strand important text on a little tabletop screen beneath an unused large wall. Large words with comfortable margins. Show only the exact required lesson content; no filler labels or invented metrics. Keep the whole screen visible and unblocked. Exactly one human and exactly two arms, each traced from its own shoulder through elbow and neutral wrist to one hand. Natural ordinary object contact, no duplicate forearms, no dangling extra hand, no folded or twisted wrist. No pen or stylus anywhere. No pointing gesture. Keep the face recognizable in a candid three-quarter view with eyes directed to the real screen, not the audience. No tiny anonymous face. Preserve adult head/body balance, visible sensible seated or standing support. The technical display is equipment being used for the ongoing task, not a floating overlay. No unrelated diagram. No speech bubble, watermark or signature.\nCanonical person: Dr. Farah, adult woman with warm medium-brown skin, dark loosely tied hair, silver-gray lab coat, small earrings and green AR lens over her left eye. Moment: she is investigating the reading that passed individual z-score checks, despite a combination absent from eleven days of archive. Preserve her candid right-side stance and careful, slightly concerned concentration. She leans toward the lab workbench, glances up-left at the large wall screen, and uses a mouse with her right hand on the bench. Her left hand rests on the bench for support, with a natural wrist and distinct fingers. Remove the stylus. The enormous previously blank rear lab wall is the MAIN lesson display and occupies most of the left two-thirds. Transfer the technical content off the cramped tabletop console and make it large, crisply readable, comfortably spaced on that wall screen. Remove or deactivate the old small text console so it no longer competes. Exact wall display title \"One reading, three checks\". A clean three-row table: \"Amplitude\" with \"normal\"; \"Frequency\" with \"normal\"; \"Phase\" with \"normal\". Beneath the table a large amber outlined message \"Combination unseen in eleven days\". Footer \"Check feature relationships\". These are separate feature checks, not proof the combination is safe. No autoencoder result, training verdict or anomaly cause yet. Keep brass instruments, green tube, glass partition and room identity from the lab reference. Do not leave the large wall empty. No other technical text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "fe42fc9a545f802ce56f6b4bebd73dca2892912b9c32ac71877caa98065a2739",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room master"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+      "sha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+      "role": "edit target"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+    "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+  },
+  "sourceSha256": "63477b60f01a914e26f40063ca8c64a7ffb383b113ce47ff44d38b46b39606d9",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Asset: 1536x1024 landscape Deep Orbit lesson story illustration. Recompose the last reference image to fix the user-rejected anatomy and improve teaching display readability. Image 1 is the canonical identity authority. Image 2 is the room authority. Image 3 is the edit target, not an identity authority. Keep the same person, adult proportions, clothing, canonical face shape, eye spacing, nose, jaw, complexion, age and signature equipment. Preserve warm brass, sage green interfaces, near-black space and crisp bold cel shading. Use the room's available space for ONE generously sized, readable primary physical lesson display. Set it close to upright and angled toward the operator, with text, lines and boxes all following its plane. Never strand important text on a little tabletop screen beneath an unused large wall. Large words with comfortable margins. Show only the exact required lesson content; no filler labels or invented metrics. Keep the whole screen visible and unblocked. Exactly one human and exactly two arms, each traced from its own shoulder through elbow and neutral wrist to one hand. Natural ordinary object contact, no duplicate forearms, no dangling extra hand, no folded or twisted wrist. No pen or stylus anywhere. No pointing gesture. Keep the face recognizable in a candid three-quarter view with eyes directed to the real screen, not the audience. No tiny anonymous face. Preserve adult head/body balance, visible sensible seated or standing support. The technical display is equipment being used for the ongoing task, not a floating overlay. No unrelated diagram. No speech bubble, watermark or signature.\nCanonical person: Dr. Farah, adult woman with warm medium-brown skin, dark loosely tied hair, silver-gray lab coat, small earrings and green AR lens over her left eye. Moment: she is investigating the reading that passed individual z-score checks, despite a combination absent from eleven days of archive. Preserve her candid right-side stance and careful, slightly concerned concentration. She leans toward the lab workbench, glances up-left at the large wall screen, and uses a mouse with her right hand on the bench. Her left hand rests on the bench for support, with a natural wrist and distinct fingers. Remove the stylus. The enormous previously blank rear lab wall is the MAIN lesson display and occupies most of the left two-thirds. Transfer the technical content off the cramped tabletop console and make it large, crisply readable, comfortably spaced on that wall screen. Remove or deactivate the old small text console so it no longer competes. Exact wall display title \"One reading, three checks\". A clean three-row table: \"Amplitude\" with \"normal\"; \"Frequency\" with \"normal\"; \"Phase\" with \"normal\". Beneath the table a large amber outlined message \"Combination unseen in eleven days\". Footer \"Check feature relationships\". These are separate feature checks, not proof the combination is safe. No autoencoder result, training verdict or anomaly cause yet. Keep brass instruments, green tube, glass partition and room identity from the lab reference. Do not leave the large wall empty. No other technical text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "userCorrection": true,
+  "publication": {
+    "date": "2026-11-08",
+    "replacement": "in-place",
+    "source": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp"
+  },
+  "generatedAt": "2026-11-08T17:13:36.864758+00:00",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-7023f9e1-7537-4f76-a30e-d8144c7d3db6.png",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+  "candidateSha256": "63477b60f01a914e26f40063ca8c64a7ffb383b113ce47ff44d38b46b39606d9",
+  "faceCropCoordinates": {
+    "coordinateSpace": "candidate pixels, origin top-left",
+    "left": 980,
+    "top": 180,
+    "width": 310,
+    "height": 350
+  },
+  "ownReview": {
+    "reviewedAt": "2026-11-08T17:15:48.902219+00:00",
+    "candidateSha256": "63477b60f01a914e26f40063ca8c64a7ffb383b113ce47ff44d38b46b39606d9",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution full-image review plus temporary face-crop comparison against the canonical portrait. Traced all complete arm chains, inspected hands and object contact, screen perspective, text, source facts, gaze and posture.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "action": "Farah uses the lab mouse while inspecting the three individual feature checks on the wall.",
+    "emotion": "Careful concern about the unfamiliar combination.",
+    "eyeline": "Up-left to the large lab wall display.",
+    "narrativeReason": "The three normal feature checks miss their unusual joint relationship.",
+    "findings": [
+      "The large formerly empty wall now carries the full lesson content in large readable type. The small competing console is removed.",
+      "Amplitude, Frequency and Phase each read normal. Combination unseen in eleven days and Check feature relationships preserve the current opening without inventing an autoencoder result.",
+      "Farah has exactly two complete arms, one ordinary mouse grip and one supporting hand. Shoulders, elbows, wrists, neck and forward lean are coherent.",
+      "The canonical crop comparison preserves her complexion, dark tied hair, AR lens, eye shape, nose and facial proportions. Her attention goes to the wall screen, not the camera."
+    ],
+    "canonicalFaceComparison": {
+      "referencePath": "docs/art-refs/deep-orbit/dr-farah.png",
+      "referenceSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "candidateCropCoordinates": {
+        "coordinateSpace": "candidate pixels, origin top-left",
+        "left": 980,
+        "top": 180,
+        "width": 310,
+        "height": 350
+      },
+      "nativeCropReviewed": true,
+      "temporaryCropRemoved": true
+    },
+    "remainingGate": "Independent peer review and root publication; active assets remain unchanged."
+  },
+  "publicationStatus": "withheld pending independent peer review",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    }
+  ],
+  "temporaryCandidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-08/repairs/anomaly-detection__autoencoders-briefing/candidate.png",
+  "publishedSource": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+  "webpSha256": "6e9a49d565cdcc8a53b0adf429a14c28656cb19be0c9368ee9d2d9fd4186e900",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+    "sourceSha256": "078bec3438bc2cbbd9bdc38fa573b29fe0d3f194a4e8cb00da66ae0b2ece764f",
+    "webpSha256": "ebc978acb5d07ffcc5fe977b9e2bc3dd7fbf82aca2c66fea660dc9a03eebbbb0",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7c20c5cf-5d97-4f0a-95c7-a62d6d811f60.png"
+  },
+  "rootReview": {
+    "reviewer": "quality_early",
+    "authorReviewer": "/root/quality_sequence",
+    "status": "approved",
+    "candidateSha256": "63477b60f01a914e26f40063ca8c64a7ffb383b113ce47ff44d38b46b39606d9",
+    "method": "Exact candidate hash independently peer-reviewed at native size and with canonical face/hand detail, source meaning and display legibility. See adjacent peer.json.",
+    "checks": [
+      "Exact canonical identity and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and natural grip",
+      "Large upright primary display with source-grounded content",
+      "Reader/operator direction and surface perspective",
+      "Distinct candid action, reaction and narrative reason",
+      "Independent exact-hash peer PASS required"
+    ],
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/anomaly-detection__autoencoders-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

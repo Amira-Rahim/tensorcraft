@@ -1,0 +1,643 @@
+{
+  "date": "2026-11-06",
+  "owner": "scene_character_audit",
+  "direction": "Visible recognizable canonical faces per user's latest instruction. Earlier shadow candidates discarded.",
+  "items": [
+    {
+      "key": "network",
+      "asset": "neural-networks/building-a-network",
+      "chars": [
+        "commander-mirza"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset: Deep Orbit lesson scene, landscape1536x1024. Image1 is the current scene edit target and ship-bridge location reference. Image2 is the canonical identity reference for Commander Mirza.\nReframe image1 into a MEDIUM narrative shot at the command rail. Move the camera much closer to Mirza and crop the empty room area. Mirza is the clear primary subject, shown from waist or upper torso upward. Her visible face must be at least180pixels high in the1024px-tall image, preferably220px high, unmistakably readable and expressive. Show her in natural three-quarter view, giving the order to assemble the classifier with one calm open-hand gesture. Use soft balanced warm facial lighting with restrained green edge light so both eyes, skin tone, mature age lines and expression are clear.\nPreserve the exact woman from image2: mature Black woman aged52, dark brown skin, close-cropped natural hair silver at the temples, strong brow, crow's feet and smile lines, warm composed authority. Same charcoal command jacket with restrained brass piping, rank bars and plain blank brass chronometer at chest. Keep mature facial proportions, no de-aging. EXACTLY ONE human, Mirza alone.\nKeep the recognizable same Archimedes bridge with angular starfield viewports, brass rails and green consoles, but use the closer command-rail viewpoint. In the foreground or alongside Mirza, keep a substantial clearly visible GREEN THREE-STAGE NETWORK HOLOGRAM: three connected groups of simple nodes and layer blocks on a round or cropped holo table. Stage Mirza and the network together in one continuous narrative scene. Her face and the network are both visible, with no hologram covering her face. The room is supporting context.\nClean cel-shaded cartoon illustration matching image2 and the existing ship art, bold consistent linework, flat shading, green #6BAA8A interface glow and warm brass #A89060. No photorealism. No portrait inset or panel. No extra people or shadows resembling people. No faceless black cutouts, no backs-only view. All screens and holograms show only unlabeled abstract nodes, waveforms, geometric gauges and grids. NO letters, words, numbers, abbreviations, captions, labels, logos, watermarks or writing-like marks anywhere. Output landscape3:2.",
+      "references": [
+        "/Users/amira.salah/Desktop/tensorcraft/apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-0ebc051d-e49a-45e7-9a11-7b1f141c16ed.png",
+      "staged_png": "art-src/scenes/neural-networks__building-a-network-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 139270,
+      "quality": 82,
+      "visual_check": "Medium narrative framing. One canonical mature Mirza with a clearly readable face about280px high. Three-stage network hologram visible in foreground. Same bridge. No extra people.",
+      "passes": [
+        {
+          "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Commander Mirza: mature Black woman aged52, dark brown skin, visibly mature face with crow's feet and smile lines, close-cropped natural hair silver at the temples, strong brow, charcoal command jacket with restrained brass piping and a plain brass chest chronometer. Warm composed authority.\nRemove every current person and show exactly ONE human: Commander Mirza alone at the raised command console, issuing the order to assemble the network. Give her a visible three-quarter face and a natural commanding gesture with one hand, not a mannequin pose. Keep the big round central holo table and the complete connected node/layer network hologram prominent. No suit or necktie. No other crew anywhere.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+          "references": [
+            {
+              "removedInput": "neural-networks__building-a-network-original.webp",
+              "sha256": "e2aa6929284644fbe728de556f2a0604ff46a0a0d37db3e3191f957ad2b81926",
+              "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+            },
+            "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png"
+          ],
+          "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-bc7cbda1-2834-4b14-be44-67fe984276e7.png"
+        },
+        {
+          "prompt": "Use case: identity-preserve. Asset: Deep Orbit lesson scene, landscape1536x1024. Image1 is the current scene edit target and ship-bridge location reference. Image2 is the canonical identity reference for Commander Mirza.\nReframe image1 into a MEDIUM narrative shot at the command rail. Move the camera much closer to Mirza and crop the empty room area. Mirza is the clear primary subject, shown from waist or upper torso upward. Her visible face must be at least180pixels high in the1024px-tall image, preferably220px high, unmistakably readable and expressive. Show her in natural three-quarter view, giving the order to assemble the classifier with one calm open-hand gesture. Use soft balanced warm facial lighting with restrained green edge light so both eyes, skin tone, mature age lines and expression are clear.\nPreserve the exact woman from image2: mature Black woman aged52, dark brown skin, close-cropped natural hair silver at the temples, strong brow, crow's feet and smile lines, warm composed authority. Same charcoal command jacket with restrained brass piping, rank bars and plain blank brass chronometer at chest. Keep mature facial proportions, no de-aging. EXACTLY ONE human, Mirza alone.\nKeep the recognizable same Archimedes bridge with angular starfield viewports, brass rails and green consoles, but use the closer command-rail viewpoint. In the foreground or alongside Mirza, keep a substantial clearly visible GREEN THREE-STAGE NETWORK HOLOGRAM: three connected groups of simple nodes and layer blocks on a round or cropped holo table. Stage Mirza and the network together in one continuous narrative scene. Her face and the network are both visible, with no hologram covering her face. The room is supporting context.\nClean cel-shaded cartoon illustration matching image2 and the existing ship art, bold consistent linework, flat shading, green #6BAA8A interface glow and warm brass #A89060. No photorealism. No portrait inset or panel. No extra people or shadows resembling people. No faceless black cutouts, no backs-only view. All screens and holograms show only unlabeled abstract nodes, waveforms, geometric gauges and grids. NO letters, words, numbers, abbreviations, captions, labels, logos, watermarks or writing-like marks anywhere. Output landscape3:2.",
+          "references": [
+            "/Users/amira.salah/Desktop/tensorcraft/apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp",
+            "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png"
+          ],
+          "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-0ebc051d-e49a-45e7-9a11-7b1f141c16ed.png"
+        }
+      ]
+    },
+    {
+      "key": "anomaly",
+      "asset": "anomaly-detection/the-anomaly",
+      "chars": [
+        "commander-mirza",
+        "dr-farah",
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Commander Mirza: mature Black woman aged52, dark brown skin, visibly mature face with crow's feet and smile lines, close-cropped natural hair silver at the temples, strong brow, charcoal command jacket with restrained brass piping and a plain brass chest chronometer. Warm composed authority.\nInput image3: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nInput image4: Chief Nazari: mature capable woman aged48, weathered tan skin, lined face, practical short asymmetrical dark hair streaked gray, olive gunmetal engineering coverall and multitool. Guarded evaluating expression. Never a bearded man, never long hair.\nInput image5: Ensign Demir: young adult man in midtwenties, warm light-medium skin, tousled dark hair, light stubble, green comms earpiece, slate junior crew uniform and wrist terminal. Alert approachable expression.\nRemove every current person and show exactly FOUR humans: Mirza, Farah, Nazari, Demir gathered around the holo table reacting to the anomalous signal, each with a fully visible canonical three-quarter face. Mirza stands composed at left, Farah studies the projection with stylus paused, Nazari assesses a small readout skeptically, Demir turns from his wrist terminal toward the signal with concern. Keep the giant jagged waveform on the main display behind them. Do not obscure the whole main signal with people. ARIA is only a small green abstract waveform inside a thin ring on one side monitor. No fifth human.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "anomaly-detection__the-anomaly-original.webp",
+          "sha256": "5f883133f2fa7bc648aedc57c6ecda73fb9d69d17fda5bd7e414ed9ae820b84e",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-1b6a9108-616c-46ae-92f8-fc2c431d2a4d.png",
+      "staged_png": "art-src/scenes/anomaly-detection__the-anomaly-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+      "expected_human_count": 4,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 185388,
+      "quality": 78,
+      "visual_check": "exact canonical human count, visible canonical faces, room and story moment preserved"
+    },
+    {
+      "key": "finale",
+      "asset": "capstone/launch-epilogue",
+      "chars": [
+        "commander-mirza",
+        "dr-farah",
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Commander Mirza: mature Black woman aged52, dark brown skin, visibly mature face with crow's feet and smile lines, close-cropped natural hair silver at the temples, strong brow, charcoal command jacket with restrained brass piping and a plain brass chest chronometer. Warm composed authority.\nInput image3: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nInput image4: Chief Nazari: mature capable woman aged48, weathered tan skin, lined face, practical short asymmetrical dark hair streaked gray, olive gunmetal engineering coverall and multitool. Guarded evaluating expression. Never a bearded man, never long hair.\nInput image5: Ensign Demir: young adult man in midtwenties, warm light-medium skin, tousled dark hair, light stubble, green comms earpiece, slate junior crew uniform and wrist terminal. Alert approachable expression.\nReplace all current people with exactly FOUR humans: Mirza, Farah, Nazari, Demir. Recompose within the same bridge display-wall setting so all four actual faces are visible in three-quarter view, with the repeating waveforms still large behind them. They quietly react to the signal mirroring their own harmonics: Mirza's resolved calm, Farah's awe with stylus lowered, Nazari checking her handheld calibration with troubled concentration, Demir at the comms console turning toward Mirza. No backs-only lineup, no stare-at-camera pose. Several large screens show the same smooth repeated two-lobed waveform, one pane a rising correlation curve, all unlabeled. ARIA only an abstract green waveform ring on Demir's side monitor. Exactly four humans, no extra crew.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "capstone__launch-epilogue-original.webp",
+          "sha256": "e73309634568576d6426c6f776486e70e90fc873b0cb583355bacb3ebb17db5f",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-ccfdfb10-1db5-4f0b-b2b6-196eff3852f1.png",
+      "staged_png": "art-src/scenes/capstone__launch-epilogue-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/capstone/launch-epilogue.webp",
+      "expected_human_count": 4,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 188886,
+      "quality": 82,
+      "visual_check": "exact canonical human count, visible canonical faces, room and story moment preserved"
+    },
+    {
+      "key": "shapes",
+      "asset": "foundations/tensor-shapes",
+      "chars": [
+        "dr-farah"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nReplace the current figure with exactly ONE human, canonical Dr.Farah. She stands three-quarter facing the learner beside the lab whiteboard, raising her stylus toward a small hovering holographic lattice while looking at it with focused curiosity. Her face and AR lens must be clearly visible. Keep the lab bench, brass instruments, large waveform/grid display and hovering lattice. She is studying how a flat ribbon divides into grid layouts. No other humans.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "foundations__tensor-shapes-original.webp",
+          "sha256": "65f55c860e7fe6f8f10a3715c0003852fa53f09127e80cae497df7eabe7852ac",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-d77a6d17-55c9-4c30-ac22-416fbd14ed86.png",
+      "staged_png": "art-src/scenes/foundations__tensor-shapes-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 183000,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "neuron",
+      "asset": "neural-networks/first-neuron",
+      "chars": [
+        "dr-farah"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nReplace the current figure with exactly ONE human, canonical Dr.Farah. Show her in three-quarter view with an interested adult face clearly visible, tracing a SINGLE circled neuron node with her stylus on the whiteboard while glancing toward her learner just off camera. Three input lines converge on that node. Nearby displays contain two clean smooth reference-tone waveforms side by side and a third jagged waveform apart. Keep the lab architecture and brass instruments, make this a narrative teaching moment. No other humans.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "neural-networks__first-neuron-original.webp",
+          "sha256": "5abd88a9a5f3d3ab58cbe4b12284d9d08a4fdeaf6c05e0a0eb2959b71a412514",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-01b63c5f-90b7-4a58-a69b-be8c78839ea5.png",
+      "staged_png": "art-src/scenes/neural-networks__first-neuron-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 151008,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "loss",
+      "asset": "training-loop/loss-functions",
+      "chars": [
+        "dr-farah"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nReplace the current figure with exactly ONE human, canonical Dr.Farah at the lamplit lab bench, visible three-quarter face, studying the two markers on a small probability rail while sighting along her stylus. Keep her expression absorbed and precise. On the main whiteboard include one UPWARD-OPENING U-shaped parabola with its minimum at bottom center and both arms rising toward upper corners, never a downward arch. Show the two markers on a horizontal probability rail with a bracket across their gap, without numbers. Preserve the warm bench lamp and late green room light. No other humans.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "training-loop__loss-functions-original.webp",
+          "sha256": "f6469d9afc0b04fad94db2fd597b0c5a3a1d1d0c9c37a6c235b9984d15eb2fac",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-120b3081-5220-4bd9-b2a5-a4ab4a680e67.png",
+      "staged_png": "art-src/scenes/training-loop__loss-functions-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 172802,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "beyond",
+      "asset": "advanced-time-series/beyond-lstm",
+      "chars": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nInput image3: Ensign Demir: young adult man in midtwenties, warm light-medium skin, tousled dark hair, light stubble, green comms earpiece, slate junior crew uniform and wrist terminal. Alert approachable expression.\nReplace every current figure with exactly TWO humans, Farah and Demir, with both actual faces clearly visible in three-quarter view. Farah uses her stylus to circle a tiny EARLY ripple near the start of the long trace; Demir studies her annotation holding his wrist terminal. Both look focused and puzzled by the precursor. The long waveform has a small early ripple and a large pulse near the end, and the early ripple is circled. Keep the original lab, workbench, instruments and large trace. No extra people.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "advanced-time-series__beyond-lstm-original.webp",
+          "sha256": "2506a164a9a40ae8f7a75c8a71aab4b16ed4d842620c0334b3e5fca9cbc965e1",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-b363ac35-0ccf-4f95-acc9-96b4b5522b25.png",
+      "staged_png": "art-src/scenes/advanced-time-series__beyond-lstm-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/advanced-time-series/beyond-lstm.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 184296,
+      "quality": 78,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "science",
+      "asset": "llm-integration/llms-for-science",
+      "chars": [
+        "dr-farah",
+        "chief-nazari"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nInput image3: Chief Nazari: mature capable woman aged48, weathered tan skin, lined face, practical short asymmetrical dark hair streaked gray, olive gunmetal engineering coverall and multitool. Guarded evaluating expression. Never a bearded man, never long hair.\nRemove all three current figures including the bearded man. Show exactly TWO women, canonical Farah and Nazari, with their actual faces clearly visible in three-quarter view. Farah gestures with stylus toward abstract page-outline glyphs at the holo table and pitches her plan. Nazari stands nearby with arms crossed and multitool at belt, visibly evaluating it. Keep the bridge, round holo table, green countdown ring and three page-shaped rectangles, with only simple horizontal rules inside pages and no writing. No Mirza or Demir, no male engineer, no third human.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "llm-integration__llms-for-science-original.webp",
+          "sha256": "78624fdd5657dd7a94dc66adbef2726559630952b699b98602d08e96b41c2174",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-6aa19b10-0a72-4484-af63-3edf7d0347e2.png",
+      "staged_png": "art-src/scenes/llm-integration__llms-for-science-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 172718,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "prompting",
+      "asset": "llm-integration/prompt-engineering",
+      "chars": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nInput image3: Ensign Demir: young adult man in midtwenties, warm light-medium skin, tousled dark hair, light stubble, green comms earpiece, slate junior crew uniform and wrist terminal. Alert approachable expression.\nReplace every current figure with exactly TWO humans, canonical Farah and Demir, both actual faces clearly visible. Farah stands beside the whiteboard in three-quarter view marking a dense column of four framed prompt blocks with her stylus; Demir leans over the bench with wrist terminal glowing, thoughtfully comparing it with a sparse lone block diagram. Keep the lab and two contrasting abstract diagrams, one sparse and one densely structured, no writing. Make natural dialogue and shared task, not a posed portrait lineup.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "llm-integration__prompt-engineering-original.webp",
+          "sha256": "98512539f6342741039b6107aa11103f457b32060f2616642278dec7fee4788e",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-1e4ecd9f-8b80-4feb-98ca-f058097422d6.png",
+      "staged_png": "art-src/scenes/llm-integration__prompt-engineering-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/llm-integration/prompt-engineering.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 172346,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "quantization",
+      "asset": "optimization-edge/quantization",
+      "chars": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Chief Nazari: mature capable woman aged48, weathered tan skin, lined face, practical short asymmetrical dark hair streaked gray, olive gunmetal engineering coverall and multitool. Guarded evaluating expression. Never a bearded man, never long hair.\nInput image3: Ensign Demir: young adult man in midtwenties, warm light-medium skin, tousled dark hair, light stubble, green comms earpiece, slate junior crew uniform and wrist terminal. Alert approachable expression.\nReplace the current figure with exactly TWO humans, canonical Nazari and Demir, actual recognizable faces visibly lit in three-quarter view. Nazari stands squared at the diagnostics display, points to the shrinking block diagram with her multitool, and looks toward Demir with skeptical concentration. Demir works through the sums on his wrist terminal, looking between it and Nazari. Keep engineering tool wall, hanging lamps and dark cabinet. Main display: FOUR equal stacked blocks resolving into ONE block, with small quantized histogram. Side display: FIVE simple nonhumanoid geometric class glyphs, one dimmer. No humanoid icons on screens and no extra crew.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "optimization-edge__quantization-original.webp",
+          "sha256": "344edef7929a92efd969364930d2c7a5b731297351d0514db9ff9b1c9f0d9fdd",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-40690ccf-e9af-437a-a4c6-6392cde1dfc8.png",
+      "staged_png": "art-src/scenes/optimization-edge__quantization-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/optimization-edge/quantization.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 177326,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "galley",
+      "asset": "neural-networks/first-neuron-epilogue",
+      "chars": [
+        "chief-nazari"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Chief Nazari: mature capable woman aged48, weathered tan skin, lined face, practical short asymmetrical dark hair streaked gray, olive gunmetal engineering coverall and multitool. Guarded evaluating expression. Never a bearded man, never long hair.\nReplace the long-haired figure with exactly ONE human, canonical Chief Nazari, with her mature lined face clearly visible in three-quarter view. Her short gray-streaked hair ends at the nape, never shoulder-length. She pauses at the galley counter holding a plain mug, multitool at belt, looking at a spare monitor with a small earned hint of respect. Keep mug rail, counter, brass monitor frame, viewport and after-hours lighting. Monitor shows two simple flat horizontal green traces separated vertically, neither crosses the other, no labels. No extra humans.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "neural-networks__first-neuron-epilogue-original.webp",
+          "sha256": "09922fc2c1e10b74bad3e2b00309e31232b83a0bd2451eccf89a89b027cba886",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "passes": [
+        {
+          "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Chief Nazari: mature capable woman aged48, weathered tan skin, lined face, practical short asymmetrical dark hair streaked gray, olive gunmetal engineering coverall and multitool. Guarded evaluating expression. Never a bearded man, never long hair.\nReplace the long-haired figure with exactly ONE human, canonical Chief Nazari, with her mature lined face clearly visible in three-quarter view. Her short gray-streaked hair ends at the nape, never shoulder-length. She pauses at the galley counter holding a plain mug, multitool at belt, looking at a spare monitor with a small earned hint of respect. Keep mug rail, counter, brass monitor frame, viewport and after-hours lighting. Monitor shows two simple flat horizontal green traces separated vertically, neither crosses the other, no labels. No extra humans.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+          "references": [
+            {
+              "removedInput": "neural-networks__first-neuron-epilogue-original.webp",
+              "sha256": "09922fc2c1e10b74bad3e2b00309e31232b83a0bd2451eccf89a89b027cba886",
+              "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+            },
+            "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png"
+          ],
+          "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-e68be720-bb5a-4867-b3db-f63deb6b7852.png"
+        },
+        {
+          "prompt": "Use case: precise-object-edit. Make one exact screen correction in this illustration. On the large brass-framed monitor to the LEFT of Nazari, replace the two curved/wavy plots with exactly TWO FLAT STRAIGHT HORIZONTAL GREEN LINES, separated vertically, one upper and one lower, never crossing. Remove the filled green area. The two traces are stable separated neuron outputs, so there must be no waves, peaks, dips, arcs or undulation in either trace. Both lines are perfectly flat straight left-to-right across the same plain dark green plotting field. No text, labels, numbers or symbols. Keep the exact canonical mature Nazari face, short gray-streaked hair, pose, mug, uniform, tools, room, camera, lighting and every other pixel unchanged. Do not change the character. No extra humans. Same1536x1024 landscape.",
+          "references": [
+            "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-e68be720-bb5a-4867-b3db-f63deb6b7852.png"
+          ],
+          "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-2665506e-721a-40ca-ae51-9643ddb0a3d9.png"
+        }
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-2665506e-721a-40ca-ae51-9643ddb0a3d9.png",
+      "staged_png": "art-src/scenes/neural-networks__first-neuron-epilogue-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 128796,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "sequences",
+      "asset": "recurrent-networks/sequences-matter",
+      "chars": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah: clearly adult woman aged38, olive-tan skin, mature adult facial proportions with light eye lines, dark wavy hair loosely tied in a low ponytail with escaping strands, green AR lens over one eye, muted slate lab layer over ship uniform, stylus. Curious intelligent expression.\nInput image3: Ensign Demir: young adult man in midtwenties, warm light-medium skin, tousled dark hair, light stubble, green comms earpiece, slate junior crew uniform and wrist terminal. Alert approachable expression.\nReplace both current figures with exactly TWO canonical humans, Farah and Demir, with actual faces clearly visible. Farah stands three-quarter view gesturing with her stylus toward a long repeating waveform sliced into bracketed overlapping windows, one square snapshot frame floats apart. Demir watches from the bench holding his wrist terminal, concentrating on her explanation. Keep the lab, waveform wall, glass corridor and ordered instruments. No short-haired male labcoat presenter. No extra people.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "recurrent-networks__sequences-matter-original.webp",
+          "sha256": "db630c477ba9a30b756756b77f4db8590916d0ae62295b608244b946432def47",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-f2b0119a-77a2-4acd-be63-c16892ea1d96.png",
+      "staged_png": "art-src/scenes/recurrent-networks__sequences-matter-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 193104,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "timefrequency",
+      "asset": "signal-processing/time-vs-frequency",
+      "chars": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah, adult woman38 with olive-tan skin, mature adult face, loosely tied wavy dark hair with escaping strands and low ponytail, green AR lens, slate lab jacket, stylus. Curious precise expression.\nInput image3: Ensign Demir, adult man midtwenties, light-medium warm skin, tousled dark hair, light stubble, green earpiece, slate junior uniform, wrist terminal.\nReplace both faceless figures with exactly TWO canonical humans, Farah and Demir, their actual faces visibly lit in three-quarter view. Farah raises her stylus toward two side-by-side telemetry frames showing the same slow breathing swell embedded in noisy traces, archive beside live capture. Demir holds his wrist terminal and thoughtfully compares them. Keep the existing two monitors, workbench, brass instruments, green spectrograph column and room. Both faces clear, engaged in shared work, no black shadows.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "signal-processing__time-vs-frequency-original.webp",
+          "sha256": "e5463a06fe059e2ba10a443f4ef1420e5ce96ed182a39638d269bfe5f4754cca",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-323bf4e9-cd52-4c3e-b057-58f7062eac9c.png",
+      "staged_png": "art-src/scenes/signal-processing__time-vs-frequency-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 175666,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "spectrograms",
+      "asset": "signal-processing/spectrograms",
+      "chars": [
+        "dr-farah",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Dr.Farah, adult woman38 with olive-tan skin, mature adult face, loosely tied wavy dark hair with escaping strands and low ponytail, green AR lens, slate lab jacket, stylus. Curious precise expression.\nInput image3: Ensign Demir, adult man midtwenties, light-medium warm skin, tousled dark hair, light stubble, green earpiece, slate junior uniform, wrist terminal.\nReplace both faceless figures with exactly TWO canonical humans, Farah and Demir, both faces clearly visible in three-quarter view as they discuss the spectrogram. Adjust their position beside the large telemetry screen rather than backs to camera. Farah indicates a regularly recurring bright band with stylus, Demir studies it with wrist terminal poised. Preserve the lab and huge waterfall heatmap, represent time-frequency intensity as fine columns with a bright streak recurring at regular gaps. Keep main visual story dominant. No faces hidden in shadow.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "signal-processing__spectrograms-original.webp",
+          "sha256": "d8f3018ff208d908f73369e43d912b7400a98fd713fe59c873cf828b734d6912",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-abb433e1-a01c-4390-9eef-446d8041cfeb.png",
+      "staged_png": "art-src/scenes/signal-processing__spectrograms-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 194334,
+      "quality": 74,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "fftfeatures",
+      "asset": "signal-processing/fft-as-features",
+      "chars": [
+        "ensign-demir",
+        "dr-farah",
+        "chief-nazari"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Ensign Demir, adult man midtwenties, light-medium warm skin, tousled dark hair, light stubble, green earpiece, slate junior uniform, wrist terminal.\nInput image3: Dr.Farah, adult woman38 with olive-tan skin, mature adult face, loosely tied wavy dark hair with escaping strands and low ponytail, green AR lens, slate lab jacket, stylus. Curious precise expression.\nInput image4: Chief Nazari, mature woman48, weathered tan skin, lined face, short asymmetrical gray-streaked hair, olive gunmetal coverall and multitool. Guarded competent expression. Never a bearded man.\nReplace every current figure with exactly THREE canonical humans, Demir, Farah and Nazari, all actual faces clear and visibly lit in three-quarter view. They confer at the engineering diagnostics bay. Demir holds a plain small slate board and marks a simple unlabeled accuracy bar, Farah indicates frequency-bin glyphs with her stylus, Nazari watches skeptically with multitool at belt. Main diagnostics display shows a TWO-bar comparison beside a row of small frequency-bin rectangles. The slate is a plain small board, not a movie clapperboard, no striped top. Preserve tool wall, pipes, work lamps and dark cabinet. No extra humans.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "signal-processing__fft-as-features-original.webp",
+          "sha256": "f43e6b00643ebcf24ebc62909bd4a82f598beba33f8ce2dd458838348419a60e",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-57936344-2ebe-4fbe-baa1-fc124c5b0e3d.png",
+      "staged_png": "art-src/scenes/signal-processing__fft-as-features-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/signal-processing/fft-as-features.webp",
+      "expected_human_count": 3,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 196896,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "lstmgates",
+      "asset": "recurrent-networks/lstm-gates",
+      "chars": [
+        "ensign-demir",
+        "chief-nazari",
+        "dr-farah"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset type: story-driven cel-shaded Deep Orbit lesson scene, 1536x1024 landscape.\nInput image1 is the EDIT TARGET and location/composition reference. The remaining input images are canonical character identity references in the listed order. Recreate the actual characters from those references exactly, preserving face structure, age, skin tone, distinctive hair, wardrobe and props.\nThe user specifically wants actual characters with visible recognizable faces, never faceless black shadows. Use a medium-wide narrative composition and balanced front/side lighting so every staged character has a clear visible three-quarter or front face, at least70px high for a group and larger for one/two-person scenes. Natural poses focused on the shared task. No backs-only figures, no black cutout people, no portrait insets or pasted busts. Preserve original room architecture, key props, story display, green #6BAA8A interface glow, warm brass #A89060, clean bold linework, flat cel shading and near-black starfield. You may adjust staging within that room to reveal faces.\nInput image2: Ensign Demir, adult man midtwenties, light-medium warm skin, tousled dark hair, light stubble, green earpiece, slate junior uniform, wrist terminal.\nInput image3: Chief Nazari, mature woman48, weathered tan skin, lined face, short asymmetrical gray-streaked hair, olive gunmetal coverall and multitool. Guarded competent expression. Never a bearded man.\nInput image4: Dr.Farah, adult woman38 with olive-tan skin, mature adult face, loosely tied wavy dark hair with escaping strands and low ponytail, green AR lens, slate lab jacket, stylus. Curious precise expression.\nReplace all current figures with exactly THREE canonical humans, Demir, Nazari and Farah, each actual face clear and visible in three-quarter view. Demir slumps at the diagnostic console after failed overnight training, worried tired face. Nazari stands nearby arms crossed, evaluating the flatline. Farah arrives at the frame edge raising a tablet and stylus with a proposed gated-cell diagram open, concerned but purposeful expression. The central display shows a long DEAD-FLAT horizontal training curve above an agitated signal trace, not a rising or falling loss curve. Preserve engineering tool wall, pipes, green diagnostic wash, warm lamps and dark rule-engine cabinet. No extra humans.\nAll screens and holograms are wordless abstract charts, waves, dials or geometric rules. Remove existing generated letters and numerals. No words, letters, numbers, abbreviations, captions, labels, logos, equations, watermark or writing-like marks anywhere. No extra humans in the background, reflections, screens or holograms. No unrelated art-style change or photorealism.",
+      "references": [
+        {
+          "removedInput": "recurrent-networks__lstm-gates-original.webp",
+          "sha256": "b776d2e68320a73c15ec37b3af23ce9b9a9a3ba1460499f08ce0ba0f230e18b1",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-d92e3d52-c5fa-469e-be98-2ba718b9eec3.png",
+      "staged_png": "art-src/scenes/recurrent-networks__lstm-gates-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates.webp",
+      "expected_human_count": 3,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 193636,
+      "quality": 78,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "backprop",
+      "asset": "training-loop/backpropagation",
+      "chars": [
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 1 human character: Ensign Demir. No additional people, duplicates, bystanders or background crew.\nARIA is present only as an abstract green waveform inside a fixed brass ring on a screen, with no human or robot face.\nStory moment: Demir scales the nudge-and-rerun gradient method to all 673 parameters and pays the price on the rig: one full forward pass per parameter per step, 27 seconds a step, a run stretching past thirty hours. ARIA, watching, notes there is a procedure that gets all 673 derivatives in one backward sweep.\nScene action and equipment: Close shot into the diagnostics bay from the entrance in green diagnostic wash, the main display crawling through a vast grid of parameter cells with only a thin lit arc of progress, Demir a recognizable crew sagging at the console with wrist terminal glowing, ARIA's waveform steady on an adjacent screen\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nEvery visible human face must remain readable in the room, with balanced warm facial lighting and natural expressions.\nInput image3 is ARIA's fixed abstract waveform-in-ring shell reference. Use this exact simple ring motif on the adjacent screen, only as a glyph. Remove the existing human/profile icon from the main screen, replace it with an unlabeled simple geometric parameter-grid tile. Never draw a human-face icon.",
+      "references": [
+        {
+          "removedInput": "training-loop__backpropagation-original.webp",
+          "sha256": "c6074df67d66f4185b8638c27c60048642f6587801e079ad58eadc6d974472a5",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+        "/Users/amira.salah/Desktop/tensorcraft/apps/web/public/characters/deep-orbit/aria.webp"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-498485a2-4483-4f22-aafd-9b20d5855d4f.png",
+      "staged_png": "art-src/scenes/training-loop__backpropagation-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 171960,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "fitloop",
+      "asset": "training-loop/training-loop",
+      "chars": [
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 1 human character: Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: The number from the glass wall is finally moving: the training log ticks epoch by epoch as the loss slides from coin-flip 0.6931 into a steady fall. Demir has run the loop by hand twice this week; tonight model.fit runs it, and he watches to find out whether he trusts it.\nScene action and equipment: Wide shot from the bay entrance with hanging lamps dimmed and the room lit mostly by its own displays, the main diagnostic screen carrying a long loss curve stepping steadily downward past rows of epoch tick glyphs, Demir a recognizable crew standing back from the console with arms folded and wrist terminal glowing\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nEvery visible human face must remain readable in the room, with balanced warm facial lighting and natural expressions.",
+      "references": [
+        {
+          "removedInput": "training-loop__training-loop-original.webp",
+          "sha256": "7e110263533e35c26aea014fc60e5ac095b5ea9863639602366de6251e3a48b1",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-60a40fa7-9ccb-4a0f-9c76-8493e732642a.png",
+      "staged_png": "art-src/scenes/training-loop__training-loop-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/training-loop/training-loop.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 162936,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "evaluation",
+      "asset": "training-loop/evaluating-deep-scan",
+      "chars": [
+        "commander-mirza"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Commander Mirza: a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 1 human character: Commander Mirza. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Training is complete and Mirza convenes the deployment review with one demand: run the evaluation suite and bring real numbers on signals the network has never seen. Held-out data gets the first honest word on DEEP SCAN.\nScene action and equipment: Close shot from the port-forward quarter onto the holo table and raised tier in even duty light, the table projecting a glowing two-by-two grid of verdict cells flanked by steady gauges over a strip of fresh unseen waveforms, Mirza alone as a recognizable crew at the command station with one hand near the brass chronometer\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nEvery visible human face must remain readable in the room, with balanced warm facial lighting and natural expressions.",
+      "references": [
+        {
+          "removedInput": "training-loop__evaluating-deep-scan-original.webp",
+          "sha256": "c2b4af847c590e518bca26685040bab6f2153607120d31b06a5aa33e1f94f665",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-c6d52254-ef21-4ebd-a108-9255908934ea.png",
+      "staged_png": "art-src/scenes/training-loop__evaluating-deep-scan-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+      "expected_human_count": 1,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 185612,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    },
+    {
+      "key": "browser",
+      "asset": "browser-runtimes/why-the-browser",
+      "chars": [
+        "chief-nazari",
+        "ensign-demir"
+      ],
+      "tool": "image_gen.imagegen",
+      "mode": "built-in edit",
+      "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Chief Nazari: a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Chief Nazari, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Nazari refuses to route signal data through a server on every reading: the classifier runs in the bridge dashboard or it does not ship. Demir wonders whether a dashboard tab can really carry a model trained on the engineering rig's GPU.\nScene action and equipment: Mid-wide shot from the port-forward quarter looking aft, duty lighting, one aft-rail dashboard console dark with only an empty chart grid while the holo table streams a live looping signal trace, a forward display schematic of a signal path glyph splitting toward a far node and a near node; Nazari a recognizable crew pointing at the dark console, Demir beside her lit by his wrist terminal\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nEvery visible human face must remain readable in the room, with balanced warm facial lighting and natural expressions.",
+      "references": [
+        {
+          "removedInput": "browser-runtimes__why-the-browser-original.webp",
+          "sha256": "bad6773e0117ab0b866bb4dadba6774048141da15fab99738de467e5d7894728",
+          "reason": "Superseded input removed during the requested asset cleanup on 2026-11-06."
+        },
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+        "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png"
+      ],
+      "status": "shipped",
+      "generated_source": "/Users/amira.salah/.codex/generated_images/01a1b22c-81a2-7b02-9782-8c9889c14070/exec-6597cb39-30a7-4859-a2ec-a14c393f9aeb.png",
+      "staged_png": "art-src/scenes/browser-runtimes__why-the-browser-openai-20261106.png",
+      "shipped_webp": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser.webp",
+      "expected_human_count": 2,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 190142,
+      "quality": 82,
+      "visual_check": "Exact canonical human count. Canonical faces visibly lit and recognizable. Room and story moment preserved."
+    }
+  ]
+}

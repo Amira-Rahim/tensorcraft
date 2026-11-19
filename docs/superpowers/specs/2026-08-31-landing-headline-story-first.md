@@ -3,7 +3,7 @@
 **Date:** 2026-08-31
 **Status:** Implemented
 **Scope:** Headline rewrite of `LandingHero`; nothing else in the hero moves
-**Supersedes:** [2026-05-08-landing-headline-audience-callout.md](2026-05-08-landing-headline-audience-callout.md)
+**Supersedes:** The May 8 curiosity-hook headline. Its earlier implementation record remains in git history.
 
 ## Goal
 

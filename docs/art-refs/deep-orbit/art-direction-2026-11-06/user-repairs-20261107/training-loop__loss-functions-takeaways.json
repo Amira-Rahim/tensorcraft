@@ -1,0 +1,153 @@
+{
+  "id": "training-loop/loss-functions",
+  "phase": "takeaways",
+  "name": "loss-functions-takeaways-reader",
+  "cast": [
+    "dr-farah"
+  ],
+  "room": "lab",
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ff33910d-c0c2-45e2-9391-46a041919ce0.png",
+  "meaning": "At labely1,p.01: MSE+sigmoid outputlogit gradientabout-.0196, BCE+sigmoid-.99; earlierlayers affectweightgradients.",
+  "prompt": "Use case: precise-object-edit. Image1 canonical Farah identity authority. Image2 labmaster ROOM ONLY. Image3 exact narrative candidate. Change ONLY the bright lime vertical pillar behind Farah: dim and desaturate all its green bands/interior/nearby glassreflection to subdued dark gray-sage, matching restrained charcoal/brass room. Remove lime cast. Keep natural warm tasklight and all skin unchanged. Preserve the ENTIRE rest of image3 exactly: Farah's canonical adult face, anatomical-left lens, working surprised expression/eyeline, correct head scale, whole seated torso/chair, both complete arms/hands and contact with comparison-selector/desk, all apparatus. Main working wallboard text/numerals/grid/plane MUST stay EXACT: Gradient at output logit; y=1,p=0.01; MSE+sigmoid: about -0.0196; BCE+sigmoid: -0.99; Earlier layers still affect gradients. No new or rearranged lesson data. Keep every glyph and line sharing the current real panel perspective. No outward cards or paper added. Other displays stay inactive. This is a narrow pillar palette-only edit of1536x1024 cel-shaded scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "role": "ROOM ONLY",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ff33910d-c0c2-45e2-9391-46a041919ce0.png",
+      "role": "exact existing narrative candidate edit target",
+      "sha256": "fe355263a495db5232f923da0fd911d9b6e24786906e2b94a64f9a58914513cc"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+      "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+      "sha256": "6992cb41c1b8bc28b5a5cc7d1e40eebde6f5fbe95a89fc0a766dc86608fdc7f9"
+    }
+  ],
+  "status": "published",
+  "tool": "built-in imagegen",
+  "generationHistory": [
+    {
+      "prompt": "Use case: precise-object-edit. Image1 canonical Farah identity authority. Image2 labmaster ROOM ONLY. Image3 exact narrative candidate. Change ONLY the bright lime vertical pillar behind Farah: dim and desaturate all its green bands/interior/nearby glassreflection to subdued dark gray-sage, matching restrained charcoal/brass room. Remove lime cast. Keep natural warm tasklight and all skin unchanged. Preserve the ENTIRE rest of image3 exactly: Farah's canonical adult face, anatomical-left lens, working surprised expression/eyeline, correct head scale, whole seated torso/chair, both complete arms/hands and contact with comparison-selector/desk, all apparatus. Main working wallboard text/numerals/grid/plane MUST stay EXACT: Gradient at output logit; y=1,p=0.01; MSE+sigmoid: about -0.0196; BCE+sigmoid: -0.99; Earlier layers still affect gradients. No new or rearranged lesson data. Keep every glyph and line sharing the current real panel perspective. No outward cards or paper added. Other displays stay inactive. This is a narrow pillar palette-only edit of1536x1024 cel-shaded scene.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "role": "canonical dr-farah",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "role": "ROOM ONLY",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-ff33910d-c0c2-45e2-9391-46a041919ce0.png",
+          "role": "exact existing narrative candidate edit target",
+          "sha256": "fe355263a495db5232f923da0fd911d9b6e24786906e2b94a64f9a58914513cc"
+        }
+      ],
+      "output": {
+        "path": "/tmp/loss-functions-takeaways-reader-candidate.png",
+        "sha256": "4f987eff812d753108cb38260620c8d79db319edf8654d0fef9a10ca80cdf9ea",
+        "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7a3adcc7-0061-4f7f-8c77-bdb03282d2af.png"
+      }
+    }
+  ],
+  "candidate": {
+    "path": "/tmp/loss-functions-takeaways-reader-candidate.png",
+    "sha256": "4f987eff812d753108cb38260620c8d79db319edf8654d0fef9a10ca80cdf9ea",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7a3adcc7-0061-4f7f-8c77-bdb03282d2af.png"
+  },
+  "ownReview": {
+    "nativeFullFrame": "pass",
+    "identity": "Fresh exact candidate crop beside canonical portrait pass morphology/age/equipment.",
+    "anatomy": "Both continuous arm chains and supported task contact preserved, natural working gaze.",
+    "readerDirection": "Forward: flat plain input pad, no wrongly oriented ink; main monitor faces Demir. Loss: no outward papers, Farah uses selector with shared working panel.",
+    "semantics": "Exact text and values checked against MDX/YAML; no invented result.",
+    "palette": "Loss pillar now subdued gray-sage, both scenes muted.",
+    "faceCrop": {
+      "left": 825,
+      "top": 110,
+      "width": 390,
+      "height": 445
+    },
+    "originalEvidence": {
+      "path": "/tmp/loss-functions-takeaways-reader-candidate.png",
+      "sha256": "4f987eff812d753108cb38260620c8d79db319edf8654d0fef9a10ca80cdf9ea",
+      "canonical": {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+        "role": "canonical dr-farah",
+        "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+      }
+    },
+    "temporaryProofs": "Fresh combined proof viewed then removed."
+  },
+  "candidatePath": "art-src/scenes/training-loop__loss-functions-takeaways-openai-20261107.png",
+  "candidateSha256": "4f987eff812d753108cb38260620c8d79db319edf8654d0fef9a10ca80cdf9ea",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-7a3adcc7-0061-4f7f-8c77-bdb03282d2af.png",
+  "temporaryCandidatePathAtReview": "/tmp/loss-functions-takeaways-reader-candidate.png",
+  "publishedSource": "art-src/scenes/training-loop__loss-functions-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp",
+  "sourceSha256": "4f987eff812d753108cb38260620c8d79db319edf8654d0fef9a10ca80cdf9ea",
+  "webpSha256": "840fb6a759764d903fd54a7cc2a09fe89753b7453b61e4bbe7fa5fc49a684585",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__loss-functions-takeaways-openai-20261107.png",
+    "sourceSha256": "7dc85c9cafb4c786b7ee75780c56e570af765d77c0e1ed322df8e5e4734d160a",
+    "webpSha256": "9e19f456ddad6a3676e81f27ebb2e1a9d1e65e3d4c7ed1701ba50a3ee6a1ffb8",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-cd5684ce-1d46-4a23-a863-3615ca619041.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/late_final",
+    "status": "approved",
+    "candidateSha256": "4f987eff812d753108cb38260620c8d79db319edf8654d0fef9a10ca80cdf9ea",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "nativeFrame": "pass",
+      "canonicalIdentity": "pass",
+      "handsAndBody": "pass",
+      "readerDirection": "pass",
+      "screenPerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "At labely1,p.01: MSE+sigmoid outputlogit gradientabout-.0196, BCE+sigmoid-.99; earlierlayers affectweightgradients."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+        "sha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+        "sha256": "6992cb41c1b8bc28b5a5cc7d1e40eebde6f5fbe95a89fc0a766dc86608fdc7f9"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__loss-functions-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__loss-functions-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-takeaways.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

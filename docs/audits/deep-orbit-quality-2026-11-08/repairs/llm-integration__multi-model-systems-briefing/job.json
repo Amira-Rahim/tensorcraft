@@ -1,0 +1,140 @@
+{
+  "id": "llm-integration__multi-model-systems-briefing",
+  "lesson": "llm-integration/multi-model-systems",
+  "phase": "briefing",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: ensign-demir.\nStory action: Demir traces the handoffs before connecting the models. Expression: Thoughtful interest and a small dawning smile.\nDemir seated at left with one hand comfortably under his chin and the other on a mouse, both full arms connected normally. Large upright physical monitor fills right half from near top to desk. Diagram title Checked model handoffs. Three large clearly separated source boxes: Classifier / Class + score; Autoencoder / Reconstruction error; LSTM / Forecast. All three arrows lead to LLM draft, then an arrow to Review: pending. Footer Check each output. Use big labels, short lines, generous spacing. No ungrounded output values. This is planning, not a completed measurement.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "dd578720d799e19b0e12d028107a2f8865f8ae6c00f48ee463bc7b15678966fa",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "role": "canonical identity: ensign-demir",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room architecture only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "art-src/scenes/llm-integration__multi-model-systems-openai-20261107.png",
+      "role": "edit target",
+      "sha256": "9ea1abd683f7e4c1e7bd3e53eeac176701002f5ef92bc78192efd31dc333dd40"
+    }
+  ],
+  "sourceSha256": "9ea1abd683f7e4c1e7bd3e53eeac176701002f5ef92bc78192efd31dc333dd40",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+    "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+  },
+  "source": "art-src/scenes/llm-integration__multi-model-systems-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.346749+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: ensign-demir.\nStory action: Demir traces the handoffs before connecting the models. Expression: Thoughtful interest and a small dawning smile.\nDemir seated at left with one hand comfortably under his chin and the other on a mouse, both full arms connected normally. Large upright physical monitor fills right half from near top to desk. Diagram title Checked model handoffs. Three large clearly separated source boxes: Classifier / Class + score; Autoencoder / Reconstruction error; LSTM / Forecast. All three arrows lead to LLM draft, then an arrow to Review: pending. Footer Check each output. Use big labels, short lines, generous spacing. No ungrounded output values. This is planning, not a completed measurement.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__multi-model-systems-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Demir traces the handoffs before connecting the models.",
+    "location": "Archimedes, Bridge",
+    "action": "Demir traces the handoffs before connecting the models.",
+    "emotion": "Thoughtful interest and a small dawning smile.",
+    "eyeline": "Toward task equipment and colleague as the narrative action requires.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-5f61fd42-be00-4dec-a5ac-5ea9478b1414.png",
+  "candidatePath": "art-src/scenes/llm-integration__multi-model-systems-openai-20261107.png",
+  "candidateSha256": "1a46021d9429046ea249a269a732ece9098652ac79d5cb2afe2aa91973db15e0",
+  "generatedAt": "2026-11-08T19:40:46.533593+00:00",
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        360,
+        210,
+        280,
+        360
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__multi-model-systems-briefing-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        500,
+        510,
+        170,
+        150
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__multi-model-systems-briefing-hands0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        580,
+        820,
+        250,
+        150
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__multi-model-systems-briefing-hands1.png",
+      "removedAfterReview": true
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.716617+00:00",
+    "candidateSha256": "1a46021d9429046ea249a269a732ece9098652ac79d5cb2afe2aa91973db15e0",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "publishedSource": "art-src/scenes/llm-integration__multi-model-systems-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/multi-model-systems.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "temporaryDiagnosticCropsRemoved": true
+}

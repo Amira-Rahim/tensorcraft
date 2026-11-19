@@ -79,6 +79,24 @@ Demir needs to send each new reading with the same reference facts and response 
 
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
 
+## The argument that reaches each line
+
+Farah's scene uses the fictional archive reading 7741: amplitude 1024 counts, frequency 73.4 Hz, and phase 0.23 rad. The catalogue lists known reference frequencies separately. Neither list supplies a correct label for 7741.
+
+<CodeBlock language="javascript" title="prompt-argument-lines.js">
+{`const signal = { amplitude: 1024, frequency: 73.4, phase: 0.23 };
+const units = { amplitude: 'counts', frequency: 'Hz', phase: 'rad' };
+const catalogue = 'Known reference frequencies: 5, 12, 23, 47 Hz';
+const reading = Object.entries(signal)
+  .map(([field, value]) => field + ': ' + value + ' ' + units[field])
+  .join('\\n');
+console.log(catalogue + '\\nCurrent reading:\\n' + reading);`}
+</CodeBlock>
+
+The frequency here means cycles per second. The three-feature classifier in the later orchestration exercise instead receives a zero-crossing count before scaling. Those values need their own field descriptions. Copying a number between these interfaces would change its meaning.
+
+The activity's P1 and P2 are separate, supplied prompt-building probes. They show how changed arguments change matching lines. It constructs text locally and produces no model response.
+
 ## The reading and its reference data
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -127,6 +145,8 @@ The story's classifier score of 51.8% does not establish a calibrated probabilit
 </DerivationDrawer>
 
 ## Prompt Templates
+
+<ConceptReference summary="A larger prompt template and its separate response parser">
 
 <CodeBlock language="typescript" title="templates.ts">
 {`// Farah's v8 includes the amplitude reference but still lacks
@@ -182,6 +202,8 @@ function parseClassification(response: string) {
 }`}
 </CodeBlock>
 
+</ConceptReference>
+
 ## Challenge
 
 Write version 9 of the prompt template. Add the missing reference facts on their own line between the role and the current reading. The model cannot know the sector's frequency catalogue unless you supply it.
@@ -189,6 +211,8 @@ Write version 9 of the prompt template. Add the missing reference facts on their
 Your generated prompt appears after the run. Check that the catalogue describes the reference frequencies and that the current reading remains separate. This prepares a request for Farah to evaluate. It does not establish how a language model will answer it.
 
 <Exercise slug="prompt-template" />
+
+Inspect the prompt your function returned. Find the analyst instruction, the separate catalogue line, the three current argument values, and the requested JSON fields. Then compare the changed-input check. Each new argument must reach its matching line while the catalogue stays fixed. A missing reference fact is a useful prompt-construction failure. A complete prompt still needs the reply checks from the previous lesson.
 
 <RecallPrompt
   question="What do the four prompt parts do, and what still needs checking?"

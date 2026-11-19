@@ -2,6 +2,14 @@ import { describe, it, expect } from "vitest";
 import { parseAndRunTests } from "./exercise-runner-node";
 
 describe("parseAndRunTests", () => {
+  it("reports the executing TensorFlow.js version and backend", async () => {
+    const outcome = await parseAndRunTests(
+      "const reading = tf.tensor1d([1]);",
+      "it('reads', () => expect(reading.dataSync()[0]).toBe(1));",
+    );
+    expect(outcome.runtimeVersion).toBe("4.22.0");
+    expect(outcome.backend).toBe("cpu");
+  });
   it("runs a passing synchronous test", async () => {
     const userCode = "function add(a, b) { return a + b; }";
     const testCode =

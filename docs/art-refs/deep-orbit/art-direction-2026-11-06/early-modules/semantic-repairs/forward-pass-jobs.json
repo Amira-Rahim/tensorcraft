@@ -1,0 +1,91 @@
+[
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "briefing",
+    "cast": [
+      "ensign-demir",
+      "dr-farah"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Keep Demir currentheadsize and face, reduce Farah head only5percent subtly. Turn Demir entire chair/hip/chest slightly toward viewer so his chin-supported head and chest align naturally toward mainconsole; preserve two arm chains and keyboard/chin contacts, no backwards necktwist. Farah crossedarms preserved. Mainconsole darkscreen title 'Shape error'. Four spacious rows: 'Expected: [rows,3]', 'Received: [3]', 'Adapter result: [3,1]', 'Missing batch axis'. No successbadge or correctedoutput yet. Turn ALL other panels off, including foreground roundradar and Demirwrist.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "concept",
+    "cast": [
+      "dr-farah",
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce wholeheads includinghair only8percent, preservefaceforms/neck. Keep Demir holdingtabletback and Farahpen/pocket pose. Replace floating panel with compactdiagram: top '[0.5,0.8,0.2]' and 'shape [3]', downwardarrow labeled 'expandDims(0)', bottom '[[0.5,0.8,0.2]]' and 'shape [1,3]'. Footer '1 row, 3 features'. This is one row of threevalues. No anonymouscoloredblocks. Adjacentlargephysicaldisplay and allbackground/wrist screens inactive.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-concept-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "challenge",
+    "cast": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce Demir wholehead includinghair only8percent, preserve canonicalmorphology and closeframepose. Keep onehandholdingphysicalcartridge/sideofmonitor and otherindexonkey. Mainpanel title 'Practice task'. Upper task shows 'Input [[1,2],[3,4]]', 'shape [2,2]', arrow to 'Dense: 3 units', arrow to 'Expected shape [2,3]'. Lower separate row 'Single reading [5,6]' and 'Add one batch axis'. Footer 'Awaiting code'. No numeric predictedoutputs, no successmark, no outputs presentedascompleted. All peripheral and wrist screens dark.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-challenge-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "takeaways",
+    "cast": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce Demirwholehead includinghair only8percent, maintainwarmadultface andtabletgrip. Tabletback preservedplain. Mainrear monitor replacesempty4blockpipeline with clear 'Add a batch axis', then '[n]' arrow labeled 'expandDims(0)' to '[1,n]'. Under it exactexample '[5,6]' arrow to '[[5,6]]'. Footer 'Values unchanged'. Allothermonitors includinglowerthree-slider panel andwristscreen inactive. No modelaccuracyclaims.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-takeaways-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "prepared"
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "phase": "epilogue",
+    "cast": [
+      "ensign-demir"
+    ],
+    "prompt": "Use case: identity-preserve teaching-scene edit. First references are exact canonical character portraits, LAST reference TARGET. Preserve exact adult identity, face morphology/age, eyes/nose/jaw/mouth, hair, expression and natural gaze. Farah lens anatomicalLEFT, Demir comms anatomicalRIGHT only, visible anatomicalleft ear bare. Preserve camera and full scene environment, furniture/physical contacts, each separate connected shoulder-elbow-wrist-hand chain, limbs and proportions, natural neck/torso alignment. Keep warm stylized adult heads, not realistic tiny heads. All nonlesson screens, wrist screens, rearplots and round radar displays must be inactive charcoal glass, no arbitrary waves/bars/grids/shapes. Physical hardware buttons remain. Main teaching panel has only specified accurate text and task data, integrated into real console perspective. Muted sage #6BAA8A and aged brass #A89060, no neonmint bloom or yellowgold wash. No left accentbars. 1536x1024 cel-shaded adventurecomic. Gently reduce Demirwholehead only8percent whilepreserving exactface/pose/hands. Leftforegroundconsole title 'Saved demo run'. Threesimplereadable rows '0.49', '0.53', '0.51', no bars and no invented sampleIDs. Rearwallpanel title 'Random initial weights', subtitle 'Training still needed'. Smallline 'Input shape [1,3]'. Do not claimtrustworthyclassificationoraccuracy. Keep handonkeyboard andotherholdingphysicalnotebook, wrist screenoff. All secondaryscreens dark.",
+    "references": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/neural-networks__forward-pass-epilogue-openai-20261107.png"
+    ],
+    "lessonSource": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "exerciseSources": [
+      "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml"
+    ],
+    "status": "prepared"
+  }
+]

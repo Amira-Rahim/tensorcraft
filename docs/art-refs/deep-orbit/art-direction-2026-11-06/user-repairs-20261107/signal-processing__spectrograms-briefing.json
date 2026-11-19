@@ -1,0 +1,160 @@
+{
+  "key": "spectrograms-briefing",
+  "id": "signal-processing/spectrograms",
+  "phase": "briefing",
+  "source": "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+  "sourceSha256": "fdcb4856e6c1eb840c77436f3f59934b9af83792a567241d555b7bc82efcead7",
+  "sourceEvidence": {
+    "mdx": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+    "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+  },
+  "reviewer": "/root/reader_signal",
+  "nativeReview": "1536x1024 current source visually inspected",
+  "gates": {
+    "identity": "pass",
+    "anatomy": "pass",
+    "headNeck": "pass",
+    "readerDirection": "pass",
+    "surfacePerspective": "pass",
+    "palette": "hold",
+    "lessonMeaning": "hold",
+    "storyAction": "pass"
+  },
+  "verdict": "hold",
+  "holdReason": "Four bright dashes lack time/frequency axes or magnitude key; misleadingly unexplained marks. Lime glow.",
+  "preserve": "Preserve curious explanation and Demir listening.",
+  "prompt": "Use case: precise-object-edit. Asset: Deep Orbit signal-processing/spectrograms-briefing scene,1536x1024 landscape. Image1: dr-farah canonical identity authority; Image2: ensign-demir canonical identity authority; Image3: lab ROOM ONLY master, copy architecture not its incidental graphics or oversaturated lighting; Image4: exact edit target.\nPreserve Farah explaining at the large wall display with Demir thoughtfully listening. Replace the anonymous four dashes with a clear useful schematic whose horizontal axis is Time and vertical axis Frequency. A thin intermittent sage band appears at one fixed height, with dark intervals; no numeric ticks or measured interval yet. Header Windowed view (schematic). Small intensity legend Dark: low magnitude / Light: high magnitude. Beside it a much smaller whole-capture spectrum labelled Whole capture, one isolated peak, no numerical axis. Farah uses her stylus to trace one gap in time, visibly realizing the question is when the tone appears. Demir looks at that gap. Secondary screens dark, no random charts; restrained sage display and muted brass, no lime glow.\nIdentity: preserve canonical facial geometry, ages, skin, hairstyle, natural expressions and signature equipment. Keep readable faces in natural three-quarter angles, stable adult head/body proportions. Trace each shoulder through elbow/wrist to one natural five-finger hand; solid furniture contacts. Each screen front faces its actual reader; all text and diagrams follow its physical perspective, never camera-facing overlays. No extra crew, no plants, no fake tiny glyphs. Subordinate unused screens and wrist displays are dark. Muted charcoal, gray, restrained olive, sage interface and aged brass. Warm light remains localized, no yellow wash or electric lime. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Equipment-side check: Demir has one earpiece on anatomical RIGHT ear only. If his visible ear is anatomical LEFT, keep it bare and hide the far-side earpiece completely; never float green hardware on cheek, eye or collar.",
+  "promptSha256": "c3ddf77867378f6eaaf8d509bfbf00181f27a5ef3ee8f7ceee6b40b6da6bcffa",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+      "sha256": "74351764a08ab97d3f222ead21b393cb21676f87a82cd01187731c06f360cee4"
+    }
+  ],
+  "alt": "Farah notices gaps in the time-frequency view while Demir follows the intermittent tone.",
+  "method": "built-in imagegen",
+  "status": "published",
+  "candidate": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3b20b30d-1afb-448d-bcca-e7d29ddfcd7c.png",
+  "candidateSha256": "fdcb4856e6c1eb840c77436f3f59934b9af83792a567241d555b7bc82efcead7",
+  "ownReview": {
+    "verdict": "pass",
+    "nativeFull": true,
+    "reviewer": "/root/reader_signal",
+    "notes": "Candid question about missing tone, STFT schematic proper Time/Frequency and dark-low/light-high key; meaningful whole-capture contrast.",
+    "gates": {
+      "identity": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    }
+  },
+  "candidatePath": "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3b20b30d-1afb-448d-bcca-e7d29ddfcd7c.png",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room architecture only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+      "sha256": "74351764a08ab97d3f222ead21b393cb21676f87a82cd01187731c06f360cee4",
+      "role": "edit target"
+    }
+  ],
+  "independentReview": {
+    "key": "spectrograms-briefing",
+    "id": "signal-processing/spectrograms",
+    "phase": "briefing",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3b20b30d-1afb-448d-bcca-e7d29ddfcd7c.png",
+    "candidateSha256": "fdcb4856e6c1eb840c77436f3f59934b9af83792a567241d555b7bc82efcead7",
+    "verdict": "pass",
+    "reviewer": "/root",
+    "method": "Native complete1536x1024 plus canonical portraits and current MDX/exercise",
+    "notes": "Canonical two faces and natural hands including thoughtful chin touch. Demir communicator partially occluded at right temple/ear, attached plausibly. Windowed schematic has frequency vertical/time horizontal, low/high magnitude key and whole-capture contrast. Text follows wall plane; shared work discussion with readable equipment.",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+        "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+      }
+    ],
+    "alt": "Farah and Demir investigate when a tone disappears from successive windows.",
+    "location": "Archimedes, Lab"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-aa5d-7471-b45c-55966db66e22/exec-3b20b30d-1afb-448d-bcca-e7d29ddfcd7c.png",
+  "publishedSource": "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms.webp",
+  "webpSha256": "e90c2ed4eb302bd772e11ccfd6a382adc045fc063a588f3f0f5cead3def5fbef",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+    "sourceSha256": "74351764a08ab97d3f222ead21b393cb21676f87a82cd01187731c06f360cee4",
+    "webpSha256": "468ef2a937dd87815b919b8f0f0d77ffe7d6b03f44cb7af1b2c0d004da87ae5e",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2b0-071e-7011-b4ba-ec80e3c8d47e/exec-adac0ca5-f0e6-4ac3-92a5-acf8d8d547ed.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "/root/reader_signal",
+    "status": "approved",
+    "candidateSha256": "fdcb4856e6c1eb840c77436f3f59934b9af83792a567241d555b7bc82efcead7",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "combinedNativeReview": "Canonical two faces and natural hands including thoughtful chin touch. Demir communicator partially occluded at right temple/ear, attached plausibly. Windowed schematic has frequency vertical/time horizontal, low/high magnitude key and whole-capture contrast. Text follows wall plane; shared work discussion with readable equipment."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+        "sha256": "9e6bff20d1646bcb51d5710e9190ca91b040a09b0f3212ac2ff7d6dba905a646"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/signal-processing__spectrograms-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths.",
+  "publicationReviewer": "/root"
+}

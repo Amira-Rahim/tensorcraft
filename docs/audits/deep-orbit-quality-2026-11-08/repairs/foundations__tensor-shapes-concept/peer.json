@@ -1,0 +1,43 @@
+{
+  "reviewer": "/root/quality_sequence",
+  "reviewedAt": "2026-11-08T17:21:24.926772+00:00",
+  "candidatePath": "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-08/repairs/foundations__tensor-shapes-concept/candidate.png",
+  "candidateSha256": "d191d62df43b8f60db5dfaae4a75883db1cf05d19bef56a0331f2f161870c027",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent full 1536x1024 original inspection plus original-pixel face and hand crops, with current lesson source and canonical portraits. Traced shoulder-elbow-wrist-hand chains and checked thumb sides, prop continuity, display values, screen perspective and available display space.",
+  "sourceEvidence": {
+    "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+    "sha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7"
+  },
+  "canonicalReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "Canonical Farah identity"
+    }
+  ],
+  "cropCoordinates": {
+    "face": [
+      1090,
+      170,
+      330,
+      380
+    ],
+    "hands": [
+      530,
+      720,
+      870,
+      260
+    ]
+  },
+  "cropConvention": "left, top, width, height in candidate pixels",
+  "temporaryCropsRemoved": true,
+  "findings": [
+    "PASS: all 24 displayed values are correct. The 3-by-4 moment/sensor grid transposes into the 4-by-3 sensor/moment grid; sensor A's column becomes its row.",
+    "The large wall display provides readable labels, correct grid topology, no occluded cells and consistent physical perspective.",
+    "Two arms connect naturally through their elbows to a plausible dial pinch and resting hand. Thumb positions and finger overlap are coherent at native hand-crop resolution.",
+    "Farah's canonical facial structure is preserved and her gaze goes to the result."
+  ],
+  "repairDirection": "None. Candidate is ready for root publication checks."
+}

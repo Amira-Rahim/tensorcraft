@@ -1,0 +1,127 @@
+{
+  "id": "advanced-time-series__temporal-attention-briefing",
+  "lesson": "advanced-time-series/temporal-attention",
+  "phase": "briefing",
+  "char": "ensign-demir",
+  "room": "bridge",
+  "src": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+  "mdx": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+  "alt": "Demir checks two attention peaks and their timestamps on a large bridge display.",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "preparedAt": "2026-11-08T17:06:27.318298+00:00",
+  "prompt": "Use case: precise-object-edit. Asset: 1536x1024 landscape Deep Orbit lesson story illustration. Recompose the last reference image to fix the user-rejected anatomy and improve teaching display readability. Image 1 is the canonical identity authority. Image 2 is the room authority. Image 3 is the edit target, not an identity authority. Keep the same person, adult proportions, clothing, canonical face shape, eye spacing, nose, jaw, complexion, age and signature equipment. Preserve warm brass, sage green interfaces, near-black space and crisp bold cel shading. Use the room's available space for ONE generously sized, readable primary physical lesson display. Set it close to upright and angled toward the operator, with text, lines and boxes all following its plane. Never strand important text on a little tabletop screen beneath an unused large wall. Large words with comfortable margins. Show only the exact required lesson content; no filler labels or invented metrics. Keep the whole screen visible and unblocked. Exactly one human and exactly two arms, each traced from its own shoulder through elbow and neutral wrist to one hand. Natural ordinary object contact, no duplicate forearms, no dangling extra hand, no folded or twisted wrist. No pen or stylus anywhere. No pointing gesture. Keep the face recognizable in a candid three-quarter view with eyes directed to the real screen, not the audience. No tiny anonymous face. Preserve adult head/body balance, visible sensible seated or standing support. The technical display is equipment being used for the ongoing task, not a floating overlay. No unrelated diagram. No speech bubble, watermark or signature.\nCanonical person: Ensign Demir, young adult man with swept brown hair, freckles, light stubble, charcoal uniform and green earpiece. Moment: he has spotted two peaks in the attention weights and checks their actual timestamps. Recompose as Demir standing at the right third of the frame, a light forward lean toward a broad bridge display filling the left half and center. His right hand operates a mouse on the console just in front of him with a loose normal wrist and fingers resting on the mouse. His left hand rests palm down on the console edge; show both complete distinct arm chains. He has raised curious brows and a small engaged smile, watching the highlighted event labels. Remove the old bent pen completely. Keep the bridge architecture recognizable. The display uses a simple schematic horizontal sequence with two highlighted markers. Put the following exact large text on it: title \"80-reading window\"; first event \"Step 4\" with \"Amplitude spike\"; second event \"Step 78\" with \"Frequency shift\"; bracket label \"74 positions apart\". Below, a two-column timestamp comparison \"4.0 s\" and \"77.4 s\", then a large result \"Raw gap: 73.4 s\". Smallest required label, still easily readable: \"Schematic mission capture\". The schematic is not an invented measured waveform. The 74 positions and 73.4 seconds are different quantities. No other text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "e6569d6fd9765657b5807a435c671a18e38edadef63921e5c5e543139ef86d59",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room master"
+    },
+    {
+      "path": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+      "sha256": "a362ffba38ef8c9cc122cb0a6405a7d0a6cafe09fd572d3febe99f9f5bf59d73",
+      "role": "edit target"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+    "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+  },
+  "sourceSha256": "a362ffba38ef8c9cc122cb0a6405a7d0a6cafe09fd572d3febe99f9f5bf59d73",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Asset: 1536x1024 landscape Deep Orbit lesson story illustration. Recompose the last reference image to fix the user-rejected anatomy and improve teaching display readability. Image 1 is the canonical identity authority. Image 2 is the room authority. Image 3 is the edit target, not an identity authority. Keep the same person, adult proportions, clothing, canonical face shape, eye spacing, nose, jaw, complexion, age and signature equipment. Preserve warm brass, sage green interfaces, near-black space and crisp bold cel shading. Use the room's available space for ONE generously sized, readable primary physical lesson display. Set it close to upright and angled toward the operator, with text, lines and boxes all following its plane. Never strand important text on a little tabletop screen beneath an unused large wall. Large words with comfortable margins. Show only the exact required lesson content; no filler labels or invented metrics. Keep the whole screen visible and unblocked. Exactly one human and exactly two arms, each traced from its own shoulder through elbow and neutral wrist to one hand. Natural ordinary object contact, no duplicate forearms, no dangling extra hand, no folded or twisted wrist. No pen or stylus anywhere. No pointing gesture. Keep the face recognizable in a candid three-quarter view with eyes directed to the real screen, not the audience. No tiny anonymous face. Preserve adult head/body balance, visible sensible seated or standing support. The technical display is equipment being used for the ongoing task, not a floating overlay. No unrelated diagram. No speech bubble, watermark or signature.\nCanonical person: Ensign Demir, young adult man with swept brown hair, freckles, light stubble, charcoal uniform and green earpiece. Moment: he has spotted two peaks in the attention weights and checks their actual timestamps. Recompose as Demir standing at the right third of the frame, a light forward lean toward a broad bridge display filling the left half and center. His right hand operates a mouse on the console just in front of him with a loose normal wrist and fingers resting on the mouse. His left hand rests palm down on the console edge; show both complete distinct arm chains. He has raised curious brows and a small engaged smile, watching the highlighted event labels. Remove the old bent pen completely. Keep the bridge architecture recognizable. The display uses a simple schematic horizontal sequence with two highlighted markers. Put the following exact large text on it: title \"80-reading window\"; first event \"Step 4\" with \"Amplitude spike\"; second event \"Step 78\" with \"Frequency shift\"; bracket label \"74 positions apart\". Below, a two-column timestamp comparison \"4.0 s\" and \"77.4 s\", then a large result \"Raw gap: 73.4 s\". Smallest required label, still easily readable: \"Schematic mission capture\". The schematic is not an invented measured waveform. The 74 positions and 73.4 seconds are different quantities. No other text.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png"
+    ],
+    "transparent_background": false
+  },
+  "userCorrection": true,
+  "publication": {
+    "alt": "Demir checks two attention peaks and their timestamps on a large bridge display.",
+    "location": "Archimedes, Bridge",
+    "action": "Demir checks the two event timestamps using a console mouse while leaning toward the screen.",
+    "emotion": "Engaged recognition, raised brows and a restrained smile.",
+    "eyeline": "Toward the left shared display.",
+    "checks": [
+      "Exact canonical identity and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and natural grip",
+      "Large upright primary display with source-grounded content",
+      "Reader/operator direction and surface perspective",
+      "Distinct candid action, reaction and narrative reason",
+      "Independent exact-hash peer PASS required"
+    ]
+  },
+  "generatedAt": "2026-11-08T17:13:36.851515+00:00",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-3546a779-d31d-422d-a2fb-6fee40494b59.png",
+  "candidatePath": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+  "candidateSha256": "573cc2b0bfa37ff8f006fcc2d7804ad95461c86f29919ff74c58f59d975e6aca",
+  "faceCropCoordinates": {
+    "coordinateSpace": "candidate pixels, origin top-left",
+    "left": 935,
+    "top": 55,
+    "width": 300,
+    "height": 350
+  },
+  "ownReview": {
+    "reviewedAt": "2026-11-08T17:15:48.894531+00:00",
+    "candidateSha256": "573cc2b0bfa37ff8f006fcc2d7804ad95461c86f29919ff74c58f59d975e6aca",
+    "nativeReviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh original-resolution full-image review plus temporary face-crop comparison against the canonical portrait. Traced all complete arm chains, inspected hands and object contact, screen perspective, text, source facts, gaze and posture.",
+    "scores": {
+      "color": 4,
+      "pose": 4,
+      "expression": 4,
+      "displays": 5,
+      "composition": 4,
+      "identity": 4,
+      "story": 4
+    },
+    "verdict": "candidate-passes-own-review",
+    "action": "Demir checks the two event timestamps using a console mouse while leaning toward the screen.",
+    "emotion": "Engaged recognition, raised brows and a restrained smile.",
+    "eyeline": "Toward the left shared display.",
+    "narrativeReason": "Distinguish 74 dashboard positions from the precise 73.4-second raw gap.",
+    "findings": [
+      "The bent pen is absent. Exactly two connected shoulder, elbow, wrist and hand chains are visible, with one ordinary mouse grip and one palm resting on the console.",
+      "The main display now occupies most of the left half with large, unobstructed labels. Step 4, Step 78, 74 positions, 4.0 s, 77.4 s and 73.4 s all match the lesson. The abbreviated sequence is explicitly labeled schematic.",
+      "Canonical face crop comparison preserves Demir's eye shape, brows, freckles, small nose, stubble, jaw, hair and earpiece. The adult standing posture has sensible support."
+    ],
+    "canonicalFaceComparison": {
+      "referencePath": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "referenceSha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "candidateCropCoordinates": {
+        "coordinateSpace": "candidate pixels, origin top-left",
+        "left": 935,
+        "top": 55,
+        "width": 300,
+        "height": 350
+      },
+      "nativeCropReviewed": true,
+      "temporaryCropRemoved": true
+    },
+    "remainingGate": "Independent peer review and root publication; active assets remain unchanged."
+  },
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+    }
+  ],
+  "publishedSource": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+  "owner": "/root/quality_sequence"
+}

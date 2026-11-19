@@ -55,6 +55,29 @@ describe("ExerciseBrief (spec 2026-09-24, section 3)", () => {
     expect(screen.getByTestId("exercise-hints")).toBeInTheDocument();
   });
 
+  it("pairs a focusable brief with the matching editor anchor", () => {
+    render(
+      <ExerciseDataProvider exercises={new Map([[exercise.slug, exercise]])}>
+        <ExerciseBrief
+          slug={exercise.slug}
+          anchorId="launch-brief-create"
+          editorAnchor="launch-editor-create"
+        />
+      </ExerciseDataProvider>,
+    );
+    expect(screen.getByTestId("exercise-brief")).toHaveAttribute(
+      "id",
+      "launch-brief-create",
+    );
+    expect(screen.getByTestId("exercise-brief")).toHaveAttribute(
+      "tabindex",
+      "-1",
+    );
+    expect(
+      screen.getByRole("link", { name: /Open First Contact/ }),
+    ).toHaveAttribute("href", "#launch-editor-create");
+  });
+
   it("wraps its header row between whole items only", () => {
     const { container } = renderBrief();
     const row = container.querySelector(

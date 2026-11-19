@@ -1,0 +1,232 @@
+{
+  "key": "deep-orbit/anomaly-detection/autoencoders",
+  "phase": "epilogue",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit. Canonical portraits first are immutable identity references; room master palette reference; LAST input is target. Correct ONLY Nazari's open notebook reader direction. She writes from the far side of the desk. Rotate the handwritten content180degrees within the page plane, so the lines90min training and412suspect rows read upright to Nazari and visibly UPSIDE DOWN to the camera across the desk. Use natural spaces. Do not mirror letters. Page rulings, perspective and pen contact remain physical and coherent; preserve both faces and whole candid poses, all four connected arms/hands, Farah's stylus at Review training rows, all exact foreground screen content, inactive background monitors and muted pillar. One1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-epilogue-narrative-stage2-openai-20261107.png",
+      "sha256": "09ebdd0a8862aae8977c3646840f95d8c8289be58485062b405399d1f31ab76e",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "09ebdd0a8862aae8977c3646840f95d8c8289be58485062b405399d1f31ab76e",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+    "sha256": "f01d6f6eae0ba42a5ff8d215f8de6ee848dfe1c0b448075f70e0ec5131819aa5"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "6821225054139b4792a89aa17d77cde50a967288dfdb035d90b20151365e6e37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sha256": "e4d09dbb27230413c387d2b4df6b62c16664a8095d7b6c2299e2ca4ea8272d4e"
+    }
+  ],
+  "panelSpecification": {
+    "state": "fictional mission miss",
+    "concreteGenerationSpecification": "Restage as a candid late-night investigation at the lab bench, not a smiling pair below a poster. Farah sits turned toward a low angled work monitor, leaning in with tired concentration, her stylus selecting Review training rows. Her other hand supports her on the desk. Nazari sits or leans at the adjacent side of the desk, writing the cost in a notebook lying flat, one hand holding the page and the other pen poised. She directs a skeptical glance toward Farah, eyebrows drawn, mouth firm. Four distinct continuous arms, supported body positions, natural necks, believable grips. Remove the held sheet and giant wall heading; wallboard is inactive. The compact working monitor shows Mission review, Error: 1.4x baseline, Below this run cutoff, 412 suspect rows / 28,800, Activity near 73.4 Hz, and Second run: 0115 in separate small orderly rows. Lower control reads Review training rows with status Cause unresolved. Nazari's flat notebook has only 90 min training and 412 suspect rows, same known findings, no extra values. All text and dividers precisely follow each angled screen/paper plane. No fabricated cutoff, loss curve or chosen7741 branch. Restrained warm lamp light with charcoal, aged brass and dim sage pillar. Preserve exact canonical faces, adult age, no eyewear on Nazari, balanced head sizes and no fluorescent rims.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Epilogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass.",
+    "finalLocalizedCorrection": "Use case: precise-object-edit. Canonical portraits first are immutable identity references; room master palette reference; LAST input is target. Correct ONLY Nazari's open notebook reader direction. She writes from the far side of the desk. Rotate the handwritten content180degrees within the page plane, so the lines90min training and412suspect rows read upright to Nazari and visibly UPSIDE DOWN to the camera across the desk. Use natural spaces. Do not mirror letters. Page rulings, perspective and pen contact remain physical and coherent; preserve both faces and whole candid poses, all four connected arms/hands, Farah's stylus at Review training rows, all exact foreground screen content, inactive background monitors and muted pillar. One1536x1024 scene."
+  },
+  "bodyConstraints": "Complete restaging allowed, exact canonical morphology and balanced head scale preserved. Natural eyelines, supported task action, two continuous arm chains per person.",
+  "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-epilogue-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-59eebb43-79e8-4158-ba1b-90cd29da2e05.png",
+  "ownReview": {
+    "reviewer": "late_final",
+    "status": "approved",
+    "candidateSha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+    "proofSha256": "825091c80ad318b6931d3fbd7a630f0e4eecd351844db5241425047b7c84fba5",
+    "gates": [
+      "Candid story action and task-tied emotion",
+      "Canonical face morphology and age",
+      "Balanced stylized proportions",
+      "Complete supported shoulder-arm-wrist-hand chains",
+      "Muted room palette",
+      "Exact phase MDX/YAML meaning and values",
+      "Physical screen and paper perspective",
+      "Work surfaces oriented toward their reader"
+    ],
+    "actionEmotionStory": "Nazari logs the contaminated rows while Farah reopens training selection, both tired and concerned about the missed signal before the next run."
+  },
+  "previousSemanticMetadata": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/history/autoencoders-epilogue-before-narrative.json",
+  "narrativeInput": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-epilogue-target.png",
+    "sha256": "333c1e31c9b4acba49ee68295f197fcd050bcc74a5b354e396504492b5dfa7bf",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "333c1e31c9b4acba49ee68295f197fcd050bcc74a5b354e396504492b5dfa7bf",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "inputSource": {
+    "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-epilogue-runtime-before.png",
+    "sha256": "ac6f3d948bd9df83ed1891ca417fcbee9ffaaef49889c90ec07096032b470349",
+    "pathAvailability": "deleted-obsolete-working-copy",
+    "pathDeletedSha256": "ac6f3d948bd9df83ed1891ca417fcbee9ffaaef49889c90ec07096032b470349",
+    "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+  },
+  "narrativeSpecification": {
+    "actionEmotionStory": "Nazari logs the contaminated rows while Farah reopens training selection, both tired and concerned about the missed signal before the next run.",
+    "fullSpecification": "Restage as a candid late-night investigation at the lab bench, not a smiling pair below a poster. Farah sits turned toward a low angled work monitor, leaning in with tired concentration, her stylus selecting Review training rows. Her other hand supports her on the desk. Nazari sits or leans at the adjacent side of the desk, writing the cost in a notebook lying flat, one hand holding the page and the other pen poised. She directs a skeptical glance toward Farah, eyebrows drawn, mouth firm. Four distinct continuous arms, supported body positions, natural necks, believable grips. Remove the held sheet and giant wall heading; wallboard is inactive. The compact working monitor shows Mission review, Error: 1.4x baseline, Below this run cutoff, 412 suspect rows / 28,800, Activity near 73.4 Hz, and Second run: 0115 in separate small orderly rows. Lower control reads Review training rows with status Cause unresolved. Nazari's flat notebook has only 90 min training and 412 suspect rows, same known findings, no extra values. All text and dividers precisely follow each angled screen/paper plane. No fabricated cutoff, loss curve or chosen7741 branch. Restrained warm lamp light with charcoal, aged brass and dim sage pillar. Preserve exact canonical faces, adult age, no eyewear on Nazari, balanced head sizes and no fluorescent rims."
+  },
+  "narrativeVisualReview": "own-pass-awaiting-independent-review",
+  "candidateSha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+  "narrativeIterations": [
+    {
+      "prompt": "Use case: identity-preserve narrative restaging. First inputs canonical identity portraits; next room master is only architectural/palette reference; LAST input is prior scene for cast, approved face morphology and exact task content, NOT a pose to preserve. Preserve each canonical face, adult age, hair, eye/nose/jaw proportions and characteristic accessories. Farah lens anatomical LEFT eye; Demir comms anatomical RIGHT ear; Nazari and Mirza have no eyewear. Balanced stylized adult head/body scale, neither oversized heads nor realistic tiny heads. Clean cel-shaded adventure-comic linework, natural supported anatomy, two arms per character. Restage as a candid late-night investigation at the lab bench, not a smiling pair below a poster. Farah sits turned toward a low angled work monitor, leaning in with tired concentration, her stylus selecting Review training rows. Her other hand supports her on the desk. Nazari sits or leans at the adjacent side of the desk, writing the cost in a notebook lying flat, one hand holding the page and the other pen poised. She directs a skeptical glance toward Farah, eyebrows drawn, mouth firm. Four distinct continuous arms, supported body positions, natural necks, believable grips. Remove the held sheet and giant wall heading; wallboard is inactive. The compact working monitor shows Mission review, Error: 1.4x baseline, Below this run cutoff, 412 suspect rows / 28,800, Activity near 73.4 Hz, and Second run: 0115 in separate small orderly rows. Lower control reads Review training rows with status Cause unresolved. Nazari's flat notebook has only 90 min training and 412 suspect rows, same known findings, no extra values. All text and dividers precisely follow each angled screen/paper plane. No fabricated cutoff, loss curve or chosen7741 branch. Restrained warm lamp light with charcoal, aged brass and dim sage pillar. Preserve exact canonical faces, adult age, no eyewear on Nazari, balanced head sizes and no fluorescent rims. Output one full 1536x1024 scene. No text outside genuine work artifacts, no captions, no hero portraits, no camera-facing eye contact or lesson cards.",
+      "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-epilogue-narrative-stage1-openai-20261107.png",
+      "candidateSha256": "a5d01e9ff72072ee1e693ab80ce8efec0a939824f2b45fb7830793af047726b1",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-533f217e-44f6-4cdc-a694-726991b9a71e.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/narrative-review/inputs/autoencoders-epilogue-target.png",
+          "sha256": "333c1e31c9b4acba49ee68295f197fcd050bcc74a5b354e396504492b5dfa7bf",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "333c1e31c9b4acba49ee68295f197fcd050bcc74a5b354e396504492b5dfa7bf",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ]
+    },
+    {
+      "prompt": "Use case: precise-object-edit. Canonical portraits are identity references first; room master is palette reference; LAST image is the only edit target. Change ONLY the incidental background monitors and pillar. Turn OFF both small monitors behind Farah on the rear bench and both doorway monitors behind Nazari, replacing invented circular graphs and bars with inactive dark charcoal glass. Darken the vertical lab pillar to subdued dark sage with very faint thin internal lines, no lime or golden fluorescence. Preserve the entire current two-person candid composition, exact canonical faces and adult sizes, Farah leaning with stylus at Review training rows, Nazari writing with four separate anatomically connected arms, and all exact foreground screen and notebook text. Keep natural warm skin, restrained brass lamp light, no extra changes. Output one1536x1024 image.",
+      "candidatePath": "art-src/scenes/anomaly-detection__autoencoders-epilogue-narrative-stage2-openai-20261107.png",
+      "candidateSha256": "09ebdd0a8862aae8977c3646840f95d8c8289be58485062b405399d1f31ab76e",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-991977ec-2865-4934-b6dc-8539837dc3a8.png",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+          "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/anomaly-detection__autoencoders-epilogue-narrative-stage1-openai-20261107.png",
+          "sha256": "a5d01e9ff72072ee1e693ab80ce8efec0a939824f2b45fb7830793af047726b1",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "a5d01e9ff72072ee1e693ab80ce8efec0a939824f2b45fb7830793af047726b1",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-epilogue-identity-proof.jpg"
+    }
+  ],
+  "faceBoxes": {
+    "farah": [
+      450,
+      305,
+      325,
+      350
+    ],
+    "nazari": [
+      1105,
+      280,
+      280,
+      350
+    ]
+  },
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/autoencoders-epilogue-identity-proof.jpg",
+  "surfacePerspectiveReview": {
+    "status": "approved",
+    "reviewer": "late_final",
+    "candidateSha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+    "reason": "Final work-surface orientation and text baselines match reader and plane."
+  },
+  "previousPanelSpecification": {
+    "state": "fictional mission miss",
+    "concreteGenerationSpecification": "Preserve Farah stylus hand, paper grip, whole seated torso/chair alignment and Nazari standing with tablet back toward viewer. Farah head is slightly heavy: adjust complete head at most 5 percent smaller, preserve morphology and natural short neck. Nazari head unchanged. Main board shows concise mission findings, arranged in separate panels with no graphs: heading \"Mission review\", left \"Error: 1.4x baseline\" and \"Below this run cutoff\"; right \"412 suspect rows / 28,800\" and \"Activity near 73.4 Hz\"; bottom \"Second run: 0115\". Foreground tablet Farah points at reads \"Review training rows\" and \"Cause unresolved\". Her paper remains blank reverse side. No fabricated cutoff or loss curve. This is a fictional story finding, not the synthetic exercise output. All other displays off.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+        "section": "Epilogue"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+        "section": "instructions, solution and relevant displayed-result fixture"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "combinedVisualReview": "pending-independent-review",
+  "publicationHold": false,
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  },
+  "reviewEvidence": {
+    "kind": "original-images",
+    "paths": [
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-533f217e-44f6-4cdc-a694-726991b9a71e.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-59eebb43-79e8-4158-ba1b-90cd29da2e05.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-991977ec-2865-4934-b6dc-8539837dc3a8.png",
+      "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders-epilogue.webp",
+      "art-src/scenes/anomaly-detection__autoencoders-epilogue-narrative-stage3-openai-20261107.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/masters/lab.png"
+    ],
+    "note": "Inspect the exact candidate and canonical images. Deleted preview paths and their hashes describe historical review output."
+  },
+  "retiredWorkingCandidate": {
+    "path": "art-src/scenes/anomaly-detection__autoencoders-epilogue-narrative-stage3-openai-20261107.png",
+    "sha256": "cfc72aafd78f7562813a67f03f4b82538b6ef1e59a480651aebb5a2bf5f80032",
+    "reason": "Reviewed replacement published to active source"
+  },
+  "currentReviewRecord": "docs/art-refs/deep-orbit/art-direction-2026-11-06/user-repairs-20261107/anomaly-detection__autoencoders-epilogue.json"
+}

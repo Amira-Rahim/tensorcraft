@@ -1,0 +1,306 @@
+{
+  "key": "sequence-prediction-takeaways",
+  "id": "recurrent-networks/sequence-prediction",
+  "phase": "takeaways",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+    "sha256": "4eb68d274fccc6a6c825288d4ae6e34d027b72b68825e4133db9d7f058158c3d"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Restage as spontaneous bridge discussion. Farah seated RIGHT at shared terminal, one hand on mouse and other on desktop. Demir stands LEFT beside her, leaning one hand on chair back with other at his side. They exchange a friendly knowing smile after spotting a units mismatch. One shared upright monitor LEFT foreground physically faces both crew and camera. Remove both outward devices. Screen heading \"Check the horizon\". Two clearly separated panels: \"Demo: 47 one-second steps\" with subline \"Less than a minute\"; \"Bridge: 47-minute countdown\" with subline \"Separate pulse series\". Footer \"Report per-feature errors in original units\" and \"Compare with a baseline\". All lines and panels follow screen perspective. No fabricated errors, scores, or success ticks. Logical calm work with humor in their expressions, not camera presentation.",
+  "meaning": "Recap differentiates demo47one-secondsteps fromfictionalbridge47mincountdown separatepulseseries; reportperfeatureoriginalunits andbaseline.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+      "sha256": "4eb68d274fccc6a6c825288d4ae6e34d027b72b68825e4133db9d7f058158c3d",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-cdc94108-edc8-4f02-ba2b-c56a9394788a.png",
+  "reviewCrops": [
+    {
+      "kind": "face",
+      "index": 0,
+      "left": 510,
+      "top": 30,
+      "width": 220,
+      "height": 330
+    },
+    {
+      "kind": "face",
+      "index": 1,
+      "left": 1040,
+      "top": 260,
+      "width": 280,
+      "height": 350
+    },
+    {
+      "kind": "hands",
+      "index": 0,
+      "left": 810,
+      "top": 375,
+      "width": 110,
+      "height": 175
+    },
+    {
+      "kind": "hands",
+      "index": 1,
+      "left": 470,
+      "top": 755,
+      "width": 100,
+      "height": 130
+    },
+    {
+      "kind": "hands",
+      "index": 2,
+      "left": 650,
+      "top": 815,
+      "width": 660,
+      "height": 100
+    }
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+  "candidateSha256": "5b3c75784343e5cde40ca190d4a009025a0a59af884f869209480e54221815fc",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Restage as spontaneous bridge discussion. Farah seated RIGHT at shared terminal, one hand on mouse and other on desktop. Demir stands LEFT beside her, leaning one hand on chair back with other at his side. They exchange a friendly knowing smile after spotting a units mismatch. One shared upright monitor LEFT foreground physically faces both crew and camera. Remove both outward devices. Screen heading \"Check the horizon\". Two clearly separated panels: \"Demo: 47 one-second steps\" with subline \"Less than a minute\"; \"Bridge: 47-minute countdown\" with subline \"Separate pulse series\". Footer \"Report per-feature errors in original units\" and \"Compare with a baseline\". All lines and panels follow screen perspective. No fabricated errors, scores, or success ticks. Logical calm work with humor in their expressions, not camera presentation.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+          "sha256": "4eb68d274fccc6a6c825288d4ae6e34d027b72b68825e4133db9d7f058158c3d",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-cdc94108-edc8-4f02-ba2b-c56a9394788a.png",
+        "sha256": "5b3c75784343e5cde40ca190d4a009025a0a59af884f869209480e54221815fc"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Recap differentiates demo47one-secondsteps fromfictionalbridge47mincountdown separatepulseseries; reportperfeatureoriginalunits andbaseline.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      {
+        "kind": "face",
+        "index": 0,
+        "left": 510,
+        "top": 30,
+        "width": 220,
+        "height": 330
+      },
+      {
+        "kind": "face",
+        "index": 1,
+        "left": 1040,
+        "top": 260,
+        "width": 280,
+        "height": 350
+      },
+      {
+        "kind": "hands",
+        "index": 0,
+        "left": 810,
+        "top": 375,
+        "width": 110,
+        "height": 175
+      },
+      {
+        "kind": "hands",
+        "index": 1,
+        "left": 470,
+        "top": 755,
+        "width": 100,
+        "height": 130
+      },
+      {
+        "kind": "hands",
+        "index": 2,
+        "left": 650,
+        "top": 815,
+        "width": 660,
+        "height": 100
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+      "sha256": "4eb68d274fccc6a6c825288d4ae6e34d027b72b68825e4133db9d7f058158c3d",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "sequence-prediction-takeaways",
+    "id": "recurrent-networks/sequence-prediction",
+    "phase": "takeaways",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-cdc94108-edc8-4f02-ba2b-c56a9394788a.png",
+    "candidateSha256": "5b3c75784343e5cde40ca190d4a009025a0a59af884f869209480e54221815fc",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-08T07:13:07.609236+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+        "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Current source explicitly distinguishes47 one-second demo steps from47-minute bridge countdown on separate pulse series. Original-unit per-feature errors and baseline check are accurate. Natural warm cast exchange and reader-side monitor."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-takeaways.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-cdc94108-edc8-4f02-ba2b-c56a9394788a.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-takeaways.webp",
+  "sourceSha256": "5b3c75784343e5cde40ca190d4a009025a0a59af884f869209480e54221815fc",
+  "webpSha256": "a87ee930ceaca15eec3d1aaaabb610b884e8b0428657055b36bb392b7593cd59",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+    "sourceSha256": "4eb68d274fccc6a6c825288d4ae6e34d027b72b68825e4133db9d7f058158c3d",
+    "webpSha256": "6703a27863b6d1ecc644d5101ef6424757482e5644aa67e250f9762603e4d28c",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-6de4657b-673a-489c-9c5f-cb9f2e2b9518.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "5b3c75784343e5cde40ca190d4a009025a0a59af884f869209480e54221815fc",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full1536x1024 independently inspected.",
+      "identity": "Canonical faces, age, hair, outfit and adult proportions consistent.",
+      "anatomy": "Connected hands/wrists/arm chains, necks and furniture support coherent.",
+      "screenPlane": "Displayed text, boxes and axis follow physical screen plane.",
+      "readerDirection": "Actual operators can see display front; candid cast interaction rather than camera gaze.",
+      "story": "Purposeful task activity and friendly character response.",
+      "palette": "Muted charcoal, sage and aged brass consistent.",
+      "meaning": "Current source explicitly distinguishes47 one-second demo steps from47-minute bridge countdown on separate pulse series. Original-unit per-feature errors and baseline check are accurate. Natural warm cast exchange and reader-side monitor."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+        "sha256": "951044dcc7339212310bcdfc918b1b928442a30c206909ec73b251e49c1e9411"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+        "sha256": "56d126ad294f5cd7f282373ea6b6adcddaeb938072ae644e3ee0e69cd6036f0e"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__sequence-prediction-takeaways-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-takeaways.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

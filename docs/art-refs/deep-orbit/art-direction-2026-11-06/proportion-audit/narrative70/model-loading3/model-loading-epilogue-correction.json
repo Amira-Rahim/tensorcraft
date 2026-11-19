@@ -1,0 +1,57 @@
+{
+  "key": "model-loading-epilogue",
+  "id": "browser-runtimes/model-loading",
+  "phase": "epilogue",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "ownerLedger": "docs/art-refs/deep-orbit/art-direction-2026-11-06/optimization-modules/identity-approved.json",
+  "status": "prepared-correction",
+  "input": "art-src/scenes/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+  "inputSha256": "b18fdcfa9e2d3aa148756baca6f5dcbaf0ee4a16a75556f3b9910074856c709b",
+  "archivedInput": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/inputs/browser-runtimes__model-loading-epilogue-openai-20261107.png",
+  "archivedInputSha256": "b18fdcfa9e2d3aa148756baca6f5dcbaf0ee4a16a75556f3b9910074856c709b",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f28d09e1-e296-4a3a-b6f0-67cb880cbb16.png",
+      "sha256": "7e904452932da5fa32049da591da69cbee3e91bd9ab489ee354d1254ba60c009"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "sha256": "9e0109554d625d1ba57b2fd25ab6dbd89b78b06b641bd46cfef5501899a522d6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+      "sha256": "d630acf6fb6828cbd11bc3e62fdcf085512c5e2e07fa3127fdcdd9c1e7921c32"
+    }
+  ],
+  "screenMeaning": "Farah and Demir discover their notebook and cached dashboard use different model versions for the same reading.",
+  "screenSpecification": "Restage the moment as a candid two-person investigation at the bridge dashboard bench. Farah has set her open notebook computer firmly on the bench beside the dashboard, both screens facing the crew and visible to the camera at an oblique angle. Farah leans in from the left, one hand relaxed on the bench and the other naturally touching the notebook trackpad. Demir leans in from the right with one hand by the dashboard keyboard and the other supported on the bench. Both bodies turn toward the two screens, with naturally visible three-quarter faces. Farah looks from her notebook toward Demir with a raised skeptical eyebrow and amused concern. Demir looks at the dashboard version with a dawning embarrassed realization, not a generic smile. Neither looks at camera or holds a device outward. Notebook screen exact text \"NOTEBOOK\" and \"Retrained v2\". Dashboard screen exact text \"DASHBOARD\" and \"Cached v1\". A small comparison strip on the dashboard reads \"Same reading: 3 percentage points apart\". No fabricated absolute scores. Preserve the story that the discrepancy has just been noticed, not already fixed.",
+  "narrativeSpecification": "Restage the moment as a candid two-person investigation at the bridge dashboard bench. Farah has set her open notebook computer firmly on the bench beside the dashboard, both screens facing the crew and visible to the camera at an oblique angle. Farah leans in from the left, one hand relaxed on the bench and the other naturally touching the notebook trackpad. Demir leans in from the right with one hand by the dashboard keyboard and the other supported on the bench. Both bodies turn toward the two screens, with naturally visible three-quarter faces. Farah looks from her notebook toward Demir with a raised skeptical eyebrow and amused concern. Demir looks at the dashboard version with a dawning embarrassed realization, not a generic smile. Neither looks at camera or holds a device outward. Notebook screen exact text \"NOTEBOOK\" and \"Retrained v2\". Dashboard screen exact text \"DASHBOARD\" and \"Cached v1\". A small comparison strip on the dashboard reads \"Same reading: 3 percentage points apart\". No fabricated absolute scores. Preserve the story that the discrepancy has just been noticed, not already fixed.",
+  "prompt": "Use case: precise identity-preserving narrative scene correction. First 2 images are exact canonical portraits for dr-farah, ensign-demir. Next is ROOM ARCHITECTURE ONLY; ignore all its display graphics. LAST image is the edit target. Correct the physical blocking of this candid investigation. The current screen fronts face away from the characters, so they cannot see the contents. Restage the two devices at screen-LEFT and BOTH characters at screen-RIGHT, seated/leaning on the SAME user side of those devices and looking LEFT at their visible screen fronts. The camera is to one side of the work surface, giving a natural side-three-quarter view of both faces and oblique but legible screens. Demir sits nearest the keyboard, body and chair turned toward the screens, one hand on the keyboard and one relaxed on the desk edge. Farah leans beside his far shoulder with one hand supported on the bench and one relaxed by her side, looking at Demir with skeptical amused concern. Demir has dawning embarrassed realization while looking at the old version. Do not make either look at camera. No device held outward, no person looking at the BACK of a monitor, no hand reaching across a monitor to its far-side keyboard. Preserve exact semantic contents: laptop \"NOTEBOOK\" / \"Retrained v2\"; fixed console \"DASHBOARD\" / \"Cached v1\"; small comparison strip \"Same reading: 3 percentage points apart\". No invented scores. All labels and boxes share the oblique screen plane and lighting. Keep canonical faces, adult age, balanced current head sizes, Farah left-eye lens and Demir right-ear comms, muted palette. All secondary displays off. Natural continuous shoulder-elbow-wrist-palm chains, one thumb and four fingers per hand, plausible support. No long thin neck or head resize. No teaching-card or viewer-facing pose. Preserve muted sage/aged brass, charcoal/navy, natural tan and flat cel shading. One1536x1024 image.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/model-loading-epilogue-correction.prompt.txt",
+  "metadataPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/proportion-audit/narrative70/model-loading3/model-loading-epilogue-correction.json",
+  "resultKeys": [
+    "image_url",
+    "output_hint"
+  ],
+  "inputCandidate": "/Users/amira.salah/.codex/generated_images/01a1b506-dcf1-7803-a54e-d607bdd271cf/exec-f28d09e1-e296-4a3a-b6f0-67cb880cbb16.png",
+  "inputCandidateSha256": "7e904452932da5fa32049da591da69cbee3e91bd9ab489ee354d1254ba60c009",
+  "archivedInputDeletedWorkingCopy": true,
+  "archivedInputRetentionNote": "Duplicate local working copy removed on user request after generation completed. Historical path and SHA256 retained; generated image library untouched."
+}

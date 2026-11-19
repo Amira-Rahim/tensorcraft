@@ -9,7 +9,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 const NAV_LINKS = [
   { href: "/worlds", label: "WORLDS" },
   { href: "/pricing", label: "PRICING" },
-  { href: "/blog", label: "BLOG" },
+  { href: "/guides", label: "Guides" },
 ] as const;
 
 export function MobileNav() {
@@ -163,11 +163,11 @@ export function MobileNav() {
                     Access and pricing
                   </Link>
                   <Link
-                    href="/blog"
+                    href="/guides"
                     onClick={() => setOpen(false)}
                     className="min-h-11 py-3 text-center text-sm underline"
                   >
-                    Blog
+                    Guides
                   </Link>
                   {/* ph-no-capture: identity text stays out of PostHog
                       autocapture and session replays. */}

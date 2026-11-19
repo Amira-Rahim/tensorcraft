@@ -13,7 +13,7 @@ export function LessonChallengeScene(props: Props) {
       data-testid="challenge-scene"
       aria-label="Mission scene"
     >
-      <LessonMissionScene {...props} compact narrativeFirst />
+      <LessonMissionScene {...props} phase="challenge" compact narrativeFirst />
     </section>
   );
 }

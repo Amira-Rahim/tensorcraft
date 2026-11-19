@@ -1,6 +1,12 @@
-import { describe, it, expect, vi, beforeAll } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { BRIDGES } from "@tensorcraft/shared";
+import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import {
+  BRIDGES,
+  DEFAULT_WORLD,
+  WORLD_CONTENT,
+  getModuleLessonCount,
+} from "@tensorcraft/shared";
+import { capture } from "@/lib/posthog";
 import { LandingHero } from "./components/landing-hero";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { CommitTrail } from "./components/commit-trail";
@@ -77,6 +83,34 @@ vi.mock("framer-motion", () => ({
   ),
 }));
 
+// Mock the posthog transport. A factory mock of the widely imported
+// analytics-events module is the vi.mock drift trap from the 2026-08-26
+// PostHog wiring incident. This mock is partial, so every other export of
+// the module stays real.
+vi.mock("@/lib/posthog", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/posthog")>()),
+  capture: vi.fn(),
+}));
+
+beforeEach(() => {
+  vi.mocked(capture).mockClear();
+});
+
+// jsdom cannot navigate, and following the link would log "Not implemented:
+// navigation". Cancel the default action so the click exercises the tracker.
+function clickWithoutNavigating(el: HTMLElement) {
+  el.addEventListener("click", (e) => e.preventDefault());
+  fireEvent.click(el);
+}
+
+// The free-lesson events among everything `capture` recorded, so a test can
+// assert exactly one per click.
+function ctaClicks() {
+  return vi
+    .mocked(capture)
+    .mock.calls.filter(([event]) => event === "free_lesson_cta_clicked");
+}
+
 describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   describe("LandingHero", () => {
     it("renders the descriptive course headline", () => {
@@ -110,38 +144,62 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(primary.className).toMatch(/focus-visible:ring-/);
     });
 
-    // Conversion pass (2026-06-10), spec:
-    // docs/superpowers/specs/2026-06-10-hero-conversion-pass.md
-    // 2026-08-22 (owner): label was "Run Your First Tensor (Free)". "Run"
-    // was wrong (lesson 1 has the learner write tf.tensor(...), not run
-    // one), and "tensor" was the taught term with no gloss anywhere on the
-    // page, logged BORDERLINE in
-    // docs/audits/prelesson-copy-audit-2026-08-19.md:170. "Mission" is
-    // deep-orbit's own word for a lesson (packages/worlds/src/deep-orbit.ts
-    // terminology.lesson) and is what the destination renders via
-    // lesson-steps.tsx, so the button names the thing the way the product
-    // names it three seconds later. The world name follows the same
-    // precedent as onboarding's "Start Deep Orbit" (audit :450). Owner also
-    // dropped the "(free)" tag here, so no free assertion: if it comes
-    // back, restore one, since module 1 is the entire free tier and the
-    // claim is the hero's only risk reversal.
-    it("primary CTA names the mission and world and keeps the free-lesson href", () => {
+    // Homepage entry points name the same free offer. The adjacent note
+    // scopes it to the first module rather than the entire Deep Orbit course.
+    it("primary CTA names the free world entry and keeps the free-lesson href", () => {
       render(<LandingHero />);
       const primary = screen.getByTestId("landing-cta-primary");
-      expect(primary.textContent).toMatch(/start mission/i);
-      expect(primary.textContent).toMatch(/deep orbit/i);
+      expect(primary.textContent).toBe("Start Deep Orbit free");
       expect(primary.getAttribute("href")).toBe(
         "/worlds/deep-orbit/foundations/introduction-to-tensors",
       );
     });
 
-    it("subhead connects the crew story to the browser workflow", () => {
-      // 2026-08-19 (owner): the eyebrow, stat line, and trust line were cut
-      // from the hero; the differentiator now lives only in the subhead.
+    it("names Deep Orbit's free lessons and account-free access next to the CTAs", () => {
+      render(<LandingHero />);
+      const note = screen.getByTestId("landing-cta-note");
+      const freeLessons = getModuleLessonCount(
+        DEFAULT_WORLD,
+        WORLD_CONTENT.freeModuleSlug,
+      );
+      expect(note.textContent).toBe(
+        `Deep Orbit’s first ${freeLessons} lessons are free, no account needed.`,
+      );
+      // The note qualifies the buttons, so it sits right after their row.
+      expect(note.previousElementSibling).toContainElement(
+        screen.getByTestId("landing-cta-primary"),
+      );
+    });
+
+    it("reports a primary CTA click as a landing_hero free-lesson click", () => {
+      render(<LandingHero />);
+      clickWithoutNavigating(screen.getByTestId("landing-cta-primary"));
+      expect(ctaClicks()).toEqual([
+        ["free_lesson_cta_clicked", { source: "landing_hero" }],
+      ]);
+    });
+
+    it("links the introduction without recording a free-lesson click", () => {
+      render(<LandingHero />);
+      const explorerLink = screen.getByTestId("landing-cta-secondary");
+      expect(explorerLink).toHaveAccessibleName("Watch introduction");
+      expect(explorerLink).toHaveAttribute("href", "#introduction");
+      clickWithoutNavigating(explorerLink);
+      expect(ctaClicks()).toEqual([]);
+    });
+
+    it("positions Deep Orbit as the first world within Tensorcraft", () => {
       const { container } = render(<LandingHero />);
-      expect(container.textContent).toMatch(/crew of the Archimedes/i);
-      expect(container.textContent).toMatch(/models in JavaScript/i);
-      expect(container.textContent).not.toMatch(/pipeline/i);
+      expect(container.textContent).toMatch(/build and evaluate models/i);
+      expect(container.textContent).toMatch(
+        /interactive stories and JavaScript exercises/i,
+      );
+      expect(container.textContent).toMatch(
+        /each Tensorcraft world explores a different part of ML/i,
+      );
+      expect(container.textContent).toMatch(
+        /Deep Orbit is the first world available/i,
+      );
     });
 
     it("no longer mounts the live-demo proof panel (removed 2026-08-31)", () => {
@@ -256,6 +314,28 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     });
   });
 
+  describe("Introduction video", () => {
+    it("opens the approved introduction from the hero without autoplaying it", async () => {
+      const { default: Home } = await import("./page");
+      render(<Home />);
+      const intro = screen.getByTestId("intro-video-section");
+      expect(intro).toHaveAttribute("id", "introduction");
+      expect(screen.getByTestId("landing-cta-secondary")).toHaveAttribute(
+        "href",
+        `#${intro.id}`,
+      );
+      const player = screen.getByTestId("intro-video-player");
+      expect(player).toHaveAttribute("src", "/media/tensorcraft-intro.mp4");
+      expect(player).toHaveAttribute("controls");
+      expect(player).toHaveAttribute("preload", "none");
+      expect(player).not.toHaveAttribute("autoplay");
+      expect(player.querySelector("track")).toHaveAttribute(
+        "src",
+        "/media/tensorcraft-intro.vtt",
+      );
+    });
+  });
+
   describe("Final CTA", () => {
     it("carries the brutalist idle-stamp loop alongside shadow + hover", async () => {
       const { default: Home } = await import("./page");
@@ -264,6 +344,15 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(cta.className).toMatch(/brutalist-stamp/);
       expect(cta.className).toMatch(/brutalist-shadow/);
       expect(cta.className).toMatch(/brutalist-hover/);
+    });
+
+    it("reports a final CTA click as a landing_footer free-lesson click", async () => {
+      const { default: Home } = await import("./page");
+      render(<Home />);
+      clickWithoutNavigating(screen.getByTestId("landing-cta-final"));
+      expect(ctaClicks()).toEqual([
+        ["free_lesson_cta_clicked", { source: "landing_footer" }],
+      ]);
     });
   });
 

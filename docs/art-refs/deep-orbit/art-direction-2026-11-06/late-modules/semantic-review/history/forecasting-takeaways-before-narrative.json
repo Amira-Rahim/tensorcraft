@@ -1,0 +1,126 @@
+{
+  "key": "deep-orbit/advanced-time-series/forecasting",
+  "phase": "takeaways",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identity. First references are canonical people and room; LAST image is the exact edit target. Preserve faces, adult age, facial morphology, expressions, head scale, neck alignment, whole poses and two connected arm chains per person. Change lighting only. Turn OFF the unused bright green hologram table behind the two people so its central disk is inactive dark charcoal glass. Reduce neon mint outlines around their hair, coats and shoulders to subtle thin muted sage rim light. Preserve every face feature, expression, scale, all hands and poses, Farah lens, Mirza uniform, and exact tablet and rear monitor text without any change. Keep skin naturally warm. Deep Orbit clean cel-shaded adventure comic, muted sage and aged brass, charcoal glass, no neon or gold cast. Output one complete 1536x1024 scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/advanced-time-series__forecasting-takeaways-semantics-stage1-openai-20261107.png",
+      "sha256": "c30652074c9fed4ed6ab9b16826c6402db40c893f36735f7717bfd0e62a66fcc",
+      "role": "target scene",
+      "originalPath": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/advanced-time-series__forecasting-takeaways-semantics-stage1-openai-20261107.png",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "c30652074c9fed4ed6ab9b16826c6402db40c893f36735f7717bfd0e62a66fcc",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-takeaways.webp",
+    "sha256": "3b6fa3db8df8398b6f2a04c9ba4faa4065bc1a59b21b7729d5d1c54d1d826dc3"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1"
+    }
+  ],
+  "panelSpecification": {
+    "state": "recall",
+    "panels": [
+      "Tablet compares Earlier period and Later period using1-step replay and Observed history for both.",
+      "Small rear reminder: Predictions can feed later inputs. No invented numeric errors or drift verdict."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Preserve Farah pointing at tablet and holding its edge with other hand, Mirza full stance andrailcontact, both exact faces and expressions. Both heads can be adjusted only slightly, around95 percent current size, with natural necks, samefaceproportions. Tablet replaces arbitrary waveforms with a concise comparison headed \"Compare errors\". Two side-by-side cards: \"Earlier period\" with \"1-step replay\" and \"Later period\" with \"1-step replay\". Below both, one shared note \"Observed history\". No invented numeric errors or verdict. One background monitor directly between their heads may carry the short lesson reminder \"Predictions can feed later inputs\"; do not add graphs. Other screens OFF. Do not imply errors always rise or that error growth proves drift."
+  },
+  "bodyConstraints": "Preserve all approved whole body construction, continuous arms and hands, supported chair poses. No blanket realism.",
+  "candidatePath": "art-src/scenes/advanced-time-series__forecasting-takeaways-openai-20261107.png",
+  "candidateSha256": "6aeb3e007ea5597dae797f5149562a747eb3f4b53bf2e00af2dad7e5755cceb4",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-bd5a8bb6-9ab9-4d05-8e21-deabbb6aa0fc.png",
+  "ownReview": "Native fullframe and canonical proof checked: faces, balanced stylized proportions, two connected arm chains, contacts, palette and all prominent panels pass.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-takeaways-identity-proof.jpg",
+  "iterations": [
+    {
+      "prompt": "Use case: precise-object-edit with immutable canonical identity. Cinematic Deep Orbit adventure-comic scene,1536x1024. First reference images are canonical faces, next is bridge master for room/palette, LAST is exact scene to edit. Preserve exact people, facial morphology, adult age markers, warm skin, nose/jaw/eye proportions, hair, side-specific accessories, expressions, story action and entire room composition. Keep every continuous shoulder-elbow-wrist-hand chain, grips, torso/head alignment, thighs, chair support and rail contacts intact. Demir comms anatomical RIGHT ear, Farah lens anatomical LEFT eye. Make only requested screens and small proportional adjustments. Keep narrative people dominant; embed concise task meaning in existing screens rather than turning scene into a full technical infographic. All peripheral monitors, wrist displays and unmentioned readable displays must be OFF, plain charcoal glass with no arbitrary bars, waveforms, gauges or text. Retain physical buttons. Muted sage, aged brass and charcoal with natural warm skin; no neon mint, cyan or mustard wash. Preserve Farah pointing at tablet and holding its edge with other hand, Mirza full stance andrailcontact, both exact faces and expressions. Both heads can be adjusted only slightly, around95 percent current size, with natural necks, samefaceproportions. Tablet replaces arbitrary waveforms with a concise comparison headed \"Compare errors\". Two side-by-side cards: \"Earlier period\" with \"1-step replay\" and \"Later period\" with \"1-step replay\". Below both, one shared note \"Observed history\". No invented numeric errors or verdict. One background monitor directly between their heads may carry the short lesson reminder \"Predictions can feed later inputs\"; do not add graphs. Other screens OFF. Do not imply errors always rise or that error growth proves drift. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full scene only.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/commander-mirza.png",
+          "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+          "role": "room and palette reference"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/forecasting-takeaways-before.png",
+          "sha256": "ae2e557d5e47ad4e7dc3f945c53cdfe11c5791e7c285591a2be0e1ab4845534d",
+          "role": "target scene",
+          "pathAvailability": "deleted-obsolete-working-copy",
+          "pathDeletedSha256": "ae2e557d5e47ad4e7dc3f945c53cdfe11c5791e7c285591a2be0e1ab4845534d",
+          "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+        }
+      ],
+      "candidatePath": "art-src/scenes/advanced-time-series__forecasting-takeaways-semantics-stage1-openai-20261107.png",
+      "candidateSha256": "c30652074c9fed4ed6ab9b16826c6402db40c893f36735f7717bfd0e62a66fcc",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-3b9b7eb3-2a02-4e66-8e56-c730fb384e52.png"
+    }
+  ],
+  "requestedDisplayCorrections": "Change lighting only. Turn OFF the unused bright green hologram table behind the two people so its central disk is inactive dark charcoal glass. Reduce neon mint outlines around their hair, coats and shoulders to subtle thin muted sage rim light. Preserve every face feature, expression, scale, all hands and poses, Farah lens, Mirza uniform, and exact tablet and rear monitor text without any change. Keep skin naturally warm.",
+  "independentReview": {
+    "status": "approved",
+    "reviewer": "/root",
+    "notes": "Native fullframe and all fresh canonical proofs reviewed. Muted cone and inactive unused emitter solved palette holds; faces, proportions, poses and exact diagrams preserved.",
+    "candidateSha256": "6aeb3e007ea5597dae797f5149562a747eb3f4b53bf2e00af2dad7e5755cceb4",
+    "proofSha256": "0642749e52749aa14e8acccbd3f9e3a16568c2fc9b983cce142253990c15a266",
+    "reviewedAt": "2026-11-07T10:00:21.038980+00:00"
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__forecasting-takeaways-semantics-stage2-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-takeaways.webp",
+  "publishedOutputSha256": "ac645567677141ef8495186069e5ec1031dd6374a1e65c2088dc1f1aad38849d",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 190892
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

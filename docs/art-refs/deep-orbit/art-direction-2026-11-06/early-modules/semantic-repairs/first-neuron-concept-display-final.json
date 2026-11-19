@@ -1,0 +1,46 @@
+{
+  "id": "neural-networks/first-neuron",
+  "phase": "concept",
+  "cast": [
+    "dr-farah"
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3d7bf62d-b0e9-45da-ac43-1ba74e5c350c.png",
+  "previousGeneratedSource": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-db32993f-c738-4843-b9cf-37e2948a79ca.png",
+  "prompt": "Use case: precise-object-edit. Input1 is immutable canonical Dr.Farah identity. Input2 is TARGET approved new story scene. Preserve Farah's exact face, head size, yaw, neck, hair, expression, body, both arm-hand chains, all furniture, lighting, composition and1536x1024size exactly. DO NOT change proportions or repaint the person. Only clean up specified incidental display elements. No new text, people, hands or data. Turn OFF all incidental small monitors: farleft vertical monitors, two bench monitors under main board, and far right small wall screen. Their glass becomes plain dark standby, no plots, dots, target symbols or bars. Also remove the two clusters of three short decorative horizontal lines near bottom of main display. Preserve main Weighted sum calculation .20,-.16,.12+bias.1\u2192Score.26 and all precise arrows, plus handheld tablet0.26.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-db32993f-c738-4843-b9cf-37e2948a79ca.png"
+  ],
+  "status": "generated-awaiting-review",
+  "tool": "built-in image_gen",
+  "proofs": [
+    {
+      "character": "dr-farah",
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/early-modules/semantic-repairs/first-neuron-concept-dr-farah-proof.png",
+      "sha256": "8cbaedccfec12a8ef90b7e9087f2864a663d11842e44b523c6a7596cf7508589",
+      "crop": {
+        "left": 985,
+        "top": 130,
+        "width": 270,
+        "height": 340
+      },
+      "canonical": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "canonicalSha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "priorSource": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-fcac4868-4d8a-4587-954b-3eb706969915.png",
+      "priorSha256": "408b6bb95efe80dce860418070c75928b27212973345c993ef460f863017b991",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-3d7bf62d-b0e9-45da-ac43-1ba74e5c350c.png",
+      "candidateSha256": "3d35a757a550628147fb2fc75fdf48242f4d2b6cb861f82a86c793910f7228b7"
+    }
+  ],
+  "pathSha256": "3d35a757a550628147fb2fc75fdf48242f4d2b6cb861f82a86c793910f7228b7",
+  "lessonSource": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+  "exerciseSources": [
+    "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml"
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

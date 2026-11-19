@@ -1,0 +1,213 @@
+{
+  "id": "llm-integration__llms-for-science-briefing",
+  "lesson": "llm-integration/llms-for-science",
+  "phase": "briefing",
+  "reviewer": "/root",
+  "status": "published",
+  "tool": "builtin image_gen",
+  "intent": "edit",
+  "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, chief-nazari.\nStory action: Farah proposes a draft while Nazari insists on a verification ledger. Expression: Farah is hopeful and animated; Nazari is dryly skeptical.\nKeep Farah seated left, Nazari standing right, conversing across the table. Farah rests BOTH hands naturally on an open notebook on the table facing her, one hand on each page. No open-palm or pointing gesture. She still smiles conversationally toward Nazari while proposing the report. Exactly two arms, neutral wrists, back of each hand visible with ordinary relaxed fingers and correct left/right thumb position. Nazari folds her two arms naturally, without extra hands. Enlarge the central upright monitor UPWARD into unused space so it fills most of the central half vertically. Their faces remain clearly visible at the two sides. Exact display rows: Report window: 6 hours; Archive: 47 days; Classified events: 12,000; Unclassified: 1. Then Draft > Verify > Approve. Below, two spacious ledger rows Unsupported claims: pending and Review minutes: pending. No invented results.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "b637fbd38428dbb4e4fbc12249bff34b5eab57a591a233717ba3e971d58192e7",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "role": "canonical identity: dr-farah",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+      "role": "canonical identity: chief-nazari",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+      "role": "room architecture only",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dbdd1608-56d2-4874-acb6-e87510acf790.png",
+      "role": "edit target",
+      "sha256": "2fde8c1ac140daeacf6c5908f95ab363dea24f09bcaa6bdce35b035d97f99876"
+    }
+  ],
+  "sourceSha256": "195af2f784830431a217c750105b1505de0e3dc07c8338d4083e9c6ba69795e0",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+    }
+  ],
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+    "sha256": "3d2f648166ec87ecc8e4edee99969ba3c7a303caeefb947a5cf11bf8eff0329a"
+  },
+  "source": "art-src/scenes/llm-integration__llms-for-science-openai-20261107.png",
+  "preparedAt": "2026-11-08T18:50:44.319696+00:00",
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, chief-nazari.\nStory action: Farah proposes a draft while Nazari insists on a verification ledger. Expression: Farah is hopeful and animated; Nazari is dryly skeptical.\nKeep Farah seated left, Nazari standing right, conversing across the table. Farah rests BOTH hands naturally on an open notebook on the table facing her, one hand on each page. No open-palm or pointing gesture. She still smiles conversationally toward Nazari while proposing the report. Exactly two arms, neutral wrists, back of each hand visible with ordinary relaxed fingers and correct left/right thumb position. Nazari folds her two arms naturally, without extra hands. Enlarge the central upright monitor UPWARD into unused space so it fills most of the central half vertically. Their faces remain clearly visible at the two sides. Exact display rows: Report window: 6 hours; Archive: 47 days; Classified events: 12,000; Unclassified: 1. Then Draft > Verify > Approve. Below, two spacious ledger rows Unsupported claims: pending and Review minutes: pending. No invented results.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dbdd1608-56d2-4874-acb6-e87510acf790.png"
+    ],
+    "transparent_background": false
+  },
+  "publication": {
+    "alt": "Farah proposes a draft while Nazari insists on a verification ledger.",
+    "location": "Archimedes, Bridge",
+    "action": "Farah proposes a draft while Nazari insists on a verification ledger.",
+    "emotion": "Farah is hopeful and animated; Nazari is dryly skeptical.",
+    "eyeline": "Toward task equipment and colleague as the narrative action requires.",
+    "checks": [
+      "Canonical faces and adult proportions",
+      "Complete shoulder-elbow-wrist-hand chains and correct thumb sides",
+      "Large readable source-grounded lesson content",
+      "Physical display perspective and operator direction",
+      "Distinct expressive story action",
+      "Independent exact-hash peer PASS"
+    ]
+  },
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-ad8bbd35-1215-4648-b2e2-1114ed42a4c4.png",
+  "candidatePath": "art-src/scenes/llm-integration__llms-for-science-openai-20261107.png",
+  "candidateSha256": "5f17706850f9af2a91f13a1f45b11e75e72577511afdaf669a9e6cd57e293dac",
+  "generatedAt": "2026-11-09T06:40:45.163289+00:00",
+  "diagnosticCrops": [
+    {
+      "kind": "faces",
+      "box": [
+        140,
+        335,
+        250,
+        300
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__llms-for-science-briefing-faces0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "faces",
+      "box": [
+        1180,
+        145,
+        280,
+        320
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__llms-for-science-briefing-faces1.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        330,
+        650,
+        310,
+        290
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__llms-for-science-briefing-hands0.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        1140,
+        505,
+        300,
+        150
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/llm-integration__llms-for-science-briefing-hands1.png",
+      "removedAfterReview": true
+    },
+    {
+      "kind": "hands",
+      "box": [
+        300,
+        810,
+        420,
+        170
+      ],
+      "scale": 2,
+      "path": "/tmp/root-art-crops/science-final-hands.png",
+      "note": "Final v2 notebook hands freshly inspected.",
+      "removedAfterReview": true
+    }
+  ],
+  "attempts": [
+    {
+      "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, chief-nazari.\nStory action: Farah proposes a draft while Nazari insists on a verification ledger. Expression: Farah is hopeful and animated; Nazari is dryly skeptical.\nKeep Farah seated left, Nazari standing right, conversing across the table. Farah makes a small relaxed open-palm gesture from a bent elbow; her other hand rests on the table. Nazari folds her two arms naturally, without extra hands. Enlarge the central upright monitor UPWARD into unused space so it fills most of the central half vertically. Their faces remain clearly visible at the two sides. Exact display rows: Report window: 6 hours; Archive: 47 days; Classified events: 12,000; Unclassified: 1. Then Draft > Verify > Approve. Below, two spacious ledger rows Unsupported claims: pending and Review minutes: pending. No invented results.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "628cd419fcc622c0093fe7dd4b3e6ec2c13b501669d3384f92875f77da709edf",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/dr-farah.png",
+          "role": "canonical identity: dr-farah",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/chief-nazari.png",
+          "role": "canonical identity: chief-nazari",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/bridge.png",
+          "role": "room architecture only",
+          "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a"
+        },
+        {
+          "path": "art-src/scenes/llm-integration__llms-for-science-openai-20261107.png",
+          "role": "edit target",
+          "sha256": "195af2f784830431a217c750105b1505de0e3dc07c8338d4083e9c6ba69795e0"
+        }
+      ],
+      "generationArgs": {
+        "prompt": "Use case: precise-object-edit. Create a 1536x1024 landscape Deep Orbit story illustration by recomposing the final reference. The first references are canonical identity portraits for exactly the named humans; preserve their actual face shape, eye spacing, nose, jaw, complexion, age, hairline and equipment. The following room master is architecture and set-dressing authority ONLY. The final reference is the edit target, not identity authority. Keep clear bold cel shading, restrained charcoal/navy, muted sage green #6BAA8A interfaces and aged brass #A89060, naturally lit warm skin. No neon green cast, orange wash, plants or photorealistic rendering. Maintain adult stylized head-to-body balance, ordinary neck length and shoulder width. Every human has exactly two complete shoulder-elbow-wrist-hand chains; five digits per hand with correct thumb side, natural grips, neutral wrists, plausible furniture contact. Any pen must be one continuous straight object. Make a candid story moment with expressive faces and task-directed gazes, never a viewer-facing mugshot. Use available space for the primary lesson display, with large high-contrast words and generous margins. All text, boxes and lines share the actual perspective of their physical screen, which faces its operator and remains readable to the viewer. Avoid labels squeezed into thin strips or little screens beneath blank walls. Other screens may be dark. All required facts are below; no invented measurements, code or filler graphics.\nCanonical crew: dr-farah, chief-nazari.\nStory action: Farah proposes a draft while Nazari insists on a verification ledger. Expression: Farah is hopeful and animated; Nazari is dryly skeptical.\nKeep Farah seated left, Nazari standing right, conversing across the table. Farah makes a small relaxed open-palm gesture from a bent elbow; her other hand rests on the table. Nazari folds her two arms naturally, without extra hands. Enlarge the central upright monitor UPWARD into unused space so it fills most of the central half vertically. Their faces remain clearly visible at the two sides. Exact display rows: Report window: 6 hours; Archive: 47 days; Classified events: 12,000; Unclassified: 1. Then Draft > Verify > Approve. Below, two spacious ledger rows Unsupported claims: pending and Review minutes: pending. No invented results.\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+          "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/llm-integration__llms-for-science-openai-20261107.png"
+        ],
+        "transparent_background": false
+      },
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-dbdd1608-56d2-4874-acb6-e87510acf790.png",
+      "candidateSha256": "2fde8c1ac140daeacf6c5908f95ab363dea24f09bcaa6bdce35b035d97f99876",
+      "reason": "The suspected reversed palm was later cleared using a palmar anatomy reference and independent review. The current variant is retained for its readable display and coherent notebook interaction, not because the prior palm was proven defective.",
+      "reviewCorrection": "The suspected reversed palm was later cleared using a palmar anatomy reference and independent review. The current variant is retained for its readable display and coherent notebook interaction, not because the prior palm was proven defective."
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root",
+    "reviewedAt": "2026-11-09T07:40:22.694004+00:00",
+    "candidateSha256": "5f17706850f9af2a91f13a1f45b11e75e72577511afdaf669a9e6cd57e293dac",
+    "nativeReviewed": true,
+    "canonicalPortraitsCompared": true,
+    "faceCropsReviewed": true,
+    "magnifiedHandPropCropsReviewed": true,
+    "wholeArmChainsReviewed": true,
+    "displayPerspectiveReviewed": true,
+    "lessonMeaningReviewed": true,
+    "verdict": "PASS",
+    "scores": {
+      "identity": 4,
+      "anatomy": 4,
+      "color": 4,
+      "expression": 4,
+      "storyAction": 4,
+      "composition": 4,
+      "displayLegibility": 5
+    },
+    "checks": [
+      "Native full frame and 2x diagnostic details inspected before publication.",
+      "Canonical age, facial structure, hair and identifying equipment retained.",
+      "Hands traced from shoulders through elbows and wrists, with plausible surface orientation, grips and contact.",
+      "Display facts match recorded lesson sources and occupy useful available space.",
+      "Physical screens and reading direction remain coherent."
+    ]
+  },
+  "publishedSource": "art-src/scenes/llm-integration__llms-for-science-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/llm-integration/llms-for-science.webp",
+  "publicationStatus": "published after independent exact-hash peer approval",
+  "temporaryDiagnosticCropsRemoved": true
+}

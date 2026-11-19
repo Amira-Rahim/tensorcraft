@@ -1,0 +1,75 @@
+{
+  "collectedAt": "2026-11-11T09:11:09Z",
+  "projectId": 257980,
+  "projectUrl": "https://eu.posthog.com/project/257980",
+  "timezone": "UTC",
+  "sourceTool": "query-trends",
+  "input": {
+    "dateRange": {
+      "date_from": "2026-10-12",
+      "date_to": "2026-11-08"
+    },
+    "filterTestAccounts": true,
+    "properties": [
+      {
+        "key": "$host",
+        "type": "event",
+        "operator": "exact",
+        "value": [
+          "tensorcraft.app"
+        ]
+      }
+    ],
+    "series": [
+      {
+        "kind": "EventsNode",
+        "event": "$pageview",
+        "math": "dau"
+      },
+      {
+        "kind": "EventsNode",
+        "event": "lesson_started",
+        "math": "dau"
+      },
+      {
+        "kind": "EventsNode",
+        "event": "lesson_completed",
+        "math": "dau"
+      },
+      {
+        "kind": "EventsNode",
+        "event": "experiment_submitted",
+        "math": "dau"
+      },
+      {
+        "kind": "EventsNode",
+        "event": "pricing_page_viewed",
+        "math": "dau"
+      },
+      {
+        "kind": "EventsNode",
+        "event": "checkout_started",
+        "math": "dau"
+      },
+      {
+        "kind": "EventsNode",
+        "event": "signup_completed",
+        "math": "dau"
+      }
+    ],
+    "trendsFilter": {
+      "display": "ActionsTable"
+    },
+    "interval": "day"
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Date range|Aggregated value for $pageview|Aggregated value for lesson_started|Aggregated value for lesson_completed|Aggregated value for experiment_submitted|Aggregated value for pricing_page_viewed|Aggregated value for checkout_started|Aggregated value for signup_completed\n2026-10-12 00:00:00+00:00 to 2026-11-08 23:59:59+00:00|2|1|1|1|1|1|1"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  }
+}

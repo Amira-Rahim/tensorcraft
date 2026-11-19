@@ -27,12 +27,18 @@ vi.mock("@/lib/analytics-events", () => ({
   },
 }));
 
+let analyticsReady = true;
+vi.mock("@/lib/analytics-ready", () => ({
+  useAnalyticsReady: () => analyticsReady,
+}));
+
 import { PaywallNotice } from "../paywall-notice";
 
 describe("PaywallNotice", () => {
   beforeEach(() => {
     trackMock.mockClear();
     mockModule = null;
+    analyticsReady = true;
   });
 
   /**
@@ -52,6 +58,19 @@ describe("PaywallNotice", () => {
     mockLocked = null;
     render(<PaywallNotice />);
     expect(trackMock).not.toHaveBeenCalled();
+  });
+
+  it("waits for analytics readiness and records the current paywall after consent", () => {
+    analyticsReady = false;
+    mockLocked = "deep-orbit";
+    const view = render(<PaywallNotice />);
+    expect(trackMock).not.toHaveBeenCalled();
+    analyticsReady = true;
+    view.rerender(<PaywallNotice />);
+    expect(trackMock).toHaveBeenCalledWith("paywall_hit", {
+      worldId: "deep-orbit",
+      moduleId: "unknown",
+    });
   });
 
   /**
@@ -75,7 +94,7 @@ describe("PaywallNotice", () => {
   });
 
   /**
-   * paywall_hit was specced in dev-plan §4c but never fired: its only call
+   * paywall_hit previously never fired: its only call
    * site lived in <LessonPaywall>, which became unreachable when the lesson
    * route switched to redirect-based enforcement. This component mounts at
    * exactly the paywall-hit moment, so it is the correct home for the event.

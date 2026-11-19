@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent, within } from "@testing-library/react";
+import { capture } from "@/lib/posthog";
 import PricingPage from "../page";
 
 // ─── Mocks ─────────────────────────────────────────────────────────────
@@ -39,6 +40,14 @@ vi.mock("@/lib/supabase/client", () => ({
 vi.mock("@/lib/analytics", () => ({
   trackCheckoutStarted: vi.fn(),
   trackPricingPageViewed: vi.fn(),
+}));
+
+// Partial mock of the posthog transport: it replaces only `capture`. A
+// factory mock of the widely imported analytics-events module is the vi.mock
+// drift trap from the 2026-08-26 PostHog wiring incident.
+vi.mock("@/lib/posthog", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/posthog")>()),
+  capture: vi.fn(),
 }));
 
 vi.mock("@/app/components/ambient-background", () => ({
@@ -109,6 +118,25 @@ vi.mock("@tensorcraft/worlds", () => {
   };
 });
 
+beforeEach(() => {
+  vi.mocked(capture).mockClear();
+});
+
+// jsdom cannot navigate, and following the link would log "Not implemented:
+// navigation". Cancel the default action so the click exercises the tracker.
+function clickWithoutNavigating(el: HTMLElement) {
+  el.addEventListener("click", (e) => e.preventDefault());
+  fireEvent.click(el);
+}
+
+// The free-lesson events among everything `capture` recorded, so a test can
+// assert exactly one per click.
+function ctaClicks() {
+  return vi
+    .mocked(capture)
+    .mock.calls.filter(([event]) => event === "free_lesson_cta_clicked");
+}
+
 describe("PricingPage (brutalist Phase 11 §11d)", () => {
   it('renders the "Buy once" H1', () => {
     render(<PricingPage />);
@@ -176,5 +204,23 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     expect(first.className).toContain("tc-curriculum-row");
     expect(first.style.getPropertyValue("--tc-row-delay")).toBe("1.60s");
     expect(last.style.getPropertyValue("--tc-row-delay")).toBe("2.60s");
+  });
+
+  it("reports the closing free-module link as a pricing_footer click", () => {
+    render(<PricingPage />);
+    // The next/link mock drops data attributes, so find the link through
+    // the closing section's heading.
+    const closing = screen
+      .getByRole("heading", { name: "The free first module" })
+      .closest("section");
+    expect(closing).not.toBeNull();
+    clickWithoutNavigating(
+      within(closing as HTMLElement).getByRole("link", {
+        name: "Start Module 1",
+      }),
+    );
+    expect(ctaClicks()).toEqual([
+      ["free_lesson_cta_clicked", { source: "pricing_footer" }],
+    ]);
   });
 });

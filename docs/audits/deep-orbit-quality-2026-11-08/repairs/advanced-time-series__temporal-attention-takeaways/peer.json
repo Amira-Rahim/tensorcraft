@@ -1,0 +1,59 @@
+{
+  "reviewer": "quality_early",
+  "reviewedAt": "2026-11-08T17:24:03.096634+00:00",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/advanced-time-series__temporal-attention-takeaways/candidate.png",
+  "candidateSha256": "be316312978454bac889b508b592f87d9e4e35955ffe36d745742d41cf286c86",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Fresh native original plus 2x face and hand/contact crops; full shoulder/elbow/wrist chains traced in the original. Canonical portrait independently viewed. Current lesson source checked for required display meaning.",
+  "checks": {
+    "armsHandsProps": "Both arms emerge from their respective shoulders and descend into separate ordinary mouse and brace contacts. Thumbs are on plausible inner sides, with no added forearm or finger.",
+    "displayReadabilityAndAccuracy": "Complete 80, steps 0-79, versus truncated 48, kept 32-79, missing 0-31 and lost onset 4 are large and clear. Both weight sums are 1.000, with the normalization limitation readable. Bars are schematic blocks, not claimed one-cell-per-reading plots.",
+    "identityExpressionAndStory": "Demir's face is recognizable against canonical and the concerned expression is tied to discovering the missing onset.",
+    "colorAndPerspective": "Muted sage interfaces, charcoal and brass, warm skin and coherent equipment planes. Large readable lesson display is unobstructed and faces its operator."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "cropCoordinates": [
+    {
+      "i": "peer2face",
+      "box": [
+        270,
+        60,
+        550,
+        390
+      ],
+      "scale": 2,
+      "k": 2
+    },
+    {
+      "i": "peer2arms",
+      "box": [
+        195,
+        650,
+        680,
+        975
+      ],
+      "scale": 2,
+      "k": 2
+    }
+  ],
+  "canonicalReference": {
+    "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+    "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+    "role": "canonical identity"
+  },
+  "lessonSource": {
+    "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+    "sha256": "050442de9621844d5746c1330a87a10c9ad8be38becc8c5d1f6f1cede8d8867d"
+  },
+  "temporaryCropsRemoved": true,
+  "publication": "Peer review only; no active asset mutation."
+}

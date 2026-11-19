@@ -1,0 +1,102 @@
+{
+  "slug": "backpropagation",
+  "phase": "concept",
+  "cast": [
+    "ensign-demir"
+  ],
+  "source": "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+  "instruction": "Correct ONLY the main board diagram's physical perspective and technical meaning, preserving Demir's exact face, delighted working expression, head scale, natural body/neck pose, stylus hand and notebook hand/contact, clothing, camera, lighting and engineering room. This board is seen obliquely: EVERY diagram box, label, arrow and line must be projected onto its same plane. In image coordinates horizontal board lines rise toward the right following its top/bottom rails; rectangles must share that convergence and foreshortening, never flat camera-facing cards. Replace the three empty floating boxes with a concise real lesson computation: four connected nodes, from left to right 'Input', 'ReLU', 'Logits', 'BCE loss'. Thin muted green forward arrows point RIGHT between these nodes and short top label 'Forward: loss'. A separate muted coral-red backward arrow row below the same nodes points LEFT from BCE loss back through Logits and ReLU toward Input, label 'Backward: gradients'. All arrows have clear direction; gradients reverse the forward calculation, do not reverse lettering or mirror text. Small footer 'Weights unchanged' makes clear this computes gradients and does not update weights. Demir's stylus tip naturally follows the leftward gradient route without adding hand deformation; only tiny stylus repositioning if needed. No invented numbers or timings, no giant teaching poster outside this working board. Keep side ARIA scope abstract, label it 'ARIA' in its own screen plane; wrist screen inactive. Keep notebook pages blank and facing Demir. No other restaging.",
+  "id": "training-loop/backpropagation",
+  "referencePaths": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png"
+  ],
+  "prompt": "Use case: precise-object-edit with identity preservation. Image1: canonical identity portrait for ensign-demir. NEXT image is engineering room master, ROOM ONLY, no copying old people or diagrams. LAST is TARGET. Correct ONLY the main board diagram's physical perspective and technical meaning, preserving Demir's exact face, delighted working expression, head scale, natural body/neck pose, stylus hand and notebook hand/contact, clothing, camera, lighting and engineering room. This board is seen obliquely: EVERY diagram box, label, arrow and line must be projected onto its same plane. In image coordinates horizontal board lines rise toward the right following its top/bottom rails; rectangles must share that convergence and foreshortening, never flat camera-facing cards. Replace the three empty floating boxes with a concise real lesson computation: four connected nodes, from left to right 'Input', 'ReLU', 'Logits', 'BCE loss'. Thin muted green forward arrows point RIGHT between these nodes and short top label 'Forward: loss'. A separate muted coral-red backward arrow row below the same nodes points LEFT from BCE loss back through Logits and ReLU toward Input, label 'Backward: gradients'. All arrows have clear direction; gradients reverse the forward calculation, do not reverse lettering or mirror text. Small footer 'Weights unchanged' makes clear this computes gradients and does not update weights. Demir's stylus tip naturally follows the leftward gradient route without adding hand deformation; only tiny stylus repositioning if needed. No invented numbers or timings, no giant teaching poster outside this working board. Keep side ARIA scope abstract, label it 'ARIA' in its own screen plane; wrist screen inactive. Keep notebook pages blank and facing Demir. No other restaging. Exact immutable canonical morphology and ages, especially Demir broad compact chin, rounded compact nose, eyes, eyebrows, freckles/stubble. Demir's comms on anatomical RIGHT ear, visible left ear bare. Do not shrink/enlarge heads. Exactly2connected arms and2hands per human, natural thumb/finger arrangement and object contact. No extra people, gadgets or incidental diagrams, no neon wash, no em dash or colored left accent bars. Preserve1536x1024. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "metadataPath": "/tmp/user-targeted-backpropagation-concept-candidate.json",
+  "lessonSource": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml",
+  "sourceSha256": "1d4a663511e8f828ff28b60e42862ef118ee076a8a1630a8468a712b0d0ce536",
+  "lessonSourceSha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d",
+  "exerciseSourceSha256": "554328dd9b6d4d9710bbfc769bccd642628aa8d1cb8753d8f807a7edd3890b72",
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "room only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+      "sha256": "d91c28ebd02d97581de537f4dc36c2c6234255e51702246c6b960e5e63ae701f",
+      "role": "edit target"
+    }
+  ],
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-e322361d-b285-4c44-9ae5-ee2ba053d90a.png",
+  "tool": "built-in image_gen",
+  "date": "2026-11-07",
+  "status": "published",
+  "candidateSha256": "1d4a663511e8f828ff28b60e42862ef118ee076a8a1630a8468a712b0d0ce536",
+  "ownerReview": {
+    "faces": "Canonical morphology/age viewed at original and enlarged crops; preserved from current source.",
+    "fullFrame": "Full shoulder-arm-wrist-hand continuity and natural existing task gaze inspected.",
+    "status": "pass",
+    "hold": null
+  },
+  "candidatePath": "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-e322361d-b285-4c44-9ae5-ee2ba053d90a.png",
+  "publishedSource": "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-concept.webp",
+  "webpSha256": "cf81f18dbff6b287f62b26bbcaf81617cacb2d6ef32918b057dff5eb30fd2fab",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+    "sourceSha256": "d91c28ebd02d97581de537f4dc36c2c6234255e51702246c6b960e5e63ae701f",
+    "webpSha256": "0d3ecbc7c9a3d2cd795444164ac9921a46af927f7a804dcc85aceeaea86aadf8",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ddb6f335-421c-4bd8-9a04-9adf3dc987b2.png"
+  },
+  "rootReview": {
+    "reviewer": "/root",
+    "authorReviewer": "art_peer_final",
+    "status": "approved",
+    "candidateSha256": "1d4a663511e8f828ff28b60e42862ef118ee076a8a1630a8468a712b0d0ce536",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "Canonical Demir cheek, brow, nose and compact chin retained.",
+      "anatomy": "Stylus and book grips have coherent wrists, fingers and connected arm chains.",
+      "perspective": "Diagram boxes, forward and backward arrows, labels and footer share the board plane.",
+      "meaning": "Input, ReLU, logits and BCE loss follow MDX example. Gradient direction reversed; weights unchanged until optimizer update.",
+      "palette": "Muted sage, charcoal and warm brass match engineering.",
+      "story": "Active diagram tracing with task gaze and an expressive face."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+        "sha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml",
+        "sha256": "554328dd9b6d4d9710bbfc769bccd642628aa8d1cb8753d8f807a7edd3890b72"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-concept.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/training-loop__backpropagation-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation-concept.webp"
+  },
+  "publicationNote": "Root independently approved the exact generated image hash and replaced the canonical source and runtime paths. No alternate project image was retained."
+}

@@ -1,0 +1,237 @@
+{
+  "key": "pruning-challenge",
+  "auditIndex": 65,
+  "id": "optimization-edge/pruning",
+  "phase": "challenge",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+    "sha256": "54708e1b0962d895d59320a9326afd7491283a526f6e206ab636b01f7b834de0"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Farah lens stays over anatomical LEFT eye. Keepfriendlyworkingpair butshowactualmonitor task. Demir LEFT seated, onehandonmouse otherondesk, looksatFarah with littlecaught-outsmile. Farah RIGHT leaningonepalmonbench, otherhandrestinglightlyontopclosednotebook, warmknowingexpressionlookingatscreen. Removeheldtabletandbook. MonitorLEFTforegroundfacesbothcrew. Heading \"Pruning review\". Taskrows \"Start each level from original weights\", \"Report recall for every class\", \"Restore weights after scoring\". Bottom \"Class with no examples: null\" and \"Results pending\". No inventedclassscores orforcedfiveclasscount. The storyisFarahmakinghimcheckbeyondoneaggregate.",
+  "meaning": "Pruningexercisecloneoriginal,pooledkernelranking,startoriginaleachlevel,perclassrecall,nullmissingclass,restorefinally.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+      "sha256": "54708e1b0962d895d59320a9326afd7491283a526f6e206ab636b01f7b834de0",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1067ccdd-0461-4194-82a2-64ab5b8fec02.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/pruning-challenge/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/pruning-challenge/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+  "candidateSha256": "7df67215621b59a15556874ad8f4ad1c65e1c4fa99f14a692f15dfc2e35f50c4",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams.  Demir single earpiece stays on anatomical RIGHT ear; a visible left ear is bare when right ear is hidden. Farah lens stays over anatomical LEFT eye. Keepfriendlyworkingpair butshowactualmonitor task. Demir LEFT seated, onehandonmouse otherondesk, looksatFarah with littlecaught-outsmile. Farah RIGHT leaningonepalmonbench, otherhandrestinglightlyontopclosednotebook, warmknowingexpressionlookingatscreen. Removeheldtabletandbook. MonitorLEFTforegroundfacesbothcrew. Heading \"Pruning review\". Taskrows \"Start each level from original weights\", \"Report recall for every class\", \"Restore weights after scoring\". Bottom \"Class with no examples: null\" and \"Results pending\". No inventedclassscores orforcedfiveclasscount. The storyisFarahmakinghimcheckbeyondoneaggregate.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+          "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+          "sha256": "54708e1b0962d895d59320a9326afd7491283a526f6e206ab636b01f7b834de0",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1067ccdd-0461-4194-82a2-64ab5b8fec02.png",
+        "sha256": "7df67215621b59a15556874ad8f4ad1c65e1c4fa99f14a692f15dfc2e35f50c4"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Pruningexercisecloneoriginal,pooledkernelranking,startoriginaleachlevel,perclassrecall,nullmissingclass,restorefinally.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/pruning-challenge/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/pruning-challenge/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+      "sha256": "54708e1b0962d895d59320a9326afd7491283a526f6e206ab636b01f7b834de0",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+    }
+  ],
+  "independentReview": {
+    "key": "pruning-challenge",
+    "id": "optimization-edge/pruning",
+    "phase": "challenge",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1067ccdd-0461-4194-82a2-64ab5b8fec02.png",
+    "candidateSha256": "7df67215621b59a15556874ad8f4ad1c65e1c4fa99f14a692f15dfc2e35f50c4",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+        "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "Originalweightsperlevel,restoreafterscoring,nullmissingclasssourceexact; openworkdiscussionnaturalhands. Native full frame inspected against canonical identity and current source.",
+    "alt": "Demir and Farah prepare per-class recall checks at each pruning level.",
+    "location": "Archimedes, Engineering"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-1067ccdd-0461-4194-82a2-64ab5b8fec02.png",
+  "publishedSource": "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-challenge.webp",
+  "sourceSha256": "7df67215621b59a15556874ad8f4ad1c65e1c4fa99f14a692f15dfc2e35f50c4",
+  "webpSha256": "2d8be403bcb5abf07fed468e5869d2a6089955546f8a55116e4ed9b9eeb8bcd0",
+  "webpQuality": 84,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+    "sourceSha256": "54708e1b0962d895d59320a9326afd7491283a526f6e206ab636b01f7b834de0",
+    "webpSha256": "a4288cf78f0335c08a6641c60698053baa656dcab013138a81e726e6c4a2e2e3",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-4ca97ab3-c857-4e1a-870d-d95794f8e05f.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "7df67215621b59a15556874ad8f4ad1c65e1c4fa99f14a692f15dfc2e35f50c4",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+        "sha256": "12f140123c82f66688e0aa8e59763f9dc8a4af624afa124e042973fa02bcfd44"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+        "sha256": "146775178eebb24a4864a152a2e59a721101c30f7e804382d7967de95299eb5a"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-challenge.webp",
+    "docs/art-refs/deep-orbit/dr-farah.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__pruning-challenge-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/pruning-challenge.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

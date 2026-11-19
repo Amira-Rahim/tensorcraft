@@ -1,0 +1,24 @@
+{
+  "id": "recurrent-networks/simple-rnns",
+  "phase": "briefing",
+  "cast": [
+    "dr-farah",
+    "ensign-demir"
+  ],
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png"
+  ],
+  "prompt": "Use case: precise-object-edit. Canonical portraits first, engineering master room-only next, LAST is target. Remove ONLY the two decorative strokes flanking the heading One-unit cell drill. Keep all numerical values, formula, screen layout, people and environment unchanged. One1536x1024 image. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "alt": "Farah shows Demir how the same input gives a different hidden state after earlier readings.",
+  "location": "Archimedes, Engineering",
+  "lessonSource": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+  "exerciseSource": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+  "screenMeaning": "Main board title \"One-unit cell drill\". Formula \"h = tanh(0.8h + x)\" with \"Start h = 0\". Exactly three rows under headers \"Input x | Updated h\": \"0.5 | 0.4621\", \"0.9 | 0.8537\", \"0.5 | 0.8284\". Below \"Hand-picked weights, bias 0\". Farah points at last updated state. Emphasize that same0.5 input gives differentstate because ofhistory. Remove all arbitrary stairplots. Preserve Farah two connected arms and Demir comfortable chair position, anatomically plausible head-neck-torso alignment, hands naturally on controls.",
+  "status": "generated-awaiting-review",
+  "prefix": "rnn",
+  "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-ab2ddd20-367c-4cf4-a491-2327b00bef9b.png",
+  "previousCandidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-a19aecc9-afd2-44a7-8b39-afc93c726ffd.png"
+}

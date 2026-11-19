@@ -20,10 +20,10 @@ import { logger } from "../lib/logger";
  *
  * Side-effects:
  *   - Logs the bounce via Pino so Fly log aggregation / Sentry gets a
- *     durable record (see §6h, deliverability monitoring).
- *   - Does NOT mutate the `profiles` row. Marking an email invalid is
- *     tracked as deferred work in docs/dev-plan.md §4e, requires a
- *     migration + UX for re-validating a bounced email.
+ *     durable record (see docs/observability.md).
+ *   - Suppression events disable waitlist subscription and profile email
+ *     preferences. An explicit invalid-email state and re-validation UX
+ *     remain deferred in ROADMAP.md.
  */
 const webhooks = new Hono();
 

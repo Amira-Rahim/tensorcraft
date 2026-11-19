@@ -1,0 +1,244 @@
+{
+  "key": "caching-strategies-epilogue",
+  "id": "optimization-edge/caching-strategies",
+  "phase": "epilogue",
+  "cast": [
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+  "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded narrative scene,1536x1024 landscape. First reference is authoritative canonical Demir identity, age, face proportions, brown eyes, tousled dark hair, freckles, short stubble, single earpiece and charcoal uniform. Second reference is approved dashboard station ROOM ARCHITECTURE ONLY, not its old diagrams or coloring. Last reference is exact scene to restage. Keep muted sage #6BAA8A, aged brass #A89060 and charcoal/navy, natural tan skin and modest practical lighting, no neon lime, no glossy 3D. Balanced stylized adult proportions, coherent neck/shoulders, exactly two plausible arm chains and two hands with five fingers each, hands naturally supported. Every monitor faces its operator, and camera views it from beside operator on same FRONT side. All text, rows and borders follow the physical display plane and shared vanishing point. Keep the character's face visible in natural three-quarter view; eyes follow actual work. No camera gaze, no outward demonstration cards, no held tablets, no writing through device backs. Remove all decorative waveforms and unrelated screens; inactive peripheral displays dark. Use only exact specified concise screen content, no invented measurements or successes. Let the scene feel like a spontaneous thoughtful crew moment, not a presentation photograph. Late-watch candid moment at the dashboard alcove. Demir sits RIGHT, torso and chair turned toward a work monitor LEFT, clearly on its front side. He pauses over a flat closed maintenance notebook, one palm resting on it, other hand naturally on mouse. His brows lift with curious concern rather than celebration, a small thoughtful half-smile as he spots an absent match. No papers or devices held up. A desk lamp and an untouched mug lend lived-in quiet. Exact main screen heading \"Retained cache log\", line \"Anomaly: no matching hit\", and a separated next-action line \"Raw capture comparison: pending\". This absence concerns retained keys only. Do not imply the source never repeats. All other screens dark. Preserve dashboard master architecture, muted colors, and canonical Demir identity. Compose him and the work screen as a natural diagonal, not a centered portrait.",
+  "meaning": "Epilogue Demir finds no anomaly hit in retained cache log and states raw captures must be compared before judging repetition. Capture comparison remains pending.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+    "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+      "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+      "sha256": "c0f246ddc10cd94b72f210c267b16cc80a06ec0998c9ce76ec23b777224a28de",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+      "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+      "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-c278897f-c44d-456a-9b6c-31b31ff44dcb.png",
+  "reviewCrops": {
+    "face": {
+      "left": 890,
+      "top": 40,
+      "width": 380,
+      "height": 450
+    },
+    "hands": {
+      "left": 270,
+      "top": 720,
+      "width": 900,
+      "height": 180
+    }
+  },
+  "candidatePath": "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+  "candidateSha256": "a732151033908547d0eac07165243c7e62cca3d1f661b099c0e3dd70d62c8430",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit hand-drawn cel-shaded narrative scene,1536x1024 landscape. First reference is authoritative canonical Demir identity, age, face proportions, brown eyes, tousled dark hair, freckles, short stubble, single earpiece and charcoal uniform. Second reference is approved dashboard station ROOM ARCHITECTURE ONLY, not its old diagrams or coloring. Last reference is exact scene to restage. Keep muted sage #6BAA8A, aged brass #A89060 and charcoal/navy, natural tan skin and modest practical lighting, no neon lime, no glossy 3D. Balanced stylized adult proportions, coherent neck/shoulders, exactly two plausible arm chains and two hands with five fingers each, hands naturally supported. Every monitor faces its operator, and camera views it from beside operator on same FRONT side. All text, rows and borders follow the physical display plane and shared vanishing point. Keep the character's face visible in natural three-quarter view; eyes follow actual work. No camera gaze, no outward demonstration cards, no held tablets, no writing through device backs. Remove all decorative waveforms and unrelated screens; inactive peripheral displays dark. Use only exact specified concise screen content, no invented measurements or successes. Let the scene feel like a spontaneous thoughtful crew moment, not a presentation photograph. Late-watch candid moment at the dashboard alcove. Demir sits RIGHT, torso and chair turned toward a work monitor LEFT, clearly on its front side. He pauses over a flat closed maintenance notebook, one palm resting on it, other hand naturally on mouse. His brows lift with curious concern rather than celebration, a small thoughtful half-smile as he spots an absent match. No papers or devices held up. A desk lamp and an untouched mug lend lived-in quiet. Exact main screen heading \"Retained cache log\", line \"Anomaly: no matching hit\", and a separated next-action line \"Raw capture comparison: pending\". This absence concerns retained keys only. Do not imply the source never repeats. All other screens dark. Preserve dashboard master architecture, muted colors, and canonical Demir identity. Compose him and the work screen as a natural diagonal, not a centered portrait.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+          "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+          "sha256": "c0f246ddc10cd94b72f210c267b16cc80a06ec0998c9ce76ec23b777224a28de",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-c278897f-c44d-456a-9b6c-31b31ff44dcb.png",
+        "sha256": "a732151033908547d0eac07165243c7e62cca3d1f661b099c0e3dd70d62c8430"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native1536x1024 frame",
+      "canonical face comparison at native crop",
+      "native hands crop"
+    ],
+    "readerDirection": "Front of screen faces character and camera from beside operator. No outward cards.",
+    "anatomy": "Natural supported arm chains, mouse/keyboard/book/mug actions with coherent fingers, no twisted neck.",
+    "identity": "Canonical Demir morphology and costume retained.",
+    "screenPlane": "Rows and text converge with respective monitor.",
+    "palette": "Muted sage and aged brass.",
+    "meaning": "Epilogue Demir finds no anomaly hit in retained cache log and states raw captures must be compared before judging repetition. Capture comparison remains pending.",
+    "story": "Engaged screen eyelines and distinct emotion/action per phase.",
+    "reviewCrops": {
+      "face": {
+        "left": 890,
+        "top": 40,
+        "width": 380,
+        "height": 450
+      },
+      "hands": {
+        "left": 270,
+        "top": 720,
+        "width": 900,
+        "height": 180
+      }
+    }
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+      "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+      "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/dashboard-station.png",
+      "sha256": "bc7657be62dc5d61789fc2af62223adf25cb67673adb9ccdc027af9dcb42d02f",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+      "sha256": "c0f246ddc10cd94b72f210c267b16cc80a06ec0998c9ce76ec23b777224a28de",
+      "role": "exact edit target"
+    }
+  ],
+  "independentPeerReview": {
+    "key": "caching-strategies-epilogue",
+    "id": "optimization-edge/caching-strategies",
+    "phase": "epilogue",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-c278897f-c44d-456a-9b6c-31b31ff44dcb.png",
+    "candidateSha256": "a732151033908547d0eac07165243c7e62cca3d1f661b099c0e3dd70d62c8430",
+    "verdict": "pass",
+    "reviewedAt": "2026-11-07T19:35:17.601980+00:00",
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+        "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+        "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+        "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+      }
+    ],
+    "review": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "Retained log shows no matching anomaly hit while raw capture comparison remains pending, exactly current epilogue; no unsupported claim that source never repeats."
+    }
+  },
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies-epilogue.webp"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-c278897f-c44d-456a-9b6c-31b31ff44dcb.png",
+  "publishedSource": "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies-epilogue.webp",
+  "sourceSha256": "a732151033908547d0eac07165243c7e62cca3d1f661b099c0e3dd70d62c8430",
+  "webpSha256": "d8817e94b481853f797d46a3f1f944e5bda8c59436fd3dfb37ff7a0d2fac0c4f",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+    "sourceSha256": "c0f246ddc10cd94b72f210c267b16cc80a06ec0998c9ce76ec23b777224a28de",
+    "webpSha256": "dd525b40420cee5f9d8c2de959c4b6f996bd316f3d8019493e880553172a8fb6",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b2af-b6e8-71e0-9033-1d23a1d38a36/exec-ab17b6c2-55c2-4ce2-9a86-cd652742d8a2.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "a732151033908547d0eac07165243c7e62cca3d1f661b099c0e3dd70d62c8430",
+    "method": "Independent native full-frame review, canonical identity and current source verification by /root/reader_signal. Root verified exact candidate and source hashes before publication.",
+    "checks": {
+      "nativeResolution": "Full 1536x1024 image inspected independently.",
+      "identity": "Canonical character identities and adult proportions match.",
+      "anatomy": "Visible hands, wrist/arm chains, necks, shoulders and furniture contacts are plausible.",
+      "screenPlane": "All displayed text and diagrams share their physical screen plane.",
+      "readerDirection": "Characters work from the front/operator side; camera sees the same face obliquely.",
+      "story": "Candid task action and character expressions; no audience-only placard pose.",
+      "palette": "Muted charcoal, brass and restrained green consistent with scene set.",
+      "meaning": "Retained log shows no matching anomaly hit while raw capture comparison remains pending, exactly current epilogue; no unsupported claim that source never repeats."
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+        "sha256": "9e05c484c3888166d2fbe9e0ef0deb5f28488bedd18faf7c4ce6994bb801be83"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+        "sha256": "d2782f12df9244fd611bec7a8b73980bfad0fb1723099d150293e3a36c2271e8"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+        "sha256": "ea807b6620ff89211bf8c6e8cf1f827524fe3438eed35b9c1c4ef73bb682db20"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/optimization-edge__caching-strategies-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/optimization-edge/caching-strategies-epilogue.webp",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

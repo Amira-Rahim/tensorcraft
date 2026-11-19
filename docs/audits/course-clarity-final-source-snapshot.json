@@ -1,0 +1,709 @@
+{
+  "date": "2026-11-10",
+  "scope": "Cumulative curriculum product/test/support changes for the 56 Deep Orbit clarity revisions. Source bytes identify implementation and executed support, not learning outcomes.",
+  "baseline": "db4225a7e9d809b894251cd4df127e2ef22a2311",
+  "historicalHashEntriesPreserved": 342,
+  "files": [
+    {
+      "path": "apps/web/app/components/__fixtures__/course-results.ts",
+      "sha256": "dc2350da63fe5a8192a02f4e62526864d265af8cecdb13c6c548eb93dfdec983"
+    },
+    {
+      "path": "apps/web/app/components/__fixtures__/lesson-results.ts",
+      "sha256": "8f684aa5baf29fea2270e0251542320e707a4e0cdc3366722c147890c5cbd2df"
+    },
+    {
+      "path": "apps/web/app/components/__fixtures__/runtime-results.ts",
+      "sha256": "43645e14b177e5bb95924c3f231c4ad20b8b0b9f1eff9dbb581f4981f1b8e7b4"
+    },
+    {
+      "path": "apps/web/app/components/course-result-explanation.test.tsx",
+      "sha256": "0c929fddf6638ca49911ef624ee4c6d2a85800019dc07f2dcb69c1ba9dbe318e"
+    },
+    {
+      "path": "apps/web/app/components/course-result-explanation.tsx",
+      "sha256": "2e92789604da235b6095c6d4ba6fbca46b22faa03a572222c7eeec3a4fabd905"
+    },
+    {
+      "path": "apps/web/app/components/lesson-result-exercise.test.tsx",
+      "sha256": "64b9a34f305030abaf791c568064fb8d2432a2094d3169404d22a374a86a9c70"
+    },
+    {
+      "path": "apps/web/app/components/lesson-result-exercise.tsx",
+      "sha256": "3403ccb13589a71ef8c23942a0e052609a9e9994e382121c4e44799e52483d59"
+    },
+    {
+      "path": "apps/web/app/components/lesson-result-explanation.test.tsx",
+      "sha256": "6180c37b30491092e98713ba135c7ab94a5d2d2c04f3760b4f90c670a715d275"
+    },
+    {
+      "path": "apps/web/app/components/lesson-result-explanation.tsx",
+      "sha256": "b717f8354a3b5319ed1c5cb100f6f4f2fdd71ad278b52b71e5f75cd35859db02"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/anomaly-clarity-investigations.ts",
+      "sha256": "3a89f4572b93370e36dada0844358eb8caea191fe2c3b94bb129ec97cf77f369"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/anomaly-time-clarity.test.ts",
+      "sha256": "3b2ca9263233d7f0bab93e85a0f248149bdb28f1b7b0004da10d1a0345afe5d9"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/anomaly-time-trace-graphics.ts",
+      "sha256": "d16e28c8ba93ac9ad36011858bc26d12edf5997c088ac19771c39315e46d4533"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/browser-policy-setup-investigations.test.ts",
+      "sha256": "2390d8c9c204b10d31d594dc022eed1cfc3f66134a3bfa352a00f4217bd7f695"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/building-network-investigation.test.ts",
+      "sha256": "320b2e6504a87ee82c2c5e0ae7139e46220757061d60960f16c203617d16d0ce"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/capstone-investigations.test.ts",
+      "sha256": "ed51ce6705f2d342cdc496efc801bedc973cf9557f5560a09acfb68f554e3f79"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/capstone-investigations.ts",
+      "sha256": "d836260bb2659370b1187795c7b742a12b51b567f3cd17b6bd83eb8aca19f300"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/data-loading-investigation.test.ts",
+      "sha256": "9e441840ee04b2efbb2c79f2ac8a53418d2b4b9eb608dc2483eb62886419fb4d"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/deep-orbit-visuals.ts",
+      "sha256": "ef3be9c0ac90067979a7d4c925c636fc97424f79966cf3c599875e1389c284a1"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/evaluation-investigation.test.ts",
+      "sha256": "29a877c236ec219c302fc5d644c71ffd4bb1885614ed6773b8bd22bfea55ab31"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/flow-investigation-contracts.test.ts",
+      "sha256": "3311c4cc7f4324133c23f86c23e2705d66132ce7c5e44ba38f74257190f1b71f"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/flow-investigation-render.test.tsx",
+      "sha256": "20d13c15f0e9e9337a9786c2869699bb4b38ea8f86a437c283956e0c93437be2"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/flow-investigations.ts",
+      "sha256": "7d26940ccd5f071a08f03b8ca1705330839fe5f6eece6962cf774fd2286b335c"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/investigation-source-context.test.tsx",
+      "sha256": "81e83bed0531b121b1559261ccedd327d634551a9431e6e414d6e9e8e36a4543"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/investigation-source-context.ts",
+      "sha256": "657311780dcab31779311fe34174ae806b51be0a5c2037967365d4372bdf606b"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/investigation-types.ts",
+      "sha256": "3adf9b525cbb1abbcc4cf4ba94cc900bd39ae850405fef0d779234632c099008"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lesson-handoffs.ts",
+      "sha256": "ee8d2d681e48a3aea6e02f7bcaadfea84267ab59d9b3e1e0b2daab92f0a041fe"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lesson-investigation.css",
+      "sha256": "663de54c8300047c6bb59e9b4f9ee62dd3a2709e67d0897d67885d3159d73673"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lesson-investigation.test.tsx",
+      "sha256": "73229e3fd408dded871817f8a2fe50cc9d73320e44cfc95c71390c8f02861c6e"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lesson-investigation.tsx",
+      "sha256": "92109a9000b41fc13d9a218e840acb21f08620cdf4eaf2d40a3d97fb936d3ceb"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lesson-investigations.test.ts",
+      "sha256": "9ccc20bfea232ac41d5658163bb064b560c0664c0e43ff184f7f1fd63431cae2"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lesson-investigations.ts",
+      "sha256": "e2d91e8abc7978513953c929609c1ec25a0c0666cd300a343414dd4e10bbf665"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lesson-visuals.test.tsx",
+      "sha256": "1a836990b7ba09b371ad319fce8c16fabd1d032b036460549bcc1dba394864cf"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/llm-optimization-investigations.test.ts",
+      "sha256": "6db1698ab7ac4480a7c5809282afec587898761881c39908eadc710fae7aa7d2"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/llm-report-examples.ts",
+      "sha256": "5f2b2955e0f5a8e3c7f72bd37c2c091f7ef33a99513f14329e707b623b5a6d54"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/loading-inference-investigations.test.ts",
+      "sha256": "cb8e9395b6c34ea5adcefc95b52f38f0ea09727cc013887e47606dea6e85ee51"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/loss-gradient-investigations.test.ts",
+      "sha256": "3807a16c4805e06691b06c21dbe3fafb7fb63466162e014668cfa8785d563c25"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/lstm-investigation.test.ts",
+      "sha256": "a645bb00d3fc7877e95179e54359c698f7365193d7d784d6147853a2f9dcd53a"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/network-shape-investigations.test.ts",
+      "sha256": "d60cee6dc835159cce9b2073b044ccc4dc0fd0be0682f5daf27d9df8c50ba90d"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/neuron-activation-investigations.test.ts",
+      "sha256": "c62ab38a82cc13fe692a842355e2061d5aead36d1cbe5be3c351e15cbb77de62"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/normalization-investigation.test.ts",
+      "sha256": "0ef9ec8055a5bab523b0ee8775f9ae4c1f8b34d1e3ed64af669864776d926f33"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/numeric-investigations.test.ts",
+      "sha256": "57ad3824c94c5433f1d3c7ce09bad35c04e0496978aa82a898add97aa1d6c140"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/numeric-investigations.ts",
+      "sha256": "583b2c28ca3c89410ee1e7856f987706e6ea95a61f42fa36906e305556471758"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/optimization-examples.ts",
+      "sha256": "62629a850b9ff2190e95ac2ea614862a159fc942733da9fc8e19120db021fa28"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/rag-retrieval-example.ts",
+      "sha256": "291c38e425f95a1ffae3548a9441b84c5e9dcc8d4cf29e9d0b2170b8d2efad1f"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/recurrent-task-investigations.test.ts",
+      "sha256": "655316f97c840074dfe641fbb3793c7b511d55f91aa293031207331c3ef902df"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/recurrent-task-investigations.ts",
+      "sha256": "eec630585ac464b1eb1c7369a8bf1c05f45ca643dfc6fb4997e5be9eb229b414"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/reference-instruments.test.tsx",
+      "sha256": "ecf9861f0686a3587ae24a657209ccbc285b5f1105f0dd3120e9131a76dc43f0"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/runtime-comparison-report-investigations.test.ts",
+      "sha256": "24387440f5976e4302b9ad64052bc22a5205f4bed5bba8dd589b881fc99e05b1"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/signal-task-investigations.test.ts",
+      "sha256": "f5985725e4d39a264db038d8f100505165a70abd0ffd9fa28d6175b0ae94049f"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/signal-task-investigations.ts",
+      "sha256": "97ab8f5ff6b8405c7e8a9fded976cc7b4b4e39f7655bd209c2ece14af82d2278"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/tensor-investigation.test.tsx",
+      "sha256": "e41e538f0d1f0c38821068bc81db58b4e991fb60753a8bcb5a0d14166cbf21ce"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/tensor-investigation.tsx",
+      "sha256": "44cf970deb141c4b48f4dc5af87d11718ddc2ad50188dbeefb47a627ee8673d9"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/tensor-operations-investigation.test.ts",
+      "sha256": "8c7d0103f89408594b119d49d5869686db5f5c110786632cf821e661551bc844"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/time-series-clarity-investigations.ts",
+      "sha256": "343aba9500e2bb05665dcaef08bb3c80c42f9ecde40af45cb80072c0e3393246"
+    },
+    {
+      "path": "apps/web/app/components/lesson-visuals/training-loop-investigation.test.ts",
+      "sha256": "b7f8c5daff17ee37c36365374cc39ddf3833cde4dc01038693a63b9ed60d61cf"
+    },
+    {
+      "path": "apps/web/app/components/mdx/channel-layout-experiment.css",
+      "sha256": "fe62e5078858c73fa8dcc012be16b2e66e93fd6a702bb0ad8125fdd2ef64085f"
+    },
+    {
+      "path": "apps/web/app/components/mdx/channel-layout-experiment.test.tsx",
+      "sha256": "c9f24845d2bf24ed77b58e65dc3ab47dccdda549d7ce0701ca91ab53a46e1354"
+    },
+    {
+      "path": "apps/web/app/components/mdx/channel-layout-experiment.tsx",
+      "sha256": "b4a5dbec5305f595fd347ba44c7d76207d616d338ddf1371a4a8915ef022866c"
+    },
+    {
+      "path": "apps/web/app/components/runtime-result-explanation.test.tsx",
+      "sha256": "18cb5385255188ac0ffe6f8ae6bca287dabfede5aa69d48ec99f14532f3554b0"
+    },
+    {
+      "path": "apps/web/app/components/runtime-result-explanation.tsx",
+      "sha256": "0b626e82f2ce7bd62744cb6e6dc8e2433f776fcc93c3f84b4ecd17a48c6347df"
+    },
+    {
+      "path": "apps/web/app/components/training-result-explanation.test.tsx",
+      "sha256": "067103e1fc0c028d1897a746b0648e442a758ee50c4d5fc1becb72dad3a29498"
+    },
+    {
+      "path": "apps/web/app/components/training-result-explanation.tsx",
+      "sha256": "a4cdc067d7b2a9599cab3a2e02f52fe3267c5c870ae9e5481a0c13ee8a96ec0c"
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx",
+      "sha256": "be6f53368b0b21ad208c6b9277224696b9a0162744b8f74fb18ea4f34ca20c07"
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx",
+      "sha256": "6e2a2af4151d14ae1e9f3421bb1bcb180752f90f3756f7219ca2ea9da610cc49"
+    },
+    {
+      "path": "apps/web/lib/course-result-explanations.test.ts",
+      "sha256": "12bb89ddd617e75cfde975b843d06bcb5e41b0c23c33203aef2416c302bc3cfb"
+    },
+    {
+      "path": "apps/web/lib/course-result-explanations.ts",
+      "sha256": "502dcf4ba53dd68df2605a719b9c89664a297be57f148b1759a6474649792ccd"
+    },
+    {
+      "path": "apps/web/lib/lesson-exercise-order.test.ts",
+      "sha256": "6a06c6955c6e3c3d7a0034bfdbdc44bda05c4a3ce7470c1cddcfb18691e60e11"
+    },
+    {
+      "path": "apps/web/lib/lesson-exercise-order.ts",
+      "sha256": "01b79c7528ec689832743fc58c1ab0a91ad6689283dfb5a4541aa7459ec65449"
+    },
+    {
+      "path": "apps/web/lib/lesson-result-explanations.test.ts",
+      "sha256": "86569d31797de61acd1f09d7038a16057753711a5190a082f1d526e40baab5a6"
+    },
+    {
+      "path": "apps/web/lib/lesson-result-explanations.ts",
+      "sha256": "f44e0cba10638733144a14766f92b063579735ec30f96e6cfadc4b1a15c22334"
+    },
+    {
+      "path": "apps/web/lib/runtime-result-explanations.test.ts",
+      "sha256": "a64fb516fcdb14def5163ac3cb281ac94e1af4e3db3247b11e0d37dcc997aa56"
+    },
+    {
+      "path": "apps/web/lib/runtime-result-explanations.ts",
+      "sha256": "b90da8f9bb3e5004b3cf34557f6bd1a7353004f2645ede1f35fda45d1e9744aa"
+    },
+    {
+      "path": "apps/web/lib/training-result-explanations.test.ts",
+      "sha256": "43e4e00feced5aac846fc6f5b45280c38ab5a1757589caf2d50aa514b5c7c71f"
+    },
+    {
+      "path": "apps/web/lib/training-result-explanations.ts",
+      "sha256": "363543261754552ef511603500e5133fe27f2165cf7c9a1a713b6bf2b5f96e8b"
+    },
+    {
+      "path": "docs/design-previews/research/deep-orbit-result-map.md",
+      "sha256": "8ac339381fe9102530d3343924cfca471bf5ce78928efe4bd41c34a1de50f9ba"
+    },
+    {
+      "path": "docs/design-previews/research/result-contract-matrix.json",
+      "sha256": "ff70e646bc95cb61418a49a4a3a55978df298e8297fffa095a56bce2c16c6e89"
+    },
+    {
+      "path": "e2e/exercise-run.spec.ts",
+      "sha256": "bb6b560fb03d158b2cd97944fe0bb89f5c4881ac9c75387d6a837e01e35ccfd6"
+    },
+    {
+      "path": "e2e/fixtures/lesson-result.tsx",
+      "sha256": "96b706018747d54ab49de33a96fc3ae69586f6d67a310769c2204ecda99f31c7"
+    },
+    {
+      "path": "e2e/helpers/local-review.ts",
+      "sha256": "9225a41ea41cb74e3f1b59cea99f93cf64de9b6fa08aecdb84320cb2de9aaee3"
+    },
+    {
+      "path": "e2e/lesson-continuity.spec.ts",
+      "sha256": "b0130e1c75eefb34ec482c118af3f491c8a977173606fcf35b516f2a02236a72"
+    },
+    {
+      "path": "e2e/lesson-result.config.ts",
+      "sha256": "37a5918bfddaeeb061f2c6bd758793f9d07695f033463770ae3755e918af96b2"
+    },
+    {
+      "path": "e2e/lesson-result.spec.ts",
+      "sha256": "04d92eb40d1b34c63210bdd1ee8e66b6acaf40a67981fd9f877014046551e708"
+    },
+    {
+      "path": "e2e/signed-in-clarity.spec.ts",
+      "sha256": "cb9d5096d8ab3feab70c93490e8cb4ab456b1205adcc37eef7da6cd7a89355be"
+    },
+    {
+      "path": "e2e/signed-in-evaluation.spec.ts",
+      "sha256": "034fd50a8ffd4797b2408dcd46721751d120bd153daad311581fb20404e97ac5"
+    },
+    {
+      "path": "e2e/signed-in-forward-result.spec.ts",
+      "sha256": "ff14cb9dcc7ddde9876416a2e32635940ba9120aab8a1503df3d03c705ac0dcb"
+    },
+    {
+      "path": "e2e/signed-in-lesson-results.spec.ts",
+      "sha256": "75d14f97a94c45f7ec017c4d174062eb1db1e8928a75ac88771feba8ba1fe34d"
+    },
+    {
+      "path": "e2e/signed-in-runtime-results.spec.ts",
+      "sha256": "40ccf922874eb77223b448fa7333b569d982902671824f85810075e051d986cb"
+    },
+    {
+      "path": "e2e/signed-in-training-results.spec.ts",
+      "sha256": "4ed36e391a14da7c6ea2727c49c2c2162e0e7cb6113e7169a7640b1648837f7c"
+    },
+    {
+      "path": "packages/content/__tests__/backprop-restoration.test.ts",
+      "sha256": "9001be7b018bfae9ab8a89e780ce4928b478d35634d1b6febe828d0eb0ffd2d6"
+    },
+    {
+      "path": "packages/content/__tests__/deep-orbit-recall-checks.test.ts",
+      "sha256": "567b75cdf2fcdb4a4a2242992715dde9ff8a98b6af46f27437f85007779003ff"
+    },
+    {
+      "path": "packages/content/__tests__/evaluation-gap-boundary.test.ts",
+      "sha256": "e5937eaf1bf022dda10ea7def3baba906d4de6d0fc653d5515dd7ef40761ca71"
+    },
+    {
+      "path": "packages/content/__tests__/foundations-continuity.test.ts",
+      "sha256": "f937bb02191a08e0537daba89c4bb859a8c8e0acc398d64c7bfbea82dda07d2a"
+    },
+    {
+      "path": "packages/content/__tests__/llm-optimization-failures.test.ts",
+      "sha256": "0acd2f547e9c8317ee57b15d848b177613da3f812817b08aaa9f76d0587ddaaf"
+    },
+    {
+      "path": "packages/content/__tests__/onnx-comparison-boundaries.test.ts",
+      "sha256": "87d7da51897bdf0d399e786006a34c4202117c1cbbfa98bcdde708d9cf404eae"
+    },
+    {
+      "path": "packages/content/__tests__/training-loop-diagnosis.test.ts",
+      "sha256": "113242ed36a75bc024fa3d8f0d500dadd78cf91d601aa044477b601aa48fe62f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sha256": "64e061d2247f339754977755c7f5b52834e6d9575a41caf67786ad47325c24b7"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sha256": "f624633cc9c4116321cae67a37b69d5cc964c20fb2c0013df0e6ed61081aeec8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "911935f68f4265e610f9532e0370c853f1a9d6d8642e5e54396e5b67bd7e8038"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sha256": "c40342f8595db176933d5651d9b4ec44dd37bb7f35035264f23725248ea64416"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+      "sha256": "aa9354a57a7e1a3580a0dfcee75ef5161fb4204852729bf7621a3c0b49f3f71a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sha256": "d01d97fc3412c15134dae2634ef084527392165e27df326176c95f40e05654d9"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "sha256": "c792c19c053f5523da13020f68b53e552f7eac036bcc6803134b237b8bb06bf9"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sha256": "a016e6c602b16317d5cc0e8c55eb1324071d4996e9f24601b06324e55ecd8fe9"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sha256": "df9cf72fe1790274e217eae4dfd84119e07acf10cb0e4c8274d64f77c39dbc00"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "bdfcef3d7f41101c5b58c22606f82149adf45b28e967bb4f28e19d1a2a0a6d13"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sha256": "82576e6c2cde6d78e0bec49b0fdf1d5aba261d805e5919431fb7fc44ee094b79"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "sha256": "baac494c0cdc73d00e9f496400c1f2f39290df1650205f0f3029dea7c1283a4a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sha256": "8693ef5eef3eac8b20753f24640435c7747eaf29a85ca705553f2796e2c053ad"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "sha256": "2740f8f6f164b64f1819f42a5285763d26bcb9aa99ecf8396348076cd7cae861"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "sha256": "e7bdeed7b4eb75a998d2f5e43216d4f5192ba11b0c36a0fbd7e85651b72f1976"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "bd0242c15f226c66ec7691ed370d01d891dfa63e0a20505c12c0544acce7a926"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "sha256": "d18a3746e665aa11060b2b09ff69ab70df5b9b9f76265aa0204e1aaec5ab16ec"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "sha256": "5d38f1f8f6e76d38d61c4e729f5ee9a6a9470819986d8910d75b1bb391b74d39"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+      "sha256": "1b510e56b07bf068d6a84467026063cc98db253c5b60fff267b24f4cdcf9a04c"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+      "sha256": "55a746b1869c6303a18667976fabb03e0cdb8ae61abcd709dd20815d46ba324f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "sha256": "bc22292a377bb003309f7b456dabd1b56a95927d2c91875a6acf7d3fce924c1e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+      "sha256": "08c4e27c327324d64e36a6bac7a6994d28fc40db7ccd0cb96f4e348e3eb54ca3"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+      "sha256": "918e2a085233a39ffc59d8325409a07047ee7d58ba0efa4af259186e61e08785"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+      "sha256": "2c0139caab73e3d7f01d406a969e7ab186ab7a4dccea60038a29bceeeaa85d42"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sha256": "3196e8e0b8ee797ea497c050aac42e23b1216cc54492bc1f41809333eae9b0aa"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "sha256": "6cf29ff3901c23c89dcf870840f403bb83ca69bc486cc2a61f5aeaa811159b7e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+      "sha256": "8e82eb5e1c8d39eaeaa9b3d351a5e496ff6cb3763480bae087d15908917cdbb9"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sha256": "d390f988871164f25302588e1eb4ba0038a8e068dab93129807347da7872255f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+      "sha256": "bc5c2eed65a24cc378f9d9234f97d4bd48fad8437016ffb1cd9ca5a2775aa7b9"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+      "sha256": "4265023fcfe25cf087a8f94d44288b95badf74955a8c2bef714ef0863df39e26"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "sha256": "516ebdcaf3230ba599f9b3fb46321461dbd14a577007e36419f7ae661ddee3f8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+      "sha256": "aad9cbc0f696a315061bdf3f8911a190a11b11be8cfaa8eca057eef6933a5b07"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "sha256": "9ec273078a9e1fa7f6b6d487d41ab62d6b2a040a8a31fa3caadcdc03d9e01092"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sha256": "0868261463890664989de0796e8f82771959fe35e1f4bf1af13e8147ac086677"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml",
+      "sha256": "e630ae8c69d38c24e9bfd041aba748b772e903ed334efcb2bf248739120ec31c"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "sha256": "cf8f5d36362fa83e9a37de7bbbb5e6c7311c8fec015c3d8071b759a3deb9f8cb"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sha256": "d70dd06ff2c69b0cf8ab52e7c2923b11f1d5c0467b69ea4b022b4e0ae7e1f54f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "55716fad3a7c732b669a4583b4f39315bf63fbbf30fd9e8c105a5d9841f6414b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sha256": "98ee6e126ee79afa9a4c2060a8c626de1d861b256dfdd931e75236800a6fdb31"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "41c70f6fade138edcd0c0a39d1c0ba052e698388a6ea26cca8730eb517d4c69b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "de0ad1b8895a8aaa2aafeec8aa3946f30d039241fb2d6858b4c5c426d2600102"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+      "sha256": "3fa5cf9b3a35c9c4967fd15f0eed607bc9174f0b27a186ec21494e328e8e5872"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+      "sha256": "35e7cd1f182cc83fd33e126026383de7a00f2dd606dd4c61d355bad769c83675"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+      "sha256": "17580c383e6c9b4f6347e0558cf21aa0c1f4941b880818b0c61e48dac88c1bf6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "sha256": "fa76c9bb00d6ccc643235d528754fd19339e1ec5be6b77ea1ab44538e2681b52"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+      "sha256": "2566e3cfe06312ecd978ac87c5c1850cd2f7fcdaa2f235d3c3b0ca94a1c7043c"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+      "sha256": "fbf101fc005c5c4355486f916b844108abb504fbe13401301213a436df26c38a"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sha256": "93a1fb1efdc3354d2bc1c719f549eaf80d3f17591ed5092739c7643f715eecb4"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sha256": "7d42d66af5695c18c343f2f487f8245aae4ef0beeb9b5f87b50bd391e1a65205"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sha256": "efb7418acdae90d2bbf192f0a5ab215af03e7f52ea9ac3fb4ebf2a8f37da251f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sha256": "71c7a45d007d041996a3973fbc4d5242598e46054d872875e4ccbc8b8cf11dd9"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "sha256": "ea2d1fa9c5f6ed92623eb43c40ad246a56706f9cc7b3a281afbf12ee4b277822"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sha256": "b46c80234d88121ddec56e6d78aced91e0fb635f18032c208fec2ebc6e6adc84"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "sha256": "f316eb193bf8066db995e1568f6d34f894ec0c3f5766eed0a612d6841e405188"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sha256": "db280a0fa3126d4f2edd66cc1498769dff4cbd997cd2af9e2bec20c974cd996f"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sha256": "a9cacbcecdd6e6bb7311dc4ce918dbcdb411383a8ad304d648e5a0e75f4c0317"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sha256": "fe5997e8e9f81e6f9cd865a6fbda356de57f45a53f3711841b1a6da958100c37"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sha256": "5ac918d2a374f507260ce21c701ed4ec2ce22eab5b2d3f76e8ad6a49bd8f6c17"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sha256": "536a3bcb2b8e100c4fc43c2e9dc122b25b34d32231faff184152eb7210ec650b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sha256": "385dca692ed9e88a6b2cf9b22632dbc4835d11bb4db81f0efe30e9bc12a01dcd"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "sha256": "cd65aeb9323d874a3a2d5589297fb41b6ca419796c0facdfdd442a171b2576e4"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "sha256": "2afa21db0664e4ea30a5bd4c11cef4ef9c76233d9804f91e17b19a984a50d049"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+      "sha256": "5caa5727c3d3c571c3df578a5aba5505acb48365a02324c12effc6b7da2ee6d4"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sha256": "d6ea95f1c09f662d07d18db582e2d036b09e63a516361a0c9cba4362d221e0ce"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+      "sha256": "3eefd31154f5bc50b01eb2449e06d31be49922a13183224a398855c136617139"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+      "sha256": "ee7a96747ba06b0c632c1fbc0ec1e651dac5cded4b7c5ece270c848cd134b7d1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sha256": "6a54242107d64ff193289c7a2906fca6b55969d21020dafbf60eb01bf5803d76"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml",
+      "sha256": "f2d9533943d6f0a0824f2eb1b9858945b823543315f9ea4508b62e769baf7c0e"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
+      "sha256": "e82a3a5ca0a4f87873248babd7cf4c3fa7df142c0f628b31314c34905fcaa6b6"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+      "sha256": "c4ec8788dc33c72d86f6c6af8680a8de6a0523e735e7ab734caa00dd2e2213fa"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+      "sha256": "8e45e025151722b96a69b34085fc43370884047e3c24fa5d7092bd9f3934450c"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
+      "sha256": "59266a171d043599f409a33ad300512ebf5a703edba47596ca445444a82d6064"
+    },
+    {
+      "path": "packages/ui/src/mdx/exercise-brief.test.tsx",
+      "sha256": "95ce18ff9c27707fe07fce186a58b76ed576408ca7861d4044cb850c0113ee87"
+    },
+    {
+      "path": "packages/ui/src/mdx/exercise-brief.tsx",
+      "sha256": "e2417cf44d0716540eeeb2a50e84bfcb6100d45bc1f413471760f62a0ee221d2"
+    },
+    {
+      "path": "packages/ui/src/mdx/exercise-output.test.tsx",
+      "sha256": "5d3596562c3a2b0576e6882c46367f9f8449614cc8721448ad1c41176966c935"
+    },
+    {
+      "path": "packages/ui/src/mdx/exercise-output.tsx",
+      "sha256": "a40ee9a8aa958b8a41d50910abe4c2e9264617955ae571d8a58d3f55ce1e8821"
+    },
+    {
+      "path": "packages/ui/src/mdx/exercise-saved-runs.test.tsx",
+      "sha256": "6a942667e9a0c38cc5b3c67121e4c289dc8a27d20fbf162257725592f8e9f235"
+    },
+    {
+      "path": "packages/ui/src/mdx/exercise.tsx",
+      "sha256": "a2f65c3a2c2734c37e3b87781ff755d08a640ccc51ab039aead4d424dcd66b8d"
+    },
+    {
+      "path": "scripts/check-reviewed-examples.mjs",
+      "sha256": "ffc62e2828d0d16f2aef6737ddc770a1c769636fd53d18d43b28d39945fdbb6f"
+    }
+  ],
+  "exclusions": [
+    "Central plan/audit and this snapshot avoid self-referential hashes.",
+    "Concurrent marketing, landing, teaser/video and analytics work is excluded.",
+    "Generated evidence, environment files and installed dependencies are excluded."
+  ]
+}

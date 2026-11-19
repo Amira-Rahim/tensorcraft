@@ -28,6 +28,11 @@ instructions: |
   - Any other validation worsening: return `'validation-worsening'`.
   - Otherwise: return `'plateau'`.
 
+  Inspect the curves and the diagnosis from this same fit. The chart keeps at most
+  64 original epoch samples. Diagnosis uses copies of the full histories, and
+  its summary retains the original recent windows. A diagnosis error keeps the
+  measured curves available. This inspection does not run another fit.
+
   These labels describe what the curves did. They cannot tell you why.
   Investigate the data and run further checks before blaming overfitting,
   changed data, or the learning rate.
@@ -194,6 +199,70 @@ testCode: |
         xLabel: 'Epoch', yLabel: 'Loss', labels: epochs.map((i) => String(i + 1)),
         series: [{ name: 'Training', values: epochs.map((i) => loss[i]) }, { name: 'Validation', values: epochs.map((i) => val[i]) }],
       });
+      // Capture before learner diagnosis can mutate its argument copies or fail.
+      const count = loss.length;
+      const hasWindows = count >= 20;
+      const windowMean = (values, start, end) =>
+        values.slice(start, end).reduce((total, value) => total + value / 10, 0);
+      const trainingPrevious = hasWindows ? windowMean(loss, count - 20, count - 10) : null;
+      const trainingRecent = hasWindows ? windowMean(loss, count - 10, count) : null;
+      const validationPrevious = hasWindows ? windowMean(val, count - 20, count - 10) : null;
+      const validationRecent = hasWindows ? windowMean(val, count - 10, count) : null;
+      let status = 'returned', diagnosis = null, detail = '';
+      const labels = ['insufficient-history', 'validation-improving', 'both-worsening',
+        'train-down-validation-up', 'validation-worsening', 'plateau'];
+      try {
+        const result = diagnose([...loss], [...val]);
+        if (labels.includes(result)) diagnosis = result;
+        else {
+          status = 'invalid';
+          detail = 'diagnose returned ' + (result === null ? 'null' : typeof result) +
+            '. Expected one of the six trend labels.';
+        }
+      } catch (error) {
+        status = 'threw';
+        try {
+          detail = String(error && error.message || error).slice(0, 200);
+        } catch {
+          detail = 'diagnose threw a value that could not be converted to text.';
+        }
+      }
+      recordResult({
+        kind: 'table', title: 'Your full-history diagnosis',
+        summary: 'Your diagnose result from copies of the complete actual fit histories. The original epoch windows and means are recorded before diagnosis. No extra fit runs.',
+        columns: ['Measure', 'Value'],
+        rows: [
+          ['Completed epochs', count],
+          ['Previous window first epoch', hasWindows ? count - 19 : null],
+          ['Previous window last epoch', hasWindows ? count - 10 : null],
+          ['Recent window first epoch', hasWindows ? count - 9 : null],
+          ['Recent window last epoch', hasWindows ? count : null],
+          ['Training previous mean', trainingPrevious],
+          ['Training recent mean', trainingRecent],
+          ['Validation previous mean', validationPrevious],
+          ['Validation recent mean', validationRecent],
+          ['Diagnosis status', status],
+          ['Returned diagnosis', diagnosis],
+          ['Diagnosis detail', detail],
+        ],
+      });
+      const direction = (previous, recent) => {
+        if (previous === 0) return recent === 0 ? 'flat' : 'up';
+        if (recent < previous * 0.95 - 1e-12) return 'down';
+        if (recent > previous * 1.05 + 1e-12) return 'up';
+        return 'flat';
+      };
+      let expected = 'insufficient-history';
+      if (hasWindows) {
+        const training = direction(trainingPrevious, trainingRecent);
+        const validation = direction(validationPrevious, validationRecent);
+        expected = validation === 'down' ? 'validation-improving'
+          : validation === 'up' && training === 'up' ? 'both-worsening'
+          : validation === 'up' && training === 'down' ? 'train-down-validation-up'
+          : validation === 'up' ? 'validation-worsening' : 'plateau';
+      }
+      expect(status, 'Your curves were captured, but diagnose must return a valid trend label for the full history.').toBe('returned');
+      expect(diagnosis, 'Apply diagnose to the full actual histories, using the final two ten-epoch windows.').toBe(expected);
     });
     it('attaches the validation callback to the fit that produced history', () => {
       const fit = tf.__fits.find((entry) => entry && entry.history === history);
@@ -236,7 +305,12 @@ testCode: |
     });
     it('respects patience when a real run ends before the budget', () => {
       const v = history.history.val_loss;
-      if (v.length === 500) return;
+      const fit = tf.__fits.find((entry) => entry && entry.history === history);
+      const budget = fit && fit.settings && fit.settings.epochs;
+      expect(Number.isInteger(budget) && budget >= 1 && budget <= 500,
+        'Choose an epoch budget from 1 to 500.').toBe(true);
+      if (v.length === budget) return;
+      expect(v.length).toBeLessThan(budget);
       let best = 0;
       for (let i = 1; i < v.length; i++) if (v[i] < v[best]) best = i;
       expect(v.length - 1 - best).toBe(5);

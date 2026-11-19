@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__prompt-engineering-challenge/candidate.png",
+  "candidateSha256": "aa6f1ff308eaa9232a8b997ba44a10f749a99f57a5833cd7e4be7d63779536df",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native-original review, 2x/3x face/hand/prop crops, complete shoulder-elbow-wrist tracing and explicit left/right thumb chirality check, direct canonical face comparison, and current lesson source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 2,
+      "name": "root-first-challenge-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__prompt-engineering-challenge/candidate.png",
+      "box": [
+        665,
+        720,
+        1145,
+        970
+      ],
+      "scale": 3
+    },
+    {
+      "i": 2,
+      "name": "root-first-challenge-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__prompt-engineering-challenge/candidate.png",
+      "box": [
+        320,
+        75,
+        720,
+        530
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sha256": "98f58df73a484c3ed3663ece22190d3d699c5d0f7db961f6c389f0100c5f19a2"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's far left hand is visibly thumbed on the near medial edge, pointing toward his near right hand. This is correct left-hand chirality in a view of his right side, not a mirrored right hand. His near right thumb is occluded on the far edge. Two shoulder-elbow-wrist chains connect naturally to separate keyboard areas.",
+    "displayLegibilityAndSource": "The enlarged upright monitor separates the exact 1024-count, 73.4-Hz, 0.23-rad reading from the 5/12/23/47-Hz catalogue. Prompt pending and Request not sent preserve the challenge's uncompleted state; no answer is supplied.",
+    "identityExpressionAndStory": "Demir's slight anticipatory smile and downward working gaze fit assembling the prompt. His canonical hair, face, stubble, freckles and earpiece remain recognizable.",
+    "palette": "Restrained charcoal, sage and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Display glyphs and borders align to the actual screen plane; the operator can view and use the same front surface.",
+    "largeDisplayRule": "Required teaching information is large and spacious, using the main working monitor and available scene area."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:00:44.522862+00:00"
+}

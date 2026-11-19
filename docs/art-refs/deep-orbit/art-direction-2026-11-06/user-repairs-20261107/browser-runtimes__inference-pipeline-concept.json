@@ -1,0 +1,261 @@
+{
+  "key": "inference-pipeline-concept",
+  "auditIndex": 31,
+  "id": "browser-runtimes/inference-pipeline",
+  "phase": "concept",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+    "sha256": "41afd43f43f441337cd7b050ca2393479ed853dff41837bf9b1433bfa2837ad7"
+  },
+  "prompt": "Use case: identity-preserve. 1536x1024 Deep Orbit image edit. Restage Nazari and Demir naturally working together at a bridge console. Both people at LEFT, physical monitor at far RIGHT facing diagonally left toward them and camera, with no character behind its screen. Nazari stands beside seated Demir, one hand resting on desk and the other holding a stylus with natural grip toward display. Demir types, turning slightly toward Nazari with an amused realization. Exact header \"Async prediction cleanup\". Four connected steps in order: \"Sync tf.tidy()\", \"Return output tensor\", \"Await output.data()\", \"Finally: output.dispose()\". Footer \"Await outside tidy\". No additional charts or numbers. Preserve canonical facial morphology and age from first two portraits, short relaxed necks, ordinary shoulders, four plausible hands and arm chains. Last reference is the scene to restage, room reference for architecture only. All unused screens, hologram table and wrist displays dark. All display content shares its physical screen perspective. Muted charcoal/navy, sage #6BAA8A and aged brass #A89060, localized warm light. Demir communicator on anatomical RIGHT ear. No plants or glowing neon outlines. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-c34ae36f-f81b-425f-86ba-062ad25919ca.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-c34ae36f-f81b-425f-86ba-062ad25919ca.png",
+      "sha256": "6ed4a2fffc03525411448e4e6ff5175b4ca23e008fc64230957bd5ffb4ffe7d1",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+      "sha256": "560dc4e1ee822f040e0cd640202a63da969457552439a309eedaa24e8656af49"
+    }
+  ],
+  "status": "published",
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+      "sha256": "560dc4e1ee822f040e0cd640202a63da969457552439a309eedaa24e8656af49"
+    }
+  ],
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-c34ae36f-f81b-425f-86ba-062ad25919ca.png",
+      "sha256": "6ed4a2fffc03525411448e4e6ff5175b4ca23e008fc64230957bd5ffb4ffe7d1",
+      "role": "exact edit target"
+    }
+  ],
+  "rootTakeover": true,
+  "jobPath": "/tmp/tensorcraft-combined-repairs/inference-pipeline-concept/job.json",
+  "candidatePath": "art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-13888058-2e91-4d78-af14-99fce06a49a7.png",
+  "ownReview": {
+    "reviewer": "/root",
+    "verdict": "PASS",
+    "nativeFull": true,
+    "notes": "Native full image inspected against current lesson and canonical original portraits. Exact requested data and screen perspective retained, normal adult neck and shoulder proportions, natural coherent hand chains, candid task gaze and readable operator side, unused displays dark."
+  },
+  "candidateSha256": "686c53488227df0953179d5a4ed9eaa47505567951829faaa56b366ab50a4055",
+  "promptSha256": "e80c65ddae06636584bf089052e544f0cb890eb37afa15cf4514947b91e77f45",
+  "independentPeerReview": {
+    "key": "inference-pipeline-concept",
+    "metadataPath": "/tmp/tensorcraft-combined-repairs/inference-pipeline-concept/job.json",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-13888058-2e91-4d78-af14-99fce06a49a7.png",
+    "candidateSha256": "686c53488227df0953179d5a4ed9eaa47505567951829faaa56b366ab50a4055",
+    "sourceFiles": [
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+        "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+        "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+      },
+      {
+        "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+        "sha256": "560dc4e1ee822f040e0cd640202a63da969457552439a309eedaa24e8656af49"
+      }
+    ],
+    "verdict": "PASS",
+    "reviewer": "/root/remaining_late",
+    "method": "Independent native full-frame inspection, current MDX and exercise verification, canonical face crops compared side by side.",
+    "notes": "Nazari explains output ownership while Demir types and looks up with interest. Four steps correctly show synchronous tf.tidy, returned output tensor, await output.data outside tidy, then output.dispose in finally. Current MDX verifies this sequence and disposal on readback failure. Physical screen faces both crew and the camera, all labels align with its surface. Natural stylus grip, desk bracing and keyboard hands, canonical face crops and normal neck/shoulder proportions. Restrained palette and dark peripheral screens.",
+    "faceCropCoordinates": [
+      {
+        "character": "ensign-demir",
+        "left": 138,
+        "top": 194,
+        "width": 280,
+        "height": 365
+      },
+      {
+        "character": "chief-nazari",
+        "left": 440,
+        "top": 78,
+        "width": 287,
+        "height": 345
+      }
+    ],
+    "temporaryFaceCropsRemoved": true
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-13888058-2e91-4d78-af14-99fce06a49a7.png",
+  "publishedSource": "art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-concept.webp",
+  "sourceSha256": "686c53488227df0953179d5a4ed9eaa47505567951829faaa56b366ab50a4055",
+  "webpSha256": "9616142cf01a480e91d113806d73c4f2c52b75d1abaa1f3ea7002bd3816c8653",
+  "webpQuality": 86,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+    "sourceSha256": "41afd43f43f441337cd7b050ca2393479ed853dff41837bf9b1433bfa2837ad7",
+    "webpSha256": "ae0cbed64fe3daffc88aee027654adf5b9c29e9966cb681f3ea37155e236e69d",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-cc1c1af4-3f2c-4630-80ae-894dc8b3cc44.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/remaining_late",
+    "authorReviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "686c53488227df0953179d5a4ed9eaa47505567951829faaa56b366ab50a4055",
+    "method": "Independent native full-frame inspection, current MDX and exercise verification, canonical face crops compared side by side.",
+    "checks": {
+      "combinedNativeReview": {
+        "key": "inference-pipeline-concept",
+        "metadataPath": "/tmp/tensorcraft-combined-repairs/inference-pipeline-concept/job.json",
+        "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-13888058-2e91-4d78-af14-99fce06a49a7.png",
+        "candidateSha256": "686c53488227df0953179d5a4ed9eaa47505567951829faaa56b366ab50a4055",
+        "sourceFiles": [
+          {
+            "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+            "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+          },
+          {
+            "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+            "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+          },
+          {
+            "path": "/Users/amira.salah/Desktop/tensorcraft/packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+            "sha256": "560dc4e1ee822f040e0cd640202a63da969457552439a309eedaa24e8656af49"
+          }
+        ],
+        "verdict": "PASS",
+        "reviewer": "/root/remaining_late",
+        "method": "Independent native full-frame inspection, current MDX and exercise verification, canonical face crops compared side by side.",
+        "notes": "Nazari explains output ownership while Demir types and looks up with interest. Four steps correctly show synchronous tf.tidy, returned output tensor, await output.data outside tidy, then output.dispose in finally. Current MDX verifies this sequence and disposal on readback failure. Physical screen faces both crew and the camera, all labels align with its surface. Natural stylus grip, desk bracing and keyboard hands, canonical face crops and normal neck/shoulder proportions. Restrained palette and dark peripheral screens.",
+        "faceCropCoordinates": [
+          {
+            "character": "ensign-demir",
+            "left": 138,
+            "top": 194,
+            "width": 280,
+            "height": 365
+          },
+          {
+            "character": "chief-nazari",
+            "left": 440,
+            "top": 78,
+            "width": 287,
+            "height": 345
+          }
+        ],
+        "temporaryFaceCropsRemoved": true
+      },
+      "authorReview": {
+        "reviewer": "/root",
+        "verdict": "PASS",
+        "nativeFull": true,
+        "notes": "Native full image inspected against current lesson and canonical original portraits. Exact requested data and screen perspective retained, normal adult neck and shoulder proportions, natural coherent hand chains, candid task gaze and readable operator side, unused displays dark."
+      },
+      "sourceFiles": [
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+          "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+          "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+        },
+        {
+          "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+          "sha256": "560dc4e1ee822f040e0cd640202a63da969457552439a309eedaa24e8656af49"
+        }
+      ]
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+        "sha256": "dcb04497230960e7770bf16034cb58762448b31015f36b86086570012c908bce"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+        "sha256": "0b346f18416edbd741012a62a147e4129017e8d66e639f13105197fd78246809"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+        "sha256": "560dc4e1ee822f040e0cd640202a63da969457552439a309eedaa24e8656af49"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-concept.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/browser-runtimes__inference-pipeline-concept-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline-concept.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

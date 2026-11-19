@@ -1,0 +1,94 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-epilogue/candidate.png",
+  "candidateSha256": "1d5496daf5923ea56c3befea5ca42ec2cba15a1e13ea184a29e57b261c3c3526",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist chains and explicit thumb chirality review, direct canonical portrait comparison, and current lesson source checks.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/commander-mirza.png",
+      "sha256": "cae1303266865ab747b929ab509cc9420cac0fb9dac9abe6e569e039abbab40e"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 3,
+      "name": "root-rest-multi-epi-faces",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-epilogue/candidate.png",
+      "box": [
+        500,
+        190,
+        1370,
+        590
+      ],
+      "scale": 2
+    },
+    {
+      "i": 3,
+      "name": "root-rest-multi-epi-demir-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-epilogue/candidate.png",
+      "box": [
+        450,
+        755,
+        840,
+        900
+      ],
+      "scale": 3
+    },
+    {
+      "i": 3,
+      "name": "root-rest-multi-epi-mug",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-epilogue/candidate.png",
+      "box": [
+        975,
+        530,
+        1200,
+        710
+      ],
+      "scale": 3
+    },
+    {
+      "i": 3,
+      "name": "root-rest-multi-epi-resthand",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__multi-model-systems-epilogue/candidate.png",
+      "box": [
+        1120,
+        825,
+        1340,
+        950
+      ],
+      "scale": 3
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sha256": "60652831c8a6c1c222f15bd033f6f5f1cdb1358b79dc53591aa83e0f818556e8"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Demir's hands occupy separate keyboard areas on two complete arm chains. Mirza's right fingers wrap the mug handle, thumb above and handle continuing to the cup; her left hand rests naturally on the desk. No doubled digits or detached props.",
+    "displayLegibilityAndSource": "The large screen separates the published measured alert from the explanation awaiting review and shows 14 s end-to-end, 62 s pulse interval and profiler ready, explicitly marked fictional crew timing. These match the epilogue.",
+    "identityExpressionAndStory": "Demir's engaged explanation and Mirza's restrained skeptical smile form a candid coffee conversation. Mirza's close-cropped greying hair, mature facial shape, hoops and chronometer match the canon.",
+    "palette": "Muted sage, charcoal and aged brass with warm natural skin.",
+    "perspectiveAndOperator": "Main display geometry and text follow their physical plane and remain visible to the operator.",
+    "largeDisplayRule": "The main lesson facts are large and clear, using the available working display area."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:18:43.212421+00:00"
+}

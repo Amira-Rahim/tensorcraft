@@ -12,6 +12,7 @@ vi.mock("@vercel/speed-insights/next", () => ({
 }));
 
 function grantConsent() {
+  localStorage.setItem("tc-cookie-consent-version", "2");
   localStorage.setItem(CONSENT_KEY, "accepted");
   notifyConsentChanged();
 }

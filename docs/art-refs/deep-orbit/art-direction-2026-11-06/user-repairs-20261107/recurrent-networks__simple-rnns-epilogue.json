@@ -1,0 +1,237 @@
+{
+  "key": "simple-rnns-epilogue",
+  "auditIndex": 23,
+  "id": "recurrent-networks/simple-rnns",
+  "phase": "epilogue",
+  "cast": [
+    "chief-nazari",
+    "ensign-demir"
+  ],
+  "target": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2af4f0a0-8b87-4fbc-ad9b-3f441fe42f73.png",
+  "originalActiveSource": {
+    "path": "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+    "sha256": "b7783a4ce1ecfc33906973e99fb1f0b80bbf16447ed5a512f5edba31a282a254"
+  },
+  "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Nazari LEFT stands beside seated Demir RIGHT at engineering workstation after overnight training. Demir holds a ceramic mug below his chin in one hand, other rests naturally on desk; he looks toward Nazari with rueful slightly amused exhaustion. Nazari with wry raised eyebrow looks at actual work display, one hand rests on desk, other at side. REMOVE her clipboard entirely and remove all loose visible reports. A shared upright screen LEFT foreground facesbothcrew and camera. Heading \"0640: overnight run\". Rows \"80-step windows\", \"200 epochs; 6 hours\", \"Loss: 0.693\", \"Predictions near 0.5\". Lower section \"This run: gradients fade near step 20\" and \"Pattern gap: 74 steps\". Allnumbersfictionalrun, no universalRNNhorizonclaim. Naturalarms/neck/heads, readablemonitorplane.",
+  "meaning": "Fictionalfailedovernightrun6h200epochs loss.693,predictionsnear.5,80windows,gradientfade20andpatterngap74;Nazariinquiriescost.",
+  "references": [
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+    "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+    "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2af4f0a0-8b87-4fbc-ad9b-3f441fe42f73.png"
+  ],
+  "referenceEvidence": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2af4f0a0-8b87-4fbc-ad9b-3f441fe42f73.png",
+      "sha256": "c7a05be14bb44ae5be71f0c6ae6a2dd937ac5b55b1d21556fab9b922a5577c32",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+      "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+    }
+  ],
+  "status": "published",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e3c25722-460b-4329-9023-65f1c872e28e.png",
+  "reviewCrops": [
+    "/tmp/tensorcraft-combined-repairs/simple-rnns-epilogue/face-review.png",
+    "/tmp/tensorcraft-combined-repairs/simple-rnns-epilogue/hands-review.png"
+  ],
+  "candidatePath": "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+  "candidateSha256": "d44c35c18c3af8ee57fe1c1c140e23f0bd39bd6f3a9495b31060fc43b5e196ff",
+  "generationHistory": [
+    {
+      "prompt": "Use case: identity-preserve. Deep Orbit cinematic cel-shaded narrative,1536x1024 landscape. First portraits establish fixed canonical identities, facial morphology and age, eyes/nose/jaw, hair, costume and equipment. Next approved room master for ROOM ARCHITECTURE ONLY, not diagrams or colors. Last reference exact restaging target. Restrained clean outlines and muted sage #6BAA8A, aged brass #A89060, charcoal/navy, natural skin, modest practical lights. No glossy or neon lime. Balanced stylized adults with coherent neck/shoulders/torso, plausible arm chains, exactly two five-finger hands each, natural chair/table support. Faces visible, eyes follow work or other crew, candid action and subtle lively emotion, no camera gaze or presentation portrait. Screens physically face actual reader; camera beside reader sees same front face. Every label, cell, line, arrow follows correct surface perspective. Remove outward handheld displays. Peripheral screens inactive. Only specified content, no fake numerical findings or extra diagrams. Nazari LEFT stands beside seated Demir RIGHT at engineering workstation after overnight training. Demir holds a ceramic mug below his chin in one hand, other rests naturally on desk; he looks toward Nazari with rueful slightly amused exhaustion. Nazari with wry raised eyebrow looks at actual work display, one hand rests on desk, other at side. REMOVE her clipboard entirely and remove all loose visible reports. A shared upright screen LEFT foreground facesbothcrew and camera. Heading \"0640: overnight run\". Rows \"80-step windows\", \"200 epochs; 6 hours\", \"Loss: 0.693\", \"Predictions near 0.5\". Lower section \"This run: gradients fade near step 20\" and \"Pattern gap: 74 steps\". Allnumbersfictionalrun, no universalRNNhorizonclaim. Naturalarms/neck/heads, readablemonitorplane.",
+      "references": [
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+          "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity"
+        },
+        {
+          "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "approved room master only"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2af4f0a0-8b87-4fbc-ad9b-3f441fe42f73.png",
+          "sha256": "c7a05be14bb44ae5be71f0c6ae6a2dd937ac5b55b1d21556fab9b922a5577c32",
+          "role": "exact edit target"
+        }
+      ],
+      "output": {
+        "path": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e3c25722-460b-4329-9023-65f1c872e28e.png",
+        "sha256": "d44c35c18c3af8ee57fe1c1c140e23f0bd39bd6f3a9495b31060fc43b5e196ff"
+      }
+    }
+  ],
+  "ownReview": {
+    "reviewer": "/root/reader_root_opt",
+    "status": "pass-awaiting-independent-review",
+    "methods": [
+      "native full frame1536x1024",
+      "native face crops against canonical portraits",
+      "native hands crops"
+    ],
+    "readerDirection": "Characters and camera are on display front side. Held-out papers/devices removed.",
+    "anatomy": "Supported arm chains and natural hands; coherent neck/head/torso connection and furniture.",
+    "identity": "Canonical age, facial morphology, hair and costume preserved.",
+    "screenPlane": "All text and diagram components follow monitor plane.",
+    "palette": "Muted sage, charcoal and aged brass.",
+    "meaning": "Fictionalfailedovernightrun6h200epochs loss.693,predictionsnear.5,80windows,gradientfade20andpatterngap74;Nazariinquiriescost.",
+    "story": "Candid work or peer reaction with no camera gaze.",
+    "reviewCrops": [
+      "/tmp/tensorcraft-combined-repairs/simple-rnns-epilogue/face-review.png",
+      "/tmp/tensorcraft-combined-repairs/simple-rnns-epilogue/hands-review.png"
+    ]
+  },
+  "actualReferences": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/chief-nazari.png",
+      "sha256": "8c2975ba8a46b0d5e044240d1cce835af71704b3ffd1770b2b520900b6eccfa6",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "approved room master only"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-2af4f0a0-8b87-4fbc-ad9b-3f441fe42f73.png",
+      "sha256": "c7a05be14bb44ae5be71f0c6ae6a2dd937ac5b55b1d21556fab9b922a5577c32",
+      "role": "exact edit target"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+      "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+    }
+  ],
+  "independentReview": {
+    "key": "simple-rnns-epilogue",
+    "id": "recurrent-networks/simple-rnns",
+    "phase": "epilogue",
+    "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e3c25722-460b-4329-9023-65f1c872e28e.png",
+    "candidateSha256": "d44c35c18c3af8ee57fe1c1c140e23f0bd39bd6f3a9495b31060fc43b5e196ff",
+    "verdict": "pass",
+    "reviewer": "/root/reader_signal",
+    "nativeFull": true,
+    "sourceEvidence": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+        "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+      }
+    ],
+    "gates": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "notes": "0640, 200 epochs, 6 hours, .693 loss, .5 predictions, 80-step windows and observed gradient fade around20/required74 match fictional epilogue. Native full frame inspected, readable surfaces, coherent hands and furniture.",
+    "alt": "Nazari reviews the failed overnight run while Demir pauses with his coffee.",
+    "location": "Archimedes, Engineering"
+  },
+  "temporaryCandidatePathAtReview": "/Users/amira.salah/.codex/generated_images/01a1b703-3853-7761-9cfb-a5ed2e9db5ee/exec-e3c25722-460b-4329-9023-65f1c872e28e.png",
+  "publishedSource": "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-epilogue.webp",
+  "sourceSha256": "d44c35c18c3af8ee57fe1c1c140e23f0bd39bd6f3a9495b31060fc43b5e196ff",
+  "webpSha256": "cb774e897f731214af61e21499f48454f3b222abd8b742973b0371fe54e8162d",
+  "webpQuality": 82,
+  "webpEffort": 6,
+  "resizeFit": "cover",
+  "previousAsset": {
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+    "sourceSha256": "b7783a4ce1ecfc33906973e99fb1f0b80bbf16447ed5a512f5edba31a282a254",
+    "webpSha256": "a1518b0c6dd56b6385ccac6279202aa692bf536cf34ffe1ed7e958b3e77afe71",
+    "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-f4473285-797b-4682-b4f5-01934b817d4b.png"
+  },
+  "rootReview": {
+    "reviewer": "/root/reader_signal",
+    "authorReviewer": "/root/reader_root_opt",
+    "status": "approved",
+    "candidateSha256": "d44c35c18c3af8ee57fe1c1c140e23f0bd39bd6f3a9495b31060fc43b5e196ff",
+    "method": "Native full-frame review against canonical original portraits and current lesson source. Temporary crops inspected where needed and not retained.",
+    "checks": {
+      "identity": "pass",
+      "equipmentSide": "pass",
+      "anatomy": "pass",
+      "headNeck": "pass",
+      "readerDirection": "pass",
+      "surfacePerspective": "pass",
+      "palette": "pass",
+      "lessonMeaning": "pass",
+      "storyAction": "pass"
+    },
+    "reviewedSourceFiles": [
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+        "sha256": "5006718112c397ce5aa787cf12eb73b9dc0681ef2318d19b5dcdb0ac89c6edc7"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+        "sha256": "a22d8505520efe429fe10c75a1fb7c54f72dc502cf56b7944773f95151899a53"
+      }
+    ]
+  },
+  "evidenceKind": "original-images",
+  "proofPaths": [
+    "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+    "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-epilogue.webp",
+    "docs/art-refs/deep-orbit/chief-nazari.png",
+    "docs/art-refs/deep-orbit/ensign-demir.png"
+  ],
+  "publication": {
+    "date": "2026-11-07",
+    "replacement": "in-place",
+    "source": "art-src/scenes/recurrent-networks__simple-rnns-epilogue-openai-20261107.png",
+    "destination": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns-epilogue.webp"
+  },
+  "publicationNote": "Root verified source and candidate hashes and published after the recorded independent peer review. Active paths replaced in place.",
+  "publicationReviewer": "/root"
+}

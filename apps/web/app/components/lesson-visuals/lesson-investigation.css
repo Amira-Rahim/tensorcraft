@@ -203,6 +203,70 @@
 .orbit-investigation-chart text {
   fill: var(--tc-text);
 }
+.orbit-investigation-category-chart {
+  min-width: 0;
+  color: var(--tc-text);
+}
+.orbit-investigation-bar-rows {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.orbit-investigation-bar-row {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.orbit-investigation-bar-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 5px;
+}
+.orbit-investigation-bar-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.orbit-investigation-bar-value {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.orbit-investigation-bar-track {
+  position: relative;
+  height: 12px;
+  background: var(--tc-border);
+}
+.orbit-investigation-bar-fill {
+  position: absolute;
+  inset-block: 2px;
+  background: var(--tc-primary);
+}
+.orbit-investigation-bar-fill[data-selected="true"] {
+  outline: 2px solid var(--tc-text);
+}
+.orbit-investigation-bar-zero {
+  position: absolute;
+  z-index: 1;
+  inset-block: -2px;
+  width: 1px;
+  background: var(--tc-text);
+}
+.orbit-investigation-bar-axis {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: var(--tc-muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
 .orbit-investigation-pipeline {
   display: grid;
   gap: 12px;
@@ -294,6 +358,7 @@
   margin-bottom: 8px;
 }
 .orbit-investigation-feedback {
+  overflow-wrap: anywhere;
   margin: 20px 0;
 }
 .orbit-investigation-run-values {
@@ -338,6 +403,7 @@
   margin-top: 28px;
   padding-top: 20px;
   border-top: 1px solid var(--tc-border);
+  overflow-wrap: anywhere;
 }
 .orbit-investigation-explanation summary,
 .orbit-investigation-method > summary,
@@ -529,4 +595,44 @@
   .tensor-investigation-practice legend {
     font-size: 24px;
   }
+}
+
+.orbit-investigation-source {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 16px;
+  border: 1px solid var(--tc-border);
+  border-radius: 4px;
+  background: var(--tc-bg);
+  overflow-wrap: anywhere;
+}
+.orbit-investigation-source > p {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.orbit-investigation-source > p > span {
+  color: var(--tc-muted);
+}
+.orbit-investigation-source dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.orbit-investigation-source dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  min-width: 0;
+}
+.orbit-investigation-source dt {
+  font-weight: 600;
+}
+.orbit-investigation-source dd {
+  min-width: 0;
+  margin: 0;
 }

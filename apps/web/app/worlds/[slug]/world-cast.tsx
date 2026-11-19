@@ -3,6 +3,7 @@
 import { worlds } from "@tensorcraft/worlds";
 import { AnimatedAvatar } from "@tensorcraft/ui/animated-avatar";
 import { portraitSources } from "@/lib/character-art";
+import { characterDisplayRole } from "@/lib/lesson-characters";
 import { heroPlateSrc } from "@/lib/location-art";
 
 /* ── WorldCast: the crew, on the world page ───────────────────────────
@@ -48,6 +49,7 @@ export function WorldCast({ slug }: { slug: string }) {
             <AnimatedAvatar
               name={c.name}
               src={portraitSources(slug, c).src}
+              isAI={c.isAI}
               size={AVATAR_SIZE}
             />
             <div className="flex flex-col">
@@ -58,7 +60,7 @@ export function WorldCast({ slug }: { slug: string }) {
                   Nazari's gives away her arc. */}
               {c.role && (
                 <span className="font-mono text-xs text-text-muted">
-                  {c.role}
+                  {characterDisplayRole(slug, c)}
                 </span>
               )}
             </div>

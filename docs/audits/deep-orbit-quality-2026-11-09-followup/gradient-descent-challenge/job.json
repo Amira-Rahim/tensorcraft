@@ -1,0 +1,366 @@
+{
+  "id": "training-loop__gradient-descent-challenge",
+  "lesson": "training-loop/gradient-descent",
+  "phase": "challenge",
+  "owner": "/root/quality_sequence",
+  "status": "published",
+  "tool": "built-in image_gen",
+  "attempt": 2,
+  "preparedAt": "2026-11-09T14:20:05.449358+00:00",
+  "priorApproval": {
+    "status": "reopened by user",
+    "source": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png",
+    "sourceSha256": "17893b0c56248fdf5999b0d4b08c29c165cf5bf70230eb3e2988a5ad5b4684df",
+    "reason": "The user rejected the clipboard and button hands. Recompose complete relaxed arm chains and desk contacts. Correct the graph and physical screen plane together."
+  },
+  "cast": [
+    "ensign-demir"
+  ],
+  "room": "Engineering",
+  "prompt": "Use case: precise-object-edit with identity preservation.\nCorrect ONLY the monitor's physical rectangular front. Output one 1536x1024 image.\n\nReference 1 is Demir's canonical identity portrait. Reference 2 is the Engineering room master. Reference 3 is the repaired scene, the edit target.\n\nPreserve exactly the target's Demir face, hairstyle, age, expression, neck, head-to-body proportions, charcoal uniform, full torso and both complete arms. Preserve his right hand resting on the closed notebook and his left hand operating the mouse, with exactly the same wrists, digits and contact. Preserve the notebook, mouse, desk, room, lights and framing. Do not change the pose or any anatomy.\n\nThe only remaining defect is the slight slope of the monitor's top bezel and glass. Make the ENTIRE monitor FRONT a perfect rectangle parallel to the camera sensor. Its top and bottom physical bezel edges MUST be horizontal. Its left and right edges MUST be vertical. The inner glass top and bottom MUST also be exactly level. No shallow trapezoid, no sloping top, no keystone effect. Keep the swiveling stand and its contact unchanged, supporting this frontal monitor.\n\nUse approximately these four inner glass corners: top-left (840,210), top-right (1478,210), bottom-right (1478,682), bottom-left (840,682). All boxes, rules, graph axes and text share this exact frontal plane. Preserve the current large clear content and spacing, which are already correct.\n\nExact labels remain:\n\"Expected first step\"\n\"L = w\u00b2\"\n\"Loss\"\n\"w\"\n\"0\"\n\"w = 5\"\n\"w = 4\"\n\"5 - 0.1 \u00d7 10 = 4\"\n\nPreserve one bowl-shaped quadratic with 0 directly under its minimum, both labeled points on the positive right-hand branch, and exactly one downhill arrow from the higher right point w=5 to the lower left point w=4. Keep the word Expected. No added marks, result claims or new values. The front surface remains visible to Demir on the left and to the camera.\n\nMake only this strict screen geometry correction. Keep the successful character, two natural hand contacts, ordinary proportions, warm room and green graph unchanged.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+  "promptSha256": "f8f84cc06b1af299e35124233e1d43295520dd3078fb81d035049c3b255254bf",
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity: Ensign Demir"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+      "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+      "role": "room master: Engineering"
+    },
+    {
+      "path": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ec21585c-7e27-4319-b464-baa73b38a12d.png",
+      "sha256": "b23684761d533394aa71d93d2582f844d3b643f94d1b29d86537434703fe98bc",
+      "role": "edit target: creator-rejected candidate 1 with repaired anatomy",
+      "pathAtGeneration": "docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/rejected-v1.png",
+      "resolutionNote": "The obsolete project copy was removed after the next revision completed. The exact builtin original remains available."
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983",
+      "facts": [
+        "Demir learns to update one weight from a freshly calculated loss gradient.",
+        "The initial squared-loss example uses weight 5 and learning rate 0.1. It is one scalar update, not a completed spacecraft classifier."
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+      "sha256": "1ff5952eb7da68d094f13533c6a1720674167fde98749ac548d1013b29518253",
+      "facts": [
+        "For L=w squared at w=5, the stored gradient is 10.",
+        "One first update computes 5 - 0.1 * 10 = 4.",
+        "The display must identify this as the expected first step before implementation."
+      ]
+    }
+  ],
+  "generationArgs": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nCorrect ONLY the monitor's physical rectangular front. Output one 1536x1024 image.\n\nReference 1 is Demir's canonical identity portrait. Reference 2 is the Engineering room master. Reference 3 is the repaired scene, the edit target.\n\nPreserve exactly the target's Demir face, hairstyle, age, expression, neck, head-to-body proportions, charcoal uniform, full torso and both complete arms. Preserve his right hand resting on the closed notebook and his left hand operating the mouse, with exactly the same wrists, digits and contact. Preserve the notebook, mouse, desk, room, lights and framing. Do not change the pose or any anatomy.\n\nThe only remaining defect is the slight slope of the monitor's top bezel and glass. Make the ENTIRE monitor FRONT a perfect rectangle parallel to the camera sensor. Its top and bottom physical bezel edges MUST be horizontal. Its left and right edges MUST be vertical. The inner glass top and bottom MUST also be exactly level. No shallow trapezoid, no sloping top, no keystone effect. Keep the swiveling stand and its contact unchanged, supporting this frontal monitor.\n\nUse approximately these four inner glass corners: top-left (840,210), top-right (1478,210), bottom-right (1478,682), bottom-left (840,682). All boxes, rules, graph axes and text share this exact frontal plane. Preserve the current large clear content and spacing, which are already correct.\n\nExact labels remain:\n\"Expected first step\"\n\"L = w\u00b2\"\n\"Loss\"\n\"w\"\n\"0\"\n\"w = 5\"\n\"w = 4\"\n\"5 - 0.1 \u00d7 10 = 4\"\n\nPreserve one bowl-shaped quadratic with 0 directly under its minimum, both labeled points on the positive right-hand branch, and exactly one downhill arrow from the higher right point w=5 to the lower left point w=4. Keep the word Expected. No added marks, result claims or new values. The front surface remains visible to Demir on the left and to the camera.\n\nMake only this strict screen geometry correction. Keep the successful character, two natural hand contacts, ordinary proportions, warm room and green graph unchanged.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ec21585c-7e27-4319-b464-baa73b38a12d.png"
+    ],
+    "transparent_background": false
+  },
+  "candidatePath": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png",
+  "publicationStatus": "not published",
+  "publication": {
+    "alt": "Demir starts the single-weight exercise beside a graph showing the expected descent from 5 to 4.",
+    "location": "Archimedes, Engineering",
+    "action": "Demir uses the mouse while his other hand rests on a closed notebook beside the expected first update.",
+    "emotion": "Focused anticipation as he prepares to implement the update.",
+    "eyeline": "Demir looks toward the visible front of the expected-step monitor.",
+    "checks": [
+      "Canonical Demir face and ordinary adult body proportions.",
+      "Separate shoulder-elbow-wrist chains with relaxed notebook and mouse contact.",
+      "Whole monitor and graph share a frontal rectangular plane.",
+      "Expected first step, squared loss, 5-to-4 arrow and update formula remain readable at 768x512."
+    ]
+  },
+  "diagnosticReview": {
+    "crops": [
+      {
+        "name": "face",
+        "kind": "face",
+        "rect": [
+          420,
+          235,
+          250,
+          305
+        ],
+        "scale": 2
+      },
+      {
+        "name": "notebook-hand",
+        "kind": "hand",
+        "rect": [
+          245,
+          835,
+          290,
+          125
+        ],
+        "scale": 2
+      },
+      {
+        "name": "mouse-hand",
+        "kind": "hand",
+        "rect": [
+          835,
+          815,
+          265,
+          145
+        ],
+        "scale": 2
+      }
+    ],
+    "fullFramePreview": {
+      "dimensions": [
+        768,
+        512
+      ]
+    },
+    "temporaryFilesRemoved": true
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "candidatePath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ec21585c-7e27-4319-b464-baa73b38a12d.png",
+      "candidateSha256": "b23684761d533394aa71d93d2582f844d3b643f94d1b29d86537434703fe98bc",
+      "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-ec21585c-7e27-4319-b464-baa73b38a12d.png",
+      "prompt": "Use case: identity-preserve with targeted anatomy and display repair.\nAsset type: one finished 1536x1024 landscape Deep Orbit story illustration, Gradient Descent challenge.\n\nReference 1: Ensign Demir canonical portrait, fixed identity authority. Reference 2: Engineering master, room authority. Reference 3: current challenge scene, edit target and source of the warm palette, expression and lesson content.\n\nRepair the two hands by restaging Demir's complete arms and their contacts. He stands at the engineering workbench in a comfortable three-quarter lean, engaged in starting the single-weight practice. Keep his recognizable young-adult face, freckles, brown eyes, nose, jaw, stubble, swept dark hair, comms earpiece and charcoal uniform. Give him the same focused, slightly excited expression, looking toward the expected-step display. Use ordinary lean adult shoulder, torso, arm and hand proportions.\n\nRemove the held clipboard and remove the pointing/button-press gesture. Place a plain closed notebook flat on the near workbench, with no visible writing. Demir's right hand rests lightly palm-down on its cover with gently curved fingers and a neutral wrist. His left hand operates a normal mouse on the workbench to his left, on the image's right, below the display. The index and middle fingers curve naturally onto the mouse buttons, with the thumb on the appropriate side and the remaining fingers resting around its outer edge. Do not grip a pointer or press an isolated console button.\n\nShow two complete separate arm chains, each visibly connected from its own shoulder through the upper arm, relaxed elbow, forearm, wrist and hand. Both elbows remain near the torso instead of reaching across it. Nothing crosses through the notebook, desk edge, rail or other arm. Both hands have five ordinary digits with plausible overlap and contact. Keep hands proportional to the face and wrists aligned with the forearms.\n\nRebuild the main right-hand screen as a large upright swivel-mounted monitor. The whole physical front bezel and the glass are TRUE RECTANGLES parallel to the camera sensor, top and bottom perfectly level, both side edges vertical. Show all four glass corners. No trapezoid or sloping bezel. Its sturdy support sits behind the desk. Demir is on the visible front side and looks at its contents. Keep every title, box, axis, text baseline and divider in that same frontal plane. Use the available right-hand space for large readable text at 768x512, with generous margins.\n\nPreserve exact lesson content:\nTitle: \"Expected first step\"\nEquation above the graph: \"L = w\u00b2\"\nVertical axis label: \"Loss\"\nHorizontal axis label: \"w\"\nA simple upward bowl-shaped quadratic, with its minimum at the origin labeled \"0\". Show two points on the positive, right-hand branch, the higher right point labeled \"w = 5\" and the lower left point labeled \"w = 4\". Connect them with exactly ONE short downhill arrow whose arrowhead points toward w = 4. The points belong to the same quadratic, with w = 4 closer to zero and lower than w = 5. No other step arrows or data points.\nLarge boxed footer: \"5 - 0.1 \u00d7 10 = 4\"\n\nThis is the supplied scalar exercise's expected first update, before the learner implements it. Keep the title's word Expected. No success verdict, classifier result, 673-weight update claim, or extra numeric values.\n\nPreserve the warm Engineering light, hanging lamps, pipes, toolboard, brass trim and green screen glow from the references. Keep background panels quiet. Show a candid work moment, no gaze toward the viewer. No extra people, clipboard, pen, twisted wrist, oversized hands, fused fingers, phantom arm, inconsistent screen perspective or clipped words.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+      "promptSha256": "6430793322b1a3c3ef94154e73d2aa842d0283b3f60503aca67966c4391640a0",
+      "references": [
+        {
+          "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+          "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+          "role": "canonical identity: Ensign Demir"
+        },
+        {
+          "path": "docs/art-refs/deep-orbit/masters/engineering.png",
+          "sha256": "76b19d0eeb9b1f9c78ac5fad714ca5b6d72281ebab8528423d9698b533de0c24",
+          "role": "room master: Engineering"
+        },
+        {
+          "path": "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-37be0ede-0782-42e9-abc1-3adc0e9d366a.png",
+          "sha256": "17893b0c56248fdf5999b0d4b08c29c165cf5bf70230eb3e2988a5ad5b4684df",
+          "role": "edit target: user-rejected challenge original",
+          "pathAtGeneration": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png"
+        }
+      ],
+      "generationArgs": {
+        "prompt": "Use case: identity-preserve with targeted anatomy and display repair.\nAsset type: one finished 1536x1024 landscape Deep Orbit story illustration, Gradient Descent challenge.\n\nReference 1: Ensign Demir canonical portrait, fixed identity authority. Reference 2: Engineering master, room authority. Reference 3: current challenge scene, edit target and source of the warm palette, expression and lesson content.\n\nRepair the two hands by restaging Demir's complete arms and their contacts. He stands at the engineering workbench in a comfortable three-quarter lean, engaged in starting the single-weight practice. Keep his recognizable young-adult face, freckles, brown eyes, nose, jaw, stubble, swept dark hair, comms earpiece and charcoal uniform. Give him the same focused, slightly excited expression, looking toward the expected-step display. Use ordinary lean adult shoulder, torso, arm and hand proportions.\n\nRemove the held clipboard and remove the pointing/button-press gesture. Place a plain closed notebook flat on the near workbench, with no visible writing. Demir's right hand rests lightly palm-down on its cover with gently curved fingers and a neutral wrist. His left hand operates a normal mouse on the workbench to his left, on the image's right, below the display. The index and middle fingers curve naturally onto the mouse buttons, with the thumb on the appropriate side and the remaining fingers resting around its outer edge. Do not grip a pointer or press an isolated console button.\n\nShow two complete separate arm chains, each visibly connected from its own shoulder through the upper arm, relaxed elbow, forearm, wrist and hand. Both elbows remain near the torso instead of reaching across it. Nothing crosses through the notebook, desk edge, rail or other arm. Both hands have five ordinary digits with plausible overlap and contact. Keep hands proportional to the face and wrists aligned with the forearms.\n\nRebuild the main right-hand screen as a large upright swivel-mounted monitor. The whole physical front bezel and the glass are TRUE RECTANGLES parallel to the camera sensor, top and bottom perfectly level, both side edges vertical. Show all four glass corners. No trapezoid or sloping bezel. Its sturdy support sits behind the desk. Demir is on the visible front side and looks at its contents. Keep every title, box, axis, text baseline and divider in that same frontal plane. Use the available right-hand space for large readable text at 768x512, with generous margins.\n\nPreserve exact lesson content:\nTitle: \"Expected first step\"\nEquation above the graph: \"L = w\u00b2\"\nVertical axis label: \"Loss\"\nHorizontal axis label: \"w\"\nA simple upward bowl-shaped quadratic, with its minimum at the origin labeled \"0\". Show two points on the positive, right-hand branch, the higher right point labeled \"w = 5\" and the lower left point labeled \"w = 4\". Connect them with exactly ONE short downhill arrow whose arrowhead points toward w = 4. The points belong to the same quadratic, with w = 4 closer to zero and lower than w = 5. No other step arrows or data points.\nLarge boxed footer: \"5 - 0.1 \u00d7 10 = 4\"\n\nThis is the supplied scalar exercise's expected first update, before the learner implements it. Keep the title's word Expected. No success verdict, classifier result, 673-weight update claim, or extra numeric values.\n\nPreserve the warm Engineering light, hanging lamps, pipes, toolboard, brass trim and green screen glow from the references. Keep background panels quiet. Show a candid work moment, no gaze toward the viewer. No extra people, clipboard, pen, twisted wrist, oversized hands, fused fingers, phantom arm, inconsistent screen perspective or clipped words.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "/Users/amira.salah/.codex/generated_images/01a1b507-5961-7501-ad84-ebd98e7727f5/exec-37be0ede-0782-42e9-abc1-3adc0e9d366a.png"
+        ],
+        "transparent_background": false
+      },
+      "ownReview": {
+        "reviewer": "/root/quality_sequence",
+        "reviewedAt": "2026-11-09T14:20:05.448569+00:00",
+        "candidateSha256": "b23684761d533394aa71d93d2582f844d3b643f94d1b29d86537434703fe98bc",
+        "verdict": "FAIL",
+        "nativeReviewed": true,
+        "handAndFaceCropsReviewedAt2x": true,
+        "canonicalPortraitCompared": true,
+        "preview768Reviewed": true,
+        "checks": {
+          "anatomy": "Both shoulders connect through visible relaxed elbows and wrists. The right hand rests on the notebook, and the left hand grips the mouse with plausible radial thumb placement and finger contacts.",
+          "identity": "Canonical nose, face width, eyes, freckles, stubble, hair and earpiece retained.",
+          "proportions": "The torso and arms read as a lean young adult, with ordinary hands and head scale.",
+          "source": "Expected first step, L=w squared, points 5 and 4 on the positive branch, one downhill arrow and exact update equation are correct. The labels are readable at 768x512.",
+          "displayGeometry": "The upper bezel rises about 12 pixels across its width. The glass top rises about 8 pixels while the title rule and chart axis remain level. The requested rectangular plane is not complete."
+        },
+        "findings": [
+          "Residual physical screen plane mismatch."
+        ],
+        "repairDirection": "Preserve the successful anatomy and expression. Correct the entire bezel and glass to exact horizontal/vertical rectangular edges, sharing the existing graph plane."
+      },
+      "diagnosticReview": {
+        "crops": [
+          {
+            "name": "face",
+            "kind": "face",
+            "rect": [
+              420,
+              235,
+              250,
+              305
+            ],
+            "scale": 2
+          },
+          {
+            "name": "notebook-hand",
+            "kind": "hand",
+            "rect": [
+              245,
+              835,
+              290,
+              125
+            ],
+            "scale": 2
+          },
+          {
+            "name": "mouse-hand",
+            "kind": "hand",
+            "rect": [
+              835,
+              815,
+              265,
+              145
+            ],
+            "scale": 2
+          }
+        ],
+        "fullFramePreview": {
+          "dimensions": [
+            768,
+            512
+          ]
+        },
+        "temporaryFilesRemoved": true
+      },
+      "retainUntil": "Project copy removed after revision 2 completed. Historical file remains at the exact builtin archive path.",
+      "candidatePathAtReview": "docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/rejected-v1.png",
+      "generationArgsAtGeneration": {
+        "prompt": "Use case: identity-preserve with targeted anatomy and display repair.\nAsset type: one finished 1536x1024 landscape Deep Orbit story illustration, Gradient Descent challenge.\n\nReference 1: Ensign Demir canonical portrait, fixed identity authority. Reference 2: Engineering master, room authority. Reference 3: current challenge scene, edit target and source of the warm palette, expression and lesson content.\n\nRepair the two hands by restaging Demir's complete arms and their contacts. He stands at the engineering workbench in a comfortable three-quarter lean, engaged in starting the single-weight practice. Keep his recognizable young-adult face, freckles, brown eyes, nose, jaw, stubble, swept dark hair, comms earpiece and charcoal uniform. Give him the same focused, slightly excited expression, looking toward the expected-step display. Use ordinary lean adult shoulder, torso, arm and hand proportions.\n\nRemove the held clipboard and remove the pointing/button-press gesture. Place a plain closed notebook flat on the near workbench, with no visible writing. Demir's right hand rests lightly palm-down on its cover with gently curved fingers and a neutral wrist. His left hand operates a normal mouse on the workbench to his left, on the image's right, below the display. The index and middle fingers curve naturally onto the mouse buttons, with the thumb on the appropriate side and the remaining fingers resting around its outer edge. Do not grip a pointer or press an isolated console button.\n\nShow two complete separate arm chains, each visibly connected from its own shoulder through the upper arm, relaxed elbow, forearm, wrist and hand. Both elbows remain near the torso instead of reaching across it. Nothing crosses through the notebook, desk edge, rail or other arm. Both hands have five ordinary digits with plausible overlap and contact. Keep hands proportional to the face and wrists aligned with the forearms.\n\nRebuild the main right-hand screen as a large upright swivel-mounted monitor. The whole physical front bezel and the glass are TRUE RECTANGLES parallel to the camera sensor, top and bottom perfectly level, both side edges vertical. Show all four glass corners. No trapezoid or sloping bezel. Its sturdy support sits behind the desk. Demir is on the visible front side and looks at its contents. Keep every title, box, axis, text baseline and divider in that same frontal plane. Use the available right-hand space for large readable text at 768x512, with generous margins.\n\nPreserve exact lesson content:\nTitle: \"Expected first step\"\nEquation above the graph: \"L = w\u00b2\"\nVertical axis label: \"Loss\"\nHorizontal axis label: \"w\"\nA simple upward bowl-shaped quadratic, with its minimum at the origin labeled \"0\". Show two points on the positive, right-hand branch, the higher right point labeled \"w = 5\" and the lower left point labeled \"w = 4\". Connect them with exactly ONE short downhill arrow whose arrowhead points toward w = 4. The points belong to the same quadratic, with w = 4 closer to zero and lower than w = 5. No other step arrows or data points.\nLarge boxed footer: \"5 - 0.1 \u00d7 10 = 4\"\n\nThis is the supplied scalar exercise's expected first update, before the learner implements it. Keep the title's word Expected. No success verdict, classifier result, 673-weight update claim, or extra numeric values.\n\nPreserve the warm Engineering light, hanging lamps, pipes, toolboard, brass trim and green screen glow from the references. Keep background panels quiet. Show a candid work moment, no gaze toward the viewer. No extra people, clipboard, pen, twisted wrist, oversized hands, fused fingers, phantom arm, inconsistent screen perspective or clipped words.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+        "referenced_image_paths": [
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+          "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+          "/Users/amira.salah/Desktop/tensorcraft/art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png"
+        ],
+        "transparent_background": false
+      }
+    }
+  ],
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1bc05-ed68-74a0-8744-7ad2b4da38ad/exec-38ca819e-ed65-4afb-82a9-6ea37ee55177.png",
+  "generatedAt": "2026-11-09T14:21:06.220127+00:00",
+  "candidateSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+  "candidateDimensions": [
+    1536,
+    1024
+  ],
+  "ownReview": {
+    "reviewer": "/root/quality_sequence",
+    "reviewedAt": "2026-11-09T14:21:37.280992+00:00",
+    "candidateSha256": "2c543a0b7fe35edf53af4693582b7d0191571d22e6049fbf36f100025e6493a3",
+    "attempt": 2,
+    "verdict": "PASS",
+    "nativeReviewed": true,
+    "handAndFaceCropsReviewedAt2x": true,
+    "canonicalPortraitCompared": true,
+    "preview768Reviewed": true,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "method": "Fresh native candidate, canonical face comparison, 2x face and both hand crops, complete arm tracing, explicit glass-corner and graph-plane check, and 768x512 preview.",
+    "checks": {
+      "identity": "Canonical Demir face width, nose, eye spacing, freckles, stubble, swept hair and comms device remain recognizable.",
+      "anatomy": "His right shoulder connects through the bent elbow to a relaxed palm-down notebook hand. His left arm follows a separate shoulder-elbow-forearm chain to the mouse. Both wrists are neutral. Visible curved digits and occluded fingers are plausible at 2x. The left mouse thumb lies on the radial side.",
+      "proportions": "The leaning body, shoulders, head, neck and hands have coherent ordinary young-adult proportions.",
+      "displayGeometry": "The bezel and inner glass now form true frontal rectangles with level horizontal families. The title rule, chart baseline and footer box share the same plane.",
+      "operatorSide": "Demir stands to the left and forward of the monitor, looking at the visible screen front.",
+      "source": "Expected first step stays explicit. The diagram shows L=w squared, 0 under the bowl minimum, both labeled points on the positive branch and a single downhill arrow from 5 to 4. The equation 5 - 0.1 \u00d7 10 = 4 matches the supplied scalar exercise.",
+      "readability": "Every displayed label and value remains clear at 768x512 with no clipping.",
+      "story": "Demir starts the practice at the mouse with a focused, anticipatory expression while his other hand rests on a closed notebook."
+    },
+    "glassGeometryApproxXY": {
+      "topLeft": [
+        837,
+        215
+      ],
+      "topRight": [
+        1478,
+        215
+      ],
+      "bottomRight": [
+        1478,
+        685
+      ],
+      "bottomLeft": [
+        837,
+        685
+      ],
+      "physicalBezelTopY": 178,
+      "physicalBezelBottomY": 724,
+      "titleRuleY": 295,
+      "chartBaselineY": 548,
+      "footerBoxTopY": 591,
+      "footerBoxBottomY": 661,
+      "minimum": [
+        1142,
+        548
+      ],
+      "point5": [
+        1313,
+        382
+      ],
+      "point4": [
+        1267,
+        459
+      ],
+      "descentArrow": "One arrow from the higher right point toward the lower left point.",
+      "operatorPosition": "Demir remains to the left and forward of the screen, on the visible side."
+    },
+    "findings": [],
+    "limits": [
+      "Independent peer review remains pending.",
+      "The preview uses the candidate PNG; final compressed WebP needs a separate check."
+    ]
+  },
+  "faceCropCoordinates": [
+    {
+      "name": "face",
+      "kind": "face",
+      "rect": [
+        420,
+        235,
+        250,
+        305
+      ],
+      "scale": 2
+    }
+  ],
+  "handCropCoordinates": [
+    {
+      "name": "notebook-hand",
+      "kind": "hand",
+      "rect": [
+        245,
+        835,
+        290,
+        125
+      ],
+      "scale": 2
+    },
+    {
+      "name": "mouse-hand",
+      "kind": "hand",
+      "rect": [
+        835,
+        815,
+        265,
+        145
+      ],
+      "scale": 2
+    }
+  ],
+  "generationArgsAtGeneration": {
+    "prompt": "Use case: precise-object-edit with identity preservation.\nCorrect ONLY the monitor's physical rectangular front. Output one 1536x1024 image.\n\nReference 1 is Demir's canonical identity portrait. Reference 2 is the Engineering room master. Reference 3 is the repaired scene, the edit target.\n\nPreserve exactly the target's Demir face, hairstyle, age, expression, neck, head-to-body proportions, charcoal uniform, full torso and both complete arms. Preserve his right hand resting on the closed notebook and his left hand operating the mouse, with exactly the same wrists, digits and contact. Preserve the notebook, mouse, desk, room, lights and framing. Do not change the pose or any anatomy.\n\nThe only remaining defect is the slight slope of the monitor's top bezel and glass. Make the ENTIRE monitor FRONT a perfect rectangle parallel to the camera sensor. Its top and bottom physical bezel edges MUST be horizontal. Its left and right edges MUST be vertical. The inner glass top and bottom MUST also be exactly level. No shallow trapezoid, no sloping top, no keystone effect. Keep the swiveling stand and its contact unchanged, supporting this frontal monitor.\n\nUse approximately these four inner glass corners: top-left (840,210), top-right (1478,210), bottom-right (1478,682), bottom-left (840,682). All boxes, rules, graph axes and text share this exact frontal plane. Preserve the current large clear content and spacing, which are already correct.\n\nExact labels remain:\n\"Expected first step\"\n\"L = w\u00b2\"\n\"Loss\"\n\"w\"\n\"0\"\n\"w = 5\"\n\"w = 4\"\n\"5 - 0.1 \u00d7 10 = 4\"\n\nPreserve one bowl-shaped quadratic with 0 directly under its minimum, both labeled points on the positive right-hand branch, and exactly one downhill arrow from the higher right point w=5 to the lower left point w=4. Keep the word Expected. No added marks, result claims or new values. The front surface remains visible to Demir on the left and to the camera.\n\nMake only this strict screen geometry correction. Keep the successful character, two natural hand contacts, ordinary proportions, warm room and green graph unchanged.\n\ncel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic.",
+    "referenced_image_paths": [
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/engineering.png",
+      "/Users/amira.salah/Desktop/tensorcraft/docs/audits/deep-orbit-quality-2026-11-09-followup/gradient-descent-challenge/rejected-v1.png"
+    ],
+    "transparent_background": false
+  },
+  "publishedSource": "art-src/scenes/training-loop__gradient-descent-challenge-openai-20261107.png",
+  "publishedRuntime": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent-challenge.webp",
+  "publishedWebpSha256": "5fb60150f39ca924c1728d262f9d4d513bb10bbaa7330a0b2992da0ba374ff10"
+}

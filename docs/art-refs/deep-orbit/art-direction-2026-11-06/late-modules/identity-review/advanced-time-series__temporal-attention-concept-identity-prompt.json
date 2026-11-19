@@ -1,0 +1,50 @@
+{
+  "queueIndex": 1,
+  "key": "deep-orbit/advanced-time-series/temporal-attention",
+  "phase": "concept",
+  "status": "awaiting-identity-correction",
+  "inputScene": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-concept-original.webp",
+  "inputSceneSha256": "b7046c32223c912e66f53230cad2bf7ed19d35890a6837206be7fb4522302c8a",
+  "cast": [
+    "demir"
+  ],
+  "faceBoxes": {
+    "demir": [
+      390,
+      55,
+      370,
+      455
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/input-scenes/advanced-time-series__temporal-attention-concept-original.webp",
+      "sha256": "b7046c32223c912e66f53230cad2bf7ed19d35890a6837206be7fb4522302c8a",
+      "role": "target scene",
+      "originalPath": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "b7046c32223c912e66f53230cad2bf7ed19d35890a6837206be7fb4522302c8a",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "prompt": "Use case: identity-preserve. Image 1 is the authoritative neutral face of Ensign Demir. Image 2 is the scene with an incorrect narrow face. Replace the entire head in Image 2 with the same head as Image 1. Turn the head slightly toward the camera to a near-frontal three-quarter view, with eyes still directed downward at the dial. Use a small CLOSED-MOUTH friendly smile like the anchor so the lower-face shape is not stretched by an open grin. Faithfully reproduce the anchor's exact broad lower cheeks, softly squared jaw, short round chin, full rounded nose tip and nostril width, fairly straight eyebrows, eye size and spacing, warm light-medium complexion, sparse freckles and uneven stubble. Do not preserve the tiny button nose or tapered chin from Image 2. Compact hair must follow Image 1's same front locks and hairline. Green earpiece remains on his anatomical right ear. Preserve absolutely everything below the neck: torso, both arms, both hands, dial contact, tablet display, control deck, chair, room, lighting direction and 1536x1024 composition. No additional text or objects.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/advanced-time-series__temporal-attention-concept-identity-prompt.json",
+  "newSource": "art-src/scenes/advanced-time-series__temporal-attention-concept-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp",
+  "priorAttempts": [
+    {
+      "prompt": "Use case: identity-preserve. STRICT CHARACTER IDENTITY CORRECTION, not a new illustration. Image 1 is the authoritative neutral identity of ensign-demir. Image 2 is the scene to correct and is NOT an identity authority. ensign-demir is the existing person whose head is near 0.37 of image width and 0.28 of image height. Change only heads, hair and neck transitions to make every person unmistakably the SAME INDIVIDUAL as their neutral anchor. Retain current head rotation, gaze and appropriate facial expression, using expression alone without changing facial structure. Preserve exactly the entire room, bodies, all existing arms and hands, uniforms, furniture, teaching displays and graphics, props, colors, lighting direction, composition and image size. DEMIR: faithfully reproduce the anchor's mid-twenties face proportions, warm light-medium complexion, broad softly squared lower face, short rounded chin, round-ended nose of the same width, distinctive fairly straight eyebrows and exact eye spacing/size, short uneven stubble, sparse freckles, compact tousled hair with the same hairline and front locks, and green round comms earpiece on the same anatomical ear as the anchor. Do not elongate or sharpen the jaw, pinch the nose, increase eye size, create a tall heroic quiff or make a different handsome anime character. Every face must match its individual portrait without relying on clothes or equipment. No new people, no added arms/hands, no text or decorative symbols. One 1536x1024 scene. Do not modify any screen or plot, even if you think it can be improved.",
+      "reason": "Independent review rejected first correction: tiny button nose and narrow lower face still differed."
+    },
+    {
+      "prompt": "Use case: identity-preserve. Image 1 is the only authoritative face of Ensign Demir. Image 2 has an inconsistent narrow-faced version and is the target scene, not an identity authority. Replace his entire head with the same person as Image 1 while keeping head position, current downward gaze and friendly open-mouth smile. Change the facial structure, not just surface details: reproduce the anchor's broad lower cheeks and softly squared jaw, short rounded chin, rounded nose tip and actual nose width, eye spacing and size, straight distinctive brows, sparse freckles and uneven stubble. Avoid a tiny button nose or long pinched nose. Keep the compact tousled hairline and front locks from Image 1, not the exaggerated tall quiff in Image 2. Keep the green earpiece on the same anatomical ear as the anchor. A slight turn toward camera is allowed to show the correct proportions. Preserve the exact torso, two original arms/hands, dial grip, chair, all screens and plots, room, light direction, composition and 1536x1024 size. Do not add text, props, hands or people.",
+      "reason": "Independent reviewer still finds small nose and tapered jaw; requests near-frontal head and closed smile."
+    }
+  ],
+  "originalInputScene": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention-concept.webp"
+}

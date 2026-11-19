@@ -111,9 +111,39 @@ Demir needs one result the watch can use, with failures caught before they reach
 
 <LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Connect a classifier, an anomaly detector, and an alert writer, checking each result before passing it on", "Check every stage's output, then use an acceptable fallback or stop if no safe substitute exists", "Follow one capture through DEEP SCAN and explain why each model needs its own input format and scaling"]} />
 
-## The DEEP SCAN Pipeline
+## The raw reading and the classifier input
+
+The required exercise has two jobs. `classifierStage` prepares a raw reading for a real supplied TensorFlow.js model. `pipeline` then checks the classifier, detector, and optional writer handoffs. The activity uses controlled replies to expose those checks. It does not run that model.
+
+The first exercise probe supplies `[180, 5, 0.3]`. Its fields mean amplitude counts, frequency zero-crossing count, and phase radians, in that order. The model's ranges come from the exercise contract:
+
+<CodeBlock language="javascript" title="classifier-feature-handoff.js">
+{`const raw = [180, 5, 0.3];
+const bounds = [[0, 2048], [0, 63], [-Math.PI, Math.PI]];
+const scaled = raw.map((value, index) => {
+  const [min, max] = bounds[index];
+  return (value - min) / (max - min);
+});
+console.log(scaled); // One model row, still in amplitude/frequency/phase order`}
+</CodeBlock>
+
+Validate exactly three finite raw values before prediction. Create one tensor of shape `[1, 3]` from the scaled values. Require one finite sigmoid score in `[0, 1]`. A score strictly above 0.5 chooses anomaly. At or below 0.5 it chooses noise. Return the chosen class's score, so a noise result uses `1 - p`. Keep tensor work inside cleanup that returns plain fields. The caller still owns the model.
+
+## The checked stage handoffs
+
+| Stage | Receives | Required result |
+| --- | --- | --- |
+| Classifier callback | Original raw reading | `noise` or `anomaly`, otherwise `unknown`, and a finite score in `[0, 1]` |
+| Detector callback | Original raw reading and checked class | A boolean, including valid `false` |
+| Writer callback | Original raw reading and checked class | Nonblank text, only when the detector returns `true` |
+
+An invalid score stops before the detector. A string such as `"false"` stops before the writer. A real `false` skips the writer and returns `alert: null`. Every called stage receives the original raw values. Valid fields can still describe an incorrect prediction.
+
+## The separate full-system example
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<ConceptReference summary="A larger pipeline with different model inputs">
 
 <CodeBlock language="typescript" title="pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -214,6 +244,8 @@ async function processSignal(
 }`}
 </CodeBlock>
 
+</ConceptReference>
+
 Each model needs a different version of the same capture. The classifier takes module 4's three min-max-scaled features. The autoencoder takes module 5's eleven z-scored features. The LSTM takes a window of module 6's per-channel z-scores.
 
 A wrong length is easy to catch. Give the classifier eleven features and TensorFlow.js stops before prediction:
@@ -235,6 +267,8 @@ The fallback checks amplitude alone against a fixed normal-period baseline. It c
 For valid sensor readings scaled into [0, 1], the largest absolute z-score is about 3.47 at zero. That bound follows from the physical range and this fixed baseline. A different range or baseline would change it. The helpers check shape and finite values. An application must also validate sensor ranges.
 
 Refitting the baseline changes the score even if the reading stays fixed. Holding the mean at 0.52, a reading of 1.00 scores 342.86 with standard deviation 0.0014, but 2.29 with standard deviation 0.21. Pass the approved baseline explicitly so an unusually quiet or noisy window cannot silently replace it.
+
+<ConceptReference summary="Timeouts and an application fallback">
 
 <CodeBlock language="typescript" title="resilience.ts">
 {`// Continue in the same module: reuse the checked stage helpers above.
@@ -262,6 +296,8 @@ async function resilientPipeline(
 }`}
 </CodeBlock>
 
+</ConceptReference>
+
 ## Challenge
 
 Build the classifier stage with the supplied feature ranges, then connect it to the detector and alert writer. Replace an unsupported class with unknown. Reject an invalid score before it reaches the next stage.
@@ -269,6 +305,8 @@ Build the classifier stage with the supplied feature ranges, then connect it to 
 Inspect the returned classification, score, detector decision, and alert. The example runs a real TFJS classifier with supplied detector and writer callbacks. It checks how you connected the stages. Running the full system requires the separately evaluated models described above.
 
 <Exercise slug="model-pipeline" />
+
+Follow your returned class, score, detector decision, and alert together. Compare a normal path with a rejected stage reply. The last completed handoff explains why the next callback ran or stayed uncalled. A returned alert remains a draft subject to the report review gate.
 
 <RecallPrompt
   question="Does passing the checks between stages prove the final prediction is correct?"

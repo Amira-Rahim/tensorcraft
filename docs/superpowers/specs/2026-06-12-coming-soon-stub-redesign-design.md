@@ -225,7 +225,7 @@ column, footer cards stack.
 
 - `docs/launch-scope.md`: one-line amendment describing the richer stub
   (still within the "stub page with waitlist" decision).
-- `docs/dev-plan.md` untouched (nothing deferred) unless implementation
+- [the product roadmap](../../../ROADMAP.md) untouched (nothing deferred) unless implementation
   defers a section; then record it there.
 
 ## Rollout

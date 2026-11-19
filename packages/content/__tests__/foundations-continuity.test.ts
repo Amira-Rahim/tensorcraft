@@ -8,7 +8,10 @@ const foundations = resolve(
   "../content/deep-orbit/foundations",
 );
 const lesson = (name: string) =>
-  readFileSync(resolve(foundations, name + ".mdx"), "utf8").split("---")[2]!;
+  readFileSync(resolve(foundations, name + ".mdx"), "utf8").replace(
+    /^---\r?\n[\s\S]*?\r?\n---\r?\n/,
+    "",
+  );
 const requiredRead = (name: string) =>
   lesson(name)
     .split("## Challenge")[0]!

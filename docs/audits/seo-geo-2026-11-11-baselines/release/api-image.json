@@ -1,0 +1,26 @@
+{
+  "completedAtUtc": "2026-11-11T11:05:36.768825+00:00",
+  "status": "built_and_pushed_only",
+  "productionDeployed": false,
+  "image": "registry.fly.io/tensorcraft-api@sha256:1c6e3f4d503d21ebb8e02bf3c58d39e8ecf764c415ca73205572ebfd19e4e27f",
+  "tag": "registry.fly.io/tensorcraft-api:consent-067-20261111-22cae183b5d4",
+  "sizeMb": 91,
+  "buildContext": "/private/tmp/tensorcraft-release-20261111-ajni01fn/source",
+  "dockerfile": "apps/api/Dockerfile",
+  "dockerfileSha256": "2414d18b61f26d607e1c9efb0bab6e8a3ddab530d18baacfa2ef5b077131d290",
+  "flyConfig": "apps/api/fly.toml",
+  "flyConfigSha256": "e534d79cc586f4494a1b63f91b4f5f623f5a8ecdca104ee63a85e8a62acaac1a",
+  "releaseManifestSha256": "39b41a9922246f2a5ed8fa1a68793fffe682da539b0be9b4e8119a183df0ec39",
+  "buildCommand": "NO_COLOR=1 fly deploy . --app tensorcraft-api --config apps/api/fly.toml --dockerfile apps/api/Dockerfile --remote-only --build-only --push --image-label consent-067-20261111-22cae183b5d4 --yes --wg=false",
+  "flyVersion": "0.5.7",
+  "remoteTypecheck": "passed",
+  "localTypecheck": "passed",
+  "localApiTests": {
+    "files": 9,
+    "passed": 211,
+    "runtime": "Node 26.10.0"
+  },
+  "retryReason": "Initial remote status stream timed out; cached build succeeded over HTTPS with --wg=false.",
+  "buildLog": "api-build-retry.log",
+  "buildLogSha256": "7bfd9dc73bab2085225defb8da237c738a388be3d2a1c53550ff309ea11e7fa4"
+}

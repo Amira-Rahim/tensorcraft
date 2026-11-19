@@ -1,0 +1,85 @@
+{
+  "key": "deep-orbit/advanced-time-series/forecasting",
+  "phase": "challenge",
+  "status": "published",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit with immutable canonical identity. Cinematic Deep Orbit adventure-comic scene,1536x1024. First reference images are canonical faces, next is bridge master for room/palette, LAST is exact scene to edit. Preserve exact people, facial morphology, adult age markers, warm skin, nose/jaw/eye proportions, hair, side-specific accessories, expressions, story action and entire room composition. Keep every continuous shoulder-elbow-wrist-hand chain, grips, torso/head alignment, thighs, chair support and rail contacts intact. Demir comms anatomical RIGHT ear, Farah lens anatomical LEFT eye. Make only requested screens and small proportional adjustments. Keep narrative people dominant; embed concise task meaning in existing screens rather than turning scene into a full technical infographic. All peripheral monitors, wrist displays and unmentioned readable displays must be OFF, plain charcoal glass with no arbitrary bars, waveforms, gauges or text. Retain physical buttons. Muted sage, aged brass and charcoal with natural warm skin; no neon mint, cyan or mustard wash. Preserve Demir precise face and gentle smile, both connected hands, one atdial and one onrail, torso and chair. His head is visibly large: moderate reduction to about92 percent of current linear width/height, reconnect neck naturally and retain facial morphology. Main right console replaces the two invented forecast curves with a pending comparison headed \"Synthetic series\". Two compact rows \"Rollout: prediction history\" and \"Replay: observed history\" above an empty chart frame. Chart horizontal label \"Steps ahead\", vertical label \"Scalar value\"; small legend \"Observed\", \"Your rollout\", \"Your replay\". Center of empty frame says \"Training pending\". Do not draw numerical results or success ticks before the learner runs the task. Every other monitor and wrist terminal OFF. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, cinematic character and environment framing, near-black space beyond the viewports, green #6BAA8A interface glow and rim light, warm brass #A89060 metal trim, cohesive series look, not photorealistic. Output one full scene only.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/bridge.png",
+      "sha256": "9ba213a1c91c287174c6ae800d6351456ebf1ea8d6ccf6b389065d91a88f2c7a",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/forecasting-challenge-before.png",
+      "sha256": "bbf4975747fd4b4ab8b7b7cd5f8b876e59eec2ae6cf28c6a8d2a9eaba5596c8d",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "bbf4975747fd4b4ab8b7b7cd5f8b876e59eec2ae6cf28c6a8d2a9eaba5596c8d",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+    "sha256": "77abb16aa9970c55be74d50931624c26627216db0ac9f6cfde5adc02395b829d"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sha256": "10f9203f701472e77d8f0e033b58a404764d24aa50cd8b77502d49a237f8fcd8"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sha256": "b393dfb65e300adf9830efab04b04970b0cb848bc34ce864e1fdf06aa15310c1"
+    }
+  ],
+  "panelSpecification": {
+    "state": "pending learner training and comparison",
+    "panels": [
+      "Console distinguishes rollout prediction history from replay observed history.",
+      "Empty chart: Steps ahead versus Scalar value, legends Observed, Your rollout, Your replay; Training pending."
+    ],
+    "otherScreens": "Every additional prominent tablet, wall screen or readable paper must repeat a relevant named source panel or show a clearly dormant/queued interface. Keep incidental background displays low contrast with no unsupported data or verdict.",
+    "concreteGenerationSpecification": "Preserve Demir precise face and gentle smile, both connected hands, one atdial and one onrail, torso and chair. His head is visibly large: moderate reduction to about92 percent of current linear width/height, reconnect neck naturally and retain facial morphology. Main right console replaces the two invented forecast curves with a pending comparison headed \"Synthetic series\". Two compact rows \"Rollout: prediction history\" and \"Replay: observed history\" above an empty chart frame. Chart horizontal label \"Steps ahead\", vertical label \"Scalar value\"; small legend \"Observed\", \"Your rollout\", \"Your replay\". Center of empty frame says \"Training pending\". Do not draw numerical results or success ticks before the learner runs the task. Every other monitor and wrist terminal OFF."
+  },
+  "bodyConstraints": "Preserve all approved whole body construction, continuous arms and hands, supported chair poses. No blanket realism.",
+  "candidatePath": "art-src/scenes/advanced-time-series__forecasting-challenge-openai-20261107.png",
+  "candidateSha256": "338691c9726cfe8bb6d88019e316bd36a42cd5efbd744e6243ada8ab552a89d8",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-79b3fd75-ff65-43f0-b358-0dba71a544bb.png",
+  "ownReview": "All exact labels and phase states inspected. Canonical people, clear continuous arms and hands, natural head/neck/body alignment, sensible chair contacts, muted room palette. No unrelated monitor content.",
+  "identityProof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/forecasting-challenge-identity-proof.jpg",
+  "independentReview": {
+    "reviewer": "/root",
+    "status": "approved",
+    "candidateSha256": "338691c9726cfe8bb6d88019e316bd36a42cd5efbd744e6243ada8ab552a89d8",
+    "proofSha256": "16e6255371734590740c99d2e59c1cbaa57d6e9d1865c9790f29cf860ca244ac",
+    "notes": "Root inspected fullframe and fresh canonical proof. Canonical Demir, connected hands/arms and balanced head/body pass. Synthetic pending chart has correct history distinction, axes and legends, with no invented results."
+  },
+  "originalCandidatePath": "art-src/scenes/advanced-time-series__forecasting-challenge-semantics-stage1-openai-20261107.png",
+  "publishedOutput": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting-challenge.webp",
+  "publishedOutputSha256": "268091f57df5ca264b5294beb0a47cdc2899ab7c4bf5727397b3033aa6613426",
+  "encoding": {
+    "format": "webp",
+    "quality": 86,
+    "effort": 6,
+    "resizeFit": "cover",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "bytes": 159786
+  },
+  "combinedVisualReview": "approved",
+  "publicationValidation": "Exact source/output/reference/proof hashes and byte-identical1536x1024 WebP encoding verified before removing surplus stage sources.",
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "reviewer": "quality_early",
+  "candidatePath": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-concept/candidate.png",
+  "candidateSha256": "76b60c63c4350d0196b054cb14f31d25b8ced446543aa5764169eca7563ae55c",
+  "verdict": "PASS",
+  "nativeReviewed": true,
+  "method": "Independent native original, 2x/3x face/hand/prop crops, full shoulder-elbow-wrist tracing with explicit left/right thumb chirality, direct canonical portrait comparison, and current source verification.",
+  "canonicalFaceReferences": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc"
+    }
+  ],
+  "cropCoordinatesXYXY": [
+    {
+      "i": 10,
+      "name": "root-rest-reportconcept-face",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-concept/candidate.png",
+      "box": [
+        990,
+        115,
+        1340,
+        500
+      ],
+      "scale": 2
+    },
+    {
+      "i": 10,
+      "name": "root-rest-reportconcept-hands",
+      "source": "docs/audits/deep-orbit-quality-2026-11-08/repairs/llm-integration__report-generation-concept/candidate.png",
+      "box": [
+        680,
+        670,
+        1350,
+        940
+      ],
+      "scale": 2
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sha256": "d034de81113402d1165b8a28c675a671100d1d2897aa8da00b374f6a4b68aa1c"
+    }
+  ],
+  "checks": {
+    "anatomyAndContact": "Farah's right hand anchors the binder page with a correctly medial thumb, while her left index/thumb pinch the lifted page at its corner. The sheet remains continuous to the binding and both arm chains are natural.",
+    "displayLegibilityAndSource": "The large summary panel shows Total 12,001, Normal 11,847, Anomalous 153 and Unclassified 1, with review pending and approval before assembly. These exact values and release conditions match the current section template.",
+    "identityExpressionAndStory": "Farah's thoughtful upward glance while turning the page fits evidence review. The canonical overlay, face shape, ponytail and proportions remain consistent.",
+    "palette": "Restrained charcoal, sage and aged brass with naturally lit skin.",
+    "perspectiveAndOperator": "Text and rules share their actual display plane; the operator can see the same front surface.",
+    "largeDisplayRule": "Essential lesson information is large, clear and spacious across the main available working display."
+  },
+  "scores": {
+    "color": 4,
+    "pose": 4,
+    "expression": 4,
+    "displays": 5,
+    "composition": 4,
+    "identity": 4,
+    "story": 4
+  },
+  "findings": [],
+  "temporaryCropsRemoved": true,
+  "reviewedAt": "2026-11-09T07:30:45.448107+00:00"
+}

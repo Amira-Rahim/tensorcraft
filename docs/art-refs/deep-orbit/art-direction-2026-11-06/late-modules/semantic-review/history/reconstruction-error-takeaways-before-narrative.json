@@ -1,0 +1,69 @@
+{
+  "key": "deep-orbit/anomaly-detection/reconstruction-error",
+  "phase": "takeaways",
+  "status": "candidate-awaiting-review",
+  "tool": "built-in imagegen",
+  "prompt": "Use case: precise-object-edit, immutable canonical faces. First inputs canonical identity portraits, next room reference only, LAST exact target. Preserve people, adult age, exact face morphology, expressions, hair, signature equipment, natural warm skin, whole poses, two connected arm chains per person, grips, neck alignment, chairs and contacts. Farah lens anatomical LEFT, Demir comms anatomical RIGHT. Narrative crew action stays dominant. All unmentioned monitors and wrist displays OFF, plain charcoal glass. No arbitrary waveforms, charts, code, meters or data. Restrained sage, aged brass, charcoal. Eliminate neon mint outlines and broad yellow wash. Any LAB PILLAR dark muted sage with thin dim grey internal bands, never fluorescent lime. Keep Farah holding paper with both hands and Demir pointing to it with one hand while his other hand rests naturally on table. Preserve all connected arms and paper grips. Both complete heads can be only very slightly smaller, about5 percent, preserve exact faces and natural short necks. Replace paper donut and arbitrary bars with a compact two-row example headed \"Constructed mapping\". Row1 \"[1000, 0] rebuilt [1000, 0]\" then \"MSE 0\". Row2 \"[0, 0.2] rebuilt [0, 0]\" then \"MSE 0.02\". Footer \"Low error can miss an anomaly\". Keep handwriting readable but brief, no graphs. One rear panel says \"High error does not explain the cause\". Everything else off. These are illustrative calculated examples, not trained-model measurements. Clean bold adventure-comic linework, flat cel shading, balanced stylized adults. Output one 1536x1024 scene.",
+  "references": [
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/masters/lab.png",
+      "sha256": "1e58e75ab7c0a1478c6189ad219bcd22a2d530719fc48a76a515943ff28d74bc",
+      "role": "room and palette reference"
+    },
+    {
+      "path": "/Users/amira.salah/Desktop/tensorcraft/docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/semantic-review/inputs/reconstruction-error-takeaways-before.png",
+      "sha256": "c1e878b5deab565c773b94231b9a8f21465af3cc769ccc318e2b9e79321e1b90",
+      "role": "target scene",
+      "pathAvailability": "deleted-obsolete-working-copy",
+      "pathDeletedSha256": "c1e878b5deab565c773b94231b9a8f21465af3cc769ccc318e2b9e79321e1b90",
+      "workingCopyCleanupNote": "Owner requested lean assets. The actual historical reference path and hash are retained; its obsolete local working copy was deleted after generation completed."
+    }
+  ],
+  "inputRuntime": {
+    "path": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-takeaways.webp",
+    "sha256": "0e2d0a1cd0c18c5de8a5a660d93418c99afb56ac215c4977adaf9c527477b1d8"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sha256": "fab0fcdfe1e86fc5134152280c82a3b0ee1aaa324911d59f771f10c8e38d6770"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sha256": "66cad754b20a4fad87a4552fe67c10b5c9f448275afcec674af39d20c8964fd1"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sha256": "dec34450564614d8f3963d95bf9a3cf627d276b42b576e430c9a5cae535425e6"
+    }
+  ],
+  "panelSpecification": {
+    "state": "worked mission attribution",
+    "concreteGenerationSpecification": "Keep Farah holding paper with both hands and Demir pointing to it with one hand while his other hand rests naturally on table. Preserve all connected arms and paper grips. Both complete heads can be only very slightly smaller, about5 percent, preserve exact faces and natural short necks. Replace paper donut and arbitrary bars with a compact two-row example headed \"Constructed mapping\". Row1 \"[1000, 0] rebuilt [1000, 0]\" then \"MSE 0\". Row2 \"[0, 0.2] rebuilt [0, 0]\" then \"MSE 0.02\". Footer \"Low error can miss an anomaly\". Keep handwriting readable but brief, no graphs. One rear panel says \"High error does not explain the cause\". Everything else off. These are illustrative calculated examples, not trained-model measurements.",
+    "sourceSections": [
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+        "section": "A Detector Can Miss and RecallPrompt"
+      },
+      {
+        "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+        "section": "instructions, offsetModel fixture and memory check"
+      }
+    ],
+    "otherScreens": "Inactive charcoal glass."
+  },
+  "bodyConstraints": "Preserve whole poses and anatomical chains. Briefing Farah and takeaways both receive only subtle head adjustment, all others unchanged.",
+  "candidatePath": "art-src/scenes/anomaly-detection__reconstruction-error-takeaways-semantics-stage1-openai-20261107.png",
+  "candidateSha256": "ef21b1cb2ebba169bc9fddded45372ded554a95593933ab240c4008926d5a857",
+  "generatedPath": "/Users/amira.salah/.codex/generated_images/01a1b507-227c-7a00-a2d2-b760146b21b4/exec-1b087446-04c6-4aba-bab8-0514833c498e.png"
+}

@@ -1,0 +1,53 @@
+{
+  "queueIndex": 39,
+  "key": "deep-orbit/anomaly-detection/the-anomaly",
+  "phase": "concept",
+  "status": "awaiting-identity-correction",
+  "inputScene": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+  "inputSceneSha256": "fd424f5c0418c530dc588f91e3e4265de72e44cda8e803f589ded9a65991215e",
+  "cast": [
+    "farah",
+    "demir"
+  ],
+  "faceBoxes": {
+    "farah": [
+      305,
+      65,
+      330,
+      335
+    ],
+    "demir": [
+      960,
+      55,
+      270,
+      315
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/art-refs/deep-orbit/dr-farah.png",
+      "sha256": "db514398ffd5b2ca6a020398f06f12fe7b541c0007a8d9ad7f70b793181496bc",
+      "role": "canonical identity"
+    },
+    {
+      "path": "docs/art-refs/deep-orbit/ensign-demir.png",
+      "sha256": "95f45e8965f611b819f3c4ded18f2c98c5fd8c12a68b67f088023d396ef9c17c",
+      "role": "canonical identity"
+    },
+    {
+      "path": "art-src/scenes/anomaly-detection__the-anomaly-concept-identity-stage-openai-20261107.png",
+      "sha256": "906e57254c86edb7cbd1bbe64ede903c50ac73eb2ddd72b039a45d4d598b956d",
+      "role": "target scene with corrected crew identity"
+    }
+  ],
+  "prompt": "Use case: identity-preserve. Image 1 is the canonical Dr Farah portrait; image 2 canonical Demir; image 3 the target scene. Change ONLY Farah head at left. Demir has passed strict identity review: preserve him exactly, including his face. Farah still has a tiny pointed nose and triangular pointed chin. Reconstruct her head directly from image 1: mature 38-year-old olive-tan face, broad rounded nose tip, full rounded cheeks, short softly rounded chin, restrained almond eyes with adult eye and smile lines. Turn ONLY her head slightly upward and toward a near-frontal three-quarter camera view so both cheeks and full nose width are visible. She can glance down with her eyes at the display. Use a warm small closed-mouth smile. Exact canonical dark hairline and loose tied waves, rectangular lens over the same anatomical eye. Preserve neck attachment, ALL bodies, arms, hands, room, teaching diagram, furniture, lighting and composition exactly. No new people or limbs. One 1536x1024 image. Do not alter any pixel region outside Farah head and neck transition.",
+  "promptPath": "docs/art-refs/deep-orbit/art-direction-2026-11-06/late-modules/identity-review/anomaly-detection__the-anomaly-concept-identity-prompt.json",
+  "newSource": "art-src/scenes/anomaly-detection__the-anomaly-concept-openai-20261107.png",
+  "finalOutput": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly-concept.webp",
+  "priorAttempts": [
+    {
+      "source": "art-src/scenes/anomaly-detection__the-anomaly-concept-identity-stage-openai-20261107.png",
+      "reason": "Farah concept identity still narrow."
+    }
+  ]
+}

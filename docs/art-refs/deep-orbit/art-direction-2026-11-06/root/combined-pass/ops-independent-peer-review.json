@@ -1,0 +1,89 @@
+{
+  "reviewer": "/root/late_final",
+  "reviewedAt": "2026-11-07T09:50:08.103723+00:00",
+  "status": "approved",
+  "method": "Viewed all five native fullframes and all nine canonical face crop pairs. Read current MDX and complete exercise YAML; checked exact values and phase states.",
+  "sources": [
+    {
+      "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+      "sha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b"
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml",
+      "sha256": "b93953d1e7ac07844f3b6862cb345a4fd37f4d89f8ba5430bcbf0ee3146e3c12"
+    }
+  ],
+  "records": [
+    {
+      "phase": "briefing",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1db955ba-2df7-4ee4-992c-439823ce7d72.png",
+      "candidateSHA256": "b2363ca3fc8880b22b6409367a565ea15315a7d724e12f5e5fd54ee3f0f2c333",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/ops-briefing-identity-proof.png",
+      "proofSHA256": "885a06f8677a39dac9e0cb23b9e8bc504fa3fdfd98728908a227b40e344ea5d5",
+      "status": "approved",
+      "screenMeaning": "Amp paused, [1,64] x [1,64], inner 64 != 1, 64 waiting channels and matching gains needed accurately reflect the opening error. Bare visible left ear and partially occluded right comms preserve canon.",
+      "identity": "Canonical Nazari and Demir morphology, age, hair and equipment preserved in all visible face crops.",
+      "anatomy": "Two coherent arm chains per person, supported hands and seated contact where relevant; natural head-neck-shoulder alignment.",
+      "proportions": "Balanced stylized adult scale; no oversized or over-reduced head defect.",
+      "palette": "Muted sage, brass and charcoal with natural warm skin; no dominant neon or mustard cast."
+    },
+    {
+      "phase": "concept",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1ba78f57-5ff9-488b-961c-6373f5be437b.png",
+      "candidateSHA256": "b159feed029519c49b14ad1d4e4c397d2e27913aafb5c46d6e05f6bf7eadf1f9",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/ops-concept-identity-proof.png",
+      "proofSHA256": "9188d44573d9cc0931b5c738d743d979796488869eb8d575059dab77c7fa327b",
+      "status": "approved",
+      "screenMeaning": "Worked first row [2,10]+[4,8], divide by 2 gives [3,9], gain 2 gives [6,18]. Exact MDX example, operations and values correct.",
+      "identity": "Canonical Nazari and Demir morphology, age, hair and equipment preserved in all visible face crops.",
+      "anatomy": "Two coherent arm chains per person, supported hands and seated contact where relevant; natural head-neck-shoulder alignment.",
+      "proportions": "Balanced stylized adult scale; no oversized or over-reduced head defect.",
+      "palette": "Muted sage, brass and charcoal with natural warm skin; no dominant neon or mustard cast."
+    },
+    {
+      "phase": "challenge",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-1b87771d-315e-47c2-b451-f04bf503e473.png",
+      "candidateSHA256": "ffade29afd79d1b4db069e254496c9c2747b08f05d37e64665b4b25db952b725",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/ops-challenge-identity-proof.png",
+      "proofSHA256": "7cdf3c03773830892922640479d46782f7e7ae61305c6b97fa0221fb220ae9ff",
+      "status": "approved",
+      "screenMeaning": "Broadcast test inputs are exact YAML fixture: [[0,2],[4,6],[8,10]], [2,4], gain 3. mergePasses and mixChannels requirements stated with Awaiting code, no invented solved output.",
+      "identity": "Canonical Nazari and Demir morphology, age, hair and equipment preserved in all visible face crops.",
+      "anatomy": "Two coherent arm chains per person, supported hands and seated contact where relevant; natural head-neck-shoulder alignment.",
+      "proportions": "Balanced stylized adult scale; no oversized or over-reduced head defect.",
+      "palette": "Muted sage, brass and charcoal with natural warm skin; no dominant neon or mustard cast."
+    },
+    {
+      "phase": "takeaways",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-d75e3eed-c7c1-40b9-8852-7c84c353dc98.png",
+      "candidateSHA256": "efe33d5bf7adb6ae09f141825e85977efe19b95c62d51d0abf29fb7492979fa0",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/ops-takeaways-identity-proof.png",
+      "proofSHA256": "efedf189c69107fdaed6b16985f2b66d724fc37ec5756e2ab0e0332fde498c36",
+      "status": "approved",
+      "screenMeaning": "Tablet repeats correct worked first row and gain. Rear panel preserves block [readings,channels], mix [banks,channels], matMul(mix.transpose()) and output [readings,banks].",
+      "identity": "Canonical Nazari and Demir morphology, age, hair and equipment preserved in all visible face crops.",
+      "anatomy": "Two coherent arm chains per person, supported hands and seated contact where relevant; natural head-neck-shoulder alignment.",
+      "proportions": "Balanced stylized adult scale; no oversized or over-reduced head defect.",
+      "palette": "Muted sage, brass and charcoal with natural warm skin; no dominant neon or mustard cast."
+    },
+    {
+      "phase": "epilogue",
+      "candidate": "/Users/amira.salah/.codex/generated_images/01a1b22b-7047-7de1-ac9a-7273dfbc06cd/exec-4ccf97a2-fd59-496a-9ae0-22c3771efef4.png",
+      "candidateSHA256": "7db46c9493e81a09fe9038f7065724cc033284fb1ed6bb686341f89626d97b54",
+      "proof": "docs/art-refs/deep-orbit/art-direction-2026-11-06/root/combined-pass/ops-epilogue-identity-proof.png",
+      "proofSHA256": "4dddbdb55a62dee2f6706fbfbbea9772c0bb3d4e8061a8210207fdff24632723",
+      "status": "approved",
+      "screenMeaning": "Schematic explicitly selects four channels from a 64-channel, one-hour combined capture; synchronized ripple and repeated passes 2 and 3 match the MDX ending without claiming measured plot values.",
+      "identity": "Canonical Nazari and Demir morphology, age, hair and equipment preserved in all visible face crops.",
+      "anatomy": "Two coherent arm chains per person, supported hands and seated contact where relevant; natural head-neck-shoulder alignment.",
+      "proportions": "Balanced stylized adult scale; no oversized or over-reduced head defect.",
+      "palette": "Muted sage, brass and charcoal with natural warm skin; no dominant neon or mustard cast."
+    }
+  ],
+  "reviewDerivativesCleanup": {
+    "record": "docs/audits/deep-orbit-artwork-2026-11-07/review-derivative-cleanup.json",
+    "previewFilesRemoved": true,
+    "originalPathsAndHashesRetained": true,
+    "approvalStatusUnchanged": true
+  }
+}
