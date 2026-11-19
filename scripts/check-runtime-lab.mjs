@@ -34,13 +34,17 @@ const artifacts = await exportOnnx(
   join(models, "deep-scan"),
   join(models, "deep-scan.onnx"),
 );
-for (const [pkg, target] of [
-  ["@tensorflow/tfjs-backend-wasm", "tf-wasm"],
-  ["onnxruntime-web", "ort-wasm"],
-  ["@huggingface/transformers", "hf-wasm"],
+// Transformers.js pins its own ONNX Runtime. Serve the WASM binaries that
+// match each runtime's loader, including when npm installs both versions.
+const transformersRequire = createRequire(
+  require.resolve("@huggingface/transformers"),
+);
+for (const [entry, target] of [
+  [require.resolve("@tensorflow/tfjs-backend-wasm"), "tf-wasm"],
+  [require.resolve("onnxruntime-web"), "ort-wasm"],
+  [transformersRequire.resolve("onnxruntime-web"), "hf-wasm"],
 ]) {
-  let folder = dirname(require.resolve(pkg));
-  // Both main entry points live in dist.
+  const folder = dirname(entry);
   await mkdir(join(publicDir, target));
   for (const name of await readdir(folder))
     if (/\.(wasm|mjs)$/.test(name))

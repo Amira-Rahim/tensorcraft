@@ -41,3 +41,8 @@ describe("learner download archives match their served folders", () => {
     });
   }
 });
+
+it("packages the current runtime lab sources in the learner download", () => {
+  const script = path.resolve(here, "../../../scripts/package-runtime-lab.py");
+  execFileSync("python3", [script, "--check"]);
+});

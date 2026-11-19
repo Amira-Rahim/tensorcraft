@@ -19,13 +19,11 @@ local assets on a loopback address; it uses a fresh isolated browser context.
 
 ## Conversion
 
-The converter is a separate Python tool. Keep its dependencies in a virtual
-environment; they are not shipped to the learner's browser. The pinned set
-was executed on macOS arm64 with Python 3.9. Other platforms need compatible
-wheels; do not silently replace the converter with simulated quantization.
+Use Python 3.11 for the converter on Macs with Apple silicon. The converter
+and its dependencies run in a virtual environment on your machine.
 
 ```bash
-python3 -m venv .venv-runtime
+python3.11 -m venv .venv-runtime
 .venv-runtime/bin/python -m pip install -r scripts/runtime-lab/converter-requirements.txt
 TFJS_CONVERTER="$PWD/.venv-runtime/bin/tensorflowjs_converter" \
   node scripts/check-runtime-lab.mjs --pretrained
@@ -34,7 +32,7 @@ TFJS_CONVERTER="$PWD/.venv-runtime/bin/tensorflowjs_converter" \
 `--pretrained` downloads about 335 MB of pinned ONNX model weights plus
 tokenizer/configuration files. Downloads are cached under
 `test-results/runtime-model-cache/`. The lab records their SHA-256 hashes.
-It tests Transformers.js 3.8.1 with model revision
+The lab runs Transformers.js with model revision
 `0b6928efcb76139cae2c6881d49cda67fe119f42` of
 `Xenova/distilbert-base-uncased-finetuned-sst-2-english`.
 It uses local copies to isolate runtime behavior from Hub availability.
@@ -58,7 +56,7 @@ such as `*/kernel` to retain biases at full precision.
 
 ## What is checked
 
-- TFJS 4.22.0 and ONNX Runtime Web 1.29.0 execute the same 673-parameter
+- TensorFlow.js and ONNX Runtime Web execute the same 673-parameter
   classifier on single-thread WASM. A small exporter preserves this exact
   Dense/ReLU/Dense/ReLU/Dense/Sigmoid graph; it is not a general converter.
 - 261 fixed probes check numerical agreement. They include boundary and
