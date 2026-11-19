@@ -2,7 +2,7 @@
 // Integration sketches and deliberately broken examples have separate scope.
 // Optional filters: REVIEW_MODULE=foundations or REVIEW_LESSON=tensor-shapes.
 import { readFile } from "node:fs/promises";
-import { transformWithEsbuild } from "vite";
+import { transform } from "esbuild";
 import assert from "node:assert/strict";
 import * as tf from "@tensorflow/tfjs";
 import { Tensor as OnnxTensor } from "onnxruntime-web";
@@ -48,10 +48,9 @@ async function run(
     assert.ok(block, `Missing reviewed block ${path}: ${title}`);
     return block.code.replace(/^import .*?;\s*$/gm, "");
   });
-  const { code } = await transformWithEsbuild(
+  const { code } = await transform(
     prefix + "\n" + selected.join("\n") + "\n" + suffix,
-    "reviewed-example.ts",
-    { loader: "ts", target: "es2022" },
+    { loader: "ts", sourcefile: "reviewed-example.ts", target: "es2022" },
   );
   const count = tf.memory().numTensors;
   const fn = new Function(

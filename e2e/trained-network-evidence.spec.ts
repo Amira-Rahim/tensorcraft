@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { build } from "esbuild";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -10,9 +11,6 @@ const contentRequire = createRequire(
   path.join(root, "packages/content/package.json"),
 );
 const { parse } = createRequire(contentRequire.resolve("velite"))("yaml");
-// Vite already depends on esbuild. Bundle test-only components without adding a
-// public route that could expose paid exercise content.
-const { build } = createRequire(require.resolve("vite"))("esbuild");
 const exercise = (location: string): ExerciseData =>
   parse(
     readFileSync(

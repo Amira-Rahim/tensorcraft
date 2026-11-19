@@ -1,7 +1,7 @@
 // Parse each JavaScript/TypeScript teaching block, including sketches.
 // Parsing cannot establish correctness, dependencies or backend support.
 import { readdir, readFile } from "node:fs/promises";
-import { transformWithEsbuild } from "vite";
+import { transform } from "esbuild";
 const root = new URL(
   "../packages/content/content/deep-orbit/",
   import.meta.url,
@@ -21,15 +21,12 @@ for (const module of await readdir(root, { withFileTypes: true })) {
       try {
         const code = new Function("return `" + template + "`;")();
         // Leave imports at module scope; blocks may contain top-level await.
-        await transformWithEsbuild(
-          code,
-          "lesson." + (language === "typescript" ? "ts" : "js"),
-          {
-            loader: language === "typescript" ? "ts" : "js",
-            target: "es2022",
-            logLevel: "silent",
-          },
-        );
+        await transform(code, {
+          loader: language === "typescript" ? "ts" : "js",
+          sourcefile: title,
+          target: "es2022",
+          logLevel: "silent",
+        });
       } catch (error) {
         failed++;
         console.error(

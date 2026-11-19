@@ -321,7 +321,7 @@ describe("ModuleMapClient", () => {
           const title = within(details as HTMLElement).getByText(lesson.title);
           expect(title.closest("a")).toBeNull();
           expect(title).not.toHaveClass("truncate");
-          expect(title).toHaveStyle({ color: "var(--tc-text)" });
+          expect(title.style.color).toBe("var(--tc-text)");
           expect(details).toHaveTextContent(`${lesson.estimatedMinutes} min`);
           expect(
             markup.querySelector(
