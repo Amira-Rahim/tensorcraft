@@ -15,3 +15,14 @@ prerendered pages. Their text, links, titles, descriptions, canonical URLs,
 robots directives and structured data match. The builds also produce
 identical sitemap and robots files. The remaining changes affect lint and
 test coverage. No public URL needs a recrawl for this change.
+
+## Browser runtime lab download
+
+PR #80 updates the converter's msgpack pin to 1.2.3. The repository and
+download guides use Python 3.11 on Apple silicon. CI compares the files
+inside the learner ZIP with the sources that the packager includes.
+
+The public file affected by this PR is
+[`/assignments/browser-runtime-lab-v1.zip`](https://tensorcraft.app/assignments/browser-runtime-lab-v1.zip).
+The production URL serves a ZIP and sits outside the sitemap. The lessons
+keep the same download link and page content. No search recrawl is needed.

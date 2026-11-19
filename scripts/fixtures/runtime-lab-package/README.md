@@ -31,12 +31,11 @@ is not silently reported as a GPU result.
 
 ## Run the full lab
 
-The converter is a Python CLI used once to write the model files. Its
-dependencies stay in a virtual environment. This pinned set was verified on
-macOS arm64 with Python 3.9; other systems need compatible wheels.
+Use Python 3.11 for the converter on Macs with Apple silicon. The converter
+writes the quantized model files that Chromium loads during verification.
 
 ```bash
-python3 -m venv .venv-runtime
+python3.11 -m venv .venv-runtime
 .venv-runtime/bin/python -m pip install -r scripts/runtime-lab/converter-requirements.txt
 TFJS_CONVERTER="$PWD/.venv-runtime/bin/tensorflowjs_converter" npm run verify:full
 ```
