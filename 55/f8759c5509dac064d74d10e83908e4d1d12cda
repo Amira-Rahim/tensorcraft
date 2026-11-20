@@ -1,0 +1,29 @@
+docs/audits/dependency-ci-2026-11-19.md
+  s_23a8ecc63f4366::t_17332a8ce85477 45-55
+packages/ui/src/mdx/exercise-output.tsx
+  s_23a8ecc63f4366::t_5a690b25497b2c 88,90,92-94,96-97,99-100,102-103,131-132,135,190-193,195-202,204,214-215
+  s_23a8ecc63f4366::t_75f4b112237b49 133-134
+  s_23a8ecc63f4366::t_332b857a7e744b 136-139,142-143,194
+  s_23a8ecc63f4366::t_18ad51c881a9a1 89,98
+e2e/trained-network-evidence.spec.ts
+  s_23a8ecc63f4366::t_82244275af79a0 78-89
+  s_23a8ecc63f4366::t_18ad51c881a9a1 60,67-71,159,162,164,170
+  s_23a8ecc63f4366::t_75f4b112237b49 64-66,72-77,161,166-168,171-173
+  s_23a8ecc63f4366::t_bdb85c55a9cb3b 1,61-63,90-91,156-158,160,163,165,169,174-176
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "55f8759c5509dac064d74d10e83908e4d1d12cda",
+  "prompts": {},
+  "sessions": {
+    "s_23a8ecc63f4366": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1f364-c009-7e23-b4fe-9a0b211d652b",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
