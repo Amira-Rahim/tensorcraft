@@ -42,3 +42,14 @@ The change updates the contents of
 [`/assignments/browser-runtime-lab-v1.zip`](https://tensorcraft.app/assignments/browser-runtime-lab-v1.zip).
 The ZIP stays outside the sitemap. Lesson pages keep their existing content
 and download URL, so this change needs no search recrawl.
+
+## Training chart labels, November 20
+
+The shared exercise chart now measures its y-axis labels when the font or
+the data changes. The browser test checks the displayed training-loss chart
+at 390 px and 1440 px, including with larger text. It opens the run details
+before checking the second chart there.
+
+The chart appears after a learner runs code or opens a saved result.
+The change affects that interactive result. No public lesson URL needs a
+recrawl because its indexable content and links stay the same.

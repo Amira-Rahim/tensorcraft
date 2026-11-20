@@ -85,14 +85,22 @@ function SeriesOutput({
 }) {
   const id = useId();
   const frame = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(800);
+  const tickLabels = useRef<SVGGElement>(null);
+  const [frameWidth, setFrameWidth] = useState(800);
+  const [tickWidth, setTickWidth] = useState<number | null>(null);
   useEffect(() => {
-    if (!frame.current || typeof ResizeObserver === "undefined") return;
+    const container = frame.current;
+    const labels = tickLabels.current;
+    if (!container || !labels || typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver((entries) => {
-      const next = entries[0]?.contentRect.width;
-      if (next) setWidth(Math.max(240, next));
+      for (const { target, contentRect } of entries) {
+        if (!contentRect.width) continue;
+        if (target === container) setFrameWidth(contentRect.width);
+        if (target === labels) setTickWidth(Math.ceil(contentRect.width));
+      }
     });
-    observer.observe(frame.current);
+    observer.observe(container);
+    observer.observe(labels);
     return () => observer.disconnect();
   }, []);
   const [localSelection, setLocalSelection] = useState<number | null>(null);
@@ -120,16 +128,19 @@ function SeriesOutput({
           { value: min / 2 + max / 2, position: 140 },
           { value: min, position: 224 },
         ];
-  // Keep the sign and leading decimals inside the viewport, including when
-  // a captured loss series uses more digits than a narrow card can spare.
-  const left = Math.max(
-    60,
-    ...ticks.map((tick) => display(tick.value).length * 9 + 16),
-  );
+  // Estimate only until the browser measures the labels in the learner's font.
+  const labelWidth =
+    tickWidth ??
+    Math.max(...ticks.map((tick) => display(tick.value).length * 9));
+  const left = Math.max(60, labelWidth + 16);
+  const rightMargin = 30;
+  // Keep at least 60 units of plot width when large labels fill a narrow card.
+  const width = Math.max(240, frameWidth, left + 60 + rightMargin);
+  const right = width - rightMargin;
   const x = (i: number) =>
     artifact.labels.length === 1
-      ? width / 2
-      : left + (i * (width - left - 30)) / (artifact.labels.length - 1);
+      ? (left + right) / 2
+      : left + (i * (right - left)) / (artifact.labels.length - 1);
   const y = (v: number) =>
     min === max ? 140 : 224 - ((v / scale - low) / (high - low)) * 168;
   return (
@@ -176,17 +187,21 @@ function SeriesOutput({
             {artifact.title}. {artifact.yLabel} by {artifact.xLabel}. Values
             follow in the data table.
           </title>
-          {ticks.map((tick, i) => (
-            <g key={i}>
-              <line
-                x1={left}
-                x2={width - 30}
-                y1={tick.position}
-                y2={tick.position}
-                stroke="currentColor"
-                opacity=".15"
-              />
+          {ticks.map((tick) => (
+            <line
+              key={tick.position}
+              x1={left}
+              x2={right}
+              y1={tick.position}
+              y2={tick.position}
+              stroke="currentColor"
+              opacity=".15"
+            />
+          ))}
+          <g ref={tickLabels}>
+            {ticks.map((tick) => (
               <text
+                key={tick.position}
                 data-exercise-y-tick
                 x={left - 10}
                 y={tick.position + 5}
@@ -196,8 +211,8 @@ function SeriesOutput({
               >
                 {display(tick.value)}
               </text>
-            </g>
-          ))}
+            ))}
+          </g>
           <text x="8" y="20" fill="currentColor" fontSize="16">
             {artifact.yLabel}
           </text>
