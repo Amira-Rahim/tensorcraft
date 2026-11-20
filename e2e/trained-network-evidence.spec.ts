@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "@playwright/test";
 import { build } from "esbuild";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -56,6 +56,38 @@ async function mount(page: Page, legacy: boolean) {
 }
 
 test.use({ actionTimeout: 30_000 });
+
+async function expectLossChartToFit(chart: Locator) {
+  await expect(chart).toBeVisible();
+  const ticks = chart.locator("[data-exercise-y-tick]");
+  await expect(ticks).toHaveCount(3);
+  await expect
+    .poll(() =>
+      ticks.evaluateAll((labels) =>
+        labels.flatMap((node) => {
+          const label = node as SVGTextElement;
+          const { x, width } = label.getBBox();
+          const chartWidth = label.ownerSVGElement!.viewBox.baseVal.width;
+          return width > 0 && x >= 0 && x + width <= chartWidth
+            ? []
+            : [{ label: label.textContent, x, width }];
+        }),
+      ),
+    )
+    .toEqual([]);
+  await expect
+    .poll(() =>
+      chart
+        .locator("polyline")
+        .first()
+        .evaluate(
+          (line: SVGPolylineElement) =>
+            line.points.getItem(line.points.numberOfItems - 1).x -
+            line.points.getItem(0).x,
+        ),
+    )
+    .toBeGreaterThan(0);
+}
 
 test("the actual trained-network lesson remains gated for guests", async ({
   page,
@@ -121,17 +153,27 @@ for (const width of [1440, 390]) {
     await expect(settings).toBeVisible();
     await expect(settings).toContainText("Rows passed to fit");
     await expect(settings).toContainText("120");
-    expect(
-      await current
-        .locator("[data-exercise-y-tick]")
-        .evaluateAll(
-          (ticks) =>
-            ticks.length > 0 &&
-            ticks.every(
-              (tick) => (tick as SVGGraphicsElement).getBBox().x >= 0,
-            ),
-        ),
-    ).toBe(true);
+    const lossChart = current
+      .getByRole("region", { name: "Captured training loss", exact: true })
+      .getByRole("img");
+    await expectLossChartToFit(lossChart);
+    const largeText = await page.addStyleTag({
+      content:
+        "[data-exercise-y-tick] { font-size: 40px; letter-spacing: .12em; }",
+    });
+    await expectLossChartToFit(lossChart);
+
+    const details = current.getByText("Captured values and run details", {
+      exact: true,
+    });
+    await details.click();
+    await expectLossChartToFit(
+      current
+        .getByRole("region", { name: "Captured output", exact: true })
+        .getByRole("img"),
+    );
+    await details.click();
+    await largeText.evaluate((style) => style.remove());
     const first = await page.evaluate(() =>
       window.tcNetworkEvidenceFixture.records(),
     );

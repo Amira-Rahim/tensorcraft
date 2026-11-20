@@ -18,6 +18,9 @@ license. Preserve the notices that accompany these materials:
 | Room Occupancy source dataset and the included subset                   | CC BY 4.0      | [Attribution and changes](apps/web/public/assignments/room-occupancy-v1/DATA-LICENSE.md)                                          |
 | Vendored TensorFlow.js 4.22.0 browser bundle, copyright 2024 Google LLC | Apache 2.0     | [License](apps/web/public/vendor/LICENSE-tensorflowjs.txt) and the existing header in `apps/web/public/vendor/tfjs-4.22.0.min.js` |
 
+The browser runtime lab includes a modified TensorFlow Hub 0.16.1 wheel
+under Apache 2.0. The wheel includes the license and identifies the changes.
+
 Third-party dependencies retain their own licenses. Their source and license
 notices accompany the installed packages. Installing a dependency does not
 make it Tensorcraft-owned material.

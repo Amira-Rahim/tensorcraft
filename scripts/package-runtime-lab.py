@@ -14,7 +14,8 @@ files = {
     'models/deep-scan/weights.bin': 'apps/web/public/models/deep-scan/weights.bin',
 }
 for name in ['artifact.mjs', 'browser.js', 'converter-requirements.txt',
-             'export-onnx.mjs', 'index.html', 'pretrained-files.json']:
+             'export-onnx.mjs', 'index.html', 'pretrained-files.json',
+             'wheels/tensorflow_hub-0.16.1+tensorcraft.1-py3-none-any.whl']:
     files['scripts/runtime-lab/' + name] = 'scripts/runtime-lab/' + name
 
 destination = root / 'apps/web/public/assignments/browser-runtime-lab-v1.zip'

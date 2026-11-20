@@ -26,3 +26,30 @@ The public file affected by this PR is
 [`/assignments/browser-runtime-lab-v1.zip`](https://tensorcraft.app/assignments/browser-runtime-lab-v1.zip).
 The production URL serves a ZIP and sits outside the sitemap. The lessons
 keep the same download link and page content. No search recrawl is needed.
+
+## Browser runtime lab setuptools update, November 20
+
+PR #89 upgrades setuptools to 84.1.0. TensorFlow Hub 0.16.1 imports
+`pkg_resources` when the converter starts. The learner ZIP includes a
+patched Hub wheel that uses `packaging.version` for that check.
+
+On Apple silicon, a fresh Python 3.11.18 environment installed the
+requirements from the extracted ZIP and passed `pip check`. The converter
+exported both uint8 and uint16 models. Chromium loaded both, and each
+matched the original model's classifications on all 261 probes.
+
+The change updates the contents of
+[`/assignments/browser-runtime-lab-v1.zip`](https://tensorcraft.app/assignments/browser-runtime-lab-v1.zip).
+The ZIP stays outside the sitemap. Lesson pages keep their existing content
+and download URL, so this change needs no search recrawl.
+
+## Training chart labels, November 20
+
+The shared exercise chart now measures its y-axis labels when the font or
+the data changes. The browser test checks the displayed training-loss chart
+at 390 px and 1440 px, including with larger text. It opens the run details
+before checking the second chart there.
+
+The chart appears after a learner runs code or opens a saved result.
+The change affects that interactive result. No public lesson URL needs a
+recrawl because its indexable content and links stay the same.
