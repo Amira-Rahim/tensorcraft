@@ -59,7 +59,13 @@ export function WorldSceneBackdrop({
       }}
     >
       {plateSrc && (
-        <ArtPlate src={plateSrc} bleed className="absolute inset-0" />
+        <ArtPlate
+          src={plateSrc}
+          bleed
+          className="absolute inset-0"
+          loading="eager"
+          fetchPriority="high"
+        />
       )}
       {draw && (
         <SceneCanvas

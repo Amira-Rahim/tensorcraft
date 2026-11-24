@@ -28,6 +28,7 @@ export interface ArtPlateProps {
   fallback?: ReactNode;
   className?: string;
   loading?: "lazy" | "eager";
+  fetchPriority?: "high" | "low" | "auto";
 }
 
 export function ArtPlate({
@@ -37,6 +38,7 @@ export function ArtPlate({
   fallback,
   className,
   loading = "lazy",
+  fetchPriority,
 }: ArtPlateProps) {
   const [failed, setFailed] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -59,6 +61,7 @@ export function ArtPlate({
       alt={alt ?? ""}
       aria-hidden={alt ? undefined : "true"}
       loading={loading}
+      fetchPriority={fetchPriority}
       decoding="async"
       onError={() => setFailed(src)}
       className={[

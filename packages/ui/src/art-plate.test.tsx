@@ -12,6 +12,7 @@ describe("ArtPlate", () => {
     expect(img).toHaveAttribute("alt", "");
     expect(img).toHaveAttribute("aria-hidden", "true");
     expect(img).toHaveAttribute("loading", "lazy");
+    expect(img).not.toHaveAttribute("fetchpriority");
     expect(img).toHaveAttribute("decoding", "async");
   });
 

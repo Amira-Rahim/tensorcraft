@@ -3,6 +3,9 @@ name: Lighthouse CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   lighthouse:
@@ -54,6 +57,7 @@ jobs:
       # Dashboard/settings require auth - skipped here. Add once a test-mode
       # session is plumbed through the middleware (Phase 6c follow-up).
       - name: Run Lighthouse
+        if: github.event_name == 'pull_request'
         uses: treosh/lighthouse-ci-action@v12
         with:
           urls: |
@@ -66,3 +70,17 @@ jobs:
           budgetPath: .github/lighthouse-budget.json
           uploadArtifacts: true
           configPath: .github/lighthouserc.json
+
+      - name: Measure release pages on mobile
+        if: github.event_name != 'pull_request'
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:3000/worlds/deep-orbit
+            http://localhost:3000/compare
+            http://localhost:3000/guides/javascript-machine-learning-learning-path
+            http://localhost:3000/guides/browser-machine-learning-project
+          runs: 3
+          configPath: .github/lighthouserc.json
+          uploadArtifacts: true
+          artifactName: lighthouse-release-mobile

@@ -97,8 +97,9 @@ export function TrainingDemo() {
 
   return (
     <section
+      id="training"
       aria-labelledby={`${id}-title`}
-      className="mt-12 max-w-3xl space-y-5 leading-relaxed"
+      className="mt-12 max-w-3xl scroll-mt-20 space-y-5 leading-relaxed"
     >
       <h2
         id={`${id}-title`}

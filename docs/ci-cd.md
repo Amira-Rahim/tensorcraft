@@ -52,23 +52,22 @@ Concurrency: superseded runs are cancelled on PRs only. On `main` every
 commit keeps its completed verdict; cancel-in-progress there left rapid
 pushes with no CI result at all.
 
-### Lighthouse CI (separate workflow, PRs only)
+### Lighthouse checks on pull requests and releases
 
 [`lighthouse.yml`](../.github/workflows/lighthouse.yml) builds the web
-app with the same placeholder env as the `e2e` job (the `next start`
-boot assertion applies here too), serves it, and audits `/`, `/pricing`,
-`/worlds`, and `/learn` against
-[`.github/lighthouse-budget.json`](../.github/lighthouse-budget.json).
-The budgets are a REGRESSION RATCHET, not targets: set 2026-08-24 to the
-then-worst measurement plus ~25% headroom, because the original
-aspirational budgets had never once passed and a permanently red job
-gates nothing. Aspirational values and the perf work to earn them back
-live in `docs/post-launch-backlog.md` §7. Assertions come only from the
-budget file: the action's `budgetPath` bypasses any `assert` block in
-`lighthouserc.json`, which is why that file holds only `collect`
-settings.
+app with the same placeholder environment as the `e2e` job and serves the
+production build locally. On pull requests, it audits the homepage, pricing,
+worlds, learn, the reshape guide and the first tensor lesson against the
+[existing budgets](../.github/lighthouse-budget.json). Those budgets allow
+about 25% headroom over the worst measurements from August 24.
 
-The workflow runs each URL once, so timing metrics such as Time to
+Pushes to `main` and manual runs collect three simulated mobile measurements
+each for the Deep Orbit course, comparison, learning path and browser ML
+project guide. Download the `lighthouse-release-mobile` artifact from that
+workflow run to inspect the individual reports. Production hosting, real-user
+traffic and the interactive demo's training time need separate measurements.
+
+Pull requests measure each URL once, so timing metrics such as Time to
 Interactive vary between runs on a shared runner, while layout shift is
 close to deterministic. A CLS value that repeats exactly across unrelated
 PRs is a real regression in `main`. That is how the 2026-10-20 to

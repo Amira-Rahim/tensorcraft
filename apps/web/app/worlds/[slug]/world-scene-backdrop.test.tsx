@@ -21,7 +21,7 @@ describe("WorldSceneBackdrop", () => {
     expect(screen.queryByTestId("art-plate")).toBeNull();
   });
 
-  it("layers the plate beneath the canvas when one is supplied", () => {
+  it("prioritizes the course backdrop image beneath the canvas", () => {
     render(
       <WorldSceneBackdrop
         slug="deep-orbit"
@@ -29,7 +29,10 @@ describe("WorldSceneBackdrop", () => {
         plateSrc={PLATE}
       />,
     );
-    expect(screen.getByTestId("art-plate")).toHaveAttribute("src", PLATE);
+    const image = screen.getByTestId("art-plate");
+    expect(image).toHaveAttribute("src", PLATE);
+    expect(image).toHaveAttribute("loading", "eager");
+    expect(image).toHaveAttribute("fetchpriority", "high");
     expect(screen.getByTestId("scene-canvas")).toBeInTheDocument();
   });
 

@@ -1,9 +1,11 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "pnpm --filter @tensorcraft/web start",
-      "startServerReadyPattern": "Ready",
-      "numberOfRuns": 1
+      "numberOfRuns": 1,
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "simulate"
+      }
     }
   }
 }
