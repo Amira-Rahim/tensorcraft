@@ -1,0 +1,53 @@
+.github/lighthouserc.json
+  s_5b88067647d678::t_4b32b6b53131dd 4-8
+.github/workflows/lighthouse.yml
+  s_5b88067647d678::t_da3c535e25705d 6-8,60,73-86
+apps/web/app/guides/browser-machine-learning-project/training-demo.tsx
+  s_21d17e89ae4971::t_87dfec1b5fbfb8 100,102
+apps/web/app/guides/page.tsx
+  s_5b88067647d678::t_097cca1a943980 3,5,9-10,28-48,55-102,105,109
+apps/web/app/worlds/[slug]/world-scene-backdrop.test.tsx
+  s_5b88067647d678::t_dc9147a3495ca7 24,32-35
+apps/web/app/worlds/[slug]/world-scene-backdrop.tsx
+  s_5b88067647d678::t_a331f8cfb3d7aa 62-68
+docs/audits/seo-geo-2026-11-24/README.md
+  s_5b88067647d678::t_832aba939ab1a4 1-114
+docs/audits/seo-geo-2026-11-24/mobile-lab.md
+  s_5b88067647d678::t_1b2e9e254110a5 1-84
+docs/audits/seo-geo-2026-11-24/mobile-lab.mjs
+  s_5b88067647d678::t_0beb24c3aa797e 1-161
+docs/ci-cd.md
+  s_21d17e89ae4971::t_756e19dda9fd93 55,58-70
+docs/seo-geo-plan.md
+  s_5b88067647d678::t_4ae4b26b9ad735 3-9
+e2e/guide-practice.spec.ts
+  s_5b88067647d678::t_fc4fed15fcf3ac 1-83
+packages/ui/src/art-plate.test.tsx
+  s_5b88067647d678::t_88bb23cc253aed 15
+packages/ui/src/art-plate.tsx
+  s_5b88067647d678::t_f9d313ce33c023 31,41,64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "241828f4e7b5b69703accb5b630f2268fa5bc841",
+  "prompts": {},
+  "sessions": {
+    "s_21d17e89ae4971": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20dcd-5b2c-7e50-af40-b19b47f08139",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_5b88067647d678": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20dcc-86c7-7d83-b57b-7aa12472e762",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
