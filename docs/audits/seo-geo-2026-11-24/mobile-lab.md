@@ -57,7 +57,20 @@ The bridge image stayed the largest element and Chrome recorded one request for 
 | Control | 3 | 13:55:52 | 73 | 7398 | 5126 | 26 |
 | Candidate | 3 | 13:56:02 | 85 | 3977 | 2135 | 23 |
 
-The separately verified local production build also sends a preload for this image in its HTTP `Link` header. The simulation did not add that header. A post-release capture can measure the deployed behavior. [Release candidate verification](README.md)
+The production build also sends a preload for this image in its HTTP `Link` header. The simulation did not add that header. [Release verification](README.md)
+
+## Deployed course on November 24
+
+After Vercel deployed `241828f4`, three scored cold navigations to the production course gave a median LCP of 2.37 seconds, compared with 5.07 seconds before release on the same lab setup. Median performance score rose from 81 to 97, median TBT went from 64 to 60 ms, and median image load delay fell from 2.93 to 1.11 seconds. In each scored run Chrome fetched the bridge image once at high priority and identified it as the largest visible element.
+
+| Start, UTC | Course LCP | Outcome |
+| --- | ---: | --- |
+| 14:07:11 | 2.370 s | Scored |
+| 14:07:24 | 3.277 s | Scored |
+| 14:07:37 | | Lighthouse returned `NO_FCP` and produced no score |
+| 14:33:41 | 2.328 s | Fresh run after the unscored attempt |
+
+These results describe the signed-out mobile lab environment. Real visitor load times require field data.
 
 ## Reproduction
 

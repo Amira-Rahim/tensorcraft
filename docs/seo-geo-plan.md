@@ -2,9 +2,11 @@
 
 Updated November 24, 2026. This is the single current work list. The
 [November 24 follow-up](audits/seo-geo-2026-11-24/README.md) has the latest
-Google inspections, release preparation and measurement plan. Google crawled
-and indexed the comparison page after accepting its indexing request. The project guide passed Google's
-live test after a November 23 crawl, but remains outside the index.
+Google inspections, production release and measurement plan. Google indexed
+the comparison page. The three practice links are live, and Google accepted
+the guides hub's refresh request. Recheck the project guide after the hub
+recrawl. It passed Google's live test after a November 23 crawl and remains
+outside the index.
 The November 14 discovery and implementation records below describe that
 release. The
 [audit record](audits/seo-geo-2026-11-10/README.md) preserves evidence,
